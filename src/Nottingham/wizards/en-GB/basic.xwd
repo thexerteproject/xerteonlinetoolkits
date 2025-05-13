@@ -288,7 +288,7 @@
         </lightboxImgGroup>
 	</lightboxGroup>
 
-    <AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true">
+    <!-- <AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true">
 	<aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,claude" defaultValue="openai" width="120" optional="true"/>
 	<subject label="Subject" type="text" tooltip = "The subject on which a learning object should be generated. When using files, videos or other sources, please ensure that the subject references information available in these sources. An subject which does not obviously reference the sources may increase likelihood of model hallucination." wysiwyg="false" optional="true"/>
 	<useContext label="Generate Based on Context" type="checkbox" defaultValue="false" tooltip="When selected, the AI model will also take into account the current contents of the learning object when generating this object." optional ="true"/>
@@ -307,7 +307,9 @@
       <translateApi label="Service" options="OpenAI" type="comboBox" data="pexels" defaultValue="openai" width="120" optional="true" tooltip="The service which will perform the translation." />
       <targetLanguage label="Target Language" options="French, English, Dutch, Flemish, German, Norwegian, Swedish, Danish, Spanish, Italian, Polish" type="comboBox" data="French,English,Dutch,Flemish,German,Norwegian,Swedish,Danish,Spanish,Italian,Polish" defaultValue="Dutch" tooltip="The language the learning object will be translated to." optional="true" />
       <atrButton type="autotranslatebutton" optional="true"/>
-    </autoTranslateGroup>
+    </autoTranslateGroup> -->
+
+    <corpus label="Corpus files / links" type="CorpusGrid" gridTxt="Resources can be peertube, youtube or vimeo URLs or uploaded files. &lt;br/&gt;Upload a file or enter a URL to the resource link, then click 'process' to ensure it can be used for the various AI features." columns="3" colWidths="20,15,50" editable="1,1,1" cellType="textInput,media,textArea" wysiwyg="false,false,true" controls="1" headers="Title,Resource,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of resources which can be used to supplement AI content generation."/>
 
 	<twittercard type="group" label="Twitter Card" optional="true" tooltip="Enable a Twitter card for when a public link to this project is shared via Twitter">
 		<tcoption label="Enable Twitter Card" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true"/>

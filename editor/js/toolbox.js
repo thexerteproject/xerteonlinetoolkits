@@ -6217,8 +6217,8 @@ var EDITOR = (function ($, parent) {
                                     // Check if file upload is selected
                                     if (fileUrl != null && uploadPrompt === 'true') {
                                         var cleanFileUrl = fileUrl.replace("FileLocation + '", "").replace("'", "");
-                                        var fullUrl = baseUrl + cleanFileUrl;
-                                        await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], fullUrl, null, sourceContext, assisstantPrompt, baseUrl, useContext, contextScope, modelTemplate);
+                                        //var fullUrl = baseUrl + cleanFileUrl;
+                                        await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], cleanFileUrl, null, sourceContext, assisstantPrompt, baseUrl, useContext, contextScope, modelTemplate);
                                     } else if (fileUrl === null && uploadPrompt === 'true') {
                                         alert("You've selected the 'file upload' option but haven't selected a file or provided a valid link.");
                                     } else if (textSnippet != null && uploadPrompt === 'trueText') {
@@ -6242,6 +6242,176 @@ var EDITOR = (function ($, parent) {
                             html.prop('disabled', false);
                         }
                     });
+                break;
+            case 'corpusgrid':
+                //Based on datagrid with some specific changes for the purposes of AI usage itself
+                var id = 'grid_' + form_id_offset;
+                form_id_offset++;
+                html = $('<div>')
+                    .attr('id', id)
+                    .addClass('corpusgrid')
+                    .append($('<table>')
+                        .attr('id', id + '_jqgrid'))
+                    .append($('<div>')
+                        .attr('id', id + '_nav'))
+                    .append($('<div>')
+                        .attr('id', id + '_addcolumns')
+                        .addClass('jqgridAddColumnsContainer'));
+
+                $('<input type="button" name="corpusSubmit" value="sync to corpus">')
+                    .click(function() { corpusUpdate(name, id); })
+                    .appendTo(html);
+
+                $('<input type="button" value="Refresh Corpus Grid">')
+                    .click(() => updateGrid(name, id))
+                    .appendTo(html);
+
+            function normalizePath(raw) {
+                // 0) strip any surrounding single or double quotes:
+                raw = raw.replace(/^['"]+|['"]+$/g, '');
+
+                // 1) Full URLs with scheme (http:// or https://)
+                if (/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(raw)) {
+                    try {
+                        const u = new URL(raw);
+                        if (u.origin !== window.location.origin) {
+                            // External URL → leave intact
+                            return raw;
+                        }
+                        // Same-origin URL → strip after /media/ if present
+                        const idx = u.pathname.indexOf('/media/');
+                        return (idx !== -1)
+                            ? u.pathname.slice(idx + 1).replace(/^['"]+|['"]+$/g, '')
+                            : raw;
+                    } catch {
+                        alert(`Malformed URL: ${raw}\nPlease check and try again.`);
+                        throw new Error(`Malformed URL: ${raw}`);
+                    }
+                }
+
+                // 2) Bare hostnames without scheme → user error
+                if (/^[^\/]+\.[^\/]+(\/|$)/.test(raw)) {
+                    alert(`Invalid URL: ${raw}\nPlease include http:// or https:// if you mean a web link.`);
+                    throw new Error(`Invalid URL: ${raw}`);
+                }
+
+                // 3) **Anywhere** the text "media/" appears, pull out from there
+                const idxAny = raw.indexOf('media/');
+                if (idxAny !== -1) {
+                    // slice *and* strip quotes again just in case
+                    return raw
+                        .slice(idxAny)
+                        .replace(/^['"]+|['"]+$/g, '');
+                }
+
+                // 4) Nothing matched → error
+                alert(`Unrecognized path: ${raw}\nMust be a full URL or contain “media/” in it.`);
+                throw new Error(`Unrecognized path: ${raw}`);
+            }
+
+            function corpusUpdate(name, id) {
+                const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+                // 1. Grab all the row‐objects from the jqGrid
+                const gridSel = '#' + id + '_jqgrid';
+                const allRows = $(gridSel).jqGrid('getRowData');
+
+                const files = allRows.map(row => {
+                    const raw = row['col_2'];  // This is the value from the grid, could be a full URL or relative path
+                    row['col_2'] = normalizePath(raw); // Normalize the path if it's a local URL
+
+                    return row; // Return the modified row with updated col_2
+                });
+
+                const payload = { name, baseURL, gridData: allRows };
+
+                // 4. Send it off
+                $.ajax({
+                    url: 'editor/ai/rag/syncCorpus.php',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(payload),
+                    success: function(resp) {
+                        console.log('Corpus sync succeeded:', resp);
+                        alert('✅ Synced ' + payload.gridData.length + ' files to corpus.');
+                    },
+                    error: function(xhr, status, err) {
+                        console.error('Corpus sync failed:', err);
+                        alert('⚠️ Corpus sync error: ' + err);
+                    }
+                });
+            }
+
+            function updateGridFromJson(corpusJson, id) {
+                const hashes = corpusJson.hashes || {};
+                const rows   = [];
+
+                // build one row per file
+                Object.values(hashes).forEach(entry => {
+                    const files= entry.files || [];
+                    const meta = (entry.metaData) || {};
+                    const name= meta.name || '';
+                    const description = meta.description || '';
+                    const fileSource = meta.source || '';
+
+                    files.forEach(file => {
+                        rows.push({
+                            col_1: name,
+                            col_2: fileSource,
+                            col_3: description
+                        });
+                    });
+                });
+
+                const gridSel = '#' + id + '_jqgrid';
+                $(gridSel).jqGrid('clearGridData');
+                $(gridSel).jqGrid('setGridParam', { data: rows });
+                $(gridSel).trigger('reloadGrid');
+            }
+
+            function updateGrid(name, id) {
+                confirm("A list of processed files for AI use will replace the current resource list, and any changes not yet synced will be lost. Proceed with loading?");
+                // If you need the same baseURL logic:
+                const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+
+                $.ajax({
+                    url: 'editor/ai/rag/getCorpus.php',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify({
+                        name: name,
+                        baseURL: baseURL,
+                        type: name,
+                        gridId: id
+                    }),
+                    success: function(resp) {
+                        if (!resp?.csv) {
+                            alert('No corpus data returned. Please check the server response.');
+                            return;
+                        }
+                        debugger
+                        //updateGridFromJson(resp, id);
+                        var gridId = '#' + resp.gridId + '_jqgrid';
+                        $(gridId).jqGrid('clearGridData');
+                        setAttributeValue(key, [resp.type], [resp.csv]);
+                        var rows = readyLocalJgGridData(key, resp.type);
+                        $(gridId).jqGrid('setGridParam', {data: rows});
+                        $(gridId).trigger('reloadGrid');
+
+                        // show a count
+                        const totalFiles = Object.values(resp.hashes)
+                            .reduce((sum, e) => sum + e.files.length, 0);
+                        alert(`✅ Grid updated with ${totalFiles} file(s).`);
+                    },
+                    error: function(xhr, status, err) {
+                        console.error('Failed to fetch corpus:', err);
+                        alert('⚠️ Error loading corpus data: ' + err);
+                    }
+                });
+            }
+
+                //return xml
+                datagrids.push({id: id, key: key, name: name, options: options});
                 break;
             case 'webpage':  //Not used??
             case 'xerteurl':

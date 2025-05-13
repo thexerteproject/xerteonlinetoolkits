@@ -70,36 +70,188 @@ abstract class BaseRAG
             $this->processNewEmbeddings();
 
             // Recompute TF-IDF for the entire corpus.
-            $this->generateTfidfPersistent();
+            //$this->generateTfidfPersistent();
+
+            //cleans up any unused artifacts and re-computes tf-idf for the cleaned up corpus
+            $this->cleanupStaleArtifacts();
         }
     }
 
     /**
-     * updateGlobalCorpus
-     * -------------------
-     * Checks if a file (by its name) is already present in the global corpus
-     * (stored in corpus.json). If not, it adds the file name to the corpus.
+     * processFileList
+     * ----------------
+     * Processes all files in the given list:
+     *   - For each file path, it calls processFileChunks (which checks against corpus.json)
+     *   - Then, it processes new embeddings from any new chunks
+     *   - Then, it removes any files that used to be in corpus.json but are no longer in the list
+     *   - Finally, it cleans up stale artifacts and re-computes TF-IDF vectors for the updated corpus.
      *
-     * @param string $fileName The name of the file to check.
-     * @param string $autoAdd Determines whether file should be added to corpus if not present (default: false).
-     * @return bool Returns true if the file was already processed; false otherwise.
+     * @param string[] $filePaths Array of full file paths to include in the corpus.
+     * @return array              An array of per-file results or errors.
      */
-    protected function updateGlobalCorpus($fileName, $autoAdd = false)
+    public function processFileList(array $filePaths)
     {
-        $corpus = ["files" => []];
-        if (file_exists($this->corpusFile)) {
-            $content = file_get_contents($this->corpusFile);
-            $corpus = json_decode($content, true) ?: $corpus;
-        }
-        if (!in_array($fileName, $corpus['files'])) {
-            $corpus['files'][] = $fileName;
-            if ($autoAdd) {
-                file_put_contents($this->corpusFile, json_encode($corpus));
+        $results = [];
+
+        // Build the set of all file‐basenames we consider "in the corpus"
+        $currentBasenames = [];
+
+        foreach ($filePaths as $entry) {
+            $path = $entry['path'];
+            $meta = $entry['metadata'];
+            $source = $entry['metadata']['source'];
+            $currentBasenames[] = basename($path);
+
+            // Only attempt to process ones that still exist on disk
+            if (!is_file($path)) {
+                // File might still exist elsewhere, but since it's not in our list
+                // we simply skip re‐processing—it’ll be pruned out of the corpus below.
+                continue;
             }
-            return false; // File was not previously processed.
+
+            try {
+                $res = $this->processFileChunks($path, $meta);
+                $results[] = [
+                    'file'   => $path,
+                    'result' => $res,
+                ];
+
+                // Compute its hash and then update the stored metadata in corpus.json
+                $fileHash = hash_file('sha256', $path);
+                if (file_exists($this->corpusFile)) {
+                    $corp = json_decode(file_get_contents($this->corpusFile), true) ?: ['hashes'=>[]];
+                    if (isset($corp['hashes'][$fileHash])) {
+                        // Overwrite with fresh metadata
+                        $corp['hashes'][$fileHash]['metaData'] = $meta;
+                        file_put_contents(
+                            $this->corpusFile,
+                            json_encode($corp, JSON_PRETTY_PRINT)
+                        );
+                    }
+                }
+            } catch (Exception $e) {
+                $results[] = [
+                    'file'  => $path,
+                    'error' => $e->getMessage(),
+                ];
+            }
         }
-        return true; // File is already in the corpus.
+
+        if (file_exists($this->corpusFile)) {
+            $corp = json_decode(file_get_contents($this->corpusFile), true) ?: ['hashes' => []];
+            $hashesToPurge = [];
+
+            foreach ($corp['hashes'] as $hash => $data) {
+                // Keep only files still in the provided list
+                $remaining = array_values(array_intersect($data['files'], $currentBasenames));
+
+                if (empty($remaining)) {
+                    $hashesToPurge[] = $hash;
+                    unset($corp['hashes'][$hash]);
+                } elseif (count($remaining) !== count($data['files'])) {
+                    $corp['hashes'][$hash]['files'] = $remaining;
+                }
+            }
+
+            file_put_contents($this->corpusFile, json_encode($corp, JSON_PRETTY_PRINT));
+
+            if (!empty($hashesToPurge)) {
+                $filterStream = function(string $path) use ($hashesToPurge) {
+                    if (!file_exists($path)) return;
+                    $in  = fopen($path, 'r');
+                    $out = fopen("{$path}.tmp", 'w');
+
+                    while (($line = fgets($in)) !== false) {
+                        $doc = json_decode($line, true);
+                        if (!isset($doc['fileHash']) || !in_array($doc['fileHash'], $hashesToPurge, true)) {
+                            fwrite($out, json_encode($doc) . "\n");
+                        }
+                    }
+
+                    fclose($in);
+                    fclose($out);
+                    rename("{$path}.tmp", $path);
+                };
+
+                $filterStream($this->chunksFile);
+                $filterStream($this->embeddingsFile);
+            }
+        }
+
+        // Recompute any new embeddings, clean up artifacts, refresh TF-IDF
+        $this->processNewEmbeddings();
+        $this->cleanupStaleArtifacts();
+
+        return $results;
     }
+
+    /**
+     * isHashProcessed
+     * ----------------
+     * Checks whether this content‑hash was seen before.
+     * Records filenames + timestamps for debugging.
+     *
+     * @param string $fileHash  SHA‑256 of the file contents
+     * @param string $fileName  Name of the file being processed
+     * @param bool   $autoAdd   If true, record new hashes and metadata
+     * @return bool             True if we’ve already processed this exact hash
+     */
+    protected function isHashProcessed(string $fileHash, string $fileName, bool $autoAdd = false, $metaData = null): bool
+    {
+        // 1) Load existing corpus
+        $corpus = ['hashes' => []];
+        if (file_exists($this->corpusFile)) {
+            $raw    = file_get_contents($this->corpusFile);
+            $corpus = json_decode($raw, true) ?: $corpus;
+        }
+
+        // 2) Purge this fileName from _all_ other_ hashes
+        foreach ($corpus['hashes'] as $h => &$entry) {
+            if ($h === $fileHash) {
+                // don’t touch the entry for the hash we’re about to check
+                continue;
+            }
+            if (false !== ($i = array_search($fileName, $entry['files'], true))) {
+                array_splice($entry['files'], $i, 1);
+                if (empty($entry['files'])) {
+                    unset($corpus['hashes'][$h]);
+                }
+            }
+        }
+        unset($entry);
+
+        $now = (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->format('c');
+
+        // 3) Check if this hash already exists
+        if (isset($corpus['hashes'][$fileHash])) {
+            // 3a) If the fileName is already listed under this hash, it's truly unchanged
+            if (in_array($fileName, $corpus['hashes'][$fileHash]['files'], true)) {
+                return true;
+            }
+            // 3b) Else the content matches an existing hash but under a new name
+            if ($autoAdd) {
+                $corpus['hashes'][$fileHash]['files'][]  = $fileName;
+                $corpus['hashes'][$fileHash]['metaData'][] = $metaData;
+                $corpus['hashes'][$fileHash]['lastSeen'] = $now;
+
+                file_put_contents($this->corpusFile, json_encode($corpus, JSON_PRETTY_PRINT));
+            }
+            return false;
+        }
+
+        // 4) New hash entirely
+        if ($autoAdd) {
+            $corpus['hashes'][$fileHash] = [
+                'files'     => [$fileName],
+                'metaData'  => [$metaData],
+                'firstSeen' => $now,
+                'lastSeen'  => $now,
+            ];
+            file_put_contents($this->corpusFile, json_encode($corpus, JSON_PRETTY_PRINT));
+        }
+        return false;
+    }
+
 
     /**
      * processFileChunks
@@ -113,7 +265,7 @@ abstract class BaseRAG
      *
      * @param string $filePath The path to the file.
      */
-    public function processFileChunks($filePath)
+    public function processFileChunks($filePath, $meta)
     {
         $fileName = basename($filePath);
         $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
@@ -122,38 +274,41 @@ abstract class BaseRAG
         $supported = ['txt', 'text', 'html', 'htm', 'csv', 'xml', 'docx', 'odt', 'pptx' ,'xlsx', 'md', 'markdown', 'pdf'];
         if (!in_array($extension, $supported)) {
             echo "Skipping unsupported file type: {$fileName}\n";
-            return;
+            return "Skipping unsupported file type: {$fileName}\n";
         }
 
-        // Check if file is already processed using the global corpus.
-        if ($this->updateGlobalCorpus($fileName)) {
-            echo "File {$fileName} already processed for chunks.\n";
-            return;
+        // 1) Compute file‐hash and timestamp once
+        $fileHash = hash_file('sha256', $filePath);
+        $now      = (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))
+            ->format(\DateTime::ATOM);
+
+        // 2) Skip if already processed
+        if ($this->isHashProcessed($fileHash, $fileName)) {
+            echo "Skipping {$fileName}: content unchanged since last run.\n";
+            return "Skipping {$fileName}: content unchanged since last run.\n";
         }
 
-        // Open the chunks file in append mode.
+        // 3) Open chunks file…
         $outHandle = fopen($this->chunksFile, 'a');
         if (!$outHandle) {
             echo("Error opening file for writing chunks: {$this->chunksFile}");
+            return "Error opening file for writing chunks: {$this->chunksFile}";
         }
 
-        // For plain text files, use streaming.
         if ($extension === 'txt' || $extension === 'text') {
-            $inHandle = fopen($filePath, 'r');
-            if (!$inHandle) {
-                fclose($outHandle);
-                echo("Error opening file for reading: {$filePath}");
-            }
-            $buffer = "";
+            $inHandle  = fopen($filePath, 'r');
+            $buffer    = "";
             $chunkIndex = time();
             while (!feof($inHandle)) {
                 $buffer .= fread($inHandle, 4096);
                 while (strlen($buffer) >= $this->chunkSize) {
                     $chunkText = substr($buffer, 0, $this->chunkSize);
                     $data = [
-                        'id' => $fileName . '-' . $chunkIndex++,
-                        'file' => $fileName,
-                        'chunk' => $chunkText
+                        'id'        => $fileName . '-' . $chunkIndex++,
+                        'file'      => $fileName,
+                        'fileHash'  => $fileHash,
+                        'createdAt' => $now,
+                        'chunk'     => $chunkText
                     ];
                     fwrite($outHandle, json_encode($data) . "\n");
                     $buffer = substr($buffer, $this->chunkSize);
@@ -161,32 +316,36 @@ abstract class BaseRAG
             }
             if (strlen($buffer) > 0) {
                 $data = [
-                    'id' => $fileName . '-' . $chunkIndex++,
-                    'file' => $fileName,
-                    'chunk' => $buffer
+                    'id'        => $fileName . '-' . $chunkIndex++,
+                    'file'      => $fileName,
+                    'fileHash'  => $fileHash,
+                    'createdAt' => $now,
+                    'chunk'     => $buffer
                 ];
                 fwrite($outHandle, json_encode($data) . "\n");
             }
             fclose($inHandle);
+
         } else {
-            // For non-txt files, use DocumentLoader to load full content.
+            // non‐txt loader/splitter branch
             try {
-                $loader = DocumentLoaderFactory::getLoader($filePath);
+                $loader  = DocumentLoaderFactory::getLoader($filePath);
                 $content = $loader->load();
             } catch (Exception $e) {
                 echo "Error loading file {$fileName}: " . $e->getMessage() . "\n";
                 fclose($outHandle);
-                return;
+                return "Error loading file {$fileName}: " . $e->getMessage() . "\n";
             }
 
-            // Use text splitter function to split the loaded content.
-            $chunksArr = splitTextByFileType($content, $extension, $this->chunkSize);
+            $chunksArr  = splitTextByFileType($content, $extension, $this->chunkSize);
             $chunkIndex = time();
-            foreach ($chunksArr as $chunk) {
+            foreach ($chunksArr as $chunkText) {
                 $data = [
-                    'id' => $fileName . '-' . $chunkIndex++,
-                    'file' => $fileName,
-                    'chunk' => $chunk
+                    'id'        => $fileName . '-' . $chunkIndex++,
+                    'file'      => $fileName,
+                    'fileHash'  => $fileHash,
+                    'createdAt' => $now,
+                    'chunk'     => $chunkText
                 ];
                 if (($encoded = json_encode($data, JSON_INVALID_UTF8_SUBSTITUTE)) === false) {
                     echo("JSON encode failed: " . json_last_error_msg());
@@ -197,8 +356,11 @@ abstract class BaseRAG
         }
 
         fclose($outHandle);
-        $this->updateGlobalCorpus($fileName, true);
+
+        // 4) Finally, record this hash as processed
+        $this->isHashProcessed($fileHash, $fileName, true, $meta);
         echo "Processed chunks for {$fileName}.\n";
+        return "Processed chunks for {$fileName}.\n";
     }
 
     /**
@@ -227,36 +389,55 @@ abstract class BaseRAG
      */
     public function processNewEmbeddings($batchSize = 10)
     {
-        $newChunks = [];
-        $existingFiles = [];
-        // If embeddings file exists, gather list of files already embedded.
+        $newChunks      = [];
+        $existingHashes = [];
+
+        // 1) Gather all fileHashes we've already embedded
         if (file_exists($this->embeddingsFile)) {
             $handle = fopen($this->embeddingsFile, 'r');
             while (($line = fgets($handle)) !== false) {
                 $data = json_decode($line, true);
-                if ($data && !in_array($data['file'], $existingFiles)) {
-                    $existingFiles[] = $data['file'];
+                // <-- changed: look at fileHash instead of file
+                if ($data && !in_array($data['fileHash'], $existingHashes, true)) {
+                    $existingHashes[] = $data['fileHash'];
                 }
             }
             fclose($handle);
         }
-        // Scan chunks file for chunks belonging to files not yet embedded.
+
+        // 2) Load the current set of valid hashes from corpus.json
+        $validHashes = [];
+        if (file_exists($this->corpusFile)) {
+            $corp        = json_decode(file_get_contents($this->corpusFile), true);
+            $validHashes = array_keys($corp['hashes'] ?? []);
+        }
+
+        // 3) Scan chunks; pick only those whose fileHash is both valid and not yet embedded
         $handle = fopen($this->chunksFile, 'r');
         if (!$handle) {
             echo("Error opening chunks file: {$this->chunksFile}");
+            return;
         }
         while (($line = fgets($handle)) !== false) {
             $data = json_decode($line, true);
-            if ($data && !in_array($data['file'], $existingFiles)) {
+            if (
+                $data
+                // must come from a “current” file version…
+                && in_array($data['fileHash'], $validHashes, true)
+                // …and not already in embeddings
+                && !in_array($data['fileHash'], $existingHashes, true)
+            ) {
                 $newChunks[] = $data;
             }
         }
         fclose($handle);
 
+        // 4) batch & call processEmbeddingBatch()
         if (count($newChunks) > 0) {
-            $outHandle = fopen($this->embeddingsFile, 'a'); // Append mode.
+            $outHandle = fopen($this->embeddingsFile, 'a');
             if (!$outHandle) {
                 echo("Error opening embeddings file: {$this->embeddingsFile}");
+                return;
             }
             $batch = [];
             foreach ($newChunks as $chunkData) {
@@ -270,7 +451,6 @@ abstract class BaseRAG
                 $this->processEmbeddingBatch($batch, $outHandle);
             }
             fclose($outHandle);
-            //echo ("Processed embeddings for new chunks.\n");
         } else {
             echo("No new chunks found for embeddings.\n");
         }
@@ -288,11 +468,13 @@ abstract class BaseRAG
         $embeddingsBatch = $this->getEmbeddings($texts);
         // Write each embedding along with its chunk metadata
         foreach ($batch as $index => $chunkData) {
-            $result = [
-                'id' => $chunkData['id'],
-                'file' => $chunkData['file'],
-                'embedding' => $embeddingsBatch[$index]
-            ];
+                $result = [
+                    'id'        => $chunkData['id'],
+                    'file'      => $chunkData['file'],       // readability only
+                    'fileHash'  => $chunkData['fileHash'],   // ← newly added
+                    'createdAt' => $chunkData['createdAt'],  // ← newly added (optional)
+                    'embedding' => $embeddingsBatch[$index]
+                ];
             fwrite($outHandle, json_encode($result) . "\n");
         }
     }
@@ -1069,5 +1251,121 @@ abstract class BaseRAG
                 echo "Not found (skipped): {$file}\n";
             }
         }
+    }
+
+    /**
+     * Remove all data for one file (by path) and re‑compute IDF/TF‑IDF.
+     */
+    public function removeFileArtifacts(string $filePath): void
+    {
+        $fileName = basename($filePath);
+        $fileHash = hash_file('sha256', $filePath);
+
+        // 1) === Corpus cleanup ===
+        if (file_exists($this->corpusFile)) {
+            $corp = json_decode(file_get_contents($this->corpusFile), true) ?: ['hashes'=>[]];
+
+            // Drop this fileName from any hash entry; if empty, drop the hash
+            foreach ($corp['hashes'] as $h => &$entry) {
+                if (false !== ($i = array_search($fileName, $entry['files'], true))) {
+                    array_splice($entry['files'], $i, 1);
+                    if (empty($entry['files'])) {
+                        unset($corp['hashes'][$h]);
+                    }
+                }
+            }
+            unset($entry);
+
+            file_put_contents(
+                $this->corpusFile,
+                json_encode($corp, JSON_PRETTY_PRINT)
+            );
+            echo "Removed {$fileName} from corpus.json\n";
+        }
+
+        // 2) === Chunk & Embedding cleanup ===
+        // helper to rewrite a JSONL file sans any entries with this fileHash
+        $filter = function(string $path) use ($fileHash) {
+            $tmp = "{$path}.tmp";
+            if (!file_exists($path)) return;
+            $in  = fopen($path, 'r');
+            $out = fopen($tmp, 'w');
+            while (($line = fgets($in)) !== false) {
+                $data = json_decode($line, true);
+                if (!$data || ($data['fileHash'] ?? null) === $fileHash) {
+                    // skip any chunk/embedding for this file version
+                    continue;
+                }
+                fwrite($out, json_encode($data) . "\n");
+            }
+            fclose($in);
+            fclose($out);
+            rename($tmp, $path);
+            echo "Cleaned up {$path}\n";
+        };
+
+        $filter($this->chunksFile);
+        $filter($this->embeddingsFile);
+
+        // 3) === Re‑compute IDF + TF‑IDF on whatever’s left ===
+        $this->generateTfidfPersistent();
+        echo "Re‑generated IDF and TF‑IDF on remaining corpus.\n";
+    }
+
+    /**
+     * Remove all chunk & embedding entries whose fileHash
+     * is no longer in the global corpus, then rebuild IDF/TF‑IDF.
+     */
+    public function cleanupStaleArtifacts(): void
+    {
+        // 1) Load valid hashes from the corpus
+        if (!file_exists($this->corpusFile)) {
+            echo "No corpus file found—skipping cleanup.\n";
+            return;
+        }
+        $corp        = json_decode(file_get_contents($this->corpusFile), true);
+        $validHashes = array_keys($corp['hashes'] ?? []);
+        if (empty($validHashes)) {
+            echo "Corpus is empty—nothing to keep.\n";
+            return;
+        }
+
+        // 2) Helper to rewrite JSONL, keeping only valid fileHashes
+        $filterJsonl = function(string $path) use ($validHashes) {
+            if (!file_exists($path)) {
+                echo "File not found (skipping): {$path}\n";
+                return;
+            }
+            $tmp    = "{$path}.tmp";
+            $in     = fopen($path, 'r');
+            $out    = fopen($tmp, 'w');
+            $kept   = 0;
+            while (($line = fgets($in)) !== false) {
+                $data = json_decode($line, true);
+                // if it has a fileHash field, keep only those in validHashes
+                if (isset($data['fileHash']) && in_array($data['fileHash'], $validHashes, true)) {
+                    fwrite($out, json_encode($data) . "\n");
+                    $kept++;
+                }
+            }
+            fclose($in);
+            fclose($out);
+            rename($tmp, $path);
+            echo "Retained {$kept} entries in {$path}\n";
+        };
+
+        // 3) Apply to chunks and embeddings
+        $filterJsonl($this->chunksFile);
+        $filterJsonl($this->embeddingsFile);
+
+        // 4) Re‑build IDF + TF‑IDF on what's left
+        $this->generateTfidfPersistent();
+        echo "Re‑generated idf.json and tfidf_embeddings.json on filtered corpus.\n";
+    }
+    /**
+     * Return the path of the list of processed corpus files.
+     */
+    public function getCorpusDirectory (){
+        return $this->corpusFile;
     }
 }

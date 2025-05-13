@@ -40,7 +40,7 @@
 		<name label="Overlay" type="TextInput"/>
 
 		<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true">
-            <aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,copilot" defaultValue="openai" width="120" optional="true"/>
+            <aiSelector label="AI model" options="GPT (OpenAI),Claude (Anthropic), Mistral AI" type="comboBox" data="openai,anthropic,mistralai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
             <subject label="Subject" tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'. Multiple subjects from the video may be chosen. Selecting a subject which is not talked about or directly referenced in the video may lead to content and timestamp inaccuracies." type="TextInput" defaultValue="" placeholder="Enter a subject here..." optional="true"/>
             <subtype label="Object Type" tooltip="Pick which kind of content to generate!" options="Generate Text Object,Generate Multiple Choice Question" type="comboBox" data="text_object,mcq" defaultValue="text_object" optional="true" conditionTrigger="true"/>
             <nrq label="Number of Multiple Choice Questions" type="TextInput" wysiwyg="true" defaultValue="3" optional="true" condition="subtype=='mcq'"/>

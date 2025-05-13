@@ -1,5 +1,5 @@
 <?php
-require '../../vendor/autoload.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
 use Smalot\PdfParser\Parser;
 
 interface DocumentLoader {
@@ -112,43 +112,6 @@ class OdtLoader implements DocumentLoader {
         return '';
     }
 }
-/*class OdtLoader implements DocumentLoader {
-    private string $filePath;
-
-    public function __construct(string $filePath) {
-        $this->filePath = $filePath;
-    }
-
-    public function load(): string {
-        if (!file_exists($this->filePath)) return '';
-
-        $zip = new ZipArchive();
-        if ($zip->open($this->filePath) === TRUE) {
-            $xmlStream = $zip->getFromName('content.xml');
-            $zip->close();
-
-            if ($xmlStream) {
-                return $this->extractText($xmlStream);
-            }
-        }
-        return '';
-    }
-
-    private function extractText(string $xmlStream): string {
-        $reader = new XMLReader();
-        $reader->xml($xmlStream);
-        $text = '';
-
-        while ($reader->read()) {
-            if ($reader->nodeType == XMLReader::TEXT || $reader->nodeType == XMLReader::CDATA) {
-                $text .= $reader->value . "\n";
-            }
-        }
-        $reader->close();
-        return trim($text);
-    }
-}
-*/
 
 class XlsxLoader implements DocumentLoader {
     private string $filePath;

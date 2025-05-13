@@ -12,7 +12,6 @@ class mistralaiApi
         $this->xerte_toolkits_site = $xerte_toolkits_site;
         require_once (str_replace('\\', '/', __DIR__) . "/rag/BaseRAG.php");
         require_once (str_replace('\\', '/', __DIR__) . "/rag/MistralRAG.php");
-        require_once (str_replace('\\', '/', __DIR__) . "/transcribe/AITranscribe.php");
     }
 
     private function clean_result($answer) {
@@ -157,7 +156,7 @@ class mistralaiApi
         return $finalPath;
     }
 
-    public function ai_request($p, $type, $baseUrl, $globalInstructions, $useCorpus = false, $useTranscription = false){
+    public function ai_request($p, $type, $baseUrl, $globalInstructions, $useCorpus){
         if (is_null($this->preset_models->type_list[$type]) or $type == "") {
             return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
         }
@@ -168,52 +167,20 @@ class mistralaiApi
 
         $prompt = $this->generatePrompt($p, $type, $globalInstructions);
 
-        if ($useTranscription){
-            $apiTranscribeKey = $this->xerte_toolkits_site->openAI_key;
-            $transcriber = new OpenAITranscribe($apiTranscribeKey);
-            $file = $this->prepareURL($baseUrl . DIRECTORY_SEPARATOR . "media" . DIRECTORY_SEPARATOR . "audioTest" . DIRECTORY_SEPARATOR . "BouwenPeditTest.mp3");
-            $transcription = $transcriber->transcribeAudioTimestamped($file);
-        }
-
         if ($useCorpus){
-            //take context from uploaded file and add it into the prompt.
             $apiKey = $this->xerte_toolkits_site->mistralai_key;
-
             $encodingDirectory = $this->prepareURL($baseUrl);
             $rag = new MistralRAG($apiKey, "txt", $encodingDirectory);
-
-            // Start memory tracking
-            $startMemory = memory_get_usage(true);
-            $startTime = microtime(true);
-
-            $directory = $this->prepareURL($baseUrl . DIRECTORY_SEPARATOR . "media" . DIRECTORY_SEPARATOR . "corpus");
-
-            $rag->processDirectory($directory);
-
-
-            // Get relevant context for a question
-            $question = $p['subject'];
-            $context = $rag->getWeightedContext($question);
-            //$rag->flushPersistentFiles();
-
-            // End memory tracking
-            $endMemory = memory_get_usage(true);
-            $peakMemory = memory_get_peak_usage(true);
-            $executionTime = microtime(true) - $startTime;
-
-            echo "Start Memory: " . number_format($startMemory / 1024, 2) . " KB\n";
-            echo "End Memory: " . number_format($endMemory / 1024, 2) . " KB\n";
-            echo "Peak Memory: " . number_format($peakMemory / 1024, 2) . " KB\n";
-            echo "Execution Time: " . number_format($executionTime, 5) . " seconds\n";
-
+            $promptReference = x_clean_input($p['subject']);
+            $context = $rag->getWeightedContext($promptReference);
             $new_messages = array(
                 array(
                     'role' => 'user',
-                    'content' => 'Great job! That\'s a great example of what I need. Now, I want to send you the context of the learning object you are generating these XMLs for. In the future, please generate the xml based on the context I will provide.',
+                    'content' => 'Great job! That\'s a great example of what I need. Now, I want to send you the context of the learning object you are generating these XMLs for. Bear in mind, the context can take different forms: transcripts or text. In the future, please generate the xml based on the context I will provide.',
                 ),
                 array(
                     'role' => 'assistant',
-                    'content' => 'Understood. I\'m happy to help you with your task. Please provide the current context of the learning object. Once you do, we can proceed to generating new XML objects using the exact same structure I used in my previous message, this time taking the new context into account.',
+                    'content' => 'Understood. I\'m happy to help you with your task. Please provide the current context of the learning object. I will keep in mind that for transcripts, I dont have to include the timestamps in my response unless otherwise specified. Once you do, we can proceed to generating new XML objects using the exact same structure I used in my previous message, this time taking the new context into account.',
                 ),
                 array(
                     'role' => 'user',
