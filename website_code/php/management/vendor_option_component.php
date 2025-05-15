@@ -39,10 +39,12 @@ class vendor_option_component
     //check if vendor has no sub options
     public function has_no_sub_options(): bool
     {
-            if (!(array)$this->sub_options) {
-                return true;
-            }
-            return false;
+        if (!(array)$this->sub_options) {
+            return true;
         }
+        return false;
+    }
+
+
 
 }

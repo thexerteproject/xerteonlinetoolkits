@@ -2459,7 +2459,7 @@ var EDITOR = (function ($, parent) {
     browseFile = function (id, type, key, name, value, obj)
     {
         let tmp_loc = 'media';
-        if (type === 'CorpusGrid') {
+        if (type === 'CorpusGrid' || type === 'mediaCorpus') {
             tmp_loc = 'corpus';
         }
         window.elFinder = {};
@@ -5018,7 +5018,7 @@ var EDITOR = (function ($, parent) {
 				}
 
 				break;
-
+            case 'mediaCorpus':
 			case 'media':
 				var id = 'media_' + form_id_offset;
 				form_id_offset++;
@@ -5056,9 +5056,9 @@ var EDITOR = (function ($, parent) {
                     .attr('type', 'button')
 					.addClass("xerte_button")
 					.addClass("media_browse")
-					.click({id:id, key:key, name:name}, function(event)
+					.click({id:id, key:key, name:name, type:options.type}, function(event)
 					{
-						browseFile(event.data.id, "",event.data.key, event.data.name, this.value, this);
+						browseFile(event.data.id, event.data.type ,event.data.key, event.data.name, this.value, this);
 					})
 					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')))
 
