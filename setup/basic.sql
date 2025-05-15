@@ -26,6 +26,7 @@ DROP TABLE IF EXISTS `$template_group_rights` ;
 DROP TABLE IF EXISTS `$folderrights` ;
 DROP TABLE IF EXISTS `$folder_group_rights` ;
 DROP TABLE IF EXISTS `$oai_publish` ;
+DROP TABLE If EXISTS `$management_helper` ;
 
 DROP TABLE IF EXISTS `$lti_context` ;
 DROP TABLE IF EXISTS `$lti_keys` ;
@@ -396,3 +397,13 @@ insert into `$role`(`roleid`, `name`) values
   (6, 'projectadmin'),
   (7, 'harvestadmin'),
   (8, 'aiuser');
+
+CREATE TABLE IF NOT EXISTS `$management_helper` (
+    `interaction_id` int(11) NOT NULL AUTO_INCREMENT,
+    `vendor` VARCHAR(10) NOT NULL,
+    `type` VARCHAR(10) NOT NULL,
+    `needs_key` BOOLEAN NOT NULL,
+    `enabled` BOOLEAN NOT NULL ,
+    `sub_options` TEXT,
+    PRIMARY KEY (`interaction_id`)
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

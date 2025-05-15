@@ -1649,13 +1649,37 @@ function upgrade_52()
 
     if (($error1 === false)) {
         $error1_returned = false;
-        // echo "creating LRS_Endpoint field FAILED";
     }
 
     if (($error2 === false)) {
         $error2_returned = false;
-        // echo "creating LRS_Key field FAILED";
     }
 
-    return "Creating LRS Endpoint settings fields - ok ? " . ($error1_returned && $error2_returned? 'true' : 'false'). "<br>";
+    return "create ai settings field - ok ? " . ($error1_returned && $error2_returned? 'true' : 'false'). "<br>";
+}
+
+
+function upgrade_53()
+{
+    $message = "";
+
+    if (!_table_exists("management_helper")) {
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `management_helper` (
+        `interaction_id` int(11) NOT NULL AUTO_INCREMENT,
+        `vendor` VARCHAR(10) NOT NULL,
+        `type` VARCHAR(10) NOT NULL,
+        `needs_key` BOOLEAN NOT NULL,
+        `enabled` BOOLEAN NOT NULL ,
+        `sub_options` TEXT,  
+        PRIMARY KEY (`interaction_id`)
+      )"
+        );
+
+        $message .= "Creating management helper table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    }
+    else{
+        $message .= "Table management_helper already exists - ok ? true". "<br>";
+    }
+
+    return $message;
 }

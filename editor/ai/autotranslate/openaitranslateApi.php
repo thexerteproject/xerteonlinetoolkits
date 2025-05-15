@@ -163,7 +163,7 @@ class openaitranslateApi
 
     private function translateBatch($texts, $target_language)
     {
-        $openAiKey = $this->xerte_toolkits_site->openAI_key;
+        $openAiKey = $this->xerte_toolkits_site->openai_key;
 
         // Use a unique delimiter unlikely to appear in normal text
         $uniqueDelimiter = "@@@###@@@";

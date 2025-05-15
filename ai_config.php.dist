@@ -1,6 +1,7 @@
 <?php
-
-$xerte_toolkits_site->openAI_key = '';
+//please name all ai/image keys the same as the vendors in the management helper table.
+//example: $xerte_toolkits_site->*vendor name here*_key = '';
+$xerte_toolkits_site->openai_key = '';
 $xerte_toolkits_site->copilot_key = '';
 $xerte_toolkits_site->anthropic_key = '';
 $xerte_toolkits_site->mistralai_key = '';

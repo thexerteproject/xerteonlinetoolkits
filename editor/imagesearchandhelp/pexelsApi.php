@@ -68,7 +68,7 @@ class pexelsApi
     }
 
     private function extractParameters($input){
-        $openAiKey = $this->xerte_toolkits_site->openAI_key;
+        $openAiKey = $this->xerte_toolkits_site->openai_key;
 
         // If it's the first time, initialize the conversation with the instructions and the first example
         if (empty($conversation)) {
@@ -159,7 +159,7 @@ class pexelsApi
     private function rewritePrompt($query)
     {
         // Your OpenAI API key
-        $openAiKey = $this->xerte_toolkits_site->openAI_key;
+        $openAiKey = $this->xerte_toolkits_site->openai_key;
 
         // The system message to instruct the AI how to rewrite the prompt
         $systemMessage = "You are an AI assistant. Rewrite the following user query to be more effective for image search APIs like Pexels.";

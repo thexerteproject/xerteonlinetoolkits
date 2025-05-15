@@ -24,39 +24,37 @@ _load_language_file("/website_code/php/management/ai_management.inc");
 require("../user_library.php");
 
 if(is_user_admin()) {
+    $form_state = x_clean_input_array($_POST['form_state']);
 
-    $database_id = database_connect("templates list connected", "template list failed");
+    $database_id = database_connect("ai and image settings updated", "ai and image settings update failed");
 
-    /* Ensure that the various check values are valid before saving them. */
-    //placeholder until roles is ready
-    $openai = '';
-    $_POST['openai_allow'] === 'true' ? $openai .= 'allow:true,' : $openai .= 'allow:false,';
-    $_POST['openai_whisper'] === 'true' ? $openai .= 'whisper:true,' : $openai .= 'whisper:false,';
-    $_POST['openai_dali'] === 'true' ? $openai .= 'dali:true,' : $openai .= 'dali:false,';
-    $_POST['openai_upload'] === 'true' ? $openai .= 'upload:true,' : $openai .= 'upload:false,';
-    $openai = rtrim($openai, ',');
-
-    $anthropic = '';
-    $_POST['anthropic_allow'] === 'true' ? $anthropic .= 'allow:true,' : $anthropic .= 'allow:false,';
-    $_POST['anthropic_whisper'] === 'true' ? $anthropic .= 'whisper:true,' : $anthropic .= 'whisper:false,';
-    $_POST['anthropic_dali'] === 'true' ? $anthropic .= 'dali:true,' : $anthropic .= 'dali:false,';
-    $_POST['anthropic_upload'] === 'true' ? $anthropic .= 'upload:true,' : $anthropic .= 'upload:false,';
-    $anthropic = rtrim($anthropic, ',');
-
-
-    $query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set openai = ?, anthropic = ?";
-
-    $res = db_query($query, [$openai, $anthropic]);
-
-    if ($res !== false) {
-        echo MANAGEMENT_AI_SUCCESS;
-
-    } else {
-
-        echo MANAGEMENT_AI_FAIL . " Something went wrong";
+    $vendors = [];
+    foreach ($form_state as $key=>$value){
+        $key_split = strpos($key, '_');
+        $vendor = substr($key, 0, $key_split);
+        $option = str_replace('_', ' ',substr($key, $key_split + 1));
+        if (!array_key_exists($vendor, $vendors)){
+            $vendors[$vendor] = [$option => $value];
+        } else {
+            $vendors[$vendor][$option] = $value;
+        }
     }
 
+    foreach ($vendors as $vendor=>$options) {
+        $enabled = $options['enabled'] == 'true';
+        $sub_options = $options;
+        unset($sub_options['enabled']);
+        $sub_options_json = json_encode($sub_options);
+
+        $query = "UPDATE " . $xerte_toolkits_site->database_table_prefix . "management_helper 
+          SET enabled = ?, sub_options = ? 
+          WHERE vendor = ?";
+        $res = db_query_one($query, [$enabled, $sub_options_json, $vendor]);
+
+        if ($res === false) {
+            echo MANAGEMENT_AI_FAIL . " Something went wrong";
+        }
+    }
+    echo MANAGEMENT_AI_SUCCESS;
 }
-
-
 ?>

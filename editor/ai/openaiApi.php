@@ -31,7 +31,7 @@ class openaiApi
    private function POST_OpenAi($prompt, $settings)
     {
 
-        $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openAI_key;
+        $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openai_key;
 
         //add user supplied prompt to payload
         $settings["payload"]["messages"][max(sizeof($settings["payload"]["messages"]) - 1, 0)]["content"] = $prompt;
@@ -64,7 +64,7 @@ class openaiApi
 
     private function POST_OpenAi_Assistant($prompt, $settings)
     {
-        $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openAI_key;
+        $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openai_key;
 
         //add user supplied prompt to payload
         $settings["payload"]["thread"]["messages"][max(sizeof($settings["payload"]["thread"]["messages"])-1, 0)]["content"] = $prompt;
@@ -113,7 +113,7 @@ class openaiApi
     }
 
     private function GET_OpenAi_Run_Status($runId, $threadId){
-        $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openAI_key;
+        $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openai_key;
         $url = "https://api.openai.com/v1/threads/$threadId/runs/$runId";
         //start api interaction
 
@@ -134,7 +134,7 @@ class openaiApi
     }
 
     private function GET_last_message_from_thread($threadId) {
-        $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openAI_key;
+        $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openai_key;
         $url = "https://api.openai.com/v1/threads/$threadId/messages";
 
         $curl = curl_init();
@@ -183,7 +183,7 @@ class openaiApi
     }
 
     private function deleteThread($threadId){
-        $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openAI_key;
+        $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openai_key;
         $url = "https://api.openai.com/v1/threads/$threadId";
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -289,7 +289,7 @@ class openaiApi
             return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
         }
 
-        if ($this->xerte_toolkits_site->openAI_key == "") {
+        if ($this->xerte_toolkits_site->openai_key == "") {
             return (object) ["status" => "error", "message" => "there is no corresponding API key"];
         }
 
