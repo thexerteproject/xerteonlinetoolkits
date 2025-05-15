@@ -14,6 +14,10 @@
 //    die('{"status": "error", "message": "prompt must not be empty"}');
 //}
 
+require_once(dirname(__FILE__) . "/../../config.php");
+
+
+
 $prompt_params = $_POST["prompt"] ?? null;
 $type = $_POST["type"];
 $ai_api = $_POST["api"] ?? 'openai';
@@ -38,6 +42,11 @@ if (!in_array($ai_api, $allowed_apis)){
 require_once(dirname(__FILE__) . "/" . $ai_api ."Api.php");
 
 ob_start();
+
+//ensure corpus directory exists
+$url_parts = explode('/', $baseUrl);
+end($url_parts);
+verify_LO_folder(prev($url_parts), '/corpus');
 
 //dynamically initiate correct api class
 $api_type = $ai_api . 'Api';

@@ -481,3 +481,15 @@ function set_token()
         $_SESSION['token'] = uid();
     }
 }
+
+//Function that ensures a folder exists in the learning object
+function verify_LO_folder($LO, $folder): void
+{
+    global $xerte_toolkits_site;
+
+    $user_files_dir = $xerte_toolkits_site->users_file_area_full . $LO . $folder;
+
+    if (!is_dir($user_files_dir)) {
+        mkdir($user_files_dir);
+    }
+}

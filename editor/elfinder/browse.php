@@ -78,6 +78,15 @@ if (isset($_REQUEST['langCode']))
     $lang = x_clean_input($_REQUEST['langCode']);
 }
 
+//extra option to support alternative corpus file storage
+$file_location = 'media';
+if (isset($_REQUEST['loc'])) {
+    $file_location = x_clean_input($_REQUEST['loc']);
+    //ensure $file_location is always media or corpus
+    if (!in_array($file_location, ['media', 'corpus'], true)) {
+        die("Invalid location");
+    }
+}
 
 ?>
 <!DOCTYPE html>
@@ -127,7 +136,7 @@ if (isset($_REQUEST['langCode']))
             ?>
 
             $('#elfinder').elfinder({
-                url : 'php/connector.php?uploadDir=<?php echo $_SESSION['uploadDir'];?>&uploadURL=<?php echo $_SESSION['uploadURL'];?>',       // connector URL (REQUIRED)
+                url : 'php/connector.php?uploadDir=<?php echo $_SESSION['uploadDir'];?>&uploadURL=<?php echo $_SESSION['uploadURL'];?>&loc=<?php echo $file_location;?>',       // connector URL (REQUIRED)
                 lang: '<?php echo $lang;?>',     // language (OPTIONAL)
                 uiOptions : {
                     // toolbar configuration

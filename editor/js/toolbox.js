@@ -1286,6 +1286,10 @@ var EDITOR = (function ($, parent) {
     jqGridAfterShowForm = function(id, ids, options)
     {
 		var col_id = this.id;
+        var file_loc = 'media';
+        if (options.type === 'CorpusGrid'){
+            file_loc = 'CorpusGrid';
+        }
 
         if (options.wysiwyg != 'false' && options.wysiwyg != undefined)
         {
@@ -1368,7 +1372,7 @@ var EDITOR = (function ($, parent) {
                         $(this).parent().append('<button id="' + 'browse_' + col_id + '" title="' + language.compMedia.$tooltip + '" class="xerte_button media_browse"></button>');
                         $(this).parent().find("#browse_" + col_id)
                             .click(function () {
-                                browseFile(col_id);
+                                browseFile(col_id, file_loc);
                             })
                             .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon'));
 
@@ -2452,14 +2456,18 @@ var EDITOR = (function ($, parent) {
         setAttributeValue(key, [name], [actvalue]);
     },
 
-    browseFile = function (id, key, name, value, obj)
+    browseFile = function (id, type, key, name, value, obj)
     {
+        let tmp_loc = 'media';
+        if (type === 'CorpusGrid') {
+            tmp_loc = 'corpus';
+        }
         window.elFinder = {};
         window.elFinder.callBack = function(file) {
             // Actions with url parameter here
             var url = decodeURIComponent(file.url);
             pos = url.indexOf(rlourlvariable);
-            if (pos >=0) {
+            if (pos >= 0) {
                 url = "FileLocation + '" + url.substr(rlourlvariable.length + 1) + "'";
             }
             $('#' + id).attr("value", url);
@@ -2470,7 +2478,7 @@ var EDITOR = (function ($, parent) {
             }
             window.elFinder = null;
         };
-        window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2) + '&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable, 'Browse file', "height=600, width=800");
+        window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2) + '&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable+'&loc='+tmp_loc, 'Browse file', "height=600, width=800");
     },
 
 	previewFile = function(alt, src, title)
@@ -5050,7 +5058,7 @@ var EDITOR = (function ($, parent) {
 					.addClass("media_browse")
 					.click({id:id, key:key, name:name}, function(event)
 					{
-						browseFile(event.data.id, event.data.key, event.data.name, this.value, this);
+						browseFile(event.data.id, "",event.data.key, event.data.name, this.value, this);
 					})
 					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')))
 
