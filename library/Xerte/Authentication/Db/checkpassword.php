@@ -41,10 +41,10 @@ function checkOldPassword(){
 
     if ($authmech->canManageUser($jsscript)){
         if ($authmech_can_manage_users) {
-            return $authmech->login($_SESSION['toolkits_logon_username'], x_clean_input($_POST['oldpass']));
+            return $authmech->login($_SESSION['toolkits_logon_username'], $_POST['oldpass']);
         }
         else if ($altauthmech_can_manage_users) {
-            return $altauthmech->login($_SESSION['toolkits_logon_username'], x_clean_input($_POST['oldpass']));
+            return $altauthmech->login($_SESSION['toolkits_logon_username'], $_POST['oldpass']);
         }
     }else{
         return false;
