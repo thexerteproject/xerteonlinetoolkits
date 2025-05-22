@@ -61,7 +61,7 @@ if (isset($_REQUEST['loc'])) {
     if (!in_array($folder_space, ['media', 'corpus'], true)) {
         die("Invalid location");
     }
-    if ($folder_space = 'corpus') {
+    if ($folder_space == 'corpus') {
         $path_parts = explode('/', $rootpath);
         end($path_parts);
         $lastElement = prev($path_parts);
