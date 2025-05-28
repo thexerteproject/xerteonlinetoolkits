@@ -20,7 +20,6 @@
 // Tree : Add the tree object to the editor
 
 var EDITOR = (function ($, parent) {
-
     // Create the tree object and refer locally to it as 'my'
     var my = parent.tree = {},
         toolbox = parent.toolbox,

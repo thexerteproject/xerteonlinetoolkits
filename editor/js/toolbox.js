@@ -4204,7 +4204,6 @@ var EDITOR = (function ($, parent) {
 					.prop('checked', value && (value == 'true' || value == '1' || value == 'on'))
 					.change({id:id, key:key, name:name, trigger:conditionTrigger, group:options.group}, function(event){
                             cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
-                        }
                         if (event.data.trigger)
                         {
                             if (mode === 'none') {
@@ -5689,109 +5688,62 @@ var EDITOR = (function ($, parent) {
                     .attr('id', ish_id)
                     .attr('class', 'imgsh_button')
                     .text('Query')
-                    .click({key: key}, function(event) {
-                        var api = lo_data[key].attributes['imgApi'] || "pexels";
+                    .click({key: key, group: options.group}, function(event) {
+                        html.prop('disabled', true);
+                        event.preventDefault();
+
+                        let constructorObject = getConstructorFromLightbox(html, event.data.group);
+                        if (constructorObject === false) {return}
+                        let api = constructorObject['imgApi'] !== undefined ? constructorObject['imgApi'] : 'pexels';
+                        delete constructorObject.imgApi;
+
                         var query;
-                        var querySelect = lo_data[key].attributes["imgQuerySelect"] || 'custom'; //query select option for specific pages
+                        //query select option for specific pages
+                        let querySelect = constructorObject['imgQuerySelect'] !== undefined ? constructorObject['imgQuerySelect'] : 'custom';
+                        delete constructorObject.imgQuerySelect;
+
                         switch (querySelect) {
                             case 'custom':
                                 //general default option
-                                query = lo_data[key].attributes["imgQuery"];
+                                query = constructorObject['imgQuery'] !== undefined ? constructorObject['imgQuery'] : "";
+                                delete constructorObject.imgQuery;
                                 if (!query || query.trim() === ""){
                                     query = null;
                                 }
                                 break;
                             case 'side1':
-                                query = lo_data[key].attributes["side1"];
-                                if (query === "Content for side one of the card" || !query || query.trim() === ""){
+                                query = constructorObject['side1'] !== undefined ? constructorObject['side1'] : "";
+                                delete constructorObject.side1;
+                                if (!query || query.trim() === ""){
                                     query = null;
                                 }
                                 break;
                             case 'side2':
-                                query = lo_data[key].attributes["side2"];
-                                if (query === "Content for side two of the card" || !query || query.trim() === ""){
+                                query = constructorObject['side2'] !== undefined ? constructorObject['side2'] : "";
+                                delete constructorObject.side2;
+                                if (!query || query.trim() === ""){
                                     query = null;
                                 }
                                 break;
                         }
-                        var interpretPrompt = lo_data[key].attributes["useAiInterpret"];
-                        var aiSettingsOverride = lo_data[key].attributes["overrideAiSettings"];
-                        if (aiSettingsOverride === "true") {
-                            switch (api){
-                                case 'pexels':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImages"],
-                                        "color": lo_data[key].attributes["pexelsColor"],
-                                        "size": lo_data[key].attributes["pexelsSize"],
-                                        "orientation": lo_data[key].attributes["pexelsOrientation"],
-                                    }
-                                    break;
-                                case 'pixabay':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImages"],
-                                        "color": lo_data[key].attributes["pixabayColors"],
-                                        "type": lo_data[key].attributes["pixabayType"],
-                                        "orientation": lo_data[key].attributes["pixabayOrientation"],
-                                    }
-                                    break;
-                                case 'wikimedia':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImages"],
-                                        "width": lo_data[key].attributes["wikimediaWidth"],
-                                        "height": lo_data[key].attributes["wikimediaHeight"],
-                                    }
-                                    break;
-                                case 'unsplash':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImagesDalle2"],
-                                        "color": lo_data[key].attributes["unsplashColors"],
-                                        "orientation": lo_data[key].attributes["unsplashOrientation"],
-                                    }
-                                    break;
-                                case 'dalle2':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImagesDalle2"],
-                                    }
-                                    break;
-                                default:
-                                    constructorObject = {};
-                            }
-                        } else {
-                            switch (api){
-                                case 'pexels':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImages"],
-                                    }
-                                    break;
-                                case 'pixabay':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImages"],
-                                    }
-                                    break;
-                                case 'dalle2':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImagesDalle2"],
-                                    }
-                                    break;
-                                case 'unsplash':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImagesDalle2"],
-                                    }
-                                    break;
-                                case 'wikimedia':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImages"],
-                                    }
-                                    break;
-                                default:
-                                    constructorObject = {};
-                            }
-                        }
+
+                        let interpretPrompt = constructorObject['useAiInterpret'] !== undefined ? constructorObject['useAiInterpret'] : "false";
+                        delete constructorObject.useAiInterpret;
+
+                        let aiSettingsOverride = constructorObject['overrideAiSettings'] !== undefined ? constructorObject['overrideAiSettings'] : "false";
+                        delete constructorObject.overrideAiSettings;
+
                         if (query === null) {
                             alert("Your query could not be found! Please double-check all relevant fields and try again.");
-                        } else {
-                            img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject);
+                            html.prop('disabled', false);
+                            return;
                         }
+                        if (!hasApiKeyInstalled('image', api)) {
+                            return;
+                        }
+
+                        img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject);
+
                     });
                 break;
             case 'generatesuggestionbutton':
@@ -5815,12 +5767,12 @@ var EDITOR = (function ($, parent) {
                             "additionalInstructions": "Regarding what kind of suggestions I'm looking for, see: " + lo_data[key].attributes["additionalInstructions"],
                         };
                         console.log(type);
-                        if (confirm("Generated suggestions will override any existing suggestions. Generate anyway?")){
+                        if (confirm(language.vendorApi.overideSuggestionMsg)){
                             try {
                                     await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], null, null, sourceContext, false, baseUrl, true, lo_data[key].attributes.linkID, modelTemplate);
                             } catch (error) {
                                 console.log('Error occurred:', error);
-                                alert("Something went wrong. Please try making another AI request.");
+                                alert(language.vendorApi.genericAiAPiError);
                             } finally {
                                 // Re-enable the button after the function completes (success or failure)
                                 html.prop('disabled', false);
@@ -5861,12 +5813,12 @@ var EDITOR = (function ($, parent) {
                                 break;
                         }
                         console.log(type);
-                        if (confirm("The selected suggestion will be processed and used to alter the contents of this page or generate a new page. Proceed?")){
+                        if (confirm(language.vendorApi.useSuggestionMsg)){
                             try {
                                 await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], null, null, sourceContext, false, baseUrl, true, contextScope, modelTemplate);
                             } catch (error) {
                                 console.log('Error occurred:', error);
-                                alert("Something went wrong. Please try making another AI request.");
+                                alert(language.vendorApi.genericAiAPiError);
                             } finally {
                                 // Re-enable the button after the function completes (success or failure)
                                 html.prop('disabled', false);
@@ -6334,40 +6286,9 @@ var EDITOR = (function ($, parent) {
                         nummeric = ^\d+$
                          */
 
-                        //new version
-                        let constructorObject = {};
-                        let formInputValues = $('#lightbox_' + event.data.group + ' :input');
-                        let formValidation = true;
-                        formInputValues.each(function() {
-                            //ignore all buttons as they do not contain data
-                            if (this.nodeName !== "BUTTON") {
+                        let constructorObject = getConstructorFromLightbox(html, event.data.group);
 
-                                let formFieldValue = this.value;
-                                if ((formFieldValue === undefined || formFieldValue === "" ) && this.getAttribute('defaultvalueph') !== null) {
-                                    //if the form field has no value and has a placeholder
-                                    formFieldValue = this.getAttribute('defaultvalueph');
-                                }
-
-                                if (this.pattern !== undefined && !validateFormInput(this.pattern, formFieldValue, this.name)) {
-                                    //one of the validation fields has not been filled in correctly.
-                                    formValidation = false;
-                                    return false;
-                                }
-
-                                let formFieldName = this.name;
-                                if (formFieldName === undefined) {
-                                    formFieldName = "noName";
-                                }
-
-                                constructorObject[formFieldName] = formFieldValue;
-                            }
-                        });
-                        //if form validation failed do not make request
-                        if (!formValidation) {
-                            html.prop('disabled', false);
-                            return;
-                        }
-
+                        if (constructorObject === false) {return}
                         if ("fileAccessPrompt" in constructorObject && constructorObject["fileAccessPrompt"] === 'true') {
                             constructorObject["access"] = "HAVE";
                         } else {
@@ -6415,7 +6336,7 @@ var EDITOR = (function ($, parent) {
                         }
 
 
-                        if (confirm("Generated AI content will override most content on this page. Generate anyway?")) {
+                        if (hasApiKeyInstalled('ai', aiSettings['modelSelection']) && confirm(language.vendorApi.overideContentMsg)) {
                             try {
                                 let fullUrl = null;
                                 if (aiSettings['uploadPrompt'] === 'true') {
@@ -6435,7 +6356,7 @@ var EDITOR = (function ($, parent) {
                             }
                             catch (error) {
                                 console.log('Error occurred:', error);
-                                alert("Something went wrong. Please try making another AI request.");
+                                alert(language.vendorApi.genericAiAPiError);
                             } finally {
                                 // Re-enable the button after the function completes (success or failure)
                                 html.prop('disabled', false);
@@ -6543,6 +6464,7 @@ var EDITOR = (function ($, parent) {
                     }
                 });
             }
+
             function updateGrid(name, id) {
                 confirm("A list of processed files for AI use will replace the current resource list, and any changes not yet synced will be lost. Proceed with loading?");
                 // If you need the same baseURL logic:
@@ -6628,9 +6550,7 @@ var EDITOR = (function ($, parent) {
 					if (options.type.toLowerCase() == 'xertelo' && value.length==0)
 					{
 						value=template_id;
-                        if (mode === "none") {
                             setAttributeValue(key, [name], [value]);
-                        }
 					}
 					html = $('<input>')
 						.attr('type', "text")
@@ -6656,7 +6576,6 @@ var EDITOR = (function ($, parent) {
                             }
 
                                 inputChanged(event.data.id, event.data.key, event.data.name, fieldValue, this);
-                            }
                             if (event.data.trigger)
                             {
                                 //no lightbox so redraw entire page
