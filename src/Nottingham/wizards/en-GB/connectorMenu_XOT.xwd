@@ -15,7 +15,7 @@
 	<endPageID label="Last Entry" type="pageList" defaultValue="" optional="true" tooltip="Include menu links up to and including this page"/>
 	<pageTick label="Tick When Viewed" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" tooltip="Links to previously viewed pages will be ticked"/>
 	<itemSpacingY label="Vertical Spacing" type="NumericStepper" min="5" max="35" step="1" width="100" defaultValue="5" optional="true" tooltip="Adjust the space between page links"/>	
-	<columns label="Number of Columns" conditionTrigger="true" type="NumericStepper" min="1" max="6" step="1" width="100" defaultValue="2"  optional="true" tooltip="Automatically wrap into a set number of columns. Note: with this option set the optional 'button width' property will be ignored and the buttons will fill the width of each column."/>
+	<columns label="Number of Columns" verification="^(\s*[^,]+\s*,\s*)+[^,]+\s*$" conditionTrigger="true" type="NumericStepper" min="1" max="6" step="1" width="100" defaultValue="2"  optional="true" tooltip="Automatically wrap into a set number of columns. Note: with this option set the optional 'button width' property will be ignored and the buttons will fill the width of each column."/>
 	<itemHeight label="Menu Item Height" type="NumericStepper" min="25" max="35" step="1" width="100" defaultValue="25" optional="true" deprecated="This property is deprecated"/>
 	<itemSpacingX label="Horizontal Spacing" type="NumericStepper" min="10" max="30" step="1" width="100" defaultValue="10" optional="true" deprecated="This property is deprecated"/>
     <menuLineCol label="Line Colour" type="ColourPicker" defaultValue="0x84A2C6" optional="true" deprecated="This property is deprecated"/>
