@@ -2353,7 +2353,23 @@ var EDITOR = (function ($, parent) {
         var description = $("<div>" + theme.description + "</div><div class='theme_url_param'>" + language.ThemeUrlParam + " " + theme.name + "</div>");
         $('div.theme_description:first').html(description);
         setAttributeValue(key, [name], [theme.name]);
-    },
+    }
+
+    getComboboxOptionsForVendor = function (type){
+        let labels = [];
+        let option = [];
+        if (vendor_options.hasOwnProperty(type)){
+            for (let vendor in vendor_options[type]) {
+                option.push(vendor);
+                labels.push(vendor_options[type][vendor].label);
+            }
+        } else {
+            //type is not in management helper table
+            labels.push("NaN");
+            option.push("NaN")
+        }
+        return [labels,option];
+    }
 
     selectChanged = function (id, key, name, value, obj)
     {
@@ -4041,7 +4057,7 @@ var EDITOR = (function ($, parent) {
     lightboxSetUp = function(group, attributes, node_options, key, formState="", mode) {
 
         let groupChildren = group.value.children;
-        var lightboxHtml = $("<form id='lightbox_" + group.name + "'></form>");
+        var lightboxHtml = $("<form id='lightbox_" + group.name + "' style='width: 50vw' ></form>");
         let lightboxTable = $("<table id='lightboxPanel' class='content'></table>");
         let lightboxId = "#lightbox_" + group.name;
 
@@ -4087,14 +4103,21 @@ var EDITOR = (function ($, parent) {
         let formState = {};
         let formInputValues = $('#lightbox_' + group + ' :input');
         if (mode === 'initialize') {
-            //get default values for form
+            var attributes = lo_data[key]['attributes'];
+            //if not exists or empty option =>
             for (let input = 0; input < groupChildren.length; input++) {
-                formState[groupChildren[input].name] = groupChildren[input].value.defaultValue;
+                //get data from previous ai generation
+                if (attributes[groupChildren[input].name] !== undefined && attributes[groupChildren[input].name] !== ""){
+                    formState[groupChildren[input].name] = attributes[groupChildren[input].name];
+                } else {
+                    //get default values for form
+                    formState[groupChildren[input].name] = groupChildren[input].value.defaultValue;
+                }
             }
         } else {
             //get current form values
             for (let input = 0; input < formInputValues.length; input++) {
-                formState[formInputValues[input].name] = formInputValues[input].value;
+                formState[formInputValues[input].name] = formInputValues[input].type !== 'checkbox' ? formInputValues[input].value : String(formInputValues[input].checked);
             }
         }
 
@@ -4115,6 +4138,56 @@ var EDITOR = (function ($, parent) {
         }
         return true;
     }
+    //verifies if an API key is needed and if it exists.
+    hasApiKeyInstalled = function (vendorGroup, vendor) {
+        if (vendor_options[vendorGroup] !== undefined && vendor_options[vendorGroup][vendor] !== undefined && (vendor_options[vendorGroup][vendor].has_key === true || vendor_options[vendorGroup][vendor].needs_key === false)) {
+            return true;
+        }
+
+        alert(language.vendorApi.missingKey);
+        return false;
+    }
+
+    getConstructorFromLightbox = function (html, group) {
+        //new version
+        let constructorObject = {};
+        let formInputValues = $('#lightbox_' + group + ' :input');
+        let formValidation = true;
+        formInputValues.each(function() {
+            //ignore all buttons as they do not contain data
+            if (this.nodeName !== "BUTTON") {
+                let formFieldValue = this.value;
+                if (this.type === "checkbox") {
+                    formFieldValue = String(this.checked);
+                }
+
+                if ((formFieldValue === undefined || formFieldValue === "" ) && this.getAttribute('defaultvalueph') !== null) {
+                    //if the form field has no value and has a placeholder
+                    formFieldValue = this.getAttribute('defaultvalueph');
+                }
+
+                if (this.pattern !== undefined && !validateFormInput(this.pattern, formFieldValue, this.name)) {
+                    //one of the validation fields has not been filled in correctly.
+                    formValidation = false;
+                    return false;
+                }
+
+                let formFieldName = this.name;
+                if (formFieldName === undefined) {
+                    formFieldName = "noName";
+                }
+
+                constructorObject[formFieldName] = formFieldValue;
+            }
+        });
+
+        //if form validation failed do not make request
+        if (!formValidation) {
+            html.prop('disabled', false);
+            return false;
+        }
+        return constructorObject;
+    }
 
     displayDataType = function (value, options, name, key, label, mode) {
 		var html;
@@ -4129,8 +4202,7 @@ var EDITOR = (function ($, parent) {
                     .attr('name', name)
 					.attr('type',  "checkbox")
 					.prop('checked', value && (value == 'true' || value == '1' || value == 'on'))
-					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event){
-                        if (mode === 'none') {
+					.change({id:id, key:key, name:name, trigger:conditionTrigger, group:options.group}, function(event){
                             cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
                         }
                         if (event.data.trigger)
@@ -4157,31 +4229,36 @@ var EDITOR = (function ($, parent) {
                     html = div;
                 }
 				break;
+            case 'combobox_image':
+            case 'combobox_ai':
             case 'combobox':
 				var id = 'select_' + form_id_offset;
 				form_id_offset++;
-				var s_options = options.options.split(',');
-                for (var i=0; i<s_options.length; i++) {
-                    s_options[i] = decodeURIComponent(s_options[i].replace(/%%/g, '%'));
+                if (options.type.toLowerCase() === 'combobox') {
+                    var s_options = options.options.split(',');
+                    for (var i = 0; i < s_options.length; i++) {
+                        s_options[i] = decodeURIComponent(s_options[i].replace(/%%/g, '%'));
+                    }
+                    var s_data = [];
+                    if (options.data) {
+                        s_data = options.data.split(',');
+                    } else {
+                        s_data = s_options;
+                    }
+                } else {
+                    let vendor = options.type.split("_");
+                    let vendor_options = getComboboxOptionsForVendor(vendor.length >= 2 ? vendor[1] : "");
+                    s_options = vendor_options[0];
+                    s_data = vendor_options[1];
                 }
-				var s_data = [];
-				if (options.data)
-				{
-					s_data = options.data.split(',');
-				}
-				else
-				{
-					s_data = s_options;
-				}
+
 				html = $('<select>')
 					.attr('id', id)
                     .attr('name', name)
 					.change({id:id, key:key, name:name, group:options.group ,trigger:conditionTrigger}, function(event)
 					{
                         //store data in xml
-                        if (mode === "none") {
-                            selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                        }
+                        selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         if (event.data.trigger)
                         {
                             //no lightbox so redraw entire page
@@ -4227,7 +4304,7 @@ var EDITOR = (function ($, parent) {
                     && lcvalue.indexOf('<code>') == -1)
                     textvalue = value == undefined && options.placeholder != undefined ? '' : value;
 
-                var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
+                var textarea = "<textarea id=\"" + id + "\" name=\"" + name + "\" class=\"ckeditor\" style=\"";
                 if (options.height) textarea += "height:" + options.height + "px";
                 textarea += "\">" + textvalue + "</textarea>";
                 $textarea = $(textarea);
@@ -6327,9 +6404,7 @@ var EDITOR = (function ($, parent) {
                             aiSettings['fileUrl'] = null;
                         }
 
-                        //todo not all places have this option when allowing files,
-                        //todo ignore uploadpromt when file is given?
-                        //todo combine with fix of file upload
+                        //todo page based file upload not supported so can ignore this.
                         let uploadPrompt = constructorObject['uploadPrompt'] !== undefined ? constructorObject['uploadPrompt'] : 'false';
                         delete constructorObject.uploadPrompt;
 
@@ -6548,9 +6623,7 @@ var EDITOR = (function ($, parent) {
 					if (options.type.toLowerCase() == 'xerteurl' && value.length==0)
 					{
 						value=baseUrl();
-                        if (mode === "none") {
-                            setAttributeValue(key, [name], [value]);
-                        }
+                        setAttributeValue(key, [name], [value]);
 					}
 					if (options.type.toLowerCase() == 'xertelo' && value.length==0)
 					{
@@ -6575,11 +6648,12 @@ var EDITOR = (function ($, parent) {
 						})
 						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
+                            let fieldValue = this.value;
                             if (mode === "none") {
-                                let fieldValue = this.value;
                                 if (fieldValue !== "" && options.defaultValuePH !== undefined) {
                                     fieldValue = options.defaultValuePH;
                                 }
+                            }
 
                                 inputChanged(event.data.id, event.data.key, event.data.name, fieldValue, this);
                             }

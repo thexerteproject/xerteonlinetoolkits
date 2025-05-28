@@ -4,7 +4,9 @@ class vendor_option_component
 {
     public string $vendor;
     public string $type;
+    public string $label;
     public bool $needs_key;
+    public bool $has_key;
     public bool $enabled;
     public stdClass $sub_options;
 
@@ -13,6 +15,11 @@ class vendor_option_component
         $this->vendor = "unknown";
         if ($vendor['vendor'] !== null && $vendor['vendor'] !== "") {
             $this->vendor = $vendor['vendor'];
+        }
+
+        $this->label = "unknown";
+        if ($vendor['label'] !== null && $vendor['label'] !== "") {
+            $this->label = $vendor['label'];
         }
 
         $this->type = "unknown";
@@ -24,6 +31,10 @@ class vendor_option_component
         if ($vendor['needs_key'] !== null) {
             $this->needs_key = $vendor['needs_key'];
         }
+
+
+        $this->has_api_key();
+
 
         $this->enabled = false;
         if ($vendor['enabled'] !== null) {
@@ -44,6 +55,22 @@ class vendor_option_component
         }
         return false;
     }
+
+    //check if api key exists for vendor
+    private function has_api_key() : void {
+        global $xerte_toolkits_site;
+        if ($this->needs_key) {
+            $key_name = $this->vendor . '_key';
+            if ($xerte_toolkits_site->{$key_name} !== null && $xerte_toolkits_site->{$key_name} !== "") {
+                //todo check key validity or existance?
+                $this->has_key = true;
+                return;
+            }
+        }
+        $this->has_key = false;
+    }
+
+
 
 
 

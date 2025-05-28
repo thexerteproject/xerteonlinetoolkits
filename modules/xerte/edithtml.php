@@ -27,21 +27,7 @@
 
 require_once (__DIR__ . "/../../website_code/php/xmlInspector.php");
 require_once (__DIR__ . "/../../website_code/php/themes_library.php");
-
-function get_children ($parent_id, $lookup, $column, $type) {
-    // children
-    $children = array();
-    //we are at a leaf level
-    if (empty($lookup[$parent_id]['children'])){
-        return $children;
-    }
-    foreach ($lookup[$parent_id]['children'] as $node) {
-        $children[] = array('name' => $node[$column], 'value' => $node[$column], 'children' => get_children($node[$type], $lookup, $column, $type));
-    }
-    return $children;
-}
-
-
+require_once (__DIR__ . "/../../website_code/php/editor_support_library.php");
 /**
  *
  * Function output_editor_code
@@ -240,6 +226,21 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     if ($xerte_toolkits_site->rights == 'elevated')
     {
         $body_class = ' class="elevated"';
+    }
+
+    $vendors = get_vendor_settings();
+    $corpus_upload_types = array();
+    if (array_key_exists('ai', $vendors )){
+        foreach ($vendors['ai'] as $vendor){
+            foreach ($vendor->sub_options as $option_name=>$value){
+                if ($value) {
+                    $option_exploded = explode(" ", $option_name);
+                    if ($option_exploded[1] == 'uploads' && !in_array($option_exploded[0], $corpus_upload_types)) {
+                        $corpus_upload_types[] = $option_exploded[0];
+                    }
+                }
+            }
+        }
     }
 
     _debug("Starting editor page");
@@ -441,12 +442,11 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     }
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
     echo "oai_pmh_available=" . ($oai_pmh ? "true" : "false") . ";\n";
-    //todo use roles to hide ui elemnts
     echo "roles=" . json_encode($user_roles) . ";\n";
     echo "theme=\"" . $theme . "\";\n";
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
-    //todo store what ai models are enabled from server
-    //echo "allowed_ai_api=" . "" . ";\n";
+    echo "vendor_options=" . json_encode($vendors) . ";\n";
+    echo "corpus_upload_types=" . json_encode($corpus_upload_types) . ";\n";
     ?>
 
     function bunload(){

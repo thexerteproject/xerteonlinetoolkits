@@ -1633,40 +1633,15 @@ function upgrade_51()
     return $message;
 }
 
-
-
 function upgrade_52()
 {
-    // add ai settings table
-    if (! _db_field_exists('sitedetails', 'openai_settings')) {
-        $error1 = _db_add_field('sitedetails', 'openai', 'char(255)', 'false', 'globalsocialauth');
-        $error1_returned = true;
-    }
-    if (! _db_field_exists('sitedetails', 'anthropic_settings')) {
-        $error2 = _db_add_field('sitedetails', 'anthropic', 'char(255)', 'false', 'globalsocialauth');
-        $error2_returned = true;
-    }
-
-    if (($error1 === false)) {
-        $error1_returned = false;
-    }
-
-    if (($error2 === false)) {
-        $error2_returned = false;
-    }
-
-    return "create ai settings field - ok ? " . ($error1_returned && $error2_returned? 'true' : 'false'). "<br>";
-}
-
-
-function upgrade_53()
-{
     $message = "";
-
+    //todo also add `vendor` to other place for defaulth instalation
     if (!_table_exists("management_helper")) {
         $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `management_helper` (
         `interaction_id` int(11) NOT NULL AUTO_INCREMENT,
         `vendor` VARCHAR(10) NOT NULL,
+        `label` VARCHAR(34) NOT NULL,
         `type` VARCHAR(10) NOT NULL,
         `needs_key` BOOLEAN NOT NULL,
         `enabled` BOOLEAN NOT NULL ,

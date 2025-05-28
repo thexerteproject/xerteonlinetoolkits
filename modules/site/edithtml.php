@@ -19,26 +19,8 @@
  */
 
 require_once (__DIR__ . "/../../website_code/php/themes_library.php");
+require_once (__DIR__ . "/../../website_code/php/editor_support_library.php");
 
-/**
- * Created by PhpStorm.
- * User: tom
- * Date: 10-5-14
- * Time: 12:24
- */
-
-function get_children ($parent_id, $lookup, $column, $type) {
-    // children
-    $children = array();
-    //we are at a leaf level
-    if (empty($lookup[$parent_id]['children'])){
-        return $children;
-    }
-    foreach ($lookup[$parent_id]['children'] as $node) {
-        $children[] = array('name' => $node[$column], 'value' => $node[$column], 'children' => get_children($node[$type], $lookup, $column, $type));
-    }
-    return $children;
-}
 
 /**
  *
