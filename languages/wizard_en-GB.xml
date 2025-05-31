@@ -256,4 +256,11 @@
 	  <title>Select all images you want to keep</title>
 	  <keepButtonText>Keep</keepButtonText>
 	</imageSelection>
+	<vendorApi>
+		<missingKey>The selected vendor has no API key installed. Please contact your system administrator</missingKey>
+		<genericAiAPiError>Something went wrong. Please try making another AI request.</genericAiAPiError>
+		<overideSuggestionMsg>Generated suggestions will override any existing suggestions. Generate anyway?</overideSuggestionMsg>
+		<useSuggestionMsg>The selected suggestion will be processed and used to alter the contents of this page or generate a new page. Proceed?</useSuggestionMsg>
+		<overideContentMsg>Generated AI content will override most content on this page. Generate anyway?</overideContentMsg>
+	</vendorApi>
 </language>

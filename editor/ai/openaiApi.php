@@ -206,7 +206,8 @@ class openaiApi
     }
 
     //generates prompt for openai from preset prompts and user input
-    //todo Timo rework to use wildcards
+    //todo maybe add some validation for missing fields?
+    //to help with pinpointing wrong/missing front end fields
     private function generatePrompt($p, $type, $globalInstructions): string {
         $prompt = '';
         foreach ($this->preset_models->prompt_list[$type] as $prompt_part) {

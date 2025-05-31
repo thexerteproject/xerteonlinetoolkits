@@ -2353,7 +2353,23 @@ var EDITOR = (function ($, parent) {
         var description = $("<div>" + theme.description + "</div><div class='theme_url_param'>" + language.ThemeUrlParam + " " + theme.name + "</div>");
         $('div.theme_description:first').html(description);
         setAttributeValue(key, [name], [theme.name]);
-    },
+    }
+
+    getComboboxOptionsForVendor = function (type){
+        let labels = [];
+        let option = [];
+        if (vendor_options.hasOwnProperty(type)){
+            for (let vendor in vendor_options[type]) {
+                option.push(vendor);
+                labels.push(vendor_options[type][vendor].label);
+            }
+        } else {
+            //type is not in management helper table
+            labels.push("NaN");
+            option.push("NaN")
+        }
+        return [labels,option];
+    }
 
     selectChanged = function (id, key, name, value, obj)
     {
@@ -4041,7 +4057,7 @@ var EDITOR = (function ($, parent) {
     lightboxSetUp = function(group, attributes, node_options, key, formState="", mode) {
 
         let groupChildren = group.value.children;
-        var lightboxHtml = $("<form id='lightbox_" + group.name + "'></form>");
+        var lightboxHtml = $("<form id='lightbox_" + group.name + "' style='width: 50vw' ></form>");
         let lightboxTable = $("<table id='lightboxPanel' class='content'></table>");
         let lightboxId = "#lightbox_" + group.name;
 
@@ -4087,14 +4103,21 @@ var EDITOR = (function ($, parent) {
         let formState = {};
         let formInputValues = $('#lightbox_' + group + ' :input');
         if (mode === 'initialize') {
-            //get default values for form
+            var attributes = lo_data[key]['attributes'];
+            //if not exists or empty option =>
             for (let input = 0; input < groupChildren.length; input++) {
-                formState[groupChildren[input].name] = groupChildren[input].value.defaultValue;
+                //get data from previous ai generation
+                if (attributes[groupChildren[input].name] !== undefined && attributes[groupChildren[input].name] !== ""){
+                    formState[groupChildren[input].name] = attributes[groupChildren[input].name];
+                } else {
+                    //get default values for form
+                    formState[groupChildren[input].name] = groupChildren[input].value.defaultValue;
+                }
             }
         } else {
             //get current form values
             for (let input = 0; input < formInputValues.length; input++) {
-                formState[formInputValues[input].name] = formInputValues[input].value;
+                formState[formInputValues[input].name] = formInputValues[input].type !== 'checkbox' ? formInputValues[input].value : String(formInputValues[input].checked);
             }
         }
 
@@ -4115,6 +4138,56 @@ var EDITOR = (function ($, parent) {
         }
         return true;
     }
+    //verifies if an API key is needed and if it exists.
+    hasApiKeyInstalled = function (vendorGroup, vendor) {
+        if (vendor_options[vendorGroup] !== undefined && vendor_options[vendorGroup][vendor] !== undefined && (vendor_options[vendorGroup][vendor].has_key === true || vendor_options[vendorGroup][vendor].needs_key === false)) {
+            return true;
+        }
+
+        alert(language.vendorApi.missingKey);
+        return false;
+    }
+
+    getConstructorFromLightbox = function (html, group) {
+        //new version
+        let constructorObject = {};
+        let formInputValues = $('#lightbox_' + group + ' :input');
+        let formValidation = true;
+        formInputValues.each(function() {
+            //ignore all buttons as they do not contain data
+            if (this.nodeName !== "BUTTON") {
+                let formFieldValue = this.value;
+                if (this.type === "checkbox") {
+                    formFieldValue = String(this.checked);
+                }
+
+                if ((formFieldValue === undefined || formFieldValue === "" ) && this.getAttribute('defaultvalueph') !== null) {
+                    //if the form field has no value and has a placeholder
+                    formFieldValue = this.getAttribute('defaultvalueph');
+                }
+
+                if (this.pattern !== undefined && !validateFormInput(this.pattern, formFieldValue, this.name)) {
+                    //one of the validation fields has not been filled in correctly.
+                    formValidation = false;
+                    return false;
+                }
+
+                let formFieldName = this.name;
+                if (formFieldName === undefined) {
+                    formFieldName = "noName";
+                }
+
+                constructorObject[formFieldName] = formFieldValue;
+            }
+        });
+
+        //if form validation failed do not make request
+        if (!formValidation) {
+            html.prop('disabled', false);
+            return false;
+        }
+        return constructorObject;
+    }
 
     displayDataType = function (value, options, name, key, label, mode) {
 		var html;
@@ -4129,10 +4202,8 @@ var EDITOR = (function ($, parent) {
                     .attr('name', name)
 					.attr('type',  "checkbox")
 					.prop('checked', value && (value == 'true' || value == '1' || value == 'on'))
-					.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event){
-                        if (mode === 'none') {
+					.change({id:id, key:key, name:name, trigger:conditionTrigger, group:options.group}, function(event){
                             cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
-                        }
                         if (event.data.trigger)
                         {
                             if (mode === 'none') {
@@ -4157,31 +4228,36 @@ var EDITOR = (function ($, parent) {
                     html = div;
                 }
 				break;
+            case 'combobox_image':
+            case 'combobox_ai':
             case 'combobox':
 				var id = 'select_' + form_id_offset;
 				form_id_offset++;
-				var s_options = options.options.split(',');
-                for (var i=0; i<s_options.length; i++) {
-                    s_options[i] = decodeURIComponent(s_options[i].replace(/%%/g, '%'));
+                if (options.type.toLowerCase() === 'combobox') {
+                    var s_options = options.options.split(',');
+                    for (var i = 0; i < s_options.length; i++) {
+                        s_options[i] = decodeURIComponent(s_options[i].replace(/%%/g, '%'));
+                    }
+                    var s_data = [];
+                    if (options.data) {
+                        s_data = options.data.split(',');
+                    } else {
+                        s_data = s_options;
+                    }
+                } else {
+                    let vendor = options.type.split("_");
+                    let vendor_options = getComboboxOptionsForVendor(vendor.length >= 2 ? vendor[1] : "");
+                    s_options = vendor_options[0];
+                    s_data = vendor_options[1];
                 }
-				var s_data = [];
-				if (options.data)
-				{
-					s_data = options.data.split(',');
-				}
-				else
-				{
-					s_data = s_options;
-				}
+
 				html = $('<select>')
 					.attr('id', id)
                     .attr('name', name)
 					.change({id:id, key:key, name:name, group:options.group ,trigger:conditionTrigger}, function(event)
 					{
                         //store data in xml
-                        if (mode === "none") {
-                            selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                        }
+                        selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         if (event.data.trigger)
                         {
                             //no lightbox so redraw entire page
@@ -4227,7 +4303,7 @@ var EDITOR = (function ($, parent) {
                     && lcvalue.indexOf('<code>') == -1)
                     textvalue = value == undefined && options.placeholder != undefined ? '' : value;
 
-                var textarea = "<textarea id=\"" + id + "\" class=\"ckeditor\" style=\"";
+                var textarea = "<textarea id=\"" + id + "\" name=\"" + name + "\" class=\"ckeditor\" style=\"";
                 if (options.height) textarea += "height:" + options.height + "px";
                 textarea += "\">" + textvalue + "</textarea>";
                 $textarea = $(textarea);
@@ -5612,109 +5688,62 @@ var EDITOR = (function ($, parent) {
                     .attr('id', ish_id)
                     .attr('class', 'imgsh_button')
                     .text('Query')
-                    .click({key: key}, function(event) {
-                        var api = lo_data[key].attributes['imgApi'] || "pexels";
+                    .click({key: key, group: options.group}, function(event) {
+                        html.prop('disabled', true);
+                        event.preventDefault();
+
+                        let constructorObject = getConstructorFromLightbox(html, event.data.group);
+                        if (constructorObject === false) {return}
+                        let api = constructorObject['imgApi'] !== undefined ? constructorObject['imgApi'] : 'pexels';
+                        delete constructorObject.imgApi;
+
                         var query;
-                        var querySelect = lo_data[key].attributes["imgQuerySelect"] || 'custom'; //query select option for specific pages
+                        //query select option for specific pages
+                        let querySelect = constructorObject['imgQuerySelect'] !== undefined ? constructorObject['imgQuerySelect'] : 'custom';
+                        delete constructorObject.imgQuerySelect;
+
                         switch (querySelect) {
                             case 'custom':
                                 //general default option
-                                query = lo_data[key].attributes["imgQuery"];
+                                query = constructorObject['imgQuery'] !== undefined ? constructorObject['imgQuery'] : "";
+                                delete constructorObject.imgQuery;
                                 if (!query || query.trim() === ""){
                                     query = null;
                                 }
                                 break;
                             case 'side1':
-                                query = lo_data[key].attributes["side1"];
-                                if (query === "Content for side one of the card" || !query || query.trim() === ""){
+                                query = constructorObject['side1'] !== undefined ? constructorObject['side1'] : "";
+                                delete constructorObject.side1;
+                                if (!query || query.trim() === ""){
                                     query = null;
                                 }
                                 break;
                             case 'side2':
-                                query = lo_data[key].attributes["side2"];
-                                if (query === "Content for side two of the card" || !query || query.trim() === ""){
+                                query = constructorObject['side2'] !== undefined ? constructorObject['side2'] : "";
+                                delete constructorObject.side2;
+                                if (!query || query.trim() === ""){
                                     query = null;
                                 }
                                 break;
                         }
-                        var interpretPrompt = lo_data[key].attributes["useAiInterpret"];
-                        var aiSettingsOverride = lo_data[key].attributes["overrideAiSettings"];
-                        if (aiSettingsOverride === "true") {
-                            switch (api){
-                                case 'pexels':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImages"],
-                                        "color": lo_data[key].attributes["pexelsColor"],
-                                        "size": lo_data[key].attributes["pexelsSize"],
-                                        "orientation": lo_data[key].attributes["pexelsOrientation"],
-                                    }
-                                    break;
-                                case 'pixabay':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImages"],
-                                        "color": lo_data[key].attributes["pixabayColors"],
-                                        "type": lo_data[key].attributes["pixabayType"],
-                                        "orientation": lo_data[key].attributes["pixabayOrientation"],
-                                    }
-                                    break;
-                                case 'wikimedia':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImages"],
-                                        "width": lo_data[key].attributes["wikimediaWidth"],
-                                        "height": lo_data[key].attributes["wikimediaHeight"],
-                                    }
-                                    break;
-                                case 'unsplash':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImagesDalle2"],
-                                        "color": lo_data[key].attributes["unsplashColors"],
-                                        "orientation": lo_data[key].attributes["unsplashOrientation"],
-                                    }
-                                    break;
-                                case 'dalle2':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImagesDalle2"],
-                                    }
-                                    break;
-                                default:
-                                    constructorObject = {};
-                            }
-                        } else {
-                            switch (api){
-                                case 'pexels':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImages"],
-                                    }
-                                    break;
-                                case 'pixabay':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImages"],
-                                    }
-                                    break;
-                                case 'dalle2':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImagesDalle2"],
-                                    }
-                                    break;
-                                case 'unsplash':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImagesDalle2"],
-                                    }
-                                    break;
-                                case 'wikimedia':
-                                    constructorObject = {
-                                        "nri": lo_data[key].attributes["nrImages"],
-                                    }
-                                    break;
-                                default:
-                                    constructorObject = {};
-                            }
-                        }
+
+                        let interpretPrompt = constructorObject['useAiInterpret'] !== undefined ? constructorObject['useAiInterpret'] : "false";
+                        delete constructorObject.useAiInterpret;
+
+                        let aiSettingsOverride = constructorObject['overrideAiSettings'] !== undefined ? constructorObject['overrideAiSettings'] : "false";
+                        delete constructorObject.overrideAiSettings;
+
                         if (query === null) {
                             alert("Your query could not be found! Please double-check all relevant fields and try again.");
-                        } else {
-                            img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject);
+                            html.prop('disabled', false);
+                            return;
                         }
+                        if (!hasApiKeyInstalled('image', api)) {
+                            return;
+                        }
+
+                        img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject);
+
                     });
                 break;
             case 'generatesuggestionbutton':
@@ -5738,12 +5767,12 @@ var EDITOR = (function ($, parent) {
                             "additionalInstructions": "Regarding what kind of suggestions I'm looking for, see: " + lo_data[key].attributes["additionalInstructions"],
                         };
                         console.log(type);
-                        if (confirm("Generated suggestions will override any existing suggestions. Generate anyway?")){
+                        if (confirm(language.vendorApi.overideSuggestionMsg)){
                             try {
                                     await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], null, null, sourceContext, false, baseUrl, true, lo_data[key].attributes.linkID, modelTemplate);
                             } catch (error) {
                                 console.log('Error occurred:', error);
-                                alert("Something went wrong. Please try making another AI request.");
+                                alert(language.vendorApi.genericAiAPiError);
                             } finally {
                                 // Re-enable the button after the function completes (success or failure)
                                 html.prop('disabled', false);
@@ -5784,12 +5813,12 @@ var EDITOR = (function ($, parent) {
                                 break;
                         }
                         console.log(type);
-                        if (confirm("The selected suggestion will be processed and used to alter the contents of this page or generate a new page. Proceed?")){
+                        if (confirm(language.vendorApi.useSuggestionMsg)){
                             try {
                                 await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], null, null, sourceContext, false, baseUrl, true, contextScope, modelTemplate);
                             } catch (error) {
                                 console.log('Error occurred:', error);
-                                alert("Something went wrong. Please try making another AI request.");
+                                alert(language.vendorApi.genericAiAPiError);
                             } finally {
                                 // Re-enable the button after the function completes (success or failure)
                                 html.prop('disabled', false);
@@ -5812,485 +5841,9 @@ var EDITOR = (function ($, parent) {
                         html.prop('disabled', true);
                         event.preventDefault();
 
-                        //todo remove after all pages are reworked via xwd
-                        // // Build the constructor object based on the type
-                        // var constructorObject;
-                        // if (sourceContext === "standard"){
-                        //     switch (type) {
-                        //         case 'quiz':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "nrq": lo_data[key].attributes["amountOfQuestions"] || "3",
-                        //                 "nra": lo_data[key].attributes["amountOfAnswers"] || "4",
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             }
-                        //             break;
-                        //         case 'inventory':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "nrq": lo_data[key].attributes["amountOfQuestions"] || "5",
-                        //                 "nra": lo_data[key].attributes["amountOfAnswers"] || "4",
-                        //                 "classlist":lo_data[key].attributes["classlist"],
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             }
-                        //             break;
-                        //         case 'gapFill':
-                        //             //todo  works when drawn from form
-                        //             constructorObject = {
-                        //                 "tasknr": lo_data[key].attributes["taskType"],
-                        //             }
-                        //             if (constructorObject["tasknr"]=="task1"){
-                        //                 constructorObject["subject"] = lo_data[key].attributes["subject"];
-                        //                 constructorObject["length"] = lo_data[key].attributes["sentenceLength"] || "50";
-                        //                 constructorObject["tone"] = lo_data[key].attributes["voiceSelector"];
-                        //                 constructorObject["range"] = lo_data[key].attributes["ageRange"];
-                        //                 constructorObject["eduLevel"] = lo_data[key].attributes["eduLevel"];
-                        //             }
-                        //             if (constructorObject["tasknr"]=="task2"){
-                        //                 constructorObject["target"] = lo_data[key].attributes["targetWords"] || "Nouns";
-                        //                 constructorObject["sentence"] = lo_data[key].attributes['passage'];
-                        //                 //todo do not have to do this when using form, field will not exists
-                        //                 uploadPrompt = 'false';
-                        //             }
-                        //             break;
-                        //         case 'textMatch':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "length": lo_data[key].attributes["sentenceLength"] || "20",
-                        //                 "nrs": lo_data[key].attributes["numberOfSentences"] || "3",
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             }
-                        //             break;
-                        //         case 'textHighlight':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "length": lo_data[key].attributes["paragraphLength"] || "50",
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             }
-                        //             break;
-                        //         case 'summary':
-                        //             //todo works when drawn from form
-                        //             constructorObject = {
-                        //                 "template": lo_data[key].attributes["template"],
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             }
-                        //             if (constructorObject["template"]=="lo"){
-                        //                 useContext = "true";
-                        //             }else if (constructorObject["template"]=="file"){
-                        //                 uploadPrompt = 'true'
-                        //                 constructorObject["summaryObject"] = "the uploaded file";
-                        //             } else if (constructorObject["template"]=="text"){
-                        //                 constructorObject["summaryObject"] = "the following text: " + lo_data[key].attributes["sourceText"];
-                        //             }
-                        //             break;
-                        //
-                        //         case 'orient':
-                        //
-                        //
-                        //             constructorObject = {
-                        //                 "instruction": lo_data[key].attributes["instruction"],
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //             }
-                        //             uploadPrompt = 'false';
-                        //             //todo what does this do??
-                        //             //todo this should be a hidden field in the form, always true.
-                        //             useContext = true;
-                        //             break;
-                        //         case 'textCorrection':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "mistakeType": lo_data[key].attributes["mistakeType"] || "spelling mistakes",
-                        //                 "length": lo_data[key].attributes["paragraphLength"] || "50",
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             }
-                        //             break;
-                        //         case 'modify':
-                        //             constructorObject = {
-                        //                 "tasknr": lo_data[key].attributes["taskType"],
-                        //                 "textInstructions": lo_data[key].attributes["textInstructions"] || 'write the text in present tense',
-                        //             }
-                        //             if (constructorObject["tasknr"]=="task1"){
-                        //                 constructorObject["subject"] = lo_data[key].attributes["subject"];
-                        //                 constructorObject["length"] = lo_data[key].attributes["sentenceLength"] || "50";
-                        //                 constructorObject["tone"] = lo_data[key].attributes["voiceSelector"];
-                        //                 constructorObject["range"] = lo_data[key].attributes["ageRange"];
-                        //                 constructorObject["eduLevel"] = lo_data[key].attributes["eduLevel"];
-                        //
-                        //             }
-                        //             if (constructorObject["tasknr"]=="task2"){
-                        //                 constructorObject["sentence"] = lo_data[key].attributes["text"];
-                        //                 uploadPrompt = 'false';
-                        //             }
-                        //             break;
-                        //         case 'grid':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "columns": lo_data[key].attributes["columns"],
-                        //                 "rows": lo_data[key].attributes["rows"] || "5",
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             }
-                        //             break;
-                        //         case 'tableDoc': //documentation subpage
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "columns": lo_data[key].attributes["columns"],
-                        //                 "rows": lo_data[key].attributes["rows"] || "5",
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             }
-                        //             break;
-                        //         case 'buttonQuestion':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             }
-                        //             break;
-                        //         case 'timeline':
-                        //             //todo this needs new version
-                        //
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "nrs": lo_data[key].attributes["timelineSteps"] || "5",
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //             }
-                        //             //todo move to backend, should be in backend
-                        //             if (lo_data[key].attributes["interactivity"]==="Timeline"){
-                        //                 constructorObject["interactivityDetails"] = "In this case specifically, the value of each 'name' attribute should be a number numbers.";
-                        //             }else{
-                        //                 constructorObject["interactivityDetails"] = "";
-                        //             }
-                        //             break;
-                        //         case 'dialog':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "nrs": lo_data[key].attributes["numberOfSentences"] || "5",
-                        //                 "delim": lo_data[key].attributes["answerDelimeter"] || ',',
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             }
-                        //             break;
-                        //         case 'crossword':
-                        //         case 'wordsearch':
-                        //         case 'hangman':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "nrw": lo_data[key].attributes["numberOfWords"] || "10",
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             }
-                        //             break;
-                        //         case 'interactiveText':
-                        //             constructorObject = {
-                        //                 "tasknr": lo_data[key].attributes["taskType"],
-                        //             }
-                        //             if (constructorObject["tasknr"]=="task1"){
-                        //                 constructorObject["subject"] = lo_data[key].attributes["subject"];
-                        //                 constructorObject["length"] = lo_data[key].attributes["sentenceLength"] || "50";
-                        //                 constructorObject["tone"] = lo_data[key].attributes["voiceSelector"];
-                        //                 constructorObject["range"] = lo_data[key].attributes["ageRange"];
-                        //                 constructorObject["eduLevel"] = lo_data[key].attributes["eduLevel"];
-                        //             }
-                        //             if (constructorObject["tasknr"]=="task2"){
-                        //                 constructorObject["target"] = lo_data[key].attributes["targetWords"] || "Nouns";
-                        //                 constructorObject["sentence"] = lo_data[key].attributes['passage'];
-                        //                 uploadPrompt = 'false';
-                        //             }
-                        //             break;
-                        //         case 'morphImages':
-                        //         case 'imageViewer':
-                        //         case 'imageSequence':
-                        //         case 'singleImg': //subpage of image sequence
-                        //         case 'imgSeries': //subpage of image sequence
-                        //         case 'textGraphics':
-                        //         case 'flickr':
-                        //         case 'audioSlideshow':
-                        //         case 'bleedingImage':
-                        //         case 'media360':
-                        //         case 'image': //perspectives subpage
-                        //         case 'text':
-                        //             //todo this needs new version
-                        //
-                        //             switch (requestTemplate){
-                        //                 case 'custom':
-                        //                     constructorObject = {
-                        //                         "subject": lo_data[key].attributes["subject"],
-                        //                         "additionalInstructions": lo_data[key].attributes["additionalInstructions"] || "",
-                        //                         "exampleContent": lo_data[key].attributes["exampleContent"],
-                        //                         "tone": lo_data[key].attributes["voiceSelector"],
-                        //                         "range": lo_data[key].attributes["ageRange"],
-                        //                         "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //                     }
-                        //                     break;
-                        //                 case 'altText':
-                        //                     //todo not supported in next release
-                        //                     constructorObject = {
-                        //                         "subject": 'Short alt text of image',
-                        //                         "tone": 'any',
-                        //                         "range": 'any',
-                        //                         "eduLevel":'any',
-                        //                         "additionalInstructions": 'Generate an image alt text ONLY, based on the provided image description. It should be no more than 7 words. Do NOT return anything except the alt text. Return the XML WITHOUT the name attribute.',
-                        //                         "exampleContent": 'Suburban house with two stories'
-                        //                     }
-                        //                     //todo should be invisible field in form
-                        //                     uploadPrompt = 'true';
-                        //                     break;
-                        //             }
-                        //             break;
-                        //         case 'selectlist':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "nro": lo_data[key].attributes["numberOptions"] || "3",
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //
-                        //             }
-                        //             break;
-                        //         case 'bullets':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "nro": lo_data[key].attributes["numberOptions"] || "3",
-                        //                 "additionalInstructions": lo_data[key].attributes["Instructions"],
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             }
-                        //             break;
-                        //         case 'learningObject':
-                        //
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "headers": lo_data[key].attributes["headers"],
-                        //                 "goals": lo_data[key].attributes["goals"],
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"]
-                        //             }
-                        //             //todo ignore does nothing
-                        //             assisstantPrompt = true;
-                        //             break;
-                        //         case 'ivOverlayPanel':
-                        //             //todo this needs new version
-                        //
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "nrq": lo_data[key].attributes["nrq"] || "3",
-                        //                 "nra": lo_data[key].attributes["nra"] || "4",
-                        //                 "nrt": lo_data[key].attributes["nrt"] || "3",
-                        //                 "subtype": lo_data[key].attributes["subtype"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //             }
-                        //             fileUrl = lo_data[key].attributes["file"];
-                        //             //todo add to form
-                        //             uploadPrompt = 'true';
-                        //             break;
-                        //         case 'flashCards':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "nrc": lo_data[key].attributes["amountOfCards"] || "5",
-                        //                 "hintMode": lo_data[key].attributes["hintMode"],
-                        //                 "languageMode": lo_data[key].attributes["languageMode"],
-                        //                 "reverseMode": lo_data[key].attributes["reverseMode"],
-                        //                 "language": lo_data[key].attributes["languageChoice"] || "Dutch",
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             }
-                        //             break;
-                        //         case 'topXQ':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "nro": lo_data[key].attributes["numberOfOptions"] || "5",
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             };
-                        //             break;
-                        //         case 'buttonSequence':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "nrb": lo_data[key].attributes["amountOfButtons"] || "5",
-                        //                 "length": lo_data[key].attributes["sequenceLength"] || "20",
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             };
-                        //             break;
-                        //         case 'categories':
-                        //             constructorObject = {
-                        //                 "categories": lo_data[key].attributes["subject"],
-                        //                 "wpc": lo_data[key].attributes["wordsPerCategory"] || "5",
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             };
-                        //             break;
-                        //         case 'decision':
-                        //             //todo no longer used
-                        //
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "depth": lo_data[key].attributes["depth"],
-                        //                 "nor": lo_data[key].attributes["numberOfResults"],
-                        //                 "additionalInstructions": "Regarding what kind of suggestions I'm looking for, see: " + lo_data[key].attributes["additionalInstructions"],
-                        //             };
-                        //             break;
-                        //         case 'opinion':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "categories": lo_data[key].attributes["categories"],
-                        //                 "numberOfQuestions": lo_data[key].attributes["numberOfQuestions"] || "3",
-                        //                 "targetDemographic": lo_data[key].attributes["targetDemographic"] || "Base it on the subject.",
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             };
-                        //             break;
-                        //         case 'mcq':
-                        //             constructorObject = {
-                        //                 //"subject": lo_data[key].attributes["subject"],
-                        //                 "sentence": lo_data[key].attributes['prompt'],
-                        //                 "aoa": lo_data[key].attributes["amountOfAnswers"] || "4",
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             }
-                        //             break;
-                        //         case 'nestedTab': //tabnavextra+ mainpage
-                        //         case 'nav': //multinav mainpage
-                        //         case 'columnPage': //columns mainpage
-                        //             constructorObject = {
-                        //                 "subjects": lo_data[key].attributes["subjects"], //note the plural-for tavbnavextra main page, nav main page, column main page
-                        //                 "additionalInstructions": lo_data[key].attributes["additionalInstructions"] || " ",
-                        //                 "exampleContent": lo_data[key].attributes["exampleContent"],
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             }
-                        //             break;
-                        //         case 'nestedColumnPage':
-                        //         case 'nestedPage': //tabnavextra /tabnav+ subpage
-                        //         case 'navPage':
-                        //         case 'movie':
-                        //         case 'sound':
-                        //         case 'textbox': //documentation subpage
-                        //         case 'textarea': //documentation subpage
-                        //         case 'description': //documentation subpage
-                        //         case 'mpText':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //                 "additionalInstructions": lo_data[key].attributes["additionalInstructions"] || " ",
-                        //                 "exampleContent": lo_data[key].attributes["exampleContent"],
-                        //                 "tone": lo_data[key].attributes["voiceSelector"],
-                        //                 "range": lo_data[key].attributes["ageRange"],
-                        //                 "eduLevel": lo_data[key].attributes["eduLevel"],
-                        //             }
-                        //             break;
-                        //         // Add more cases as needed for different types
-                        //         default:
-                        //             constructorObject = {};
-                        //             break;
-                        //     }
-                        // }
-                        // else if (sourceContext === "bootstrap"){
-                        //     //todo ignore
-                        //     switch (type) {
-                        //         case 'learningObject':
-                        //             constructorObject = {
-                        //                 "subject": lo_data[key].attributes["subject"],
-                        //             }
-                        //             break;
-                        //     }
-                        // }
-                        // //constructor defaults
-                        // //todo why are these here instead of defaultvalue of xwd
-                        // constructorObject["tone"] = lo_data[key].attributes["voiceSelector"] || "semi-formal";
-                        // constructorObject["range"] = lo_data[key].attributes["ageRange"] || "Intermediate English B2";
-                        // constructorObject["eduLevel"] = lo_data[key].attributes["eduLevel"] || "University";
-                        //
-                        // //todo move to php
-                        // if (infoPrompt === 'true'){
-                        //     constructorObject["access"] = "HAVE";
-                        // }else{
-                        //     constructorObject["access"] = "DON'T HAVE";
-                        // }
+                        let constructorObject = getConstructorFromLightbox(html, event.data.group);
 
-                        // // Fields that must be numeric
-                        //todo remove after xwd changes
-                        // const numericFields = [
-                        //     "nrq", "nra", "length", "nrs", "rows", "nrw", "nro", "nrt", "nrc", "nrb", "wpc", "numberOfQuestions", "aoa"
-                        // ];
-                        //
-                        // // Fields that require at least two words separated by a comma, constructor vs how they appear to users
-                        // const commaSeparatedFields = [
-                        //     { backend: "categories", frontend: "Categories" },
-                        //     { backend: "classlist", frontend: "Classes" },
-                        //     { backend: "columns", frontend: "Columns" },
-                        //     { backend: "subjects", frontend: "Subjects" }
-                        // ];
-
-                        /*
-                        validation regex's used
-                        not empty = ^.+$
-                        comma separated = ^(\s*[^,]+\s*,\s*)+[^,]+\s*$
-                        nummeric = ^\d+$
-                         */
-
-                        //new version
-                        let constructorObject = {};
-                        let formInputValues = $('#lightbox_' + event.data.group + ' :input');
-                        let formValidation = true;
-                        formInputValues.each(function() {
-                            //ignore all buttons as they do not contain data
-                            if (this.nodeName !== "BUTTON") {
-
-                                let formFieldValue = this.value;
-                                if ((formFieldValue === undefined || formFieldValue === "" ) && this.getAttribute('defaultvalueph') !== null) {
-                                    //if the form field has no value and has a placeholder
-                                    formFieldValue = this.getAttribute('defaultvalueph');
-                                }
-
-                                if (this.pattern !== undefined && !validateFormInput(this.pattern, formFieldValue, this.name)) {
-                                    //one of the validation fields has not been filled in correctly.
-                                    formValidation = false;
-                                    return false;
-                                }
-
-                                let formFieldName = this.name;
-                                if (formFieldName === undefined) {
-                                    formFieldName = "noName";
-                                }
-
-                                constructorObject[formFieldName] = formFieldValue;
-                            }
-                        });
-                        //if form validation failed do not make request
-                        if (!formValidation) {
-                            html.prop('disabled', false);
-                            return;
-                        }
-
+                        if (constructorObject === false) {return}
                         if ("fileAccessPrompt" in constructorObject && constructorObject["fileAccessPrompt"] === 'true') {
                             constructorObject["access"] = "HAVE";
                         } else {
@@ -6327,9 +5880,7 @@ var EDITOR = (function ($, parent) {
                             aiSettings['fileUrl'] = null;
                         }
 
-                        //todo not all places have this option when allowing files,
-                        //todo ignore uploadpromt when file is given?
-                        //todo combine with fix of file upload
+                        //todo page based file upload not supported so can ignore this.
                         let uploadPrompt = constructorObject['uploadPrompt'] !== undefined ? constructorObject['uploadPrompt'] : 'false';
                         delete constructorObject.uploadPrompt;
 
@@ -6340,7 +5891,7 @@ var EDITOR = (function ($, parent) {
                         }
 
 
-                        if (confirm("Generated AI content will override most content on this page. Generate anyway?")) {
+                        if (hasApiKeyInstalled('ai', aiSettings['modelSelection']) && confirm(language.vendorApi.overideContentMsg)) {
                             try {
                                 let fullUrl = null;
                                 if (aiSettings['uploadPrompt'] === 'true') {
@@ -6360,7 +5911,7 @@ var EDITOR = (function ($, parent) {
                             }
                             catch (error) {
                                 console.log('Error occurred:', error);
-                                alert("Something went wrong. Please try making another AI request.");
+                                alert(language.vendorApi.genericAiAPiError);
                             } finally {
                                 // Re-enable the button after the function completes (success or failure)
                                 html.prop('disabled', false);
@@ -6468,6 +6019,7 @@ var EDITOR = (function ($, parent) {
                     }
                 });
             }
+
             function updateGrid(name, id) {
                 confirm("A list of processed files for AI use will replace the current resource list, and any changes not yet synced will be lost. Proceed with loading?");
                 // If you need the same baseURL logic:
@@ -6548,16 +6100,12 @@ var EDITOR = (function ($, parent) {
 					if (options.type.toLowerCase() == 'xerteurl' && value.length==0)
 					{
 						value=baseUrl();
-                        if (mode === "none") {
-                            setAttributeValue(key, [name], [value]);
-                        }
+                        setAttributeValue(key, [name], [value]);
 					}
 					if (options.type.toLowerCase() == 'xertelo' && value.length==0)
 					{
 						value=template_id;
-                        if (mode === "none") {
                             setAttributeValue(key, [name], [value]);
-                        }
 					}
 					html = $('<input>')
 						.attr('type', "text")
@@ -6575,14 +6123,14 @@ var EDITOR = (function ($, parent) {
 						})
 						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
 						{
+                            let fieldValue = this.value;
                             if (mode === "none") {
-                                let fieldValue = this.value;
                                 if (fieldValue !== "" && options.defaultValuePH !== undefined) {
                                     fieldValue = options.defaultValuePH;
                                 }
+                            }
 
                                 inputChanged(event.data.id, event.data.key, event.data.name, fieldValue, this);
-                            }
                             if (event.data.trigger)
                             {
                                 //no lightbox so redraw entire page

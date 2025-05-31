@@ -401,6 +401,7 @@ insert into `$role`(`roleid`, `name`) values
 CREATE TABLE IF NOT EXISTS `$management_helper` (
     `interaction_id` int(11) NOT NULL AUTO_INCREMENT,
     `vendor` VARCHAR(10) NOT NULL,
+    `label` VARCHAR(34) NOT NULL,
     `type` VARCHAR(10) NOT NULL,
     `needs_key` BOOLEAN NOT NULL,
     `enabled` BOOLEAN NOT NULL ,

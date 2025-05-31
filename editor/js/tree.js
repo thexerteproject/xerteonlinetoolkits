@@ -20,7 +20,6 @@
 // Tree : Add the tree object to the editor
 
 var EDITOR = (function ($, parent) {
-
     // Create the tree object and refer locally to it as 'my'
     var my = parent.tree = {},
         toolbox = parent.toolbox,
@@ -721,7 +720,6 @@ var EDITOR = (function ($, parent) {
         {
             CKEDITOR.instances[name].destroy(true);
         }
-        //todo use this to gather xwd data for lightbox group
         var attributes = lo_data[key]['attributes'];
 
         // Get the node name
@@ -775,7 +773,7 @@ var EDITOR = (function ($, parent) {
         {
             $('#pagetype').html('');
         }
-		
+
         var node_options = wizard_data[node_name].node_options;
         if (wizard_data[node_name].menu_options.label)
         {
@@ -1089,7 +1087,6 @@ var EDITOR = (function ($, parent) {
                 html.append(table2);
             }
 
-
             if (node_options['optional'].length > 0) {
                 $('#optionalParams').append(html);
             }
@@ -1116,7 +1113,6 @@ var EDITOR = (function ($, parent) {
                     }
                 }
             }
-
 
             $('#languagePanel').html("<hr><table class=\"wizard\" border=\"0\">");
             // languageOptons
@@ -1359,9 +1355,6 @@ var EDITOR = (function ($, parent) {
 		var groupChildren = group.value.children;
 
         if (group.value.lightbox === 'form') {
-            //todo clean
-            //toolbox.lightboxSetUp(group, attributes, node_options, key, group.value.lightbox);
-            //no lightbox + attribute support atm
             toolbox.triggerRedrawForm(group.name, key, groupChildren, 'initialize');
         } else {
 

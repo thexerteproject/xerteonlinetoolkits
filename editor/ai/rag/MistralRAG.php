@@ -6,7 +6,7 @@ class MistralRAG extends BaseRAG
 {
     private $apiKey;
 
-    public function __construct($apiKey, $fileType, $encodingDirectory, $chunkSize = 2048,)
+    public function __construct($apiKey, $fileType, $encodingDirectory, $chunkSize = 2048)
     {
         parent::__construct($chunkSize, $fileType, $encodingDirectory);
         $this->apiKey = $apiKey;
