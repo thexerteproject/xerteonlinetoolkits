@@ -1770,18 +1770,101 @@ var EDITOR = (function ($, parent) {
 
     img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings){
         $('body').css("cursor", "wait");
-        console.log("start pexels api request please wait");
-        alert("Fetching images. Please wait.");
+        //console.log("start pexels api request please wait");
+				let image_preview = $("<div class=\"img_search_preview\"><div class=\"img_search_loading\">loading...</div></div>");
+        let selection_window = $.featherlight(image_preview, {
+						closeOnClick: false,
+				});
+				image_preview = $(".img_search_preview");
         $.ajax({
             url: "editor/imagesearchandhelp/imgSHAPI.php",
             type: "POST",
             data: {query: query, api: api, target: url, interpretPrompt: interpretPrompt, overrideSettings: overrideSettings, settings: settings},
-            success: function(data) {
-                console.log("The image results have successfully been retrieved:", data);
-                alert("Images have successfully been downloaded. Please check the media folder to preview and use them.");
+            success: function(data_json) {
+								image_preview.find(".img_search_loading").remove();
+								let header = $("<h1>" + language.imageSelection.title + "</h1>");
+								image_preview.append(header);
+								let image_preview_images = $("<div class=\"image_preview_images\"></div>");
+								image_preview.append(image_preview_images);
+								let submit_button = $("<input type=\"submit\" value=\"" + language.imageSelection.keepButtonText + "\">").click(function() {
+										let indices_to_delete = [];
+										for(let input of $.makeArray(image_preview.find("input[type=\"checkbox\"]"))){
+												if(!input.checked){
+														indices_to_delete.push(+input.name);
+												}
+										}
+										$.ajax({
+												url: "editor/imagesearchandhelp/imgSelection.php",
+												type: "POST",
+												data: {indices_to_delete: indices_to_delete},
+												success: function(data){
+														alert("success");
+														selection_window.close();
+												},
+												error: function(xhr, status, error){
+														console.log("Error deleting images: ", error);
+														alert("an error occurred");
+												}
+										});
+								});
+								image_preview.append("<br>").append(submit_button);
+								image_preview_images.height($(".img_search_preview").innerHeight() - submit_button.outerHeight(true) - header.outerHeight(true));
+
+								$(window).on("resize", function() {
+										let width = ($(".img_search_preview .image_preview_images").innerWidth()/5) - 20 /*padding*/ - credits_button_width;
+										image_preview_images.height($(".img_search_preview").innerHeight() - submit_button.outerHeight(true) - header.outerHeight(true));
+										//let width = ($(".img_search_preview").innerWidth()-20*5/*padding inline*/)/5;
+										$(".img_search_preview").find(".img_search_preview_image").each(function() {
+												this.width = width;
+												$(this).css("max-height", image_preview_images.height()/2);
+										});
+								});
+								
+								let data = JSON.parse(data_json);
+								let credits_button_width = 0;
+                //console.log("The image results have successfully been retrieved:", data);
+								for(let i = 0; i < data.paths.length; i++){
+										let image_url = data.paths[i];
+										let checkbox = $("<input type=\"checkbox\" id=\"check" + i + "\" name=\"" + i + "\"></input>");
+										let image = $("<img class=\"img_search_preview_image\"></img>");
+										let label = $("<label for=\"check" + i + "\"></label>").append(image);
+										let container = $("<div class=\"img_search_container\"></div>");
+										image.attr("src", image_url);
+										image.attr("title", data.credits[i]);
+										image_preview_images.append(container);
+										container.append(checkbox).append(label);//.append("<div>" + credits_texts[0] + "</div><div>" + credits_texts[1] + "</div>");
+										let enlarge_button = $("<button title=\"Enlarge\" type=\"button\" class=\"enlarge_button\"><i class=\"fa fa-lg fa-search xerte-icon\"></i></button>").click(function() {
+												$.featherlight(image_url);
+										});
+										container.append(enlarge_button);
+										/*let credits_button;
+										if(typeof data.credits[i] == "string") {
+												let credits_texts = data.credits[i].split("\n");
+												credits_button = $("<i class=\"fa fa-info-circle\"></i>").click(function (){
+														$.featherlight("<p>" + credits_texts[0] + "</p><p>" + credits_texts[1] + "</p>", {});
+												});
+												//container.append(credits_button);
+												credits_button_width = credits_button.width();
+												credits_button_width = 0;
+										}*/
+										image.on("load", function () {
+												let width = ($(".img_search_preview .image_preview_images").innerWidth()/5) - 20 /*padding*/ - credits_button_width;
+												this.width = width;
+												$(this).css("max-height", image_preview_images.height()/2);
+										});
+								}
+								$(window).on("resize", function() {
+										let width = ($(".img_search_preview .image_preview_images").innerWidth()/5) - 20 /*padding*/ - credits_button_width;
+										//let width = ($(".img_search_preview").innerWidth()-20*5/*padding inline*/)/5;
+										$(".img_search_preview").find(".img_search_preview_image").each(function() {
+												this.width = width;
+										});
+								});
             },
             error: function(xhr, status, error) {
                 console.error("Error retrieving image results:", error);
+								image_preview.find(".img_search_loading").remove();
+								image_preview.text("an error occurred");
             },
             complete: function() {
                 // This function runs after the AJAX request completes (whether success or error)

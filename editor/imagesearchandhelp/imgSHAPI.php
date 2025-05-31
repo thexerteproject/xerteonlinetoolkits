@@ -32,10 +32,31 @@ require_once(dirname(__FILE__) . "/" . $api ."Api.php");
 $api_type = $api . 'Api';
 $imgshApi = new $api_type();
 
-$result = $imgshApi->sh_request($query, $url, $interpretPrompt, $overrideSettings, $settings);
-
-if ($result->status){
-    echo json_encode($result);
+/* unset($_SESSION["saved"]); */
+//FIXME: remove this if statement when done testing only the original must stay
+if (isset($_SESSION["saved"])) {
+	echo json_encode($_SESSION["saved"]);
 } else {
-    echo json_encode(["status" => "success", "result" => $result]);
+	$result = $imgshApi->sh_request($query, $url, $interpretPrompt, $overrideSettings, $settings); // original
+
+	if ($result->status) {
+		$_SESSION["paths_img_search"] = array();
+		$result->credits = array();
+		for($i = 0; $i < count($result->paths); $i++){
+			$full_path = $result->paths[$i];
+			
+			$web_path = str_replace($xerte_toolkits_site->root_file_path, $xerte_toolkits_site->site_url, $full_path);
+			$ext = pathinfo($full_path, PATHINFO_EXTENSION);
+			$credits = str_replace($ext, "txt", $full_path);
+			
+			$_SESSION["paths_img_search"][] = $full_path;
+			$result->paths[$i] = $web_path;
+			$result->credits[] = file_get_contents($credits);
+		}
+		$_SESSION["saved"] = $result;
+		echo json_encode($result);
+	} else {
+		$_SESSION["saved"] = ["status" => "success", "result" => $result];
+		echo json_encode(["status" => "success", "result" => $result]);
+	}
 }
