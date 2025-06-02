@@ -570,7 +570,7 @@
 
     //retrieves the period start and end dates from the interaction
     function getPeriods(MultiPeriod){
-        if (MultiPeriod === 'off') {return [["01-01-0000","05-05-2000"]]}
+        if (MultiPeriod === 'off') {return [["01-01-0000","05-05-3000"]]}
         let periods = [];
         let period0 = x_currentPageXML.getAttribute("period0");
         let period1 = x_currentPageXML.getAttribute("period1");
@@ -581,7 +581,7 @@
                 period0.split(',')[1].split('T')[0]
             ]);
         } else {
-            periods.push(["01-01-0000","05-05-2000"]);
+            periods.push(["01-01-0000","05-05-3000"]);
         }
         if (period1 !== null && period1 !== 'false') {
             periods.push([
@@ -893,6 +893,8 @@
             }
 
             periods.push([e.target.elements.startperiode2.value, e.target.elements.endperiode2.value]);
+        } else {
+            periods.push('false');
         }
 
         if ( $('#period3').is(':checked') && (e.target.elements.startperiode3.value == '' || e.target.elements.endperiode3.value == '')) {
@@ -908,6 +910,8 @@
             }
 
             periods.push([e.target.elements.startperiode3.value, e.target.elements.endperiode3.value]);
+        } else {
+            periods.push('false');
         }
         return periods;
     }
