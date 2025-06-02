@@ -583,13 +583,13 @@
         } else {
             periods.push(["01-01-0000","05-05-3000"]);
         }
-        if (period1 !== null && period1 !== 'false') {
+        if (period1 !== null && period1 !== 'false' && period1 !== 'true') {
             periods.push([
                 period1.split(',')[0].split('T')[0],
                 period1.split(',')[1].split('T')[0]
             ]);
         }
-        if (period2 !== null && period2 !== 'false') {
+        if (period2 !== null && period2 !== 'false' && period2 !== 'true') {
             periods.push([
                 period2.split(',')[0].split('T')[0],
                 period2.split(',')[1].split('T')[0]
