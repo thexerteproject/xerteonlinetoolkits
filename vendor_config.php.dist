@@ -1,0 +1,11 @@
+<?php
+//
+$xerte_toolkits_site->openai_key = '';
+$xerte_toolkits_site->mistral_key = '';
+$xerte_toolkits_site->anthropic_key ='';
+
+$xerte_toolkits_site->pexels_key = '';
+$xerte_toolkits_site->pixabay_key = '';
+$xerte_toolkits_site->unsplash_key = '';
+$xerte_toolkits_site->dalle2_key = '';
+$xerte_toolkits_site->dalle3_key = '';

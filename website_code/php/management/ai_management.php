@@ -44,7 +44,11 @@ if(is_user_admin()) {
         $enabled = $options['enabled'] == 'true';
         $sub_options = $options;
         unset($sub_options['enabled']);
-        $sub_options_json = json_encode($sub_options);
+        if (sizeof($sub_options) == 0) {
+            $sub_options_json = '{}';
+        } else {
+            $sub_options_json = json_encode($sub_options);
+        }
 
         $query = "UPDATE " . $xerte_toolkits_site->database_table_prefix . "management_helper 
           SET enabled = ?, sub_options = ? 

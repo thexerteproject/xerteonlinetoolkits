@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 require_once("../../../config.php");
-require_once("../../../ai_config.php");
+require_once("../../../vendor_config.php");
 
 _load_language_file("/website_code/php/management/ai.inc");
 _load_language_file("/ai.inc");
@@ -64,8 +64,8 @@ if (is_user_admin()) {
         foreach ($blocks[$group] as $vendor) {
             echo "<h3>" . $vendor->vendor . MANAGEMENT_SETTINGS . "</h3>";
 
-            //verify a api key is installed
-            if ($vendor->needs_key && !isset($xerte_toolkits_site->{$vendor->vendor . '_key'}) or $xerte_toolkits_site->openai_key == '') {
+            //verify an api key is installed
+            if ($vendor->needs_key && !$vendor->has_key) {
                 echo "<p>" . MANAGEMENT_KEY_STATUS . "</p>";
                 continue;
             }
@@ -80,7 +80,7 @@ if (is_user_admin()) {
             //generate sub options html
             foreach ($vendor->sub_options as $sub_option=>$value) {
                 $id_string = $vendor->vendor . "_" . str_replace(' ', '_', $sub_option);
-                echo "<input type=\"checkbox\" id=\"" . $id_string . "\" name=\"" . $id_string . "\" " . ($value ? " checked" : "") . "/><label for=\"" . $id_string . "\">" . $sub_option . "</label>";
+                echo "<input type=\"checkbox\" id=\"" . $id_string . "\" name=\"" . $id_string . "\" " . ($value == "true" ? " checked" : "") . "/><label for=\"" . $id_string . "\">" . $sub_option . "</label>";
             }
 
             echo "</form></p>";

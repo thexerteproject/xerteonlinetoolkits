@@ -326,13 +326,7 @@ if (isset($_SESSION['elevated']) && $_SESSION['elevated'])
     $xerte_toolkits_site->rights = 'elevated';
 }
 
-if (file_exists(dirname(__FILE__) . '/ai_config.php'))
+if (file_exists(dirname(__FILE__) . '/vendor_config.php'))
 {
-    require_once(dirname(__FILE__) . '/ai_config.php');
+    require_once(dirname(__FILE__) . '/vendor_config.php');
 }
-
-if (file_exists(dirname(__FILE__) . '/imgsh_config.php'))
-{
-    require_once(dirname(__FILE__) . '/imgsh_config.php');
-}
-

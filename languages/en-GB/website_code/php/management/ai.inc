@@ -17,7 +17,7 @@
 
 	define("MANAGEMENT_ENABLE_VENDOR", "Allow usage of ");
 
-    define("MANAGEMENT_KEY_STATUS", "Currently there is no valid API key associated with this vendor, please add one in ai_config");
+    define("MANAGEMENT_KEY_STATUS", "Currently there is no valid API key associated with this vendor, please add one in vendor_config");
 
     define("MANAGEMENT_ENABLE_SUBOPTIONS", "Select the desired suboptions for ");
 

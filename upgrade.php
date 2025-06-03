@@ -1636,7 +1636,6 @@ function upgrade_51()
 function upgrade_52()
 {
     $message = "";
-    //todo also add `vendor` to other place for defaulth instalation
     if (!_table_exists("management_helper")) {
         $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `management_helper` (
         `interaction_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1651,6 +1650,23 @@ function upgrade_52()
         );
 
         $message .= "Creating management helper table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        if ($ok) {
+            $ok = db_query("INSERT INTO `management_helper` VALUES 
+                                    (1, 'openai', 'GPT (Openai)', 'ai', 1, 0, '{\"generate image\":\"false\",\"image uploads\":\"false\"}'),
+                                    (2, 'anthropic', 'Claude (Anthropic)', 'ai', 1, 0, '{\"generate image\":\"false\"}'),
+                                    (3, 'mistral', 'Mistral AI', 'ai', 1, 0, '{\"generate image\":\"false\"}'),
+                                    (4, 'pexels', 'Pexels', 'image', 1, 0, '{}'),
+                                    (5, 'pixabay', 'Pixabay', 'image', 1, 0, '{}'),
+                                    (6, 'unsplash', 'Unsplash', 'image', 1, 0, '{}'),
+                                    (7, 'wikimedia', 'Wikimedia Foundation', 'image', 0, 0, '{}'),
+                                    (8, 'dalle2', 'DallE2 (Generative)', 'image', 1, 0, '{}'),
+                                    (9, 'dalle3', 'DallE3 (Generative)', 'image', 1, 0, '{}')
+                                    ");
+            $message .= "Populating management helper table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+        }
+
+
     }
     else{
         $message .= "Table management_helper already exists - ok ? true". "<br>";
