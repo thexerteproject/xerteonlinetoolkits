@@ -1442,6 +1442,57 @@ div.hotspot360Icon span.icon360Holder .icon360 {
 	height: 1.2em;
 }
 
+.img_search_preview {
+	width: 80vw;
+	height: 80vh;
+	overflow: clip;
+}
+.img_search_preview > h1{
+	text-align: center;
+}
+
+.img_search_loading {
+	text-align: center;
+}
+
+.img_search_preview_image {
+	border-radius: 10px;
+	border: 4px transparent solid;
+}
+
+.img_search_container input[type="checkbox"] {
+	display: none;
+}
+
+.img_search_container input[type="checkbox"]:checked + label img {
+	border-color: blue;
+}
+
+.img_search_container {
+	display: inline;
+	padding-inline: 10px;
+	max-height: 50%;
+	position: relative;
+}
+
+.img_search_container i {
+	font-size: 1.5em;
+}
+
+.image_preview_images {
+	/* overflow: auto; */
+}
+
+.enlarge_button {
+	background: white;
+	border: 0;
+	position: absolute;
+	right: 0px;
+	bottom: -0.5em;
+	transform: translate(-50%,-50%);
+	height: 1.7em;
+}
+
 /* start of xertecss.css
 
 body {background: #b3b3b5; padding-bottom: 30px;}

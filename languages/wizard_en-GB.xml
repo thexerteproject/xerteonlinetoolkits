@@ -252,6 +252,10 @@
 		<Info2 label = "Warning: This will add the new table to the current table, are you sure? Please note that there might be duplicate entries after merge."> </Info2>
 		<mergeOld label = "Keep the old table when importing a CSV file:"/>
 	</UploadCSV>>
+	<imageSelection>
+	  <title>Select all images you want to keep</title>
+	  <keepButtonText>Keep</keepButtonText>
+	</imageSelection>
 	<vendorApi>
 		<missingKey>The selected vendor has no API key installed. Please contact your system administrator</missingKey>
 		<genericAiAPiError>Something went wrong. Please try making another AI request.</genericAiAPiError>
