@@ -4101,7 +4101,8 @@ var EDITOR = (function ($, parent) {
     triggerRedrawForm = function (group, key, groupChildren="", mode) {
         //store current form state for rebuild
         let formState = {};
-        let formInputValues = $('#lightbox_' + group + ' :input');
+        let formInputValues = $('#lightbox_' + group + ' :input').add($('#lightbox_' + group + ' .inlinewysiwyg'));
+
         if (mode === 'initialize') {
             var attributes = lo_data[key]['attributes'];
             //if not exists or empty option =>
@@ -4109,15 +4110,23 @@ var EDITOR = (function ($, parent) {
                 //get data from previous ai generation
                 if (attributes[groupChildren[input].name] !== undefined && attributes[groupChildren[input].name] !== ""){
                     formState[groupChildren[input].name] = attributes[groupChildren[input].name];
-                } else {
+                } else if (groupChildren[input].value.defaultValue !== undefined) {
                     //get default values for form
                     formState[groupChildren[input].name] = groupChildren[input].value.defaultValue;
+                } else {
+                    formState[groupChildren[input].name] = "";
                 }
             }
         } else {
             //get current form values
-            for (let input = 0; input < formInputValues.length; input++) {
-                formState[formInputValues[input].name] = formInputValues[input].type !== 'checkbox' ? formInputValues[input].value : String(formInputValues[input].checked);
+            for (let input = 0; input < formInputValues.length ; input++) {
+                if (formInputValues[input].getAttribute('type') === 'wysiwyg') {
+                    formState[formInputValues[input].getAttribute('name')] = formInputValues[input].textContent;
+                } else {
+                    formState[formInputValues[input].name] = formInputValues[input].type !== 'checkbox' ? formInputValues[input].value : String(formInputValues[input].checked);
+                }
+
+
             }
         }
 
@@ -4151,13 +4160,24 @@ var EDITOR = (function ($, parent) {
     getConstructorFromLightbox = function (html, group) {
         //new version
         let constructorObject = {};
-        let formInputValues = $('#lightbox_' + group + ' :input');
+        let formInputValues = $('#lightbox_' + group + ' :input').add($('#lightbox_' + group + ' .inlinewysiwyg'))
+
         let formValidation = true;
+
         formInputValues.each(function() {
             //ignore all buttons as they do not contain data
             if (this.nodeName !== "BUTTON") {
-                let formFieldValue = this.value;
-                if (this.type === "checkbox") {
+
+                let formFieldValue = "";
+
+                if (this.getAttribute('type') === 'wysiwyg') {
+                    formFieldValue = this.textContent ;
+                } else {
+                    formFieldValue = this.value;
+                }
+
+
+                if (this.getAttribute('type') === "checkbox") {
                     formFieldValue = String(this.checked);
                 }
 
@@ -4165,14 +4185,14 @@ var EDITOR = (function ($, parent) {
                     //if the form field has no value and has a placeholder
                     formFieldValue = this.getAttribute('defaultvalueph');
                 }
-
-                if (this.pattern !== undefined && !validateFormInput(this.pattern, formFieldValue, this.name)) {
+                let pattern = this.getAttribute('pattern');
+                if (pattern !== null && !validateFormInput(pattern, formFieldValue, this.getAttribute('name') )) {
                     //one of the validation fields has not been filled in correctly.
                     formValidation = false;
                     return false;
                 }
 
-                let formFieldName = this.name;
+                let formFieldName = this.getAttribute('name');
                 if (formFieldName === undefined) {
                     formFieldName = "noName";
                 }
@@ -6085,6 +6105,7 @@ var EDITOR = (function ($, parent) {
 					html = $('<div>')
 						.attr('id', id)
                         .attr('name', name)
+                        .attr('type', 'wysiwyg')
 						.addClass('inlinewysiwyg')
 						.attr('contenteditable', 'true');
 
@@ -6121,7 +6142,7 @@ var EDITOR = (function ($, parent) {
 								tree.rename_node(tree.get_node(key, false), $(this).val());
 							}
 						})
-						.change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
+						.change({id:id, key:key, name:name, trigger:conditionTrigger, group:options.group}, function(event)
 						{
                             let fieldValue = this.value;
                             if (mode === "none") {
@@ -6138,7 +6159,7 @@ var EDITOR = (function ($, parent) {
                                     triggerRedrawPage(event.data.key);
                                 } else {
                                     //lightbox so redraw only the lightbox form.
-                                    triggerRedrawForm(event);
+                                    triggerRedrawForm(event.data.group, event.data.key, "", "redraw");
                                 }
                             }
 						})
