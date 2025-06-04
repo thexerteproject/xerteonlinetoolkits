@@ -5114,7 +5114,7 @@ var EDITOR = (function ($, parent) {
 				}
 
 				break;
-            case 'mediaCorpus':
+            case 'mediacorpus':
 			case 'media':
 				var id = 'media_' + form_id_offset;
 				form_id_offset++;
