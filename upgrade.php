@@ -1639,9 +1639,9 @@ function upgrade_52()
     if (!_table_exists("management_helper")) {
         $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `management_helper` (
         `interaction_id` int(11) NOT NULL AUTO_INCREMENT,
-        `vendor` VARCHAR(10) NOT NULL,
+        `vendor` VARCHAR(16) NOT NULL,
         `label` VARCHAR(34) NOT NULL,
-        `type` VARCHAR(10) NOT NULL,
+        `type` VARCHAR(16) NOT NULL,
         `needs_key` BOOLEAN NOT NULL,
         `enabled` BOOLEAN NOT NULL ,
         `sub_options` TEXT,  
@@ -1661,7 +1661,9 @@ function upgrade_52()
                                     (6, 'unsplash', 'Unsplash', 'image', 1, 0, '{}'),
                                     (7, 'wikimedia', 'Wikimedia Foundation', 'image', 0, 0, '{}'),
                                     (8, 'dalle2', 'DallE2 (Generative)', 'image', 1, 0, '{}'),
-                                    (9, 'dalle3', 'DallE3 (Generative)', 'image', 1, 0, '{}')
+                                    (9, 'dalle3', 'DallE3 (Generative)', 'image', 1, 0, '{}'),
+                                    (10, 'gladia', 'Gladia (Transcription)', 'transcription', 1, 0, '{}'),
+                                    (11, 'mistralenc', 'Mistral (Encoding)', 'encoding', 1, 0, '{}')
                                     ");
             $message .= "Populating management helper table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
         }

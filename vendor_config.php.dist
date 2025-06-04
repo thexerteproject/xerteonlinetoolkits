@@ -1,9 +1,16 @@
 <?php
-//
+//Generative models
 $xerte_toolkits_site->openai_key = '';
 $xerte_toolkits_site->mistral_key = '';
 $xerte_toolkits_site->anthropic_key ='';
 
+//Transcription Services
+$xerte_toolkits_site->gladia_key = '';
+
+//Encoding Models
+$xerte_toolkits_site->mistralenc_key = '';
+
+//Image retreival and/or generation services
 $xerte_toolkits_site->pexels_key = '';
 $xerte_toolkits_site->pixabay_key = '';
 $xerte_toolkits_site->unsplash_key = '';
