@@ -370,7 +370,7 @@ function getRolesFromUser($userID){
 	global $xerte_toolkits_site;
 	
 	$prefix = $xerte_toolkits_site->database_table_prefix;
-	$query = "select name from role join {$prefix}logindetailsrole on {$prefix}role.roleid={$prefix}logindetailsrole.roleid where {$prefix}logindetailsrole.userid=?;";
+	$query = "select name from {$prefix}role join {$prefix}logindetailsrole on {$prefix}role.roleid={$prefix}logindetailsrole.roleid where {$prefix}logindetailsrole.userid=?;";
 	$params = array($userID);
 	$result = db_query($query, $params);
 

@@ -709,7 +709,7 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	padding: 0 10px 10px 10px;
 }
 #x_mainHolder:not(.x_mobile) #x_headerBlock.pbBelow #x_headerProgress {
-	float: left;
+	/*float: left;*/
 }
 #x_mainHolder #x_headerBlock.pbBelow #x_headerProgress.progressMarkers {
 	padding: 0 20px 15px;

@@ -101,7 +101,7 @@ if (!preg_match('/^[a-zA-Z0-9_\-]+$/', $theme, $matches)) {
 }
 if ($theme != "" && $theme != "default")
 {
-    export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['template_name'] . '/' . $theme . '/');
+    export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/' . $theme . '/');
     copy_extra_files();
 }
 

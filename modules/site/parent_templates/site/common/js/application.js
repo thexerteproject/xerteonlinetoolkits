@@ -72,6 +72,18 @@ function init(){
 	});
 
 	loadContent();
+	// Setup beforeunload
+	window.onbeforeunload = XTTerminate;
+
+	XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
+
+	if (x_params.course != undefined && x_params.course != "") {
+		XTSetOption('course', x_params.course);
+	}
+	if (x_params.module != undefined && x_params.module != "") {
+		XTSetOption('module', x_params.module);
+	}
+
 }
 
 // Create parameters needed by the popcorn library and coming from xenith.js
@@ -2869,15 +2881,18 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'video'){
-				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
+				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index + "_" + x);
 				pane.append('<p>' + videoInfo[0] + '</p>');
 
 				if (videoInfo[1] != undefined) {
 					pane.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
 				}
 
-				video.push(pane.find('video'));
-				video.push(pane.find('.vidHolder.iframe'));
+				video.push(pane.find('.vidHolder').last().find('video'));
+				if (pane.find('.vidHolder').last().hasClass('iframe')) {
+					video.push(pane.find('.vidHolder').last());
+				}
+
 			}
 
 			if (this.nodeName == 'link'){
@@ -3114,7 +3129,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 						var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 						inner.append(hideContentMessage);
 					}
-					var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
+					var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index + "_" + i);
 					inner.append('<p>' + videoInfo[0] + '</p>');
 					if (videoInfo[1] != undefined) {
 						inner.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
@@ -3262,14 +3277,14 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'video'){
-				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index);
+				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index + '_' + i);
 				pane.append('<p>' + videoInfo[0] + '</p>');
 
 				if (videoInfo[1] != undefined) {
 					pane.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
 				}
 
-				video.push(pane.find('video'));
+				video.push(pane.find('.vidHolder').last());
 			}
 
 			if (this.nodeName == 'link'){
@@ -3604,7 +3619,6 @@ var checkIfHidden = function(hidePage, hideOnDate, hideOnTime, hideUntilDate, hi
 
 // adds html for videos - whether they are mp4s,youtube,vimeo (all played using mediaelement.js) or iframe embed code
 function setUpVideo(url, iframeRatio, id) {
-
 	function getAspectRatio(iframeRatio) {
 		var iframeRatio = iframeRatio != "" && iframeRatio != undefined ? iframeRatio : '16:9';
 		iframeRatio = iframeRatio.split(':');
@@ -3630,7 +3644,6 @@ function setUpVideo(url, iframeRatio, id) {
 
 	// mp4 / youtube / vimeo
 	} else {
-
 		return ['<div class="vidHolder"><video src="' + url + '" id="player' + id + '" preload="metadata" style="max-width: 100%" width="100%" height="100%"></video></div>', getAspectRatio(iframeRatio)];
 	}
 }

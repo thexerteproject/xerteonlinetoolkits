@@ -346,7 +346,7 @@
 
 					const correctOptions = [];
 					for (let i=0; i<allAnswers.length; i++) {
-						qHtml += '<option value="' + allAnswers[i].replace(/\s+/g, '') + '">' + allAnswers[i] + '</option>';
+						qHtml += '<option value="' + allAnswers[i] + '">' + allAnswers[i] + '</option>';
 
 						let correctAnswer = correctAnswers.indexOf(allAnswers[i]) > -1 ? true : false;
 						correctOptions.push({
@@ -643,7 +643,7 @@
 		this.revealHideSubmitBtn = function() {
 			if ($(".qSubmit#tableSubmit").length > 0) {
 				let hideTableSubmitBtn = false;
-				$tableHolder.find("td.questionCell:not(.completed) input,th.questionCell:not(.completed) input").each(function() {
+				$tableHolder.find("td.questionCell:not(.completed) input,th.questionCell:not(.completed) input, td.questionCell:not(.completed) select,th.questionCell:not(.completed) select").each(function() {
 					if ($(this).css("visibility") != "hidden") {
 						hideTableSubmitBtn = true;
 						return false;
@@ -724,6 +724,7 @@
 						// screen reader only text: Your answer is incorrect. Incorrect submitted answer: [submittedAnswer] Correct answer: [correctAnswer]
 						$cell.find(".afterSubmit").html('<span class="sr-only">' + x_currentPageXML.getAttribute("incorrectTxt") + '. ' + x_currentPageXML.getAttribute("srCorrectTxt") + ': </span><s>' + submittedAnswer + '</s> <span class="sr-only">' + x_currentPageXML.getAttribute("srIncorrectTxt") + ': </span>' + correctAnswers[0]);
 						$cell.find(".qSubmit").blur().css("visibility", "hidden");
+						$cell.find(".tickCross").css("visibility", "hidden");
 
 					} else {
 						lbComplete = true;

@@ -106,7 +106,7 @@ if (!ctype_alnum($theme)) {
 }
 if ($theme != "" && $theme != "default")
 {
-    export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['template_name'] . '/' . $theme . '/');
+    export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/' . $theme . '/');
     copy_extra_files();
 }
 

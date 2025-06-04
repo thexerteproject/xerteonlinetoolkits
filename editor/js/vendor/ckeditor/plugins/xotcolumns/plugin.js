@@ -17,7 +17,6 @@
           }
           var dimension = pairs[1].trim().match(/(\d+)\s*(em|px){0,1}(?:\s*(\w+)\s*(rgb\([\d|,|\s]+\)|\w+|#[0123456789abcdefABCDEF]{3,6})){0,1}/i);
           //console.log(dimension, pairs[1]);
-          //debugger;
           if (dimension && dimension.length > 0) {
             obj[pairs[0].trim()] = {
               'value': dimension[1],
@@ -42,7 +41,6 @@
   function cWD (name, ...params) {
     console.log(name, ...params);
     window[/*'widget_' + */name] = {...params};
-    debugger;
   }
 
   CKEDITOR.plugins.add('xotcolumns', {

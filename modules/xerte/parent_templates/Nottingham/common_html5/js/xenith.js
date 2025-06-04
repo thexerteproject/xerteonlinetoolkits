@@ -6251,7 +6251,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			$pbHolder = $('<div id="x_headerProgress">');
 
 			if (progressBarPosition == "header1") {
-				$pbHolder.prependTo($x_headerBlock);
+				$pbHolder.insertAfter($x_headerBlock.find(".x_icon"));
 				$x_headerBlock.addClass('pbAbove');
 			} else if (progressBarPosition == "header2") {
 				$pbHolder.appendTo($x_headerBlock);
@@ -6278,7 +6278,9 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 					"width": $pbTxt.width() + parseInt($pbTxt.css("padding-left")),
 					"margin-left": -$pbTxt.outerWidth(true)
 				});
-				$pbHolder.css("padding-left", $pbTxt.outerWidth());
+				$pbHolder.css("padding-left", $pbTxt.outerWidth() + Math.round($("#x_headerBlock .x_icon").width()));
+			} else if (progressBarPosition != "footer") {
+				$pbHolder.css("padding-left", Math.round($("#x_headerBlock .x_icon").width()) + 10);
 			}
 		}
 
