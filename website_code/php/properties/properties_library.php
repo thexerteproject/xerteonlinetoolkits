@@ -2130,10 +2130,10 @@ function tsugi_display($id, $lti_def, $mesg = "")
     if($lti_def->published)
     {
         echo "<p class='lti_launch_url'>" . PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br>";
-		echo "<a class='lti_launch_url' href='" . $lti_def->url . "' target='_blank'>" . $lti_def->url . " " . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
+		echo "<a class='lti_launch_url' href='" . $lti_def->url . "'>" . $lti_def->url . "</a>";
         echo "</p>";
 		echo "<p>" . PROPERTIES_LIBRARY_TSUGI_LTI13_LAUNCH_URL . "<br>";
-		echo "<a class='lti_launch_url' href='" . $lti_def->url13 . " target='_blank'>" . $lti_def->url13 . " " . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
+		echo "<a class='lti_launch_url' href='" . $lti_def->url13 . "'>" . $lti_def->url13 . "</a>";
 		echo "</p>";
     }
     else if ($lti_def->xapi_enabled)
@@ -2141,7 +2141,7 @@ function tsugi_display($id, $lti_def, $mesg = "")
 		// Show xapionly url
 		echo "<p class='lti_launch_url'>";
 		echo PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br>";
-		echo "<a class='lti_launch_url' href='" . $lti_def->xapionly_url . "' target='_blank'>" . $lti_def->xapionly_url . " " . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
+		echo "<a class='lti_launch_url' href='" . $lti_def->xapionly_url . "' target='_blank'>" . $lti_def->xapionly_url . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
 		echo "</p>";
     }
     ?>
