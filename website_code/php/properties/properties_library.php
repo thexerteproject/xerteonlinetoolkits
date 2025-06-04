@@ -2132,7 +2132,7 @@ function tsugi_display($id, $lti_def, $mesg = "")
 		echo "<a class='lti_launch_url' href='" . $lti_def->url . "' target='_blank'>" . $lti_def->url . " " . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
         echo "</p>";
 		echo "<p>" . PROPERTIES_LIBRARY_TSUGI_LTI13_LAUNCH_URL . "<br>";
-		echo "<a class='lti_launch_url' href='" . $lti_def->url13 . " target='_blank'>" . $lti_def->url13 . " " . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
+		echo "<a class='lti_launch_url' href='" . $lti_def->url13 . "' target='_blank'>" . $lti_def->url13 . " " . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
 		echo "</p>";
     }
     else if ($lti_def->xapi_enabled)
