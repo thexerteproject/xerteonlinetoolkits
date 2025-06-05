@@ -58,14 +58,14 @@ $folder_space = 'media';
 if (isset($_REQUEST['loc'])) {
     $folder_space = x_clean_input($_REQUEST['loc']);
     //ensure $file_location is always media or corpus
-    if (!in_array($folder_space, ['media', 'corpus'], true)) {
+    if (!in_array($folder_space, ['media', 'RAG/corpus'], true)) {
         die("Invalid location");
     }
-    if ($folder_space == 'corpus') {
+    if ($folder_space = 'RAG/corpus') {
         $path_parts = explode('/', $rootpath);
         end($path_parts);
         $lastElement = prev($path_parts);
-        verify_LO_folder($lastElement, '/corpus');
+        verify_LO_folder($lastElement, '/RAG/corpus');
     }
 }
 

@@ -4,12 +4,11 @@ class TranscriptManager {
     private $registry;
     private $mediaHandler;
     private $synchronizer;
-    private $transcriber;
 
-    public function __construct(RegistryHandler $registry, MediaHandler $mediaHandler, CorpusSynchronizer $synchronizer) {
+    public function __construct(RegistryHandler $registry, MediaHandler $mediaHandler, /*CorpusSynchronizer $synchronizer*/) {
         $this->registry = $registry;
         $this->mediaHandler = $mediaHandler;
-        $this->synchronizer = $synchronizer;
+        /*$this->synchronizer = $synchronizer;*/
     }
 
     public function appendBase($uploadPath) {
@@ -60,7 +59,7 @@ class TranscriptManager {
         $this->registry->set($id, $entry);
 
         // Sync the new transcript into the corpus directory
-        $this->synchronizer->sync();
+        //$this->synchronizer->sync();
 
         return $entry;
     }

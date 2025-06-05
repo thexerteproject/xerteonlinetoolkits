@@ -39,11 +39,11 @@ if ($result->status) {
 	$result->credits = array();
 	for($i = 0; $i < count($result->paths); $i++){
 		$full_path = $result->paths[$i];
-		
+
 		$web_path = str_replace($xerte_toolkits_site->root_file_path, $xerte_toolkits_site->site_url, $full_path);
 		$ext = pathinfo($full_path, PATHINFO_EXTENSION);
 		$credits = str_replace($ext, "txt", $full_path);
-		
+
 		$_SESSION["paths_img_search"][] = $full_path;
 		$result->paths[$i] = $web_path;
 		$result->credits[] = file_get_contents($credits);

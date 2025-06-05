@@ -5,6 +5,11 @@ class RegistryHandler {
     private $data;
 
     public function __construct($path) {
+        $registryPath = $path . DIRECTORY_SEPARATOR . "registry";
+        $this->path = $path . DIRECTORY_SEPARATOR . "registry" . DIRECTORY_SEPARATOR . "transcript_registry.json";
+        if (!is_dir($registryPath)) {
+            mkdir($registryPath, 0777, true);
+        }
         $this->path = $path . DIRECTORY_SEPARATOR . "registry" . DIRECTORY_SEPARATOR . "transcript_registry.json";
         $this->data = $this->load();
     }

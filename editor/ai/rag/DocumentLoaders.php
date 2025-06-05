@@ -60,8 +60,58 @@ class XmlLoader implements DocumentLoader {
     public function load(): string {
         if (!file_exists($this->filePath)) return '';
 
-        $xml = simplexml_load_file($this->filePath);
-        return strip_tags($xml->asXML());
+        return $this->stripXMLTagsFromFile($this->filePath);
+    }
+
+    private function stripXMLTagsFromFile($filePath): string {
+        $dom = new DOMDocument();
+        // Suppress warnings for malformed XML, handle CDATA as text
+        @$dom->load($filePath, LIBXML_NOCDATA);
+
+        // If the file couldn't be loaded
+        if (!$dom->documentElement) return '';
+
+        $textContent = $this->extractTextAndAttributes($dom->documentElement);
+
+        return trim($textContent);
+    }
+
+    private function extractTextAndAttributes($node): string {
+        $allowedAttributes = [
+            'name', 'text', 'goals', 'audience', 'prereq', 'howto', 'summary', 'nextsteps', 'pageintro', 'tip', 'side1', 'side2', 'txt', 'instruction', 'prompt', 'answer', 'intro', 'feedback', 'unit', 'question', 'hint', 'label', 'passage', 'initialtext', 'initialtitle', 'suggestedtext', 'suggestedtitle', 'generalfeedback', 'instructions', 'p1', 'p2', 'title', 'introduction', 'wrongtext', 'wordanswer', 'words', 'url', 'targetnew', 'linkid',
+        ];
+
+        $text = "";
+
+        // Element node: show tag name and allowed attributes
+        if ($node->nodeType == XML_ELEMENT_NODE) {
+            $text .= ucfirst($node->nodeName) . ": ";
+            if ($node->hasAttributes()) {
+                foreach ($node->attributes as $attr) {
+                    if (in_array(strtolower($attr->name), $allowedAttributes)) {
+                        $text .= ucfirst($attr->name) . " = '" . $attr->value . "' ";
+                    }
+                }
+            }
+            $text .= "\n";
+        }
+
+        // Text or CDATA node: show value (CDATA will appear as plain text)
+        if ($node->nodeType == XML_TEXT_NODE || $node->nodeType == XML_CDATA_SECTION_NODE) {
+            $val = trim($node->nodeValue);
+            if ($val !== '') {
+                $text .= $val . "\n";
+            }
+        }
+
+        // Recursively handle children
+        if ($node->hasChildNodes()) {
+            foreach ($node->childNodes as $child) {
+                $text .= $this->extractTextAndAttributes($child);
+            }
+        }
+
+        return $text;
     }
 }
 

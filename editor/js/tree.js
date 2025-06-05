@@ -1660,9 +1660,12 @@ var EDITOR = (function ($, parent) {
                         context: aiSettings['sourceContext'],
                         assistantPrompt: aiSettings['assisstantPrompt'],
                         baseUrl: aiSettings['baseUrl'],
-                        useContext: aiSettings['useContext'],
+                        useCorpus: aiSettings['useCorpus'],
                         contextScope: aiSettings['contextScope'],
                         modelTemplate: aiSettings['modelTemplate'],
+                        fileList: aiSettings['fileList'],
+                        useLoInCorpus: aiSettings['loSettings']['useLoInCorpus'],
+                        restrictCorpusToLo: aiSettings['loSettings']['restrictCorpusToLo']
                     },
                     success: function(data) {
                         try {

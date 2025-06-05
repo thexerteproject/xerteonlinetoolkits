@@ -83,7 +83,7 @@ $file_location = 'media';
 if (isset($_REQUEST['loc'])) {
     $file_location = x_clean_input($_REQUEST['loc']);
     //ensure $file_location is always media or corpus
-    if (!in_array($file_location, ['media', 'corpus'], true)) {
+    if (!in_array($file_location, ['media', 'RAG/corpus'], true)) {
         die("Invalid location");
     }
 }

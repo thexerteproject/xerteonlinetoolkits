@@ -101,83 +101,67 @@ function splitPlainText(string $text, int $maxSize): array {
  */
 function splitHtmlXml(string $html, int $maxSize): array {
     $chunks = [];
-    // Load HTML into DOMDocument (suppress errors for malformed HTML).
     $dom = new DOMDocument();
-    // Use HTML5 compatibility (libxml options) if needed to handle HTML fragments.
     libxml_use_internal_errors(true);
     $success = $dom->loadHTML($html, LIBXML_NOERROR | LIBXML_NOWARNING);
     libxml_clear_errors();
     if (!$success) {
-        // If DOM parse fails (e.g., truly broken XML), fall back to generic text split.
-        return splitByLength($html, $maxSize);
+        return splitPlainText($html, $maxSize);
     }
-    $dom->encoding = 'UTF-8';  // ensure consistent encoding
+    $dom->encoding = 'UTF-8';
 
-    // Get the body content for HTML. For XML, use the document element.
     $root = $dom->getElementsByTagName('body')->item(0);
     if (!$root) {
-        $root = $dom->documentElement; // for XML, or if <body> not present
+        $root = $dom->documentElement;
     }
 
-    // Traverse child nodes of the root, collecting chunks for block-level elements.
+    $buffer = '';
     foreach ($root->childNodes as $node) {
-        // If it's a text node (and not just whitespace), treat it as a chunk of plain text.
+        // Serialize node to HTML (preserves structure)
+        $htmlChunk = $dom->saveHTML($node);
+        // If the node is a text node, treat as text, else as HTML
         if ($node->nodeType === XML_TEXT_NODE) {
-            $textContent = trim($node->textContent);
-            if ($textContent !== '') {
-                // For standalone text, we may split further by plain text rules if needed.
-                if (strlen($textContent) <= $maxSize) {
-                    $chunks[] = $textContent;
-                } else {
-                    // Use plain text splitting for large text node
-                    $chunks = array_merge($chunks, splitPlainText($textContent, $maxSize));
-                }
-            }
+            $htmlChunk = htmlspecialchars($node->textContent);
         }
-        // If it's an element node, decide how to handle it
-        elseif ($node->nodeType === XML_ELEMENT_NODE) {
-            $tagName = strtolower($node->nodeName);
-            // Define which tags we consider as chunk boundaries (common block-level tags).
-            $blockTags = ['p','div','section','article','header','footer',
-                'h1','h2','h3','h4','h5','h6',
-                'ul','ol','li','pre','blockquote','table'];
-            if (in_array($tagName, $blockTags)) {
-                // Get the outer HTML of this element as a chunk
-                $chunkHtml = trim($dom->saveHTML($node));
-                if ($chunkHtml === '') continue;
-                if (strlen($chunkHtml) <= $maxSize) {
-                    $chunks[] = $chunkHtml;
-                } else {
-                    // If this block element is still too large, recursively split its inner text content
-                    $innerText = trim($node->textContent);
-                    if ($innerText !== '' && strlen($innerText) > $maxSize) {
-                        // We use plain text splitting on the text content of this element
-                        $chunks = array_merge($chunks, splitPlainText($innerText, $maxSize));
-                    } else {
-                        // If innerText is small enough or empty, just take the whole outer HTML
-                        $chunks[] = $chunkHtml;
+
+        if (strlen($buffer) + strlen($htmlChunk) > $maxSize) {
+            if (trim($buffer) !== '') {
+                $chunks[] = $buffer;
+                $buffer = '';
+            }
+            // If current node is itself too large, split further (recursively or as plain text)
+            if (strlen($htmlChunk) > $maxSize) {
+                if ($node->nodeType === XML_ELEMENT_NODE && trim($node->textContent) !== '') {
+                    // Recursively split this element's content (get its inner HTML)
+                    $innerHTML = '';
+                    foreach ($node->childNodes as $child) {
+                        $innerHTML .= $dom->saveHTML($child);
                     }
+                    $innerChunks = splitHtmlXml($innerHTML, $maxSize);
+                    foreach ($innerChunks as $c) {
+                        $chunks[] = $c;
+                    }
+                } else {
+                    // Split as plain text
+                    $chunks = array_merge($chunks, splitPlainText($node->textContent, $maxSize));
                 }
             } else {
-                // For inline or unknown elements, include them with their content as one chunk
-                $chunkHtml = trim($dom->saveHTML($node));
-                if ($chunkHtml !== '') {
-                    $chunks[] = $chunkHtml;
-                }
+                $buffer = $htmlChunk;
             }
+        } else {
+            $buffer .= $htmlChunk;
         }
-        // (We ignore other node types like comments or processing instructions for chunking)
+    }
+    if (trim($buffer) !== '') {
+        $chunks[] = $buffer;
     }
 
-    // If somehow no chunks were collected (e.g., empty body), fallback to splitting full text.
+    // Fallback: if still no chunks, treat as plain text
     if (empty($chunks)) {
         $textContent = trim($root->textContent);
-        if ($textContent === '') {
-            return [];
-        }
+        if ($textContent === '') return [];
         return splitPlainText($textContent, $maxSize);
     }
-
     return $chunks;
 }
 
