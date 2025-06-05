@@ -6101,7 +6101,10 @@ var EDITOR = (function ($, parent) {
                             loSettings['useLoInCorpus'] = true;
                             loSettings['restrictCorpusToLo'] = true;
                         }
-
+                        const requiredUploadTypes = ['ivOverlayPanel'];
+                        if (requiredLoTypes.includes(aiSettings['type'])){
+                            uploadPrompt = 'true';
+                        }
 
                         if (loSettings['restrictCorpusToLo'] === true){
                             aiSettings['useCorpus'] = true;
