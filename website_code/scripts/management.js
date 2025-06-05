@@ -412,11 +412,6 @@ function themes_list(){
 	});
 }
 
-
-// Function delete sharing template
-//
-// remove a share, and check who did it
-
 function ai_list(){
 	function_to_use="ai";
 	$.ajax({
@@ -434,20 +429,20 @@ function ai_list(){
 // remove a share, and check who did it
 
 function update_ai(){
-	openai = document.getElementById("allow_openai")
-	antrophic = document.getElementById("allow_anthropic")
+	let form_inputs = $('#admin_area :input');
+	let form_state = {};
+	for (let input = 0; input < form_inputs.length; input++) {
+		if (form_inputs[input].type === 'checkbox') {
+			form_state[form_inputs[input].name] = form_inputs[input].checked;
+		} else {
+			form_state[form_inputs[input].name] = form_inputs[input].value;
+		}
+	}
 	$.ajax({
 		type: "POST",
 		url: "website_code/php/management/ai_management.php",
 		data: {
-			openai_allow: openai ? document.getElementById("allow_openai").checked : "",
-			openai_whisper: openai ? document.getElementById("openai_whisper").checked : "",
-			openai_dali: openai ? document.getElementById("openai_dali").checked: "",
-			openai_upload: openai ? document.getElementById("openai_upload").checked : "",
-			anthropic_allow: antrophic ? document.getElementById("allow_anthropic").checked : "",
-			anthropic_whisper: antrophic ? document.getElementById("anthropic_whisper").checked : "",
-			anthropic_dali: antrophic ? document.getElementById("anthropic_dali").checked : "",
-			anthropic_upload: antrophic ? document.getElementById("anthropic_upload").checked : "",
+			form_state : form_state
 		},
 	})
 		.done(function (response) {
@@ -461,7 +456,6 @@ function update_ai(){
 
 function update_template(){
 	//bababoeie
-	debugger
 	// Get selected pages of the active_section
 	// 1. First get non-selected boxes
 	var disable_advanced_cb = $("#sub_page_select_disable_advanced_" + active_section + ":checked");

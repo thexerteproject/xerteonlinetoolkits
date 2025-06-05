@@ -967,6 +967,9 @@ xAPIDashboard.prototype.createJourneyTableSession = function (div) {
     }
 
     this.applyDisplayOptions(interactions);
+    $(".close-results").click(function () {
+      $(this).closest(".collapse").collapse("toggle");
+    });
     $(".icon-header").click(function () {
       if ($(this).hasClass("icon-hide")) {
         $(this).removeClass("icon-hide");
@@ -1516,6 +1519,8 @@ xAPIDashboard.prototype.drawPages = function (
 
   let counter = 0;
   $(".session-row").each((_, row) => {
+    // TODO: TOR: the follwoing does NOT work in general, so filetering on groups is broken for now
+    /*
     if (
       $(row).data("group-selected") ||
       $(row).data("group-selected") === undefined
@@ -1525,13 +1530,14 @@ xAPIDashboard.prototype.drawPages = function (
     } else {
       $(row).data("index", -1);
     }
+    */
     var rowIndex = $(row).data("index");
     if (rowIndex < from || rowIndex >= to) {
       $(row).addClass("hide");
-      $(row).css("display", "none");
+      //$(row).css("display", "none");
     } else {
       $(row).removeClass("hide");
-      $(row).css("display", "table-row");
+      //$(row).css("display", "table-row");
     }
   });
 };

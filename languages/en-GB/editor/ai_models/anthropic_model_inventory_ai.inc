@@ -1,3 +1,4 @@
+
 <?php
 
     define("LEARNING_PROMPT_INVENTORY", "Create a quiz to help decide whether someone is a digital nomad or a digital immigrant! These are your classes: digital nomad,digital immigrant. Make sure to assign an appropriate weight to each answer as well as mark to which class it belongs to. The quiz should contain 6 questions with 3-4 answers each!");

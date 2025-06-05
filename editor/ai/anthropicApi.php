@@ -1,13 +1,17 @@
 <?php
 
+use rag\MistralRAG;
 class anthropicApi
 {
     //constructor must be like this when adding new api
     function __construct(string $api) {
+        global $xerte_toolkits_site;
         require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/load_preset_models.php");
         $this->preset_models = $anthropic_preset_models;
         require_once (str_replace('\\', '/', __DIR__) . "/../../config.php");
         $this->xerte_toolkits_site = $xerte_toolkits_site;
+        require_once (str_replace('\\', '/', __DIR__) . "/rag/BaseRAG.php");
+        require_once (str_replace('\\', '/', __DIR__) . "/rag/MistralRAG.php");
     }
 
     private function clean_result($answer) {
@@ -50,16 +54,25 @@ class anthropicApi
         return $resultConform;
     }
 
-    private function generatePrompt($p, $type): string {
+    private function generatePrompt($p, $type, $globalInstructions): string {
         $prompt = '';
-        foreach ($this->preset_models->prompt_list[$type] as $prompt_part){
-            if ($p[$prompt_part] == null){
-                $prompt = $prompt . $prompt_part;
+        foreach ($this->preset_models->prompt_list[$type] as $prompt_part) {
+            if ($p[$prompt_part] == null) {
+                $prompt .= $prompt_part;
             } else {
-                $prompt = $prompt . $p[$prompt_part];
+                $prompt .= $p[$prompt_part];
             }
         }
+
+        // Append global instructions at the end if not empty
+        if (!empty($globalInstructions)) {
+            // Join the array into a single string with a newline between instructions
+            $globalInstructionsStr = implode("\n", $globalInstructions);
+            $prompt .= "\n" . $globalInstructionsStr;
+        }
+
         return $prompt;
+
     }
 
     private function removeBracketsAndContent($text) {
@@ -103,7 +116,18 @@ class anthropicApi
         return $jsonString;
     }
 
-    public function ai_request($p, $type){
+    private function prepareURL($uploadPath){
+        $basePath = __DIR__ . '/../../'; // Moves up from ai -> editor -> xot
+        $finalPath = realpath($basePath . $uploadPath);
+
+        if ($finalPath === false) {
+            throw new Exception("File does not exist: $finalPath");
+        }
+
+        return $finalPath;
+    }
+
+    public function ai_request($p, $type, $baseUrl, $globalInstructions, $useCorpus = false, $fileList = null, $restrictCorpusToLo = false){
         if (is_null($this->preset_models->type_list[$type]) or $type == "") {
             return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
         }
@@ -112,7 +136,50 @@ class anthropicApi
             return (object) ["status" => "error", "message" => "there is no corresponding API key"];
         }
 
-        $prompt = $this->generatePrompt($p, $type);
+        $prompt = $this->generatePrompt($p, $type, $globalInstructions);
+
+        if ($useCorpus || $fileList != null || $restrictCorpusToLo){
+            $apiKey = $this->xerte_toolkits_site->mistralenc_key;
+            $encodingDirectory = $this->prepareURL($baseUrl);
+            $rag = new MistralRAG($apiKey, $encodingDirectory);
+            if ($rag->isCorpusValid()){
+            $promptReference = x_clean_input($p['subject']);
+
+            if ($restrictCorpusToLo){
+                $fileList = [$encodingDirectory . '/preview.xml'];
+                $weights = [
+                    'embedding_cosine' => 0.3,
+                    'embedding_euclidean' => 0.2,
+                    'tfidf_cosine' => 0.3,
+                    'tfidf_euclidean' => 0.2
+                ];
+                $context = $rag->getWeightedContext($promptReference, $fileList, $weights, 25);
+            }else{
+                $context = $rag->getWeightedContext($promptReference, $fileList);
+            }
+
+            $new_messages = array(
+                array(
+                    'role' => 'user',
+                    'content' => 'Great job! That\'s a great example of what I need. Now, I want to send you the context of the learning object you are generating these XMLs for. Bear in mind, the context can take different forms: transcripts or text. In the future, please generate the xml based on the context I will provide.',
+                ),
+                array(
+                    'role' => 'assistant',
+                    'content' => 'Understood. I\'m happy to help you with your task. Please provide the current context of the learning object. I will keep in mind that for transcripts, I dont have to include the timestamps in my response unless otherwise specified. Once you do, we can proceed to generating new XML objects using the exact same structure I used in my previous message, this time taking the new context into account.',
+                ),
+                array(
+                    'role' => 'user',
+                    'content' => 'Ok. Remember, when you generate the new XML, it should do so with the context here in mind! I\'ve compiled the data for you here: [START OF CONTEXT]' . $context[0]['chunk'] . $context[1]['chunk'] . $context[2]['chunk'] . $context[3]['chunk'] . $context[4]['chunk'] . " [END OF CONTEXT]",
+                ),
+                array(
+                    'role' => 'assistant',
+                    'content' => 'Great! Now that we know the context of the sort of information I am working with, I can proceed with generating a new XML with the exact same XML structure as the first one I made, but with content adapted to the context. Please specify any of the other requirements for the XML, and I will return the XML directly with no additional commentary, so that you can immediately use my message as the XML.',
+                ),
+            );
+
+            array_splice($this->preset_models->type_list[$type]['payload']['messages'], 2, 0, $new_messages);
+            }
+        }
 
         $results = array();
 

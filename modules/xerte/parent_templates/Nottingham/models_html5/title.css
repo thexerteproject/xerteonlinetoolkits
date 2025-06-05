@@ -4,9 +4,22 @@
 		overflow-x: hidden;
 	}
 
+	.x_responsive .titlePageTxt p {
+		font-size: 7vmin;
+	}
+
+	.x_responsive #txtHolder.smallerTitle .titlePageTxt p {
+		font-size: min(3em, 7vmin);
+	}
+
 	.titlePageTxt p {
 		font-size: 1em;
+		padding: 0;
 	}
+	#extraText p {
+		padding: 0;
+	}
+
 	#x_headerBlock.hideTitleTxt h1, #x_headerBlock.hideTitleTxt h2, #x_headerBlock.hideTitleIcon .x_icon, #x_headerBlock.hideTitleTxt.hideTitleIcon {
 		display: none !important;
 	}
@@ -14,8 +27,8 @@
 		margin-top: 1em;
 	}
 	#titleStartBtn {
-		margin-left: 1em;
-		margin-right: 1em;
+		margin-left: 0;
+		margin-right: 0;
 	}
 	#titleStartBtn {
 		padding-left: 1em;
@@ -23,7 +36,7 @@
 	}
 
 	#x_pageDiv.autoLayout {
-		width: auto !important;
+		width: 100%;
 		height: auto !important;
 	}
 
@@ -41,6 +54,7 @@
 
 	#x_mainHolder:not(.x_mobile) #txtHolder {
 		flex-basis: 100%;
+		padding: .3em;
 	}
 
 	#x_mainHolder.x_mobile #mediaHolder {

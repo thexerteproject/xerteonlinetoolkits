@@ -27,21 +27,7 @@
 
 require_once (__DIR__ . "/../../website_code/php/xmlInspector.php");
 require_once (__DIR__ . "/../../website_code/php/themes_library.php");
-
-function get_children ($parent_id, $lookup, $column, $type) {
-    // children
-    $children = array();
-    //we are at a leaf level
-    if (empty($lookup[$parent_id]['children'])){
-        return $children;
-    }
-    foreach ($lookup[$parent_id]['children'] as $node) {
-        $children[] = array('name' => $node[$column], 'value' => $node[$column], 'children' => get_children($node[$type], $lookup, $column, $type));
-    }
-    return $children;
-}
-
-
+require_once (__DIR__ . "/../../website_code/php/editor_support_library.php");
 /**
  *
  * Function output_editor_code
@@ -163,7 +149,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         $lookup = $lookup + array($node['category_id'] => $node);
     }
     foreach ($lookup as $node){
-        if ($node['parent_id'] != null){
+        if ($node['parent_id'] != null && $node['parent_id'] != 0){
             $lookup[$node['parent_id']]['children'][] = $node;
         }
     }
@@ -171,7 +157,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $parsed_categories = array();
     foreach ($lookup as $value){
         //find all tree origins
-        if ($value['parent_id'] == null) {
+        if ($value['parent_id'] == null || $value['parent_id'] == 0) {
             //add node and all its children recursively
             $node = array('name' => $value['category_name'], 'value' => $value['category_name'], 'children' => get_children($value['category_id'], $lookup, 'category_name', 'category_id'));
             $parsed_categories[] = $node;
@@ -190,7 +176,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         $lookup = $lookup + [$node['educationlevel_id'] => $node];
     }
     foreach ($lookup as $node){
-        if ($node['parent_id'] != null){
+        if ($node['parent_id'] != null && $node['parent_id'] != 0){
             $lookup[$node['parent_id']]['children'][] = $node;
         }
     }
@@ -198,7 +184,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $parsed_educationlevels = array();
     foreach ($lookup as $value){
         //find all tree origins
-        if ($value['parent_id'] == null) {
+        if ($value['parent_id'] == null || $value['parent_id'] == 0) {
             //add node and all its children recursively
             $node = ['name' => $value['educationlevel_name'], 'value' => $value['educationlevel_name'], 'children' => get_children($value['educationlevel_id'], $lookup, 'educationlevel_name', 'educationlevel_id')];
             $parsed_educationlevels[] = $node;
@@ -240,6 +226,21 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     if ($xerte_toolkits_site->rights == 'elevated')
     {
         $body_class = ' class="elevated"';
+    }
+
+    $vendors = get_vendor_settings();
+    $corpus_upload_types = array();
+    if (array_key_exists('ai', $vendors )){
+        foreach ($vendors['ai'] as $vendor){
+            foreach ($vendor->sub_options as $option_name=>$value){
+                if ($value) {
+                    $option_exploded = explode(" ", $option_name);
+                    if ($option_exploded[1] == 'uploads' && !in_array($option_exploded[0], $corpus_upload_types)) {
+                        $corpus_upload_types[] = $option_exploded[0];
+                    }
+                }
+            }
+        }
     }
 
     _debug("Starting editor page");
@@ -444,6 +445,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "roles=" . json_encode($user_roles) . ";\n";
     echo "theme=\"" . $theme . "\";\n";
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
+    echo "vendor_options=" . json_encode($vendors) . ";\n";
+    echo "corpus_upload_types=" . json_encode($corpus_upload_types) . ";\n";
     ?>
 
     function bunload(){

@@ -30,7 +30,10 @@
 			$infoHolder		= $("#infoHolder");
 			
 			$infoHolder.scrollTop(0);
-			$infoHolder.find(".highlight").removeClass("highlight");
+			$infoHolder.find(".highlight")
+				.removeClass("highlight")
+				.removeAttr("aria-label");
+
 			this.loadAudio();
 		}
 		
@@ -49,7 +52,8 @@
 				var $caption = $(this);
 				$caption
 					.data("scrollPos", $caption.position().top)
-					.removeClass("highlight");
+					.removeClass("highlight")
+					.removeAttr("aria-label");
 			});
 			this.loadAudio();
 		}
@@ -130,10 +134,14 @@
 			
 			$(captions)
 				.click(function() {
-					$infoHolder.find(".highlight").removeClass("highlight");
+					$infoHolder.find(".highlight")
+						.removeClass("highlight")
+						.removeAttr("aria-label");
 					
 					var $this = $(this);
-					$this.addClass("highlight");
+					$this
+						.addClass("highlight")
+						.attr("aria-label", x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "selected", "Selected"));
 					$infoHolder.scrollTop($this.data("scrollPos") - parseInt($("#pageContents .panel").css("padding-top")) - 1);
 					$pageContents.data("mediaElement").setCurrentTime($this.data("synch") + 0.1);
 				})
@@ -185,11 +193,18 @@
 				$captions.each(function(){
 					var $thisCaption = $(this);
 					if (currentTime > $thisCaption.data("synch")) {
-						$("#infoHolder .highlight").removeClass("highlight");
-						$thisCaption.addClass("highlight");
+						$("#infoHolder .highlight")
+							.removeClass("highlight")
+							.removeAttr("aria-label");
+
+						$thisCaption
+							.addClass("highlight")
+							.attr("aria-label", x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "selected", "Selected"));
 						$infoHolder.scrollTop($thisCaption.data("scrollPos") - parseInt($("#pageContents .panel").css("padding-top")) - 1);
 					} else {
-						$thisCaption.removeClass("highlight");
+						$thisCaption
+							.removeClass("highlight")
+							.removeAttr("aria-label");
 					}
 				});
 			});

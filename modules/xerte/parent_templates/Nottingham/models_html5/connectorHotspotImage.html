@@ -26,11 +26,14 @@
 		var	$img,
 			$pageContents,
 		    options;
+
+		this.delayBubbleClose;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$img = $("#image");
 			$pageContents = $("#pageContents");
+			$x_body.append('<div id="hotspot_bubble_holder">' + '</div>');
 			
 			$("#pageContents .selected").removeClass("selected");
 			$("#pageContents .highlighted").removeClass("highlighted");
@@ -44,6 +47,10 @@
                 // Keep unselected
                 $("area").mapster('deselect');
             }
+		};
+
+		this.leavePage = function() {
+			$("#hotspot_bubble_holder").remove();
 		};
 		
 		// function called every time the size of the LO is changed
@@ -157,7 +164,7 @@
 			$("#hsHolder").html("<map id=\"hsHolder_map\" name=\"hsHolder_map\"></map>");
 			$('#hsIconHolder').empty();
 			$("#hotspot_bubble_holder").remove();
-			$("#panel").append('<div id="hotspot_bubble_holder">' + '</div>');
+			$x_body.append('<div id="hotspot_bubble_holder">' + '</div>');
 
 			$('#hotspot_bubble_holder').keyup(function(e) {
 				if (e.key === "Escape") {
@@ -263,7 +270,8 @@
 						hsInfo = "sound";
 						
 						if (this.getAttribute("playerType") != 'auto') {
-							hsType = windowType;
+							// audio uses a different window type setting that excludes the bubble option
+							hsType = this.getAttribute("windowSoundType") != undefined ? this.getAttribute("windowSoundType") : this.getAttribute("windowType") !== 'bubble' ? this.getAttribute("windowType") : 'dialog';
 						} else {
 							// auto play audio without showing player in dialog / lightbox
 							hsType = "autoPlay";
@@ -323,15 +331,16 @@
 						}
 					}
 
-					var hs_hover = 'false'
+					var hs_hover = 'false';
 					if (this.getAttribute('hotspotHover') != undefined && !!this.getAttribute('hotspotHover')){
-						hs_hover = this.getAttribute('hotspotHover')
+						if (hsType == 'bubble') {
+							hs_hover = this.getAttribute('hotspotHover')
+						}
 					}
 
 					if (hsShape !== 'icon') {
 						var _this = this,
 								$hotspot = $('<area class="hotspot transparent" shape="poly" href="#" />');
-
 
 						var coords = [];
 						var coords_string = "";
@@ -379,7 +388,6 @@
 						colour2 = colour2.indexOf('0x') === 0 ? colour2.replace("0x", "#") : colour2;
 						var icon = this.getAttribute('shape') != undefined && this.getAttribute('shape') != '' ? JSON.parse(this.getAttribute('shape')) : {centerX:0, CenterY:0, radius:0, angle:0}
 						var size = (icon.radius*2)/100 * $('#imageHolder').width()
-//todo make unique
 						var _this = this;
 
 						var $hotspotHolder = $('<div id="hotspotHolder" class="hotspotIconHolder"</div>')
@@ -578,9 +586,10 @@
 													hideOnClickOutside($("#hotspot_bubble_holder"));
 													$("#hotspot_bubble_holder").show()
 													$("#hotspot_bubble_holder").empty()
-													$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble">' + '</div>');
+													$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble" tabindex="0">' + '</div>');
 
 													setBubble(hsInfo, hsShape, _this, this)
+
 												}
 											}
 
@@ -616,7 +625,7 @@
 
 													$("#hotspot_bubble_holder").show()
 													$("#hotspot_bubble_holder").empty()
-													$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble">' + '</div>');
+													$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble" tabindex="0">' + '</div>');
 
 													setBubble(hsInfo, hsShape, _this, this)
 												}
@@ -661,8 +670,8 @@
 
 								})
 								.on("mouseenter", function () {
-
 									if (hs_hover === 'true' && x_browserInfo.mobile == false) {
+										connectorHotspotImage.delayBubbleClose = false;
 										if (hsInfo == "image" || hsInfo == "text") {
 											connectorHotspotImage.pauseAudio();
 
@@ -698,7 +707,7 @@
 													hideOnClickOutside($("#hotspot_bubble_holder"));
 													$("#hotspot_bubble_holder").show()
 													$("#hotspot_bubble_holder").empty()
-													$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble">' + '</div>');
+													$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble" tabindex="0">' + '</div>');
 
 													setBubble(hsInfo, hsShape, _this, this)
 
@@ -719,7 +728,7 @@
 
 													$("#hotspot_bubble_holder").show()
 													$("#hotspot_bubble_holder").empty()
-													$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble">' + '</div>');
+													$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble" tabindex="0">' + '</div>');
 
 													setBubble(hsInfo, hsShape, _this, this)
 												}
@@ -764,20 +773,22 @@
 								.keyup(function (e) {
 									var charCode = e.charCode || e.keyCode;
 									if (charCode == 27) {
-
-										//$(this).trigger("mouseleave")
 										$("#pageContents .selected").removeClass("selected");
 										$("#pageContents .highlighted").removeClass("highlighted");
 										$('#hotspot_bubble_holder').empty()
 									}
 								});
 
-
 					$hotspot.on( "mouseleave", function() {
 						if (hs_hover === 'true'){
-							$("#pageContents .selected").removeClass("selected");
-							$("#pageContents .highlighted").removeClass("highlighted");
-							$('#hotspot_bubble_holder').empty()
+							// add a delay to check whether the mouse has been moved over the bubble  if it has then don't auto close the bubble
+							setTimeout(function() {
+								if (!connectorHotspotImage.delayBubbleClose) {
+									$("#pageContents .selected").removeClass("selected");
+									$("#pageContents .highlighted").removeClass("highlighted");
+									$('#hotspot_bubble_holder').empty();
+								}
+							}, 100);
 						}
 					} );
 
@@ -794,13 +805,30 @@
 							});
 						}
 
+						// hotspot has tooltip on hover
 						if (x_currentPageXML.getAttribute("hs_showTooltip") == undefined || x_currentPageXML.getAttribute("hs_showTooltip") !== "false") {
-							if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "")
+							if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "") {
 								$hotspot.attr("title", this.getAttribute("alttext"));
-							else
+							} else {
 								$hotspot.attr("title", this.getAttribute("name"));
+							}
+
+						// no visible tooltip on hover - alt text instead for screenreaders only
+						} else if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "") {
+							$hotspot.attr("alt", this.getAttribute("alttext"));
+						} else {
+							$hotspot.attr("alt", this.getAttribute("name"));
 						}
-						$hotspot.attr("alt", this.getAttribute("alttext"));
+
+						// add info about where the info will open if needed
+						const startAltText = $hotspot.attr("alt") != undefined && $hotspot.attr("alt") != "" ? $hotspot.attr("alt") + ": " : "";
+						if (hsType == "newTab" || hsType == "newWindow") {
+							$hotspot.attr("alt", startAltText + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window'));
+						} else if (hsType == "dialog" || hsType == "lightbox") {
+							$hotspot.attr("alt", startAltText + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'dialog', 'opens in a dialog window'));
+						} else if (hsType == "url") {
+							$hotspot.attr("alt", startAltText + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'thisWindow', 'opens in this window'));
+						}
 
 					if (hsShape !== 'icon') {
 						$("#hsHolder_map").append($hotspot);
@@ -879,7 +907,6 @@
 	}
 
 	function setBubble(hsInfo, hsShape, _this, thisTmp) {
-
 		$hotspot_bubble = $("#hotspot_bubble");
 
 		(_this.getAttribute("showTitle") == 'true' && _this.getAttribute("name") !== "") ? bubble_content = "<h3>" + _this.getAttribute("name") + "</h3><br/>" : bubble_content = ""
@@ -967,12 +994,54 @@
 			var tmp_top = hs_top + hs_height/2 - $hotspot_bubble.outerHeight(true)/2
 		}
 
-		$hotspot_bubble.css({
-			"left": Math.max(tmp_left, 0),
-			"top": tmp_top,
-			"max-width": Math.min(vw * 0.6,max_w),
-			"max-height": vh * 0.6,
-		}).focus();
+		if ($(thisTmp).length > 0) {
+			$("#pageContents").data("thisFocus", $(thisTmp));
+		} else {
+			$("#pageContents").removeData("thisFocus");
+		}
+
+		let direction = 1;
+
+		$hotspot_bubble
+			.css({
+				"left": Math.max(tmp_left, 0),
+				"top": tmp_top,
+				"max-width": Math.min(vw * 0.6,max_w),
+				"max-height": vh * 0.6,
+			})
+			.on("mouseenter", function() {
+				connectorHotspotImage.delayBubbleClose = true;
+			})
+			.on("mouseleave", function() {
+				connectorHotspotImage.delayBubbleClose = false;
+				$(thisTmp).mouseleave();
+			})
+			.focus()
+			.keydown(function(e) {
+				if (e.shiftKey && e.key === 'Tab') {
+					direction = 0;
+				}
+			})
+			.focusout(function() {
+				// bubble will be focused automatically on open so keyboard can access its contents
+				// when tabbing away from bubble it focuses on next or previous bubble
+				if ($("#pageContents").data("thisFocus") != undefined) {
+					let $nextFocus;
+					if ($("#pageContents").data("thisFocus").hasClass("hotspotIcon")) {
+						const $tempParent = $("#pageContents").data("thisFocus").parent();
+						$nextFocus = direction == 1 ? $tempParent.next().find(".hotspotIcon") : $tempParent.prev().find(".hotspotIcon");
+					} else {
+						$nextFocus = direction == 1 ? $("#pageContents").data("thisFocus").next() : $("#pageContents").data("thisFocus").prev();
+					}
+					$("#pageContents .selected").removeClass("selected");
+					$("#pageContents .highlighted").removeClass("highlight");
+					$('#hotspot_bubble_holder').empty();
+					if ($nextFocus.length > 0) {
+						$nextFocus.focus();
+					}
+					$("#pageContents").removeData("nextFocus");
+				}
+			});
 
 		hideOnClickOutside($hotspot_bubble);
 	}

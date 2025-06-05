@@ -53,6 +53,25 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   border-color: #d6c338;
 }
 
+/* page resources */
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: #00700c;
+  color: #ffffff;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: #B45819;
+  color: #ffffff;
+}
+
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: #ffffff;
+}
+
 .highlight {
   background: #d6c338;
 }

@@ -16,76 +16,78 @@
  * limitations under the License.
  */
 require_once("../../../config.php");
-require_once("../../../ai_config.php");
+require_once("../../../vendor_config.php");
 
 _load_language_file("/website_code/php/management/ai.inc");
 _load_language_file("/ai.inc");
 
 require("../user_library.php");
 require("management_library.php");
-
+require_once("vendor_option_component.php");
 
 if (is_user_admin()) {
+    //todo add proper msg
+    $database_id = database_connect("success", "failed");
+    $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $database_id = database_connect("templates list connected", "template list failed");
+    //add management helper types here that you want to display on this page.
+    $blocks_groups = ['ai','image', 'encoding', 'transcription'];
+    //ensure that block groups and helper results are in the same order
+    sort($blocks_groups);
 
-    $query = "SELECT openai, anthropic FROM " . $xerte_toolkits_site->database_table_prefix . "sitedetails";
-    $res = db_query_one($query);
+    $blocks_groups_string = implode("','", $blocks_groups);
+
+    $query = "SELECT * FROM {$prefix}management_helper WHERE type IN ('{$blocks_groups_string}') ORDER BY type ASC";
+
+    $res = db_query($query);
+
     if ($res !== false) {
-        $openai_settings = array();
-        $settings = explode(',', $res['openai']);
-        foreach ($settings as $value){
-            $tmp = explode(':',$value);
-            $openai_settings[$tmp[0]] = $tmp[1] == 'true' ? 'checked' : "";
+        $blocks = array();
+        foreach ($blocks_groups as $group_name){
+            $blocks[$group_name] = [];
         }
 
-        $anthropic_settings = array();
-        $settings = explode(',', $res['anthropic']);
-        foreach ($settings as $value){
-            $tmp = explode(':',$value);
-            $anthropic_settings[$tmp[0]] = $tmp[1] == 'true' ? 'checked' : "";
+        foreach ($res as $vendor) {
+            $block = new vendor_option_component($vendor);
+            $blocks[$block->type][] = $block;
+
         }
 
     } else {
-        $use_openai_value = 'unknown';
-        $use_anthropic_value = 'unknown';
+        die("Failed to retrieve helper table");
     }
 
-	echo "<h2>" . MANAGEMENT_MENUBAR_AI . "</h2>";
+    foreach ($blocks_groups as $group) {
+        echo "<h2>" . $group . MANAGEMENT_VENDOR . "</h2>";
+        echo "<div class=\"admin_block\">";
+        //generate vendor html
+        foreach ($blocks[$group] as $vendor) {
+            echo "<h3>" . $vendor->vendor . MANAGEMENT_SETTINGS . "</h3>";
 
-    echo "<div class=\"admin_block\">";
+            //verify an api key is installed
+            if ($vendor->needs_key && !$vendor->has_key) {
+                echo "<p>" . MANAGEMENT_KEY_STATUS . "</p>";
+                continue;
+            }
 
-    echo "<h3>" . MANAGEMENT_OPENAI . "</h3>";
-    if (isset($xerte_toolkits_site->openAI_key) and $xerte_toolkits_site->openAI_key != '') {
-        echo "<p>" . MANAGEMENT_ENABLE_OPENAI . "<form><input type=\"checkbox\" id=\"allow_openai\" name=\"allow_openai\" " . $openai_settings['allow'] . "/></form></p>";
+            echo "<p>" . MANAGEMENT_ENABLE_VENDOR . $vendor->vendor . "<form><input type=\"checkbox\" id=\"" . $vendor->vendor . "_enabled\" name=\"" . $vendor->vendor . "_enabled\" " . ($vendor->enabled ? " checked" : "") . "/></form></p>";
 
-        echo "<p>" . MANAGEMENT_ENABLE_OPENAI_TYPES . "<form>";
-        echo "<input type=\"checkbox\" id=\"openai_upload\" name=\"openai_upload\" " . $openai_settings['upload'] . "/><label for=\"openai_upload\">" . MANAGEMENT_UPLOAD . "</label>";
-        echo "<input type=\"checkbox\" id=\"openai_whisper\" name=\"openai_whisper\" " . $openai_settings['whisper'] . "/><label for=\"openai_whisper\">" . MANAGEMENT_WHISPER . "</label>";
-        echo "<input type=\"checkbox\" id=\"openai_dali\" name=\"openai_dali\" " . $openai_settings['dali'] . "/><label for=\"openai_dali\">" . MANAGEMENT_DALI . "</label>";
-        echo "</form></p>";
-    } else {
-        echo "<p>" . MANAGEMENT_OPENAI_KEY_STATUS . "</p>";
+            //next vendor if current has no sub options
+            if ($vendor->has_no_sub_options() ) { continue; }
+
+            echo "<p>" . MANAGEMENT_ENABLE_SUBOPTIONS . $vendor->vendor . "<form>";
+
+            //generate sub options html
+            foreach ($vendor->sub_options as $sub_option=>$value) {
+                $id_string = $vendor->vendor . "_" . str_replace(' ', '_', $sub_option);
+                echo "<input type=\"checkbox\" id=\"" . $id_string . "\" name=\"" . $id_string . "\" " . ($value == "true" ? " checked" : "") . "/><label for=\"" . $id_string . "\">" . $sub_option . "</label>";
+            }
+
+            echo "</form></p>";
+        }
+        echo "</div>";
+
     }
-    echo "</div>";
-
-    echo "<div class=\"admin_block\">";
-
-    echo "<h3>" . MANAGEMENT_ANTHROPIC . "</h3>";
-
-    if (isset($xerte_toolkits_site->anthropic_key) and $xerte_toolkits_site->anthropic_key != '') {
-        echo "<p>" . MANAGEMENT_ENABLE_ANTHROPIC . "<form><input type=\"checkbox\" id=\"allow_anthropic\" name=\"allow_anthropic\" " . $anthropic_settings['allow'] . "/></form></p>";
-
-        echo "<p>" . MANAGEMENT_ENABLE_ANTHROPIC_TYPES . "<form>";
-
-        echo "<input type=\"checkbox\" id=\"anthropic_upload\" name=\"anthropic_upload\" " . $anthropic_settings['upload'] . "/><label for=\"anthropic_upload\">" . MANAGEMENT_ANTHROPIC_UPLOAD . "</label>";
-        echo "<input type=\"checkbox\" id=\"anthropic_whisper\" name=\"anthropic_whisper\" " . $anthropic_settings['whisper'] . "/><label for=\"anthropic_whisper\">" . MANAGEMENT_ANTHROPIC_WHISPER . "</label>";
-        echo "<input type=\"checkbox\" id=\"anthropic_dali\" name=\"anthropic_dali\" " . $anthropic_settings['dali'] . "/><label for=\"anthropic_dali\">" . MANAGEMENT_ANTHROPIC_DALI . "</label>";
-        echo "</form></p>";
-    } else {
-        echo "<p>" . MANAGEMENT_ANTHROPIC_KEY_STATUS . "</p>";
-    }
-    echo "</div>";
 
 } else {
 

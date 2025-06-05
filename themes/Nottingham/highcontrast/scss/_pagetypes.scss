@@ -11,7 +11,7 @@
 .x_mcq_page #feedback h3,
 .x_quiz_page #feedbackGroup h3,
 .x_textCorrection_page h3.fbLabel,
-.x_crossword_page #x_pageDiv #clues-container table th, .x_crossword_page #x_pageDiv #clues th,
+.x_crossword_page #x_pageDiv #clues-container h3, .x_crossword_page #x_pageDiv #clues h3,
 .x_results_page #txtHolder,
 .x_results_page #general_summary + #specific,
 .x_SictTimeline_page #pageContents .tl-text .tl-headline-date, .x_SictTimeline_page #pageContents .tl-text h3.tl-headline-date,
@@ -754,4 +754,11 @@ a.hotspot, a.hotspot.selected {
 }
 .x_results_page .blue {
   color: $contrastcolor;
+}
+
+//*****hotspot image connector*****/
+#hotspot_bubble {
+  color: $mainfontcolour;
+  background: $panelcolor;
+  border-color: $bordercolor;
 }

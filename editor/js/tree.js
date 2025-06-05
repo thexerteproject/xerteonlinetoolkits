@@ -20,7 +20,6 @@
 // Tree : Add the tree object to the editor
 
 var EDITOR = (function ($, parent) {
-
     // Create the tree object and refer locally to it as 'my'
     var my = parent.tree = {},
         toolbox = parent.toolbox,
@@ -528,6 +527,19 @@ var EDITOR = (function ($, parent) {
         }
     },
 
+    expandTree = function(){
+        if ($('#expand_tree').prop('checked')) {
+            // expand page tree items
+            const tree = $.jstree.reference("#treeview");
+            $("#treeview").jstree("open_all");
+        } else {
+            // collapse page tree items
+            $("#treeview #treeroot li.jstree-open").each(function() {
+                $("#treeview").jstree().close_node({ "id": this.id });
+            });
+        }
+    },
+
     duplicateNodes = function(tree, id, parent_id, pos, select)
     {
         var current_node = tree.get_node(id, false);
@@ -679,7 +691,7 @@ var EDITOR = (function ($, parent) {
      *
      */
 
-    showNodeData = function(key, keepScrollPos, scrollToId) {
+    showNodeData = function(key, keepScrollPos, scrollToId, lightboxGroup) {
         // any expanded optional property groups will be kept expanded on wizard reload
         const expandedGroups = [];
         $('#mainPanel .wizard fieldset.wizardgroup').each(function() {
@@ -687,6 +699,7 @@ var EDITOR = (function ($, parent) {
                 expandedGroups.push($(this).parents('.wizardattribute').attr('id'));
             }
         });
+
         if (scrollToId !== undefined) {
             expandedGroups.push(scrollToId);
         }
@@ -696,18 +709,17 @@ var EDITOR = (function ($, parent) {
             if (keepScrollPos != null && keepScrollPos == true) {
                 scrollPos = $("#content").scrollTop();
             }
-            buildPage(key, scrollPos, scrollToId, expandedGroups);
+            buildPage(key, scrollPos, scrollToId, expandedGroups, lightboxGroup);
         }, 350);
     },
 
     // Refresh the page when a new node is selected
-    buildPage = function (key, scrollPos, scrollToId, expandedGroups) {
+    buildPage = function (key, scrollPos, scrollToId, expandedGroups, lightboxGroup) {
         // Cleanup all current CKEDITOR instances!
         for(name in CKEDITOR.instances)
         {
             CKEDITOR.instances[name].destroy(true);
         }
-
         var attributes = lo_data[key]['attributes'];
 
         // Get the node name
@@ -761,7 +773,7 @@ var EDITOR = (function ($, parent) {
         {
             $('#pagetype').html('');
         }
-		
+
         var node_options = wizard_data[node_name].node_options;
         if (wizard_data[node_name].menu_options.label)
         {
@@ -856,7 +868,7 @@ var EDITOR = (function ($, parent) {
 			
             // If the main node has a label, display the node item second (unconditionaly)
             if (node_label.length > 0 && !node_options['cdata']) {
-                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], node_name, '', key, node_label);
+                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], node_name, '', key, false, node_label);
             }
 
 			getGroups(node_options['normal']);
@@ -986,7 +998,7 @@ var EDITOR = (function ($, parent) {
 													
 													checkForOptGroup(temp);
 												} else {
-													parent.toolbox.insertOptionalProperty(data.key, data.children[j].name, (data.children[j].value.defaultValue ? data.children[j].value.defaultValue : ""), load, (load ? "group_" + data.attribute : ""));
+													parent.toolbox.insertOptionalProperty(data.key, data.children[j].name, (data.children[j].value.defaultValue ? data.children[j].value.defaultValue : ""), load, (load ? "group_" + data.attribute : ""), (load ? data.attribute : ""));
 												}
 											}
 										}
@@ -1075,7 +1087,6 @@ var EDITOR = (function ($, parent) {
                 html.append(table2);
             }
 
-
             if (node_options['optional'].length > 0) {
                 $('#optionalParams').append(html);
             }
@@ -1083,6 +1094,7 @@ var EDITOR = (function ($, parent) {
             // Add optional property values to main panel in the order they have in the xwd
             for (var i = 0; i < node_options['optional'].length; i++)
             {
+
                 attribute_name = node_options['optional'][i].name;
                 attribute_label = node_options['optional'][i].value.label;
                 attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
@@ -1101,7 +1113,6 @@ var EDITOR = (function ($, parent) {
                     }
                 }
             }
-
 
             $('#languagePanel').html("<hr><table class=\"wizard\" border=\"0\">");
             // languageOptons
@@ -1306,6 +1317,11 @@ var EDITOR = (function ($, parent) {
             }
         }
 
+        if (lightboxGroup !== undefined && lightboxGroup !== "") {
+            $('#lightboxbutton_' + lightboxGroup).trigger("click");
+            $('.featherlight').css('background', 'rgba(0,0,0,.8)')
+        }
+
         // And finally, scroll to the scrollPos, or place scrollToId (if defined) into view
         if (scrollToId === undefined) {
             setTimeout(function () {
@@ -1331,44 +1347,48 @@ var EDITOR = (function ($, parent) {
 			}
 		});
     },
-	
+
 	groupSetUp = function(group, attributes, node_options, key) {
 		toolbox.displayGroup('#mainPanel .wizard', group.name, group.value, key);
 
 		// group children aren't sorted into alphabetical order - they appear in order taken from xml
 		var groupChildren = group.value.children;
-		
-		for (var j = 0; j < groupChildren.length; j++) {
-			
-			// set up a nested group
-			if (groupChildren[j].value.type == 'group') {
-				var foundGroup = checkGroupFound(groupChildren[j], attributes, groupChildren, key);
-				if ($.inArray(true, foundGroup) > -1) {
-					groupChildren[j].found = true;
-				}
-				
-				var visible = true;
-				if (typeof groupChildren[j].value.condition != "undefined") {
-					visible = parent.toolbox.evaluateCondition(groupChildren[j].value.condition, key);
-				}
-				groupChildren[j].visible = visible;
-				groupSetUp(groupChildren[j], attributes, node_options, key);
-				
-			// display a parameter within this group
-			} else {
-				var tableOffset = (group.value.cols ? j % parseInt(group.value.cols, 10) : '');
-				
-				if (toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found == true || !groupChildren[j].value.deprecated) {
-					toolbox.displayParameter(
-						'#mainPanel .wizard #groupTable_' + group.name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
-						groupChildren,
-						groupChildren[j].name,
-						(toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found ? toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value : groupChildren[j].value.defaultValue),
-						key
-					);
-				}
-			}
-		}
+
+        if (group.value.lightbox === 'form') {
+            toolbox.triggerRedrawForm(group.name, key, groupChildren, 'initialize');
+        } else {
+
+            for (var j = 0; j < groupChildren.length; j++) {
+                // set up a nested group
+                if (groupChildren[j].value.type == 'group') {
+                    var foundGroup = checkGroupFound(groupChildren[j], attributes, groupChildren, key);
+                    if ($.inArray(true, foundGroup) > -1) {
+                        groupChildren[j].found = true;
+                    }
+
+                    var visible = true;
+                    if (typeof groupChildren[j].value.condition != "undefined") {
+                        visible = parent.toolbox.evaluateCondition(groupChildren[j].value.condition, key);
+                    }
+                    groupChildren[j].visible = visible;
+                    groupSetUp(groupChildren[j], attributes, node_options, key);
+
+                    // display a parameter within this group
+                } else {
+                    var tableOffset = (group.value.cols ? j % parseInt(group.value.cols, 10) : '');
+
+                    if (toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found == true || !groupChildren[j].value.deprecated) {
+                        toolbox.displayParameter(
+                            '#mainPanel .wizard #groupTable_' + group.name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
+                            groupChildren,
+                            groupChildren[j].name,
+                            (toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found ? toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value : groupChildren[j].value.defaultValue),
+                            key
+                        );
+                    }
+                }
+            }
+        }
 	},
 	
 	checkGroupFound = function(group, attributes, node_options, key)
@@ -1617,35 +1637,39 @@ var EDITOR = (function ($, parent) {
         addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
     },
 
-    ai_content_generator = function(event, p, node_type, api_choice, fileUrl, textSnippet, sourceContext, assistantPrompt, baseUrl, useContext, contextScope, modelTemplate) {
+    ai_content_generator = function(aiSettings, constructorObject) {
         return new Promise((resolve, reject) => {
             try {
                 // Call aiAPI.php via jQuery's AJAX method
                 var tree = $.jstree.reference("#treeview");
                 // Show wait icon
-                $('body').css("cursor", "wait");
-                console.log("Start OpenAI API request, please wait...");
-                console.log(node_type, "+", api_choice, "+", p, "+", fileUrl, "+", event.data.key);
-
+                $('body').css("cursor", "wait")
+                $('.featherlight').css("cursor", "wait")
+                $('.featherlight-content').css("cursor", "wait")
+                //console.log("Start OpenAI API request, please wait...");
+                //console.log(node_type, "+", api_choice, "+", p, "+", fileUrl, "+", node_key);
                 $.ajax({
                     url: "editor/ai/aiAPI.php",
                     type: "POST",
                     data: {
-                        type: node_type,
-                        prompt: p,
-                        api: api_choice,
-                        url: fileUrl,
-                        textSnippet:  textSnippet,
-                        context: sourceContext,
-                        assistantPrompt: assistantPrompt,
-                        baseUrl: baseUrl,
-                        useContext: useContext,
-                        contextScope: contextScope,
-                        modelTemplate: modelTemplate,
+                        type: aiSettings['type'],
+                        prompt: constructorObject,
+                        api: aiSettings['modelSelection'],
+                        url: aiSettings['fullUrl'],
+                        textSnippet: aiSettings['textSnippet'],
+                        context: aiSettings['sourceContext'],
+                        assistantPrompt: aiSettings['assisstantPrompt'],
+                        baseUrl: aiSettings['baseUrl'],
+                        useCorpus: aiSettings['useCorpus'],
+                        contextScope: aiSettings['contextScope'],
+                        modelTemplate: aiSettings['modelTemplate'],
+                        fileList: aiSettings['fileList'],
+                        useLoInCorpus: aiSettings['loSettings']['useLoInCorpus'],
+                        restrictCorpusToLo: aiSettings['loSettings']['restrictCorpusToLo']
                     },
                     success: function(data) {
                         try {
-                            xml_to_xerte_content(data, event.data.key, 'last', tree, parent);
+                            xml_to_xerte_content(data, aiSettings['key'], 'last', tree, parent);
                         } catch (error) {
                             console.log('Error occurred in success callback:', error);
                             reject(error);
@@ -1742,18 +1766,101 @@ var EDITOR = (function ($, parent) {
 
     img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings){
         $('body').css("cursor", "wait");
-        console.log("start pexels api request please wait");
-        alert("Fetching images. Please wait.");
+        //console.log("start pexels api request please wait");
+				let image_preview = $("<div class=\"img_search_preview\"><div class=\"img_search_loading\">loading...</div></div>");
+        let selection_window = $.featherlight(image_preview, {
+						closeOnClick: false,
+				});
+				image_preview = $(".img_search_preview");
         $.ajax({
             url: "editor/imagesearchandhelp/imgSHAPI.php",
             type: "POST",
             data: {query: query, api: api, target: url, interpretPrompt: interpretPrompt, overrideSettings: overrideSettings, settings: settings},
-            success: function(data) {
-                console.log("The image results have successfully been retrieved:", data);
-                alert("Images have successfully been downloaded. Please check the media folder to preview and use them.");
+            success: function(data_json) {
+								image_preview.find(".img_search_loading").remove();
+								let header = $("<h1>" + language.imageSelection.title + "</h1>");
+								image_preview.append(header);
+								let image_preview_images = $("<div class=\"image_preview_images\"></div>");
+								image_preview.append(image_preview_images);
+								let submit_button = $("<input type=\"submit\" value=\"" + language.imageSelection.keepButtonText + "\">").click(function() {
+										let indices_to_delete = [];
+										for(let input of $.makeArray(image_preview.find("input[type=\"checkbox\"]"))){
+												if(!input.checked){
+														indices_to_delete.push(+input.name);
+												}
+										}
+										$.ajax({
+												url: "editor/imagesearchandhelp/imgSelection.php",
+												type: "POST",
+												data: {indices_to_delete: indices_to_delete},
+												success: function(data){
+														alert("success");
+														selection_window.close();
+												},
+												error: function(xhr, status, error){
+														console.log("Error deleting images: ", error);
+														alert("an error occurred");
+												}
+										});
+								});
+								image_preview.append("<br>").append(submit_button);
+								image_preview_images.height($(".img_search_preview").innerHeight() - submit_button.outerHeight(true) - header.outerHeight(true));
+
+								$(window).on("resize", function() {
+										let width = ($(".img_search_preview .image_preview_images").innerWidth()/5) - 20 /*padding*/ - credits_button_width;
+										image_preview_images.height($(".img_search_preview").innerHeight() - submit_button.outerHeight(true) - header.outerHeight(true));
+										//let width = ($(".img_search_preview").innerWidth()-20*5/*padding inline*/)/5;
+										$(".img_search_preview").find(".img_search_preview_image").each(function() {
+												this.width = width;
+												$(this).css("max-height", image_preview_images.height()/2);
+										});
+								});
+								
+								let data = JSON.parse(data_json);
+								let credits_button_width = 0;
+                //console.log("The image results have successfully been retrieved:", data);
+								for(let i = 0; i < data.paths.length; i++){
+										let image_url = data.paths[i];
+										let checkbox = $("<input type=\"checkbox\" id=\"check" + i + "\" name=\"" + i + "\"></input>");
+										let image = $("<img class=\"img_search_preview_image\"></img>");
+										let label = $("<label for=\"check" + i + "\"></label>").append(image);
+										let container = $("<div class=\"img_search_container\"></div>");
+										image.attr("src", image_url);
+										image.attr("title", data.credits[i]);
+										image_preview_images.append(container);
+										container.append(checkbox).append(label);//.append("<div>" + credits_texts[0] + "</div><div>" + credits_texts[1] + "</div>");
+										let enlarge_button = $("<button title=\"Enlarge\" type=\"button\" class=\"enlarge_button\"><i class=\"fa fa-lg fa-search xerte-icon\"></i></button>").click(function() {
+												$.featherlight(image_url);
+										});
+										container.append(enlarge_button);
+										/*let credits_button;
+										if(typeof data.credits[i] == "string") {
+												let credits_texts = data.credits[i].split("\n");
+												credits_button = $("<i class=\"fa fa-info-circle\"></i>").click(function (){
+														$.featherlight("<p>" + credits_texts[0] + "</p><p>" + credits_texts[1] + "</p>", {});
+												});
+												//container.append(credits_button);
+												credits_button_width = credits_button.width();
+												credits_button_width = 0;
+										}*/
+										image.on("load", function () {
+												let width = ($(".img_search_preview .image_preview_images").innerWidth()/5) - 20 /*padding*/ - credits_button_width;
+												this.width = width;
+												$(this).css("max-height", image_preview_images.height()/2);
+										});
+								}
+								$(window).on("resize", function() {
+										let width = ($(".img_search_preview .image_preview_images").innerWidth()/5) - 20 /*padding*/ - credits_button_width;
+										//let width = ($(".img_search_preview").innerWidth()-20*5/*padding inline*/)/5;
+										$(".img_search_preview").find(".img_search_preview_image").each(function() {
+												this.width = width;
+										});
+								});
             },
             error: function(xhr, status, error) {
                 console.error("Error retrieving image results:", error);
+								image_preview.find(".img_search_loading").remove();
+								image_preview.text("an error occurred");
             },
             complete: function() {
                 // This function runs after the AJAX request completes (whether success or error)
@@ -1991,7 +2098,14 @@ var EDITOR = (function ($, parent) {
             .append($('<i>').addClass('fa').addClass(value.icon).addClass("xerte-icon").height(14));
         buttons.append(button);
         });
+
         $('.ui-layout-west .footer').append(buttons);
+
+        // add a checkbox that expands / collapses all pages / nested items in the tree
+        $('<span id="tree_checks"><input id="expand_tree" type="checkbox" title="' + language.chkExpandTree.$tooltip + '"><label id="expand_tree_label" for="expand_tree" class="enabled">' + language.chkExpandTree.$label + '</label></span>').prependTo(buttons);
+        $('#expand_tree').on("change", function() {
+            expandTree();
+        });
     };
 
     my.setup = setup;

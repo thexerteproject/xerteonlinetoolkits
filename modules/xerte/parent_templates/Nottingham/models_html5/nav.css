@@ -87,7 +87,7 @@
 		padding: 0 4px;
 	}
 	
-	.x_mobile #pageContents.col .navChild, .x_mobile #pageContents.col #textHolder + #navHolder .navChild:first-of-type {
+	.x_mobile #pageContents.col .navChild:not(:first-of-type) {
 		padding-top: 10px;
 		border-top:	1px solid gray;
 	}

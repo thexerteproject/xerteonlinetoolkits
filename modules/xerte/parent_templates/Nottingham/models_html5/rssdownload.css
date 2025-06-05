@@ -11,6 +11,8 @@
 
 	#resultsHolder div {
 		width: 100%;
+		box-sizing: border-box;
+		word-break: break-word;
 		padding-top:	1em;
 		padding-bottom:	1em;
 	}

@@ -292,6 +292,8 @@
 			if ($pageContents.data("captionInfo").length > 1) {
 				$("#count").html(x_currentPageXML.getAttribute("countText").replace("{i}", $pageContents.data("current") + 1).replace("{n}",  $pageContents.data("captionInfo").length));
 				$("#answerTxt").attr("aria-label", $("#count").text() + ": " + $pageContents.data("answerFieldLabel"));
+			} else {
+				$("#count").remove();
 			}
 
 			if (x_addLineBreaks($pageContents.data("captionInfo")[$pageContents.data("current")].prompt == "")) {

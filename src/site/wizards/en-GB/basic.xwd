@@ -13,9 +13,9 @@
 			<categoryTxt label="Text" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Search introduction text"/>
 		</searchGroup>
 
-		<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true">
-            <aiSelector label="AI model" options="OpenAI,Claude" type="comboBox" data="openai,claude" defaultValue="openai" width="120" optional="true"/>
-            <subject label="Subject" type="TextInput" tooltip = "The subject on which a bootstrap learning object should be generated." wysiwyg="false" optional="true"/>
+		<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true" lightbox="form" condition="hasrole('aiuser')">
+			<aiSelector label="AI model" type="comboBox_ai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
+            <subject verification="^.+$"  label="Subject" type="TextInput" tooltip = "The subject on which a bootstrap learning object should be generated." wysiwyg="false" optional="true"/>
             <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file or when using a video or audio link as a source. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." optional ="true"/>
             <file label="File" type="media" defaultValue="Upload a file" tooltip = "Select a video, audio, powerpoint, PDF or other text file to be used for content generation." optional="true"/>
             <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip = "Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" optional ="true"/>

@@ -83,6 +83,7 @@ a {
 	height:			auto;
 	position:		absolute;
 	top:			0px;
+	overflow-y: auto;
 }
 
 #x_headerBlock div, #x_pageDiv {
@@ -91,6 +92,10 @@ a {
 
 #x_headerBlock img {
 	max-height: 200px;
+}
+
+#x_pageTitle {
+	vertical-align: middle;
 }
 
 #x_pageHolder {
@@ -193,12 +198,12 @@ button.ui-button-icon-only {
 	margin-right:	3px;
 }
 
-.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home, .ui-icon.x_saveSession, .ui-icon.x_projectIntro {
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home, .ui-icon.x_saveSession, .ui-icon.x_projectIntro, .ui-icon.x_resourceIcon {
 	height:					40px;
 	background-position:	center;
 }
 
-.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_home, .ui-icon.x_saveSession, .ui-icon.x_projectIntro {
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_home, .ui-icon.x_saveSession, .ui-icon.x_projectIntro, .ui-icon.x_resourceIcon {
 	width:	41px;
 	min-width: 1.4em;
 }
@@ -492,7 +497,8 @@ fieldset.noStyle legend {
 
 /* TABLE STYLES */
 
-#x_pageDiv table {
+#x_pageDiv table,
+table#x_resourceTable {
 	text-align:			left;
 	border-collapse:	collapse;
 }
@@ -624,7 +630,7 @@ table.headerCol.simple th:first-child {
     margin-top: -0.5em;
 }
 
-.ui-icon.fa {
+.ui-icon.fa, .ui-icon.fas, .ui-icon.fa, .ui-icon.fab {
 	overflow: visible;
 }
 
@@ -686,7 +692,8 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 #x_headerBlock #x_headerProgress.progressMarkers {
 	padding: 15px 20px 15px;
 }
-#x_headerBlock #x_headerProgress div:not(.pbTxt) {
+#x_headerBlock #x_headerProgress div:not(.pbTxt),
+#x_headerBlock #x_headerProgress .progressMarker {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
@@ -702,7 +709,7 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	padding: 0 10px 10px 10px;
 }
 #x_mainHolder:not(.x_mobile) #x_headerBlock.pbBelow #x_headerProgress {
-	float: left;
+	/*float: left;*/
 }
 #x_mainHolder #x_headerBlock.pbBelow #x_headerProgress.progressMarkers {
 	padding: 0 20px 15px;
@@ -713,7 +720,7 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	width: 100%;
 	height: 6px;
 	margin: auto;
-	margin-top: 15px;
+	margin-top: .5em;
 	background-color: #fff;
 }
 #x_headerProgress .pbContainer {
@@ -756,7 +763,7 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 
 /* the text next to the progress bar */
 .pbTxt {
-	font-size: 10px;
+	font-size: max(.8em, 10px);
 	text-align: center;
 	padding-top: .5em;
 }
@@ -1092,6 +1099,7 @@ button.customIconBtn:after {
 #x_introH1.x_introImgH1 {
 	background: inherit;
 	position: absolute;
+	padding-right: 1em;
 }
 
 #x_introStartBtn.x_introImgBtn {
@@ -1107,22 +1115,26 @@ button.customIconBtn:after {
 }
 
 .featherlight-content.pageIntroVideo.max,
+.featherlight-content.resourceVideo.max,
 .featherlight-content.splashVideo.max {
 	width: 90vw;
 	height: 90vh;
 }
 
 .featherlight-content.pageIntroVideo.hidden,
+.featherlight-content.resourceVideo.hidden,
 .featherlight-content.splashVideo.hidden {
 	opacity: 0;
 }
 
 .featherlight-content.pageIntroVideo.youTube .mejs-layers, .featherlight-content.pageIntroVideo.youTube .mejs-controls,
+.featherlight-content.resourceVideo.youTube .mejs-layers, .featherlight-content.resourceVideo.youTube .mejs-controls,
 .featherlight-content.splashVideo.youTube .mejs-layers, .featherlight-content.splashVideo.youTube .mejs-controls {
 	display: none;
 }
 
 .featherlight .featherlight-content.pageIntroVideo.max.youTube iframe,
+.featherlight .featherlight-content.resourceVideo.max.youTube iframe,
 .featherlight .featherlight-content.splashVideo.max.youTube iframe {
 	width: 100%;
 }
@@ -1155,7 +1167,7 @@ button.customIconBtn:after {
 	position: relative;
 	margin: auto;
 	left: auto;
-	top: -.5em;
+	top: -.8em;
 	font-size: 0.5em;
 }
 
@@ -1279,7 +1291,7 @@ button.customIconBtn:after {
 .ui-helper-hidden-accessible {
 	position:absolute;
 	left:-10000px;
-	top:auto;
+	top:-1000px;
 	width:1px;
 	height:1px;
 	overflow:hidden;
@@ -1494,6 +1506,7 @@ a:focus .wcagLogo {
 	border-radius: 0px;
 	display: block;
 	height: auto !important;
+	width: 100%;
 }
 
 #x_sideBar #x_sideBarBtnHolder button:not(.customIconBtn) .ui-icon {
@@ -1504,6 +1517,7 @@ a:focus .wcagLogo {
 
 #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(.customIconBtn) .ui-icon {
 	float: left;
+	margin-top: .4em;
 }
 
 #x_sideBar.sideBarLarge #x_sideBarBtnHolder button {
@@ -1512,8 +1526,6 @@ a:focus .wcagLogo {
 }
 
 #x_sideBar.sideBarSmall #x_sideBarBtnHolder button {
-	white-space: nowrap;
-	width: auto;
 	box-sizing: border-box;
 	text-align: left;
 	padding: 1em 5px 1em;
@@ -1597,6 +1609,11 @@ a:focus .wcagLogo {
 	margin-bottom: 5px;
 	text-align: left;
 	box-sizing: border-box;
+	overflow: auto;
+}
+
+#menuItems .chapterItem a {
+	padding-right: 1em;
 }
 
 #menuItems .chapterPageHolder .menuItem:last-of-type {
@@ -1655,6 +1672,25 @@ a:focus .wcagLogo {
 	overflow-y: auto;
 }
 
+/* make sure ticks are aligned whether ticks are for chapters or pages (inside or outside of chapters) */
+#menuItems .menuItem .viewTick:not(.beforeText),
+#menuItems .chapterItem .viewTick:not(.beforeText) {
+	float: right;
+	margin-top: 0.2em;
+}
+
+#menuItems .chapterItem .viewTick:not(.beforeText) {
+	padding-right: .1em;
+}
+
+#menuItems > .menuItem .viewTick:not(.beforeText) {
+	padding-right: .1em;
+}
+
+#menuItems .chapterPageHolder .menuItem .viewTick.beforeText {
+	margin-left: -.1em;
+}
+
 /* accessibility options dialog / lightbox */
 #x_colourChanger #colourChangerHolder {
 	padding: 0 5px;
@@ -1683,4 +1719,138 @@ a:focus .wcagLogo {
 #x_colourChanger .checkGroup {
 	padding-top: 5px;
 	padding-bottom: 5px;
+}
+
+/* --RESOURCES-------------------------------------------------------------- */
+
+/* page resources button & lightbox */
+#x_headerBlock #x_pageResourcesBtn {
+	float: right;
+	padding: 0;
+	margin: 0 0 5px 10px;
+	font-size: min(1.5em, 30px);
+}
+
+#x_pageResourcesBtn.ui-button-icon-only {
+	width: 2em;
+	height: 1.5em;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only .ui-icon {
+	margin-left: -.65em;
+}
+
+#x_pageResourcesBtn:not(.ui-button-icon-only) .ui-button-text {
+	font-size: .5em;
+	padding-left: 4em;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+	background: black;
+	color: white;
+	width: .8em;
+	height: .8em;
+	border-radius: 1em;
+	position: absolute;
+	top: .1em;
+	right: .1em;
+	padding: 0;
+}
+
+#x_pageResourcesBtn .resourceNumber .resourceNumberTxt {
+	padding: 0;
+	font-size: .5em;
+	margin-top: .2em;
+}
+
+#x_resourceHeader {
+	margin-bottom: .5em;
+}
+
+#x_resources p {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+#x_resourceTable {
+	width: 100%;
+	margin-top: .5em;
+}
+
+#x_resourceTable tr {
+	border-color: #ccc;
+}
+
+#x_resourceTable th,
+#x_resourceTable td {
+	padding: .2em .4em .2em 0;
+}
+
+#x_resourceTable th:last-of-type,
+#x_resourceTable td:last-of-type {
+	padding-right: 0;
+}
+
+#x_resourceTable th {
+	vertical-align: bottom;
+}
+
+#x_resourceTable .completeCell,
+#x_resourceTable th.actionCell {
+	text-align: center;
+}
+
+#x_resourceTable td.actionCell {
+	text-wrap: nowrap;
+}
+
+#x_resourceTable td.titleCell .resourceLinkHolder,
+#x_resourceTable td.actionCell .actionBtnHolder {
+	display: flex;
+	align-items: center;
+}
+
+.resourceIcon {
+	border: 1px solid #ccc;
+	padding: .5em;
+	margin-right: 1em;
+	box-sizing: content-box !important;
+	flex-shrink: 0;
+}
+
+.actionCell .ui-button-icon-only .ui-icon[class*=" fa-"] {
+	margin-left: -.5em;
+	margin-top: -.5em;
+	overflow: visible;
+}
+
+.resourceViewBtn + .resourceDownloadBtn {
+	margin-left: .2em;
+}
+
+.resourceDownloadBtn {
+	width: 2.4em;
+	height: 2.4em;
+}
+
+.resourceLink, .resourceLink:visited, .resourceLink:focus,
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+	color: #000;
+}
+
+button.resourceLink {
+	background: none;
+	border: none;
+	padding: 0;
+	text-decoration: underline;
+	cursor: pointer;
+	text-align: left;
+}
+
+#suppressWarningCheck, #suppressWarningBtnHolder {
+	margin-top: 1em;
+}
+
+.resourceContinueBtn {
+	margin-right: .5em;
 }

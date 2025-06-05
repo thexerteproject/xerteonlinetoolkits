@@ -236,7 +236,7 @@ input.media, input.date
 	position: relative;
 }
 
-.ui-layout-center .content
+.ui-layout-center .content, .featherlight-content .content
 {
     background : #eee;
 }
@@ -685,7 +685,7 @@ select, input, textarea
     padding: 4px;
 }
 
-#mainPanel select,  #mainPanel textarea {
+#mainPanel select,  #mainPanel textarea, #lightboxPanel select,  #lightboxPanel textarea {
     background: #fff;
     border: 1px solid #cdcdcd;
     width: 100%;
@@ -737,16 +737,16 @@ form.csvUpload input[name=merge] {
 	font-size: 0.8em;
 }
 
-#mainPanel select.deprecated {
+#mainPanel select.deprecated, #lightboxPanel select.deprecated{
 	width: 95%;
 }
 
-#mainPanel select.deprecated_option_selected {
+#mainPanel select.deprecated_option_selected, #lightboxPanel select.deprecated_option_selected{
 	color:red;
 }
 
 
-#mainPanel input
+#mainPanel input, #lightboxPanel input
 {
     background: #fff;
     /*border-radius: 4px;*/
@@ -780,8 +780,8 @@ td.wizardlabel {
     min-width: 155px;
 }
 
-.wizardgroup .column_table td.wizardlabel {
-	/*min-width: auto;*/
+.wizardgroup .column_table > tbody > tr > td {
+	vertical-align: top;
 }
 
 td.wizardvalue {
@@ -1052,7 +1052,7 @@ div.hotspotEditor {
 
 
 
-table.wizard td {
+table.wizard td, table.content td {
     vertical-align: middle;
     height: 40px;
 }
@@ -1143,8 +1143,8 @@ button.hseditModeButton:hover:enabled {background: #f86718; color: #000000; curs
 button.hseditModeButton:hover {cursor: default;}
 
 
-#mainPanel .xerte_button { color: #000; }
-#mainPanel .xerte_button.disabled { color: #ccc; font-size: 1em; }
+#mainPanel .xerte_button,  #lightboxPanel .xerte_button{ color: #000; }
+#mainPanel .xerte_button.disabled, #lightboxPanel .xerte_button.disabled { color: #ccc; font-size: 1em; }
 
 div#save_buttons button {font-size: 1.3em; padding-top: 0px!important; height: 40px!important;}
 div#save_buttons button img {height: 1em!important; margin-right: 10px!important;}
@@ -1156,6 +1156,8 @@ div#top_buttons button img {height: 20px!important;}
 div#top_buttons button:last-of-type {margin-right: 0px;}
 
 div#bottom_buttons .xerte-icon,  div#top_buttons .xerte-icon {cursor: pointer;}
+#bottom_buttons #up_button, #bottom_buttons #down_button { float: right; }
+#expand_tree { margin-top: .5em; }
 #merge_center label {cursor: pointer; display:block;}
 #merge.xerte_button_dark { background: #f0f0f0; font-size: 1.3em;
 	padding-top: 0px!important;
@@ -1438,6 +1440,57 @@ div.hotspot360Icon span.icon360Holder .icon360 {
 	padding: 4px;
 	overflow: hidden;
 	height: 1.2em;
+}
+
+.img_search_preview {
+	width: 80vw;
+	height: 80vh;
+	overflow: clip;
+}
+.img_search_preview > h1{
+	text-align: center;
+}
+
+.img_search_loading {
+	text-align: center;
+}
+
+.img_search_preview_image {
+	border-radius: 10px;
+	border: 4px transparent solid;
+}
+
+.img_search_container input[type="checkbox"] {
+	display: none;
+}
+
+.img_search_container input[type="checkbox"]:checked + label img {
+	border-color: blue;
+}
+
+.img_search_container {
+	display: inline;
+	padding-inline: 10px;
+	max-height: 50%;
+	position: relative;
+}
+
+.img_search_container i {
+	font-size: 1.5em;
+}
+
+.image_preview_images {
+	/* overflow: auto; */
+}
+
+.enlarge_button {
+	background: white;
+	border: 0;
+	position: absolute;
+	right: 0px;
+	bottom: -0.5em;
+	transform: translate(-50%,-50%);
+	height: 1.7em;
 }
 
 /* start of xertecss.css

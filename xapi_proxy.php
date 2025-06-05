@@ -248,7 +248,7 @@ if (!isset($_SESSION['XAPI_PROXY']))
         $lrs = $_SESSION['XAPI_PROXY'];
         if (!isset($lrs['aggregate']))
         {
-            $lrs = CheckLearningLocker($lrs);
+            $lrs = CheckLearningLocker($lrs, true);
             $_SESSION['XAPI_PROXY'] = $lrs;
         }
     }
@@ -275,7 +275,7 @@ if (!isset($_SESSION['XAPI_PROXY']))
                 $lrs['lrskey'] = $row['tsugi_xapi_key'];
                 $lrs['lrssecret'] = $row['tsugi_xapi_secret'];
             }
-            $lrs = CheckLearningLocker($lrs);
+            $lrs = CheckLearningLocker($lrs, true);
             $_SESSION['XAPI_PROXY'] = $lrs;
         }
         else
@@ -292,15 +292,15 @@ if (!isset($_SESSION['XAPI_PROXY']))
         $headers = getallheaders();
         // Create a copy of headers with all lowercase keys
         $lcheaders = array_change_key_case($headers);
-	    // _debug("xapi_proxy: headers" . print_r($headers, true));
-	    // _debug("xapi_proxy: lcheaders" . print_r($headers, true));
+	    _debug("xapi_proxy: headers" . print_r($headers, true));
+	    _debug("xapi_proxy: lcheaders" . print_r($lcheaders, true));
         if (isset($lcheaders['x-xerte-usedb']) && $lrs['db']) {
             $usedb = true;
         }
         else {
             $usedb = false;
         }
-	    // _debug("xapi_proxy: Use lrsdb = " . $usedb . " (defined by x-xerte-usedb=" . isset($lcheaders['x-xerte-usedb']) . " and lrs[db]=" . $lrs['db'] . ")");
+	    _debug("xapi_proxy: Use lrsdb = " . ($usedb?'true':'false') . " (defined by x-xerte-usedb=" . (isset($lcheaders['x-xerte-usedb'])?'true':'false') . " and lrs[db]=" . ($lrs['db']?'true':'false') . ")");
 
         $request_uri = x_clean_input($_SERVER["REQUEST_URI"]);
         _debug("xapi_proxy: Request uri:  " . $request_uri);

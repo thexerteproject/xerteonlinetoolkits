@@ -418,8 +418,8 @@
 				var chartHolder = document.getElementById("chartHolder");
 				if (chartHolder.getContext) {
 					var $panel = $("#pageContents .panel"),
-							availW = Math.min(550, Math.max(300, $panel.width())),
-							availH = Math.min(550, Math.max(300, x_getAvailableHeight([$panel], [$("#restartBtn"), $("#chartTitle")], true)));
+							availW = Math.min(550, Math.max(300, $("#pageContents .panel").width() - ($("#pageContents .panel").outerWidth() - $("#pageContents .panel").width()) - ($("#pageContents .panel .chart .qContent").outerWidth() - $("#pageContents .panel .chart .qContent").width()))),
+							availH = Math.min(550, Math.max(300, x_getAvailableHeight([$panel, $("#pageContents .panel .chart .qContent")], [$("#restartBtn"), $("#chartTitle")], true)));
 
 					chartHolder.width = availW;
 					chartHolder.height = availH;

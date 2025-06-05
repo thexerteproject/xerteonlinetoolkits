@@ -198,4 +198,11 @@
 		<Info2 label = "Let op: de nieuwe tabel wordt aan de oude tabel toegevoegd. Wilt u doorgaan? NB na het toevoegen kunnen er dubbele rijen na de merge."> </Info2>
 		<mergeOld label = "Voeg nieuwe tabel toe aan huidige inhoud:"/>
 	</UploadCSV>>
+	<vendorApi>
+		<missingKey>De geselecteerde leverancier heeft geen API-sleutel geïnstalleerd. Neem contact op met uw systeembeheerder.</missingKey>
+		<genericAiAPiError>Er is iets misgegaan. Probeer opnieuw een AI-verzoek te doen.</genericAiAPiError>
+		<overideSuggestionMsg>Gegenereerde suggesties overschrijven alle bestaande suggesties. Toch genereren?</overideSuggestionMsg>
+		<useSuggestionMsg>De geselecteerde suggestie wordt verwerkt en gebruikt om de inhoud van deze pagina aan te passen of een nieuwe pagina te genereren. Doorgaan?</useSuggestionMsg>
+		<overideContentMsg>Gegenereerde AI-inhoud zal de meeste inhoud op deze pagina overschrijven. Toch genereren?</overideContentMsg>
+	</vendorApi>
 </language>

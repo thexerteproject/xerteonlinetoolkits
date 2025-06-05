@@ -370,6 +370,13 @@ function x_check_zip($zip)
     }
 }
 
+function x_check_zip_file($file){
+    $zip = new ZipArchive();
+    $x = $zip->open($file);
+
+    x_check_zip($zip);
+}
+
 function x_check_path_traversal($path, $expected_path=null, $message=null)
 {
     $mesg = ($message != null ? $message : "Path traversal detected!");
@@ -483,4 +490,16 @@ function x_set_session_name()
     $hash = str_replace('=', '', $hash);
     $current_session_name = session_name();
     session_name($current_session_name . "_" . $hash);
+}
+//
+//Function that ensures a folder exists in the learning object
+function verify_LO_folder($LO, $folder): void
+{
+    global $xerte_toolkits_site;
+
+    $user_files_dir = $xerte_toolkits_site->users_file_area_full . $LO . $folder;
+
+    if (!is_dir($user_files_dir)) {
+        mkdir($user_files_dir, 0777, true);
+    }
 }

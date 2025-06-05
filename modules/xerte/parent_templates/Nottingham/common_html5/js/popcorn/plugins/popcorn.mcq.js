@@ -235,7 +235,6 @@ optional: feedback page synch play enable
 		
 		return {
 			_setup: function(options) {
-				console.log(options);
 				media = this;
 				let judgeOverride = options.judge?? "true";
 				judge = false;
@@ -429,7 +428,7 @@ optional: feedback page synch play enable
 					$target.hide();
 					
                 	if(options.optional == "true") {
-						var $showHolder  = $('<div id="showHolder" tabindex="0" />').appendTo($target);
+						var $showHolder  = $('<div id="showHolder"/>').appendTo($target);
 						$showHs = $('<div class="Hs x_noLightBox showHotspot"/>').addClass(options.attrib.icon).appendTo($showHolder);
 						$showHs.css({
 							"background-color": options.attrib.colour1,
@@ -480,7 +479,6 @@ optional: feedback page synch play enable
 								$showHolder.hide();
 								$optHolder.show();
 								$target.prepend($optionText);
-								$target.parent().focus();
 							})
 							.keypress(function(e) {
 								var charCode = e.charCode || e.keyCode;
@@ -646,11 +644,6 @@ optional: feedback page synch play enable
 					}).show();
 				}
 				$target.show();
-				if ($target.find("#showHolder").length > 0) {
-					$target.find("#showHolder").focus();
-				} else {
-					$target.parent().focus(); // this isn't bringing the overlay into focus - not sure why not
-				}
 				x_pageContentsUpdated();
 			},
 			

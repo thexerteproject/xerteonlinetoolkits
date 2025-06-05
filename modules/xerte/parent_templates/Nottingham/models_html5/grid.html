@@ -132,7 +132,6 @@
 						maxH = Math.max(maxH, $(this).height());
 						if ($.inArray(i,fixedCols) == -1) {
 							maxW = Math.max(maxW, $(this).width());
-							console.log($(this).width());
 						}
 						/*if(maxW > ($grid.width()-24)){
 							maxW = $grid.width()-24;
@@ -296,7 +295,7 @@
 				
                 if ($this.data("correct") == $this.index() || labelData[$("#grid .listHolder").index($this.parents(".listHolder"))][$this.index()] == $this.html() || !judge) {
 					if(judge) {
-						$this.append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '</span><span class="result fa fa-fw fa-x-tick"></span></span>');
+						$this.append('<span class="tick"><span class="ui-helper-hidden-accessible"> ' + x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct") + '</span><span class="result fa fa-fw fa-x-tick"></span></span>');
 					}
                     numOfQuestions++;
                     correct++;
@@ -304,7 +303,7 @@
                     l_feedback = "Correct";
                 } else {
                     Correct = false;
-					$this.append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Incorrect") + '</span><span class="result fa fa-fw fa-x-cross"></span></span>');
+					$this.append('<span class="tick"><span class="ui-helper-hidden-accessible"> ' + x_getLangInfo(x_languageData.find("cross")[0], "title", "Incorrect") + '</span><span class="result fa fa-fw fa-x-cross"></span></span>');
                     numOfQuestions++;
                     l_option.result = false;
                     l_feedback = "Incorrect";
@@ -338,11 +337,7 @@
 			$pageContents = $("#pageContents");
 
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-			if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != "") {
-				$("#feedback")
-					.html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")))
-					.hide();
-			} else {
+			if (!(x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != "")) {
 				$("#feedback").remove();
 			}
 
@@ -411,7 +406,11 @@
                             $(this)
                                 .button({label: x_currentPageXML.getAttribute("resetBtnTxt") != undefined ? x_currentPageXML.getAttribute("resetBtnTxt") : "Reset"})
                                 .data("state", "reset");
-                            $("#feedback").show();
+
+							if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != "") {
+								$("#feedback").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+							}
+
                             $("#grid .listHolder ul li.ui-draggable")
                                 .draggable( "option", "disabled", true )
                                 .off("focusin focusout keypress click");
@@ -421,7 +420,7 @@
                             .button({label:	x_currentPageXML.getAttribute("checkBtnTxt") != undefined ? x_currentPageXML.getAttribute("checkBtnTxt") : "Check Answers"})
                             .data("state", "check");
 
-                        $("#feedback").hide();
+                        $("#feedback").empty();
                         $("#grid .tick").remove();
                         $("#grid .listHolder ul li.ui-draggable")
                             .draggable( "option", "disabled", false )
@@ -1280,7 +1279,7 @@
 	<div id="content">
 	<div id="otherContent">
 		<div id="textHolder"/>
-		<div id="feedback"/>
+		<div id="feedback" aria-live="polite"/>
 	</div>
 
 	<div id="gridHolder">

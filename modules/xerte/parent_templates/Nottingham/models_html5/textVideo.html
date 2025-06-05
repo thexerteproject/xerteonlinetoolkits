@@ -29,7 +29,6 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-
 			// transcript needs to be hidden for dimensions to be calculated corrcetly
 			if ($('.transcriptHolder').length > 0 && $('.transcript').is(':visible')) {
 				$('.transcriptBtn').click();
@@ -41,7 +40,9 @@
 
 			// max size of video (60% of width by default but can be changed with opt property)
 			let max = 0.6;
-			if (x_currentPageXML.getAttribute("iframeMax") && $.isNumeric(x_currentPageXML.getAttribute("iframeMax"))) {
+			if (x_currentPageXML.getAttribute("full") == "true") {
+				max = 1;
+			} else if (x_currentPageXML.getAttribute("iframeMax") && $.isNumeric(x_currentPageXML.getAttribute("iframeMax"))) {
 					max = Number(x_currentPageXML.getAttribute("iframeMax"));
 					max = Math.max(max, 0.1);
 					max = Math.min(max, 1);
@@ -52,19 +53,22 @@
 
 			// max width depends on iframe max but max height is all available space
 			const maxW = x_browserInfo.mobile == true ? 1 : max;
-			const maxH = x_getAvailableHeight([$("#videoHolder")], [$('.transcriptHolder')], true)
+			const maxH = x_currentPageXML.getAttribute("full") == "true" ? $x_pageHolder.outerHeight() : x_getAvailableHeight([$("#videoHolder")], [$('.transcriptHolder')], true)
 
 			// make sure width of video isn't more than screen width when padding & margin on panel are accounted for
-			var width = $x_pageDiv.width() * maxW;
-			if (width > $x_pageDiv.width() - ($pageVideo.parent('.panel').outerWidth(true) - $pageVideo.parent('.panel').width())) {
-				width -= ($pageVideo.parent('.panel').outerWidth(true) - $pageVideo.parent('.panel').width());
-			}
+			var width = x_currentPageXML.getAttribute("full") == "true" ? $x_pageDiv.outerWidth() : $x_pageDiv.width() * maxW;
 
-			// fixed size video - still don't show too large for page
-			if (x_currentPageXML.getAttribute("movieSize")) {
-				let dimensions = $pageVideo.data("dimensions");
-				if (dimensions[0] != 0 && dimensions[1] != 0) {
-					width = width < Number(dimensions[0]) ? width : Number(dimensions[0]);
+			if (x_currentPageXML.getAttribute("full") != "true") {
+				if (width > $x_pageDiv.width() - ($pageVideo.parent('.panel').outerWidth(true) - $pageVideo.parent('.panel').width())) {
+					width -= ($pageVideo.parent('.panel').outerWidth(true) - $pageVideo.parent('.panel').width());
+				}
+
+				// fixed size video - still don't show too large for page
+				if (x_currentPageXML.getAttribute("movieSize")) {
+					let dimensions = $pageVideo.data("dimensions");
+					if (dimensions[0] != 0 && dimensions[1] != 0) {
+						width = width < Number(dimensions[0]) ? width : Number(dimensions[0]);
+					}
 				}
 			}
 
@@ -85,7 +89,7 @@
 					resizeEmbededMedia($(this), {width: width, height: height}) //popcorn mediaconstructor
 				});
 			}, 100);
-			
+
 			if ($(".transcriptHolder").length > 0) {
 				$(".transcript").width($pageVideo.width());
 			}
@@ -93,6 +97,31 @@
 		
 		this.init = function()
 		{
+			if (x_currentPageXML.getAttribute("full") == "true") {
+				// video is full screen so remove text & transcript as no space for it
+				$("#textHolder").remove();
+			} else {
+				// add text & align video
+				if (x_currentPageXML.childNodes.length > 0) {
+					$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+				} else {
+					$("#textHolder").remove();
+				}
+
+				const $panel = $("#pageContents .panel");
+				const textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom
+				if (textAlign == "Top" || textAlign == "Bottom") {
+					if (textAlign == "Top") {
+						$("#pageContents").prepend($("#textHolder"));
+					}
+					$("#pageContents .mobileAlign").addClass("centerAlign");
+				} else if (textAlign == "Right") {
+					$panel.addClass("x_floatLeft");
+				} else {
+					$panel.addClass("x_floatRight");
+				}
+			}
+
 			var popLocation = "common_html5/js/popcorn/"
 			var scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
 			var i = 0;
@@ -118,27 +147,6 @@
 			// Reset video for pageChanged
 			$("#pageVideo").html("");
 			$('.transcriptHolder').remove();
-			// text align
-			if (x_currentPageXML.childNodes.length > 0) {
-				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
-			}
-			else {
-				$("#textHolder").html("");
-			}
-
-			var $panel = $("#pageContents .panel");
-
-			var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom
-			if (textAlign == "Top" || textAlign == "Bottom") {
-				if (textAlign == "Top") {
-					$("#pageContents").prepend($("#textHolder"));
-				}
-				$("#pageContents .mobileAlign").addClass("centerAlign");
-			} else if (textAlign == "Right") {
-				$panel.addClass("x_floatLeft");
-			} else {
-				$panel.addClass("x_floatRight");
-			}
 
 			var $pageVideo = $("#pageVideo"),
 				videoSrc = x_fixYouTubeVimeo(x_currentPageXML.getAttribute("url")),
@@ -146,58 +154,68 @@
 				iframeRatio = ratio ? ratio : '16:9',
 				videoDimensions;// = [320,240];
 
-			// fixed video size
-			if (x_currentPageXML.getAttribute("movieSize")) {
-				var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
-				if (dimensions[0] != 0 && dimensions[1] != 0) {
-					videoDimensions = dimensions;
-					iframeRatio = dimensions[0] + ":" + dimensions[1];
+			iframeRatio = iframeRatio.split(':');
+
+			if (x_currentPageXML.getAttribute("full") != "true") {
+				// fixed video size
+				if (x_currentPageXML.getAttribute("movieSize")) {
+					var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+					if (dimensions[0] != 0 && dimensions[1] != 0) {
+						videoDimensions = dimensions;
+						iframeRatio = [dimensions[0], dimensions[1]];
+					}
+					$pageVideo.data("dimensions", videoDimensions);
 				}
-				$pageVideo.data("dimensions",videoDimensions);
+
+				// iframe ratio
+				if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
+					iframeRatio = [16, 9];
+				}
 			}
 
-			// iframe ratio
-			iframeRatio = iframeRatio.split(':');
-			if (!$.isNumeric(iframeRatio[0]) || !$.isNumeric(iframeRatio[1])) {
-				iframeRatio = [16,9];
-			}
 			$pageVideo.data('ratio', iframeRatio[0] / iframeRatio[1]);
+
+			// full screen
+			if (x_currentPageXML.getAttribute("full") == "true") {
+				$x_pageHolder.addClass('full');
+				$("#pageContents .panel").removeClass("panel inline");
+			}
 
 			if (videoSrc.substr(0,7) == "<iframe") {
 				
 				$pageVideo
 					.addClass('iframe')
 					.append(videoSrc);
-				
-				if (x_currentPageXML.getAttribute("transcript") != undefined && x_currentPageXML.getAttribute("transcript") != '') {
 
-					$transcriptHolder = $('<div class="transcriptHolder"><button class="transcriptBtn"></button><div class="transcript">' 
-					+ x_addLineBreaks(x_currentPageXML.getAttribute("transcript")) + '</div></div>').insertAfter($pageVideo);
-					
-					$transcriptHolder.find(".transcript").hide();
-					$transcriptHolder.find(".transcriptBtn")
-						.button({
-							icons: {secondary:"fa fa-x-btn-hide"},
-							label: x_currentPageXML.getAttribute("transcriptTabTxt") ? x_currentPageXML.getAttribute("transcriptTabTxt") : "Transcript"
-						})
-						.click(function() {
-							// transcript slides in and out of view on click
-							var $transcript = $(this).next(".transcript");
-							if ($transcript.is(":hidden") == true) {
-								$(this).button({icons: {secondary:"fa fa-x-btn-show"}});
-								$transcript.slideDown();
-							} else {
-								$transcript.slideUp();
-								$(this).button({icons: {secondary:"fa fa-x-btn-hide"}});
-							}
-						});
-					
-				} else {
-					$("#pageContents .panel").removeClass("panel inline");
+				if (x_currentPageXML.getAttribute("full") != "true") {
+					if (x_currentPageXML.getAttribute("transcript") != undefined && x_currentPageXML.getAttribute("transcript") != '') {
+						// add a transcript
+						$transcriptHolder = $('<div class="transcriptHolder"><button class="transcriptBtn"></button><div class="transcript">'
+								+ x_addLineBreaks(x_currentPageXML.getAttribute("transcript")) + '</div></div>').insertAfter($pageVideo);
+
+						$transcriptHolder.find(".transcript").hide();
+						$transcriptHolder.find(".transcriptBtn")
+								.button({
+									icons: {secondary: "fa fa-x-btn-hide"},
+									label: x_currentPageXML.getAttribute("transcriptTabTxt") ? x_currentPageXML.getAttribute("transcriptTabTxt") : "Transcript"
+								})
+								.click(function () {
+									// transcript slides in and out of view on click
+									var $transcript = $(this).next(".transcript");
+									if ($transcript.is(":hidden") == true) {
+										$(this).button({icons: {secondary: "fa fa-x-btn-show"}});
+										$transcript.slideDown();
+									} else {
+										$transcript.slideUp();
+										$(this).button({icons: {secondary: "fa fa-x-btn-hide"}});
+									}
+								});
+					} else {
+						$("#pageContents .panel").removeClass("panel inline");
+					}
 				}
 
 			} else {
-
 				$pageVideo.data({
 					"src"			:videoSrc,
 					"startEndFrame"	:[Number(x_currentPageXML.getAttribute("startFrame")), Number(x_currentPageXML.getAttribute("endFrame"))]
@@ -205,11 +223,11 @@
 
 				this.popcornInstance = loadMedia($("#pageVideo"), "video",
 				{	tip: x_currentPageXML.getAttribute("tip"),
-					width: videoDimensions ? Number(videoDimensions[0]) : 0,
-					height: videoDimensions ? Number(videoDimensions[1]) : 0,
+					width: x_currentPageXML.getAttribute("full") == "true" ? "100%" : videoDimensions ? Number(videoDimensions[0]) : 0,
+					height: x_currentPageXML.getAttribute("full") == "true" ? "100%" : videoDimensions ? Number(videoDimensions[1]) : 0,
 					media: x_currentPageXML.getAttribute("url"),
 					autoplay: "false",
-					aspect: $pageVideo.data('ratio'),
+					aspect: x_currentPageXML.getAttribute("full") == "true" ? undefined : $pageVideo.data('ratio'),
 					transcript: x_currentPageXML.getAttribute("transcript"),
 					transcriptBtnTxt: x_currentPageXML.getAttribute("transcriptTabTxt"),
 					audioImage: undefined,
@@ -238,6 +256,7 @@
 		}
 
 		this.leavePage = function() {
+			$x_pageHolder.removeClass('full');
 			document.dispatchEvent(new Event('leavepage'));
 			// Destroy popcorn instance
 			$("#pageVideo").html("");

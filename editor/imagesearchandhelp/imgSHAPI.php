@@ -13,6 +13,7 @@
 //    _debug("prompt is empty");
 //    die('{"status": "error", "message": "prompt must not be empty"}');
 //}
+ob_start();
 $query = $_POST["query"];
 $api = $_POST["api"] ?? 'pexels';
 $url = $_POST["target"];
@@ -32,10 +33,25 @@ require_once(dirname(__FILE__) . "/" . $api ."Api.php");
 $api_type = $api . 'Api';
 $imgshApi = new $api_type();
 
-$result = $imgshApi->sh_request($query, $url, $interpretPrompt, $overrideSettings, $settings);
+$result = $imgshApi->sh_request($query, $url, $interpretPrompt, $overrideSettings, $settings); // original
 
-if ($result->status){
-    echo json_encode($result);
+if ($result->status) {
+	$_SESSION["paths_img_search"] = array();
+	$result->credits = array();
+	for($i = 0; $i < count($result->paths); $i++){
+		$full_path = $result->paths[$i];
+
+		$web_path = str_replace($xerte_toolkits_site->root_file_path, $xerte_toolkits_site->site_url, $full_path);
+		$ext = pathinfo($full_path, PATHINFO_EXTENSION);
+		$credits = str_replace($ext, "txt", $full_path);
+
+		$_SESSION["paths_img_search"][] = $full_path;
+		$result->paths[$i] = $web_path;
+        //TODO: Fix for non-credit vendors (Dalle2, Dalle3)
+		$result->credits[] = file_get_contents($credits);
+	}
+    ob_end_clean();
+	echo json_encode($result);
 } else {
-    echo json_encode(["status" => "success", "result" => $result]);
+	echo json_encode(["status" => "success", "result" => $result]);
 }

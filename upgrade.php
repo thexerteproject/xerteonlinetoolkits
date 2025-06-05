@@ -1625,25 +1625,54 @@ function upgrade_50()
 
 function upgrade_51()
 {
-    // add ai settings table
-    if (! _db_field_exists('sitedetails', 'openai_settings')) {
-        $error1 = _db_add_field('sitedetails', 'openai', 'char(255)', 'false', 'globalsocialauth');
-        $error1_returned = true;
+    $roleTable = table_by_key("role");
+
+    $ok = db_query("insert into $roleTable(`roleid`, `name`) values (8, 'aiuser')");
+    $message = "Creating extra role aiuser - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+}
+
+function upgrade_52()
+{
+    $message = "";
+    if (!_table_exists("management_helper")) {
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `management_helper` (
+        `interaction_id` int(11) NOT NULL AUTO_INCREMENT,
+        `vendor` VARCHAR(16) NOT NULL,
+        `label` VARCHAR(34) NOT NULL,
+        `type` VARCHAR(16) NOT NULL,
+        `needs_key` BOOLEAN NOT NULL,
+        `enabled` BOOLEAN NOT NULL ,
+        `sub_options` TEXT,  
+        PRIMARY KEY (`interaction_id`)
+      )"
+        );
+
+        $message .= "Creating management helper table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        if ($ok) {
+            $ok = db_query("INSERT INTO `management_helper` VALUES 
+                                    (1, 'openai', 'GPT (Openai)', 'ai', 1, 0, '{\"generate image\":\"false\",\"image uploads\":\"false\"}'),
+                                    (2, 'anthropic', 'Claude (Anthropic)', 'ai', 1, 0, '{\"generate image\":\"false\"}'),
+                                    (3, 'mistral', 'Mistral AI', 'ai', 1, 0, '{\"generate image\":\"false\"}'),
+                                    (4, 'pexels', 'Pexels', 'image', 1, 0, '{}'),
+                                    (5, 'pixabay', 'Pixabay', 'image', 1, 0, '{}'),
+                                    (6, 'unsplash', 'Unsplash', 'image', 1, 0, '{}'),
+                                    (7, 'wikimedia', 'Wikimedia Foundation', 'image', 0, 0, '{}'),
+                                    (8, 'dalle2', 'DallE2 (Generative)', 'image', 1, 0, '{}'),
+                                    (9, 'dalle3', 'DallE3 (Generative)', 'image', 1, 0, '{}'),
+                                    (10, 'gladia', 'Gladia (Transcription)', 'transcription', 1, 0, '{}'),
+                                    (11, 'mistralenc', 'Mistral (Encoding)', 'encoding', 1, 0, '{}')
+                                    ");
+            $message .= "Populating management helper table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+        }
+
+
     }
-    if (! _db_field_exists('sitedetails', 'anthropic_settings')) {
-        $error2 = _db_add_field('sitedetails', 'anthropic', 'char(255)', 'false', 'globalsocialauth');
-        $error2_returned = true;
+    else{
+        $message .= "Table management_helper already exists - ok ? true". "<br>";
     }
 
-    if (($error1 === false)) {
-        $error1_returned = false;
-        // echo "creating LRS_Endpoint field FAILED";
-    }
-
-    if (($error2 === false)) {
-        $error2_returned = false;
-        // echo "creating LRS_Key field FAILED";
-    }
-
-    return "Creating LRS Endpoint settings fields - ok ? " . ($error1_returned && $error2_returned? 'true' : 'false'). "<br>";
+    return $message;
 }

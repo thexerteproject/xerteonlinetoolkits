@@ -112,6 +112,7 @@
 
             if (x_currentPageXML.getAttribute("additionalTxt") != undefined && x_currentPageXML.getAttribute("additionalTxt") !== "") {
                 $('<div id="extraText">' + x_currentPageXML.getAttribute("additionalTxt") + '</div>').appendTo($("#txtHolder"));
+                $("#txtHolder").addClass("smallerTitle");
             }
 
             // add a start button that moves to next page
@@ -123,6 +124,8 @@
                     .click(function () {
                         x_changePage(x_normalPages[$.inArray(x_currentPage, x_normalPages) + 1]);
                     });
+
+                $("#txtHolder").addClass("smallerTitle");
             }
 
             let triggerLoad = true;
@@ -171,6 +174,7 @@
                     }
 
                     $pageContents.append($mediaHolder);
+                    $("#txtHolder").addClass("smallerTitle");
 
                     if ($mediaHolder.hasClass("pageImg")) {
                         // scale image (either image on its own or above audio player)
@@ -247,8 +251,8 @@
         }
 
         this.responsiveTitle = function () {
-            if (XENITH.ACCESSIBILITY.checkResponsiveTxt() && window.innerWidth >= 768) {
-                // responsive text is on & the project isn't showing at a fixed size
+            if (XENITH.ACCESSIBILITY.checkResponsiveTxt()) {
+                // responsive text is on so won't use fixed size set in editor
                 $(".titlePageTxt").css("font-size", "");
             } else {
                 $(".titlePageTxt").css("font-size", x_currentPageXML.getAttribute("size") + "pt");

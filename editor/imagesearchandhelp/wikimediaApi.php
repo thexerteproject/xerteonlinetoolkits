@@ -62,7 +62,7 @@ class wikimediaApi
     private function rewritePrompt($query, $conversation = [])
     {
         // Your OpenAI API key
-        $openAiKey = $this->xerte_toolkits_site->openAI_key;
+        $openAiKey = $this->xerte_toolkits_site->openai_key;
 
         // If it's the first time, initialize the conversation with the instructions and the first example
         if (empty($conversation)) {
@@ -140,7 +140,7 @@ class wikimediaApi
 
     private function extractParameters($input){
         // Your OpenAI API key
-        $openAiKey = $this->xerte_toolkits_site->openAI_key;
+        $openAiKey = $this->xerte_toolkits_site->openai_key;
 
         // If it's the first time, initialize the conversation with the instructions and the first example
         if (empty($conversation)) {

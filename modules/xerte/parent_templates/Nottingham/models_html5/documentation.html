@@ -30,7 +30,11 @@
 			required = [];
 		
 		this.pageChanged = function() {
-			
+			currentPage = $("#pageContents").data("currentPage");
+		}
+
+		this.leavePage = function() {
+			$("#pageContents").data("currentPage", currentPage);
 		}
 		
 		this.sizeChanged = function() {
@@ -78,6 +82,8 @@
 			styles += 'body, .ui-widget { font-family: Arial, sans-serif; -webkit-font-smoothing: antialiased; color: black; font-size: 12pt; } ';
 			styles += 'table.tableDoc { font-size: 1em; margin: 0.2em; padding: 0.2em; width: 100%; border-collapse: collapse; } ';
 			$('#pageContents').data('downloadStyles', styles);
+
+			let hLevel = 1;
 		
 			var pageIndex = 0;
 
@@ -129,7 +135,7 @@
 			}
 			
 			// Process document details
-			docData.documentName = x_currentPageXML.getAttribute('name');
+			docData.documentName = '<h' + hLevel + '>' + x_currentPageXML.getAttribute('name') + '</h' + hLevel + '>';
 			docData.documentText = x_currentPageXML.getAttribute('text');
 			docData.documentIntro = x_currentPageXML.getAttribute('intro');
 			
@@ -145,6 +151,7 @@
 
 			// Loop through all pages
 			for (var page=0; page < $(x_currentPageXML).children().length; page++) {
+				hLevel = 2;
 				var pageXML = $(x_currentPageXML).children()[page];
 				
 				if ($(pageXML).children().length != 0 || pageXML.getAttribute('name') != "" || pageXML.getAttribute('text') != "") {
@@ -158,14 +165,16 @@
 					if (pageIndex > 1)
 						$page.attr('class', 'page hidepage');
 
-					docData.pages[page].pageName = pageXML.getAttribute('name');
+					docData.pages[page].pageName = '<h' + hLevel + '>' + pageXML.getAttribute('name') + '</h' + hLevel + '>';
 					docData.pages[page].pageText = pageXML.getAttribute('text');
 					
 					var $intro = $('<div class="intro">').appendTo($page);
-					if (docData.pages[page].pageName.length > 0) {
+					if (pageXML.getAttribute('name').length > 0) {
 						$('<h3>')
-							.html(docData.pages[page].pageName)
+							.html(pageXML.getAttribute('name'))
 							.appendTo($intro);
+
+						hLevel++;
 					}
 					if (docData.pages[page].pageText.length > 0) {
 						$('<div>')
@@ -180,14 +189,16 @@
 					if ($(pageXML).children().length > 0) {
 						docData.pages[page].sections = [];
 						for (var section=0, noSections=$(pageXML).children().length; section<noSections; section++) {
+							let newLevel = hLevel;
 							var sectionXML = $(pageXML).children()[section];
 							docData.pages[page].sections[section] = {'items':[]};
 							
 							// Create the sections
 							if (sectionXML.nodeName == 'section') {
 								if (sectionXML.getAttribute('exclude') != 'doc') {
-									docData.pages[page].sections[section].sectionName = sectionXML.getAttribute('name');
+									docData.pages[page].sections[section].sectionName = '<h' + newLevel + '>' + sectionXML.getAttribute('name') + '</h' + newLevel + '>';
 									docData.pages[page].sections[section].sectionText = sectionXML.getAttribute('text');
+									newLevel++;
 								}
 								
 								var $section = $('<fieldset>').attr('class', 'section'),
@@ -232,7 +243,7 @@
 								// Create each item
 								for (var item=0, noItems=$(sectionXML).children().length; item<noItems; item++) {
 									var itemXML = $(sectionXML).children()[item],
-										$newItem = documentation.processItem(page, section, item, itemXML);
+										$newItem = documentation.processItem(page, section, item, itemXML, newLevel);
 
 									if ($newItem !== null) $newItem.appendTo($section);
 								}
@@ -243,7 +254,7 @@
 							}
 							else {
 								docData.pages[page].sections[section].items[0] = {};
-								var $newItem = documentation.processItem(page, section, 0, sectionXML);
+								var $newItem = documentation.processItem(page, section, 0, sectionXML, newLevel);
 								if ($newItem !== null) $newItem.appendTo($page);
 							}
 						}
@@ -353,7 +364,7 @@
 			x_pageLoaded();
 		};
 		
-		this.processItem = function (page, section, item, xml) {
+		this.processItem = function (page, section, item, xml, hLevel) {
 			// Item to be excluded?
 			var exclude = '';
 			if (xml.getAttribute('exclude')) {
@@ -362,7 +373,9 @@
 			
 			if (exclude != 'doc') {
 				docData.pages[page].sections[section].items[item] = {};
-				docData.pages[page].sections[section].items[item].itemName = xml.getAttribute('name');
+				if (xml.getAttribute('name') != undefined && xml.getAttribute('name') != '') {
+					docData.pages[page].sections[section].items[item].itemName = '<h' + hLevel + '>' + xml.getAttribute('name') + '</h' + hLevel + '>';
+				}
 				docData.pages[page].sections[section].items[item].itemText = xml.getAttribute('text');
 				
 				if (xml.nodeName != 'tableDoc') {

@@ -152,9 +152,9 @@
               range.endContainer.getText().substr( range.startOffset , 1 ).charCodeAt(0) === 32) {
         range.startOffset += 1;
         //try {
-          console.log("left", editor.getSelectedHtml().getHtml());debugger;
+          //console.log("left", editor.getSelectedHtml().getHtml());debugger;
           range.select();
-console.log("left", editor.getSelectedHtml().getHtml());debugger;
+        //console.log("left", editor.getSelectedHtml().getHtml());debugger;
         //} catch(e){done=true;}
       }
 
@@ -164,9 +164,9 @@ console.log("left", editor.getSelectedHtml().getHtml());debugger;
               range.endContainer.getText().substr( range.endOffset , 1 ).charCodeAt(0) === 32) {
         range.endOffset -= 1;
         //try {
-          console.log("right", editor.getSelectedHtml().getHtml());debugger;
+          //console.log("right", editor.getSelectedHtml().getHtml());debugger;
           range.select();
-console.log("right", editor.getSelectedHtml().getHtml());debugger;
+          //console.log("right", editor.getSelectedHtml().getHtml());debugger;
         //} catch(e){
         //  range.endOffset += 1;
         //  range.select();

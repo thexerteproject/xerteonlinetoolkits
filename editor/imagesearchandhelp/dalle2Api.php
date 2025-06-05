@@ -38,7 +38,7 @@ class dalle2Api
         curl_setopt($curl, CURLOPT_URL, "https://api.openai.com/v1/chat/completions");
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, [
-            "Authorization: Bearer {$this->xerte_toolkits_site->openAI_key}",
+            "Authorization: Bearer {$this->xerte_toolkits_site->openai_key}",
             "Content-Type: application/json"
         ]);
         curl_setopt($curl, CURLOPT_POST, true);
@@ -96,7 +96,7 @@ class dalle2Api
         curl_setopt($curl, CURLOPT_URL, "https://api.openai.com/v1/images/generations");
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, [
-            "Authorization: Bearer {$this->xerte_toolkits_site->openAI_key}",
+            "Authorization: Bearer {$this->xerte_toolkits_site->openai_key}",
             "Content-Type: application/json"
         ]);
         curl_setopt($curl, CURLOPT_POST, true);
