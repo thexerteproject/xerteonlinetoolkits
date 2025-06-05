@@ -13,7 +13,8 @@ class MediaHandler {
     public function __construct($basePath, $transcriber) {
         $this->basePath = rtrim($basePath, '/');
         $this->transcriber = $transcriber;
-        $this->mediaPath = $this->basePath . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'transcripts';
+        //We set this to the designated folder for transcript-related content
+        $this->mediaPath = $this->basePath . DIRECTORY_SEPARATOR . 'RAG' . DIRECTORY_SEPARATOR . 'transcripts';
         if (!file_exists($this->mediaPath)) {
             mkdir($this->mediaPath, 0777, true);
         }
@@ -270,6 +271,22 @@ class MediaHandler {
         }
     }
 
+    /**
+     * Delete a file from disk.
+     *
+     * @param string $filePath
+     * @return boolean true if success, false if failed.
+     */
+    private function deleteFile($filePath) {
+        if (is_file($filePath)) {
+            return unlink($filePath);
+        } else {
+            // File does not exist or is not a file
+            return false;
+        }
+    }
+
+
     /* ----------------------------
        High-Level: Get Transcript Workflow
        ---------------------------- */
@@ -286,8 +303,7 @@ class MediaHandler {
      *   - For video files: extract audio and transcribe.
      *   - For audio files: transcribe directly.
      *
-     * Note that the actual AI transcription is handled by an injected transcriber (which
-     * implements a function like transcribeAudioTimestamped).
+     * Note that the actual AI transcription is handled by an injected transcriber
      *
      * @param string $input URL or file path.
      * @param object $transcriber An instance of your AI transcription service.
@@ -313,7 +329,10 @@ class MediaHandler {
             // Fallback: Download video, extract audio, and transcribe.
             $downloadedVideo = $this->downloadVideo($input);
             $extractedAudio = $this->extractAudio($downloadedVideo);
-            return $this->transcriber->transcribeAudioTimestamped($extractedAudio);
+            $transcribedAudio = $this->transcriber->transcribeAudioTimestamped($extractedAudio);
+            $this->deleteFile($downloadedVideo);
+            $this->deleteFile($extractedAudio);
+            return $transcribedAudio;
         }
         // Case 2: Input is a file path.
         else {
@@ -323,7 +342,9 @@ class MediaHandler {
             $audioMimeTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg'];
             if (in_array($mimeType, $videoMimeTypes)) {
                 $extractedAudio = $this->extractAudio($filePath);
-                return $this->transcriber->transcribeAudioTimestamped($extractedAudio);
+                $transcribedAudio = $this->transcriber->transcribeAudioTimestamped($extractedAudio);
+                $this->deleteFile($extractedAudio);
+                return $transcribedAudio;
             } elseif (in_array($mimeType, $audioMimeTypes)) {
                 return $this->transcriber->transcribeAudioTimestamped($filePath);
             } else {

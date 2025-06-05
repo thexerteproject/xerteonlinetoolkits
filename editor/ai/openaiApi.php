@@ -2,10 +2,14 @@
 //openai api master class
 //file name must be $api . Api.php for example openaiApi.php when adding new api
 //class name AiApi mandatory when adding new api
+
+use rag\MistralRAG;
+
 class openaiApi
 {
     //constructor must be like this when adding new api
     function __construct(string $api) {
+        global $xerte_toolkits_site;
         require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/load_preset_models.php");
         $this->preset_models = $openAI_preset_models;
         require_once (str_replace('\\', '/', __DIR__) . "/../../config.php");
@@ -284,7 +288,7 @@ class openaiApi
 
     //public function must be ai_request($p, $type) when adding new api
     //todo Timo maybe change this to top level object and extend with api functions?
-    public function ai_request($p, $type, $baseUrl, $globalInstructions, $useCorpus)
+    public function ai_request($p, $type, $baseUrl, $globalInstructions, $useCorpus = false, $fileList = null, $restrictCorpusToLo = false)
     {
         if (is_null($this->preset_models->type_list[$type]) or $type == "") {
             return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
@@ -296,36 +300,51 @@ class openaiApi
 
         $prompt = $this->generatePrompt($p, $type, $globalInstructions);
 
-        if ($useCorpus){
-            $apiKey = $this->xerte_toolkits_site->mistralai_key;
+        if ($useCorpus || $fileList != null || $restrictCorpusToLo){
+            $apiKey = $this->xerte_toolkits_site->mistralenc_key;
             $encodingDirectory = $this->prepareURL($baseUrl);
-            $rag = new MistralRAG($apiKey, "txt", $encodingDirectory);
-            $promptReference = x_clean_input($p['subject']);
-            $context = $rag->getWeightedContext($promptReference);
-            $new_messages = array(
-                array(
-                    'role' => 'user',
-                    'content' => 'Great job! That\'s a great example of what I need. Now, I want to send you the context of the learning object you are generating these XMLs for. Bear in mind, the context can take different forms: transcripts or text. In the future, please generate the xml based on the context I will provide.',
-                ),
-                array(
-                    'role' => 'assistant',
-                    'content' => 'Understood. I\'m happy to help you with your task. Please provide the current context of the learning object. I will keep in mind that for transcripts, I dont have to include the timestamps in my response unless otherwise specified. Once you do, we can proceed to generating new XML objects using the exact same structure I used in my previous message, this time taking the new context into account.',
-                ),
-                array(
-                    'role' => 'user',
-                    'content' => 'Ok. Remember, when you generate the new XML, it should do so with the context here in mind! I\'ve compiled the data for you here:' . $context[0]['chunk'] . $context[1]['chunk'] . $context[2]['chunk'],
-                ),
-                array(
-                    'role' => 'assistant',
-                    'content' => 'Great! Now that we know the context of the sort of information I am working with, I can proceed with generating a new XML with the exact same XML structure as the first one I made, but with content adapted to the context. Please specify any of the other requirements for the XML, and I will return the XML directly with no additional commentary, so that you can immediately use my message as the XML.',
-                ),
-            );
+            $rag = new MistralRAG($apiKey, $encodingDirectory);
+            if ($rag->isCorpusValid()){
+                $promptReference = x_clean_input($p['subject']);
 
-            if (isset($this->preset_models->type_list[$type]['payload']['assistant_id'])){
-                // Insert the new messages into the original $settings array
-                array_splice($this->preset_models->type_list[$type]['payload']['thread']['messages'], 2, 0, $new_messages);
-            }else{
-                array_splice($this->preset_models->type_list[$type]['payload']['messages'], 2, 0, $new_messages);
+                if ($restrictCorpusToLo){
+                    $fileList = [$encodingDirectory . '/preview.xml'];
+                    $weights = [
+                        'embedding_cosine' => 0.3,
+                        'embedding_euclidean' => 0.2,
+                        'tfidf_cosine' => 0.3,
+                        'tfidf_euclidean' => 0.2
+                    ];
+                    $context = $rag->getWeightedContext($promptReference, $fileList, $weights, 25);
+                }else{
+                    $context = $rag->getWeightedContext($promptReference, $fileList);
+                }
+
+                $new_messages = array(
+                    array(
+                        'role' => 'user',
+                        'content' => 'Great job! That\'s a great example of what I need. Now, I want to send you the context of the learning object you are generating these XMLs for. Bear in mind, the context can take different forms: transcripts or text. In the future, please generate the xml based on the context I will provide.',
+                    ),
+                    array(
+                        'role' => 'assistant',
+                        'content' => 'Understood. I\'m happy to help you with your task. Please provide the current context of the learning object. I will keep in mind that for transcripts, I dont have to include the timestamps in my response unless otherwise specified. Once you do, we can proceed to generating new XML objects using the exact same structure I used in my previous message, this time taking the new context into account.',
+                    ),
+                    array(
+                        'role' => 'user',
+                        'content' => 'Ok. Remember, when you generate the new XML, it should do so with the context here in mind! I\'ve compiled the data for you here: [START OF CONTEXT]' . $context[0]['chunk'] . $context[1]['chunk'] . $context[2]['chunk'] . $context[3]['chunk'] . $context[4]['chunk'] . " [END OF CONTEXT]",
+                    ),
+                    array(
+                        'role' => 'assistant',
+                        'content' => 'Great! Now that we know the context of the sort of information I am working with, I can proceed with generating a new XML with the exact same XML structure as the first one I made, but with content adapted to the context. Please specify any of the other requirements for the XML, and I will return the XML directly with no additional commentary, so that you can immediately use my message as the XML.',
+                    ),
+                );
+
+                if (isset($this->preset_models->type_list[$type]['payload']['assistant_id'])){
+                    // Insert the new messages into the original $settings array
+                    array_splice($this->preset_models->type_list[$type]['payload']['thread']['messages'], 2, 0, $new_messages);
+                }else{
+                    array_splice($this->preset_models->type_list[$type]['payload']['messages'], 2, 0, $new_messages);
+                }
             }
         }
 

@@ -12,6 +12,7 @@ require_once (str_replace('\\', '/', __DIR__) . "/../transcribe/CorpusSynchroniz
 require_once (str_replace('\\', '/', __DIR__) . "/../transcribe/RegistryHandler.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../transcribe/TranscriptManager.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../../../config.php");
+require_once (str_replace('\\', '/', __DIR__) . "/../../../vendor_config.php");
 
 use rag\MistralRAG;
 
@@ -59,86 +60,116 @@ try {
     }
     $gridData = $input['gridData'] ?? [];
     $baseUrl = $input['baseURL'] ?? '';
+    $corpusScope = $input['corpusGrid'] ?? true;
+    $useLoInCorpus = $input['useLoInCorpus'] ?? false;
 
     // 2. Prep directories & API keys
     $baseDir = prepareURL($baseUrl);
-    $mediaDir = realpath($baseDir . DIRECTORY_SEPARATOR . 'media');
-    $transcriptDir = realpath($mediaDir . DIRECTORY_SEPARATOR . 'transcripts');
-    $corpusDir = realpath($mediaDir . DIRECTORY_SEPARATOR . 'corpus');
+    $mediaPath = $baseDir . DIRECTORY_SEPARATOR .'RAG' . DIRECTORY_SEPARATOR . 'corpus';
+    if (!is_dir($mediaPath)) {
+        mkdir($mediaPath, 0777, true);
+    }
+    $mediaDir = realpath($mediaPath);
+    //$corpusDir = realpath($mediaDir . DIRECTORY_SEPARATOR . 'corpus');
 
     x_check_path_traversal($baseDir);
     x_check_path_traversal($mediaDir);
-    x_check_path_traversal($transcriptDir);
-    x_check_path_traversal($corpusDir);
+    //x_check_path_traversal($corpusDir);
 
     $gladiaKey = $xerte_toolkits_site->gladia_key;
     $transcriber = new GladiaTranscribe($gladiaKey);
     $mediaHandler = new MediaHandler($baseDir, $transcriber);
+
+    $transcriptPath = $mediaHandler->returnMediaPath();
+
+    if (!is_dir($transcriptPath)) {
+        mkdir($transcriptPath, 0777, true);
+    }
+    $transcriptDir = realpath($transcriptPath);
+    x_check_path_traversal($transcriptDir);
+
     $registryHandler = new RegistryHandler($transcriptDir);
-    $corpusSync = new CorpusSynchronizer($transcriptDir, $corpusDir);
-    $transcriptMgr = new TranscriptManager($registryHandler, $mediaHandler, $corpusSync);
+    //$corpusSync = new CorpusSynchronizer($transcriptDir, $corpusDir);
+    $transcriptMgr = new TranscriptManager($registryHandler, $mediaHandler, /*$corpusSync*/);
+
+    $mistralKey = $xerte_toolkits_site->mistralenc_key;
+    $rag = new MistralRAG($mistralKey, $baseDir);
 
     $results = [];
 
-    // 1) Walk grid data by reference, so we can update col_2 in place
-    foreach ($gridData as &$row) {
-        $uploadUrl = urldecode(ltrim($row['col_2'])) ?? null;
+    if (!$useLoInCorpus){
+        // 1) Walk grid data by reference, so we can update col_2 in place
+        foreach ($gridData as &$row) {
+            $uploadUrl = urldecode(ltrim($row['col_2'])) ?? null;
 
-        if (!$uploadUrl) {
-            $results[] = [
-                'file'  => null,
-                'error' => 'Missing col_2 value',
-            ];
-            continue;
+            if (!$uploadUrl) {
+                $results[] = [
+                    'file'  => null,
+                    'error' => 'Missing col_2 value',
+                ];
+                continue;
+            }
+
+            try {
+                // 2) Process the file
+                $transcript = $transcriptMgr->process($uploadUrl);
+
+                // 3) Record success
+                $results[] = [
+                    'file'       => $uploadUrl,
+                    'transcript' => $transcript,
+                ];
+
+                // 4a) Mutate the grid row in place: replace col_2 with the transcript path; add original source (video file, audio file, or link) to col_4
+                $row['col_2'] = $transcript['transcript_path'];
+                $row['col_4'] = $transcript['source'];
+            } catch (Exception $e) {
+                // 4b) Record the error, leave col_2 untouched
+                $results[] = [
+                    'file'  => $uploadUrl,
+                    'error' => $e->getMessage(),
+                ];
+            }
         }
+        // break the reference
+        unset($row);
 
-        try {
-            // 2) Process the file
-            $transcript = $transcriptMgr->process($uploadUrl);
-
-            // 3) Record success
-            $results[] = [
-                'file'       => $uploadUrl,
-                'transcript' => $transcript,
+        // 5. Once all transcripts are accounted for, run the RAG on all listed files, including the transcripts
+        // 5.1 Create a list of all file objects with the relevant data to be processed
+        $fileObjects = array_map(function($row) use ($baseDir) {
+            $path = normalize_path(urldecode(ltrim($row['col_2']))); //first normalize whatever is in col 2, just in case a valid path has already been substituted if it's a transcript
+            //If it's already a full path, don't do anything extra. If it isn't, add the base directory
+            if(!(realpath($path))){
+                $path = normalize_path(urldecode(rtrim($baseDir, '/\\') . '/' . ltrim($row['col_2'], '/\\')));
+            }
+            x_check_path_traversal($path);
+            return [
+                'path'     => $path,
+                'metadata' => [
+                    'name'        => $row['col_1'] ?? null,
+                    'description' => $row['col_3'] ?? null,
+                    'source' => $row['col_4'] ?: $path,
+                ]
             ];
-
-            // 4a) Mutate the grid row in place: replace col_2 with the transcript path; add original source (video file, audio file, or link) to col_4
-            $row['col_2'] = $transcript['transcript_path'];
-            $row['col_4'] = $transcript['source'];
-        } catch (Exception $e) {
-            // 4b) Record the error, leave col_2 untouched
-            $results[] = [
-                'file'  => $uploadUrl,
-                'error' => $e->getMessage(),
+        }, $gridData);
+    } else {
+        //If we're adding the learning object to the context, use the static path of the preview.xml and add the relevant fields instead
+        //The processFileList works in principle the same, the only thing changed is the fact that we use a static file list
+        $path = normalize_path(urldecode(rtrim($baseDir, '/\\') . '/' . ltrim('preview.xml', '/\\')));
+        $fileObjects =
+            [
+                ['path'     => $path,
+                'metadata' => [
+                    'name'        => 'Learning Object',
+                    'description' => 'The last synced version of the learning object preview.',
+                    'source' => $path,
+                    ]
+                ]
             ];
-        }
     }
-    // break the reference
-    unset($row);
-
-    // 5. Once all transcripts are accounted for, run the RAG on all listed files, including the transcripts
-    $mistralKey = $xerte_toolkits_site->mistralai_key;
-    $rag = new MistralRAG($mistralKey, 'txt', $baseDir);
-    // 5.1 Create a list of all file objects with the relevant data to be processed
-    $fileObjects = array_map(function($row) use ($baseDir) {
-        $path = normalize_path(urldecode(ltrim($row['col_2']))); //first normalize whatever is in col 2, just in case a valid path has already been substituted if it's a transcript
-        //If it's already a full path, don't do anything extra. If it isn't, add the base directory
-        if(!(realpath($path))){
-            $path = normalize_path(urldecode(rtrim($baseDir, '/\\') . '/' . ltrim($row['col_2'], '/\\')));
-        }
-        x_check_path_traversal($path);
-        return [
-            'path'     => $path,
-            'metadata' => [
-                'name'        => $row['col_1'] ?? null,
-                'description' => $row['col_3'] ?? null,
-                'source' => $row['col_4'] ?: $path,
-            ]
-        ];
-    }, $gridData);
 
     //5.2 encode all files in the file list and register them as processed
-    $rag->processFileList($fileObjects);
+    $rag->processFileList($fileObjects, $corpusScope);
 
     $debugOutput = ob_get_contents();
     ob_end_clean();

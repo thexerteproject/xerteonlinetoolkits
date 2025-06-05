@@ -7,6 +7,7 @@ error_reporting(E_ALL);
 require_once (str_replace('\\', '/', __DIR__) . "/BaseRAG.php");
 require_once (str_replace('\\', '/', __DIR__) . "/MistralRAG.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../../../config.php");
+require_once (str_replace('\\', '/', __DIR__) . "/../../../vendor_config.php");
 
 use rag\MistralRAG;
 
@@ -46,14 +47,15 @@ try {
     $input = json_decode($raw, true);
 
     $baseUrl = $input['baseURL'] ?? '';
-    $type   = x_clean_input($input['type']   ?? '',    'alphanumeric');
-    $gridId = x_clean_input($input['gridId'] ?? '',    'alphanumeric');
+    $type   = x_clean_input($input['type']   ?? '',    'string');
+    $gridId = x_clean_input($input['gridId'] ?? '',    'string');
+    $format = x_clean_input($input['format'] ?? '',    'string');
 
     // Prep directories & API keys
     $baseDir = prepareURL($baseUrl);
     x_check_path_traversal($baseDir);
-    $mistralKey = $xerte_toolkits_site->mistralai_key;
-    $rag = new MistralRAG($mistralKey, 'txt', $baseDir);
+    $mistralKey = $xerte_toolkits_site->mistralenc_key;
+    $rag = new MistralRAG($mistralKey, $baseDir);
 
     $corpusFile = $rag->getCorpusDirectory();
     $corpus = ['hashes' => []];
@@ -66,14 +68,20 @@ try {
             if (isset($entry['metaData']['source']) && is_string($entry['metaData']['source'])) {
                 $src = $entry['metaData']['source'];
 
-                //if it’s a URL, leave it
-                if (! preg_match('#^https?://#i', $src)) {
-                    //otherwise strip up to "media/"
+                // If it’s a URL, leave it
+                if (!preg_match('#^https?://#i', $src)) {
+                    // Otherwise strip up to "RAG/corpus/" or "preview.xml"
                     $src = normalize_path($src);
-                    $needle = 'media/';
-                    if (false !== ($pos = strpos($src, $needle))) {
-                        //for files, we substitute 'FileLocation' instead of the full path, to stay consistent with how it is displayed/handled in the front end
-                        $src = 'FileLocation + ' . substr($src, $pos);
+                    $needleCorpus = 'RAG/corpus/';
+                    $needlePreview = 'preview.xml';
+
+                    $posCorpus = strpos($src, $needleCorpus);
+                    $posPreview = strpos($src, $needlePreview);
+
+                    if ($posCorpus !== false) {
+                        $src = 'FileLocation + \'' . substr($src, $posCorpus) . '\'';
+                    } elseif ($posPreview !== false) {
+                        $src = 'FileLocation + \'' . substr($src, $posPreview) . '\'';
                     }
                 }
 
@@ -87,36 +95,39 @@ try {
     $anonymizedCorpus = $corpus;
     $anonymizedCorpus['hashes'] = array_values($corpus['hashes']);
 
-    //Build the rows using the | symbol as a separator
-    $csv_parsed = '';
-    foreach ($anonymizedCorpus['hashes'] as $entry) {
-        $files = $entry['files']    ?? [];
-        $meta  = $entry['metaData'] ?? [];
-        $name        = $meta['name']        ?? '';
-        $description = $meta['description'] ?? '';
-        $fileSource  = $meta['source']      ?? '';
+    if ($format == "csv"){
+        //Build the rows using the | symbol as a separator
+        $csv_parsed = '';
+        foreach ($anonymizedCorpus['hashes'] as $entry) {
+            $files = $entry['files']    ?? [];
+            $meta  = $entry['metaData'] ?? [];
+            $name        = $meta['name']        ?? '';
+            $description = $meta['description'] ?? '';
+            $fileSource  = $meta['source']      ?? '';
 
-        foreach ($files as $file) {
-            // each cell + '|' ; after each row add an extra '|'
-            $cells = [ $name, $fileSource, $description ];
-            foreach ($cells as $cell) {
-                // sanitize any stray pipes in the data
-                $safe = str_replace('|',' ', $cell);
-                $csv_parsed .= $safe . '|';
+            foreach ($files as $file) {
+                $cells = [ $name, $fileSource, $description ];
+                foreach ($cells as $cell) {
+                    $safe = str_replace('|',' ', $cell);
+                    $csv_parsed .= ($safe === '' ? ' ' : $safe) . '|';
+                }
+                $csv_parsed .= '|';
             }
-            $csv_parsed .= '|';
         }
+        // strip the trailing "||"
+        $filesStructured = substr($csv_parsed, 0, -2);
+    } else if ($format == "json"){
+        $filesStructured = $anonymizedCorpus;
     }
 
-    // strip the trailing "||"
-    $csv_parsed = substr($csv_parsed, 0, -2);
+
 
     $debugOutput = ob_get_contents();
     ob_end_clean();
 
     echo json_encode([
         'type'   => $type,
-        'csv'    => $csv_parsed,
+        'corpus'    => $filesStructured,
         'gridId' => $gridId
     ]);
 

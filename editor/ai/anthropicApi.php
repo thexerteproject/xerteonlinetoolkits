@@ -1,9 +1,11 @@
 <?php
 
+use rag\MistralRAG;
 class anthropicApi
 {
     //constructor must be like this when adding new api
     function __construct(string $api) {
+        global $xerte_toolkits_site;
         require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/load_preset_models.php");
         $this->preset_models = $anthropic_preset_models;
         require_once (str_replace('\\', '/', __DIR__) . "/../../config.php");
@@ -114,7 +116,18 @@ class anthropicApi
         return $jsonString;
     }
 
-    public function ai_request($p, $type, $baseUrl, $globalInstructions, $useCorpus){
+    private function prepareURL($uploadPath){
+        $basePath = __DIR__ . '/../../'; // Moves up from ai -> editor -> xot
+        $finalPath = realpath($basePath . $uploadPath);
+
+        if ($finalPath === false) {
+            throw new Exception("File does not exist: $finalPath");
+        }
+
+        return $finalPath;
+    }
+
+    public function ai_request($p, $type, $baseUrl, $globalInstructions, $useCorpus = false, $fileList = null, $restrictCorpusToLo = false){
         if (is_null($this->preset_models->type_list[$type]) or $type == "") {
             return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
         }
@@ -125,12 +138,26 @@ class anthropicApi
 
         $prompt = $this->generatePrompt($p, $type, $globalInstructions);
 
-        if ($useCorpus){
-            $apiKey = $this->xerte_toolkits_site->mistralai_key;
+        if ($useCorpus || $fileList != null || $restrictCorpusToLo){
+            $apiKey = $this->xerte_toolkits_site->mistralenc_key;
             $encodingDirectory = $this->prepareURL($baseUrl);
-            $rag = new MistralRAG($apiKey, "txt", $encodingDirectory);
+            $rag = new MistralRAG($apiKey, $encodingDirectory);
+            if ($rag->isCorpusValid()){
             $promptReference = x_clean_input($p['subject']);
-            $context = $rag->getWeightedContext($promptReference);
+
+            if ($restrictCorpusToLo){
+                $fileList = [$encodingDirectory . '/preview.xml'];
+                $weights = [
+                    'embedding_cosine' => 0.3,
+                    'embedding_euclidean' => 0.2,
+                    'tfidf_cosine' => 0.3,
+                    'tfidf_euclidean' => 0.2
+                ];
+                $context = $rag->getWeightedContext($promptReference, $fileList, $weights, 25);
+            }else{
+                $context = $rag->getWeightedContext($promptReference, $fileList);
+            }
+
             $new_messages = array(
                 array(
                     'role' => 'user',
@@ -142,7 +169,7 @@ class anthropicApi
                 ),
                 array(
                     'role' => 'user',
-                    'content' => 'Ok. Remember, when you generate the new XML, it should do so with the context here in mind! I\'ve compiled the data for you here:' . $context[0]['chunk'] . $context[1]['chunk'] . $context[2]['chunk'],
+                    'content' => 'Ok. Remember, when you generate the new XML, it should do so with the context here in mind! I\'ve compiled the data for you here: [START OF CONTEXT]' . $context[0]['chunk'] . $context[1]['chunk'] . $context[2]['chunk'] . $context[3]['chunk'] . $context[4]['chunk'] . " [END OF CONTEXT]",
                 ),
                 array(
                     'role' => 'assistant',
@@ -151,6 +178,7 @@ class anthropicApi
             );
 
             array_splice($this->preset_models->type_list[$type]['payload']['messages'], 2, 0, $new_messages);
+            }
         }
 
         $results = array();

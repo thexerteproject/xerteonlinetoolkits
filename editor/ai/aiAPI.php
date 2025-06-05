@@ -29,9 +29,12 @@ $baseUrl = $_POST["baseUrl"];
 $contextScope = $_POST["contextScope"];
 $modelTemplate = $_POST["modelTemplate"];
 $useCorpus = $_POST["useCorpus"] ?? false;
+$fileList = $_POST["fileList"] ?? null;
+$useLoInCorpus = $_POST['useLoInCorpus'];
+$restrictCorpusToLo = $_POST['restrictCorpusToLo'];
 
-$allowed_apis = ['openai', 'anthropic', 'mistralai'];
-$global_instructions = ["All text within the following attributes: 'text', 'goals', 'audience', 'prereq', 'howto', 'summary', 'nextsteps', 'pageintro', 'tip', 'side1', 'side2', 'txt', 'instruction', 'prompt', 'answer', 'intro', 'feedback', 'unit', 'question', 'hint', 'label', 'passage', 'initialtext', 'initialtitle', 'suggestedtext', 'suggestedtitle', 'generalfeedback', 'instructions', 'p1', 'p2', 'title', 'introduction', 'wrongtext', 'wordanswer', 'words' should be correctly formatted with relevant HTML encoding tags (headers, paragraphs, etc. if needed), using HTML entities. Additionally, all text within CDATA nodes should also be formatted using at minimum paragraph tags, or other relevant tags if needed."];
+$allowed_apis = ['openai', 'anthropic', 'mistral'];
+$global_instructions = ["All text enclosed within the following attributes: 'text', 'goals', 'audience', 'prereq', 'howto', 'summary', 'nextsteps', 'pageintro', 'tip', 'side1', 'side2', 'txt', 'instruction', 'prompt', 'answer', 'intro', 'feedback', 'unit', 'question', 'hint', 'label', 'passage', 'initialtext', 'initialtitle', 'suggestedtext', 'suggestedtitle', 'generalfeedback', 'instructions', 'p1', 'p2', 'title', 'introduction', 'wrongtext', 'wordanswer', 'words' must be formatted with relevant HTML encoding tags (headers, paragraphs, etc. if needed), using EXCLUSIVELY HTML entities. On the other hand, the text inside CDATA nodes should be formatted using at minimum paragraph tags, or other relevant tags if needed."];
 
 //todo combine with api check from admin page
 if (!in_array($ai_api, $allowed_apis)){
@@ -46,16 +49,16 @@ ob_start();
 //ensure corpus directory exists
 $url_parts = explode('/', $baseUrl);
 end($url_parts);
-verify_LO_folder(prev($url_parts), '/corpus');
+verify_LO_folder(prev($url_parts), '/RAG/corpus');
 
 //dynamically initiate correct api class
 $api_type = $ai_api . 'Api';
 $aiApi = new $api_type($ai_api);
 switch ($ai_api){
     case 'openai':
-    case 'mistralai':
+    case 'mistral':
     case 'anthropic':
-        $result = $aiApi->ai_request($prompt_params, $type, $baseUrl, $global_instructions, $useCorpus);
+        $result = $aiApi->ai_request($prompt_params, $type, $baseUrl, $global_instructions, $useCorpus, $fileList, $restrictCorpusToLo);
         break;
 }
 

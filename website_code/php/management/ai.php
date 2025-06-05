@@ -31,7 +31,7 @@ if (is_user_admin()) {
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
     //add management helper types here that you want to display on this page.
-    $blocks_groups = ['ai','image'];
+    $blocks_groups = ['ai','image', 'encoding', 'transcription'];
     //ensure that block groups and helper results are in the same order
     sort($blocks_groups);
 

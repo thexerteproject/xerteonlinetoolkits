@@ -5,20 +5,20 @@ use DocumentLoaderFactory;
 
 abstract class BaseRAG
 {
-    protected $fileType;
     protected $chunkSize;
     protected $encodingDirectory;
     protected $chunksFile;
     protected $embeddingsFile;
     protected $idfFile;
+    protected $tempIdfFile;
     protected $corpusFile;
     protected $tfidfFile;
+    protected $tempTfidfFile;
 
-    public function __construct($chunkSize = 2048, $fileType, $encodingDirectory)
+    public function __construct($encodingDirectory, $chunkSize = 2048)
     {
         $this->chunkSize = $chunkSize;
         require_once(str_replace('\\', '/', __DIR__) . "/TextSplitter.php");
-        $this->fileType = $fileType;
         require_once(str_replace('\\', '/', __DIR__) . "/DocumentLoaders.php");
 
         // Ensure the base directory exists
@@ -38,7 +38,9 @@ abstract class BaseRAG
         $this->chunksFile = $this->encodingDirectory . 'chunks.json';
         $this->embeddingsFile = $this->encodingDirectory . 'embeddings.json';
         $this->idfFile = $this->encodingDirectory . 'idf.json';
+        $this->tempIdfFile = $this->encodingDirectory . 'temp' . DIRECTORY_SEPARATOR . 'idf.json';
         $this->tfidfFile = $this->encodingDirectory . 'tfidf.json';
+        $this->tempTfidfFile = $this->encodingDirectory . 'temp' . DIRECTORY_SEPARATOR . 'tfidf.json';
         $this->corpusFile = $this->encodingDirectory . 'corpus.json';
     }
 
@@ -87,9 +89,10 @@ abstract class BaseRAG
      *   - Finally, it cleans up stale artifacts and re-computes TF-IDF vectors for the updated corpus.
      *
      * @param string[] $filePaths Array of full file paths to include in the corpus.
+     * @param bool $corpusGrid A boolean specifying whether the received list represents the state of the entire corpus. Deletes stale artifacts by default.
      * @return array              An array of per-file results or errors.
      */
-    public function processFileList(array $filePaths)
+    public function processFileList(array $filePaths, $corpusGrid = true)
     {
         $results = [];
 
@@ -137,7 +140,7 @@ abstract class BaseRAG
             }
         }
 
-        if (file_exists($this->corpusFile)) {
+        if ($corpusGrid === true && file_exists($this->corpusFile)) {
             $corp = json_decode(file_get_contents($this->corpusFile), true) ?: ['hashes' => []];
             $hashesToPurge = [];
 
@@ -180,8 +183,9 @@ abstract class BaseRAG
 
         // Recompute any new embeddings, clean up artifacts, refresh TF-IDF
         $this->processNewEmbeddings();
-        $this->cleanupStaleArtifacts();
-
+        if ($corpusGrid === true){
+            $this->cleanupStaleArtifacts();
+        }
         return $results;
     }
 
@@ -484,11 +488,12 @@ abstract class BaseRAG
      * -------------------------
      * Reads all chunks from the chunks file, computes document frequencies,
      * calculates a global IDF dictionary, and then computes each chunk's TF-IDF vector.
-     * The global IDF (along with the list of files in the corpus) is saved to idf.json,
-     * and the TF-IDF vectors are saved to tfidf_embeddings.json.
+     * The global IDF (along with the list of files in the corpus) is saved to idf.json (or tempIdfFile),
+     * and the TF-IDF vectors are saved to tfidf_embeddings.json (or tempTfidfFile).
      *
+     * @param array|null $allowedFileHashes Optional array of allowed file hashes to filter by.
      */
-    public function generateTfidfPersistent()
+    public function generateTfidfPersistent(array $allowedFileHashes = null): void
     {
         $df = [];
         $totalDocs = 0;
@@ -497,11 +502,17 @@ abstract class BaseRAG
         $inHandle = fopen($this->chunksFile, 'r');
         if (!$inHandle) {
             echo("Error opening chunks file: {$this->chunksFile}");
+            return;
         }
-        // First pass: build document frequency counts and collect chunks.
+        // First pass: build document frequency counts and collect filtered chunks.
+
         while (($line = fgets($inHandle)) !== false) {
             $chunkData = json_decode($line, true);
             if (!$chunkData) continue;
+            // Apply filtering if $allowedFileHashes is provided
+            if ($allowedFileHashes !== null && !in_array($chunkData['fileHash'], $allowedFileHashes)) {
+                continue;
+            }
             $chunks[] = $chunkData;
             $totalDocs++;
             $tokens = $this->tokenize($chunkData['chunk']);
@@ -529,12 +540,22 @@ abstract class BaseRAG
             'files' => $corpus['files'] ?? [],
             'idf' => $idf
         ];
-        file_put_contents($this->idfFile, json_encode($idfData));
 
-        // Second pass: compute TF-IDF for each chunk.
-        $outHandle = fopen($this->tfidfFile, 'w');
+        // Write to either the normal file or the temp file, depending on filtering
+        $idfFileToUse = $allowedFileHashes === null ? $this->idfFile : ($this->tempIdfFile);
+        // Create the temp directory, if it's not already there
+        $tempDir = dirname($idfFileToUse);
+        if (!is_dir($tempDir)) {
+            mkdir($tempDir, 0777, true);
+        }
+        file_put_contents($idfFileToUse, json_encode($idfData));
+
+        // Second pass: compute TF-IDF for each filtered chunk.
+        $tfidfFileToUse = $allowedFileHashes === null ? $this->tfidfFile : ($this->tempTfidfFile);
+        $outHandle = fopen($tfidfFileToUse, 'w');
         if (!$outHandle) {
-            echo("Error opening TF-IDF file for writing: {$this->tfidfFile}");
+            echo("Error opening TF-IDF file for writing: {$tfidfFileToUse}");
+            return;
         }
         foreach ($chunks as $chunkData) {
             $tf = $this->computeTf($chunkData['chunk']);
@@ -550,7 +571,12 @@ abstract class BaseRAG
             fwrite($outHandle, json_encode($result) . "\n");
         }
         fclose($outHandle);
-        echo "Recomputed TF-IDF for the updated corpus.\n";
+
+        if ($allowedFileHashes === null) {
+            echo "Recomputed TF-IDF for the full corpus.\n";
+        } else {
+            echo "Computed TF-IDF for the filtered corpus. See: {$idfFileToUse}, {$tfidfFileToUse}\n";
+        }
     }
 
     /**
@@ -672,7 +698,6 @@ abstract class BaseRAG
         return $results;
     }
 
-
     /**
      * getContextCosine
      * ----------------------
@@ -683,14 +708,15 @@ abstract class BaseRAG
      *
      * @param string $question The input query.
      * @param int $topK Number of top results to return (default: 2).
+     * @param array|null $allowedFileHashes Optional array of allowed file hashes to filter by.
      * @return array The top matching chunks with their similarity scores.
      */
-    public function getContextCosine($question, $topK = 2)
+    public function getContextCosine(string $question, int $topK = 2, array $allowedFileHashes = null)
     {
         $questionEmbedding = $this->getEmbedding($question);
         $similarities = [];
 
-        // Build a map from chunk id to chunk text.
+        // Build a map from chunk id to chunk text, **filtered by fileHash** if provided.
         $chunksMap = [];
         $handle = fopen($this->chunksFile, 'r');
         if (!$handle) {
@@ -700,11 +726,14 @@ abstract class BaseRAG
         while (($line = fgets($handle)) !== false) {
             $data = json_decode($line, true);
             if (!$data) continue;
+            if ($allowedFileHashes !== null && !in_array($data['fileHash'], $allowedFileHashes)) {
+                continue;
+            }
             $chunksMap[$data['id']] = $data['chunk'];
         }
         fclose($handle);
 
-        // Read stored embeddings and compute similarity with the question.
+        // Read stored embeddings and compute similarity with the question, **filtered by fileHash** if provided.
         $handle = fopen($this->embeddingsFile, 'r');
         if (!$handle) {
             echo("Error opening embeddings file: {$this->embeddingsFile}");
@@ -713,6 +742,9 @@ abstract class BaseRAG
         while (($line = fgets($handle)) !== false) {
             $data = json_decode($line, true);
             if (!$data) continue;
+            if ($allowedFileHashes !== null && !in_array($data['fileHash'], $allowedFileHashes)) {
+                continue;
+            }
             $embedding = $data['embedding'];
             $sim = $this->cosineSimilarity($questionEmbedding, $embedding);
             $similarities[$data['id']] = $sim;
@@ -742,21 +774,26 @@ abstract class BaseRAG
      *
      * @param string $question The input query.
      * @param int $topK Number of top results to return (default: 2).
+     * @param array|null $allowedFileHashes Optional array of allowed file hashes to filter by, when it is not null the temporary idf and tfidf encodings are used.
      * @return array The top matching chunks with their similarity scores.
      */
-    public function getContextCosineTfIdf($question, $topK = 2)
+    public function getContextCosineTfIdf($question, $topK = 2, $allowedFileHashes)
     {
+        // Write to either the normal file or the temp file, depending on filtering
+        $idfFileToUse = $allowedFileHashes === null ? $this->idfFile : ($this->tempIdfFile);
+        $tfidfFileToUse = $allowedFileHashes === null ? $this->tfidfFile : ($this->tempTfidfFile);
+
         // Load the precomputed global IDF dictionary from file.
-        $idfHandle = fopen($this->idfFile, 'r');
+        $idfHandle = fopen($idfFileToUse, 'r');
         if (!$idfHandle) {
-            echo("Error opening IDF file: {$this->idfFile}");
+            echo("Error opening IDF file: {$idfFileToUse}");
             return [];
         }
-        $idfContent = fread($idfHandle, filesize($this->idfFile));
+        $idfContent = fread($idfHandle, filesize($idfFileToUse));
         fclose($idfHandle);
         $idfData = json_decode($idfContent, true);
         if (!$idfData || !isset($idfData['idf'])) {
-            echo("Error decoding IDF data from: {$this->idfFile}");
+            echo("Error decoding IDF data from: {$idfFileToUse}");
             return [];
         }
         $idf = $idfData['idf'];
@@ -784,9 +821,9 @@ abstract class BaseRAG
 
         // Compare the question vector to each stored TF-IDF vector.
         $similarities = [];
-        $handle = fopen($this->tfidfFile, 'r');
+        $handle = fopen($tfidfFileToUse, 'r');
         if (!$handle) {
-            echo("Error opening TF-IDF file: {$this->tfidfFile}");
+            echo("Error opening TF-IDF file: {$tfidfFileToUse}");
             return [];
         }
         while (($line = fgets($handle)) !== false) {
@@ -927,14 +964,15 @@ abstract class BaseRAG
      *
      * @param string $question The input query.
      * @param int $topK Number of top results to return (default: 2).
+     * @param array|null $allowedFileHashes Optional array of allowed file hashes to filter by.
      * @return array Array of candidates with keys: id, chunk, score.
      */
-    public function getContextEuclidean($question, $topK = 2)
+    public function getContextEuclidean($question, $topK = 2, $allowedFileHashes = null)
     {
         $questionEmbedding = $this->getEmbedding($question);
         $similarities = [];
 
-        // Build mapping: chunk id => chunk text.
+        // Build mapping: chunk id => chunk text, filter by fileHash if provided.
         $chunksMap = [];
         $handle = fopen($this->chunksFile, 'r');
         if (!$handle) {
@@ -944,11 +982,14 @@ abstract class BaseRAG
         while (($line = fgets($handle)) !== false) {
             $data = json_decode($line, true);
             if (!$data) continue;
+            if ($allowedFileHashes !== null && !in_array($data['fileHash'], $allowedFileHashes)) {
+                continue;
+            }
             $chunksMap[$data['id']] = $data['chunk'];
         }
         fclose($handle);
 
-        // Compute Euclidean similarity using embeddings.
+        // Compute Euclidean similarity using embeddings, filter by fileHash if provided.
         $handle = fopen($this->embeddingsFile, 'r');
         if (!$handle) {
             echo("Error opening embeddings file: {$this->embeddingsFile}");
@@ -957,6 +998,9 @@ abstract class BaseRAG
         while (($line = fgets($handle)) !== false) {
             $data = json_decode($line, true);
             if (!$data) continue;
+            if ($allowedFileHashes !== null && !in_array($data['fileHash'], $allowedFileHashes)) {
+                continue;
+            }
             $embedding = $data['embedding'];
             $sim = $this->euclideanSimilarity($questionEmbedding, $embedding);
             $similarities[$data['id']] = $sim;
@@ -985,21 +1029,26 @@ abstract class BaseRAG
      *
      * @param string $question The input query.
      * @param int $topK Number of top results to return (default: 2).
+     * @param array|null $allowedFileHashes Optional array of allowed file hashes to filter by, when it is not null the temporary idf and tfidf encodings are used.
      * @return array Array of candidates with keys: id, chunk, score.
      */
-    public function getContextEuclideanTfIdf($question, $topK = 2)
+    public function getContextEuclideanTfIdf($question, $topK = 2, $allowedFileHashes)
     {
+        // Write to either the normal file or the temp file, depending on filtering
+        $idfFileToUse = $allowedFileHashes === null ? $this->idfFile : ($this->tempIdfFile);
+        $tfidfFileToUse = $allowedFileHashes === null ? $this->tfidfFile : ($this->tempTfidfFile);
+
         // Load the precomputed global IDF dictionary.
         $idfHandle = fopen($this->idfFile, 'r');
         if (!$idfHandle) {
-            echo("Error opening IDF file: {$this->idfFile}");
+            echo("Error opening IDF file: {$idfFileToUse}");
             return [];
         }
-        $idfContent = fread($idfHandle, filesize($this->idfFile));
+        $idfContent = fread($idfHandle, filesize($idfFileToUse));
         fclose($idfHandle);
         $idfData = json_decode($idfContent, true);
         if (!$idfData || !isset($idfData['idf'])) {
-            echo("Error decoding IDF data from: {$this->idfFile}");
+            echo("Error decoding IDF data from: {$idfFileToUse}");
             return [];
         }
         $idf = $idfData['idf'];
@@ -1027,9 +1076,9 @@ abstract class BaseRAG
 
         // Compute Euclidean similarity for TF-IDF vectors.
         $similarities = [];
-        $handle = fopen($this->tfidfFile, 'r');
+        $handle = fopen($tfidfFileToUse, 'r');
         if (!$handle) {
-            echo("Error opening TF-IDF file: {$this->tfidfFile}");
+            echo("Error opening TF-IDF file: {$tfidfFileToUse}");
             return [];
         }
         while (($line = fgets($handle)) !== false) {
@@ -1074,6 +1123,49 @@ abstract class BaseRAG
         $distance = sqrt($sum);
         return 1 / (1 + $distance);
     }
+    /**
+     * matchSourceToHashes
+     * --------------------
+     * Given a list of partial file sources, as stored in the dataGrid, normalizes the paths and finds the matching hash.
+     *
+     * @param array $fileList a list of full or partial file source paths.
+     */
+    private function matchSourceToHashes(array $fileList) : array{
+        function normalize_path(string $path): string
+        {
+            // 1) turn backslashes into forward-slashes
+            $p = str_replace('\\', '/', $path);
+
+            // 2) collapse multiple slashes into one
+            return preg_replace('#/+#', '/', $p);;
+        }
+
+        $corpusData = json_decode(file_get_contents($this->corpusFile), true);
+
+        $allowedFileHashes = [];
+
+        foreach ($fileList as $file) {
+            $path = normalize_path(urldecode(ltrim($file))); //first normalize whatever is in col 2, just in case a valid path has already been substituted if it's a transcript
+            //If it's already a full path, don't do anything extra. If it isn't, add the base directory
+            if(!(realpath($path))){
+                $path = normalize_path(urldecode(rtrim($this->encodingDirectory, '/\\') . '/' . ltrim($file, '/\\')));
+            }
+            $file = $path;
+            $matched = false;
+            foreach ($corpusData['hashes'] as $hash => $entry) {
+                $entrySource = $entry['metaData']['source'] ?? '';
+                if (basename($entrySource) === basename($file)) {
+                    $allowedFileHashes[] = $hash; // just add the hash to the output array
+                    $matched = true;
+                    break; // Only want the first match
+                }
+            }
+            if (!$matched) {
+                $allowedFileHashes[] = null;
+            }
+        }
+        return $allowedFileHashes;
+    }
 
     /**
      * getWeightedContext
@@ -1093,12 +1185,13 @@ abstract class BaseRAG
      *   - tfidf_euclidean:     0.2
      *
      * @param string $question The input query.
+     * @param null $allowedFiles An array of hashes to define a limited scope from the whole corpus.
      * @param array|null $weights Associative array with keys: 'embedding_cosine', 'embedding_euclidean', 'tfidf_cosine', 'tfidf_euclidean'.
      * @param int $topK Number of top chunks to return (default: 3).
      * @param float $overlap Percentage of previous and following chunk to include in retrieval (default: 0.5).
      * @return array Array of top chunks with combined weighted scores.
      */
-    public function getWeightedContext($question, $weights = null, $topK = 3, $overlap = 0.5)
+    public function getWeightedContext($question, $allowedFiles = null, $weights = null, $topK = 3, $overlap = 0.5)
     {
         // Set default weights if not provided.
         if (!$weights) {
@@ -1109,12 +1202,21 @@ abstract class BaseRAG
                 'tfidf_euclidean' => 0.2
             ];
         }
+        //Retrieve the hashes for all the indicated allowed files
+        $allowedFileHashes = $allowedFiles !== null ? $this->matchSourceToHashes($allowedFiles) : null;
 
         // Get candidate results from each modular function (requesting more than needed).
-        $candidatesEmbeddingCosine = $this->getContextCosine($question, 10);
-        $candidatesEmbeddingEuclidean = $this->getContextEuclidean($question, 10);
-        $candidatesTfidfCosine = $this->getContextCosineTfIdf($question, 10);
-        $candidatesTfidfEuclidean = $this->getContextEuclideanTfIdf($question, 10);
+        $candidatesEmbeddingCosine = $this->getContextCosine($question, 10, $allowedFileHashes);
+        $candidatesEmbeddingEuclidean = $this->getContextEuclidean($question, 10, $allowedFileHashes);
+        //If allowedFileHashes is not null, it means the user has requested a restricted context
+        //We take the provided list, which is of the partial file sources, and retrieve the associated hashes from the
+        //corpus file for filtering.
+        if ($allowedFileHashes != null){
+            $corpus = $this->corpusFile;
+            $this->generateTfidfPersistent($allowedFileHashes);
+        }
+        $candidatesTfidfCosine = $this->getContextCosineTfIdf($question, 10, $allowedFileHashes);
+        $candidatesTfidfEuclidean = $this->getContextEuclideanTfIdf($question, 10, $allowedFileHashes);
 
         // Merge candidates by chunk id.
         $merged = [];
@@ -1367,5 +1469,25 @@ abstract class BaseRAG
      */
     public function getCorpusDirectory (){
         return $this->corpusFile;
+    }
+
+    public function isCorpusValid() {
+        if (!file_exists($this->corpusFile)) {
+            return false;
+        }
+        $contents = file_get_contents($this->corpusFile);
+        $json = json_decode($contents, true);
+
+        // Check for empty file, invalid JSON, or hashes array is empty
+        if (
+            empty($json) ||
+            !isset($json['hashes']) ||
+            !is_array($json['hashes']) ||
+            count($json['hashes']) === 0
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }
