@@ -13,6 +13,7 @@
 //    _debug("prompt is empty");
 //    die('{"status": "error", "message": "prompt must not be empty"}');
 //}
+ob_start();
 $query = $_POST["query"];
 $api = $_POST["api"] ?? 'pexels';
 $url = $_POST["target"];
@@ -46,8 +47,10 @@ if ($result->status) {
 
 		$_SESSION["paths_img_search"][] = $full_path;
 		$result->paths[$i] = $web_path;
+        //TODO: Fix for non-credit vendors (Dalle2, Dalle3)
 		$result->credits[] = file_get_contents($credits);
 	}
+    ob_end_clean();
 	echo json_encode($result);
 } else {
 	echo json_encode(["status" => "success", "result" => $result]);

@@ -490,6 +490,6 @@ function verify_LO_folder($LO, $folder): void
     $user_files_dir = $xerte_toolkits_site->users_file_area_full . $LO . $folder;
 
     if (!is_dir($user_files_dir)) {
-        mkdir($user_files_dir);
+        mkdir($user_files_dir, 0777, true);
     }
 }
