@@ -408,3 +408,14 @@ CREATE TABLE IF NOT EXISTS `$management_helper` (
     `sub_options` TEXT,
     PRIMARY KEY (`interaction_id`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `management_helper` VALUES
+                                    (1, 'openai', 'GPT (Openai)', 'ai', 1, 0, '{\"generate image\":\"false\",\"image uploads\":\"false\"}'),
+                                    (2, 'anthropic', 'Claude (Anthropic)', 'ai', 1, 0, '{\"generate image\":\"false\"}'),
+                                    (3, 'mistral', 'Mistral AI', 'ai', 1, 0, '{\"generate image\":\"false\"}'),
+                                    (4, 'pexels', 'Pexels', 'image', 1, 0, '{}'),
+                                    (5, 'pixabay', 'Pixabay', 'image', 1, 0, '{}'),
+                                    (6, 'unsplash', 'Unsplash', 'image', 1, 0, '{}'),
+                                    (7, 'wikimedia', 'Wikimedia Foundation', 'image', 0, 0, '{}'),
+                                    (8, 'dalle2', 'DallE2 (Generative)', 'image', 1, 0, '{}'),
+                                    (9, 'dalle3', 'DallE3 (Generative)', 'image', 1, 0, '{}');
