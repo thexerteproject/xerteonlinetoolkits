@@ -2896,21 +2896,44 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'link'){
+				const hideContent = checkHiddenContent($(this), 'Content');
+				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
+					const $this = $(this);
+					const url = $this.attr('url');
 
-				var url = $(this).attr('url');
-				var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
-				var options = '';
-				options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
-				options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
-				options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
-				options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
-				options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
-				options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
-				options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
-				options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
+					if ($this.attr('windowName') != undefined) {
+						// this is now deprecated but keeping here in case old project use it still
+						const winName = $this.attr('windowName') != undefined ? $this.attr('windowName') : 'win' + new Date().getTime();
+						let options = '';
+						options += $this.attr('width') != undefined ? 'width=' + $this.attr('width') + ',' : '';
+						options += $this.attr('height') != undefined ? 'height=' + $this.attr('height') + ',' : '';
+						options += $this.attr('scrollbars') != undefined ? 'scrollbars=' + $this.attr('scrollbars') + ',' : '';
+						options += $this.attr('location') != undefined ? 'location=' + $this.attr('location') + ',' : '';
+						options += $this.attr('status') != undefined ? 'status=' + $this.attr('status') + ',' : '';
+						options += $this.attr('titlebar') != undefined ? 'titlebar=' + $this.attr('titlebar') + ',' : '';
+						options += $this.attr('toolbar') != undefined ? 'toolbar=' + $this.attr('toolbar') + ',' : '';
+						options += $this.attr('resizable') != undefined ? 'resizable=' + $this.attr('resizable') + ',' : '';
+						pane.append('<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $this.attr('name') + '</a></p>');
 
-				pane.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
+					} else {
+						let target = "target='_blank'";
+						let linkWarning = " (" + getLangInfo(languageData.find("screenReaderInfo")[0], "shortNewWindow", "opens in a new window") + ")";
+						if ($this.attr('target') == 'lightbox') {
+							target = "data-featherlight='iframe'";
+							linkWarning = "";
+						} else if ($this.attr('target') == '_self') {
+							target = "target='_self'";
+							linkWarning = "";
+						}
+						const linkText = $this.attr('name') != undefined && $this.attr('name') != "" ? $this.attr('name') : url;
+						pane.append("<p><a href='" + url + "' " + target + ">" + linkText + linkWarning + "</a></p>");
+					}
 
+					if (authorSupport == true) {
+						const hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+						pane.append(hideContentMessage);
+					}
+				}
 			}
 
 			if (this.nodeName == 'pdf'){
@@ -3138,23 +3161,42 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'link') {
-				var hideContent = checkHiddenContent($(this), 'Content');
+				const hideContent = checkHiddenContent($(this), 'Content');
 				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
-					var url = $(this).attr('url');
-					var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime();
-					var options = '';
-					options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
-					options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
-					options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
-					options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
-					options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
-					options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
-					options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
-					options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
 
-					inner.append('<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>');
-					if(authorSupport == true){
-						var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+					const $this = $(this);
+					const url = $this.attr('url');
+
+					if ($this.attr('windowName') != undefined) {
+						// this is now deprecated but keeping here in case old project use it still
+						const winName = $this.attr('windowName') != undefined ? $this.attr('windowName') : 'win' + new Date().getTime() ;
+						let options = '';
+						options += $this.attr('width') != undefined ? 'width=' + $this.attr('width') + ',' : '';
+						options += $this.attr('height') != undefined ? 'height=' + $this.attr('height') + ',' : '';
+						options += $this.attr('scrollbars') != undefined ? 'scrollbars=' + $this.attr('scrollbars') + ',' : '';
+						options += $this.attr('location') != undefined ? 'location=' + $this.attr('location') + ',' : '';
+						options += $this.attr('status') != undefined ? 'status=' + $this.attr('status') + ',' : '';
+						options += $this.attr('titlebar') != undefined ? 'titlebar=' + $this.attr('titlebar') + ',' : '';
+						options += $this.attr('toolbar') != undefined ? 'toolbar=' + $this.attr('toolbar') + ',' : '';
+						options += $this.attr('resizable') != undefined ? 'resizable=' + $this.attr('resizable') + ',' : '';
+						inner.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $this.attr('name') + '</a></p>' );
+
+					} else {
+						let target = "target='_blank'";
+						let linkWarning = " (" + getLangInfo(languageData.find("screenReaderInfo")[0], "shortNewWindow", "opens in a new window") + ")";
+						if ($this.attr('target') == 'lightbox') {
+							target = "data-featherlight='iframe'";
+							linkWarning = "";
+						} else if ($this.attr('target') == '_self') {
+							target = "target='_self'";
+							linkWarning = "";
+						}
+						const linkText = $this.attr('name') != undefined && $this.attr('name') != "" ? $this.attr('name') : url;
+						inner.append("<p><a href='" + url + "' " + target + ">" + linkText + linkWarning + "</a></p>");
+					}
+
+					if (authorSupport == true) {
+						const hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 						inner.append(hideContentMessage);
 					}
 				}
@@ -3288,21 +3330,45 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'link'){
+				var hideContent = checkHiddenContent($(this), 'Content');
+				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
 
-				var url = $(this).attr('url');
-				var winName = $(this).attr('windowName') != undefined ? $(this).attr('windowName') : 'win' + new Date().getTime() ;
-				var options = '';
-				options += $(this).attr('width') != undefined ? 'width=' + $(this).attr('width') + ',' : '';
-				options += $(this).attr('height') != undefined ? 'height=' + $(this).attr('height') + ',' : '';
-				options += $(this).attr('scrollbars') != undefined ? 'scrollbars=' + $(this).attr('scrollbars') + ',' : '';
-				options += $(this).attr('location') != undefined ? 'location=' + $(this).attr('location') + ',' : '';
-				options += $(this).attr('status') != undefined ? 'status=' + $(this).attr('status') + ',' : '';
-				options += $(this).attr('titlebar') != undefined ? 'titlebar=' + $(this).attr('titlebar') + ',' : '';
-				options += $(this).attr('toolbar') != undefined ? 'toolbar=' + $(this).attr('toolbar') + ',' : '';
-				options += $(this).attr('resizable') != undefined ? 'resizable=' + $(this).attr('resizable') + ',' : '';
+					const $this = $(this);
+					const url = $this.attr('url');
 
-				pane.append( '<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $(this).attr('name') + '</a></p>' );
+					if ($this.attr('windowName') != undefined) {
+						// this is now deprecated but keeping here in case old project use it still
+						const winName = $this.attr('windowName') != undefined ? $this.attr('windowName') : 'win' + new Date().getTime();
+						let options = '';
+						options += $this.attr('width') != undefined ? 'width=' + $this.attr('width') + ',' : '';
+						options += $this.attr('height') != undefined ? 'height=' + $this.attr('height') + ',' : '';
+						options += $this.attr('scrollbars') != undefined ? 'scrollbars=' + $this.attr('scrollbars') + ',' : '';
+						options += $this.attr('location') != undefined ? 'location=' + $this.attr('location') + ',' : '';
+						options += $this.attr('status') != undefined ? 'status=' + $this.attr('status') + ',' : '';
+						options += $this.attr('titlebar') != undefined ? 'titlebar=' + $this.attr('titlebar') + ',' : '';
+						options += $this.attr('toolbar') != undefined ? 'toolbar=' + $this.attr('toolbar') + ',' : '';
+						options += $this.attr('resizable') != undefined ? 'resizable=' + $this.attr('resizable') + ',' : '';
+						pane.append('<p><a href="javascript:window.open(\'' + url + '\', \'' + winName + '\', \'' + options + '\');void(0)">' + $this.attr('name') + '</a></p>');
 
+					} else {
+						let target = "target='_blank'";
+						let linkWarning = " (" + getLangInfo(languageData.find("screenReaderInfo")[0], "shortNewWindow", "opens in a new window") + ")";
+						if ($this.attr('target') == 'lightbox') {
+							target = "data-featherlight='iframe'";
+							linkWarning = "";
+						} else if ($this.attr('target') == '_self') {
+							target = "target='_self'";
+							linkWarning = "";
+						}
+						const linkText = $this.attr('name') != undefined && $this.attr('name') != "" ? $this.attr('name') : url;
+						pane.append("<p><a href='" + url + "' " + target + ">" + linkText + linkWarning + "</a></p>");
+					}
+
+					if (authorSupport == true) {
+						const hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
+						pane.append(hideContentMessage);
+					}
+				}
 			}
 
 			if (this.nodeName == 'pdf'){
