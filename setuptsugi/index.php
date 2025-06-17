@@ -320,6 +320,12 @@ $_SESSION['admin'] = true;
 			echo "Your PHP version is ". $phpversion . ". Using branch php-80-x.<br>";
 			$branch = "php-80-x";
 		}
+        else if ($phpversion < "8.4")
+        {
+            echo "Your PHP version is ". $phpversion . ". Using tag 25.5.1 (php 8.2 and 8.3).<br>";
+            $branch = "master";
+            $tag = "25.5.1";
+        }
 		else
 		{
 			$branch = "master";
@@ -410,8 +416,16 @@ $_SESSION['admin'] = true;
 		flush();
                 global $xerte_toolkits_site;
                 //$url = "https://github.com/$u/$repo/archive/master.zip";
-                $url = "https://github.com/tsugiproject/tsugi/archive/refs/heads/{$branch}.zip";
-                $tsugizip = __DIR__."/../import/tsugi-{$branch}.zip";
+                if (!isset($tag)) {
+                    $url = "https://github.com/tsugiproject/tsugi/archive/refs/heads/{$branch}.zip";
+                    $zip = $branch;
+                }
+                else
+                {
+                    $url = "https://github.com/tsugiproject/tsugi/archive/refs/tags/{$tag}.zip";
+                    $zip = $tag;
+                }
+                $tsugizip = __DIR__."/../import/tsugi-{$zip}.zip";
                 $ch = curl_init();
                 $f = fopen($tsugizip, 'w+');
                 $opt = [
