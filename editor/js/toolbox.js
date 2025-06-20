@@ -429,7 +429,7 @@ var EDITOR = (function ($, parent) {
         var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true" || xmlData[0].getAttribute("linkPageChapter") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
 		var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
-		var milestoneIcon = getExtraTreeIcon(key, "milestone", xmlData[0].getAttribute("milestone") != undefined && xmlData[0].getAttribute("milestone") != '');
+		var milestoneIcon = getExtraTreeIcon(key, "milestone", xmlData[0].getAttribute("milestone") == "true");
 
         treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + milestoneIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
 
@@ -2206,7 +2206,7 @@ var EDITOR = (function ($, parent) {
         }
 
         if (name == "milestone") {
-            changeNodeStatus(key, "milestone", value != "");
+            changeNodeStatus(key, "milestone", value == "true");
         }
 
         if (name == "unmarkForCompletion") {
