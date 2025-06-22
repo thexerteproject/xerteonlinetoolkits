@@ -13,9 +13,7 @@ require_once("management_library.php");
 function changeuserselection_roles($userid){
 	global $xerte_toolkits_site;
 
-	database_connect();
-	
-    $result = db_query("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}logindetails order by surname,firstname,username");
+    $result = db_query("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}logindetails where disabled=0 order by surname,firstname,username");
 
 	if($result === false){
 		return;
@@ -38,8 +36,10 @@ function changeuserselection_roles($userid){
         foreach ($user_roles_results as $user_role) {
             $user_roles[] = $user_role["roleid"];
         }
-        echo "<div style=\"margin-left:20px\">";
-        echo "<select onchange=\"changeUserSelection_user_roles()\" id=\"user_roles\">";
+        echo "<div id=\"user_roles_container\" style=\"margin-left:20px\">";
+
+        echo "<select onchange=\"changeUserSelection_user_roles()\" id=\"user_roles\" class=\"selectize\">";
+        echo "<option value=\"\">" . USERS_MANAGE_ROLES_SELECT_USER . "</option>";
 
         foreach ($result as $row_users) {
             if ($row_users["login_id"] == $userid) {
@@ -78,7 +78,7 @@ function x_get_user_roles(){
     $result = db_query("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}logindetails order by surname,firstname,username");
 	
 	if(!($result===false) && count($result) > 0){
-		changeuserselection_roles($result[0]["login_id"]);
+		changeuserselection_roles("-1");
 	}
 }
 

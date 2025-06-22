@@ -47,6 +47,9 @@ function management_stateChanged(response) {
 	if (response != "") {
 
 		document.getElementById('admin_area').innerHTML = response;
+
+		$(".selectize").selectize();
+
 		loadModal();
 	}
 }
@@ -1208,7 +1211,7 @@ function loadModal() {
             load(modal);
         }
     }
-};
+}
 
 function load(modal)
 {
@@ -1541,6 +1544,127 @@ function delete_group( group_tag ){
 	}
 }
 
+function changeUserSelection_active_users(mode='previous', include_header=false){
+	let selected_users = $("#users");
+	let oldmode = $("#users").data("mode");
+	if (oldmode !== undefined && mode == 'previous') {
+		mode = oldmode;
+		$("#users").data("mode", mode);
+	}
+	else
+	{
+		$("#users").data("mode", mode);
+	}
+	if(selected_users){
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/management/get_active_users.php",
+			data : {
+				mode: mode,
+				include_header: include_header,
+				userids: selected_users.val(),
+			},
+		}).done(function (response){
+			if (include_header) {
+				document.getElementById("active_user_management").innerHTML = response;
+				$(".selectize").selectize();
+			}
+			else {
+				document.getElementById("user_selection").innerHTML = response;
+			}
+		}).fail(function (){
+			alert("something went wrong");
+		});
+	}
+}
+
+function change_user_active(user_id){
+	let user_disabled = $("#user_disabled" + user_id);
+	if (user_disabled) {
+		disabled = user_disabled.prop("checked");
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/management/change_user_active.php",
+			data : {
+				user_id: user_id,
+				disabled: disabled,
+			},
+		}).done(function (response){
+			if (response != "") {
+				alert(response);
+			}
+			changeUserSelection_active_users('previous', true);
+		}).fail(function (){
+			alert("something went wrong");
+		});
+	}
+}
+
+function change_user_active_state(state)
+{
+	let selected_users = $("#users");
+	if(selected_users){
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/management/change_users_active.php",
+			data : {
+				state: state,
+				userids: selected_users.val(),
+			},
+		}).done(function (response){
+			changeUserSelection_active_users('previous', true);
+		}).fail(function (){
+			alert("something went wrong");
+		});
+	}
+}
+
+function change_user_active_mode(mode) {
+	if (mode == 'all'|| mode == 'active' || mode == 'inactive') {
+		changeUserSelection_active_users(mode, true);
+	}
+	else {
+		alert("Invalid mode selected: " + mode);
+	}
+}
+
+function disable_users_based_on_last_login()
+{
+	let last_login_date = $("#disable_users_last_login_date");
+	if (last_login_date && last_login_date.val() != "") {
+
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/management/retrieve_users_based_on_last_login.php",
+			data : {
+				last_login_date: last_login_date.val(),
+			},
+		}).done(function (response){
+			if (response != "") {
+				if (confirm(response))
+				{
+					$.ajax({
+						type: "POST",
+						url: "website_code/php/management/disable_users_based_on_last_login.php",
+						data : {
+							last_login_date: last_login_date.val(),
+						},
+					}).done(function(response){
+						if (response != "") {
+							alert(response);
+						}
+						changeUserSelection_active_users('previous', true);
+					})
+				}
+			}
+		}).fail(function (){
+			alert("something went wrong");
+		});
+	}
+	else {
+		alert("Please select a date to disable users based on their last login.");
+	}
+}
 function changeUserSelection_user_roles(){
 		let role_user_select = document.getElementById("user_roles");
 		if(role_user_select){
@@ -1552,11 +1676,15 @@ function changeUserSelection_user_roles(){
 						},
 				}).done(function (response){
 						document.getElementById("manage_user_roles").innerHTML = response;
+						$(".selectize").selectize();
 				}).fail(function (){
 						alert("something went wrong");
 				});
 		}
 }
+
+
+
 
 function manage_user_roles_select(user_id)
 {
@@ -1568,6 +1696,7 @@ function manage_user_roles_select(user_id)
 		},
 	}).done(function (response){
 		document.getElementById("manage_user_roles").innerHTML = response;
+		$(".selectize").selectize();
 	}).fail(function (){
 		alert("something went wrong");
 	});

@@ -188,21 +188,11 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
 	$email = '';
 
 	if ($result) {
-            echo "<select onchange=\"changeUserSelection_authDb_user()\" id=\"authDb_list_user\">";
+            echo "<select onchange=\"changeUserSelection_authDb_user()\" id=\"authDb_list_user\" class=\"selectize\">";
+            echo "<option selected=\"selected\" value=\"\">" . AUTH_DB_SELECT_USER . "</option>";
 
-            $first = true;
             foreach($result as $row_users){
-                if ($first) {
-                    echo "<option selected=\"selected\" value=\"" . $row_users['username'] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
-                    $username = $row_users['username'];
-                    $firstname = $row_users['firstname'];
-                    $surname = $row_users['surname'];
-                    $email = $row_users['email'];
-                    $first = false;
-            	}
-                else {
-                    echo "<option value=\"" . $row_users['username'] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
-                }
+                echo "<option value=\"" . $row_users['username'] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
             }
 
             echo "</select>";

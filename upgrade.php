@@ -1622,3 +1622,17 @@ function upgrade_50()
 
     return $message;
 }
+
+function upgrade_51()
+{
+    // Add disabled flag to logindetails
+    if (! _db_field_exists('logindetails', 'disabled')) {
+        $error1 = _db_add_field('logindetails', 'disabled', 'tinyint(1)', '0', 'surname');
+
+        return "Creating disabled field in logindetails - ok ? " . ($error1 ? 'true' : 'false');
+    }
+    else
+    {
+        return "Disabled field in logindetails already present - ok ? true";
+    }
+}

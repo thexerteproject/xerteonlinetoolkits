@@ -59,7 +59,7 @@ if(is_numeric($parameters[0])&&is_string($parameters[1])){
         $query_groups_response = db_query($query_for_groups, array("%$search%", $tutorial_id));
 
         $query_for_names = "select login_id, firstname, surname, username from {$prefix}logindetails WHERE "
-        . "((firstname like ?) or (surname like ?) or (username like ?)) AND login_id NOT IN ( "
+        . "((firstname like ?) or (surname like ?) or (username like ?)) AND disabled=0 AND login_id NOT IN ( "
         . "SELECT login_id from {$prefix}folderrights where folder_id = ? ) ORDER BY firstname ASC";
 
         $params = array("%$search%", "%$search%", "%$search%", $tutorial_id);
