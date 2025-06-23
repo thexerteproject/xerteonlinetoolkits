@@ -943,11 +943,15 @@ function sharing_info($template_id)
 
     $query_group_sharing_rows = db_query($sql, array($template_id));
 
-    $sql = "SELECT folder FROM {$prefix}templaterights where template_id = ? and role =?";
-    $query_folder_id = db_query($sql, array($template_id, "creator"));
+    $sql = "SELECT folder FROM {$prefix}templaterights where template_id = ?";
+    $query_folder_ids = db_query($sql, array($template_id));
 
-    $sql = "SELECT * FROM {$prefix}folderrights where folder_id = ?";
-    $query_folders = db_query($sql, array($query_folder_id[0]["folder"]));
+    $folder_ids_string = implode(",", array_map(function($item) {
+        return $item['folder'];
+    }, $query_folder_ids));
+
+    $sql = "SELECT * FROM {$prefix}folderrights where folder_id in ({$folder_ids_string})";
+    $query_folders = db_query($sql);
 
     $related_folders = array();
     $params = array();
