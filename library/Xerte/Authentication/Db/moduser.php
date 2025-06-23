@@ -49,17 +49,17 @@ if(is_user_permitted("useradmin")){
     {
         $warn .= "<li>" . AUTH_DB_MODUSER_USERNAMEIGNORED . "</li>";
     }
-    if (isset($_POST['password']) && strlen(urldecode($_POST['password'])) != 0 && strlen(urldecode(x_clean_input($_POST['password']))) < 5 )
+    if (isset($_POST['password']) && strlen(urldecode($_POST['password'])) != 0 && strlen($_POST['password']) < 5 )
     {
         $mesg .= "<li>" . AUTH_DB_MODUSER_PASSWORDTOOSHORT . "</li>";
     }
     if (strlen($mesg) == 0)
     {
         if ($authmech_can_manage_users) {
-            $mesg .= $authmech->modUser(urldecode(x_clean_input($_POST['username'])), urldecode(x_clean_input($_POST['firstname'])), urldecode(x_clean_input($_POST['surname'])), urldecode(x_clean_input($_POST['password'])), urldecode(x_clean_input($_POST['email'])));
+            $mesg .= $authmech->modUser(urldecode(x_clean_input($_POST['username'])), urldecode(x_clean_input($_POST['firstname'])), urldecode(x_clean_input($_POST['surname'])), $_POST['password'], urldecode(x_clean_input($_POST['email'])));
         }
         else if ($altauthmech_can_manage_users) {
-            $mesg .= $altauthmech->modUser(urldecode(x_clean_input($_POST['username'])), urldecode(x_clean_input($_POST['firstname'])), urldecode(x_clean_input($_POST['surname'])), urldecode(x_clean_input($_POST['password'])), urldecode(x_clean_input($_POST['email'])));
+            $mesg .= $altauthmech->modUser(urldecode(x_clean_input($_POST['username'])), urldecode(x_clean_input($_POST['firstname'])), urldecode(x_clean_input($_POST['surname'])), $_POST['password'], urldecode(x_clean_input($_POST['email'])));
         }
     }
     if (strlen($mesg) > 0)

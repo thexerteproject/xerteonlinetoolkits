@@ -26,7 +26,7 @@
 	
 		global $xerte_toolkits_site;
 
-        $query = "select * from $xerte_toolkits_site->database_table_prefix syndicationcategories";
+        $query = "select * from {$xerte_toolkits_site->database_table_prefix}syndicationcategories";
         $query_response = db_query($query);
 
         //build tree
@@ -78,7 +78,7 @@
     function educationlevel_list(){
         global $xerte_toolkits_site;
 
-        $query = "select * from $xerte_toolkits_site->database_table_prefix educationlevel";
+        $query = "select * from {$xerte_toolkits_site->database_table_prefix}educationlevel";
         $query_response = db_query($query);
 
         //build tree

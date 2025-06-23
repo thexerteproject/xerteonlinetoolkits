@@ -132,17 +132,17 @@
 			var imgMaxW, imgMaxH;
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				imgMaxW = Math.round($x_pageDiv.width() - 30);
-				imgMaxH = Math.round($x_pageHolder.height() - 30);
 				$('#panel').css('margin', '0px');
+				imgMaxH = x_getAvailableHeight([$('#panel')], []);
 			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
 				imgMaxW = Math.round($x_pageDiv.width() * 0.8 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxH = x_getAvailableHeight([$('#panel')], []);
 			} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
 				imgMaxW = Math.round($x_pageDiv.width() * 0.3 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxH = x_getAvailableHeight([$('#panel')], []);
 			} else {
 				imgMaxW = Math.round($x_pageDiv.width() * 0.55 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxH = x_getAvailableHeight([$('#panel')], []);
 			}
 			
 			$img.mapster('unbind');

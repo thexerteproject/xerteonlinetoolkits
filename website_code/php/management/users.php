@@ -25,6 +25,7 @@ _load_language_file("/management.inc");
 require("../user_library.php");
 require("management_library.php");
 require("get_user_roles.php");
+require("get_active_users.php");
 
 if(is_user_permitted("useradmin")){
     global $authmech, $xerte_toolkits_site;;
@@ -94,7 +95,13 @@ if(is_user_permitted("useradmin")){
             if ($prevuser != -1) {
                 echo "</td>";
                 // select button
-                echo "<td><button type=\"button\" class=\"xerte_button\" id=\"user_id_" . $row['login_id'] . "_btn\" title=\"" . USERS_MANAGE_ROLES_OVERVIEW_SELECT_USER . "\" onclick=\"javascript:manage_user_roles_select('" . $prevuser . "')\"><i class='fa fa-pen-to-square'></i></button></td>";
+                if (is_user_admin()) {
+                    echo "<td><button type=\"button\" class=\"xerte_button\" id=\"user_id_" . $row['login_id'] . "_btn\" title=\"" . USERS_MANAGE_ROLES_OVERVIEW_SELECT_USER . "\" onclick=\"javascript:manage_user_roles_select('" . $prevuser . "')\"><i class='fa fa-pen-to-square'></i></button></td>";
+                }
+                else{
+                    // Empty column
+                    echo "<td></td>";
+                }
                 echo "</tr>";
             }
             echo "<tr><td class=\"user-roles-username\">";
@@ -113,20 +120,48 @@ if(is_user_permitted("useradmin")){
     }
     echo "</td>";
     // select button
-    echo "<td><button type=\"button\" class=\"xerte_button\" id=\"user_id_" . $row['login_id'] . "_btn\" title=\"" . USERS_MANAGE_ROLES_OVERVIEW_SELECT_USER . "\" onclick=\"javascript:manage_user_roles_select('" . $prevuser . "')\"><i class='fa fa-pen-to-square'></i></button></td>";
+    if (is_user_admin()) {
+        echo "<td><button type=\"button\" class=\"xerte_button\" id=\"user_id_" . $row['login_id'] . "_btn\" title=\"" . USERS_MANAGE_ROLES_OVERVIEW_SELECT_USER . "\" onclick=\"javascript:manage_user_roles_select('" . $prevuser . "')\"><i class='fa fa-pen-to-square'></i></button></td>";
+    }
+    else{
+        // Empty column
+        echo "<td></td>";
+    }
     echo "</tr>";
     echo "    </tbody>";
     echo "  </table>";
+
+    x_get_users();
+
+    echo "<br><div>";
+    echo "<h2>" . USERS_MANAGE_DISABLE_USERS_BASED_ON_LASTLOGIN . "</h2>";
+    echo "<p>" . USERS_MANAGE_DISABLE_USERS_BASED_ON_LASTLOGIN_TEXT . "</p>";
+    echo "<p><label for=\"disable_users_last_login_date\">" . USERS_MANAGE_DISABLE_USERS_BASED_ON_LASTLOGIN_DATE . "&nbsp;</label>";
+    echo "<input type=\"date\" id=\"disable_users_last_login_date\" name=\"disable_users_last_login_date\" value=\"" . date("Y-m-d", strtotime("-1 year")) . "\" />";
+    echo "&nbsp;<button type=\"button\" class=\"xerte_button\" id=\"disable_users_last_login_btn\" onclick=\"javascript:disable_users_based_on_last_login()\">" . USERS_MANAGE_DISABLE_USERS_BASED_ON_LASTLOGIN_BUTTON . "</button>";
+    echo "</p></div>";
+    /*
     echo "  </div>";
-    echo "<h2>" . USERS_MANAGE_ACTIVE . "</h2>";
 
-    $database_id = database_connect("templates list connected","template list failed");
+    $query="select * from {$prefix}logindetails where disabled=0 order by surname,firstname,username";
+    $active_users = db_query($query);
 
-    $query="select * from {$prefix}logindetails order by surname,firstname,username";
+    echo "<h2>" . USERS_MANAGE_ACTIVE . "(" . count($active_users) . ")</h2>";
 
-	$query_response = db_query($query);
+    echo "<select onchange=\"changeUserSelection_active_users()\" multiple id=\"users\" class=\"selectize selectize_multi\">";
+    echo "<option value=\"\">" . USERS_MANAGE_ACTIVE_SELECT_USER . "</option>";
 
-    foreach($query_response as $row) { 
+    foreach ($active_users as $row_users) {
+        if ($row_users["login_id"] == "*") {
+            echo "<option selected=\"selected\" value=\"" . $row_users['login_id'] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
+        } else {
+            echo "<option value=\"" . $row_users['login_id'] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
+        }
+    }
+
+    echo "</select>";
+
+    foreach($active_users as $row) {
         echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['surname'] . ", " . $row['firstname'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:templates_display('" . $row['username'] . "')\">" . USERS_TOGGLE . "</button></p></div><div class=\"template_details\" id=\"" . $row['username']  . "_child\">";
 
         echo "<p>" . USERS_ID . "<form><textarea id=\"user_id" . $row['login_id'] .  "\">" . $row['login_id'] . "</textarea></form></p>";
@@ -138,11 +173,10 @@ if(is_user_permitted("useradmin")){
     }
 	
 	echo "</div>";
-
+    */
 }else{
 
     management_fail();
 
 }
 
-?>
