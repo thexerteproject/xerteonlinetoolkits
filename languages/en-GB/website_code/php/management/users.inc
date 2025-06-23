@@ -79,6 +79,8 @@
     define("USERS_ROLE_PROJECTADMIN", "Project Admin");
 
     define("USERS_ROLE_HARVESTADMIN", "Harvest Admin");
+
+    define("USERS_ROLE_AIUSER", "AI User");
 //  admin roles info -------------------------------------------
 
     define("USERS_ROLE_SUPER_INFO", "This role gives access to the whole management page. It is the highest level of access.");
@@ -94,4 +96,6 @@
     define("USERS_ROLE_PROJECTADMIN_INFO", "This role gives access to the User Projects tab in the management page.");
 
     define("USERS_ROLE_HARVESTADMIN_INFO", "This role allows you to enable a project to be harvested using OAI-PMH (if configured).");
+
+    define("USERS_ROLE_AIUSER_INFO", "This role allows you to use generative AI to create content (if configured).");
 

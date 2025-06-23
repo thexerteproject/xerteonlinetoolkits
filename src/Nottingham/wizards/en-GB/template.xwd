@@ -832,10 +832,10 @@
         <multiPeriodVersion label="Select period version" type="combobox" conditionTrigger="true" options="Disabled,Static periods,Dynamic periods(on demand),Dynamic periods(always)" data="off,static,dynamic,dynamic_always" defaultValue="off" optional="true"/>
         <period0Date label="From" type="DateField" defaultValue="" optional="true" allowBlank="false" condition="multiPeriodVersion=='static'" conditionTrigger="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
         <period0UntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="false" condition="multiPeriodVersion=='static'" conditionTrigger="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
-        <period1 label="Use second period" type="CheckBox" defaultValue="true" optional="true" condition="multiPeriodVersion=='static'"/>
+        <period1 label="Use second period" type="CheckBox" defaultValue="false" optional="true" condition="multiPeriodVersion=='static'"/>
         <period1Date label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="multiPeriodVersion=='static'" conditionTrigger="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
         <period1UntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="multiPeriodVersion=='static'" conditionTrigger="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
-        <period2 label="Use third period" type="CheckBox" defaultValue="true" optional="true" condition="multiPeriodVersion=='static'"/>
+        <period2 label="Use third period" type="CheckBox" defaultValue="false" optional="true" condition="multiPeriodVersion=='static'"/>
         <period2Date label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="multiPeriodVersion=='static'" conditionTrigger="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
         <period2UntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="multiPeriodVersion=='static'" conditionTrigger="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
 
