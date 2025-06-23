@@ -268,17 +268,28 @@ class DocumentLoaderFactory {
     public static function getLoader(string $filePath): DocumentLoader {
         $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
 
-        return match ($extension) {
-            'txt'  => new TextLoader($filePath),
-            'html', 'htm' => new HtmlLoader($filePath),
-            'csv'  => new CsvLoader($filePath),
-            'xml'  => new XmlLoader($filePath),
-            'docx'  => new DocxLoader($filePath),
-            'odt'  => new OdtLoader($filePath),
-            'xlsx'  => new XlsxLoader($filePath),
-            'pptx'  => new PptxLoader($filePath),
-            'pdf'  => new PdfLoader($filePath),
-            default => throw new Exception("Unsupported file type: $extension"),
-        };
+        switch ($extension) {
+            case 'txt':
+                return new TextLoader($filePath);
+            case 'html':
+            case 'htm':
+                return new HtmlLoader($filePath);
+            case 'csv':
+                return new CsvLoader($filePath);
+            case 'xml':
+                return new XmlLoader($filePath);
+            case 'docx':
+                return new DocxLoader($filePath);
+            case 'odt':
+                return new OdtLoader($filePath);
+            case 'xlsx':
+                return new XlsxLoader($filePath);
+            case 'pptx':
+                return new PptxLoader($filePath);
+            case 'pdf':
+                return new PdfLoader($filePath);
+            default:
+                throw new Exception("Unsupported file type: $extension");
+        }
     }
 }
