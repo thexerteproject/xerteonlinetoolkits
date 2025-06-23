@@ -924,6 +924,7 @@ var EDITOR = (function ($, parent) {
                 .addClass("optButtonContainer");
             var table = $('<table>'); // contains opt props specific to this page type
             var table2 = $('<table>'); // contains opt props used on all page types
+            var tableLightbox = $('<table>'); //contains opt props using lightboxes
             var flashonly = $('<img>')
                 .attr('src', 'editor/img/flashonly.png')
                 .attr('alt', 'Flash only attribute');
@@ -1056,15 +1057,19 @@ var EDITOR = (function ($, parent) {
                             .append($('<td>')
                                 .append(button));
 
-                        if (sorted_options['optional'][i].value.common) {
-                            // chapter folders don't share general optional properties with pages
-                            if (node_name != "chapter") {
-                                table2.append(tablerow);
-                            }
+                        if (sorted_options['optional'][i].value.lightbox === 'form') {
+                            tableLightbox.append(tablerow);
                         } else {
-                            table.append(tablerow);
-                        }
+                            if (sorted_options['optional'][i].value.common) {
+                                // chapter folders don't share general optional properties with pages
+                                if (node_name != "chapter") {
+                                    table2.append(tablerow);
+                                }
+                            } else {
+                                table.append(tablerow);
+                            }
 
+                        }
                     }
                 }
             }
@@ -1076,6 +1081,15 @@ var EDITOR = (function ($, parent) {
                     table.prepend(tablerow);
                 }
                 html.append(table);
+            }
+
+            if (tableLightbox.find("tr").length > 0) {
+                if (menu_options.menu != undefined) {
+                    var tablerow = $('<tr>')
+                        .append('<td class="optPropTitle">' + (language.optionalAssistantPropHTML && language.optionalAssistantPropHTML.$general ? language.optionalAssistantPropHTML.$general : "Assistend") + '</td>');
+                    tableLightbox.prepend(tablerow);
+                }
+                html.append(tableLightbox);
             }
 
             if (table2.find("tr").length > 0) {
@@ -1317,6 +1331,7 @@ var EDITOR = (function ($, parent) {
             }
         }
 
+        //open lightbox when added to the page for the first time.
         if (lightboxGroup !== undefined && lightboxGroup !== "") {
             $('#lightboxbutton_' + lightboxGroup).trigger("click");
             $('.featherlight').css('background', 'rgba(0,0,0,.8)')

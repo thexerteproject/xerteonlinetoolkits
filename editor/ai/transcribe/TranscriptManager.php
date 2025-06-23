@@ -5,10 +5,9 @@ class TranscriptManager {
     private $mediaHandler;
     private $synchronizer;
 
-    public function __construct(RegistryHandler $registry, MediaHandler $mediaHandler, /*CorpusSynchronizer $synchronizer*/) {
+    public function __construct(RegistryHandler $registry, MediaHandler $mediaHandler) {
         $this->registry = $registry;
         $this->mediaHandler = $mediaHandler;
-        /*$this->synchronizer = $synchronizer;*/
     }
 
     public function appendBase($uploadPath) {

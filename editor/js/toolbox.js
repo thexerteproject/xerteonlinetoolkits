@@ -6088,7 +6088,7 @@ var EDITOR = (function ($, parent) {
                         if (aiSettings['updateLoOnRequest'] === "true"){
                             loSettings['useLoInCorpus'] = true;
                         }
-                        debugger
+
                         if (uploadPrompt == 'lo'){
                             loSettings['restrictCorpusToLo'] = true;
                         }

@@ -40,6 +40,7 @@
 	<addProp label="Voeg in" tooltip="Toevoegen" />
 	<optionalProp label="Extra eigenschappen:"/>
 	<optionalPropHTML general="Algemeen" label="Extra eigenschappen"/>
+	<optionalAssistantPropHTML label="Ai functies en hulpmiddelen" general="Assistent"/>
 	<chkShowLanguage label="Toon taal opties" tooltip="Laat de taal opties zien als die er zijn."/>
 	<chkShowAdvanced label="Toon geavanceerde opties" tooltip="Laat de geavanceerde opties zien, als die er zijn."/>
 	<chkShowToolbar label="Toon knoppenbalk" tooltip="Zet standaard de knoppen balk aan."/>
@@ -198,11 +199,4 @@
 		<Info2 label = "Let op: de nieuwe tabel wordt aan de oude tabel toegevoegd. Wilt u doorgaan? NB na het toevoegen kunnen er dubbele rijen na de merge."> </Info2>
 		<mergeOld label = "Voeg nieuwe tabel toe aan huidige inhoud:"/>
 	</UploadCSV>>
-	<vendorApi>
-		<missingKey>De geselecteerde leverancier heeft geen API-sleutel geïnstalleerd. Neem contact op met uw systeembeheerder.</missingKey>
-		<genericAiAPiError>Er is iets misgegaan. Probeer opnieuw een AI-verzoek te doen.</genericAiAPiError>
-		<overideSuggestionMsg>Gegenereerde suggesties overschrijven alle bestaande suggesties. Toch genereren?</overideSuggestionMsg>
-		<useSuggestionMsg>De geselecteerde suggestie wordt verwerkt en gebruikt om de inhoud van deze pagina aan te passen of een nieuwe pagina te genereren. Doorgaan?</useSuggestionMsg>
-		<overideContentMsg>Gegenereerde AI-inhoud zal de meeste inhoud op deze pagina overschrijven. Toch genereren?</overideContentMsg>
-	</vendorApi>
 </language>
