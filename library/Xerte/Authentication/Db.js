@@ -46,6 +46,7 @@ function authdb_stateChanged(){
 
     if (xmlHttp.readyState==4){
         document.getElementById('manage_auth_users').innerHTML = xmlHttp.responseText;
+        $("#authDb_list_user").selectize();
     }
 }
 

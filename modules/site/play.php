@@ -291,7 +291,12 @@ function show_template($row, $xapi_enabled=false){
     }
 
     $page_content = str_replace("%TRACKING_SUPPORT%", $tracking, $page_content);
-    $page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $page_content);
+    if (isset($youtube_api_key)) {
+        $page_content = str_replace("%YOUTUBEAPIKEY%", $youtube_api_key, $page_content);
+    }
+    else{
+        $page_content = str_replace("%YOUTUBEAPIKEY%", "", $page_content);
+    }
     $page_content = str_replace("%LASTUPDATED%", $row['date_modified'], $page_content);
     $page_content = str_replace("%DATECREATED%", $row['date_created'], $page_content);
     $page_content = str_replace("%NUMPLAYS%", $row['number_of_uses'], $page_content);

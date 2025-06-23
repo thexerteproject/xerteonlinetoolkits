@@ -471,12 +471,24 @@
                     if(nextPosition === "across"){
                         active++
                         relocateFocus(active)
+						if ($('#crossword-table tbody tr td').eq(active+1).find('input')[0] === undefined) nextPosition = "down";
                         return;
-                    }else{
+					}else if (nextPosition === "down") {
                         active+=columns
                         relocateFocus(active)
                         return;
-                    }
+                    }else { // down, across
+						if ($('#crossword-table tbody tr td').eq(active+1).find('input')[0]) {
+							active++
+							nextPosition = "across"
+						}
+						else {
+							active+=columns
+							nextPosition = "down"
+						}
+						relocateFocus(active);
+						return;
+					}
                 }else if(e === 8){
 
                     if(nextPosition === "across"){
@@ -1321,7 +1333,7 @@
                             coordinate = d + "," + c;
                             coordinates.push(coordinate)
                             letters.push(grid[d][c].char)
-                            indices.push(grid[d][c].across ? grid[d][c].across.index : grid[d][c].down.index);
+                            indices.push(grid[d][c].across ? (grid[d][c].down ? [ grid[d][c].across.index, grid[d][c].down.index ] : grid[d][c].across.index) :	grid[d][c].down.index);
                         }
                     }
                 }
@@ -1336,7 +1348,12 @@
                         //replace letter
                         document.getElementById(coordinates[coor]).value =  document.getElementById(coordinates[coor]).value.replace(/[^\d,]/g,'')
                         document.getElementById(coordinates[coor]).value = letters[coor];
-                        if (incorrectIndices.indexOf(indices[coor]) === -1) {
+                        if (Array.isArray(indices[coor])) {
+							indices[coor].forEach(function(ind) {
+								if (incorrectIndices.indexOf(ind) === -1) incorrectIndices.push(ind);
+							});
+						}
+						else if (incorrectIndices.indexOf(indices[coor]) === -1) {
                             incorrectIndices.push(indices[coor]);
                         }
                     }

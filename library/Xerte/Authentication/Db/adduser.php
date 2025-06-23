@@ -66,10 +66,10 @@ if(is_user_permitted("useradmin")){
     if (strlen($mesg) == 0)
     {
         if ($authmech_can_manage_users) {
-            $mesg = $authmech->addUser(urldecode(x_clean_input($_POST['username'])), urldecode(x_clean_input($_POST['firstname'])), urldecode(x_clean_input($_POST['surname'])), urldecode(x_clean_input($_POST['password'])), urldecode(x_clean_input($_POST['email'])));
+            $mesg = $authmech->addUser(urldecode(x_clean_input($_POST['username'])), urldecode(x_clean_input($_POST['firstname'])), urldecode(x_clean_input($_POST['surname'])), urldecode($_POST['password']), urldecode(x_clean_input($_POST['email'])));
         }
         else if ($altauthmech_can_manage_users) {
-            $mesg = $altauthmech->addUser(urldecode(x_clean_input($_POST['username'])), urldecode(x_clean_input($_POST['firstname'])), urldecode(x_clean_input($_POST['surname'])), urldecode(x_clean_input($_POST['password'])), urldecode(x_clean_input($_POST['email'])));
+            $mesg = $altauthmech->addUser(urldecode(x_clean_input($_POST['username'])), urldecode(x_clean_input($_POST['firstname'])), urldecode(x_clean_input($_POST['surname'])), urldecode($_POST['password']), urldecode(x_clean_input($_POST['email'])));
         }
     }
     if (strlen($mesg) > 0)

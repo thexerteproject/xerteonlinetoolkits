@@ -20,7 +20,7 @@ if (!isset($_POST['username']) || !isset($_POST['password']))
     die(AUTH_DB_CHANGEPASSWORD_INVALIDUSERNAME);
 }
 $supposed_user = x_clean_input($_POST['username']);
-$password = x_clean_input($_POST['password']);
+$password = $_POST['password'];
 $real_user = "";
 if (isset($_SESSION['toolkits_logon_username'])){
     $real_user = $_SESSION['toolkits_logon_username'];
@@ -84,10 +84,10 @@ if(is_user_permitted("useradmin") || $supposed_user == $real_user){
     if (strlen($mesg) == 0)
     {
         if ($authmech_can_manage_users) {
-            $mesg = $authmech->changePassword(urldecode($supposed_user), urldecode($password));
+            $mesg = $authmech->changePassword(urldecode($supposed_user), $password);
         }
         else if ($altauthmech_can_manage_users) {
-            $mesg = $altauthmech->changePassword(urldecode($supposed_user), urldecode($password));
+            $mesg = $altauthmech->changePassword(urldecode($supposed_user), $password);
         }
     }
     if (strlen($mesg) > 0)

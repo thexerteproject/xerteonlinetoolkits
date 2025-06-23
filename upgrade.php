@@ -1625,11 +1625,14 @@ function upgrade_50()
 
 function upgrade_51()
 {
-    $roleTable = table_by_key("role");
+    // Add disabled flag to logindetails
+    if (! _db_field_exists('logindetails', 'disabled')) {
+        $error1 = _db_add_field('logindetails', 'disabled', 'tinyint(1)', '0', 'surname');
 
-    $ok = db_query("insert into $roleTable(`roleid`, `name`) values (8, 'aiuser')");
-    $message = "Creating extra role aiuser - ok ? " . ($ok ? 'true' : 'false') . "<br>";
-
-    return $message;
+        return "Creating disabled field in logindetails - ok ? " . ($error1 ? 'true' : 'false');
+    }
+    else
+    {
+        return "Disabled field in logindetails already present - ok ? true";
+    }
 }
-
