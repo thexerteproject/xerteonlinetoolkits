@@ -43,6 +43,7 @@
 	<addProp label="Add" tooltip="add" />
 	<optionalProp label="Optional Properties:"/>
 	<optionalPropHTML label="Optional Properties" general="General"/>
+	<optionalAssistantPropHTML label="Ai features and tools" general="Assistant"/>
 	<chkShowLanguage label="Show Language Options" tooltip="If language options are available, show them."/>
 	<chkShowAdvanced label="Show Advanced Options" tooltip="If advanced options are available, show them."/>
     <chkShowToolbar label="Show Toolbar" tooltip="Show all the toolbars by default."/>
@@ -263,4 +264,7 @@
 		<useSuggestionMsg>The selected suggestion will be processed and used to alter the contents of this page or generate a new page. Proceed?</useSuggestionMsg>
 		<overideContentMsg>Generated AI content will override most content on this page. Generate anyway?</overideContentMsg>
 	</vendorApi>
+	<lightbox>
+		<settingsButton>Open Settings</settingsButton>
+	</lightbox>
 </language>
