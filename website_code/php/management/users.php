@@ -57,23 +57,34 @@ if(is_user_permitted("useradmin")){
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
 	echo "<h2>" . MANAGEMENT_MENUBAR_USERS . "</h2>";
-	echo "<div class=\"admin_block\">";
+
 
     if ($authmech_can_manage_users || $altauthmech_can_manage_users)
     {
-        echo "<h2>" . USERS_MANAGE_AUTH . "</h2>";
-        echo "<div id=\"manage_auth_users\">";
+        echo "  <div class=\"template\" id=\"db_user_mngmnt\"><p>" . USERS_MANAGE_AUTH . " <button type=\"button\" class=\"xerte_button\" id=\"db_user_mngmnt_btn\" onclick=\"javascript:templates_display('db_user_mngmnt')\">" . USERS_TOGGLE . "</button></p></div>";
+        echo "  <div class=\"template_details\" id=\"db_user_mngmnt_child\">";
+        //echo "    <h2>" . USERS_MANAGE_AUTH . "</h2>";
+        echo "    <div id=\"manage_auth_users\">";
         if ($authmech_can_manage_users) {
             $authmech->getUserList(true, "");
         }
         else if ($altauthmech_can_manage_users) {
             $altauthmech->getUserList(true, "");
         }
-        echo "</div>";
+        echo "    </div>";
+        echo "  </div>";
     }
-    echo "<div id=\"manage_user_roles\">";
+
+    if (is_user_admin()) {
+        $user_roles_title = USERS_MANAGE_ROLES;
+    }
+    else {
+        $user_roles_title = USERS_SHOW_ROLES;
+    }
+    echo "  <div class=\"template\" id=\"user_roles\"><p>" . $user_roles_title . " <button type=\"button\" class=\"xerte_button\" id=\"user_roles_btn\" onclick=\"javascript:templates_display('user_roles')\">" . USERS_TOGGLE . "</button></p></div>";
+    echo "  <div class=\"template_details\" id=\"user_roles_child\">";
+
     x_get_user_roles();
-    echo "</div>";
     $query = "SELECT ld.*, r.name FROM {$prefix}logindetails ld, {$prefix}role r, {$prefix}logindetailsrole ldr WHERE ld.login_id = ldr.userid AND r.roleid = ldr.roleid ORDER BY ld.surname, ld.firstname, ld.username, r.roleid";
     $result = db_query($query);
     echo "<h3>" . USERS_MANAGE_ROLES_OVERVIEW . "</h3>";
@@ -130,11 +141,19 @@ if(is_user_permitted("useradmin")){
     echo "</tr>";
     echo "    </tbody>";
     echo "  </table>";
+    echo "</div>";
+
+    echo "  <div class=\"template\" id=\"manage_users\"><p>" . USERS_MANAGE_USERS . " <button type=\"button\" class=\"xerte_button\" id=\"manage_users_btn\" onclick=\"javascript:templates_display('manage_users')\">" . USERS_TOGGLE . "</button></p></div>";
+    echo "  <div class=\"template_details\" id=\"manage_users_child\">";
 
     x_get_users();
 
-    echo "<br><div>";
-    echo "<h2>" . USERS_MANAGE_DISABLE_USERS_BASED_ON_LASTLOGIN . "</h2>";
+    echo "<br>";
+    echo "</div>";
+
+    //echo "<h2>" . USERS_MANAGE_DISABLE_USERS_BASED_ON_LASTLOGIN . "</h2>";
+    echo "  <div class=\"template\" id=\"disable_users\"><p>" . USERS_MANAGE_DISABLE_USERS_BASED_ON_LASTLOGIN . " <button type=\"button\" class=\"xerte_button\" id=\"disable_users_btn\" onclick=\"javascript:templates_display('disable_users')\">" . USERS_TOGGLE . "</button></p></div>";
+    echo "  <div class=\"template_details\" id=\"disable_users_child\">";
     echo "<p>" . USERS_MANAGE_DISABLE_USERS_BASED_ON_LASTLOGIN_TEXT . "</p>";
     echo "<p><label for=\"disable_users_last_login_date\">" . USERS_MANAGE_DISABLE_USERS_BASED_ON_LASTLOGIN_DATE . "&nbsp;</label>";
     echo "<input type=\"date\" id=\"disable_users_last_login_date\" name=\"disable_users_last_login_date\" value=\"" . date("Y-m-d", strtotime("-1 year")) . "\" />";

@@ -19,7 +19,6 @@ function changeuserselection_roles($userid){
 		return;
 	}
 
-	echo "<h2>" . USERS_MANAGE_ROLES . "</h2>";
     // Only allow superadmin to assign roles
     if (is_user_admin()) {
         echo "<h3>" . USERS_MANAGE_ROLES_ASSIGN_ROLES . "</h3>";
