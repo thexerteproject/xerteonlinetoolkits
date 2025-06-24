@@ -34,7 +34,8 @@ $useLoInCorpus = $_POST['useLoInCorpus'];
 $restrictCorpusToLo = $_POST['restrictCorpusToLo'];
 
 $allowed_apis = ['openai', 'anthropic', 'mistral'];
-$global_instructions = ["All text enclosed within the following attributes: 'text', 'goals', 'audience', 'prereq', 'howto', 'summary', 'nextsteps', 'pageintro', 'tip', 'side1', 'side2', 'txt', 'instruction', 'prompt', 'answer', 'intro', 'feedback', 'unit', 'question', 'hint', 'label', 'passage', 'initialtext', 'initialtitle', 'suggestedtext', 'suggestedtitle', 'generalfeedback', 'instructions', 'p1', 'p2', 'title', 'introduction', 'wrongtext', 'wordanswer', 'words' must be formatted with relevant HTML encoding tags (headers, paragraphs, etc. if needed), using EXCLUSIVELY HTML entities. On the other hand, the text inside CDATA nodes should be formatted using at minimum paragraph tags, or other relevant tags if needed."];
+//$global_instructions = ["All text enclosed within the following attributes: 'text', 'goals', 'audience', 'prereq', 'howto', 'summary', 'nextsteps', 'pageintro', 'tip', 'side1', 'side2', 'txt', 'instruction', 'prompt', 'answer', 'intro', 'feedback', 'unit', 'question', 'hint', 'label', 'passage', 'initialtext', 'initialtitle', 'suggestedtext', 'suggestedtitle', 'generalfeedback', 'instructions', 'p1', 'p2', 'title', 'introduction', 'wrongtext', 'wordanswer', 'words' must be formatted with relevant HTML encoding tags (headers, paragraphs, etc. if needed), using EXCLUSIVELY HTML entities. On the other hand, the text inside CDATA nodes should be formatted using at minimum paragraph tags, or other relevant tags if needed."];
+$global_instructions = '';
 
 //todo combine with api check from admin page
 if (!in_array($ai_api, $allowed_apis)){
