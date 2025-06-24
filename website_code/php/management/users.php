@@ -83,8 +83,9 @@ if(is_user_permitted("useradmin")){
     }
     echo "  <div class=\"template\" id=\"user_roles\"><p>" . $user_roles_title . " <button type=\"button\" class=\"xerte_button\" id=\"user_roles_btn\" onclick=\"javascript:templates_display('user_roles')\">" . USERS_TOGGLE . "</button></p></div>";
     echo "  <div class=\"template_details\" id=\"user_roles_child\">";
-
+    echo "<div id=\"manage_user_roles\">";
     x_get_user_roles();
+    echo "</div>";
     $query = "SELECT ld.*, r.name FROM {$prefix}logindetails ld, {$prefix}role r, {$prefix}logindetailsrole ldr WHERE ld.login_id = ldr.userid AND r.roleid = ldr.roleid ORDER BY ld.surname, ld.firstname, ld.username, r.roleid";
     $result = db_query($query);
     echo "<h3>" . USERS_MANAGE_ROLES_OVERVIEW . "</h3>";
@@ -145,8 +146,9 @@ if(is_user_permitted("useradmin")){
 
     echo "  <div class=\"template\" id=\"manage_users\"><p>" . USERS_MANAGE_USERS . " <button type=\"button\" class=\"xerte_button\" id=\"manage_users_btn\" onclick=\"javascript:templates_display('manage_users')\">" . USERS_TOGGLE . "</button></p></div>";
     echo "  <div class=\"template_details\" id=\"manage_users_child\">";
-
+    echo "<div id=\"active_user_management\">";
     x_get_users();
+    echo "</div>";
 
     echo "<br>";
     echo "</div>";
