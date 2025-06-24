@@ -66,7 +66,7 @@ if ($assistantOn){
         ],
 
         // Optional: Uncomment and set temperature to control the randomness of the output (between 0 and 2)
-        // "temperature" => 0.7,
+         "temperature" => 0.2,
 
         // Optional: Uncomment and set top_p for nucleus sampling (considers top_p probability mass)
         // "top_p" => 0.9,
@@ -99,7 +99,7 @@ if ($assistantOn){
 else{
     //default payload for chat/completions endpoint
     $payload = ["model" => $model,
-        "max_tokens" => 3096,
+        "max_tokens" => 4096,
         "n" => 1,
         "temperature" => 0.2,
         "messages" => [["role" => "user", "content" => $q],
