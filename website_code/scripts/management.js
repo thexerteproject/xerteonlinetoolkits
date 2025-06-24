@@ -1696,7 +1696,7 @@ function manage_user_roles_select(user_id)
 		},
 	}).done(function (response){
 		document.getElementById("manage_user_roles").innerHTML = response;
-		$(".selectize").selectize();
+		$("#user_roles").selectize();
 	}).fail(function (){
 		alert("something went wrong");
 	});

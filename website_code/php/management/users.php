@@ -81,8 +81,8 @@ if(is_user_permitted("useradmin")){
     else {
         $user_roles_title = USERS_SHOW_ROLES;
     }
-    echo "  <div class=\"template\" id=\"user_roles\"><p>" . $user_roles_title . " <button type=\"button\" class=\"xerte_button\" id=\"user_roles_btn\" onclick=\"javascript:templates_display('user_roles')\">" . USERS_TOGGLE . "</button></p></div>";
-    echo "  <div class=\"template_details\" id=\"user_roles_child\">";
+    echo "  <div class=\"template\" id=\"user_roles_mngmnt\"><p>" . $user_roles_title . " <button type=\"button\" class=\"xerte_button\" id=\"user_roles_mngmnt_btn\" onclick=\"javascript:templates_display('user_roles_mngmnt')\">" . USERS_TOGGLE . "</button></p></div>";
+    echo "  <div class=\"template_details\" id=\"user_roles_mngmnt_child\">";
     echo "<div id=\"manage_user_roles\">";
     x_get_user_roles();
     echo "</div>";
