@@ -93,7 +93,7 @@ function xml_to_xerte_content(data, key, pos, tree, realParent) {
                 }
 
             }
-            console.log(x.tagName);
+            console.log(llmResultXml.tagName);
 
             build_xerte_xml(llmResultXml, llmResultXml.tagName, parser);
 
