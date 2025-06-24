@@ -264,4 +264,7 @@
 		<useSuggestionMsg>The selected suggestion will be processed and used to alter the contents of this page or generate a new page. Proceed?</useSuggestionMsg>
 		<overideContentMsg>Generated AI content will override most content on this page. Generate anyway?</overideContentMsg>
 	</vendorApi>
+	<lightbox>
+		<settingsButton>Open Settings</settingsButton>
+	</lightbox>
 </language>

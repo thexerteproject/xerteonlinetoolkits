@@ -198,5 +198,8 @@
 		<Info label = "Let op: dit overschrijft de huidige tabel"> </Info>
 		<Info2 label = "Let op: de nieuwe tabel wordt aan de oude tabel toegevoegd. Wilt u doorgaan? NB na het toevoegen kunnen er dubbele rijen na de merge."> </Info2>
 		<mergeOld label = "Voeg nieuwe tabel toe aan huidige inhoud:"/>
-	</UploadCSV>>
+	</UploadCSV>
+	<lightbox>
+		<settingsButton>Open Instellingen</settingsButton>
+	</lightbox>
 </language>

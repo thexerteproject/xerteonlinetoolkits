@@ -4082,7 +4082,7 @@ var EDITOR = (function ($, parent) {
             //create editor button to open lightbox manually
             displayParameter(
                 '#mainPanel .wizard #groupTable_' + group.name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
-                [{name: group.name, value: {type: "lightboxbutton", label: "Lightbox"}}],
+                [{name: group.name, value: {type: "lightboxbutton", label: group.value.label ? group.value.label : ""}}],
                 group.name,
                 "",
                 key
@@ -6410,7 +6410,7 @@ var EDITOR = (function ($, parent) {
                 html = $('<button>')
                     .attr('id', id)
                     .attr('class', 'lightboxbutton')
-                    .text('Open AI Settings');
+                    .text(language.lightbox.settingsButton);
 
                 break;
             case 'webpage':  //Not used??
