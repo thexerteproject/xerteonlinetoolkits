@@ -1,0 +1,532 @@
+<script type="text/javascript">
+	/**
+	 * Licensed to The Apereo Foundation under one or more contributor license
+	 * agreements. See the NOTICE file distributed with this work for
+	 * additional information regarding copyright ownership.
+
+	 * The Apereo Foundation licenses this file to you under the Apache License,
+	 * Version 2.0 (the "License"); you may not use this file except in
+	 * compliance with the License. You may obtain a copy of the License at:
+	 *
+	 * http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing, software
+	 * distributed under the License is distributed on an "AS IS" BASIS,
+	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+	 * See the License for the specific language governing permissions and
+	 * limitations under the License.
+	 */
+
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var audioRecord = new function() {
+		let audioInfo = [],
+			current = 0,
+			currentClip,
+			$pageContents;
+
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$pageContents = $("#pageContents");
+			audioInfo = $pageContents.data("audioInfo");
+			current = $pageContents.data("current");
+			currentClip = audioInfo[current];
+		}
+
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function(pageChg) {
+			const $panel = $pageContents.find(".panel");
+			$panel.height($x_pageHolder.height() - ($x_pageDiv.outerHeight(true)-$x_pageDiv.height()) - ($panel.outerHeight(true) - $panel.height()) - 1);
+		}
+		
+		this.init = function() {
+
+            $pageContents = $("#pageContents");
+
+			// get info about all audio clips
+			$(x_currentPageXML).children().each(function () {
+				const $this = $(this);
+				audioInfo.push({
+					name: $this.attr("name"),
+					text: $this.attr("text"),
+					audio: $this.attr("audio"),
+					showAudio: $this.attr("showAudio"),
+					feedback: $this.attr("feedback"),
+					feedbackAfter: Number($this.attr("feedbackAfter")),
+					recordings: [],
+					blobs: []
+				});
+			});
+			
+			if (audioInfo.length > 0) {
+				// there's at least one audio clip - continue setting up the page
+
+				// set panel width
+				const panelWidth = x_currentPageXML.getAttribute("panelWidth");
+				if (panelWidth == "Full") {
+					$pageContents.find(".panel").appendTo($pageContents);
+					$pageContents.find(".splitScreen").remove();
+				} else {
+					$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+					if (panelWidth == "Small") {
+						$pageContents.find(".splitScreen").addClass("large"); // make text area on left large so panel on right is small
+					} else if (panelWidth == "Large") {
+						$pageContents.find(".splitScreen").addClass("small");
+					} else {
+						$pageContents.find(".splitScreen").addClass("medium");
+					}
+				}
+
+				if (audioInfo.length <= 1) {
+					// only one audio clip - remove the titles and buttons from top of the panel
+					$("#panelTop").remove();
+					
+				} else {
+					// set up buttons to move between audio clips
+					$("#nextBtn")
+						.button({
+							icons: { primary: "fa fa-x-next" },
+							label: x_currentPageXML.getAttribute("nextText") != undefined && x_currentPageXML.getAttribute("nextText") != "" ? x_currentPageXML.getAttribute("nextText") : "Next",
+							text: false,
+							disabled: true
+						})
+						.click(function() {
+							// move to next audio clip & enable/disable other buttons as appropriate
+							current++;
+							$("#prevBtn").button("enable");
+							audioRecord.loadAudio();
+
+						});
+					
+					$("#prevBtn")
+						.button({
+							icons: { primary: "fa fa-x-prev" },
+							label: x_currentPageXML.getAttribute("prevText") != undefined && x_currentPageXML.getAttribute("prevText") != "" ? x_currentPageXML.getAttribute("prevText") : "Previous",
+							text: false,
+							disabled: true
+						})
+						.click(function() {
+							// move to previous audio clip & enable/disable other buttons as appropriate
+							current--;
+							
+							if (current == 0) {
+								$(this).button("disable");
+							}
+							
+							audioRecord.loadAudio();
+						});
+					
+					$("#restartBtn")
+						.button({
+							icons: { primary: "fa fa-x-refresh" },
+							label:	x_currentPageXML.getAttribute("restartText") != undefined && x_currentPageXML.getAttribute("restartText") != "" ? x_currentPageXML.getAttribute("restartText") : "Restart",
+							text: false
+						})
+						.click(function() {
+							// double check that they want to restart as all recordings will be lost
+							if (window.confirm(x_currentPageXML.getAttribute("restartConfirm") != undefined && x_currentPageXML.getAttribute("restartConfirm") != "" ? x_currentPageXML.getAttribute("restartConfirm") : "Restarting will remove all recordings. Do you want to restart?")) {
+								// reset to 1st audio clip, remove all recordings that have been made & enable/disable other buttons as appropriate
+								current = 0;
+								$("#recordedClips").empty();
+								for (let i=0; i<audioInfo.length; i++) {
+									audioInfo[i].recordings.splice(0,audioInfo[i].recordings.length);
+									audioInfo[i].blobs.splice(0,audioInfo[i].blobs.length);
+								}
+
+								$(this).button("disable");
+								$("#prevBtn, #nextBtn").button("disable");
+
+								audioRecord.loadAudio();
+							}
+						});
+
+					// randomise the order that the audio clips are shown in
+					if (x_currentPageXML.getAttribute("randomise") == "true") {
+						audioInfo = x_shuffleArray(audioInfo);
+					}
+				}
+
+				// download button allows download of all user recordings, as well as example audio files
+				if (x_currentPageXML.getAttribute("download") || x_currentPageXML.getAttribute("downloadExamples")) {
+					$("#downloadBtn")
+							.button({
+								icons: { primary: "fa fa-x-download" },
+								label:	x_currentPageXML.getAttribute("downloadText") != undefined && x_currentPageXML.getAttribute("downloadText") != "" ? x_currentPageXML.getAttribute("downloadText") : "Download"
+							})
+							.click(function() {
+								// download the example audio file
+								if (x_currentPageXML.getAttribute("downloadExamples") == "true" && $("#pageAudio audio").length > 0) {
+									// make sure file name is plain text
+									const fileName = $("<div>" + currentClip.name + "</div>").text();
+
+									// download file
+									const url = $("#pageAudio audio").attr("src");
+									const a = document.createElement("a");
+									document.body.appendChild(a);
+									a.style = "display: none";
+									a.href = url;
+									a.download = fileName;
+									a.click();
+									window.URL.revokeObjectURL(url);
+								}
+
+								// download all the recorded audio files
+								if (x_currentPageXML.getAttribute("download") == "true") {
+									for (let i = 0; i < currentClip.blobs.length; i++) {
+										// get file name for download audio file - don't include recording number
+										let fileName = currentClip.recordings[i].find(".clipTitle").clone();
+										fileName.find(".recNum").remove();
+										fileName = fileName.text() + ".webm";
+
+										// download file
+										const url = URL.createObjectURL(currentClip.blobs[i]);
+										const a = document.createElement("a");
+										document.body.appendChild(a);
+										a.style = "display: none";
+										a.href = url;
+										a.download = fileName;
+										a.click();
+										window.URL.revokeObjectURL(url);
+									}
+								}
+							});
+				} else {
+					$("#downloadBtn").remove();
+				}
+
+				const errorString = x_getLangInfo(x_languageData.find("microphoneError")[0], "label", "<p>Unable to access your microphone. Common reasons for this problem include:</p><ul><li>No microphone detected</li><li>This web page has been blocked from accessing the microphone</li><li>The microphone is already in use by another program or browser tab</li></ul>") + "<button>" + x_currentPageXML.getAttribute("micErrorLabel") + "</button>";
+				$("#errorMsg")
+					.html(errorString)
+					.find("button").button().click(function() {
+						audioRecord.setUpRecorder();
+					});
+				$("#errorMsg").find("p:eq(0)").prepend("<i class='fa fa-exclamation-triangle alert'></i> ");
+
+				$pageContents.data("audioInfo", audioInfo);
+
+				// load first audio clip
+				this.loadAudio(true);
+				
+			} else {
+				// no audio clips have been added - just show the page text and remove the panel & divs/classes used for splitscreen layout
+				$(".panel").remove();
+				$('.splitScreen').removeClass('splitScreen');
+				$('.right').removeClass('right');
+				$('.left').removeClass('left');
+				x_pageLoaded();
+			}
+		}
+		
+		this.loadAudio = function(firstLoad) {
+			// hide all recordings associated with previously shown clip
+			if (currentClip) {
+				for (let i = 0; i < currentClip.recordings.length; i++) {
+					currentClip.recordings[i].hide();
+				}
+				$("#audioHolder").remove();
+			}
+			$("#nextBtn").button("disable");
+
+			$pageContents.data("current", current);
+			currentClip = audioInfo[current];
+
+			// add the example audio player (if field is blank then there is no example audio to use, use record button only)
+			if (currentClip.audio != undefined && currentClip.audio != "") {
+				if (currentClip.showAudio == "fb") {
+					// audio player will only be shown when the associated feedback is shown
+					$('<div id="audioHolder" class="fbAudio"><div id="pageAudio"></div></div>').insertAfter("#feedbackTxt");
+				} else {
+					// audio player will be shown straight away, below the prompt
+					$('<div id="audioHolder"><div id="pageAudio"></div></div>').insertAfter("#prompt");
+				}
+
+				$("#pageAudio").mediaPlayer({
+					type: "audio",
+					source: currentClip.audio,
+					width: "100%"
+				});
+			}
+
+
+			$("#audioHolder.fbAudio").hide();
+
+			// show all recordings already made and associated with this clip & any feedback that's appropriate
+			for (let i=0; i<currentClip.recordings.length; i++) {
+				currentClip.recordings[i].show();
+			}
+			this.checkForFeedback();
+
+			// update the clip x of y text at top of panel
+			if (audioInfo.length > 1) {
+				$("#count").html(x_currentPageXML.getAttribute("countText").replace("{i}", current + 1).replace("{n}",  audioInfo.length));
+			} else {
+				$("#count").html("");
+			}
+
+			// add clip title (if exists) to text at top of panel
+			if (currentClip.name != "") {
+				if ($("#count").html() != "") {
+					$("#count").append(": ");
+				}
+				$("#count").append(currentClip.name);
+			}
+
+			// add clip text (if exists) to panel
+			if (currentClip.text == "") {
+				$("#prompt").hide();
+			} else {
+				$("#prompt")
+					.show()
+					.html(x_addLineBreaks(currentClip.text));
+			}
+
+			// if this is the 1st audio that's loaded on the page then there's some extra set up to do
+			if (firstLoad == true) {
+				this.setUpRecorder();
+				this.sizeChanged();
+				x_pageLoaded(); // call this function in every model once everything's loaded
+			} else {
+				audioRecord.reloadAudio();
+			}
+		}
+
+		this.setUpRecorder = function() {
+			$("#audioControls").hide();
+
+			// recording will ony work mediaDevices.getUserMedia supported by browser
+			if (navigator.mediaDevices.getUserMedia) {
+				const constraints = { audio: true };
+				let chunks = [];
+
+				const onSuccess = function(stream) {
+					// mic access granted - set up the record/stop button
+					$("#errorMsg").hide();
+					$("#audioControls").show();
+
+					const mediaRecorder = new MediaRecorder(stream);
+
+					// set up the record button
+					$("#recBtn")
+							.button({
+								icons: { primary: "fa fa-microphone" },
+								label: x_currentPageXML.getAttribute("recText")
+							})
+							.click(function() {
+								// button icon will change when recording in progress
+								const $this = $(this);
+								if (!$this.hasClass("recording")) {
+									mediaRecorder.start();
+
+									$this.addClass("recording");
+									$this.button({
+										icons: { primary: "fa fa-stop" },
+										label: x_currentPageXML.getAttribute("stopText")
+									});
+								} else {
+									mediaRecorder.stop();
+									$this.removeClass("recording");
+									$this.button({
+										icons: { primary:"fa fa-microphone" },
+										label: x_currentPageXML.getAttribute("recText")
+									});
+								}
+							});
+
+					// triggered after recording has stopped
+					mediaRecorder.onstop = function(e) {
+						// prompt user for title for most recently recorded audio
+						const clipName = prompt(x_currentPageXML.getAttribute("clipNameLabel") + ":", x_currentPageXML.getAttribute("defaultClipName"));
+						const $clipContainer = $("<div class='clip'><button class='deleteClipBtn delete'></button><p class='clipTitle'></p><div class='clipPlayer' controls='true'></div></div>");
+
+						// don't show audio on screen if prompt 'cancel' button is clicked
+						if (clipName != null) {
+							// show audio player for recording
+							$clipContainer.find(".clipTitle").html("<span class='recNum'>" + (currentClip.recordings.length+1) + ": </span>" + clipName);
+							$("#recordedClips").append($clipContainer);
+							currentClip.recordings.push($clipContainer);
+
+							const blob = new Blob(chunks, {"type": "audio/ogg; codecs=opus"});
+							currentClip.blobs.push(blob);
+
+							chunks = [];
+							const audioURL = window.URL.createObjectURL(blob);
+
+							// using the mediaelement player for consistency
+							$clipContainer.find(".clipPlayer").mediaPlayer({
+                                type:	"audio/ogg; codecs=opus",
+                                source:	audioURL,
+                                width:	"100%"
+                            });
+
+							// hide the audio clip length from player as it shows as NaN:NaN until it is played
+							$clipContainer.find(".mejs-time.mejs-duration-container").hide();
+
+							// recording can be deleted
+							$clipContainer.find(".deleteClipBtn")
+								.button({
+									icons: { primary: "fa fa-trash" },
+									label: x_currentPageXML.getAttribute("deleteText"),
+									text: false
+								})
+								.on("mouseover focusin", function() {
+									$(this).parent(".clip").addClass("highlight");
+								})
+								.on("mouseout focusout", function() {
+									$(this).parent(".clip").removeClass("highlight");
+								})
+								.click(function () {
+									currentClip.recordings.splice($("#recordedClips .clip:visible").index($(this).parents(".clip")), 1);
+									currentClip.blobs.splice($("#recordedClips .clip:visible").index($(this).parents(".clip")), 1);
+									$(this).parents(".clip").remove();
+
+									// re-number all the remaining clips
+									for (let i=0; i<currentClip.recordings.length; i++) {
+										currentClip.recordings[i].find(".recNum").html(i+1 + ": ");
+									}
+									audioRecord.checkForFeedback();
+								});
+
+							// recording can be renamed by clicking title
+							$clipContainer.find(".clipTitle")
+								.attr("tabindex", 0)
+								.keydown(function(e){
+									if (e.keyCode == 13 || e.keyCode == 32) {
+										$(this).click();
+									}
+								})
+								.click(function () {
+									const newClipName = prompt(x_currentPageXML.getAttribute("clipNameRenameLabel"));
+
+									if (newClipName != null) {
+										$(this).html("<span class='recNum'>" + $(this).find(".recNum").html() + "</span>" + newClipName);
+									}
+								});
+
+							audioRecord.checkForFeedback();
+							audioRecord.reloadAudio();
+						}
+					}
+
+					mediaRecorder.ondataavailable = function(e) {
+						chunks.push(e.data);
+					}
+				}
+
+				const onError = function(err) {
+					// mic access denied or failed for another reason
+					console.log("mic access denied / failed. Error: " + err);
+					$("#errorMsg").show();
+					$("#audioControls").hide();
+				}
+
+				navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, onError);
+
+			} else {
+				$("#errorMsg").show();
+				$("#audioControls").hide();
+			}
+		}
+
+		this.checkForFeedback = function() {
+			// feedback will be shown if requirements have been met
+			const audioFb = currentClip.feedback;
+			const showAudioFb = currentClip.recordings.length >= currentClip.feedbackAfter;
+			const mainFb = x_currentPageXML.getAttribute("feedback");
+			const fbTitle = x_currentPageXML.getAttribute("fbTitle");
+			let fbString = "";
+
+			// audio clip level feedback only shows if no. recordings required have been made
+			if (showAudioFb) {
+				fbString += audioFb;
+
+				// audio player & download button may also be set to appear with feedback
+				$(".fbAudio").show();
+				$("#downloadBtn").show();
+
+				// nextBtn also depends on whether the required number of recordings have been made
+				if (current+1 < audioInfo.length) {
+					$("#nextBtn").button("enable");
+				}
+			} else {
+				// hide/disable nextBtn, downloadBtn, audio player if feedback not ready to be shown yet
+				$("#nextBtn").button("disable");
+				$("#downloadBtn").hide();
+				$(".fbAudio").hide();
+			}
+
+			// page level feedback only shows if this is the last audio clip to be shown & requirements for audio clip level feedback have also been met
+			if (mainFb != undefined && mainFb != "" && current + 1 >= audioInfo.length && (audioFb == "" || showAudioFb)) {
+				fbString += mainFb;
+			}
+
+			if (fbTitle != undefined && fbTitle != "") {
+				fbString = '<h3>' + fbTitle + '</h3>';
+			}
+
+			if (fbString != "") {
+				$("#feedbackTxt").html(fbString).show();
+			} else {
+				$("#feedbackTxt").empty().hide();
+			}
+		}
+
+		this.reloadAudio = function() {
+			// if lots of recordings are added and scrollbars appear on panel, the audio player may be too wide - force resize
+			$(".mejs-container.mejs-audio").each(function() {
+				let audioW = 0;
+				$(this).find(".mejs-controls").children("div").each(function() {
+					audioW += $(this).is(":visible") ? $(this).outerWidth() : 0;
+				});
+
+				if (audioW > $("#panelContent").width()) {
+					const widthDif = audioW - $("#panelContent").width();
+					$(this).find(".mejs-time-rail").width($(this).find(".mejs-time-rail").width() - widthDif - 1);
+					$(this).find(".mejs-time-total").width($(this).find(".mejs-time-total").width() - widthDif - 1);
+				}
+			});
+		}
+	}
+
+	audioRecord.init();
+
+</script>
+
+
+<div id="pageContents">
+
+	<div class="splitScreen">
+
+		<div id="textHolder" class="left"></div>
+		
+		<div class="right">
+			<div class="panel">
+				<div id="panelTop">
+					<p id="count" aria-live="polite"></p>
+					<div id="btnHolder">
+						<button id="prevBtn"></button>
+						<button id="nextBtn"></button>
+						<button id="restartBtn"></button>
+					</div>
+				</div>
+				<div id="panelContent">
+					<div id="prompt"></div>
+					<div id="audioRecorder">
+						<div id="errorMsg"></div>
+						<div id="audioControls">
+							<div class="btnHolder">
+								<button id="recBtn"></button>
+								<button id="downloadBtn"></button>
+							</div>
+						</div>
+
+						<div id="recordedClips"></div>
+					</div>
+					<div id="feedbackTxt" aria-live="polite"></div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</div>
