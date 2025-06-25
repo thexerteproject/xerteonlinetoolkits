@@ -145,7 +145,7 @@
 			<section><![CDATA[<section name="Enter Section Title"/>]]></section>
 		</newNodes>
 
-	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><headerGroup type="group" label="Header" optional="true" common="true">
+	    <notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><headerGroup type="group" label="Header" optional="true" common="true">
 		<header type="Media" optional="true" label="Image"/>
 		<headerPos type="ComboBox" data="left,center,right" options="Left,Centre,Right" optional="true" label="Image Position" defaultValue="left" width="175"/>
 		<headerRepeat conditionTrigger="true" type="ComboBox" data="repeat,repeat-x,repeat-y,no-repeat" options="Horizontal and Vertical Repeat,Horizontal Repeat,Vertical Repeat,No Repeat" optional="true" label="Image Repeat" defaultValue="repeat" width="175"/>
@@ -157,7 +157,7 @@
 		<headerTopMargin type="NumericStepper" label="Title top margin [%]" condition="headerBanner=='fullscreen'" min="2" max="60" step="1" defaultValue="20" optional="true" tooltip="The position of the titles as a percentage from the top of the banner when using a fullscreen banner"/>
 		<bannerCollapse type="CheckBox" conditionTrigger="true" condition="headerBanner=='fullscreen'" label="Collapse banner" optional="true" defaultValue="true" tooltip="Whether to collapse the full screen banner when scrolling down"/>
 		
-		<fixedheader type="Checkbox" defaultValue="false" conditionTrigger="true" condition="headerBanner=='fullscreen'&amp;&amp;headerBanner=='fixedheight'" optional="true" label="Fixed nav"/>
+		<fixedheader type="Checkbox" defaultValue="false" conditionTrigger="true" optional="true" label="Fixed nav" condition="headerBanner=='fullscreen'&amp;&amp;headerBanner=='fixedheight"/>
 
 		<bannerFixedHeight type="CheckBox" conditionTrigger="true" condition="fixedheight=='true' || bannerCollapse=='true'" label="Fixed height" optional="true" defaultValue="false" tooltip="Whether the 'Fixed height' banner is just the height needed for the titles, or actually a given set height."/>
 		<bannerHeight type="NumericStepper" condition="bannerFixedHeight=='true' &amp;&amp; (headerBanner=='fixedheight' || bannerCollapse=='true')" label="Banner height" min="10" max="100" step="1" width="100" optional="true" defaultValue="20" tooltip="The height (in %) of the fixed height banner or the collapsed full height banner"/>
