@@ -27,7 +27,7 @@ include "../deletion_library.php";
 
 $database_id = database_connect("delete main template database connect success","delete main template database connect failed");
 
-if(is_user_admin()){
+if(is_user_permitted("useradmin")){
 
     // work out the file path before we start deletion
 

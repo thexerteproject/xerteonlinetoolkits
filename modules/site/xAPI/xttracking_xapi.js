@@ -87,10 +87,14 @@ function XApiTrackingState() {
     this.pageCompleted = pageCompleted;
     this.getdScaledScore = getdScaledScore;
     this.getdRawScore = getdRawScore;
+    this.getdScaledCompletionWeightedScore = getdScaledCompletionWeightedScore;
+    this.getdRawCompletionWeightedScore = getdRawCompletionWeightedScore;
     this.getdMinScore = getdMinScore;
     this.getdMaxScore = getdMaxScore;
     this.getScaledScore = getScaledScore;
+    this.getScaledCompletionWeightedScore = getScaledCompletionWeightedScore
     this.getRawScore = getRawScore;
+    this.getRawCompletionWeightedScore = getRawCompletionWeightedScore;
     this.getMinScore = getMinScore;
     this.getMaxScore = getMaxScore;
     this.setPageType = setPageType;
@@ -318,6 +322,14 @@ function XApiTrackingState() {
         return Math.round(this.getdScaledScore() * 100) / 100 + "";
     }
 
+    function getdScaledCompletionWeightedScore(){
+        return this.getdScaledScore() * (this.getCompletionPercentage() / 100.0);
+    }
+
+    function getScaledCompletionWeightedScore(){
+        return Math.round(this.getdScaledCompletionWeightedScore() * 100) / 100 + "";
+    }
+
     function getdRawScore() {
         if (this.lo_type == "pages only") {
             if (this.getCompletionStatus() == 'completed')
@@ -354,6 +366,14 @@ function XApiTrackingState() {
 
     function getRawScore() {
         return Math.round(this.getdRawScore() * 100) / 100 + "";
+    }
+
+    function getdRawCompletionWeightedScore(){
+        return getdRawScore() * (getCompletionPercentage() / 100.0);
+    }
+
+    function getRawCompletionWeightedScore(){
+        return Math.round(getdRawCompletionWeightedScore() * 100) / 100 + "";
     }
 
     function getdMinScore() {
@@ -417,7 +437,6 @@ function XApiTrackingState() {
 
         sit.exitInteraction(result, learneranswer, learneroptions, feedback,
             page_name);
-
         if (ia_nr < 0) {
             var temp = false;
             var i = 0;
@@ -1239,426 +1258,510 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
         var description = this.getxApiDescription();
 
         if (this.exit()) {
-            if (state.scoremode != 'first' || this.count <= 1) {
+            // ALWAYS save the xapi statement
+            // if (state.scoremode != 'first' || this.count <= 1) {
 
-                if (!state.trackingmode != 'none' && ((this.ia_nr < 0 && (state
-                        .trackingmode != 'full' || this.nrinteractions ==
-                        0)) || (this.ia_nr >= 0 && state.trackingmode ==
-                        'full'))) {
+            if (!state.trackingmode != 'none' && ((this.ia_nr < 0 && (state
+                    .trackingmode != 'full' || this.nrinteractions ==
+                0)) || (this.ia_nr >= 0 && state.trackingmode ==
+                'full'))) {
 
-                    var statement = {
-                        timestamp: this.end,
+                var statement = {
+                    timestamp: this.end,
+                    actor: actor,
+                    context: {
+                        extensions: {
+                            "http://xerte.org.uk/learningObjectLevel": "interactivity"
+                        }
+                    },
+                    verb: {
+                        id: "http://adlnet.gov/expapi/verbs/answered",
+                        display: {
+                            "en-US": "answered"
+                        }
+                    },
+                    object: {
+                        objectType: "Activity",
+                        id: id
+                    }
+                };
+
+                var psit = state.findPage(this.page_nr);
+                if (psit != null) {
+                    var pweighting = psit.weighting;
+                    var nrinteractions = psit.nrinteractions;
+                } else {
+                    var pweighting = 1.0;
+                    var nrinteractions = 1.0;
+                }
+                let judge = result.judge ?? true;
+                switch (this.ia_type) {
+                    case 'match':
+                        // We have an options as an array of objects with source and target
+                        // and we have corresponding array of answers strings
+                        // Construct answers like a:Answerstring
+                        var scormAnswerArray = [];
+                        var i = 0;
+                        for (i = 0; i < learnerOptions.length; i++) {
+                            // Create ascii characters from option number and ignore answer string
+                            var entry = learnerOptions[i];
+                            if (typeof (entry.source) == "undefined")
+                                entry.source = "";
+                            scormAnswerArray.push(entry.source.replace(/ /g,
+                                "_") + "[.]" + entry.target.replace(
+                                / /g, "_"));
+                        }
+                        var scorm_lanswer = scormAnswerArray.join('[,]');
+
+                        // Do the same for the answer pattern
+                        var sourceArray = [];
+                        var targetArray = [];
+                        var scormCorrectArray = [];
+                        var i = 0;
+                        for (i = 0; i < this.correctOptions.length; i++) {
+                            // Create ascii characters from option number and ignore answer string
+                            var entry = this.correctOptions[i];
+                            var entryobject = {
+                                id: entry.source.replace(/ /g, "_"),
+                                description: {
+                                    "en-US": entry.source
+                                }
+                            };
+                            entryobject.description[state.language] = entry.source;
+                            sourceArray.push(entryobject);
+                            // Only add to target array if not already present
+                            var found = false;
+                            var targetid = entry.target.replace(/ /g, "_");
+                            for (var j = 0; j < targetArray.length; j++) {
+                                if (targetid == targetArray[j]['id']) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                var targetObj = {
+                                    id: entry.target.replace(/ /g,
+                                        "_"),
+                                    description: {
+                                        "en-US": entry.target
+                                    }
+                                };
+                                targetObj.description[state.language] = entry.target;
+                                targetArray.push(targetObj);
+                            }
+                            scormCorrectArray.push(entry.source.replace(
+                                / /g, "_") + "[.]" + entry.target.replace(
+                                / /g, "_"));
+                        }
+                        var scorm_canswer = scormCorrectArray.join('[,]');
+                        statement.object.definition = {
+                            name: {
+                                "en-US": description
+                            },
+                            description: {
+                                "en-US": "Matching interaction " + description + " of " + pageref
+                            },
+                            type: "http://adlnet.gov/expapi/activities/cmi.interaction",
+                            interactionType: "matching",
+                            source: sourceArray,
+                            target: targetArray,
+                            correctResponsesPattern: [scorm_canswer]
+                        };
+                        statement.object.definition.name[state.language] = description;
+                        statement.result = {
+                            duration: calcDuration(this.start, this.end),
+                            score: {
+                                raw: result.score,
+                                min: 0.0,
+                                max: 100.0,
+                                scaled: result.score / 100.0
+                            },
+                            response: scorm_lanswer,
+                            success: result.success,
+                            completion: true,
+                            extensions: {
+                                "http://xerte.org.uk/result/match": scorm_lanswer,
+                                "http://xerte.org.uk/result/judge": judge
+                            }
+                        };
+                        if (!judge) {
+                            // statement.result.score.raw = 100;
+                            // statement.result.score.scaled = 1;
+                            statement.result.success = true;
+                            delete statement.result.score;
+                        }
+                        break;
+                    case 'multiplechoice':
+                        // We have an options as an array of numbers
+                        // and we have corresponding array of answers strings
+                        // Construct answers like a:Answerstring
+                        var scormAnswerArray = [];
+                        var i = 0;
+
+                        for (i = 0; i < learnerOptions.length; i++) {
+                            var entry = learnerOptions[i]['answer'].replace(
+                                / /g, "_");
+                            scormAnswerArray.push(entry);
+                        }
+                        var scorm_lanswer = scormAnswerArray.join('[,]');
+
+                        // Do the same for the answer pattern
+                        var scormArray = [];
+                        var scormCorrectArray = [];
+                        var i = 0;
+                        for (i = 0; i < this.correctOptions.length; i++) {
+                            var entry = {
+                                id: this.correctOptions[i].answer.replace(
+                                    / /g, "_"),
+                                description: {
+                                    "en-US": this.correctOptions[i][
+                                        'answer'
+                                        ]
+                                }
+                            };
+                            entry.description[state.language] = this.correctOptions[i]['answer'];
+                            scormArray.push(entry);
+                            if (this.correctOptions[i].result) {
+                                scormCorrectArray.push(this.correctOptions[
+                                    i].answer.replace(/ /g, "_"));
+                            }
+                        }
+                        var scorm_canswer = [scormCorrectArray.join('[,]')];
+
+                        statement.object.definition = {
+                            name: {
+                                "en-US": description
+                            },
+                            description: {
+                                "en-US": "Choice interaction " + description +
+                                    " of " + pageref
+                            },
+                            type: "http://adlnet.gov/expapi/activities/cmi.interaction",
+                            interactionType: "choice",
+                            choices: scormArray,
+                            correctResponsesPattern: scorm_canswer
+                        };
+                        statement.object.definition.name[state.language] = description;
+                        statement.result = {
+                            duration: calcDuration(this.start, this.end),
+                            response: scorm_lanswer,
+                            score: {
+                                raw: result.score,
+                                min: 0.0,
+                                max: 100.0,
+                                scaled: result.score / 100
+                            },
+                            success: result.success,
+                            completion: true,
+                            extensions: {
+                                "http://xerte.org.uk/result/multiplichoice": scorm_lanswer,
+                                "http://xerte.org.uk/result/judge": judge
+                            }
+                        };
+                        if (!judge) {
+                            // statement.result.score.raw = 100;
+                            // statement.result.score.scaled = 1;
+                            statement.result.success = true;
+                            delete statement.result.score;
+                        }
+                        break;
+                    case 'numeric':
+                        statement.object.definition = {
+                            name: {
+                                "en-US": description
+                            },
+                            description: {
+                                "en-US": "Numeric interaction " + description +
+                                    " of " + pageref
+                            },
+                            type: "http://adlnet.gov/expapi/activities/cmi.interaction",
+                            interactionType: "numeric",
+                            correctResponsesPattern: ["0[:]100"]
+                        };
+                        statement.object.definition.name[state.language] = description;
+                        if (this.ia_nr < 0) // Page mode
+                        {
+                            statement.result = {
+                                duration: calcDuration(this.start, this
+                                    .end),
+                                score: {
+                                    raw: this.score,
+                                    min: 0.0,
+                                    max: 100.0,
+                                    scaled: this.score / 100.0
+                                },
+                                response: this.score + "",
+                                success: (this.score >= state.lo_passed),
+                                completion: true,
+                                extensions: {
+                                    "http://xerte.org.uk/result/judge": judge
+                                }
+                            };
+                        } else { // Interaction mode
+                            statement.result = {
+                                duration: calcDuration(this.start, this
+                                    .end),
+                                score: {
+                                    raw: result.score,
+                                    min: 0.0,
+                                    max: 100.0,
+                                    scaled: result.score / 100.0
+                                },
+                                response: this.learnerAnswers + "",
+                                success: result.success,
+                                completion: true,
+                                extensions: {
+                                    "http://xerte.org.uk/result/judge": judge
+                                }
+                            };
+                        }
+                        break;
+                    case 'text':
+                    case 'fill-in':
+
+                        // Hmmm is this the page or the interaction itself
+                        if (this.ia_nr < 0) {
+                            //This is the page
+                            // Get the interaction, it is always assumed to be 0
+                            var siti = state.findInteraction(this.page_nr,
+                                0);
+                            this.correctAnswers = siti.correctAnswers;
+                            this.learnerAnswers = siti.learnerAnswers;
+                        }
+                        statement.object.definition = {
+                            name: {
+                                "en-US": description
+                            },
+                            description: {
+                                "en-US": "Fill-in interaction " + description +
+                                    " of " + pageref
+                            },
+                            type: "http://adlnet.gov/expapi/activities/cmi.interaction",
+                            interactionType: "fill-in",
+                            correctResponsesPattern: [this.correctAnswers]
+                        };
+                        statement.object.definition.name[state.language] = this.ia_name;
+                        if (this.ia_type == 'text') {
+                            statement.result = {
+                                duration: calcDuration(this.start, this
+                                    .end),
+                                score: {
+                                    raw: result.score,
+                                    min: 0.0,
+                                    max: 100.0,
+                                    scaled: result.score / 100.0,
+                                },
+                                response: this.learnerAnswers,
+                                success: result.success,
+                                completion: true,
+                                extensions: {
+                                    "http://xerte.org.uk/result/text": this.learnerAnswers,
+                                    "http://xerte.org.uk/result/judge": judge
+                                }
+                            };
+                            statement.object.definition = {
+                                name: {
+                                    "en-US": this.ia_name
+                                },
+                                description: {
+                                    "en-US": "Model answer interaction " +
+                                        this.ia_name + " of " + pageref
+                                }
+                            };
+                            statement.object.definition.name[state.language] = this.ia_name;
+                        } else {
+                            statement.result = {
+                                duration: calcDuration(this.start, this
+                                    .end),
+                                score: {
+                                    raw: result.score,
+                                    min: 0.0,
+                                    max: 100.0,
+                                    scaled: result.score / 100.0
+                                },
+                                response: this.learnerAnswers,
+                                success: result.success,
+                                completion: true,
+                                extensions: {
+                                    "http://xerte.org.uk/result/fill-in": this
+                                        .learnerAnswers,
+                                    "http://xerte.org.uk/result/judge": judge
+                                }
+                            };
+                        }
+                        break;
+                    case 'page':
+                    default:
+                        statement.verb = {
+                            id: "http://adlnet.gov/expapi/verbs/interacted",
+                            display: {
+                                "en-US": "interacted"
+                            }
+                        };
+                        statement.object.definition = {
+                            name: {
+                                "en": description
+                            },
+                            description: {
+                                "en": "Interaction with " + pageref
+                            }
+                        };
+                        statement.object.definition.name[state.language] = description;
+                        var duration = calcDuration(this.start, this.end);
+                        statement.result = {
+                            duration: duration,
+                            success: result.success,
+                            completion: Math.abs(this.end.getTime() -
+                                this.start.getTime()) > state.page_timeout
+                        };
+                }
+                if (this.grouping != "") {
+                    var definition = {
+                        name: {
+                            'en-US': this.grouping
+                        }
+                    };
+                    definition.name[state.language] = this.grouping;
+                    statement.context.contextActivities =
+                        {
+                            grouping: [{
+                                id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
+                                definition: definition,
+                                objectType: "Activity"
+                            }]
+                        };
+                }
+                if (this.context != "") {
+                    let contextitems = this.context.split(',');
+                    contextitems.forEach(function (contextitem) {
+                        let item = contextitem.split('=');
+                        if (item.length == 2) {
+                            let key = "http://xerte.org.uk/" + item[0];
+                            let value = item[1];
+                            statement.context.extensions[key] = value;
+                        }
+                    });
+                }
+                SaveStatement(statement);
+                if (typeof statement.result.score != 'undefined') {
+                    var scoredstatement = {
+                        timestamp: new Date(),
                         actor: actor,
                         context: {
                             extensions: {
-                                "http://xerte.org.uk/learningObjectLevel" : "interactivity"
+                                "http://xerte.org.uk/learningObjectLevel": "interactivity"
                             }
                         },
                         verb: {
-                            id: "http://adlnet.gov/expapi/verbs/answered",
+                            id: "http://adlnet.gov/expapi/verbs/scored",
                             display: {
-                                "en-US": "answered"
+                                "en-US": "scored"
                             }
                         },
                         object: {
                             objectType: "Activity",
+                            definition: {
+                                name: statement.object.definition.name,
+                                description: statement.object.definition
+                                    .description
+                            },
                             id: id
-                        }
+                        },
+                        result: statement.result
                     };
-
-                    var psit = state.findPage(this.page_nr);
-                    if (psit != null) {
-                        var pweighting = psit.weighting;
-                        var nrinteractions = psit.nrinteractions;
-                    } else {
-                        var pweighting = 1.0;
-                        var nrinteractions = 1.0;
-                    }
-                    switch (this.ia_type) {
-                        case 'match':
-                            // We have an options as an array of objects with source and target
-                            // and we have corresponding array of answers strings
-                            // Construct answers like a:Answerstring
-                            var scormAnswerArray = [];
-                            var i = 0;
-                            for (i = 0; i < learnerOptions.length; i++) {
-                                // Create ascii characters from option number and ignore answer string
-                                var entry = learnerOptions[i];
-                                if (typeof(entry.source) == "undefined")
-                                    entry.source = "";
-                                scormAnswerArray.push(entry.source.replace(/ /g,
-                                    "_") + "[.]" + entry.target.replace(
-                                    / /g, "_"));
-                            }
-                            var scorm_lanswer = scormAnswerArray.join('[,]');
-
-                            // Do the same for the answer pattern
-                            var sourceArray = [];
-                            var targetArray = [];
-                            var scormCorrectArray = [];
-                            var i = 0;
-                            for (i = 0; i < this.correctOptions.length; i++) {
-                                // Create ascii characters from option number and ignore answer string
-                                var entry = this.correctOptions[i];
-                                var entryobject = {
-                                    id: entry.source.replace(/ /g, "_"),
-                                    description: {
-                                        "en-US": entry.source
-                                    }
-                                };
-                                entryobject.description[state.language] = entry.source;
-                                sourceArray.push(entryobject);
-                                // Only add to target array if not already present
-                                var found = false;
-                                var targetid = entry.target.replace(/ /g, "_");
-                                for (var j = 0; j < targetArray.length; j++) {
-                                    if (targetid == targetArray[j]['id']) {
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                if (!found) {
-                                    var targetObj = {
-                                        id: entry.target.replace(/ /g,
-                                            "_"),
-                                        description: {
-                                            "en-US": entry.target
-                                        }
-                                    };
-                                    targetObj.description[state.language] = entry.target;
-                                    targetArray.push(targetObj);
-                                }
-                                scormCorrectArray.push(entry.source.replace(
-                                    / /g, "_") + "[.]" + entry.target.replace(
-                                    / /g, "_"));
-                            }
-                            var scorm_canswer = scormCorrectArray.join('[,]');
-                            statement.object.definition = {
-                                name: {
-                                    "en-US": description
-                                },
-                                description: {
-                                    "en-US": "Matching interaction " + description + " of " + pageref
-                                },
-                                type: "http://adlnet.gov/expapi/activities/cmi.interaction",
-                                interactionType: "matching",
-                                source: sourceArray,
-                                target: targetArray,
-                                correctResponsesPattern: [scorm_canswer]
-                            };
-                            statement.object.definition.name[state.language] = description;
-                            statement.result = {
-                                duration: calcDuration(this.start, this.end),
-                                score: {
-                                    raw: result.score,
-                                    min: 0.0,
-                                    max: 100.0,
-                                    scaled: result.score / 100.0
-                                },
-                                response: scorm_lanswer,
-                                success: result.success,
-                                completion: true,
-                                extensions: {
-                                    "http://xerte.org.uk/result/match": scorm_lanswer
-                                }
-                            };
-                            break;
-                        case 'multiplechoice':
-                            // We have an options as an array of numbers
-                            // and we have corresponding array of answers strings
-                            // Construct answers like a:Answerstring
-                            var scormAnswerArray = [];
-                            var i = 0;
-
-                            for (i = 0; i < learnerOptions.length; i++) {
-                                var entry = learnerOptions[i]['answer'].replace(
-                                    / /g, "_");
-                                scormAnswerArray.push(entry);
-                            }
-                            var scorm_lanswer = scormAnswerArray.join('[,]');
-
-                            // Do the same for the answer pattern
-                            var scormArray = [];
-                            var scormCorrectArray = [];
-                            var i = 0;
-                            for (i = 0; i < this.correctOptions.length; i++) {
-                                var entry = {
-                                    id: this.correctOptions[i].answer.replace(
-                                        / /g, "_"),
-                                    description: {
-                                        "en-US": this.correctOptions[i][
-                                            'answer'
-                                        ]
-                                    }
-                                };
-                                entry.description[state.language] = this.correctOptions[i]['answer'];
-                                scormArray.push(entry);
-                                if (this.correctOptions[i].result) {
-                                    scormCorrectArray.push(this.correctOptions[
-                                        i].answer.replace(/ /g, "_"));
-                                }
-                            }
-                            var scorm_canswer = [scormCorrectArray.join('[,]')];
-
-                            statement.object.definition = {
-                                name: {
-                                    "en-US": description
-                                },
-                                description: {
-                                    "en-US": "Choice interaction " + description +
-                                        " of " + pageref
-                                },
-                                type: "http://adlnet.gov/expapi/activities/cmi.interaction",
-                                interactionType: "choice",
-                                choices: scormArray,
-                                correctResponsesPattern: scorm_canswer
-                            };
-                            statement.object.definition.name[state.language] = description;
-                            statement.result = {
-                                duration: calcDuration(this.start, this.end),
-                                score: {
-                                    raw: result.score,
-                                    min: 0.0,
-                                    max: 100.0,
-                                    scaled: result.score / 100.0
-                                },
-                                response: scorm_lanswer,
-                                success: result.success,
-                                completion: true,
-                                extensions: {
-                                    "http://xerte.org.uk/result/multiplichoice": scorm_lanswer
-                                }
-                            };
-                            break;
-                        case 'numeric':
-                            statement.object.definition = {
-                                name: {
-                                    "en-US": description
-                                },
-                                description: {
-                                    "en-US": "Numeric interaction " + description +
-                                        " of " + pageref
-                                },
-                                type: "http://adlnet.gov/expapi/activities/cmi.interaction",
-                                interactionType: "numeric",
-                                correctResponsesPattern: ["0[:]100"]
-                            };
-                            statement.object.definition.name[state.language] = description;
-                            if (this.ia_nr < 0) // Page mode
-                            {
-                                statement.result = {
-                                    duration: calcDuration(this.start, this
-                                        .end),
-                                    score: {
-                                        raw: this.score,
-                                        min: 0.0,
-                                        max: 100.0,
-                                        scaled: this.score / 100.0
-                                    },
-                                    response: this.score + "",
-                                    success: (this.score >= state.lo_passed),
-                                    completion: true
-                                };
-                            } else { // Interaction mode
-                                statement.result = {
-                                    duration: calcDuration(this.start, this
-                                        .end),
-                                    score: {
-                                        raw: result.score,
-                                        min: 0.0,
-                                        max: 100.0,
-                                        scaled: result.score / 100.0
-                                    },
-                                    response: this.learnerAnswers + "",
-                                    success: result.success,
-                                    completion: true
-                                };
-                            }
-                            break;
-                        case 'text':
-                        case 'fill-in':
-
-                            // Hmmm is this the page or the interaction itself
-                            if (this.ia_nr < 0) {
-                                //This is the page
-                                // Get the interaction, it is always assumed to be 0
-                                var siti = state.findInteraction(this.page_nr,
-                                    0);
-                                this.correctAnswers = siti.correctAnswers;
-                                this.learnerAnswers = siti.learnerAnswers;
-                            }
-                            statement.object.definition = {
-                                name: {
-                                    "en-US": description
-                                },
-                                description: {
-                                    "en-US": "Fill-in interaction " + description +
-                                        " of " + pageref
-                                },
-                                type: "http://adlnet.gov/expapi/activities/cmi.interaction",
-                                interactionType: "fill-in",
-                                correctResponsesPattern: [this.correctAnswers]
-                            };
-                            statement.object.definition.name[state.language] = this.ia_name;
-                            if (this.ia_type == 'text') {
-                                statement.result = {
-                                    duration: calcDuration(this.start, this
-                                        .end),
-                                    score: {
-                                        raw: result.score,
-                                        min: 0.0,
-                                        max: 100.0,
-                                        scaled: result.score / 100.0,
-                                    },
-                                    response: this.learnerAnswers,
-                                    success: result.success,
-                                    completion: true,
-                                    extensions: {
-                                        "http://xerte.org.uk/result/text": this.learnerAnswers
-                                    }
-                                };
-                                statement.object.definition = {
-                                    name: {
-                                        "en-US": this.ia_name
-                                    },
-                                    description: {
-                                        "en-US": "Model answer interaction " +
-                                            this.ia_name + " of " + pageref
-                                    }
-                                };
-                                statement.object.definition.name[state.language] = this.ia_name;
-                            } else {
-                                statement.result = {
-                                    duration: calcDuration(this.start, this
-                                        .end),
-                                    score: {
-                                        raw: result.score,
-                                        min: 0.0,
-                                        max: 100.0,
-                                        scaled: result.score / 100.0
-                                    },
-                                    response: this.learnerAnswers,
-                                    success: result.success,
-                                    completion: true,
-                                    extensions: {
-                                        "http://xerte.org.uk/result/fill-in": this
-                                            .learnerAnswers
-                                    }
-                                };
-                            }
-                            break;
-                        case 'page':
-                        default:
-                            statement.verb = {
-                                id: "http://adlnet.gov/expapi/verbs/interacted",
-                                display: {
-                                    "en-US": "interacted"
-                                }
-                            };
-                            statement.object.definition = {
-                                name: {
-                                    "en": description
-                                },
-                                description: {
-                                    "en": "Interaction with " + pageref
-                                }
-                            };
-                            statement.object.definition.name[state.language] = description;
-                            var duration = calcDuration(this.start, this.end);
-                            statement.result = {
-                                duration: duration,
-                                success: result.success,
-                                completion: Math.abs(this.end.getTime() -
-                                    this.start.getTime()) > state.page_timeout
-                            };
-                    }
                     if (this.grouping != "") {
-                        var definition = {
-                            name: {
-                                'en-US': this.grouping
-                            }
-                        };
-                        definition.name[state.language] = this.grouping;
-                        statement.context.contextActivities =
-                            {
-                                grouping: [{
-                                    id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
-                                    definition: definition,
-                                    objectType: "Activity"
-                                }]
-                            };
+                        scoredstatement.context.contextActivities = statement.context.contextActivities;
                     }
-                    if (this.context != "")
-                    {
+                    if (this.context != "") {
                         let contextitems = this.context.split(',');
-                        contextitems.forEach(function (contextitem){
-                           let item = contextitem.split('=');
-                           if (item.length == 2) {
-                               let key = "http://xerte.org.uk/" + item[0];
-                               let value = item[1];
-                               statement.context.extensions[key] = value;
-                           }
+                        contextitems.forEach(function (contextitem) {
+                            let item = contextitem.split('=');
+                            if (item.length == 2) {
+                                let key = "http://xerte.org.uk/" + item[0];
+                                let value = item[1];
+                                statement.context.extensions[key] = value;
+                            }
                         });
                     }
-                    SaveStatement(statement);
-                    if (typeof statement.result.score != 'undefined') {
-                        var scoredstatement = {
-                            timestamp: new Date(),
-                            actor: actor,
-                            context: {
-                                extensions: {
-                                    "http://xerte.org.uk/learningObjectLevel" : "interactivity"
-                                }
-                            },
-                            verb: {
-                                id: "http://adlnet.gov/expapi/verbs/scored",
-                                display: {
-                                    "en-US": "scored"
-                                }
-                            },
-                            object: {
-                                objectType: "Activity",
-                                definition: {
-                                    name: statement.object.definition.name,
-                                    description: statement.object.definition
-                                        .description
-                                },
-                                id: id
-                            },
-                            result: statement.result
-                        };
-                        if (this.grouping != "") {
-                            scoredstatement.context.contextActivities = statement.context.contextActivities;
-                        }
-                        if (this.context != "")
-                        {
-                            let contextitems = this.context.split(',');
-                            contextitems.forEach(function (contextitem){
-                                let item = contextitem.split('=');
-                                if (item.length == 2) {
-                                    let key = "http://xerte.org.uk/" + item[0];
-                                    let value = item[1];
-                                    statement.context.extensions[key] = value;
-                                }
-                            });
-                        }
-                        SaveStatement(scoredstatement);
-                    }
+                    SaveStatement(scoredstatement);
                 }
+            }
 
 
-                if (surf_mode) {
+            if (surf_mode) {
+                var statement = {
+                    actor: actor,
+                    verb: {
+                        id: "http://lrs.surfuni.org/verb/submitted",
+                        display: {
+                            "en-US": "Submitted"
+                        }
+                    },
+                    object: {
+                        objectType: "Activity",
+                        id: id
+                    },
+                    context: {
+                        extensions: {
+                            "http://lrs.surfuni.org/context/course": surf_course,
+                            "http://lrs.surfuni.org/context/recipe": surf_recipe,
+                            "http://lrs.surfuni.org/context/label": ""
+                        }
+                    },
+                    timestamp: new Date()
+                };
+                if (this.grouping != "") {
+                    var definition = {
+                        name: {
+                            'en-US': this.grouping,
+                        }
+                    };
+                    definition.name[state.language] = this.grouping;
+                    statement.context.contextActivities = {
+                        grouping: [{
+                            id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
+                            definition: definition,
+                            objectType: "Activity"
+                        }]
+                    };
+                }
+                if (this.context != "") {
+                    let contextitems = this.context.split(',');
+                    contextitems.forEach(function (contextitem) {
+                        let item = contextitem.split('=');
+                        if (item.length == 2) {
+                            let key = "http://xerte.org.uk/" + item[0];
+                            let value = item[1];
+                            statement.context.extensions[key] = value;
+                        }
+                    });
+                }
+                SaveStatement(statement);
+                // If not a page
+                if (this.ia_nr >= 0) {
                     var statement = {
                         actor: actor,
                         verb: {
-                            id: "http://lrs.surfuni.org/verb/submitted",
+                            id: "http://adlnet.gov/expapi/verbs/scored",
                             display: {
-                                "en-US": "Submitted"
+                                "en-US": "Scored"
                             }
                         },
                         object: {
                             objectType: "Activity",
                             id: id
+                        },
+                        result: {
+                            duration: calcDuration(this.start, this.end),
+                            completion: true,
+                            success: result.success,
+                            score: {
+                                scaled: result.score / 100.0,
+                                raw: result.score,
+                                min: 0.0,
+                                max: 100.0
+                            },
+                            duration: calcDuration(sit.start, sit.end)
                         },
                         context: {
                             extensions: {
@@ -1684,10 +1787,9 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                             }]
                         };
                     }
-                    if (this.context != "")
-                    {
+                    if (this.context != "") {
                         let contextitems = this.context.split(',');
-                        contextitems.forEach(function (contextitem){
+                        contextitems.forEach(function (contextitem) {
                             let item = contextitem.split('=');
                             if (item.length == 2) {
                                 let key = "http://xerte.org.uk/" + item[0];
@@ -1697,72 +1799,9 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
                         });
                     }
                     SaveStatement(statement);
-                    // If not a page
-                    if (this.ia_nr >= 0) {
-                        var statement = {
-                            actor: actor,
-                            verb: {
-                                id: "http://adlnet.gov/expapi/verbs/scored",
-                                display: {
-                                    "en-US": "Scored"
-                                }
-                            },
-                            object: {
-                                objectType: "Activity",
-                                id: id
-                            },
-                            result: {
-                                duration: calcDuration(this.start, this.end),
-                                completion: true,
-                                success: result.success,
-                                score: {
-                                    scaled: result.score / 100.0,
-                                    raw: result.score,
-                                    min: 0.0,
-                                    max: 100.0
-                                },
-                                duration: calcDuration(sit.start, sit.end)
-                            },
-                            context: {
-                                extensions: {
-                                    "http://lrs.surfuni.org/context/course": surf_course,
-                                    "http://lrs.surfuni.org/context/recipe": surf_recipe,
-                                    "http://lrs.surfuni.org/context/label": ""
-                                }
-                            },
-                            timestamp: new Date()
-                        };
-                        if (this.grouping != "") {
-                            var definition = {
-                                name: {
-                                    'en-US': this.grouping,
-                                }
-                            };
-                            definition.name[state.language] = this.grouping;
-                            statement.context.contextActivities = {
-                                grouping: [{
-                                    id: baseUrl() + this.grouping.replace(/[\/ ]/g, "_"),
-                                    definition: definition,
-                                    objectType: "Activity"
-                                }]
-                            };
-                        }
-                        if (this.context != "")
-                        {
-                            let contextitems = this.context.split(',');
-                            contextitems.forEach(function (contextitem){
-                                let item = contextitem.split('=');
-                                if (item.length == 2) {
-                                    let key = "http://xerte.org.uk/" + item[0];
-                                    let value = item[1];
-                                    statement.context.extensions[key] = value;
-                                }
-                            });
-                        }
-                        SaveStatement(statement);
-                    }
                 }
             }
+            //}
         }
         if (!surf_mode) {
             var statement;
@@ -1876,17 +1915,53 @@ async function httpGetStatements(url, query)
     }
 }
 
+function getMboxSha1(statement)
+{
+    if (statement.actor != undefined) {
+        if (statement.actor.mbox != undefined) {
+            return toSHA1(statement.actor.mbox);
+        } else if (statement.actor.mbox_sha1sum != undefined) {
+            return statement.actor.mbox_sha1sum;
+        }
+        else {
+            return null;
+        }
+    }
+    else {
+        return null;
+    }
+}
+
 async function getStatementsFromDB(q, one)
 {
     let search = {};
+    let activity = "";
+    if (q['filter_current_users'] != undefined) {
+        if (q['filter_current_users'] == 'true') {
+            const lti_user_list = lti_users.split(',');
+            search['actor'] = lti_user_list;
+        }
+        delete q['filter_current_users'];
+    }
+    if (q['activity'] != undefined && typeof lrsExtraInstall != 'undefined' && lrsExtraInstall['source'] != undefined > 0 && q['activity'].indexOf(lrsExtraInstall['source']) == 0) {
+        search['xapiobjectid'] = [q['activity'], q['activity'].replace(lrsExtraInstall['source'], lrsExtraInstall['extra'])];
+        activity = q['activity'];
+        delete q['activity'];
+    }
     $.each(q, function(i, value) {
         search[i] = value;
     });
+    // Reinsert activity if needed
+    if (q['activity'] == undefined && activity.length > 0)
+    {
+        q['activity'] = activity;
+    }
     if (one) {
         limit=1;
     } else {
         limit = 5000;
     }
+
     let query = 'statements=1&realtime=1&query=' + JSON.stringify(search) + '&limit=' + limit + '&offset=0';
     let statements = [];
     do
@@ -1901,6 +1976,14 @@ async function getStatementsFromDB(q, one)
             query = null;
         }
     } while (query != null && query != "");
+    // Transform the statements to the correct activity
+    if (typeof lrsExtraInstall != 'undefined' && lrsExtraInstall['source'] != undefined > 0 && activity.indexOf(lrsExtraInstall['source']) == 0) {
+        for (let i = 0; i < statements.length; i++) {
+            if (statements[i].object.id.indexOf(lrsExtraInstall['extra']) == 0) {
+                statements[i].object.id = activity;
+            }
+        }
+    }
     return statements;
 }
 
@@ -1914,6 +1997,7 @@ function getStatements(q, one, callback)
         var search = ADL.XAPIWrapper.searchParams();
         var group = "";
         var context_id = "";
+	    var filter_current_users = false;
         if (q['group'] != undefined) {
             group = q['group'];
             delete q['group'];
@@ -1921,6 +2005,10 @@ function getStatements(q, one, callback)
         if (q['lti_context_id'] != undefined) {
             context_id = q['lti_context_id'];
             delete q['lti_context_id'];
+        }
+        if (q['filter_current_users'] != undefined) {
+            filter_current_users = q['filter_current_users'];
+            delete q['filter_current_users'];
         }
         $.each(q, function (i, value) {
             search[i] = value;
@@ -1931,8 +2019,10 @@ function getStatements(q, one, callback)
             search['limit'] = 1000;
         }
         var statements = [];
+
         if (callback == null) {
             var tmp = ADL.XAPIWrapper.getStatements(search);
+            var lti_user_list = lti_users.split(',');
             for (x = 0; x < tmp.statements.length; x++) {
                 if (group != ""
                     && (tmp.statements[x].context.team == undefined
@@ -1947,6 +2037,12 @@ function getStatements(q, one, callback)
                         || tmp.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
                     continue;
                 }
+                //todo add check if statements are from current users if userlist > 0
+                if (filter_current_users == 'true'){
+                    if (!lti_user_list.includes(getMboxSha1(tmp.statements[x]))) {
+                        continue;
+                    }
+                }
                 statements.push(tmp.statements[x]);
             }
             return statements;
@@ -1954,6 +2050,7 @@ function getStatements(q, one, callback)
             ADL.XAPIWrapper.getStatements(search, null,
                 function getmorestatements(err, res, body) {
                     var lastSubmit = null;
+                    var lti_user_list = lti_users.split(',');
 
                     for (x = 0; x < body.statements.length; x++) {
                         //if (sr.statements[x].actor.mbox == userEMail && lastSubmit == null) {
@@ -1974,6 +2071,13 @@ function getStatements(q, one, callback)
                                 || body.statements[x].context.extensions["http://xerte.org.uk/lti_context_id"] != context_id)) {
                             continue;
                         }
+
+                        if (filter_current_users == 'true'){
+                            //done also check for field mbox_sha1sum (has of mailto:mail@mail.nl)
+                            if (!lti_user_list.includes(getMboxSha1(body.statements[x]))) {
+                                continue;
+                            }
+                        }
                         statements.push(body.statements[x]);
                     }
                     //stringObjects.push(lastSubmit);
@@ -1985,6 +2089,7 @@ function getStatements(q, one, callback)
                     if (body.more && body.more !== "") {
                         ADL.XAPIWrapper.getStatements(null, body.more, getmorestatements);
                     } else {
+
                         callback(statements, search);
                     }
                 }
@@ -2061,6 +2166,7 @@ function XTInitialise(category) {
     if (typeof studentidmode != "undefined" && typeof studentidmode == 'string') {
         studentidmode = parseInt(studentidmode);
     }
+
     if (typeof studentidmode == "undefined" || (studentidmode <= 0 && studentidmode > 3)) {
         // set actor to global group
         actor = {
@@ -2560,8 +2666,9 @@ function XThelperConsolidateSegments(videostate) {
     while (i < segments.length) {
         var segment = $.extend(true, {}, segments[i]);
         i++;
-        while (i < segments.length && parseFloat(segment.end) >= parseFloat(segments[i].start)) {
-            segment.end = segments[i].end;
+        while (i < segments.length && parseFloat(segments[i].start) >= parseFloat(segment.start) && parseFloat(segments[i].start) <= parseFloat(segment.end)) {
+            if (parseFloat(segments[i].end) > parseFloat(segment.end))
+                segment.end = segments[i].end;
             i++;
         }
         csegments.push(segment);
@@ -2654,14 +2761,13 @@ function XTVideo(page_nr, name, block_name, verb, videostate, set_grouping) {
                         }]
                     },
                     "extensions": {
-                        "http://xerte.org.uk/learningObjectLevel" : "video",
+                        "http://xerte.org.uk/learningObjectLevel": "video",
                         "https://w3id.org/xapi/video/extensions/session-id": state.sessionId
                     }
                 }
             };
             statement.object.definition.name[state.language] = pagename;
-            if (grouping != "")
-            {
+            if (grouping != "") {
                 statement.context.contextActivities = statementgrouping;
             }
             SaveStatement(statement);
@@ -2701,15 +2807,14 @@ function XTVideo(page_nr, name, block_name, verb, videostate, set_grouping) {
                         }]
                     },
                     "extensions": {
-                        "http://xerte.org.uk/learningObjectLevel" : "video",
+                        "http://xerte.org.uk/learningObjectLevel": "video",
                         "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                         "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                     }
                 }
             };
             statement.object.definition.name[state.language] = pagename;
-            if (grouping != "")
-            {
+            if (grouping != "") {
                 statement.context.contextActivities = statementgrouping;
             }
             SaveStatement(statement);
@@ -2758,15 +2863,14 @@ function XTVideo(page_nr, name, block_name, verb, videostate, set_grouping) {
                         }]
                     },
                     "extensions": {
-                        "http://xerte.org.uk/learningObjectLevel" : "video",
+                        "http://xerte.org.uk/learningObjectLevel": "video",
                         "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                         "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                     }
                 }
             };
             statement.object.definition.name[state.language] = pagename;
-            if (grouping != "")
-            {
+            if (grouping != "") {
                 statement.context.contextActivities = statementgrouping;
             }
             SaveStatement(statement);
@@ -2807,22 +2911,21 @@ function XTVideo(page_nr, name, block_name, verb, videostate, set_grouping) {
                         }]
                     },
                     "extensions": {
-                        "http://xerte.org.uk/learningObjectLevel" : "video",
+                        "http://xerte.org.uk/learningObjectLevel": "video",
                         "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                         "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                     }
                 }
             };
             statement.object.definition.name[state.language] = pagename;
-            if (grouping != "")
-            {
+            if (grouping != "") {
                 statement.context.contextActivities = statementgrouping;
             }
             SaveStatement(statement);
             break;
         case "interacted":
             break;
-        case "exit": // Not really the verb. will send termintaed or completed depending on state
+        case "ended":
             var played_segments = "";
             for (var i = 0; i < videostate.segments.length; i++) {
                 if (i > 0) {
@@ -2831,9 +2934,10 @@ function XTVideo(page_nr, name, block_name, verb, videostate, set_grouping) {
                 played_segments += videostate.segments[i].start + "[.]" + videostate.segments[i].end;
             }
             var progress = XThelperDetermineProgress(videostate);
-            // 3. Determine whther to use completed or terminated
-            if (progress >= 99.9) {
-                // Use completed
+            var prevstate = state.prevVerb;
+            // 3. Determine whether to use completed or terminated
+            if (progress >= 0.999) {
+                // Send completed
                 var statement = {
                     "actor": actor,
                     "verb": {
@@ -2871,71 +2975,89 @@ function XTVideo(page_nr, name, block_name, verb, videostate, set_grouping) {
                             }]
                         },
                         "extensions": {
-                            "http://xerte.org.uk/learningObjectLevel" : "video",
+                            "http://xerte.org.uk/learningObjectLevel": "video",
                             "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                             "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                         }
                     }
                 };
                 statement.object.definition.name[state.language] = pagename;
-            } else {
-                // use terminated, so first send paused as according to standards (if not already sent)
-                if (state.prevVerb != "paused") {
-                    var statement = {
-                        "actor": actor,
-                        "verb": {
-                            "id": "https://w3id.org/xapi/video/verbs/paused",
-                            "display": {
-                                "en-US": "paused"
-                            }
-                        },
-                        "object": {
-                            "id": id,
-                            "definition": {
-                                "name": {
-                                    "en-US": "Video of " + pagename
-                                },
-                                "description": {
-                                    "en-US": "Watching video on " + pagename
-                                },
-                                "type": "https://w3id.org/xapi/video/activity-type/video"
-                            },
-                            "objectType": "Activity"
-                        },
-                        "result": {
-                            "extensions": {
-                                "https://w3id.org/xapi/video/extensions/time": videostate.time,
-                                "https://w3id.org/xapi/video/extensions/progress": XThelperDetermineProgress(videostate),
-                                "https://w3id.org/xapi/video/extensions/played-segments": played_segments
-                            },
-                            "duration": calcDuration(state.videostart, new Date())
-                        },
-                        "context": {
-                            "contextActivities": {
-                                "category": [{
-                                    "id": "https://w3id.org/xapi/video"
-                                }]
-                            },
-                            "extensions": {
-                                "http://xerte.org.uk/learningObjectLevel" : "video",
-                                "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
-                                "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
-                            }
-                        }
-                    };
-                    statement.object.definition.name[state.language] = pagename;
-                    if (grouping != "")
-                    {
-                        statement.context.contextActivities = statementgrouping;
-                    }
-                    SaveStatement(statement);
+                if (grouping != "") {
+                    statement.context.contextActivities = statementgrouping;
                 }
+                SaveStatement(statement);
+            }
+            break;
+        case "exit": // Not really the verb. will send completed depending on state and followed by paused and terminated
+            var played_segments = "";
+            for (var i = 0; i < videostate.segments.length; i++) {
+                if (i > 0) {
+                    played_segments += "[,]"
+                }
+                played_segments += videostate.segments[i].start + "[.]" + videostate.segments[i].end;
+            }
+            var progress = XThelperDetermineProgress(videostate);
+            var prevstate = state.prevVerb;
+            // 3. Determine whether to use completed or terminated
+            /*if (progress >= 0.999) {
+                // Send completed
                 var statement = {
                     "actor": actor,
                     "verb": {
-                        "id": "http://adlnet.gov/expapi/verbs/terminated",
+                        "id": "http://adlnet.gov/expapi/verbs/completed",
                         "display": {
-                            "en-US": "terminated"
+                            "en-US": "completed"
+                        }
+                    },
+                    "object": {
+                        "id": id,
+                        "definition": {
+                            "name": {
+                                "en-US": "Video of " + pagename
+                            },
+                            "description": {
+                                "en-US": "Watching video on " + pagename
+                            },
+                            "type": "https://w3id.org/xapi/video/activity-type/video"
+                        },
+                        "objectType": "Activity"
+                    },
+                    "result": {
+                        "extensions": {
+                            "https://w3id.org/xapi/video/extensions/time": videostate.time,
+                            "https://w3id.org/xapi/video/extensions/progress": progress,
+                            "https://w3id.org/xapi/video/extensions/played-segments": played_segments
+                        },
+                        "completion": true,
+                        "duration": calcDuration(state.videostart, new Date())
+                    },
+                    "context": {
+                        "contextActivities": {
+                            "category": [{
+                                "id": "https://w3id.org/xapi/video"
+                            }]
+                        },
+                        "extensions": {
+                            "http://xerte.org.uk/learningObjectLevel": "video",
+                            "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
+                            "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
+                        }
+                    }
+                };
+                statement.object.definition.name[state.language] = pagename;
+                if (grouping != "") {
+                    statement.context.contextActivities = statementgrouping;
+                }
+                SaveStatement(statement);
+            }*/
+            // send terminated, so first send paused as according to standards (if not already sent)
+            if (prevstate != "paused") {
+                var statement = {
+                    "actor": actor,
+                    "verb": {
+                        "id": "https://w3id.org/xapi/video/verbs/paused",
+                        "display": {
+                            "en-US": "paused"
                         }
                     },
                     "object": {
@@ -2966,16 +3088,63 @@ function XTVideo(page_nr, name, block_name, verb, videostate, set_grouping) {
                             }]
                         },
                         "extensions": {
-                            "http://xerte.org.uk/learningObjectLevel" : "video",
+                            "http://xerte.org.uk/learningObjectLevel": "video",
                             "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
                             "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
                         }
                     }
                 };
                 statement.object.definition.name[state.language] = pagename;
+                if (grouping != "") {
+                    statement.context.contextActivities = statementgrouping;
+                }
+                SaveStatement(statement);
             }
-            if (grouping != "")
-            {
+            var statement = {
+                "actor": actor,
+                "verb": {
+                    "id": "http://adlnet.gov/expapi/verbs/terminated",
+                    "display": {
+                        "en-US": "terminated"
+                    }
+                },
+                "object": {
+                    "id": id,
+                    "definition": {
+                        "name": {
+                            "en-US": "Video of " + pagename
+                        },
+                        "description": {
+                            "en-US": "Watching video on " + pagename
+                        },
+                        "type": "https://w3id.org/xapi/video/activity-type/video"
+                    },
+                    "objectType": "Activity"
+                },
+                "result": {
+                    "extensions": {
+                        "https://w3id.org/xapi/video/extensions/time": videostate.time,
+                        "https://w3id.org/xapi/video/extensions/progress": progress,
+                        "https://w3id.org/xapi/video/extensions/played-segments": played_segments
+                    },
+                    "duration": calcDuration(state.videostart, new Date())
+                },
+                "context": {
+                    "contextActivities": {
+                        "category": [{
+                            "id": "https://w3id.org/xapi/video"
+                        }]
+                    },
+                    "extensions": {
+                        "http://xerte.org.uk/learningObjectLevel": "video",
+                        "https://w3id.org/xapi/video/extensions/session-id": state.sessionId,
+                        "https://w3id.org/xapi/video/extensions/length": Math.round(videostate.duration)
+                    }
+                }
+            };
+            statement.object.definition.name[state.language] = pagename;
+
+            if (grouping != "") {
                 statement.context.contextActivities = statementgrouping;
             }
             SaveStatement(statement);
@@ -3137,6 +3306,11 @@ function XTSetPageScoreJSON(page_nr, score, JSONGraph) {
                 value = Math.round(value * 100.0) / 100.0;
                 var statement = {
                     actor: actor,
+                    context: {
+                        extensions: {
+                            "http://xerte.org.uk/learningObjectLevel" : "opinion_class"
+                        }
+                    },
                     verb: {
                         id: "http://adlnet.gov/expapi/verbs/scored",
                         display: {
@@ -3534,7 +3708,7 @@ function XTTerminate() {
                         method: "POST",
                         url: url,
                         data: {
-                            grade: state.getdScaledScore()
+                            grade: state.getdScaledCompletionWeightedScore()
                         }
                     })
                     .done(function(msg) {
@@ -3765,6 +3939,7 @@ function XTResults(fullcompletion) {
 
         } else if (results.mode == "full-results") {
             var subinteraction = {};
+						let judge = true;
 
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type) {
@@ -3816,6 +3991,8 @@ function XTResults(fullcompletion) {
                         matchSub.correct = (learnerAnswer === correctAnswer);
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
+                        matchSub.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
+                        judge &= matchSub.judge;
                         results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
                     break;
@@ -3854,9 +4031,12 @@ function XTResults(fullcompletion) {
                 subinteraction.correct = state.interactions[i].result.success;
                 subinteraction.learnerAnswer = learnerAnswer;
                 subinteraction.correctAnswer = correctAnswer;
+                subinteraction.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
+                judge = judge && subinteraction.judge;
                 results.interactions[nrofquestions - 1].subinteractions.push(
                     subinteraction);
             }
+						results.interactions[nrofquestions - 1].judge = judge;
         }
     }
     results.completion = completion;

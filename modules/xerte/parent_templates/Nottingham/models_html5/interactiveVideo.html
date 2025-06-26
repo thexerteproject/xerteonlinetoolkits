@@ -75,10 +75,7 @@
 			
 			$panelHolder.css("margin-top", infoHolderHeight);
 
-            $panelHolder.find(".panel")
-                .height($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() -
-                    (parseFloat($x_pageDiv.css("padding-top")) * 2) - (parseFloat($panelHolder.find(".panel").css("padding-top")) * 2
-                    + infoHolderHeight) - 5);
+            $panelHolder.find(".panel").height(x_getAvailableHeight([$panelHolder.find(".panel")], [infoHolderHeight], true));
 
             $x_pageHolder.css("overflow", curroverflow);
 
@@ -240,6 +237,11 @@
 
             $this = this;
 
+            // Finish tracking of video
+            // This will also account for last video segment, so there might be race conditions
+            // Also we do let popcorn handle the destruction (doNotCloseTracking parameter in loadMedia) of popcorn, so we need to do that here at the end
+            document.dispatchEvent(new Event('leavepage'));
+
             $x_pageHolder.css("overflow", '');
             $(".embed").each(function() {
                 $(this).data("popcornInstance").pause();
@@ -249,11 +251,15 @@
             // Also we do let popcorn handle the destruction (doNotCloseTrackiong parameter in loadMedia) of popcorn, so we need to do that hear at the end
             vidFullWatched.segment.end = vidFullWatched.lastTime || -1;
             // Calculate page score
-            var questions = x_currentPageXML.getElementsByTagName("synchMCQ");
+            var questions = x_currentPageXML.getElementsByTagName("ivSynchMCQ");
             var numOfQuestions = questions.length;
-            var trackVideo = x_currentPageXML.getAttribute('trackVideo') === 'yes' ||
-                x_currentPageXML.getAttribute('trackVideo') === 'only_video' ||
-                x_currentPageXML.getAttribute('trackVideo') === 'no_mcqs' && numOfQuestions == 0;
+            var trackVideo = numOfQuestions == 0;  // Default is no_mcqs
+            if (x_currentPageXML.getAttribute('trackVideo') != undefined)
+            {
+                trackVideo = x_currentPageXML.getAttribute('trackVideo') === 'yes' ||
+                    x_currentPageXML.getAttribute('trackVideo') === 'only_video' ||
+                    x_currentPageXML.getAttribute('trackVideo') === 'no_mcqs' && numOfQuestions == 0;
+            }
 
             score = 0;
             for (var i = 0; i < numOfQuestions; i++) {
@@ -320,6 +326,11 @@
                     /* files are already loaded statically */
                     loadFiles = false;
                 }
+                // comment out next loop and always load popcorn files
+                // This is because popcorn breaks if you have a mediaLesson
+                // and then a nav page which also loads popcorn with a different set of plugins
+                // Any mediaLesson after that will not work anymore
+                /*
                 for (var i=0; i<x_pageInfo.length; i++) {
                     if (i != x_currentPage && x_pageInfo[i].type == x_pageInfo[x_currentPage].type && x_pageInfo[i].built != false) {
                         // a page of this type has already been loaded - don't reload popcorn files
@@ -327,7 +338,7 @@
                         break;
                     }
                 }
-
+                */
                 if (loadFiles == true ) {
                     this.loadPopcorn();
                 } else {
@@ -423,14 +434,14 @@
             // get type of media (video/audio)
             if (mediaFile.indexOf(".mp3") != -1) {
                 mediaType = "audio";
-				
+
             } else if (mediaFile.indexOf(".") == -1) {
                 // no media
                 mediaType = undefined;
                 panelData.splice(mediaPanelIndex, 1);
                 mediaPanelIndex = -1;
             }
-			
+
             // set up accordion if there's some intro text
             if (x_currentPageXML.getAttribute("intro") != "" && x_currentPageXML.getAttribute("intro") != undefined) {
                 var $contentCover = $("#contentCover");
@@ -505,7 +516,7 @@
             }
 
             this.resizePanels();
-			
+
             // loadMedia & sortPopcorn are called below & also in the media plus plugin which deals with additional media added to panels
 
             // _____ LOAD MEDIA _____
@@ -552,8 +563,8 @@
 
             // Build trackbar structure hierarchy and add it to the media panel.
             var $trackBarHolder = $('<div id="trackBarHolder"></div>')
-                .appendTo($('#' + interactiveVideo.panelbaseid + mediaPanelIndex)[0]);
-            var $playButton = $('<div id="playButton" class="trackBarButton fa fa-fw fa-x-pause" tabindex=0/>')
+                .insertAfter($('#' + interactiveVideo.panelbaseid + mediaPanelIndex).find(".popcornMedia")[0]);
+            var $playButton = $('<div id="playButton" class="trackBarButton fa fa-fw fa-x-pause" tabindex="0"/>')
                 .appendTo($trackBarHolder);2
             var $trackBarTime = $('<div id="trackBarCurrentTime" class="trackBarTime">00:00:00</div>')
                 .appendTo($trackBarHolder);
@@ -563,7 +574,7 @@
                 .appendTo($trackBarRail);
             var $trackBarDuration = $('<div id="trackBarDuration" class="trackBarTime">00:00:00</div>')
                 .appendTo($trackBarHolder);
-            var $muteButton = $('<div id="muteButton" class="trackBarButton fa fa-fw fa-x-mute" tabindex=1/>')
+            var $muteButton = $('<div id="muteButton" class="trackBarButton fa fa-fw fa-x-mute" tabindex="0"/>')
                 .appendTo($trackBarHolder);
 
 
@@ -685,7 +696,7 @@
             //Append the OVERLAY PANEL to the main media.
             for(i = 0; i < panelData.length; i++) {
                 if(panelData[i].nodeName == "ivOverlayPanel") {
-                    $('<div class="overlay" id="mydiv"></div>')
+                    $('<div class="overlay" tabindex="0"></div>')
                         .appendTo($('#' + interactiveVideo.panelbaseid + mediaPanelIndex).children(".mainMedia"))
                         .attr("id", interactiveVideo.panelbaseid + i)
                         .hide();
@@ -701,12 +712,30 @@
                     break;
                 }
             }
+
             $("#overlay").on('click', function(e){
                 if(isPlaying) {
                     mp.pause();
                 }
                 else {
                     mp.play();
+                }
+            });
+
+            // escape key will close any open overlay content blocks
+            $(document).on("keydown.pageEvent", function(e) {
+                var charCode = e.charCode || e.keyCode;
+                if (charCode == 27 && $(".contentBlock:visible").length > 0) {
+                    $(".overlay,.overlayGray").hide()
+                }
+            });
+
+            // if content is activated from a hotspot, ensure it can be opened with keyboard only
+            $("#" + interactiveVideo.panelbaseid + i).keypress(function(e) {
+                e.stopPropagation();
+                const charCode = e.charCode || e.keyCode;
+                if ($(this).find("#showHolder:visible").length > 0 && (charCode == 32 || charCode == 13)) {
+                    $(this).find("#showHolder:visible").trigger("click");
                 }
             });
 
@@ -745,7 +774,7 @@
         this.addEvents = function() {
             this.popcornInstance.on( "timeupdate", function() {
                 $("#overlayGray").hide();
-                vidFullWatched = addTrackingOnTimeUpdate(interactiveVideo.popcornInstance, vidFullWatched);
+                //vidFullWatched = addTrackingOnTimeUpdate(interactiveVideo.popcornInstance, vidFullWatched);
                 interactiveVideo.enableControls(this.media, false, true);
 
                 //Update time and Slider location on trackbar timeline
@@ -765,24 +794,24 @@
                 }
             });
             this.popcornInstance.on( "play", function() {
-                vidFullWatched = addTrackingOnPlay(interactiveVideo.popcornInstance, vidFullWatched);
+                //vidFullWatched = addTrackingOnPlay(interactiveVideo.popcornInstance, vidFullWatched);
                 $("#overlay").hide();
                 $("#overlayGray").hide();
                 $('#playButton').removeClass('fa-x-play').addClass('fa-x-pause');
                 isPlaying = true;
             });
             this.popcornInstance.on( "pause", function() {
-                vidFullWatched = addTrackingOnPause(interactiveVideo.popcornInstance, vidFullWatched);
+                //vidFullWatched = addTrackingOnPause(interactiveVideo.popcornInstance, vidFullWatched);
                 $('#playButton').removeClass('fa-x-pause').addClass('fa-x-play');
                 console.log("Pause   : " + interactiveVideo.popcornInstance.currentTime());
                 isPlaying = false;
             });
             this.popcornInstance.on( "seeked", function() {
-                vidFullWatched = addTrackingOnSeeked(interactiveVideo.popcornInstance, vidFullWatched);
+                //vidFullWatched = addTrackingOnSeeked(interactiveVideo.popcornInstance, vidFullWatched);
                 console.log("Seeked  : " + interactiveVideo.popcornInstance.currentTime() + ", prevTime=" + vidFullWatched.prevTime);
             });
             this.popcornInstance.on("ended", function() {
-                vidFullWatched = addTrackingOnEnded(interactiveVideo.popcornInstance, vidFullWatched);
+                //vidFullWatched = addTrackingOnEnded(interactiveVideo.popcornInstance, vidFullWatched);
                 console.log("End     : " + interactiveVideo.popcornInstance.currentTime());
             });
         };
@@ -889,46 +918,41 @@
                     });
 
                     if ($(this).children().length > 0) {
-                        if (this.nodeName == "synchMediaPlus") {  //TODO What is this? Nodename does not exist
-                            // store child data of media content as they aren't synced to the mainMedia
-                            data[data.length-1].childNodes = $(this).children();
-                        } else {
-                            var $parent = $(this),
-                                syncChildren = true,
-                                prevStartII = prevStart;
+                        var $parent = $(this),
+                            syncChildren = true,
+                            prevStartII = prevStart;
 
-                            this.setAttribute("child", false);
-                            $parent.children().each(function(k) {
-                                // if child nodes have a synch point then include their details too
-                                // with reference to the parent as this will create the holder for the child
-                                // e.g. for subtitles the parent creates a holder and 1st caption
-                                // the children then have their own synch points and load in the same holder
-                                if (this.getAttribute("synchStart") == undefined) {
-                                    syncChildren = false;
-                                } else {
-                                    // if no end point is set force it to be at the start of the next child
-                                    //otherwise it won't revert if rewinding (if no next child then use parent synchEnd)
-                                    // this won't be right if the next child is using relative synching so it's fixed later after that has been calculated
-                                    var defaultEnd = $parent.children()[k+1] ? $parent.children()[k+1].getAttribute("synchStart") : $.isNumeric($parent[0].getAttribute("synchEnd")) ? ($parent[0].getAttribute("synchEnd")[0] == "+" ? end : Number($parent[0].getAttribute("synchEnd"))) : undefined;
-                                    this.setAttribute("child", true);
+                        this.setAttribute("child", false);
+                        $parent.children().each(function(k) {
+                            // if child nodes have a synch point then include their details too
+                            // with reference to the parent as this will create the holder for the child
+                            // e.g. for subtitles the parent creates a holder and 1st caption
+                            // the children then have their own synch points and load in the same holder
+                            if (this.getAttribute("synchStart") == undefined) {
+                                syncChildren = false;
+                            } else {
+                                // if no end point is set force it to be at the start of the next child
+                                //otherwise it won't revert if rewinding (if no next child then use parent synchEnd)
+                                // this won't be right if the next child is using relative synching so it's fixed later after that has been calculated
+                                var defaultEnd = $parent.children()[k+1] ? $parent.children()[k+1].getAttribute("synchStart") : $.isNumeric($parent[0].getAttribute("synchEnd")) ? ($parent[0].getAttribute("synchEnd")[0] == "+" ? end : Number($parent[0].getAttribute("synchEnd"))) : undefined;
+                                this.setAttribute("child", true);
 
-                                    var start = interactiveVideo.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStartII),
-                                        end = interactiveVideo.sortRelativeSynchPoints("end", this.getAttribute("synchEnd"), start, defaultEnd);
-                                    prevStartII = start;
-                                    data.push({
-                                        type:		$(this).parent()[0].nodeName,
-                                        start:		start,
-                                        end:		end,
-                                        target:		targetRef + "_" + j, // ref. to parent synch point to make sure it loads in correct place
-                                        optional:   $(this).parent()[0].optional,
-                                        allInfo:	this
-                                    });
-                                }
-                            });
-                            // store child data if children aren't being synced to media so plugin can use it
-                            if (syncChildren == false) {
-                                data[data.length-1].childNodes = $(this).children();
+                                var start = interactiveVideo.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStartII),
+                                    end = interactiveVideo.sortRelativeSynchPoints("end", this.getAttribute("synchEnd"), start, defaultEnd);
+                                prevStartII = start;
+                                data.push({
+                                    type:		$(this).parent()[0].nodeName,
+                                    start:		start,
+                                    end:		end,
+                                    target:		targetRef + "_" + j, // ref. to parent synch point to make sure it loads in correct place
+                                    optional:   $(this).parent()[0].optional,
+                                    allInfo:	this
+                                });
                             }
+                        });
+                        // store child data if children aren't being synced to media so plugin can use it
+                        if (syncChildren == false) {
+                            data[data.length-1].childNodes = $(this).children();
                         }
                     }
                 } else {
@@ -1081,7 +1105,7 @@
 
                     // add other info to pluginAttributes
                     $.each(thisContent.allInfo.attributes, function(i, attrib) {
-                        // ignore attributes that aren't need ed or are dealt with here rather than in individual plugins
+                        // ignore attributes that aren't needed or are dealt with here rather than in individual plugins
                         if (attrib.name != "synchStart" && attrib.name != "synchEnd" && attrib.name != "clearPanel"
                                 && attrib.name != "pauseMedia" && attrib.name != "linkID") {
                             pluginAttributes[attrib.name] = attrib.value;
@@ -1125,9 +1149,9 @@
                         popcornInstance["sortholder"](pluginAttributes);
                     }
 
-                    // pauses media at synch point if needed
-                    if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
-                        popcornInstance.cue(thisContent.start, function() {
+                    popcornInstance.cue(thisContent.start, function() {
+                        // pauses media at synch point if needed
+                        if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
                             this.pause();
                             // Gray out the background and fix z-index if the media is paused on an overlay panel
                             if (thisContent.allInfo.getAttribute("overlayPan") == "true" && thisContent.type == "ivSynchXot")
@@ -1137,8 +1161,19 @@
                             if (thisContent.allInfo.getAttribute("overlay") != "true") {
                                 interactiveVideo.exitFullScreen();
                             }
-                        });
-                    }
+                        }
+
+                        // try to get screen readers to notify user of panel contents change
+                        if (thisContent.start != 0) {
+                            const contentChgTxt = x_getLangInfo(x_languageData.find("screenReaderInfo").find("interactiveVideo")[0], "prompt") != undefined ? x_getLangInfo(x_languageData.find("screenReaderInfo").find("interactiveVideo")[0], "prompt") : (x_params.language === "en-GB" ? "Content added" : undefined);
+                            if (contentChgTxt !== undefined) {
+                                $("#srInfo").html(contentChgTxt);
+                                setTimeout(function() { $("#srInfo").html(''); }, 50);
+                            }
+
+                            $(".contentBlock:visible").parents(".overlay").focus();
+                        }
+                    });
                 }
             }
 
@@ -1189,7 +1224,9 @@
             if (enable == true) {
                 // enable
                 if (media.player) {
-                    media.player.controls = true;
+					if(typeof media.player.controls != "object"){
+						media.player.controls = true;
+					}
                     media.player.controlsEnabled = true;
                     media.player.options.clickToPlayPause = true;
                     if (includeMejs == true) {
@@ -1268,5 +1305,6 @@
     <div id="contentCover"></div>
 
     <div id="panelHolder"></div>
+    <div id="srInfo" class="sr-only" aria-live="assertive"></div>
 
 </div>

@@ -1,560 +1,662 @@
-//***********************************Text*************************************
-//*****title page******
-.titlePageTxt {
-  //*without reducing the width here horizontal scroll bars show when the theme selected isn't 100% width*/
-  width:96% !important;
-  overflow: hidden;
+
+//***********************************Styles used in several page types*************************************
+
+//*****Tables*****/
+table.glossary tr, table.glossary td,
+.x_grid_page #gridBorders {
+  background: $panelcolor;
 }
-table.glossary tr {
-  background: darken($lightestcolor, 10%);
+table, table td, table th, table tr,
+table.glossary tr td, table.glossary tr.shaded td {
+  border: 1px solid $bordercolor !important;
 }
-table.glossary tr.shaded {
-  background: darken($lightestcolor, 5%);
+table tr.shaded, table tr.alt, table tr.alt td, table.header.shaded thead tr:first-child, table.footer.shaded tbody tr:last-child,
+table.header.shaded thead tr:first-child td, table.header.shaded thead tr:first-child th,
+table.glossary tr.shaded td,
+.x_grid_page table.header.shaded tr:first-child,
+.x_grid_page table.headerCol.shaded td.header {
+  color: $mainfontcolour;
+  background: $midlightyellow !important;
 }
-//***********************************Media*************************************
-//default highlight if not overriden
-.highlight {
-  background: $lightestcolor;
+table.none, table.none td, table.none th, table.none tr,
+table.simple, table.simple td, table.simple th, table.simple tr,
+table.horizontal td, table.horizontal th,
+table.vertical tr, table.vertical td, table.vertical th,
+table.outside tr, table.outside td, table.outside th {
+  border: none !important;
 }
-//*****audio slideshow********/
-.x_audioSlideshow_page .slide {
-  margin-left: 5px;
+table.simple {
+  border-top: 2px solid $bordercolor !important;
+  border-bottom: 2px solid $bordercolor !important;
 }
-//*****multiple perspectives******/
-#thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3{
-  color: $blackordarkest;
+table.simple thead tr {
+  border-bottom: 1px solid $bordercolor !important;
 }
-//*****Synched Video*******/
-//add padding to right holder
-#x_mainHolder.x_videoSynch_page .right{
-  padding-top: 10px;
-  padding-left: 20px;
+table.simple.footer tbody tr:last-child {
+  border-top: 1px solid $bordercolor !important;
 }
-//*****transcript reader******/
-.x_transcriptReader_page .highlight {
-  background:transparentize($whiteorlightest, .6);
-}
-//*****thumbnailViewer******/
-.x_thumbnailViewer_page #thumbOverlayLeft,
-.x_thumbnailViewer_page #thumbOverlayRight {
-  background: $bodybackgroundcolor;
-}
-.x_thumbnailViewer_page #thumbBar button { color: $blackordarkest; }
-.x_thumbnailViewer_page #thumbBar button.ui-state-hover { color: lighten($blackordarkest,10%); }
-.x_thumbnailViewer_page #thumbBar button.ui-state-focus { color: lighten($blackordarkest,10%); }
-.x_thumbnailViewer_page #thumbBar button.ui-state-active { color: lighten($blackordarkest,10%); }
-//***********************************Navigators*************************************/
-//*****Accordion page*******/
-.ui-accordion .ui-accordion-content {
-  border-radius: $smallroundedcorners;
-  background: $lightestcolor;
-  color:$blackordarkest;
-}
-.ui-accordion .ui-accordion-header {
-  border-radius: $smallroundedcorners;
-  background: $blackordarkest;
-  color:#ffffff;
-}
-.ui-accordion .ui-accordion-header a {
-  border-radius: $smallroundedcorners;
-  color: $lightestcolor !important; //doesn't work without important
-  background: $blackordarkest;
-}
-.ui-accordion .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
-  text-decoration: none;
-  background: darken($lightestcolor, 70%) !important;
-  border-radius: $smallroundedcorners;
-  color: $blackordarkest;
+table.vertical td, table.vertical th {
+  border-left: 1px solid $bordercolor !important;
 }
 
+//*****Sliders*****/
+.ui-slider {
+  background: $panelcolor;
+  border-color: $bordercolor;
+  border-radius: 20px !important;
+}
+.ui-slider .ui-slider-handle {
+  border: 4px solid $bordercolor !important;
+  background: $panelcolor !important;
+  border-radius: 20px;
+}
+.ui-slider .ui-slider-handle:focus, .ui-slider .ui-slider-handle:hover {
+  background: $darkyellow !important;
+}
+
+//*****Tabs*****/
+.ui-tabs {
+  background: $panelcolor;
+  border-color: $panelcolor;
+}
+.ui-tabs .ui-tabs-panel {
+  background: $panelcolor;
+  border: 1px solid $bordercolor;
+}
+.ui-tabs .ui-tabs-nav {
+  background: none;
+  padding: 0;
+  border: none;
+}
+.ui-tabs .ui-tabs-nav li {
+  background: $panelcolor;
+  border: 1px solid $bordercolor;
+  margin-top: 1px;
+}
+.ui-tabs .ui-tabs-nav li a {
+  color: $mainfontcolour;
+}
+.ui-tabs .ui-tabs-nav li.ui-state-active,
+#tabHolder .navChildTitle.ui-tabs-active {
+  border-bottom: none !important;
+  background: $headerbackgroundcolor;
+  color: $footerfontcolor;
+  border-color: $bordercolor;
+}
+.ui-tabs .ui-tabs-nav li.ui-state-active a,
+#tabHolder .navChildTitle.ui-tabs-active a {
+  color: $footerfontcolor;
+}
+.ui-tabs .ui-tabs-nav li.ui-state-hover:not(.ui-state-active), .ui-tabs .ui-tabs-nav li.ui-state-focus:not(.ui-state-active) {
+  background: $midyellow;
+  border-color: $bordercolor;
+}
 .ui-tabs-panel a:visited, .ui-accordion-content a:visited {
-  color: $linkcolor;
+  color: $mainfontcolour;
 }
 .ui-tabs-panel a:link, .ui-accordion-content a:link {
-  color: $linkcolor;
+  color: $mainfontcolour;
 }
-
 .ui-tabs-panel a:hover, .ui-accordion-content a:hover {
-  color: $linkhover;
+  color: $mainfontcolour;
 }
 
-//*****button navigator*****/
-.ui-button {
+//*****Buttons*****/
+.ui-button,
+.ui-widget-content .ui-button {
   border-radius: $smallroundedcorners;
-  background: $blackordarkest;
-  border: none;
-  color: $lightestcolor;
+  background: $btnbackgroundcolor;
+  border: 1px solid $bordercolor;
+  color: $btntxtcolor;
 }
-.ui-button:focus {
-color: darken($lightestcolor, 30%);
+.panel .ui-button, .featherlight-content .ui-button {
+  background: $btnbackgroundcolor;
+}
+.ui-button:not(.ui-button-disabled):hover, .ui-button:not(.ui-button-disabled):active, .ui-button:not(.ui-button-disabled):focus,
+.ui-button:not(.ui-button-disabled):hover p, .ui-button:not(.ui-button-disabled):active p, .ui-button:not(.ui-button-disabled):focus p {
+  background: $btnhoverbackgroundcolor;
+  color: $btnhovertxtcolor;
+  border-color: $bordercolor;
 }
 .ui-buttonset .ui-button {
   margin-left: 0;
   margin-right: .2em;
 }
-.ui-state-active{
+.ui-state-active {
   border-radius: $smallroundedcorners;
-  border: none;
-  background: lighten($blackordarkest, 30%);
-  color:darken($lightestcolor, 30%);
-}
-//***Flash cards***/
-.front.panel{
-  background:$lightestcolor;
-  border:$blackordarkest;
-  color:$blackordarkest;
-  border:solid 1px;
-}
-.back.panel{
-  background:darken($lightestcolor, 10%);
-  border:$blackordarkest;
-  color:$blackordarkest;
-  border:solid 1px;
-}
-//*****hyperlinks******/
-.x_links_page #linkHolder a{
-  color:$linkcolor;
-}
-.x_links_page #linkHolder a:visited{
-  color:$linkvisited;
-}
-.x_links_page #linkHolder a:hover{
-  color:$linkhover;
-}
-//*****navigator*****/
-#pageContents.button button.selected {
-  background-color: $lightestcolor;
-}
-#pageContents.slide #btnHolder button {
-  background: darken($lightestcolor, 70%);
-  border-color: darken($lightestcolor, 70%);
-}
-//****tabbed navigator****/
-.ui-tabs .ui-tabs-nav li {
-  border-radius: $smallroundedcorners;
-  border:none;
-  background: $blackordarkest;
-  color:$lightestcolor;
+  color: $mainfontcolour;
 }
 
-.paneInfo{
-  /*color:$fontcolorfobrightcolor;*/
-}
-.paneList a, .paneList a:link, .paneList a:visited{
-  /*color: $linkcolor !important;*/
-}
-.ui-tabs-panel a:link, /*.ui-accordion-content a:link*/ {
-  /*color: $linkcolor;*/
-}
-.ui-tabs .ui-tabs-nav {
+//*****Form fields*****/
+#pageContents textarea,
+#pageContents input:not(.slider) {
   border-radius: $smallroundedcorners;
-  background: none;
-  border: none;
+  padding-left: .5em;
 }
-.ui-tabs .ui-tabs-nav li a {
-  color: $lightestcolor;
-}
-
-.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
-  text-decoration: none;
-  background: lighten($blackordarkest, 30%) !important;
-  color:darken($lightestcolor, 30%) !important;
-  border-radius: $smallroundedcorners;
-  border: none;
+fieldset {
+  border-color: $bordercolor !important;
 }
 
-a.topic.highlight {
-  background: darken($lightestcolor, 20%);
-  color:$blackordarkest;
+//*****Draggable labels*****/
+.label.panel.ui-draggable,
+.ui-sortable li.label.panel,
+.x_grid_page li.ui-state-default:not(.static) {
+  background: $panelcolor;
+  color: $mainfontcolour;
+  border: 2px solid $bordercolor !important;
 }
-a.topic.highlight:hover {
-  background: darken($lightestcolor, 30%);
-  color:$blackordarkest;
+.label.panel.ui-draggable:not(.ui-state-disabled).selected,
+.label.panel.ui-draggable.ui-draggable-dragging, li.ui-state-default.ui-draggable.ui-draggable-dragging,
+.ui-sortable li.label.panel.selected, .ui-sortable li.label.panel.ui-sortable-helper,
+li.ui-state-default.ui-draggable.selected {
+  border-color: $bordercolor !important;
+  color: $labelfonthovercolor !important;
+  background: $labelhovercolor;
 }
-div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
-  background:$lightestcolor;
+.label.panel.ui-draggable:not(.ui-state-disabled).selected p,
+.label.panel.ui-draggable.ui-draggable-dragging p,
+.ui-sortable li.label.panel.selected p, .ui-sortable li.label.panel.ui-sortable-helper p {
+  color: $labelfonthovercolor;
+}
+.label.panel.ui-draggable:not(.ui-state-disabled):not(.selected).focus,
+.ui-sortable li.label.panel:not(.selected):focus,
+li.ui-state-default.ui-draggable:not(.selected):focus {
+  background: $midyellow;
 }
 
+//*****Lines & borders*****/
+.x_columnPage_page #textHolder, .x_textGraphics_page #imgCaption.transcript, .x_imageSequence_page #controlBar,
+.x_mediaLesson_page .panel h3, .x_nav_page #pageContents.col #textHolder,
+.x_nav_page #pageContents.slide #btnHolder.top, .x_tabNavExtra_page .paneList, .x_table_page #footnote,
+.x_decision_page #overviewHolder .overviewStep,
+.x_documentation_page #pages:not(:last-child),
+.x_gapFill_page #labelHolder, .x_gapFill_page #feedbackTxt,
+.x_interactiveText_page #pageContents.show2 #btnHolder,
+.x_interactiveText_page #pageContents.show #btnHolder,
+.x_interactiveText_page #pageContents.find #btnHolder, #pageContents.find2 #btnHolder,
+.x_interactiveText_page #groupInfo h3,
+.x_interactiveText_page #questionHolder,
+.x_interactiveVideo_page .panel h3,
+.x_mcq_page #feedback h3,
+.x_quiz_page #feedbackGroup h3,
+.x_textCorrection_page h3.fbLabel,
+.x_crossword_page #x_pageDiv #clues-container table th, .x_crossword_page #x_pageDiv #clues th, .x_crossword_page #attempt p:first-child,
+.x_results_page #txtHolder,
+.x_results_page #general_summary + #specific,
+.x_SictTimeline_page #pageContents .tl-text .tl-headline-date, .x_SictTimeline_page #pageContents .tl-text h3.tl-headline-date,
+.x_audioRecord_page #recordedClips .clip, .x_audioRecord_page #feedbackTxt, .x_audioRecord_page #panelTop {
+  border-color: $bordercolor;
+}
+#pageContents hr,
+.x_mediaLesson_page hr,
+.x_dragDropLabel_page #pageContents #textHolder hr,
+.x_hotspotImage_page #infoHolder hr,
+.x_hotSpotQuestion_page #infoHolder hr,
+.x_opinion_page .qSeparator hr,
+.x_documentation_page #pages hr {
+  background-color: $bordercolor;
+  border-color: $bordercolor;
+}
+
+//***********************************Media*************************************
+
+//*****360 image page*****/
+.x_media360_page .pnlm-controls {
+  background-color: $btnbackgroundcolor;
+  color: $btntxtcolor;
+}
+.x_media360_page button.pannellumBtn:hover .pnlm-sprite,
+.x_media360_page button.pannellumBtn:focus .pnlm-sprite {
+  background-color: $midyellow;
+}
+.x_media360_page button.pannellumBtn.sceneMenu .sceneLink {
+  background: $panelcolor;
+  border: 1px solid $bordercolor;
+}
+.x_media360_page button.pannellumBtn.sceneMenu .sceneLink:hover,
+.x_media360_page button.pannellumBtn.sceneMenu .sceneLink:focus,
+.x_media360_page button.pannellumBtn.sceneMenu .sceneLink:active {
+  background: $midyellow;
+}
+.x_media360_page button.pannellumBtn.sceneMenu .sceneLink.current {
+  background: $btnhoverbackgroundcolor;
+  color: $btnhovertxtcolor;
+}
+.x_media360_page .pnlm-title-box {
+  color: $panelcolor;
+}
+//*****compare images*****/
+.x_imageCompare_page #slider {
+  background: $darkyellow;
+}
+.x_imageCompare_page #slider_handle {
+  background: $panelcolor;
+  border: 4px solid $bordercolor;
+  border-radius: 10px;
+  width: 14px;
+  height: 14px;
+  top: 50%;
+  right: 6px;
+}
+.x_imageCompare_page #slider_handle.vertical {
+  top: auto;;
+  right: auto;
+  bottom: 6px;
+  left: 50%;
+}
+.x_imageCompare_page #slider_handle:hover, .x_imageCompare_page #slider_handle:focus, .x_imageCompare_page #slider_handle:active {
+  background-color: $darkyellow;
+}
+
+//*****image sequence*****/
+.x_imageSequence_page #seriesMenu > button { color: $iconBtn; }
+.x_imageSequence_page #seriesMenu > button.ui-state-hover { color: $iconHoverBtn; }
+.x_imageSequence_page #seriesMenu > button.ui-state-focus { color: $iconHoverBtn; }
+.x_imageSequence_page #seriesMenu > button.ui-state-active { color: $iconHoverBtn; }
+
+.x_imageSequence_page #seriesMenu .thumbs {
+  background: $panelcolor;
+  border-color: $bordercolor;
+}
+.x_imageSequence_page #seriesMenu .thumbs.selected {
+  background: $thumbSelect;
+  border-color: $thumbSelect;
+}
+.x_imageSequence_page .magnifyLabel {
+  color: $mainfontcolour;
+}
+.x_imageSequence_page .magnifyBtn .slider {
+  background: $panelcolor;
+  color: $mainfontcolour;
+  border: 1px solid $bordercolor;
+}
+.x_imageSequence_page .magnifyBtn input + .slider:before {
+  background: $mainfontcolour;
+}
+.x_imageSequence_page input:hover + .slider, .x_imageSequence_page input:focus + .slider {
+  background: $midlightyellow;
+}
+
+//*****thumbnailViewer******/
+.x_thumbnailViewer_page #thumbOverlayLeft,
+.x_thumbnailViewer_page #thumbOverlayRight {
+  background: $bodybackgroundcolor;
+}
+.x_thumbnailViewer_page #thumbBar button { color: $iconBtn; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-hover { color: $iconHoverBtn; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-focus { color: $iconHoverBtn; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-active { color: $iconHoverBtn; }
+
+.x_thumbnailViewer_page #thumbHolder .thumbBox.selected {
+  border-color: $thumbSelect;
+}
 .x_thumbnailViewer_page #panelTxt div {
-  background-color: $blackordarkest;
-  color: $lightestcolor;
-}
-//***********************************Interactivity*************************************/
-//most text areas unless changed for specifc pages
-#pageContents textarea {
-  border-radius: $mediumroundedcorners;
-  padding: 10px;
-  background:darken($lightestcolor, 5%) !important;
-}
-//most input boxes unless changed for specifc pages
-#pageContents input {
-  border-radius: $smallroundedcorners;
-  padding-left: 10px;
-  background:darken($lightestcolor, 5%) !important;
-}
-//*****highlight text******/
-.x_textHighlight_page .ui-widget-content .ui-state-default {
-  border-radius: $smallroundedcorners;
-  background: $blackordarkest;
-  border: none;
-  color: $lightestcolor;
-}
-.x_textHighlight_page .ui-widget-content .ui-state-default:focus {
-  color: darken($lightestcolor, 30%);
-}
-//*****annotated diagram******/
-#listholder a.listitem, a:visited {
-  color:$contrastcolor ;
-}
-.x_annotatedDiagram_page .highlight{
-  background:darken($lightestcolor, 20%);
-}
-.x_annotatedDiagram_page .hotspot{
-  background:none;
-}
-.x_annotatedDiagram_page #infoHolder{
-  background:$defaultpagebackground;
-}
-//*******Drag and Drop Labelling*********/
-.target.ui-droppable.border.highlight {
-  //show transparent background when clicking target hotspots
-  background-color: transparentize($lightestcolor, .6) !important;
-}
-.x_dragDropLabel_page #infoHolder{
-  padding:20px;
-  margin-right:20px;
-}
-.x_dragDropLabel_page .label.panel{
-  background:transparentize(darken($lightestcolor, 90%), .4 )!important;
-  border-color:$lightestcolor;
-  color:$lightestcolor;
-  //darken($lightestcolor, 70%)
-}
-//*****categories*****/
-#categoryHolder .category {
-  border-radius: $smallroundedcorners;
-}
-#categoryHolder h3 {
-  color:$blackordarkest;
-}
-.x_categories_page #dragDropHolder {
-  background: $lightestcolor;
-  padding:10px;
-  border-radius: $mediumroundedcorners;
-}
-.x_categories_page .label.panel{
-  background:darken($lightestcolor, 70%);
-  border:darken($lightestcolor, 70%);
-  color:$lightestcolor ;
-  border-radius: $smallroundedcorners;
-}
-#categoryHolder .highlight {
-  border-radius: $smallroundedcorners;
-  background: $lightestcolor;
-  border: solid black 1px;
-}
-//*******decision tree********//
-.x_decision_page .highlight{
-  background: $lightestcolor;
-}
-//*****Dictation*****/
-.x_dictation_page #answerTxt {
-  width: 98%;
-  margin-bottom: 10px;
-  border-radius: $mediumroundedcorners;
-  padding:10px;
-}
-//*****gap fill*****/
-#targetHolder .target {
-  border-radius: $mediumroundedcorners;
-}
-#targetHolder .highlight {
-  background:$lightestcolor;
-  border: solid black 1px;
-}
-#labelHolder .label.panel {
-  //background: purple;
-}
-.x_gapFill_page #targetHolder .highlight {
-  background:darken($lightestcolor, 10%);
-  border:none;
-}
-.x_gapFill_page .label.panel {
-  background: darken($lightestcolor, 80%);
-  border-color:darken($lightestcolor, 80%) !important;
-  color:$lightestcolor;
-}
-.x_gapFill_page .target.correct{
-  color:green;
-  font-weight:bold;
-  background-color:transparentize($whiteorlightest, .8);
-}
-.x_gapFill_page #targetHolder select {
-  background:darken($lightestcolor, 10%);
-}
-/*gap fill: change styling of correct and disable answers*/
-.x_gapFill_page #targetHolder input[readonly].correct, .x_gapFill_page #targetHolder .target.correct, .x_gapFill_page #targetHolder input[correct], .x_gapFill_page #targetHolder select[disabled].correct {
-  background:$lightestcolor !important;
-}
-/*gap fill: drop down shows answers styling*/
-.x_gapFill_page #targetHolder .target.answerShown, .x_gapFill_page #targetHolder select[disabled].answerShown, .x_gapFill_page #targetHolder input.answerShown {
-  color: #c36b00;
-  background:$lightestcolor !important;
-}
-/*styling of disabled/incorect responses when in tracking mode*/
-.x_gapFill_page #targetHolder select[disabled],.x_gapFill_page #targetHolder .target.incorrect,  .x_gapFill_page #targetHolder input[readonly]{
-  background:$lightestcolor;
+  background: $panelcolor;
+  color: $mainfontcolour;
+  border: 1px solid $bordercolor;
 }
 
-//*****hotspot image*****/
-a.hotspot, a.hotspot.selected {
+//*****timeline media*****/
+.x_SictTimeline_page .tl-timeline {
+  background: $panelcolor;
+  color: $mainfontcolour;
+}
+.x_SictTimeline_page .tl-slider-background.tl-animate, .x_SictTimeline_page .tl-timenav {
+  background: $panelcolor !important;
+}
+.x_SictTimeline_page #pageContents .tl-text,
+.x_SictTimeline_page #pageContents .tl-text p,
+.x_SictTimeline_page #pageContents .tl-timemarker-text h2,
+.x_SictTimeline_page #pageContents .tl-text .tl-headline-date,
+.x_SictTimeline_page #pageContents .tl-text h3.tl-headline-date
+.x_SictTimeline_page #pageContents .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-media-container [class^="tl-icon-"],
+.x_SictTimeline_page #pageContents .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-media-container [class*=" tl-icon-"],
+.x_SictTimeline_page #pageContents .tl-timeaxis .tl-timeaxis-content-container .tl-timeaxis-major .tl-timeaxis-tick,
+.x_SictTimeline_page #pageContents .tl-timeaxis .tl-timeaxis-content-container .tl-timeaxis-minor .tl-timeaxis-tick,
+.x_SictTimeline_page .tl-timeline h1, .x_SictTimeline_page .tl-timeline h2, .x_SictTimeline_page .tl-timeline h3, .x_SictTimeline_page .tl-timeline h4, .x_SictTimeline_page .tl-timeline h5, .x_SictTimeline_page .tl-timeline h6,
+.x_SictTimeline_page .tl-caption,
+.x_SictTimeline_page .tl-slidenav-previous .tl-slidenav-content-container .tl-slidenav-icon,
+.x_SictTimeline_page .tl-slidenav-next .tl-slidenav-content-container .tl-slidenav-icon,
+.x_SictTimeline_page .tl-slidenav-previous .tl-slidenav-content-container .tl-slidenav-title,
+.x_SictTimeline_page .tl-slidenav-next .tl-slidenav-content-container .tl-slidenav-title,
+.x_SictTimeline_page .tl-slidenav-previous .tl-slidenav-content-container .tl-slidenav-description,
+.x_SictTimeline_page .tl-slidenav-next .tl-slidenav-content-container .tl-slidenav-description {
+  color: $mainfontcolour !important;
+  text-shadow: none;
+}
+.x_SictTimeline_page .tl-slidenav-icon:hover:before, .x_SictTimeline_page .tl-slidenav-icon:focus:before {
+  color: $iconBtn;
+}
+.x_SictTimeline_page .tl-timemarker-content,
+.x_SictTimeline_page .tl-timeaxis-background,
+.x_SictTimeline_page .tl-timeline .tl-attribution {
+  background: $panelcolor !important;
+  border-color: $bordercolor;
+}
+.x_SictTimeline_page .tl-timemarker .tl-timemarker-content-container {
+  border-color: $bordercolor;
+}
+.x_SictTimeline_page .tl-timeline p a,
+.x_SictTimeline_page .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-media-container [class^="tl-icon-"],
+.x_SictTimeline_page .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-media-container [class*=" tl-icon-"],
+.x_SictTimeline_page .tl-menubar-button {
+  color: $mainfontcolour;
+}
+.x_SictTimeline_page .tl-menubar-button {
   background: none;
 }
-.hsinfo{
-  padding:1%;
+//*****transcript reader******/
+.x_transcriptReader_page .highlight {
+  background: $midlightyellow;
 }
-//******Interactive lists*******/
-.x_interactiveText_page .highlight{
-  background: $lightestcolor;
-}
-.ui-widget-content {
-  border: 1px solid #aaaaaa;
-  //background: $lightestcolor url(images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x;
-  background: $lightestcolor;
-  color: $blackordarkest;
-}
-.ui-dialog .ui-dialog-titlebar-close {
-  background: $blackordarkest;
-  color: darken($lightestcolor, 30%);
-}
-//******Interactive lists*******/
-.x_list_page .highlight{
-  background: darken($lightestcolor, 70%);
-  color:$lightestcolor;
-}
-//*********matching texts*********/
-.x_textMatch_page #dragDropHolder {
-  background: $lightestcolor;
-  padding:10px;
+//*****youtube feed page*****/
+.x_youtuberss_page .shadedDiv {
+  background-color: $panelcolor !important; //doesn't work without important
   border-radius: $mediumroundedcorners;
+  border-bottom: 1px solid $bordercolor;
 }
-.x_textMatch_page .label.panel{
-  background:darken($lightestcolor, 70%);
-  border-color:darken($lightestcolor, 70%);
-  color:$lightestcolor;
+
+//***********************************Navigators*************************************/
+
+//*****Accordion page*******/
+.x_nav_page #pageContents.acc .ui-accordion .ui-accordion-content {
+  background: $panelcolor;
+  border-color: $bordercolor;
+}
+.x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header {
+  background: $panelcolor;
+  border: 1px solid $bordercolor;
+}
+.x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header.ui-state-hover:not(.ui-accordion-header-active), .x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header.ui-state-focus:not(.ui-accordion-header-active) {
+  background: $midyellow;
+  border-color: $bordercolor;
+  /*border-bottom-color: $bordercolor !important;*/
+}
+.x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header a, .x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header .ui-accordion-header-icon {
+  color: $mainfontcolour;
+  background: none !important;
+}
+.x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header-active {
+  background: $headerbackgroundcolor;
+}
+.x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header-active a, .x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header-active .ui-accordion-header-icon {
+  color: $headerfontcolor;
+}
+
+//*****button navigator*****/
+.x_nav_page #pageContents.button button.selected {
+  border-color: $bordercolor;
+  background: $btnhoverbackgroundcolor;
+  color: $btnhovertxtcolor;
+}
+.x_nav_page #pageContents.button .ui-button:not(.ui-button-disabled):not(.selected):hover,
+.x_nav_page #pageContents.button .ui-button:not(.ui-button-disabled):not(.selected):active,
+.x_nav_page #pageContents.button .ui-button:not(.ui-button-disabled):not(.selected):focus {
+  background: $midyellow;
+  color: $mainfontcolour;
+}
+
+//*****tabbed navigator plus page*****/
+//*****interactive list page*****/
+.x_tabNavExtra_page #topicHolder .topic,
+.x_list_page #listHolder .listItem {
+  border: 1px solid $bordercolor;
+  color: $btntxtcolor;
+  background: $btnbackgroundcolor;
+  margin-bottom: .2em;
+  font-weight: normal;
+}
+.x_tabNavExtra_page #topicHolder .topic.highlight,
+.x_list_page #listHolder .listItem.highlight {
+  color: $btnhovertxtcolor;
+  background: $bordercolor
+}
+.x_tabNavExtra_page #topicHolder .topic:not(.highlight):focus, .x_tabNavExtra_page #topicHolder .topic:not(.highlight):hover,
+.x_list_page #listHolder .listItem:not(.highlight):focus, .x_list_page #listHolder .listItem:not(.highlight):hover {
+  background: $midyellow;
+  color: $mainfontcolour;
+}
+.x_tabNavExtra_page .paneList {
+  color: $mainfontcolour;
+}
+
+//***Flash cards***/
+.x_flashCards_page .circleBtn.ui-button {
+  background: $iconBtn;
+  border-color: $iconBtn;
+}
+.x_flashCards_page .circleBtn.ui-button .ui-button-icon-primary {
+  color: $panelcolor;
+}
+.x_flashCards_page .circleBtn.ui-button:hover, .x_flashCards_page .circleBtn.ui-button:focus, .x_flashCards_page .circleBtn.ui-button:active {
+  background: $iconHoverBtn;
+  border-color: $iconHoverBtn;
+}
+.x_flashCards_page #cardCtrls .btnHolder button.ui-button {
+  color: $iconBtn;
+}
+.x_flashCards_page #cardCtrls .btnHolder button.ui-button:hover, .x_flashCards_page #cardCtrls .btnHolder button.ui-button:focus, .x_flashCards_page #cardCtrls .btnHolder button.ui-button:active {
+  color: $iconHoverBtn;
+}
+
+//*****multiple perspectives******/
+.x_perspectives_page #thumbBar button, .x_perspectives_page #gridBack {
+  color: $iconBtn;
+}
+.x_perspectives_page #thumbBar button.ui-state-hover, .x_perspectives_page #gridBack:hover,
+.x_perspectives_page #thumbBar button.ui-state-focus, .x_perspectives_page #gridBack:focus,
+.x_perspectives_page #thumbBar button.ui-state-active, .x_perspectives_page #gridBack:active {
+  color: $iconHoverBtn;
+}
+.x_perspectives_page #thumbHolder .thumbBox.border {
+  background: $panelcolor;
+  border-color: $bordercolor;
+}
+.x_perspectives_page #thumbHolder .thumbBox.border.current, .x_perspectives_page #thumbHolder .thumbBox.border.selected {
+  border-width: 1px;
+  background: $thumbSelect;
+  margin: 5px;
+}
+
+//***********************************Interactivity*************************************/
+
+//*****audio record*****/
+.x_audioRecord_page .deleteClipBtn:hover, .x_audioRecord_page .deleteClipBtn:focus {
+  color: $mainfontcolour;
+}
+.x_audioRecord_page #recBtn.recording .ui-icon, .x_audioRecord_page #recBtn.recording .ui-button-text {
+  color: $red !important;
+  background: $panelcolor !important;
+}
+
+//*****categories*****/
+.x_categories_page #categoryHolder .categoryTitle {
+  font-weight: normal;
+  border-bottom: 1px solid $bordercolor;
+  padding-bottom: .5em;
+}
+.x_categories_page #categoryHolder .category {
+  border: 1px solid $bordercolor;
+}
+
+//*******decision tree********//
+.x_decision_page .ui-slider .ui-slider-handle {
+  top: -6px;
+  height: 14px;
+  width: 14px;
+}
+.x_decision_page .ui-slider {
+  height: 10px;
+}
+
+//*******documentation*******//
+.x_documentation_page .required {
+  color: $red;
+  font-size: .8em;
+}
+
+//*****gap fill*****/
+.x_gapFill_page #targetHolder.gapStyle_false .target.answerShown,
+.x_gapFill_page #targetHolder.gapStyle_false .target.correct,
+.x_gapFill_page #targetHolder select[disabled],
+.x_gapFill_page #targetHolder .target.incorrect,
+.x_gapFill_page #targetHolder input[readonly] {
+  background: inherit;
+}
+.x_gapFill_page #targetHolder .target.selected {
+  border-color: $bordercolor !important;
+}
+.x_gapFill_page #targetHolder .target.correct+span:before,
+.x_gapFill_page #targetHolder select[disabled].correct+span:before,
+.x_gapFill_page #targetHolder .target.correct {
+  color: $green;
+}
+.x_gapFill_page #targetHolder.bg .highlight,
+.x_gapFill_page #targetHolder.gapStyle_true:not(.underline):not(.outline) .target.correct {
+  background: $midyellow;
+}
+.x_gapFill_page #targetHolder input[readonly].correct,
+.x_gapFill_page #targetHolder select[disabled].correct,
+.x_gapFill_page #targetHolder input[readonly],
+.x_gapFill_page #targetHolder select[disabled] {
+  background: inherit;
+  border: 1px solid $bordercolor;
+}
+.x_gapFill_page #targetHolder:not(.underline):not(.outline) .target.correct,
+.x_gapFill_page #targetHolder.gapStyle_false.underline .target.highlight.answerShown,
+.x_gapFill_page #targetHolder.gapStyle_false.outline .target.highlight.answerShown {
+  border: none;
+}
+.x_gapFill_page #targetHolder select[disabled].answerShown {
+  background: inherit;
+  border: 1px solid $bordercolor;
+  color: $blue;
+}
+.x_gapFill_page #targetHolder input[incorrect],
+.x_gapFill_page #targetHolder input.incorrect {
+  color: $red;
+  font-weight: normal;
+}
+.x_gapFill_page #targetHolder .target.answerShown,
+.x_gapFill_page #targetHolder input.answerShown {
+  color: $blue;
+  background: inherit;
+}
+
+.x_gapFill_page #targetHolder input.answerShown {
+  border: 1px solid $bordercolor;
+}
+
+//*****highlight text******/
+.x_textHighlight_page #initTxt, .x_textHighlight_page #notesTxt, .x_textHighlight_page #suggestedTxt {
+  border: 1px solid $bordercolor;
+}
+
+//*******hotspot question*******/
+.x_hotSpotQuestion_page #markingIcons .incorrect span:before {
+  color: $red;
+}
+.x_hotSpotQuestion_page #markingIcons .correct span:before {
+  color: $green;
+}
+
+//*********matching texts*********/
+.x_textMatch_page #targetHolder .target {
+  border: 1px solid $bordercolor;
 }
 
 //*****model answer*****/
-.x_modelAnswer_page #answerTxt {
-  border-radius: $mediumroundedcorners;
-  width: 98%;
+.x_modelAnswer_page #copyTxt {
+  color: $red;
 }
+
 //*****opinion********/
-.x_opinion_page #pageContents input {
-  padding-left: 0;
-}
-.qPanel {
-  overflow-x:hidden;
-}
-.qSeparator hr {
-  background-color: lighten($lightestcolor, 15%);
-  border-color: lighten($lightestcolor, 15%);
-  border: solid 1px lighten($lightestcolor, 15%);
-}
-.sliderHolder .labelHolder a p {
-  color: $blackordarkest;
+.x_opinion_page input.slider {
+  border-radius: 10px;
 }
 
 //*****sortable grid*****/
-.x_grid_page #gridBorders {
-  border-radius: $smallroundedcorners;
+.x_grid_page #grid ul.preview li {
+  background: inherit;
 }
-.x_grid_page #grid .listHolder.constrainC li {
-  border-radius: $smallroundedcorners;
-}
-.x_grid_page #grid ul li.header {
-  background:$blackordarkest !important;
-  color:$lightestcolor !important;
-}
-.x_grid_page table.header.shaded tr:first-child {
-  background: $blackordarkest;
-}
-.x_grid_page table.simple {
-  border: transparent;
-}
-.x_grid_page table.header.simple tr:first-child{
-  border-bottom: transparent;
-  background:$blackordarkest;
-  color:$lightestcolor !important;
-}
-//the draggable items
-.x_grid_page #grid ul li{
-  background:darken($lightestcolor, 10%);
-  border-color: transparent;
-  color:$blackordarkest !important;
-}
-//even rows of the table
-.x_grid_page table tr.shaded {
-  background: darken($lightestcolor, 30%);
-  color:$blackordarkest !important;
-}
-//odd rows of the table
-.x_grid_page table tr {
-  background: darken($lightestcolor, 10%);
-  color:$blackordarkest !important;
-}
-.x_grid_page #grid ul li.static {
-  background: none;
-  border-color: transparent;
-}
+
 /*****timeline matching pairs*****/
-.x_timeline_page #dragDropHolder {
-  background: $lightestcolor;
+.x_timeline_page #targetHolder .target.bg {
+  background-color: $panelcolor;
+  border: 1px solid $bordercolor;
 }
-//the target boxes
-.x_timeline_page #targetHolder .target {
-  border-radius: $mediumroundedcorners;
-  background-color:$lightestcolor;
-  border: solid black 1px;
-}
-.x_timeline_page .label.panel.ui-draggable {
-  background: darken($lightestcolor, 10%);
-  color: $blackordarkest;
-  border-color:darken($lightestcolor, 10%);
-}
-//***********************************Connectors*************************************/
-//*****menu connector*****/
-#subMenuItems .subMenuItem {
-  background: $lightestcolor;
-  color:$blackordarkest;
-  border: solid 1px;
-}
-//***********************************Charts*************************************/
-//***Charts Table***/
-.x_table_page table.header.simple tr:first-child {
-  border:none;
-}
-.x_table_page table.simple {
-  border: none;
-}
+
 //***********************************Games*************************************/
-//*****games memory*****/
-#pageContents .card {
-  border-radius: $smallroundedcorners;
-  border-color: $blackordarkest;
+//*****Crossword*****/
+.x_crossword_page #crossword-table, .x_crossword_page #crossword-table td.no-border, .x_crossword_page #crossword-table tr {
+  border: none !important;
 }
-#cardTopHolder .card{
-  border-color: $blackordarkest;
+.x_crossword_page #clues-container table, .x_crossword_page #clues-container tr, .x_crossword_page #clues-container td, .x_crossword_page #clues-container th {
+  border: none !important;
 }
-//*****games puzzle*****/
-#puzzle {
-  border-radius: $mediumroundedcorners;
+.x_crossword_page #clues-container th {
+  border-bottom: 1px solid $bordercolor !important;
 }
-//*****memory******/
-#pageContents .card {
-  color: $blackordarkest;
-  background:$lightestcolor;
+.highlighted .crossword-input[type=text] {
+  background: $midlightyellow;
+}
+.x_crossword_page #crossword .correct {
+  background: $green;
+  color: $panelcolor;
+}
+
+//*****memory*****/
+.x_memory_page #pageContents .card {
+  background-color:$panelcolor;
+  border-color: $bordercolor;
+}
+.x_memory_page #cardBottomHolder .card .label {
+  background-color: $panelcolor;
+}
+
+//*****wordsearch*****/
+.x_wordsearch_page #puzzle .puzzleSquare {
+  background: none;
+}
+.x_wordsearch_page #puzzle .puzzleSquare.found {
+  background: $accent1;
+}
+.x_wordsearch_page #puzzle .puzzleSquare.selected {
+  background: $accent4;
+}
+.x_wordsearch_page #puzzle .puzzleSquare.solved {
+  background: $accent6;
+}
+.x_wordsearch_page #words .wordFound {
+  color: $accent1;
 }
 
 //***********************************Misc*************************************/
-//*****youtube feed page*****/
-.x_youtuberss_page #resultsHolder div {
-  width:97%;
-  min-height: 50px;
-  padding-top: 5px;
-  border-radius: $mediumroundedcorners;
-  background-color: $lightestcolor;
-  margin:.5em;
+
+//*****RSS & RSS feed******/
+.x_rss_page #resultsHolder .shadedDiv,
+.x_rssdownload_page #resultsHolder .shadedDiv {
+  background-color: $panelcolor !important;
+  border-bottom: 1px solid $bordercolor;
 }
-.x_youtuberss_page .shadedDiv {
-  background-color: darken($lightestcolor, 10%) !important; //doesn't work without important
-  border-radius: $mediumroundedcorners;
-}
-.x_youtuberss_page .shadedDiv p{
-  color:$blackordarkest !important;
-}
-//*****qr code******/
-div#shorturltodisplay a{
-  color:$darkestcolor;
-}
-//*****RSS feed******/
-.x_rss_page #resultsHolder div {
-  border-radius: $mediumroundedcorners;
-  background-color: $lightestcolor;
-}
-.x_rss_page #resultsHolder div p {
-  color: $blackordarkest;
-}
-.x_rss_page #resultsHolder .shadedDiv {
-  background-color: darken($lightestcolor, 10%) !important; //doesn't work without important
-  border-radius: $mediumroundedcorners;
-}
-.x_rss_page #resultsHolder div a {
-  color: darkblue;
-}
+
 //*****results page*****/
-.x_results_page td {
-  border-radius: $mediumroundedcorners;
-  background:$lightestcolor;
+.x_results_page .fas.fa-times-circle {
+  color: $red;
 }
-.x_results_page #questionScores  th{
-  background-color: darken($lightestcolor, 70%);
+.x_results_page .fas.fa-check-circle {
+  color: $green;
 }
-.x_results_page tr.alt td{
-  background: darken($lightestcolor, 10%);
-  color:$blackordarkest;
+.x_results_page .fas.fa-times-circle, .x_results_page .fas.fa-check-circle {
+  background: none;
 }
-.x_results_page .details th {
-  background: $blackordarkest;
-  color: $lightestcolor;
-}
-.x_results_page th {
-  background: $blackordarkest;
-  color: $lightestcolor;
-}
-.x_results_page #general_summary th {
-  background: $lightestcolor;//hide otherwise black line at to of summary table
-}
-//***********************************Media query/responsive changes*************************************/
-//*****change tick/cross size on all pages where used******/
-.tick, img.result{
-  @media (min-width: 768px) {
-    width: 2.5vmin;
-  }
+.x_results_page .blue {
+  color: $blue;
 }
 
-
-
-//***********************************Tables*************************************/
-//default background of table rows
-.x_grid_page table tr,
-.x_table_page table tr,
-.x_interactiveText_page table tr,
-.x_documentation_page table tr,
-.x_results_page table tr {
-	background: darken($lightestcolor, 10%);
-	color: $blackordarkest;
-}
-
-//background of shaded/alternate rows
-table tr.shaded {
-	background: $lightestcolor;
-	color: $lightestcolor;
-}
-
-// header/footer shaded
-table.header.shaded thead tr:first-child,
-table.header.shaded tr.header,
-table.header.shaded :not(tbody) > tr:first-child,
-.x_grid_page table.header.shaded tr:first-child,
-table.footer.shaded tbody tr:last-child,
-table.headerCol.shaded td.header {
-	background:	$blackordarkest;
-	color: $lightestcolor;
-}
-
-
-table.header.shaded th:not(:last-of-type),
-table.footer.shaded :not(thead) tr:last-of-type td:not(:last-of-type) {
-	border-right-color: $lightestcolor;
+//*****hotspot image connector*****/
+#hotspot_bubble {
+  color: $mainfontcolour;
+  background: $panelcolor;
+  border-color: $bordercolor;
 }

@@ -1,12 +1,12 @@
 <wizard menus="Text">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <text><![CDATA[<text name="Enter Page Title">Enter text for the page here</text>]]></text> 
+      <text><![CDATA[<text name="Enter Page Title"></text>]]></text>
 	</newNodes>  
   </pageWizard>
   
   <!-- TEXT PAGE=============================================== -->
-  <text label="Page Text" type="text"  height="360" menu="Text" menuItem="Plain Text" hint="A plain and simple text page." icon="icPageWhiteText" thumb="thumbs/plainText.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#plaintext" wiki="https://xerte.org.uk/wiki/doku.php?id=text_plain_text_page" remove="true">
+  <text label="Page Text" placeholder="Enter text for the page here" type="text" height="360" menu="Text" menuItem="Plain Text" hint="A plain and simple text page." icon="icPageWhiteText" thumb="thumbs/plainText.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#plaintext" wiki="https://xerte.org.uk/wiki/doku.php?id=text_plain_text_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
 

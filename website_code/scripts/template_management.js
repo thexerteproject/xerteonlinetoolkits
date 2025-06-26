@@ -724,7 +724,7 @@ function getProjectInformation(user_id, template_id) {
             x_Dashboard.getStatements(q, false, function() {
                 $("#graph_" + info.template_id).html("");
                 x_Dashboard.drawActivityChart("", $("#graph_" + info.template_id), startstartofday, todayendofday);
-            });
+            }, true);
         }
     })
     .fail(function(jqXHR, textStatus, errorThrown)
@@ -843,7 +843,7 @@ function recycle_bin_remove_all_template(template_id) {
         }
     })
     .done(function(response){
-        if (number_of_files_to_delete != 1) {
+        if (number_of_files_to_delete > 1) {
             number_of_files_to_delete -= 1;
         } else {
             refresh_workspace();
@@ -1314,7 +1314,6 @@ function tutorial_created(response) {
             data = response.split(",");
 
             open_created_node(data[0], new_template_folder);
-            //update_your_projects();
 
             if (data[1] == "*") {
 
@@ -1394,6 +1393,10 @@ function create_tutorial(tutorial) {
                 }
             })
             .done(function(response){
+                template_toggle(active_div);
+                active_div = "";
+
+                refresh_workspace();
                 tutorial_created(response);
             });
         } else {
@@ -1402,28 +1405,6 @@ function create_tutorial(tutorial) {
     }
 }
 
-function template_submit()
-{
-    var form = document.getElementById("form-template-upload");
-    var formData = new FormData(form);
-    $.ajax({
-        type: "POST",
-        processData: false,
-        contentType: false,
-        url: "website_code/php/management/upload.php",
-        data: formData
-    })
-    .done(function(response){
-        $("body").css("cursor", "default");
-        alert(response);
-        // Refresh templates list
-        templates_list();
-    })
-    .fail(function(response){
-        $("body").css("cursor", "default");
-        alert(response);
-    });
-}
 
 /********** CHECK **************/
 

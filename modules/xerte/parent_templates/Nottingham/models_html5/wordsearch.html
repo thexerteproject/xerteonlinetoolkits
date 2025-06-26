@@ -37,6 +37,8 @@
 			if(x_browserInfo.touchScreen){
 				document.body.classList.add("stop-scrolling");
 			}
+
+			$("#puzzleHolder").prepend('<span class="sr-only">' + (x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") != undefined ? x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") : "This page type is not compatible with screen readers.") +  '</span>');
 			
 			if (x_browserInfo.mobile == true) {
 				$("#infoHolder").removeClass("panel");
@@ -159,7 +161,7 @@
 				words = words.toLowerCase();
 			else if (puzzleCase === 'uppercase')
 				words = words.toUpperCase();
-
+			
 			words = $.trim(words).split("\n");
 
 			switch(x_currentPageXML.getAttribute("order")) {
@@ -169,6 +171,17 @@
 				case 'alphabetical':
 					words.sort();
 			}
+			
+			var wordsAndSpaces = [];
+			
+			for (var i=0; i<words.length; i++) {
+				var temp = words[i];
+				words[i] = words[i].replace(/\s/g,'');
+				
+				if (words[i] != temp) {
+					wordsAndSpaces.push(temp);
+				}
+			}
 
 			// Replace alphabet if the option is selectedIndex
 			var options = {};
@@ -176,13 +189,20 @@
 				options.fillCharacters = x_currentPageXML.getAttribute('fillChars');
 			}
 
-				// start a word find game
-				puzzle = wordfindgame.create(words, "#puzzle", "#words", options);
+			// start a word find game
+			puzzle = wordfindgame.create(words, "#puzzle", "#words", options);
 
 			// style the grid according to options
 
 			if (puzzleCase !== '') {
 				$("#puzzle .puzzleSquare").css('text-transform', (puzzleCase === 'lowercase' ? 'lowercase' : puzzleCase === 'uppercase' || puzzleCase == undefined ? 'uppercase' : 'initial') );
+			}
+
+			if (wordsAndSpaces.length > 0) {
+				for (var i=0; i<wordsAndSpaces.length; i++) {
+					var noSpaces = wordsAndSpaces[i].replace(/\s/g,'');
+					$("#words li." + noSpaces).html(wordsAndSpaces[i]);
+				}
 			}
 
 			// hide word list or make sure word list height is no greater than wordsearch height
@@ -210,6 +230,10 @@
 
 		this.begin = function () {
 			wordsearch.game();
+
+			// disable tabbing to letter buttons as it's not keyboard accessible anyway
+			$("#puzzle .puzzleSquare").attr("tabindex", "-1");
+
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 		}
@@ -240,7 +264,7 @@
 
 	<div id="infoHolder" class="panel x_floatRight">
 		<div id="puzzleHolder">
-			<div id="puzzle"></div>
+			<div id="puzzle" aria-hidden="true"></div>
 			<div id="words"></div>
 		</div>
 		<div id="btnHolder"></div>

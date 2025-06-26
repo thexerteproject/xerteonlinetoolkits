@@ -6,21 +6,23 @@
     #questionScores
 	{
 		width: 97%;
-		margin: auto;
 	}
 
 	table.details
 	{
 		width: 97%;
-		margin: auto;
 	}
 
 	#pageContents p:first-child {
 		margin-top: 0px;
 	}
 
-	h3{
+	h3, h4 {
 		padding: 8px;
+	}
+
+	h4 {
+		margin: 0;
 	}
 
 	td, th{
@@ -53,6 +55,11 @@
 		text-align:center;
 	}
 
+	.td-small{
+		width: 1px;
+		white-space: nowrap;
+	}
+
 	.td-right{
 		text-align:right;
 	}
@@ -82,6 +89,13 @@
 	padding-bottom: 1em;
 	margin-bottom: 1em;
 }
+
+#general_summary + #specific {
+	border-top: 1px solid #ccc;
+	padding-top: 1em;
+	margin-top: 1em;
+}
+
 .fas.fa-check-circle{
 	color:green;
 	background: white;
@@ -91,4 +105,20 @@
 	color:#CD2A2A;
 	background: white;
 	border-radius: 12px;
+}
+
+#pdfContent {
+	overflow: auto;
+}
+
+fieldset {
+	border: 0;
+}
+
+#x_results_userName fieldset button {
+	margin-left: 1em;
+}
+
+#general_summary td:first-child {
+	padding-left: 8px !important;
 }

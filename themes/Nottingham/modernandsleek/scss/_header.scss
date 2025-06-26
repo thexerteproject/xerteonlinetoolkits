@@ -32,3 +32,33 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
 	color: $contrastcolor;
 	background-color: $brightcolor;
 }
+
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: white;
+  background-color: $contrastcolor;
+}
+#x_headerProgress .progressMarker.complete {
+  border-color: $fontcolorforlightestcolor;
+}
+
+
+/* page resources */
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+  border: none;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: $darkestcolor;
+  color: $whiteorlightest;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: $accent1;
+  color: $whiteorlightest;
+}
+
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: $whiteorlightest;
+}

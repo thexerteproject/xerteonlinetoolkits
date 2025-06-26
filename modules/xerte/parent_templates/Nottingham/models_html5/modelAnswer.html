@@ -32,20 +32,18 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				
+			const $panel = $("#pageContents .panel");
+			$panel.height(x_getAvailableHeight([$panel]));
+
+			if (x_browserInfo.mobile == false && $(".panelImg img").length > 0) {
 				// makes sure image doesn't take up too much vertical space & will try to fit text, image, answer box on screen without scrolling if possible
-				if ($(".panelImg img").length > 0) {
-					var totalHeight = 0;
-					$panel.children().each(function() {
-						totalHeight = totalHeight + $(this).outerHeight(true);
-					});
-					totalHeight -= $(".panelImg img").height();
-					var maxH = Math.max($panel.innerHeight() - totalHeight, 100);
-					$(".panelImg img").css("max-height", maxH);
-				}
+				var totalHeight = 0;
+				$panel.children().each(function() {
+					totalHeight = totalHeight + $(this).outerHeight(true);
+				});
+				totalHeight -= $(".panelImg img").height();
+				var maxH = Math.max($panel.innerHeight() - totalHeight, 100);
+				$(".panelImg img").css("max-height", maxH);
 			}
 		};
 
@@ -104,6 +102,9 @@
             {
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
+			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+				this.weighting= 0.0;
+			}
             XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
 
 			XTEnterInteraction(x_currentPage, 0, 'text', label, [], '-', [], x_currentPageXML.getAttribute("grouping"));
@@ -151,13 +152,23 @@
 				url = x_currentPageXML.getAttribute("image");
 			if (url != undefined && url != "") {
 				if (url.split('.').pop().slice(0, -1) == "swf") {
-					promptString += '<div class="centerAlign"><div id="pageSWF"><h3 class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</h3><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
+					promptString += '<div class="centerAlign"><div id="pageSWF"><p class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</p><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
 				} else {
-					promptString += '<div class="panelImg"><img src="' + x_evalURL(url) + '"';
+					if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+						promptString += '<figure class="panelImg">';
+					} else {
+						promptString += '<div class="panelImg">';
+					}
+					promptString += '<img src="' + x_evalURL(url) + '"';
 					if (x_currentPageXML.getAttribute("tooltip") != undefined && x_currentPageXML.getAttribute("tooltip") != "") {
 						promptString += 'alt="' + x_currentPageXML.getAttribute("tooltip") + '" ';
 					}
-					promptString += '/></div>';
+					promptString += '/>';
+					if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+						promptString += '<figcaption>' + x_currentPageXML.getAttribute("caption") + '</figcaption></figure>';
+					} else {
+						promptString += '</div>';
+					}
 				}
 			}
 			$prompt.html(promptString);
@@ -197,7 +208,12 @@
 							closeOnEscape:	true,
 							title:			copyShortcutTxt,
 							closeText:		x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close"),
-							close: function() {$thisDialog.parent().detach();}
+							close: function() {$thisDialog.parent().detach();},
+							create: function(event, ui) {
+								$(this).parent(".ui-dialog").find(".ui-dialog-titlebar-close .ui-icon")
+										.removeClass("ui-icon-closethick")
+										.addClass("fa fa-x-close");
+							}
 						});
 						
 						$thisDialog.html(x_pageInfo[x_currentPage].savedData);
@@ -292,14 +308,16 @@
         this.finishTracking = function()
         {
             var answerTxt = $("#answerTxt").val();
+			var correct = answerTxt.trim() != "" || !(x_currentPageXML.getAttribute("judge") != "false"); 
             result =
                 {
-                    success: (answerTxt.trim() == "" ? false : true),
-                    score: (answerTxt.trim() == "" ? 0.0 : 100.0)
+                    success: correct,
+                    score: (correct ? 100.0 : 0.0),
+					judge: x_currentPageXML.getAttribute("judge") != "false"
                 };
 
             XTExitInteraction(x_currentPage, 0, result, [], answerTxt, []);
-            XTSetPageScore(x_currentPage, (answerTxt.trim() == "" ? 0.0 : 100.0));
+            XTSetPageScore(x_currentPage, (correct ? 100.0 : 0.0));
             this.tracked = true;
         };
 

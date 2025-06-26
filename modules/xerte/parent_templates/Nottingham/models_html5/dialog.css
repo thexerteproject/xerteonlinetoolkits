@@ -10,7 +10,7 @@
 		width:	100%;
 	}
 
-	#pageContents .question div {
+	#pageContents .question label {
 		margin-top:	2px;
 		max-width:		50%;
 		display:	inline-block;

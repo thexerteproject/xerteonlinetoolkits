@@ -34,10 +34,10 @@ body {
 <div id="container">
   <div id="mainContent">
     <p><?php
-	$hide=$_GET["hide"];
-	$template_id=$_GET["template_id"];
-	$from=$_GET["from"];
-	$to=$_GET["to"];
+	$hide=x_clean_input($_GET["hide"]);
+	$template_id=x_clean_input($_GET["template_id"]);
+	$from=x_clean_input($_GET["from"]);
+	$to=x_clean_input($_GET["to"]);
 
 	// Create the link
     $link = $xerte_toolkits_site->site_url . "play.php?template_id=" . $template_id;

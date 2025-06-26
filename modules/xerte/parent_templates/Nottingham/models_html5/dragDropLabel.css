@@ -56,13 +56,14 @@
 
     #targetHolder {
         position:	absolute;
-        margin:		10px;
         top:		0;
         left:		0;
     }
 
-    #targetHolder .target {
-        position:	absolute;
+    #pageContents #targetHolder .target {
+        position: absolute;
+        cursor: pointer;
+        padding: 0 !important;
     }
 
     #targetHolder .target.border {

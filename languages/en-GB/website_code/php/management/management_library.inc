@@ -72,3 +72,4 @@
     define("MANAGEMENT_LIBRARY_LANGUAGES", "Language settings");
     define("MANAGEMENT_LIBRARY_LANGUAGES_EXPLAINED", "Upload and refresh the language definitions using the upload button below. New language definitions can be found in the download section of the Xerte Community website (http://www.xerte.org.uk). There are three different kinds of packages. You can use any of them here.");
     define("MANAGEMENT_LIBRARY_LANGUAGES_UPDATED", "Language definitions are updated.");
+

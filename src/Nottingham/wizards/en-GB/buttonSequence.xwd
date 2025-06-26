@@ -1,20 +1,20 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="Enter text for the page here" intro="Enter introduction text here" align="Left" panelWidth="Medium"/>]]></buttonSequence>
+      <buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="" intro="" align="Left" panelWidth="Medium"/>]]></buttonSequence>
     </newNodes>
   </pageWizard>
 
   <!-- BUTTON SEQUENCE PAGE============================ -->
   <buttonSequence menu="Interactivity" menuItem="Button Sequence" hint="Present a sequence of button interactions with text." icon="icButtons" thumb="thumbs/buttonSequence.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#buttonsequence" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_button_sequence" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-    <text label="Page Text" type="TextArea" height="200" />
-    <intro label="Introduction" type="TextArea" height="100" />
+    <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here" />
+    <intro label="Introduction" type="TextArea" height="100" placeholder="Enter introduction text here"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 	
     <newNodes>
-      <button><![CDATA[<button name="Show More" text="Feedback"/>]]></button>
+      <button><![CDATA[<button name="Show More" text=""/>]]></button>
     </newNodes>
 
   </buttonSequence>
@@ -23,7 +23,7 @@
   <button menuItem="Button" icon="icBulletBlue" remove="true">
     <name label="Button Label" type="TextInput" wysiwyg="true" />
 	<buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100" deprecated="Width is now set automatically"/>	
-    <text label="Feedback" type="TextArea" height="250" />
+    <text label="Feedback" type="TextArea" height="250" placeholder="Enter feedback here"/>
   </button>
 
 

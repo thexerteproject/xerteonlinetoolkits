@@ -45,42 +45,62 @@ $params = array($_SESSION['toolkits_logon_id'], "0");
 
 $query_folder_response = db_query($query_for_folder, $params);
 
-echo "<p class=\"header\"><span>" . FOLDER_RSS_TEMPLATE_MY . "</span></p>";
+echo "<h2 class=\"header\">" . FOLDER_RSS_TEMPLATE_MY . "</h2>";
 
-echo "<p>" . FOLDER_RSS_TEMPLATE_MY_FEED . "<br/><a href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_user", $_SESSION['toolkits_firstname'] . "_" . $_SESSION['toolkits_surname'] ) . "\" target=\"new\"> " . $xerte_toolkits_site->site_url . url_return("RSS_user", $_SESSION['toolkits_firstname'] . "_" . $_SESSION['toolkits_surname'] ) . "</a></p>";
+echo "<div id=\"mainContent\">";
 
-if(sizeof($query_folder_response)!=0){
+if($_SESSION['toolkits_logon_id']) {
 
-    echo "<p>" . FOLDER_RSS_TEMPLATE_MY_FOLDER_FEED . "</p>";
-    foreach($query_folder_response as $row_folder) {
+	echo "<h3>" . FOLDER_RSS_TEMPLATE_MY_FEED . ":</h3>";
 
-        echo "<p><a href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_user", $_SESSION['toolkits_firstname'] . "_" . $_SESSION['toolkits_surname'] );
+	echo "<ul class=\"rssLists\">";
 
-        if($xerte_toolkits_site->apache=="true"){
+	echo "<li><a href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_user", $_SESSION['toolkits_firstname'] . "_" . $_SESSION['toolkits_surname'] ) . "\" target=\"new\"> ";
 
-            echo "/" . str_replace("_"," ",$row_folder['folder_name']) . "/";
+	echo $_SESSION['toolkits_firstname'] . " " . $_SESSION['toolkits_surname'];
 
-        }else{
+	echo "</a><span class=\"sr-only\">" . FOLDER_RSS_TEMPLATE_LINKS . "</span></li>";
 
-            echo "&folder_name=" . str_replace("_"," ",$row_folder['folder_name']);
+	echo "</ul>";
 
-        }
+	if(sizeof($query_folder_response)!=0){
 
-        echo "\" target=\"new\">" . $xerte_toolkits_site->site_url . url_return("RSS_user", $_SESSION['toolkits_firstname'] . "_" . $_SESSION['toolkits_surname'] ); 
+		echo "<h3>" . FOLDER_RSS_TEMPLATE_MY_FOLDER_FEED . ":</h3>";
+		
+		echo "<ul class=\"rssLists\">";
+		
+		foreach($query_folder_response as $row_folder) {
 
-        if($xerte_toolkits_site->apache=="true"){
+			echo "<li><a href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_user", $_SESSION['toolkits_firstname'] . "_" . $_SESSION['toolkits_surname'] );
 
-            echo str_replace("_"," ",$row_folder['folder_name']) . "/";
+			if($xerte_toolkits_site->apache=="true"){
 
-        }else{
+				echo "/" . str_replace("_"," ",$row_folder['folder_name']) . "/";
 
-            echo "&folder_name=" . str_replace("_"," ",$row_folder['folder_name']);	
+			}else{
 
-        }
+				echo "&folder_name=" . str_replace("_"," ",$row_folder['folder_name']);
 
-        echo "</a></p>";
+			}
 
-    }
+			echo "\" target=\"new\">";
+			
+			echo str_replace("_"," ",$row_folder['folder_name']);
 
+			echo "<span class=\"sr-only\">" . FOLDER_RSS_TEMPLATE_LINKS . "</span></a></li>";
+
+		}
+		
+		echo "</ul>";
+		
+		echo "<p>" . FOLDER_RSS_TEMPLATE_LINKS_NEW . "</p>";
+
+	}
+	
+} else {
+	
+	echo "<p>" . FOLDER_RSS_TEMPLATE_ERROR . "</p>";
+	
 }
 
+echo "</div>";

@@ -1,0 +1,58 @@
+/******Header******/
+#x_headerBlock {
+  color:			$whiteorlightest;
+  background-repeat:no-repeat;
+  background-position:right;
+  background-image:	none;
+  background: $darkestcolor;
+  box-shadow: $interfaceboxshadow;
+}
+
+body:not(.sb_right):not(.sb_left) #x_headerBlock {
+  width: 100%;
+  border-top-right-radius: $largeroundedcorners;
+  border-top-left-radius: $largeroundedcorners;
+}
+
+#x_headerBlock #x_pageIntroBtn {
+  color: $whiteorlightest;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+  color: $blackordarkest;
+  background-color: $whiteorlightest;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+  color: $lightestcolor2;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+  color: $blackordarkest;
+  background-color: $lightestcolor2;
+}
+
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: $lightgrey;
+  background-color: $darkestcolor;
+}
+#x_headerProgress .progressMarker.complete {
+  border-color: $progressBarColor;
+}
+
+/* page resources */
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+  color: $whiteorlightest
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: $lightestcolor2;
+  color: $blackordarkest;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: $darkergrey;
+  color: $blackordarkest;
+}

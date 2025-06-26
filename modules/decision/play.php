@@ -33,6 +33,8 @@ function show_template($row_play, $xapi_enabled=false)
     $xmlFixer = new XerteXMLInspector();
     $xmlFixer->loadTemplateXML($xmlfile, true);
 
+    _load_language_file("/modules/decision/preview.inc");
+
     if (strlen($xmlFixer->getName()) > 0) {
         $title = $xmlFixer->getName();
     } else {
@@ -45,7 +47,6 @@ function show_template($row_play, $xapi_enabled=false)
 
     list($x, $y) = explode("~", get_template_screen_size($row_play['template_name'], $row_play['template_framework']));
 
-    _load_language_file("/modules/decision/preview.inc");
 
     $version = getVersion();
     $language_ISO639_1code = substr($xmlFixer->getLanguage(), 0, 2);

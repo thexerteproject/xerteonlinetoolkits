@@ -188,6 +188,7 @@ optional: end position* line
 					}).show();
 				}
 				$target.show();
+				x_pageContentsUpdated();
 			},
 			
 			end: function(event, options) {

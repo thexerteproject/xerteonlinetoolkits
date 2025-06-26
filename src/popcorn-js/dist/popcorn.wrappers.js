@@ -2109,7 +2109,6 @@
     if( !window.postMessage ) {
       throw "ERROR: HTMLVimeoVideoElement requires window.postMessage";
     }
-    debugger;
     var self = new Popcorn._MediaElementProto(),
       parent = typeof id === "string" ? Popcorn.dom.find( id ) : id,
       elem = document.createElement( "iframe" ),
@@ -3035,7 +3034,6 @@
         return;
       }
 
-      debugger;
 
       impl.src = aSrc;
 

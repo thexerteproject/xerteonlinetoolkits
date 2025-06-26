@@ -48,4 +48,3 @@ function show_peer_template($row)
     echo $peer_template;
 }
 
-?>

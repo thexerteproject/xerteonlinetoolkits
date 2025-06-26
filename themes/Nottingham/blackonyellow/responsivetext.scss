@@ -7,173 +7,172 @@ $resultsHolderwidth:8vmin;//previously 8vmin
 
 // --@media TABLETS and above--------------------------------------------------------------
 @media (min-width: 768px) {
-//--start of text size changes-----------------------------------------
-p {
-  font-size: $pagecontentslarge;
-}
-body {
-	font-size: $pagecontentslarge;
-}
-body ul, body ol {
-	font-size: $pagecontentslarge;
-}
+    //--start of text size changes-----------------------------------------
+    p {
+        font-size: $pagecontentslarge;
+    }
+    body {
+        font-size: $pagecontentslarge;
+    }
+    body ul, body ol {
+        font-size: $pagecontentslarge;
+    }
 
-li.bullet {
-    font-size: $pagecontentslarge;
-}
-#grid ul li {
-    font-size: $pagecontentslarge;
-}
-h3 {
-    font-size: $pagecontentslarge;
-}
-.panelPage h3 {
-    font-size: $pagecontentslarge;
-}
-#mainTxt h3 {
-    font-size: $pagecontentslarge;
-}
-#infoHolder {
-    font-size: $pagecontentslarge;
-}
-.splitScreen {
-    font-size: $pagecontentslarge;
-}
-#linkHolder .panel.linkBlock {
-    font-size: $pagecontentsmedium;
-}
-.topic {
-    font-size: $pagecontentslarge;
-}
-#optionHolder {
-    font-size: $pagecontentslarge;
-}
-.listItem {
-    font-size: $pagecontentslarge;
-}
-#categoryHolder {
-    font-size: $pagecontentslarge;
-}
-#dragDropHolder {
-    font-size: $pagecontentsmedium;
-}
-#dragDropHolder .label {
-    font-size: $pagecontentsmedium;
-}
-#pageContents h3{
-  font-size:$pagecontentslarge;
-}
-#pageContents .question {
-    font-size: $pagecontentslarge;
-}
-#pageContents .question input {
-  font-size: $pagecontentslarge;
-}
-  #pageContents #mainText {
-    font-size: $pagecontentslarge;
-  }
-#labelHolder {
-    font-size: $pagecontentslarge;
-}
-#mainPanel .panel {
-    font-size: $pagecontentslarge;
-}
-.panel #contentHolder {
-    font-size: $pagecontentslarge;
-}
-.panel #btnHolder {
-	font-size: $pagecontentslarge;
-}
-#infoHolder {
-    font-size: $pagecontentslarge;
-}
-#targetHolder h3 {
-    font-size: $pagecontentslarge;
-}
-#answerTxt {
-    font-size: $pagecontentslarge;
-}
-#pageContents textarea {
-    font-size: $pagecontentslarge;
-}
-#targetHolder .target {
-    font-size: $pagecontentsmedium;
-    //*remove padding in gap fill targets*/
-    padding: 0.6vmin !important;
-}
-#targetHolder p {
-    font-size: $pagecontentsmedium;
-}
-.labelTxt p{
-    font-size:$pagecontentsmedium;
-}
-#resultsHolder div img {
-    width: $resultsHolderwidth !important;
-    padding-right: 8px;
-    clear:both;
-}
-#hsInfo {
-    font-size: $pagecontentslarge;
-}
-#x_headerBlock h2 {
-  font-size:$headerblockh2;
-  font-weight:bold;
-}
-#x_headerBlock h1 {
-  font-size:$pagecontentsmedium;
-}
-.ui-accordion .ui-accordion-header a {
-    font-size: $pagecontentslarge;
-}
-.ui-button-text-only .ui-button-text {
-//reduce padding inside buttons e.g. zoom, submit, check etc
-    padding: .1em 1em;
-}
-.ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {
-    padding: .1em;
-}
-#slideTxt {
-    font-size: $pagecontentslarge;
-}
-.ui-tabs .ui-tabs-nav li a {
-    font-size: $pagecontentslarge;
-    //*reduce padding in tabnave buttons*/
-    padding: .4em .4em;
-}
-.ui-button-text-only .ui-button-text, .ui-button-text-icon-secondary .ui-button-text {
-    font-size: $pagecontentslarge;
-}
-.ui-button-text-icon-secondary .ui-button-text {
-	padding-right: 1.2em;
-}
+    li.bullet {
+        font-size: $pagecontentslarge;
+    }
+    #grid ul li {
+        font-size: $pagecontentslarge;
+    }
+    h3 {
+        font-size: $pagecontentslarge;
+    }
+    .panelPage h3 {
+        font-size: $pagecontentslarge;
+    }
+    #mainTxt h3 {
+        font-size: $pagecontentslarge;
+    }
+    #infoHolder {
+        font-size: $pagecontentslarge;
+    }
+    .splitScreen {
+        font-size: $pagecontentslarge;
+    }
+    #linkHolder .panel.linkBlock {
+        font-size: $pagecontentsmedium;
+    }
+    .topic {
+        font-size: $pagecontentslarge;
+    }
+    #optionHolder {
+        font-size: $pagecontentslarge;
+    }
+    .listItem {
+        font-size: $pagecontentslarge;
+    }
+    #categoryHolder {
+        font-size: $pagecontentslarge;
+    }
+    #dragDropHolder {
+        font-size: $pagecontentsmedium;
+    }
+    #dragDropHolder .label {
+        font-size: $pagecontentsmedium;
+    }
+    #pageContents h3{
+        font-size:$pagecontentslarge;
+    }
+    #pageContents .question {
+        font-size: $pagecontentslarge;
+    }
+    #pageContents .question input {
+        font-size: $pagecontentslarge;
+    }
+    #pageContents #mainText {
+        font-size: $pagecontentslarge;
+    }
+    #labelHolder {
+        font-size: $pagecontentslarge;
+    }
+    #mainPanel .panel {
+        font-size: $pagecontentslarge;
+    }
+    .panel #contentHolder {
+        font-size: $pagecontentslarge;
+    }
+    .panel #btnHolder {
+        font-size: $pagecontentslarge;
+    }
+    #infoHolder {
+        font-size: $pagecontentslarge;
+    }
+    #targetHolder h3 {
+        font-size: $pagecontentslarge;
+    }
+    #answerTxt {
+        font-size: $pagecontentslarge;
+    }
+    #pageContents textarea {
+        font-size: $pagecontentslarge;
+    }
+    #targetHolder .target {
+        font-size: $pagecontentsmedium;
+        //*remove padding in gap fill targets*/
+        padding: 0.6vmin !important;
+    }
+    #targetHolder p {
+        font-size: $pagecontentsmedium;
+    }
+    .labelTxt p{
+        font-size:$pagecontentsmedium;
+    }
+    #resultsHolder div img {
+        width: $resultsHolderwidth !important;
+        padding-right: 8px;
+        clear:both;
+    }
+    #hsInfo {
+        font-size: $pagecontentslarge;
+    }
+    #x_headerBlock h2 {
+        font-size:$headerblockh2;
+        font-weight:bold;
+    }
+    #x_headerBlock h1 {
+        font-size:$pagecontentsmedium;
+    }
+    .ui-accordion .ui-accordion-header a {
+        font-size: $pagecontentslarge;
+    }
+    .ui-button-text-only .ui-button-text {
+        //reduce padding inside buttons e.g. zoom, submit, check etc
+        padding: .1em 1em;
+    }
+    .ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {
+        padding: .1em;
+    }
+    #slideTxt {
+        font-size: $pagecontentslarge;
+    }
+    .ui-tabs .ui-tabs-nav li a {
+        font-size: $pagecontentslarge;
+        //*reduce padding in tabnave buttons*/
+        padding: .4em .4em;
+    }
+    .ui-button-text-only .ui-button-text, .ui-button-text-icon-secondary .ui-button-text {
+        font-size: $pagecontentslarge;
+    }
+    .ui-button-text-icon-secondary .ui-button-text {
+        padding-right: 1.2em;
+    }
 
-#resultsHolder div p, #resultsHolder div a {
-    font-size: $pagecontentslarge;
-}
-#optionHolder input {
-    width: $pagecontentslarge;
-    height: $pagecontentslarge;
-}
-figcaption {
-    font-size:$pagecontentsmedium;
-    margin-top:2%;
-}
-#chartHolder {
-	font-size: $pagecontentsmedium;
-}
-table {
-	font-size: $pagecontentslarge;
-}
-#pageContents.titlePageTxt,  #pageContents.titlePageTxt p {
-	font-size: $pagecontentstitlesize;
-}
-.paneList a, .paneList {
-	font-size: $pagecontentsmedium !important;
-}
-.ui-dialog {
-    font-size: $pagecontentslarge;
-}
-
+    #resultsHolder div p, #resultsHolder div a {
+        font-size: $pagecontentslarge;
+    }
+    #optionHolder input {
+        width: $pagecontentslarge;
+        height: $pagecontentslarge;
+    }
+    figcaption {
+        font-size:$pagecontentsmedium;
+        margin-top:2%;
+    }
+    #chartHolder {
+        font-size: $pagecontentsmedium;
+    }
+    table {
+        font-size: $pagecontentslarge;
+    }
+    #pageContents.titlePageTxt,  #pageContents.titlePageTxt p {
+        font-size: $pagecontentstitlesize;
+    }
+    .paneList a, .paneList {
+        font-size: $pagecontentsmedium !important;
+    }
+    .ui-dialog {
+        font-size: $pagecontentslarge;
+    }
     #grid ul li {
         font-size: $pagecontentslarge;
     }
@@ -181,8 +180,11 @@ table {
     #thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3{
         font-size:$pagecontentssmall;
     }
+    tick, img.result{
+        width: 2.5vmin;
+    }
 
-//--end of text size changes-----------------------------------------
+    //--end of text size changes-----------------------------------------
 }
 //--end of TABLETS and above-----------------------------------------
 
@@ -204,8 +206,6 @@ and (max-width :500px) {
         font-size: 12px;
     }
     #x_footerBlock button {
-        font-size: 1em;
-        width: 1em;
         margin-left: 5px;
     }
     .pbContainer {

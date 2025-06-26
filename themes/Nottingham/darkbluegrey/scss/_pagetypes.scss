@@ -1,11 +1,3 @@
-//***********************************Text*************************************
-//*****title page******/
-.titlePageTxt {
-  //*without reducing the width here horizontal scroll bars show when the theme selected isn't 100% width*/
-  width:98% !important;
-  overflow: hidden;
-}
-
 a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
   color: $lightestcolor;
 }
@@ -52,6 +44,12 @@ a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active
   border-radius: $smallroundedcorners;
   background: $contrastcolor;
   color:$whiteorlightest;
+}
+.ui-accordion .ui-accordion-content.chapterPageHolder {
+  background: $bodybackgroundcolor;
+}
+.ui-accordion .ui-accordion-content.chapterPageHolder button.menuItem {
+  border: none;
 }
 .ui-accordion .ui-accordion-header {
   border-radius: $smallroundedcorners;
@@ -273,6 +271,16 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   font-weight:bold;
   background-color:transparentize($whiteorlightest, .8);
 }
+.x_gapFill_page #targetHolder.outline .target.highlight {
+  border: 1px dashed $whiteorlightest;
+}
+.x_gapFill_page #targetHolder.underline .target.highlight {
+  border-bottom: 1px solid $whiteorlightest;
+  border-top: 1px solid transparent;
+}
+.x_gapFill_page .target.highlight {
+  color: $blackordarkest;
+}
 //*****hotspot image*****/
 a.hotspot, a.hotspot.selected {
   background: none;
@@ -474,4 +482,12 @@ table.footer.shaded tbody tr:last-child,
 table.headerCol.shaded td.header {
 	background:	$blackordarkest;
 	color: $fontcolorforcontrastcolor;
+}
+
+
+//*****hotspot image connector*****/
+#hotspot_bubble {
+  color: $mainfontcolour;
+  background: $defaultpagebackground;
+  border-color: $contrastcolor;
 }

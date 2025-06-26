@@ -37,7 +37,7 @@
 		this.resizeImg = function(firstLoad) {
 			var imgMaxW, imgMaxH;
 			imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
-			imgMaxH = Math.round($x_pageHolder.height() - 50);
+			imgMaxH = x_getAvailableHeight([$("#imgHolder")], [$("#imgHolder figcaption")]);
 			$img.mapster('unbind');
 			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
 
@@ -47,26 +47,28 @@
 				"max-height" : imgMaxH,
 				"max-width"	:imgMaxW
 			});
+
+			if($img.parents("figure").length > 0 && $img.width() > 0) {
+				$img.parents("figure").find("figcaption").css("max-width", $img.width());
+			}
 		};
 
 		this.init = function() {
 			$img = $("#pageImg");
 			// warn that links open in new window (for screen readers)
-			var linkWarning = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "newWindow", "");
-			linkWarning = linkWarning != "" ? '<span id="linkHelper" class="ui-helper-hidden-accessible">' + linkWarning + '</span>' : linkWarning;
+			const linkOpenTxt = x_currentPageXML.getAttribute("target") !== "lightbox" ? ' <i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>' : '<span class="sr-only">: ' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'dialog', 'opens in a dialog window') + '</span>';
 			
 			// descrip is a new field so old projects might not have it
-			var linkTxt = x_currentPageXML.getAttribute("descrip") != undefined ? x_currentPageXML.getAttribute("descrip") : x_currentPageXML.getAttribute("tip");
-			linkTxt += linkWarning;
+			var linkTxt = x_currentPageXML.getAttribute("descrip") != undefined && x_currentPageXML.getAttribute("descrip") != "" ? x_currentPageXML.getAttribute("descrip") : x_currentPageXML.getAttribute("tip") != undefined && x_currentPageXML.getAttribute("tip") != "" ? x_currentPageXML.getAttribute("tip") : "Link";
+			linkTxt += linkOpenTxt;
 			
 			$("#textHolder")
-				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '<p><a id="newWindowLink" class="newWindowLink" href="#">' + linkTxt + '</a></p>')
-				.find("a.newWindowLink").attr("aria-labelledby", "newWindowLink"); // forces screen readers to include linkWarning text in link description
+				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '<p><a id="newWindowLink" class="newWindowLink" href="#">' + linkTxt + '</a></p>');
 			
 			$("#pageImg")
 				.one("load", function() {
 					var imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
-					var imgMaxH = Math.round($x_pageHolder.height() - 50);
+					var imgMaxH = x_getAvailableHeight([$("#imgHolder")], [$("#imgHolder figcaption")]);
 					if (x_browserInfo.mobile == true) {
 						imgMaxW = 250; // mobile
 						imgMaxH = 250;
@@ -84,8 +86,12 @@
 						$(this).trigger("load");
 					}
 				});
-			
-			
+
+			if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+				$("#pageImg").wrap("<figure></figure>");
+				$("#pageImg").parent("figure").append("<figcaption>" + x_currentPageXML.getAttribute("caption") + "</figcaption>");
+			}
+
 			if (x_currentPageXML.getAttribute("target") == "lightbox") {
 				if (x_currentPageXML.getAttribute("htm") != undefined && x_currentPageXML.getAttribute("htm") != "") {
 					$("#pageContents .newWindowLink").attr({

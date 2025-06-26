@@ -50,5 +50,13 @@
 	
 	legend#question {
 		width: 100%;
+		font-weight: bold;
+		padding-left: 0.3em;
+		padding-right: 0.3em;
+		box-sizing: border-box;
 	}
 
+	legend#question p {
+		padding-left: 0;
+		padding-right: 0;
+	}

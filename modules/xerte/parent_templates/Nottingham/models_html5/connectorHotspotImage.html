@@ -26,11 +26,14 @@
 		var	$img,
 			$pageContents,
 		    options;
+
+		this.delayBubbleClose;
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$img = $("#image");
 			$pageContents = $("#pageContents");
+			$x_body.append('<div id="hotspot_bubble_holder">' + '</div>');
 			
 			$("#pageContents .selected").removeClass("selected");
 			$("#pageContents .highlighted").removeClass("highlighted");
@@ -44,6 +47,10 @@
                 // Keep unselected
                 $("area").mapster('deselect');
             }
+		};
+
+		this.leavePage = function() {
+			$("#hotspot_bubble_holder").remove();
 		};
 		
 		// function called every time the size of the LO is changed
@@ -125,17 +132,17 @@
 			var imgMaxW, imgMaxH;
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				imgMaxW = Math.round($x_pageDiv.width() - 30);
-				imgMaxH = Math.round($x_pageHolder.height() - 30);
 				$('#panel').css('margin', '0px');
+				imgMaxH = x_getAvailableHeight([$('#panel')], []);
 			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
 				imgMaxW = Math.round($x_pageDiv.width() * 0.8 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxH = x_getAvailableHeight([$('#panel')], []);
 			} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
 				imgMaxW = Math.round($x_pageDiv.width() * 0.3 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxH = x_getAvailableHeight([$('#panel')], []);
 			} else {
 				imgMaxW = Math.round($x_pageDiv.width() * 0.55 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxH = x_getAvailableHeight([$('#panel')], []);
 			}
 			
 			$img.mapster('unbind');
@@ -155,6 +162,15 @@
 			var scale = $img.width() / $img.data("origSize")[0],
 				selected = $("#pageContents .hotspot.selected").length > 0 ? $("#pageContents .hotspot.selected").index() : undefined;
 			$("#hsHolder").html("<map id=\"hsHolder_map\" name=\"hsHolder_map\"></map>");
+			$('#hsIconHolder').empty();
+			$("#hotspot_bubble_holder").remove();
+			$x_body.append('<div id="hotspot_bubble_holder">' + '</div>');
+
+			$('#hotspot_bubble_holder').keyup(function(e) {
+				if (e.key === "Escape") {
+					$('#hotspot_bubble_holder').empty();
+				}
+			});
 
 			var stroke = true;
 			var highlightColour = "#ffff00";
@@ -221,16 +237,30 @@
 			
 			if ($('#audioHolder')) $('#audioHolder').empty();
 
+			let hs_generic_colour_background = x_currentPageXML.getAttribute('colour1') != undefined && x_currentPageXML.getAttribute('colour1') != '' && x_currentPageXML.getAttribute('colour1') != '0x' ? x_currentPageXML.getAttribute('colour1') : '0x000000';
+			let hs_generic_colour_icon  = x_currentPageXML.getAttribute('colour2') != undefined && x_currentPageXML.getAttribute('colour2') != '' && x_currentPageXML.getAttribute('colour2') != '0x' ? x_currentPageXML.getAttribute('colour2') : '0xFFFFFF';
+
+			$('#hsIconHolder').empty()
 			$(x_currentPageXML).children()
 				.each(function(i){
 					var hsType,	// what does hs do when clicked?
-						hsInfo;
-					
-					var windowType = this.getAttribute("windowType") == 'lightbox' ? 'lightbox' : 'dialog';
-					
+						hsInfo,
+						hsShape;
+					if (["dialog","lightbox","bubble"].includes(this.getAttribute("windowType"))){
+						var windowType = this.getAttribute("windowType");
+					}else {
+						var windowType = "dialog"
+					}
+
+					//hs shape
+					if (this.getAttribute('mode') != undefined && this.getAttribute('mode') != ''){
+						hsShape = this.getAttribute('mode');
+					} else {
+						hsShape = 'rect'
+					}
 					// if more than one action has been added then priority is:
 					// video > audio > image > text > iframe > new window (html) > new window (url) > external destination > destination
-					
+
 					// open dialog popup / lightbox
 					if (this.getAttribute("hotspotMovie") != undefined && this.getAttribute("hotspotMovie") != "") {
 						//hsType = windowType; // ** video in lightbox not working yet - needs some work on video scaling
@@ -240,7 +270,8 @@
 						hsInfo = "sound";
 						
 						if (this.getAttribute("playerType") != 'auto') {
-							hsType = windowType;
+							// audio uses a different window type setting that excludes the bubble option
+							hsType = this.getAttribute("windowSoundType") != undefined ? this.getAttribute("windowSoundType") : this.getAttribute("windowType") !== 'bubble' ? this.getAttribute("windowType") : 'dialog';
 						} else {
 							// auto play audio without showing player in dialog / lightbox
 							hsType = "autoPlay";
@@ -265,12 +296,16 @@
 					} else if (this.getAttribute("windowURL") != undefined && this.getAttribute("windowURL") != "") {
 						hsType = "newWindow";
 						hsInfo = "url";
-					
-					// go to external page
+
+						// go to external page
+					} else if (this.getAttribute("destinationURL") != undefined && this.getAttribute("destinationURL") != "" && this.getAttribute('destinationType') != undefined && this.getAttribute('destinationType') == 'tab'){
+						hsType = "newTab";
+						hsInfo = this.getAttribute("destinationURL");
+
 					} else if (this.getAttribute("destinationURL") != undefined && this.getAttribute("destinationURL") != "") {
 						hsType = "url";
 						hsInfo = this.getAttribute("destinationURL");
-					
+
 					// go to page in LO
 					} else if (this.getAttribute("destination") != undefined && this.getAttribute("destination") != "") {
 						hsType = "pageLink";
@@ -295,105 +330,156 @@
 							hsInfo = $(x_pageInfo)[x_normalPages[tempIndex]].linkID;
 						}
 					}
-				
-					var _this = this,
-						$hotspot = $('<area class="hotspot transparent" shape="poly" href="#" tabindex="' + (i+2) + '" />');
 
-					var coords = [];
-					var coords_string = "";
-					// Old way of specifying hotspot: x,y,w,h
-					if (this.getAttribute("mode") == undefined && this.getAttribute("x") != undefined && this.getAttribute("y") != undefined && this.getAttribute("w") != undefined && this.getAttribute("h") != undefined) {
-						// create polygon, start with topleft
-						coords[0] = {x: parseFloat(this.getAttribute("x")), y: parseFloat(this.getAttribute("y"))};
-						coords[1] = {x: parseFloat(this.getAttribute("x")) + parseFloat(this.getAttribute("w")), y: parseFloat(this.getAttribute("y"))};
-						coords[2] = {x: parseFloat(this.getAttribute("x")) + parseFloat(this.getAttribute("w")), y: parseFloat(this.getAttribute("y")) + parseFloat(this.getAttribute("h"))};
-						coords[3] = {x: parseFloat(this.getAttribute("x")), y: parseFloat(this.getAttribute("y")) + parseFloat(this.getAttribute("h"))};
+					var hs_hover = 'false';
+					if (this.getAttribute('hotspotHover') != undefined && !!this.getAttribute('hotspotHover')){
+						if (hsType == 'bubble') {
+							hs_hover = this.getAttribute('hotspotHover')
+						}
 					}
-					if (coords.length == 4 || (this.getAttribute("points") != undefined && this.getAttribute("mode") != undefined)) {
-						if (coords.length != 4) {
-							coords = JSON.parse(this.getAttribute("points"));
+
+					if (hsShape !== 'icon') {
+						var _this = this,
+								$hotspot = $('<area class="hotspot transparent" shape="poly" href="#" />');
+
+						var coords = [];
+						var coords_string = "";
+						// Old way of specifying hotspot: x,y,w,h
+						if (this.getAttribute("mode") == undefined && this.getAttribute("x") != undefined && this.getAttribute("y") != undefined && this.getAttribute("w") != undefined && this.getAttribute("h") != undefined) {
+							// create polygon, start with topleft
+							coords[0] = {x: parseFloat(this.getAttribute("x")), y: parseFloat(this.getAttribute("y"))};
+							coords[1] = {
+								x: parseFloat(this.getAttribute("x")) + parseFloat(this.getAttribute("w")),
+								y: parseFloat(this.getAttribute("y"))
+							};
+							coords[2] = {
+								x: parseFloat(this.getAttribute("x")) + parseFloat(this.getAttribute("w")),
+								y: parseFloat(this.getAttribute("y")) + parseFloat(this.getAttribute("h"))
+							};
+							coords[3] = {
+								x: parseFloat(this.getAttribute("x")),
+								y: parseFloat(this.getAttribute("y")) + parseFloat(this.getAttribute("h"))
+							};
 						}
 
-						if (coords.length > 0) {
-							for (var j in coords) {
-								// No more need to scale the points, handled by the plugin
-								//coords[j].x *= scale;
-								//coords[j].y *= scale;
-								if (j>0)
-								{
-									coords_string += ",";
+						if (coords.length == 4 || (this.getAttribute("points") != undefined && this.getAttribute("mode") != undefined)) {
+							if (coords.length != 4) {
+								coords = JSON.parse(this.getAttribute("points"));
+							}
+
+							if (coords.length > 0) {
+								for (var j in coords) {
+									// No more need to scale the points, handled by the plugin
+									//coords[j].x *= scale;
+									//coords[j].y *= scale;
+									if (j > 0) {
+										coords_string += ",";
+									}
+									coords_string += coords[j].x + "," + coords[j].y;
 								}
-								coords_string += coords[j].x + "," + coords[j].y;
 							}
 						}
-					}
-					
-					$hotspot
-						.attr("coords", coords_string)
-						.click(function() {
-							connectorHotspotImage.pauseAudio();
-							
-							// force open dialogs to close
-							$(".x_popupDialog").parent().detach();
+					} else {
+						// correct the format of the colour codes (start with # rather than 0x)
+						var colour1 = this.getAttribute('colour1') != undefined && this.getAttribute('colour1') != '' && this.getAttribute('colour1') != '0x' ? this.getAttribute('colour1') : hs_generic_colour_background;
+						var colour2 = this.getAttribute('colour2') != undefined && this.getAttribute('colour2') != '' && this.getAttribute('colour2') != '0x' ? this.getAttribute('colour2') : hs_generic_colour_icon;
+						var iconCode = this.getAttribute('iconCode') != undefined && this.getAttribute('iconCode') != '' ? this.getAttribute('iconCode') : 'fas fa-exclamation-circle';
+						colour1 = colour1.indexOf('0x') === 0 ? colour1.replace("0x", "#") : colour1;
+						colour2 = colour2.indexOf('0x') === 0 ? colour2.replace("0x", "#") : colour2;
+						var icon = this.getAttribute('shape') != undefined && this.getAttribute('shape') != '' ? JSON.parse(this.getAttribute('shape')) : {centerX:0, CenterY:0, radius:0, angle:0}
+						var size = (icon.radius*2)/100 * $('#imageHolder').width()
+						var _this = this;
 
-							$("#pageContents .selected").removeClass("selected");
-							$("#pageContents .highlighted").removeClass("highlighted");
-							
-							if (hsType != "pageLink" && hsType != "url") $(this).addClass("selected");
-							$("#feedback").html("");
-							
-							if (hsType == "url") {
-								window.location.href = hsInfo;
-							
-							// go to page in LO
-							} else if (hsType == "pageLink") {
-								if (x_lookupPage("linkID", hsInfo) === false && ['[previous]', '[next]', '[first]', '[last]'].indexOf(hsInfo) < 0) { // destination not found
-									if (x_params.authorSupport == "true") {
-										$("#feedback").html(hsInfo + " " + $pageContents.data("authorSupport"));
+						var $hotspotHolder = $('<div id="hotspotHolder" class="hotspotIconHolder"</div>')
+						$hotspotHolder.css({
+							"top": icon.centerY + '%',
+							"left": icon.centerX + '%',
+							'height': size,
+							'width': size,
+						});
+
+
+						var $hotspot = $('<span class="hotspotIcon" tabindex="0"></span>');
+						var $iconhtml = '<i class="' + iconCode +'" style="color:' + colour2 + ';font-size:' + size/2 + 'px;transform:rotate(' + icon.angle +'deg)"></i>'
+						$hotspot.html($iconhtml)
+
+						//"top" : coords[0].y, "left": coords[0].x
+						$hotspot.css({
+							"background": colour1,
+							'border-color': colour2,
+							'border-width': size/8,
+						});
+					}
+
+						$hotspot
+								.attr({coords : coords_string})
+								.click(function () {
+									$('#hotspot_bubble_holder').empty();
+									connectorHotspotImage.pauseAudio();
+
+									// force open dialogs to close
+									$(".x_popupDialog").parent().detach();
+
+									$("#pageContents .selected").removeClass("selected");
+									$("#pageContents .highlighted").removeClass("highlighted");
+
+									if (hsType != "pageLink" && hsType != "url") $(this).addClass("selected");
+
+									$("#feedback").html("");
+									if (hsType == "url") {
+										window.location.href = hsInfo;
 									}
-								} else { // go to destination page
-									x_navigateToPage(false, {type:"linkID", ID: hsInfo});
-								}
-							
-							// auto play audio
-							} else if (hsType == "autoPlay") {
-								$(this).data('audioPlayer').setCurrentTime(Number(_this.getAttribute("soundStart")));
-								$(this).data('audioPlayer').play();
-							
-							// open dialog popup / lightbox
-							} else if (hsType == "dialog" || hsType == "lightbox") {
-								var dialogHtml;
-								if (hsInfo == "video") {
-									var videoDimensions = [320,240];
-									if (_this.getAttribute("movieSize") != "" && _this.getAttribute("movieSize") != undefined) {
-										var dimensions = _this.getAttribute("movieSize").split(",");
-										if (dimensions[0] != 0 && dimensions[1] != 0) {
-											videoDimensions = dimensions;
+									else if (hsType == "newTab") {
+										window.open(hsInfo, "_blank");
+									} else if (hsType == "pageLink") {
+   										// go to page in LO
+										if (x_lookupPage("linkID", hsInfo) === false && ['[previous]', '[next]', '[first]', '[last]'].indexOf(hsInfo) < 0) { // destination not found
+											if (x_params.authorSupport == "true") {
+												$("#feedback").html(hsInfo + " " + $pageContents.data("authorSupport"));
+											}
+										} else { // go to destination page
+											x_navigateToPage(false, {type: "linkID", ID: hsInfo});
 										}
-									}
-									var videoTip = "";
-									if (_this.getAttribute("tip") != "" &&  _this.getAttribute("tip") != undefined) {
-										videoTip = _this.getAttribute("tip");
-									}
-									
-									//if (hsType == 'dialog') {
-										dialogHtml = '<div id="pageVideo"></div>' +
-											'<script type="text/javascript">' +
-												'$("#pageVideo")' +
+
+										// auto play audio
+									} else if (hsType == "autoPlay") {
+										$(this).data('audioPlayer').setCurrentTime(Number(_this.getAttribute("soundStart")));
+										$(this).data('audioPlayer').play();
+										// open dialog popup / lightbox
+									} else if (hsType == "dialog" || hsType == "lightbox" || hsType == "bubble") {
+										var dialogHtml;
+										var bubbleHtml;
+										if (hsInfo == "video") {
+											var videoDimensions = [320, 240];
+											if (_this.getAttribute("movieSize") != "" && _this.getAttribute("movieSize") != undefined) {
+												var dimensions = _this.getAttribute("movieSize").split(",");
+												if (dimensions[0] != 0 && dimensions[1] != 0) {
+													videoDimensions = dimensions;
+												}
+											}
+											var videoTip = "";
+											if (_this.getAttribute("tip") != "" && _this.getAttribute("tip") != undefined) {
+												videoTip = _this.getAttribute("tip");
+											}
+
+											//if (hsType == 'dialog') {
+											dialogHtml = '<div id="pageVideo"></div>' +
+													'<script type="text/javascript">' +
+													'$("#pageVideo")' +
 													'.attr("title", "' + videoTip + '")' +
 													'.mediaPlayer({' +
-														'type			:"video",' +
-														"source			:'" + _this.getAttribute("hotspotMovie") + "'," +
-														'width			:' + videoDimensions[0] + ',' +
-														'height			:' + videoDimensions[1] + ',' +
-														'startEndFrame	:[' + Number(_this.getAttribute("startFrame")) + ', ' + Number(_this.getAttribute("endFrame")) + ']' +
+													'type			:"video",' +
+													"source			:'" + _this.getAttribute("hotspotMovie") + "'," +
+													'width			:' + videoDimensions[0] + ',' +
+													'height			:' + videoDimensions[1] + ',' +
+													'startEndFrame	:[' + Number(_this.getAttribute("startFrame")) + ', ' + Number(_this.getAttribute("endFrame")) + ']' +
 													'});' +
-											'</' + 'script>'; // broken in to 2 strings to stop unterminated string literal problem
-										
-										$pageContents.data("dialogPos").width = videoDimensions[0];
-										$pageContents.data("dialogPos").height = Number(videoDimensions[1]) + 5;
-									
-									/*} else {
+													'</' + 'script>'; // broken in to 2 strings to stop unterminated string literal problem
+
+											$pageContents.data("dialogPos").width = videoDimensions[0];
+											$pageContents.data("dialogPos").height = Number(videoDimensions[1]) + 5;
+
+											/*} else {
 										var $pageVideo = $('<div id="pageVideo"></div>');
 										
 										$.featherlight($pageVideo, {});
@@ -406,175 +492,352 @@
 												startEndFrame: [Number(_this.getAttribute('startFrame')), Number(_this.getAttribute('endFrame'))]
 											});
 									}*/
-									
-								} else if (hsInfo == "sound") {
-									if (hsType == 'dialog') {
-										dialogHtml = '<div id="pageAudio"></div>' +
-											'<script type="text/javascript">' +
-												'$("#pageAudio").mediaPlayer({' +
-													'type : "audio",' +
-													'source : "' + _this.getAttribute("hotspotSound") + '",' +
-													'width : "100%"' + ',' +
-													'startEndFrame: [' + Number(_this.getAttribute("soundStart")) + ', ' + Number(_this.getAttribute("soundEnd")) + ']' +
-												'});';
-										
-										// manually add a transcript button to the end of the audio bar
-										if (_this.getAttribute('soundTranscript') != undefined && _this.getAttribute('soundTranscript') != '') {
-											
-											function HtmlEncode(s) {
-												var el = document.createElement('div');
-												el.innerText = el.textContent = s;
-												s = el.innerHTML;
-												return s;
+
+										} else if (hsInfo == "sound") {
+											if (hsType == 'dialog') {
+												dialogHtml = '<div id="pageAudio"></div>' +
+														'<script type="text/javascript">' +
+														'$("#pageAudio").mediaPlayer({' +
+														'type : "audio",' +
+														'source : "' + _this.getAttribute("hotspotSound") + '",' +
+														'width : "100%"' + ',' +
+														'startEndFrame: [' + Number(_this.getAttribute("soundStart")) + ', ' + Number(_this.getAttribute("soundEnd")) + ']' +
+														'});';
+
+												// manually add a transcript button to the end of the audio bar
+												if (_this.getAttribute('soundTranscript') != undefined && _this.getAttribute('soundTranscript') != '') {
+
+													function HtmlEncode(s) {
+														var el = document.createElement('div');
+														el.innerText = el.textContent = s;
+														s = el.innerHTML;
+														return s;
+													}
+
+													dialogHtml += 'x_addAudioTranscript($("#pageAudio"), "' + HtmlEncode(_this.getAttribute('soundTranscript')) + '", true);';
+												}
+
+												dialogHtml += '</' + 'script>';
+
+												$pageContents.data("dialogPos").width = undefined;
+												$pageContents.data("dialogPos").height = x_audioBarH;
+
+											} else if (hsType == 'lightbox'){
+												var $pageAudio = $('<div id="pageAudio"></div>')
+														.width($x_mainHolder.width() * 0.8)
+														.css('max-width', '300px');
+
+												$.featherlight($pageAudio);
+
+												$('#pageAudio')
+													.attr('title', videoTip)
+													.mediaPlayer({
+														type: 'audio',
+														source: _this.getAttribute('hotspotSound'),
+														width: '100%',
+														startEndFrame: [Number(_this.getAttribute('soundStart')), Number(_this.getAttribute('soundEnd'))]
+													});
+
+												// manually add a transcript button to the end of the audio bar
+												if (_this.getAttribute('soundTranscript') != undefined && _this.getAttribute('soundTranscript') != '') {
+													x_addAudioTranscript($('#pageAudio'), _this.getAttribute('soundTranscript'));
+												}
+											} else {
+
 											}
-											
-											dialogHtml += 'x_addAudioTranscript($("#pageAudio"), "' + HtmlEncode(_this.getAttribute('soundTranscript')) + '", true);';
+
+										} else if (hsInfo == "image") {
+											if (hs_hover === 'false' || x_browserInfo.mobile == true) {
+
+												if (hsType == 'dialog') {
+
+													var styleAttr = 'style="max-width:' + $x_mainHolder.width() * 0.8 + 'px; max-height:' + $x_mainHolder.height() * 0.8 + 'px"';
+													var tip = _this.getAttribute('imageTip') != undefined && _this.getAttribute('imageTip') != '' ? ' alt="' + _this.getAttribute('imageTip') + '"' : '';
+
+													dialogHtml = '<img src="' + _this.getAttribute("imageFile") + '" class="dialogImg" ' + styleAttr + tip + '/>';
+
+													if (_this.getAttribute('imageCaption') != undefined && _this.getAttribute('imageCaption') != '') {
+														dialogHtml = '<figure>' + dialogHtml + '<figCaption>' + _this.getAttribute('imageCaption') + '</figCaption></figure>';
+													}
+
+													$pageContents.data("dialogPos").width = 'auto';
+													$pageContents.data("dialogPos").height = 'auto';
+
+												} else if (hsType == 'lightbox') {
+													var tip = _this.getAttribute('imageTip') != undefined && _this.getAttribute('imageTip') != '' ? _this.getAttribute('imageTip') : '';
+													var caption = _this.getAttribute('imageCaption') != undefined && _this.getAttribute('imageCaption') != '' ? _this.getAttribute('imageCaption') : '';
+													$.featherlight({
+														image: _this.getAttribute('imageFile'),
+														afterOpen: function (e) {
+															if (tip != '') {
+																this.$content.attr('alt', tip);
+															}
+															if (caption != '') {
+																var $img = $(this.$content[0]);
+																$img.wrap('<figure></figure>');
+																$img.parent('figure').append('<figcaption>' + caption + '</figcaption>');
+															}
+														}
+													});
+
+												} else {
+													//image
+													event.stopPropagation()
+													hideOnClickOutside($("#hotspot_bubble_holder"));
+													$("#hotspot_bubble_holder").show()
+													$("#hotspot_bubble_holder").empty()
+													$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble" tabindex="0">' + '</div>');
+
+													setBubble(hsInfo, hsShape, _this, this)
+
+												}
+											}
+
+										} else if (hsInfo == "iframe") {
+
+											if (hsType == 'dialog') {
+												dialogHtml = '<iframe src="' + _this.getAttribute("iframe") + '" width="99%" height="98%"></iframe>';
+												$pageContents.data("dialogPos").width = $x_mainHolder.width() * 0.8;
+												$pageContents.data("dialogPos").height = $x_mainHolder.height() * 0.8;
+
+											} else {
+												$.featherlight({
+													iframe: _this.getAttribute("iframe"),
+													iframeWidth: $x_mainHolder.width() * 0.8,
+													iframeHeight: $x_mainHolder.height() * 0.8
+												});
+											}
+
+										} else { // text
+											if (hs_hover === 'false' || x_browserInfo.mobile == true) {
+												dialogHtml = x_addLineBreaks(_this.getAttribute("hotspotPopUp"));
+
+												if (hsType == 'dialog') {
+													$pageContents.data("dialogPos").width = undefined;
+													$pageContents.data("dialogPos").height = undefined;
+												} else if (hsType == 'lightbox') {
+													$.featherlight(dialogHtml, {});
+													x_pageContentsUpdated();
+												} else {
+													//close hotspot bubble on click outside
+													event.stopPropagation()
+													hideOnClickOutside($("#hotspot_bubble_holder"));
+
+													$("#hotspot_bubble_holder").show()
+													$("#hotspot_bubble_holder").empty()
+													$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble" tabindex="0">' + '</div>');
+
+													setBubble(hsInfo, hsShape, _this, this)
+												}
+											}
 										}
-										
-										dialogHtml += '</' + 'script>';
-										
-										$pageContents.data("dialogPos").width = undefined;
-										$pageContents.data("dialogPos").height = x_audioBarH;
-										
-									} else {
-										var $pageAudio = $('<div id="pageAudio"></div>')
-												.width($x_mainHolder.width()*0.8)
-												.css('max-width', '300px');
-										
-										$.featherlight($pageAudio);
-										
-										$('#pageAudio')
-											.attr('title', videoTip)
-											.mediaPlayer({
-												type: 'audio',
-												source: _this.getAttribute('hotspotSound'),
-												width: '100%',
-												startEndFrame: [Number(_this.getAttribute('soundStart')), Number(_this.getAttribute('soundEnd'))]
-											});
-										
-										// manually add a transcript button to the end of the audio bar
-										if (_this.getAttribute('soundTranscript') != undefined && _this.getAttribute('soundTranscript') != '') {
-											x_addAudioTranscript($('#pageAudio'), _this.getAttribute('soundTranscript'));
+
+										if (hsType == 'dialog' && (hs_hover === 'false' || (hs_hover === 'true' && hsInfo !== "text"))) {
+											x_openDialog("connectorHotspotImage", _this.getAttribute("showTitle") == "true" ? _this.getAttribute("name") : '', $pageContents.data("continueBtnTxt"), $pageContents.data("dialogPos"), dialogHtml);
+										}
+
+										// open new window
+									} else if (hsType == "newWindow") {
+										var wh = [550, 400];
+										if (_this.getAttribute("windowWidth") != undefined && _this.getAttribute("windowWidth") != "") {
+											wh.splice(0, 1, _this.getAttribute("windowWidth"));
+										}
+										if (_this.getAttribute("windowHeight") != undefined && _this.getAttribute("windowHeight") != "") {
+											wh.splice(1, 1, _this.getAttribute("windowHeight"));
+										}
+
+										if (hsInfo == "url") {
+											var src = _this.getAttribute("windowURL");
+											window.open(src, "_blank", "width=" + wh[0] + ", height=" + wh[1]);
+										} else {
+											var popupWindow = window.open("", "", "width=" + wh[0] + ", height=" + wh[1]);
+											popupWindow.document.write((_this.getAttribute("showTitle") == "true" ? '<title>' + _this.getAttribute("name") + '</title>' : '') + _this.getAttribute("htm"));
+											popupWindow.focus();
 										}
 									}
-									
-								} else if (hsInfo == "image") {
-									
-									if (hsType == 'dialog') {
-										
-										var styleAttr = 'style="max-width:' + $x_mainHolder.width()*0.8 + 'px; max-height:' + $x_mainHolder.height()*0.8 + 'px"';
-										
-										dialogHtml = '<img src="' + _this.getAttribute("imageFile") + '" class="dialogImg" ' + styleAttr + '/>';
-										$pageContents.data("dialogPos").width = 'auto';
-										$pageContents.data("dialogPos").height = 'auto';
-									
-									} else {
-										var tip = _this.getAttribute('imageTip') != undefined && _this.getAttribute('imageTip') != '' ? _this.getAttribute('imageTip') : '';
-										$.featherlight({image: _this.getAttribute('imageFile'), afterOpen: function(e) { if (tip != '') { this.$content.attr('alt', tip); } } });
-										
-									}
-									
-								} else if (hsInfo == "iframe") {
-									
-									if (hsType == 'dialog') {
-										dialogHtml = '<iframe src="' + _this.getAttribute("iframe") + '" width="99%" height="98%"></iframe>';
-										$pageContents.data("dialogPos").width = $x_mainHolder.width()*0.8;
-										$pageContents.data("dialogPos").height = $x_mainHolder.height()*0.8;
-									
-									} else {
-										$.featherlight({iframe: _this.getAttribute("iframe"), iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
-									}
-									
-								} else { // text
-									dialogHtml = x_addLineBreaks(_this.getAttribute("hotspotPopUp"));
-									
-									if (hsType == 'dialog') {
-										$pageContents.data("dialogPos").width = undefined;
-										$pageContents.data("dialogPos").height = undefined;
-									} else {
-										$.featherlight(dialogHtml, {});
-										x_pageContentsUpdated();
-									}
-								}
-								
-								if (hsType == 'dialog') {
-									x_openDialog("connectorHotspotImage", _this.getAttribute("showTitle") == "true" ? _this.getAttribute("name") : '', $pageContents.data("continueBtnTxt"), $pageContents.data("dialogPos"), dialogHtml);
-								}
-							
-							// open new window
-							} else if (hsType == "newWindow") {
-								var wh = [550,400];
-								if (_this.getAttribute("windowWidth") != undefined && _this.getAttribute("windowWidth") != "") {
-									wh.splice(0, 1, _this.getAttribute("windowWidth"));
-								}
-								if (_this.getAttribute("windowHeight") != undefined && _this.getAttribute("windowHeight") != "") {
-									wh.splice(1, 1, _this.getAttribute("windowHeight"));
-								}
-								
-								if (hsInfo == "url") {
-									var src = _this.getAttribute("windowURL");
-									window.open(src, "_blank", "width=" + wh[0] + ", height=" + wh[1]);
-								} else {
-									var popupWindow = window.open("", "", "width=" + wh[0] + ", height=" + wh[1]);
-									popupWindow.document.write((_this.getAttribute("showTitle") == "true" ? '<title>' + _this.getAttribute("name") + '</title>' : '') + _this.getAttribute("htm"));
-									popupWindow.focus();
-								}
-							}
-							// Keep highlighted/selected
-							if (x_currentPageXML.getAttribute("highlight") == "true") {
+									// Keep highlighted/selected
+									if (x_currentPageXML.getAttribute("highlight") == "true") {
 
-								setTimeout(function() {
-									$("area").mapster('select');
-								}, 100);
-							}
-							else {
-							    // Keep unselected
-                                setTimeout(function() {
-                                    $("area").mapster('deselect');
-                                }, 100);
-                            }
+										setTimeout(function () {
+											$("area").mapster('select');
+										}, 100);
+									} else {
+										// Keep unselected
+										setTimeout(function () {
+											$("area").mapster('deselect');
+										}, 100);
+									}
 
-						})
-						.focusin(function() {
-							$('img').mapster('set_options', tabfocusoptions);
-							$(this).addClass("highlight");
-							$(this).mapster('highlight');
-						})
-						.focusout(function() {
-							$('img').mapster('set_options', options);
-							$(this).removeClass("highlight");
-							$("img").mapster('highlight', false);
-						})
-						.keypress(function(e) {
-							var charCode = e.charCode || e.keyCode;
-							if (charCode == 32) {
-								$(this).trigger("click");
+								})
+								.on("mouseenter", function () {
+									if (hs_hover === 'true' && x_browserInfo.mobile == false) {
+										connectorHotspotImage.delayBubbleClose = false;
+										if (hsInfo == "image" || hsInfo == "text") {
+											connectorHotspotImage.pauseAudio();
+
+											$("#pageContents .selected").removeClass("selected");
+											$("#pageContents .highlighted").removeClass("highlighted");
+
+											if (hsType != "pageLink" && hsType != "url") $(this).addClass("selected");
+
+											$("#feedback").html("");
+											if (hsInfo == "image" ) {
+												if (hsType == 'dialog') {
+
+													var styleAttr = 'style="max-width:' + $x_mainHolder.width() * 0.8 + 'px; max-height:' + $x_mainHolder.height() * 0.8 + 'px"';
+
+													dialogHtml = '<img src="' + _this.getAttribute("imageFile") + '" class="dialogImg" ' + styleAttr + '/>';
+													$pageContents.data("dialogPos").width = 'auto';
+													$pageContents.data("dialogPos").height = 'auto';
+
+												} else if (hsType == 'lightbox') {
+													var tip = _this.getAttribute('imageTip') != undefined && _this.getAttribute('imageTip') != '' ? _this.getAttribute('imageTip') : '';
+													$.featherlight({
+														image: _this.getAttribute('imageFile'),
+														afterOpen: function (e) {
+															if (tip != '') {
+																this.$content.attr('alt', tip);
+															}
+														}
+													});
+
+												} else {
+													//image
+													event.stopPropagation()
+													hideOnClickOutside($("#hotspot_bubble_holder"));
+													$("#hotspot_bubble_holder").show()
+													$("#hotspot_bubble_holder").empty()
+													$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble" tabindex="0">' + '</div>');
+
+													setBubble(hsInfo, hsShape, _this, this)
+
+												}
+											} else if (hsInfo == "text") {
+												dialogHtml = x_addLineBreaks(_this.getAttribute("hotspotPopUp"));
+
+												if (hsType == 'dialog') {
+													$pageContents.data("dialogPos").width = undefined;
+													$pageContents.data("dialogPos").height = undefined;
+												} else if (hsType == 'lightbox') {
+													$.featherlight(dialogHtml, {});
+													x_pageContentsUpdated();
+												} else {
+													//close hotspot bubble on click outside
+													event.stopPropagation()
+													hideOnClickOutside($("#hotspot_bubble_holder"));
+
+													$("#hotspot_bubble_holder").show()
+													$("#hotspot_bubble_holder").empty()
+													$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble" tabindex="0">' + '</div>');
+
+													setBubble(hsInfo, hsShape, _this, this)
+												}
+											}
+											if (hsType == 'dialog' ) {
+												x_openDialog("connectorHotspotImage", _this.getAttribute("showTitle") == "true" ? _this.getAttribute("name") : '', $pageContents.data("continueBtnTxt"), $pageContents.data("dialogPos"), dialogHtml);
+											}
+										}
+									}
+								})
+								.focusin(function () {
+									if ($(this).context.shape != "icon") {
+										$('img').mapster('set_options', tabfocusoptions);
+										$(this).addClass("highlight");
+										$(this).mapster('highlight');
+										if (hs_hover == "true") {
+											$(this).trigger("mouseenter")
+										}
+									} else {
+										$("#pageContents .selected").removeClass("selected");
+										$("#pageContents .highlighted").removeClass("highlighted");
+
+										$(this).addClass("selected");
+									}
+								})
+								.focusout(function () {
+									$('img').mapster('set_options', options);
+									$(this).removeClass("highlight");
+									$("img").mapster('highlight', false);
+									$("#pageContents .selected").removeClass("selected");
+								})
+								.keypress(function (e) {
+									var charCode = e.charCode || e.keyCode;
+									if (charCode == 32) {
+										if (hs_hover != "true" || x_browserInfo.mobile == true) {
+											$(this).triggerHandler("click");
+										} else {
+											$(this).trigger("mouseenter")
+										}
+									}
+								})
+								.keyup(function (e) {
+									var charCode = e.charCode || e.keyCode;
+									if (charCode == 27) {
+										$("#pageContents .selected").removeClass("selected");
+										$("#pageContents .highlighted").removeClass("highlighted");
+										$('#hotspot_bubble_holder').empty()
+									}
+								});
+
+					$hotspot.on( "mouseleave", function() {
+						if (hs_hover === 'true'){
+							// add a delay to check whether the mouse has been moved over the bubble  if it has then don't auto close the bubble
+							setTimeout(function() {
+								if (!connectorHotspotImage.delayBubbleClose) {
+									$("#pageContents .selected").removeClass("selected");
+									$("#pageContents .highlighted").removeClass("highlighted");
+									$('#hotspot_bubble_holder').empty();
+								}
+							}, 100);
+						}
+					} );
+
+
+						// create hidden audio players
+						if (hsType == 'autoPlay' && hsInfo == 'sound') {
+							var $audioHolder = $('#audioHolder').length == 0 ? $('<div id="audioHolder"></div>').appendTo($('#imageHolder')) : $('#audioHolder');
+							var $hsAudio = $('<div class="hsAudio"></div>').appendTo($audioHolder).data('hs', $hotspot);
+
+							$hsAudio.mediaPlayer({
+								type: "audio",
+								source: _this.getAttribute("hotspotSound"),
+								startEndFrame: [Number(_this.getAttribute("soundStart")), Number(_this.getAttribute("soundEnd"))]
+							});
+						}
+
+						// hotspot has tooltip on hover
+						if (x_currentPageXML.getAttribute("hs_showTooltip") == undefined || x_currentPageXML.getAttribute("hs_showTooltip") !== "false") {
+							if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "") {
+								$hotspot.attr("title", this.getAttribute("alttext"));
+							} else {
+								$hotspot.attr("title", this.getAttribute("name"));
 							}
-						});
-					
-					// create hidden audio players
-					if (hsType == 'autoPlay' && hsInfo == 'sound') {
-						var $audioHolder = $('#audioHolder').length == 0 ? $('<div id="audioHolder"></div>').appendTo($('#imageHolder')) : $('#audioHolder');
-						var $hsAudio = $('<div class="hsAudio"></div>').appendTo($audioHolder).data('hs', $hotspot);
-						
-						$hsAudio.mediaPlayer({
-							type: "audio",
-							source: _this.getAttribute("hotspotSound"),
-							startEndFrame: [Number(_this.getAttribute("soundStart")), Number(_this.getAttribute("soundEnd"))]
-						});
+
+						// no visible tooltip on hover - alt text instead for screenreaders only
+						} else if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "") {
+							$hotspot.attr("alt", this.getAttribute("alttext"));
+						} else {
+							$hotspot.attr("alt", this.getAttribute("name"));
+						}
+
+						// add info about where the info will open if needed
+						const startAltText = $hotspot.attr("alt") != undefined && $hotspot.attr("alt") != "" ? $hotspot.attr("alt") + ": " : "";
+						if (hsType == "newTab" || hsType == "newWindow") {
+							$hotspot.attr("alt", startAltText + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window'));
+						} else if (hsType == "dialog" || hsType == "lightbox") {
+							$hotspot.attr("alt", startAltText + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'dialog', 'opens in a dialog window'));
+						} else if (hsType == "url") {
+							$hotspot.attr("alt", startAltText + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'thisWindow', 'opens in this window'));
+						}
+
+					if (hsShape !== 'icon') {
+						$("#hsHolder_map").append($hotspot);
+					} else {
+						$hotspotHolder.html($hotspot)
+						$('#hsIconHolder').append($hotspotHolder)
 					}
-					
-					if (x_currentPageXML.getAttribute("hs_showTooltip") == undefined || x_currentPageXML.getAttribute("hs_showTooltip") !== "false") {
-						if (this.getAttribute("alttext") != undefined && this.getAttribute("alttext") != "")
-							$hotspot.attr("title", this.getAttribute("alttext"));
-						else
-							$hotspot.attr("title", this.getAttribute("name"));
-					}
-					$hotspot.attr("alt", this.getAttribute("alttext"));
-
-					$("#hsHolder_map").append($hotspot);
 				});
-			
+
 			$('img').mapster(options);
 			if (x_currentPageXML.getAttribute("highlight") == "true") {
 
@@ -624,7 +887,165 @@
 		}
 
 	};
-	
+
+	function hideOnClickOutside(selector) {
+		const outsideClickListener = (event) => {
+			const $target = $(event.target);
+			if (!$target.closest(selector).length && !$(selector).is(':empty')) {
+				$("#pageContents .selected").removeClass("selected");
+				$("#pageContents .highlighted").removeClass("highlighted");
+				$('#hotspot_bubble_holder').empty()
+				removeClickListener();
+			}
+		}
+
+		const removeClickListener = () => {
+			document.removeEventListener('click', outsideClickListener);
+		}
+
+		document.addEventListener('click', outsideClickListener);
+	}
+
+	function setBubble(hsInfo, hsShape, _this, thisTmp) {
+		$hotspot_bubble = $("#hotspot_bubble");
+
+		(_this.getAttribute("showTitle") == 'true' && _this.getAttribute("name") !== "") ? bubble_content = "<h3>" + _this.getAttribute("name") + "</h3><br/>" : bubble_content = ""
+
+		if (hsInfo == 'image') {
+			var styleAttr = 'style="max-width:' + $("#panel").width() * 0.40 + 'px; max-height:' + $("#panel").height() * 0.8 + 'px; border-radius: 10px"';
+			bubble_content += '<img src="' + _this.getAttribute("imageFile") + '" class="dialogImg" ' + styleAttr + '/>';
+		} else {
+			bubble_content += x_addLineBreaks(_this.getAttribute("hotspotPopUp"));
+		}
+		$hotspot_bubble.html(bubble_content);
+
+		let vw = $('#x_mainHolder').width()
+		let vh = $('#x_mainHolder').height()
+
+		$hotspot_bubble.css({
+			"max-width": vw * 0.6,
+			"max-height": vh * 0.6,
+		});
+
+		let current_icon = $("#pageContents .selected")
+		if (hsShape == 'icon') {
+			hs_left = current_icon.offset().left
+			hs_top = current_icon.offset().top
+			hs_width = current_icon.outerWidth()
+			hs_height = current_icon.outerHeight()
+		} else {
+			hs_div = $(thisTmp).parent()
+			if (current_icon[0].getAttribute('coords') !== undefined && current_icon[0].getAttribute('coords') !== '') {
+				bubble_hs_coords = current_icon[0].getAttribute('coords').split(',')
+				if (hsShape == 'rectangle' ) {
+					hs_left = $('#imageHolder').offset().left + parseInt(bubble_hs_coords[0])
+					hs_top = $('#imageHolder').offset().top + parseInt(bubble_hs_coords[1])
+					hs_width = parseInt(bubble_hs_coords[2]) - parseInt(bubble_hs_coords[0])
+					hs_height = parseInt(bubble_hs_coords[bubble_hs_coords.length - 1]) - parseInt(bubble_hs_coords[1])
+				} else {
+					poly_left = vw
+					poly_right = 0
+					//x list
+					poly_x = bubble_hs_coords.filter((v, i) => !(i % 2))
+					//find outer coordinates
+					poly_x.forEach( item =>
+					{
+						poly_right = Math.max(poly_right, item)
+						poly_left = Math.min(poly_left, item)
+					});
+					//y list
+					poly_top = vh
+					poly_bottom = 0
+					poly_y = bubble_hs_coords.filter((v, i) => (i % 2))
+					poly_y.forEach( item =>
+					{
+						poly_bottom = Math.max(poly_bottom, item)
+						poly_top = Math.min(poly_top, item)
+					});
+					hs_left = $('#imageHolder').offset().left + parseInt(poly_left)
+					hs_top = $('#imageHolder').offset().top + parseInt(poly_top)
+					hs_width = parseInt(poly_right) - parseInt(poly_left)
+					hs_height = parseInt(poly_bottom) - parseInt(poly_top)
+
+				}
+			}
+		}
+
+		//tmp_left needs to be shifted by some margin as the imge+hotspots move in between
+		// hotspot selection and final bubble render.
+		if (vw - hs_left - hs_width > hs_left) {
+			//place r
+			var tmp_left = hs_left + hs_width + 5
+			max_w = vw - hs_left - hs_width - 30
+		} else {
+			//place left
+			var tmp_left = hs_left - $hotspot_bubble.outerWidth(true) - 5
+			max_w = hs_left
+		}
+
+		if (hs_top + hs_height/2 < $hotspot_bubble.outerHeight(true) / 2) {
+			//no fits ????
+			var tmp_top = 0
+		} else if (vh - hs_top - hs_height/2 < $hotspot_bubble.outerHeight(true) / 2) {
+			var tmp_top = vh - $hotspot_bubble.outerHeight(true)
+					//hs_top - $hotspot_bubble.outerHeight(true) + hs_height / 2
+		} else {
+			//normal
+			var tmp_top = hs_top + hs_height/2 - $hotspot_bubble.outerHeight(true)/2
+		}
+
+		if ($(thisTmp).length > 0) {
+			$("#pageContents").data("thisFocus", $(thisTmp));
+		} else {
+			$("#pageContents").removeData("thisFocus");
+		}
+
+		let direction = 1;
+
+		$hotspot_bubble
+			.css({
+				"left": Math.max(tmp_left, 0),
+				"top": tmp_top,
+				"max-width": Math.min(vw * 0.6,max_w),
+				"max-height": vh * 0.6,
+			})
+			.on("mouseenter", function() {
+				connectorHotspotImage.delayBubbleClose = true;
+			})
+			.on("mouseleave", function() {
+				connectorHotspotImage.delayBubbleClose = false;
+				$(thisTmp).mouseleave();
+			})
+			.focus()
+			.keydown(function(e) {
+				if (e.shiftKey && e.key === 'Tab') {
+					direction = 0;
+				}
+			})
+			.focusout(function() {
+				// bubble will be focused automatically on open so keyboard can access its contents
+				// when tabbing away from bubble it focuses on next or previous bubble
+				if ($("#pageContents").data("thisFocus") != undefined) {
+					let $nextFocus;
+					if ($("#pageContents").data("thisFocus").hasClass("hotspotIcon")) {
+						const $tempParent = $("#pageContents").data("thisFocus").parent();
+						$nextFocus = direction == 1 ? $tempParent.next().find(".hotspotIcon") : $tempParent.prev().find(".hotspotIcon");
+					} else {
+						$nextFocus = direction == 1 ? $("#pageContents").data("thisFocus").next() : $("#pageContents").data("thisFocus").prev();
+					}
+					$("#pageContents .selected").removeClass("selected");
+					$("#pageContents .highlighted").removeClass("highlight");
+					$('#hotspot_bubble_holder').empty();
+					if ($nextFocus.length > 0) {
+						$nextFocus.focus();
+					}
+					$("#pageContents").removeData("nextFocus");
+				}
+			});
+
+		hideOnClickOutside($hotspot_bubble);
+	}
+
 	connectorHotspotImage.init();
 	
 </script>
@@ -637,9 +1058,10 @@
 			<img id="image" class="x_noLightBox"/>
 			<div id="hsHolder"></div>
 			<div id="feedback" class="alert" />
+			<div id="hsIconHolder"></div>
 		</div>
 	</div>
 
-	<div id="mainText" tabindex="1"></div>
+	<div id="mainText"></div>
 
 </div>

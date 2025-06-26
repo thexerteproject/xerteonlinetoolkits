@@ -39,27 +39,41 @@ include "workspace_library.php";
  * connect to the database
  */
 
-workspace_templates_menu();
-
 $database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
 
-$query_for_peer_templates = "select * from {$prefix}templatedetails, {$prefix}templaterights, "
+$query_for_peer_templates = "select * from {$prefix}templatedetails, "
 . "{$prefix}additional_sharing where creator_id= ? AND "
-. "{$prefix}templatedetails.template_id = {$prefix}templaterights.template_id AND "
-. "{$prefix}templaterights.template_id  = {$prefix}additional_sharing.template_id and sharing_type=?";
+. "{$prefix}templatedetails.template_id  = {$prefix}additional_sharing.template_id and sharing_type=?";
 
 $params = array( $_SESSION['toolkits_logon_id'], 'peer');
 $query_peer_response = db_query($query_for_peer_templates, $params);
 
-workspace_menu_create(80);
+usort($query_peer_response, function($first, $second){
+    return $first['template_id'] > $second['template_id'];
+});
 
-echo "<div style=\"float:left; width:20%; height:20px;\">" . PEER_REVIEW_NAME . "</div>";
+echo "<table class=\"workspaceProjectsTable\">";
+
+echo "<caption>" . PEER_REVIEW_INTRO . "</caption>";
+
+$path = $xerte_toolkits_site->site_url . "peer.php?template_id=";
+
+echo "<tr><th class=\"narrow\">" . WORKSPACE_LIBRARY_TEMPLATE_ID . "</th><th>" . WORKSPACE_LIBRARY_TEMPLATE_NAME . "</th>";
+
+echo "<th>" . PEER_REVIEW_PSWD . "</th></tr>";
 
 foreach($query_peer_response as $row) {
-
-    echo "<div style=\"float:left; width:80%;\">" . str_replace("_","",$row['template_name']) .
-            "</div><div style=\"float:left; width:20%;\"> " . PEER_REVIEW_STATUS . " </div>";
+	
+	echo "<tr><td>" . $row['template_id'] . "</td>";
+	
+	echo "<td><a href=\"" . $path . $row['template_id'] . "\" target=\"_blank\">";
+	
+	echo str_replace("_"," ",$row['template_name']);
+	
+	echo "<span class=\"sr-only\">(" . WORKSPACE_LIBRARY_LINK_WINDOW . ")</span></a></td>";
+	
+	echo "<td>" . explode(',', $row['extra'])[0] . "<button class=\"copyBtn\" onclick=\"javascript:navigator.clipboard.writeText('" . explode(',', $row['extra'])[0] . "');\" title=\"" . PEER_REVIEW_COPY . "\"><i class=\"fa fa-copy\"></i><span class=\"sr-only\">" . PEER_REVIEW_COPY . "</span></button></td></tr>";
 
 }
 
-echo "</div></div>";
+echo "</table>";

@@ -31,8 +31,8 @@ if(empty($_SESSION['toolkits_logon_id'])) {
 // if there are GET paramters, put them in session and restart
 if (isset($_GET['uploadDir']) && isset($_GET['uploadURL']))
 {
-    $_SESSION['uploadDir'] = $_REQUEST['uploadDir'];
-    $_SESSION['uploadURL'] = $_REQUEST['uploadURL'];
+    $_SESSION['uploadDir'] = x_clean_input($_GET['uploadDir']);
+    $_SESSION['uploadURL'] = x_clean_input($_GET['uploadURL']);
 
     $params = "?";
     foreach($_GET as $key => $param)
@@ -50,26 +50,32 @@ if (isset($_GET['uploadDir']) && isset($_GET['uploadURL']))
     header("Location: " . $_SERVER["SCRIPT_NAME"] . $params);
 }
 
-if (strpos($_SESSION['uploadDir'], 'USER-FILES') === false || strpos($_SESSION['uploadURL'], 'USER-FILES') === false)
+if (!isset($_SESSION['uploadDir']) || !isset($_SESSION['uploadURL']))
 {
     die("Invalid upload location");
 }
+x_check_path_traversal($_SESSION['uploadDir'], $xerte_toolkits_site->users_file_area_full, "Invalid upload location");
+
+// Check uploadURL
+// First create a path from URL by replacing site_url with root_file_path
+$uploadURL = x_convert_user_area_url_to_path($_SESSION['uploadURL']);
+x_check_path_traversal($uploadURL, $xerte_toolkits_site->users_file_area_full, "Invalid upload location");
 
 $mode = 'standalone';
-if (isset($_REQUEST['mode']) && $_REQUEST['mode']=='cke') {
+if (isset($_REQUEST['mode']) && x_clean_input($_REQUEST['mode'])=='cke') {
     $mode = 'cke';
-    $funcNum = $_REQUEST['CKEditorFuncNum'];
+    $funcNum = x_clean_input($_REQUEST['CKEditorFuncNum']);
 }
 
 $lang = "en";
 if (isset($_REQUEST['lang']))
 {
-    $lang = $_REQUEST['lang'];
+    $lang = x_clean_input($_REQUEST['lang']);
 }
 
 if (isset($_REQUEST['langCode']))
 {
-    $lang = $_REQUEST['langCode'];
+    $lang = x_clean_input($_REQUEST['langCode']);
 }
 
 
@@ -126,20 +132,15 @@ if (isset($_REQUEST['langCode']))
                 uiOptions : {
                     // toolbar configuration
                     toolbar : [
-                        // ['back', 'forward'],
                         ['reload'],
-                        // ['home', 'up'],
                         ['home'],
-                        //['mkdir', 'mkfile', 'upload'],
                         ['mkdir', 'upload'],
-                        //['open', 'download', 'getfile'],
                         ['download', 'getfile'],
                         ['info'],
                         ['quicklook'],
                         ['copy', 'cut', 'paste'],
                         ['rm'],
                         ['duplicate', 'rename', 'edit', 'resize'],
-                        //['extract', 'archive'],
                         ['search'],
                         ['view'],
                         ['help']
@@ -169,15 +170,8 @@ if (isset($_REQUEST['langCode']))
                     // navbarfolder menu
                     navbar : ['open', '|', 'copy', 'cut', 'paste', 'duplicate', '|', 'rm', '|', 'mkdir', '|', 'info'],
 
-                    // current directory menu
-                    //cwd    : ['reload', 'back', '|', 'upload', 'mkdir', 'mkfile', 'paste', '|', 'info'],
                     cwd    : ['reload', '|', 'upload', 'mkdir', 'paste', '|', 'info'],
 
-                    // current directory file menu
-                    //files  : [
-                    //    'getfile', '|','open', 'quicklook', '|', 'download', '|', 'copy', 'cut', 'paste', 'duplicate', '|',
-                    //    'rm', '|', 'edit', 'rename', 'resize', '|', 'archive', 'extract', '|', 'info'
-                    //]
                     files  : [
                         'getfile', '|','quicklook', '|', 'download', '|', 'copy', 'cut', 'paste', 'duplicate', '|',
                         'rm', '|', 'edit', 'rename', 'resize', '|', 'info'

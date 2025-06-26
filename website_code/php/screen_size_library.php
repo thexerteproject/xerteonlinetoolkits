@@ -47,7 +47,7 @@ function get_template_screen_size($filename, $type){
 
             $secondplace = strpos($data, '"', $place);
 
-            $temp = substr($data, $place, ($secondplace-$place));
+            $temp = x_clean_input(substr($data, $place, ($secondplace-$place)));
 
             $temp = explode(",",$temp);
 

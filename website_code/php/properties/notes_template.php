@@ -36,11 +36,14 @@ include "../user_library.php";
 include "properties_library.php";
 
 if(is_numeric($_POST['template_id'])){
-    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
+    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_permitted("projectadmin")){
        $query_for_template_notes = "select notes from {$xerte_toolkits_site->database_table_prefix}templaterights where template_id = ?";
        $row_notes = db_query_one($query_for_template_notes, array($_POST['template_id']));
        notes_display($row_notes['notes'],false, $_POST['template_id']);
        exit(0);
-    }
+    } else {
+		notes_display_fail(true);
+	}
+} else {
+	notes_display_fail(false);
 }
-notes_display_fail();

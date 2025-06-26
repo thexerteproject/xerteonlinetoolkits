@@ -379,6 +379,10 @@ var EDITOR = (function ($, parent) {
 
     init = function () {
         // Set some good default values for missing variables
+        if (typeof disable_advanced == "undefined")
+        {
+            disable_advanced = false;
+        }
         if (typeof simple_mode == "undefined")
         {
             simple_mode = false;
@@ -395,6 +399,15 @@ var EDITOR = (function ($, parent) {
         language_files = (languagecodevariable=='en-GB' ? en_language_files : foreign_language_files);
         $(language_files).each(function() {
             var _this = this;
+            // If _this.u contains getXwd, add parameters for plugin conditions
+            if (_this.u.indexOf("getXwd") != -1) {
+                _this.u += "?simple_mode=" + simple_mode;
+                _this.u += "&disable_advanced=" + disable_advanced;
+                _this.u += "&simple_lo_page=" + simple_lo_page;
+                _this.u += "&template_sub_pages=" + template_sub_pages;
+                _this.u += "&languagecode=" + languagecodevariable;
+                _this.u += "&theme=" + theme;
+            }
             $.ajax({
                 type: "GET",
                 url: _this.u,

@@ -29,10 +29,8 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			}
+			const $panel = $("#pageContents .panel");
+			$panel.height(x_getAvailableHeight([$panel]));
 		}
 		
 		this.init = function() {
@@ -105,7 +103,7 @@
 		<div id="textHolder" class="left"></div>
 		
 		<div id="infoHolder" class="right">
-			<div class="panel">
+			<div class="panel" tabindex="0">
 				<div id="prompt"></div>
 				<button id="button"></button>
 				<div id="answer" aria-live="polite"></div>

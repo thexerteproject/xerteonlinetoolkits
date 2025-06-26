@@ -77,7 +77,7 @@ function get_group_members($group_id){
     }
 }
 
-if(is_user_admin()){
+if(is_user_permitted("useradmin")){
 
     $group_id = $_POST['group_id'];
     get_group_members($group_id);

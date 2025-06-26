@@ -100,14 +100,14 @@ h1.heading{
 	margin:7px 10px;
 }
 
-.admin_mgt_area_middle_button_left .xerte_button {
+.admin_mgt_area_middle_button_left .xerte_button, .admin_mgt_area_middle_button_right .xerte_button {
 	margin-top: 3px;
 	margin-bottom: 3px;
 }
 
 .admin_mgt_area_middle_button_right{
 	border-left: 1px #b6b3a8 solid;
-	margin-left: 10px;
+	margin: 7px 10px;
 	padding-left: 13px;
 	display: inline-block;
 }
@@ -167,8 +167,24 @@ div#admin_area form select, div#admin_area form input, div#admin_area form .xert
 	margin-top: 10px;
 }
 
+.main_admin_block {
+	border-top: 2px #758389 solid;
+	margin-top: 10px;
+}
+
+
 .admin_block .xerte_button {
 	margin-top: 5px;
+}
+
+.theme{
+	position:relative;
+	padding:5px;
+	margin:0px;
+	width:100%;
+	box-sizing: border-box;
+	border-bottom: none;
+	cursor:pointer;
 }
 
 .template{
@@ -196,6 +212,10 @@ div#admin_area form select, div#admin_area form input, div#admin_area form .xert
 }
 
 .template_list .template {
+	margin-left: 10px;
+}
+
+.template_list .theme {
 	margin-left: 10px;
 }
 
@@ -318,3 +338,21 @@ form[name='user_templates'] {
 	padding-bottom: 5px;
 }
 
+.grid{
+	display: grid;
+	grid-template-columns: min-content min-content min-content;
+	white-space: nowrap;
+}
+
+.hidden{
+	display: none;
+}
+
+.user-role-overview {
+	margin-left: 10px;
+}
+
+.user-role-overview th, .user-role-overview td {
+	text-align: left;
+	padding-right: 15px;
+}

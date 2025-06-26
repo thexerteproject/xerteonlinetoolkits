@@ -23,7 +23,7 @@ _load_language_file("/website_code/php/management/site_details_management.inc");
 
 require("../user_library.php");
 
-if(is_user_admin()) {
+if(is_user_permitted("system")) {
 
     $database_id = database_connect("templates list connected", "template list failed");
 
@@ -52,7 +52,7 @@ if(is_user_admin()) {
 
     $query = "update " . $xerte_toolkits_site->database_table_prefix . "sitedetails set site_url = ?, site_title = ?, site_name=?, site_logo=?, organisational_logo=?, welcome_message=?,
         site_text=?, news_text=?, pod_one=?, pod_two=?, copyright=?, demonstration_page=?, form_string=?, peer_form_string=?, feedback_list=?,
-        rss_title=?, module_path=?, website_code_path=?, users_file_area_short=?, php_library_path=?, root_file_path=?, play_edit_preview_query=?, email_error_list=?,
+        rss_title=?, module_path=?, website_code_path=?, users_file_area_short=?, users_file_area_path=?, php_library_path=?, root_file_path=?, play_edit_preview_query=?, email_error_list=?,
         error_log_message=?, max_error_size=?, authentication_method=?, ldap_host=?, ldap_port=?, bind_pwd=?, basedn=?, bind_dn=?, flash_save_path=?, flash_upload_path=?, flash_preview_check_path=?, flash_flv_skin=?,
         site_email_account=?, headers=?, email_to_add_to_username=?, proxy1=?, port1=?, site_session_name=?, synd_publisher=?, synd_rights=?, synd_license=?, import_path=?,
         apache=?, enable_mime_check=?, mimetypes=?, enable_file_ext_check=?, file_extensions=?, enable_clamav_check=?, clamav_cmd=?, clamav_opts=?, LDAP_preference=?, LDAP_filter=?, integration_config_path=?,
@@ -60,7 +60,7 @@ if(is_user_admin()) {
         globalhidesocial=?, globalsocialauth=?";
 
     $data = array($_POST['site_url'], $_POST['site_title'], $_POST['site_name'], $_POST['site_logo'], $_POST['organisational_logo'], $_POST['welcome_message'], $site_texts, base64_encode(stripcslashes($_POST['news_text'])), base64_encode(stripcslashes($_POST['pod_one'])), base64_encode(stripcslashes($_POST['pod_two'])), $copyright, $_POST['demonstration_page'], base64_encode(stripcslashes($_POST['form_string'])),
-        base64_encode(stripcslashes($_POST['peer_form_string'])), $_POST['feedback_list'], $_POST['rss_title'], $_POST['module_path'], $_POST['website_code_path'], $_POST['users_file_area_short'],
+        base64_encode(stripcslashes($_POST['peer_form_string'])), $_POST['feedback_list'], $_POST['rss_title'], $_POST['module_path'], $_POST['website_code_path'], $_POST['users_file_area_short'], $_POST['users_file_area_path'],
         $_POST['php_library_path'], str_replace("\\", "/", $_POST['root_file_path']), base64_encode(stripcslashes($_POST['play_edit_preview_query'])), $_POST['email_error_list'], $_POST['error_log_message'],
         $_POST['max_error_size'], $_POST['authentication_method'], $_POST['ldap_host'], $_POST['ldap_port'], $_POST['bind_pwd'], $_POST['base_dn'], $_POST['bind_dn'], $_POST['flash_save_path'], $_POST['flash_upload_path'],
         $_POST['flash_preview_check_path'], $_POST['flash_flv_skin'], $_POST['site_email_account'], $_POST['headers'], $_POST['email_to_add_to_username'], $_POST['proxy1'], $_POST['port1'],
@@ -68,7 +68,6 @@ if(is_user_admin()) {
         $enable_mime_check, str_replace(' ', '', $_POST['mimetypes']), $enable_file_ext_check, str_replace(' ', '', $_POST['file_extensions']), $enable_clamav_check, str_replace("\\", "/", $clamav_cmd), $clamav_opts,
         $_POST['LDAP_preference'], $_POST['LDAP_filter'], $_POST['integration_config_path'], $_POST['admin_username'], $_POST['site_xapi_endpoint'], $_POST['site_xapi_key'], $_POST['site_xapi_secret'],
         $_POST['site_xapi_dashboard_enable'], $_POST['site_xapi_dashboard_nonanonymous'], $_POST['site_xapi_force_anonymous_lrs'],$_POST['xapi_dashboard_minrole'], $_POST['site_xapi_dashboard_period'], $_POST['xapi_dashboard_urls'], $_POST['globalhidesocial'], $_POST['globalsocialauth']);
-
 
     $res = db_query($query, $data);
     if ($res !== false) {
@@ -116,10 +115,9 @@ if(is_user_admin()) {
 
     }else{
 
-        echo MANAGEMENT_SITE_CHANGES_FAIL . " " . mysql_error($database_id);
+        echo MANAGEMENT_SITE_CHANGES_FAIL;
 
     }
 
 }
 
-?>

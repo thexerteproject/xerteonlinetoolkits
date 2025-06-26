@@ -1,15 +1,15 @@
 <wizard menus="Media">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <flickr><![CDATA[<flickr name="Enter Page Title" keywords="Enter keywords to search for here" content="all use" deriv="unrestricted" panelWidth="Medium" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" >Enter text for the page here</flickr>]]></flickr>  
+      <flickr><![CDATA[<flickr name="Enter Page Title" keywords="" content="all use" deriv="unrestricted" panelWidth="Medium" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" ></flickr>]]></flickr>
     </newNodes>
   </pageWizard>
 
   <!-- FLICKR SLIDESHOW=============================== -->
-  <flickr menu="Media" menuItem="Flickr Slideshow" hint="Include freely available graphical content from the Flickr photo sharing service." label="Page Text" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#flickrslideshow" wiki="https://xerte.org.uk/wiki/doku.php?id=media_flickr_slideshow_page" remove="true">
+  <flickr menu="Media" menuItem="Flickr Slideshow" hint="Include freely available graphical content from the Flickr photo sharing service." label="Page Text" placeholder="Enter text for the page here" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#flickrslideshow" wiki="https://xerte.org.uk/wiki/doku.php?id=media_flickr_slideshow_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <keywords label="Keyword(s)" type="TextInput"/>
+    <keywords label="Keyword(s)" type="TextInput" placeholder="Enter keywords to search for here"/>
     <content label="Content for" options="All use,Non-commercial use" type="comboBox" data="all use,non-commercial use" defaultValue="all use" width="150"/>
     <deriv label="Reuse" options="Unrestricted,Non-derivative,Share alike" type="comboBox" data="unrestricted,non-derivative,share alike" defaultValue="unrestricted" width="150"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true"/>

@@ -45,7 +45,7 @@ optional: pauseMedia*
 					$target.parent().hide()
 					$target.hide();
 					if(options.optional === "true") {
-	                    var $showHolder  = $('<div id="showHolder" />').appendTo($target);
+	                    var $showHolder  = $('<div id="showHolder"/>').appendTo($target);
 						$showHs = $('<div class="Hs x_noLightBox showHotspot"/>').addClass(options.attrib.icon).appendTo($showHolder);
 						$showHs.css({
 							"background-color": options.attrib.colour1,
@@ -85,7 +85,8 @@ optional: pauseMedia*
 						$target.show();
 						$showHolder
 							.show()
-                    	    .click(function () {
+                    	    .click(function (e) {
+								e.stopPropagation();
 								$showHsActive = true;
                         	    $showHolder.hide();
 								if (options.name != "") {
@@ -101,7 +102,14 @@ optional: pauseMedia*
 									"overflow": "hidden"
 								});
 								$iframe.show();
-                        	});
+                        	})
+							.keypress(function(e) {
+								var charCode = e.charCode || e.keyCode;
+								if (charCode == 32) {
+									e.stopPropagation();
+									$(this).trigger("click");
+								}
+							});
 					// if not optional
                		} else {
 						$showHsActive = true;
@@ -329,7 +337,6 @@ optional: pauseMedia*
 				}
 				$target.parent().show();
 				$target.show();
-				
 			},
 			
 			end: function(event, options) {

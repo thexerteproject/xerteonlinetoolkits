@@ -24,21 +24,14 @@ require_once("../../../config.php");
 // be VERY paranoid over the path the user is requesting to download.
 // Even if the file starts with a correct pattern (old implementation) the user could travers path
 // like 542-tom-Notingham/../database.php or like 542-tom-Notingham/../../../../etc/passwd
-$unsafe_file_path = $_GET['file'];
+$unsafe_file_path = x_clean_input($_GET['file']);
 
+$full_unsafe_file_path = x_convert_user_area_url_to_path($unsafe_file_path);
+x_check_path_traversal($full_unsafe_file_path, $xerte_toolkits_site->users_file_area_full, "Invalid file specified");
 
-$full_unsafe_file_path = $xerte_toolkits_site->root_file_path . $unsafe_file_path;
-
-// Account for Windows, because realpath changes / to \
-if(DIRECTORY_SEPARATOR !== '/') {
-    $full_unsafe_file_path = str_replace('/', DIRECTORY_SEPARATOR, $full_unsafe_file_path);
-}
-// This gets the canonical file name, so in case of 542-tom-Notingham/../../../../etc/passwd -> /etc/passwd
-$realpath = realpath($full_unsafe_file_path);
-// Check that is start with root_path/USER-FILES
-if ($realpath !== false && $realpath === $full_unsafe_file_path) {
-    echo file_get_contents($realpath);
-}
-else{
+// Make sure we're actually serving an xml file
+if (strtolower(substr($full_unsafe_file_path, -4)) !== '.xml') {
     echo "Not found!";
+    exit;
 }
+echo file_get_contents($full_unsafe_file_path);

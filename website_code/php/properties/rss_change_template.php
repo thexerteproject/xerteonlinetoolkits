@@ -38,51 +38,56 @@ include "../user_library.php";
 
 include "properties_library.php";
 
-if(is_numeric($_POST['template_id'])){
+if (!isset($_POST['template_id']) || !isset($_POST['rss']) || !isset($_POST['export']) || !isset($_POST['desc'])){
+    die("Invalid paramaters");
+}
 
-    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
 
-        $query_for_rss_status = "select rss from {$xerte_toolkits_site->database_table_prefix}templatesyndication where template_id=?";
+$template_id = x_clean_input($_POST['template_id'], 'numeric');
+$rss = x_clean_input($_POST['rss']);
+$export = x_clean_input($_POST['export']);
+$desc = x_clean_input($_POST['desc']);
 
-        $rows = db_query($query_for_rss_status, array($_POST['template_id']));
-        $status = false;
-        if(sizeof($rows)==0){
-            $query_to_change_rss_status = "Insert into {$xerte_toolkits_site->database_table_prefix}templatesyndication (template_id,rss,export,description) VALUES (?,?,?,?)";
-            $status = db_query($query_to_change_rss_status, array($_POST['template_id'], $_POST['rss'], $_POST['export'], $_POST['desc']));
+if(is_user_creator_or_coauthor($template_id)||is_user_permitted("projectadmin")){
 
-        }else{
-            $query_to_change_rss_status = "update {$xerte_toolkits_site->database_table_prefix}templatesyndication 
-                set rss=?, export=?, description=? WHERE template_id = ?";
-            $status = db_query($query_to_change_rss_status, array($_POST['rss'], $_POST['export'], $_POST['desc'], $_POST['template_id']));
-        }
+    $query_for_rss_status = "select rss from {$xerte_toolkits_site->database_table_prefix}templatesyndication where template_id=?";
 
-        // Update templatedetails modify date
-        $sql = "update {$xerte_toolkits_site->database_table_prefix}templatedetails set date_modified=? where template_id=?";
-        $params = array(date("Y-m-d H:i:s"), $_POST['template_id']);
-        db_query_one($sql, $params);
+    $rows = db_query($query_for_rss_status, array($template_id));
+    $status = false;
+    if(sizeof($rows)==0){
+        $query_to_change_rss_status = "Insert into {$xerte_toolkits_site->database_table_prefix}templatesyndication (template_id,rss,export,description) VALUES (?,?,?,?)";
+        $status = db_query($query_to_change_rss_status, array($template_id, $rss, $export, $desc));
 
-        if($status === false) {
-            echo "<p class='error'>Error saving change to template.</p>"; 
-        }
+    }else{
+        $query_to_change_rss_status = "update {$xerte_toolkits_site->database_table_prefix}templatesyndication 
+            set rss=?, export=?, description=? WHERE template_id = ?";
+        $status = db_query($query_to_change_rss_status, array($rss, $export, $desc, $template_id));
+    }
 
-        if(template_access_settings($_POST['template_id'])=="Public"){
+    // Update templatedetails modify date
+    $sql = "update {$xerte_toolkits_site->database_table_prefix}templatedetails set date_modified=? where template_id=?";
+    $params = array(date("Y-m-d H:i:s"), $template_id);
+    db_query_one($sql, $params);
 
-            $query_for_name = "select firstname,surname from {$xerte_toolkits_site->database_table_prefix}logindetails where login_id=?";
-            $row_name = db_query_one($query_for_name, array($_SESSION['toolkits_logon_id']));
-            rss_display($xerte_toolkits_site,$_POST['template_id'],true);
+    if($status === false) {
+        echo "<p class='error'>Error saving change to template.</p>";
+    }
 
-        }else{
+    if(template_access_settings($template_id)=="Public"){
 
-            rss_display_public();
-
-        }
+        $query_for_name = "select firstname,surname from {$xerte_toolkits_site->database_table_prefix}logindetails where login_id=?";
+        $row_name = db_query_one($query_for_name, array($_SESSION['toolkits_logon_id']));
+        rss_display($xerte_toolkits_site,$template_id,true);
 
     }else{
 
-        rss_display_fail();
+        rss_display_public();
 
     }
 
+}else{
+
+    rss_display_fail(true);
+
 }
 
-?>

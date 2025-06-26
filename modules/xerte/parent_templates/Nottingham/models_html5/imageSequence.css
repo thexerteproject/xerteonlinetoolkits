@@ -175,6 +175,16 @@
 	height: 100%;
 }
 
+#viewHolder fieldset {
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+#viewHolder legend {
+	float: left;
+}
+
 #viewHolder #viewOption {
 	margin-left: 0.5em;
 }
@@ -183,24 +193,37 @@
 	opacity: 0.5;
 }
 
-#viewHolder #viewOption button {
+#viewHolder #viewOption .viewBtn {
 	display: inline-block;
 	vertical-align: top;
-	padding: 3px;
-	background-color: white;
-	border: 1px solid #434343;
-	text-decoration: none;
-	cursor: pointer;
-}
-
-#viewHolder #viewOption button:not(.selected) {
 	background-color: #ccc;
-	border-color: #ccc;
+	border: 1px solid #ccc;
 	opacity: 0.5;
 }
 
-#viewHolder #viewOption button.highlighted {
-	border-color: #FF9900;
+#viewHolder #viewOption .viewBtn:has(> input:checked) {
+	background-color: white;
+	border: 1px solid #434343;
+	opacity: 1;
+}
+
+#viewHolder #viewOption .viewBtn  input {
+	width: 0;
+	height: 0;
+	margin: 0;
+	padding: 0;
+}
+
+#viewHolder #viewOption .viewBtn label {
+	font-size: 0;
+}
+
+#viewHolder #viewOption label img {
+	padding: 3px;
+}
+
+#viewHolder #viewOption .viewBtn:has(> input:focus) {
+	border: 1px solid #FF9900;
 }
 
 /* ----- MAIN CONTENT: TEXT & IMAGES ----- */
@@ -248,7 +271,7 @@
 }
 
 @media (min-width: 768px) {
-	label {
+	label,legend {
 		font-size: 2.5vmin;
 	}
 	

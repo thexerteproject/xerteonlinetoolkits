@@ -33,40 +33,54 @@ _load_language_file("/properties.inc");
 include "../template_status.php";
 include "../user_library.php";
 
-if(!is_numeric($_POST['template_id'])){
+
+
+if(!isset($_POST['template_id'])){
+	echo "<h2 class=\"header\">" . PROPERTIES_TAB_SHARED . "</h2>";
+	echo "<div id=\"mainContent\">";
     echo "<p>" . SHARING_FAIL . "</p>";
+	echo "</div>";
     exit(0);
 }
 
+$template_id = x_clean_input($_POST['template_id'], 'numeric');
 
-if(!has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
+    echo "<h2 class=\"header\">" . PROPERTIES_TAB_SHARED . "</h2>";
+	echo "<div id=\"mainContent\">";
     echo "<p>" . SHARING_FAIL . "</p>";
+	echo "</div>";
     exit(0);
 }
-$template_id = $_POST['template_id'];
+echo "<h2 class=\"header\">" . PROPERTIES_TAB_SHARED . "</h2>";
+echo "<div id=\"mainContent\">";
 
 /*
  * show a different view if you are the file creator
  */
 
-if(is_user_creator_or_coauthor((int) $template_id) || is_user_admin()){
-
-    echo "<div>";
-    echo "<p class=\"header\"><span>" . PROPERTIES_TAB_SHARED . "</span></p>";
-    echo "<p><span>" . SHARING_INSTRUCTION . "</span></p>";
-    echo "<div id=\"rolebutton\">" .
-        "<input type=\"radio\" name=\"role\" value=\"co-author\">" .
-        SHARING_COAUTHOR .
-        "<input type=\"radio\" name=\"role\" value=\"editor\"checked>" .
-        SHARING_EDITOR .
-        "<input type=\"radio\" name=\"role\" value=\"read-only\">" .
-        SHARING_READONLY .
-        "</div>";
-
-    echo "<form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_template()\" type=\"text\" size=\"20\" /></form>";
-    echo "<div id=\"area2\"><p>" . SHARING_NAMES . "</p></div>";
+if(is_user_creator_or_coauthor($template_id) || is_user_permitted("projectadmin")){
+	
+	echo "<p>" . SHARING_INSTRUCTION . "</p>";
+	
+    echo "<form id=\"share_form\">";
+	
+	echo "<label class=\"block\" for=\"searcharea\">" . SHARING_NAME_LABEL . ":</label>";
+    echo "<input id=\"searcharea\" name=\"searcharea\" onkeyup=\"javascript:name_select_template()\" type=\"text\" size=\"20\" />";
+	
+	echo "<fieldset id=\"rolebutton\" class=\"plainFS\">" .
+		"<legend>" . SHARING_ROLE_LABEL . ":</legend>" .
+        "<div><input type=\"radio\" name=\"role\" id=\"co-author\" value=\"co-author\">" .
+        "<label for=\"co-author\">" . SHARING_COAUTHOR . "</label></div>" .
+        "<div><input type=\"radio\" name=\"role\" id=\"editor\" value=\"editor\"checked>" .
+		"<label for=\"editor\">" . SHARING_EDITOR . "</label></div>" .
+        "<div><input type=\"radio\" name=\"role\" id=\"read-only\" value=\"read-only\">" .
+		"<label for=\"read-only\">" . SHARING_READONLY . "</label></div>" .
+        "</fieldset>";
+	
+	echo "</form>";
+    echo "<div id=\"area2\"><p><span class=\"placeholderTxt\">" . SHARING_NAMES . "</span></p></div>";
     echo "<p id=\"area3\">";
-    echo "</div>";
 }
 
 
@@ -88,72 +102,74 @@ $sql = "SELECT ug.group_id, group_name, role FROM " .
 
 $query_sharing_rows_group = db_query($sql, array($template_id));
 if(sizeof($query_sharing_rows)==0 && sizeof($query_sharing_rows_group)==0){
-    echo "<p class=\"share_files_paragraph\"><span>" . SHARING_NOT_SHARED . "</span></p>";
+    echo "<p class=\"share_files_paragraph\"><span>" . SHARING_NOT_SHARED . "</span></p></div>";
     exit(0);
 }
 
 echo "<p class=\"share_intro_p\"><span>" . SHARING_CURRENT . "</span></p>";
 
+echo "<ul class='share_users " . (is_user_creator_or_coauthor($template_id)|| is_user_permitted("projectadmin") ? "" : "show_list") . "'>";
 
-if(is_user_creator_or_coauthor($template_id)|| is_user_admin()){
-    foreach($query_sharing_rows_group as $row) {
-        echo "<p class=\"share_files_paragraph\"><span>" . $row['group_name'] . " - (" . $row['role'] . ")</span></p>";
+foreach($query_sharing_rows_group as $row) {
+	
+	echo "<li>" . $row['group_name'];
+	
+	if(is_user_creator_or_coauthor($template_id)|| is_user_permitted("projectadmin")){
+		
+		echo ' <label class="sr-only" for="groupRole_' . $row['group_id'] . '">' . SHARING_ROLE_LABEL . ' (' . $row['group_name'] . ')</label>' .
+			'<select name="groupRole_' . $row['group_id'] . '" id="groupRole_' . $row['group_id'] . '" onchange="set_sharing_rights_template(\'' . $template_id . '\', \'' . $row['group_id']. '\', true)">' .
+			'<option value="co-author_' . $row['group_id'] . '" ' . ($row['role'] == 'co-author' ? "selected" : "") . '>' . SHARING_COAUTHOR . '</option>' .
+			'<option value="editor_' . $row['group_id'] . '" ' . ($row['role'] == 'editor' ? "selected" : "") . '>' . SHARING_EDITOR . '</option>' .
+			'<option value="read-only_' . $row['group_id'] . '" ' . ($row['role'] == 'read-only' ? "selected" : "") . '>' . SHARING_READONLY . '</option>' .
+			'</select>';
 
-        echo '<p class=\"share_files_paragraph\">' .
-            '<input type="radio" name="role' . $row['group_id'] .'_g" value="co-author" ' . ($row['role'] == 'co-author' ? "checked": "") . ' onclick="javascript:set_sharing_rights_template(\'co-author\', \''. $template_id . '\',\'' . $row['group_id'] . '\', group=true)">'.
-            SHARING_COAUTHOR .
-            '<input type="radio" name="role' . $row['group_id'] .'_g" value="editor" ' . ($row['role'] == 'editor' ? "checked": "") . ' onclick="javascript:set_sharing_rights_template(\'editor\', \''. $template_id . '\',\'' . $row['group_id'] . '\', group=true)">'.
-            SHARING_EDITOR .
-            '<input type="radio" name="role' . $row['group_id'] .'_g" value="read-only" ' . ($row['role'] == 'read-only' ? "checked": "") . ' onclick="javascript:set_sharing_rights_template(\'read-only\', \''. $template_id . '\',\'' . $row['group_id'] . '\', group=true)">'.
-            SHARING_READONLY .
-            "</p>";
-
-        echo "<p>" . SHARING_REMOVE_DESCRIPTION . "</p>";
-        echo "&nbsp;<button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_template('" . $template_id . "','" . $row['group_id'] . "',false, group=true)\" style=\"vertical-align:middle\" ><i class=\"fa fa-times\"></i>&nbsp;" . SHARING_REMOVE . "</button>";
-
-        echo "<p class=\"share_border\"></p>";
-    }
+		echo "&nbsp;<button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_template('" . $template_id . "','" . $row['group_id'] . "',false,true)\" ><i class=\"fa fa-times\"></i> " . SHARING_REMOVE . "<span class=\"sr-only\"> (" . $row['group_name'] . ")</span></button>";
+		
+    } else {
+		
+		echo ' - ' . $row['role'];
+	}
+	
+	echo "</li>";
 }
-
 
 foreach($query_sharing_rows as $row) {
 
-    echo "<p class=\"share_files_paragraph\"><span>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] .") - (" . $row['role'] . ")</span></p>";
+    echo "<li>" . $row['firstname'] . " " . $row['surname'] . " (" . $row['username'] .")";
 
-    if($row['role']!="creator"|| is_user_admin()) {
+    if($row['role']!="creator") {
 
-        if (is_user_creator_or_coauthor($template_id)|| is_user_admin()) {
+        if (is_user_creator_or_coauthor($template_id)|| is_user_permitted("projectadmin")) {
+			
+            echo ' <label class="sr-only" for="role_' . $row['user_id'] . '">' . SHARING_ROLE_LABEL . ' (' . $row['firstname'] . " " . $row['surname'] . " - " . $row['username'] . ')</label>' .
+				'<select name="role_' . $row['user_id'] . '" id="role_' . $row['user_id'] . '" onchange="set_sharing_rights_template(\'' . $template_id . '\', \'' . $row['user_id']. '\', false)">' .
+                '<option value="co-author_' . $row['user_id'] . '" ' . ($row['role'] == 'co-author' ? "selected" : "") . '>' . SHARING_COAUTHOR . '</option>' .
+                '<option value="editor_' . $row['user_id'] . '" ' . ($row['role'] == 'editor' ? "selected" : "") . '>' . SHARING_EDITOR . '</option>' .
+				'<option value="read-only_' . $row['user_id'] . '" ' . ($row['role'] == 'read-only' ? "selected" : "") . '>' . SHARING_READONLY . '</option>' .
+				'</select>';
 
-            echo '<p class=\"share_files_paragraph\">' .
-                '<input type="radio" name="role' . $row['user_id'] . '" value="co-author" ' . ($row['role'] == 'co-author' ? "checked" : "") . ' onclick="javascript:set_sharing_rights_template(\'co-author\', \'' . $template_id . '\',\'' . $row['user_id'] . '\')">' .
-                SHARING_COAUTHOR .
-                '<input type="radio" name="role' . $row['user_id'] . '" value="editor" ' . ($row['role'] == 'editor' ? "checked" : "") . ' onclick="javascript:set_sharing_rights_template(\'editor\', \'' . $template_id . '\',\'' . $row['user_id'] . '\')">' .
-                SHARING_EDITOR .
-                '<input type="radio" name="role' . $row['user_id'] . '" value="read-only" ' . ($row['role'] == 'read-only' ? "checked" : "") . ' onclick="javascript:set_sharing_rights_template(\'read-only\', \'' . $template_id . '\',\'' . $row['user_id'] . '\')">' .
-                SHARING_READONLY .
-                "</p>";
+            echo "&nbsp;<button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_template('" . $template_id . "','" . $row['user_id'] . "',false,false)\" ><i class=\"fa fa-times\"></i> " . SHARING_REMOVE . "<span class=\"sr-only\"> (" . $row['firstname'] . " " . $row['surname'] . " - " . $row['username'] . ")</span></button>";
 
-            echo "<p>" . SHARING_REMOVE_DESCRIPTION . "</p>";
-
-            echo "&nbsp;<button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_template('" . $template_id . "','" . $row['user_id'] . "',false)\" style=\"vertical-align:middle\" ><i class=\"fa fa-user-times\"></i>&nbsp;" . SHARING_REMOVE . "</button>";
-
-            echo "<p class=\"share_border\"></p>";
-
-        }
+        } else {
+			
+			echo ' - ' . $row['role'];
+		}
 
     }
-    else{
-        echo "<p class=\"share_files_paragraph\">" . SHARING_CREATOR . "</p>";
-        echo "<p class=\"share_border\"></p>";
+    else {
+        echo " - " . $row['role'];
     }
+	
+	echo "</li>";
 
 }
 
-if(!is_user_creator($_POST['template_id'])&&!is_user_admin()){
+echo "</ul>";
 
-    echo "<p><a href=\"javascript:delete_sharing_template('" . $_POST['template_id'] . "','" . $_SESSION['toolkits_logon_id'] . "',true)\">" . SHARING_STOP . "</a></p>";
+if(!is_user_creator($template_id)&&!is_user_permitted("projectadmin")){
+
+    echo "<p>" . SHARING_STOP_INSTRUCTIONS . " <button type=\"button\" class=\"xerte_button\" onclick=\"javascript:delete_sharing_template('" . $template_id . "','" . $_SESSION['toolkits_logon_id'] . "',true,false)\"><i class=\"fa fa-times\"></i> " . SHARING_STOP . "</button></p>";
 
 }
 
-
-
+echo "</div>";

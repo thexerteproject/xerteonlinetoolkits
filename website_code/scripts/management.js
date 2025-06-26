@@ -47,6 +47,9 @@ function management_stateChanged(response) {
 	if (response != "") {
 
 		document.getElementById('admin_area').innerHTML = response;
+
+		$(".selectize").selectize();
+
 		loadModal();
 	}
 }
@@ -362,6 +365,12 @@ function template_sync(){
 	});
 }
 
+// Show first tab that user has permission to see
+function show_first_tab()
+{
+	eval(firsttab);
+}
+
 // Function site list
 //
 // remove a share, and check who did it
@@ -394,22 +403,41 @@ function templates_list(){
 	});
 }
 
+function themes_list(){
+	function_to_use="themes";
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/management/themes.php",
+		data: {no_id: 1},
+	})
+	.done(function(response){
+		management_stateChanged(response);
+	});
+}
+
+
 // Function delete sharing template
 //
 // remove a share, and check who did it
 
 function update_template(){
 	//bababoeie
-	debugger
 	// Get selected pages of the active_section
 	// 1. First get non-selected boxes
+	var disable_advanced_cb = $("#sub_page_select_disable_advanced_" + active_section + ":checked");
+	var disable_advanced = (disable_advanced_cb.length > 0);
 	var simple_lo_page_cb = $("#sub_page_select_titleonly_" + active_section + ":checked");
 	var simple_lo_page = (simple_lo_page_cb.length > 0);
 	var checkboxes_all = $(".sub_page_selection_model_" + active_section);
 	var checkboxes_selected = $(".sub_page_selection_model_" + active_section + ":checked");
 	var sub_pages = "";
+	if(disable_advanced_cb.length > 0){
+		sub_pages += "disable_advanced"
+	}
 	if(simple_lo_page_cb.length > 0){
-		sub_pages = "simple_lo_page"
+		if (sub_pages.length > 0)
+			sub_pages += ",";
+		sub_pages += "simple_lo_page"
 	}
 	if (checkboxes_all.length != checkboxes_selected.length)
 	{
@@ -564,13 +592,32 @@ function update_site() {
 			xapi_dashboard_urls: document.getElementById("xapi_dashboard_urls").value,
 			site_xapi_dashboard_period: document.getElementById("site_xapi_dashboard_period").value,
 			globalhidesocial: document.getElementById("site_socialicon_globaldisable").value,
-			globalsocialauth: document.getElementById("site_socialicon_globalauthorauth").value
+			globalsocialauth: document.getElementById("site_socialicon_globalauthorauth").value,
+			//default_theme_xerte: document.getElementById("default_theme_xerte").value,
+			//default_theme_site: document.getElementById("default_theme_site").value
 		},
 	})
 	.done(function (response) {
 		management_alert_stateChanged(response);
 	});
 }
+
+function update_themes() {
+
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/management/themes_details_management.php",
+		data: {
+			default_theme_xerte: document.getElementById("default_theme_xerte").value,
+			default_theme_site: document.getElementById("default_theme_site").value,
+			default_theme_decision: document.getElementById("default_theme_decision").value
+		},
+	})
+		.done(function (response) {
+			management_alert_stateChanged(response);
+		});
+}
+
 
 // Function update course
 //
@@ -1097,12 +1144,13 @@ function templates_delete_sub(id){
 function save_changes(){
 
 	switch(function_to_use){
-
-		case "templates":update_template();
-		    break;
-		case "users":user_template();
-			break;
 		case "site":update_site();
+			break;
+		case "themes":update_themes();
+			break;
+		case "templates":update_template();
+			break;
+		case "users":user_template();
 			break;
 		case "playsecurity":update_play_security();
 			  break;
@@ -1113,6 +1161,19 @@ function save_changes(){
 
 	}
 
+}
+
+function theme_display(tag){
+
+	var child_tag = tag + "_child";
+	var button_tag = tag + "_btn";
+	if(document.getElementById(child_tag).style.display=="table"){
+		document.getElementById(child_tag).style.display="none";
+		document.getElementById(button_tag).innerHTML = MANAGEMENT_SHOW;
+	}else{
+		document.getElementById(child_tag).style.display="table";
+		document.getElementById(button_tag).innerHTML = MANAGEMENT_HIDE;
+	}
 }
 
 function list_templates_for_user(tag){
@@ -1150,7 +1211,7 @@ function loadModal() {
             load(modal);
         }
     }
-};
+}
 
 function load(modal)
 {
@@ -1483,3 +1544,265 @@ function delete_group( group_tag ){
 	}
 }
 
+function changeUserSelection_active_users(mode='previous', include_header=false){
+	let selected_users = $("#users");
+	let oldmode = $("#users").data("mode");
+	if (oldmode !== undefined && mode == 'previous') {
+		mode = oldmode;
+		$("#users").data("mode", mode);
+	}
+	else
+	{
+		$("#users").data("mode", mode);
+	}
+	if(selected_users){
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/management/get_active_users.php",
+			data : {
+				mode: mode,
+				include_header: include_header,
+				userids: selected_users.val(),
+			},
+		}).done(function (response){
+			if (include_header) {
+				document.getElementById("active_user_management").innerHTML = response;
+				$(".selectize").selectize();
+			}
+			else {
+				document.getElementById("user_selection").innerHTML = response;
+			}
+		}).fail(function (){
+			alert("something went wrong");
+		});
+	}
+}
+
+function change_user_active(user_id){
+	let user_disabled = $("#user_disabled" + user_id);
+	if (user_disabled) {
+		disabled = user_disabled.prop("checked");
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/management/change_user_active.php",
+			data : {
+				user_id: user_id,
+				disabled: disabled,
+			},
+		}).done(function (response){
+			if (response != "") {
+				alert(response);
+			}
+			changeUserSelection_active_users('previous', true);
+		}).fail(function (){
+			alert("something went wrong");
+		});
+	}
+}
+
+function change_user_active_state(state)
+{
+	let selected_users = $("#users");
+	if(selected_users){
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/management/change_users_active.php",
+			data : {
+				state: state,
+				userids: selected_users.val(),
+			},
+		}).done(function (response){
+			changeUserSelection_active_users('previous', true);
+		}).fail(function (){
+			alert("something went wrong");
+		});
+	}
+}
+
+function change_user_active_mode(mode) {
+	if (mode == 'all'|| mode == 'active' || mode == 'inactive') {
+		changeUserSelection_active_users(mode, true);
+	}
+	else {
+		alert("Invalid mode selected: " + mode);
+	}
+}
+
+function disable_users_based_on_last_login()
+{
+	let last_login_date = $("#disable_users_last_login_date");
+	if (last_login_date && last_login_date.val() != "") {
+
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/management/retrieve_users_based_on_last_login.php",
+			data : {
+				last_login_date: last_login_date.val(),
+			},
+		}).done(function (response){
+			if (response != "") {
+				if (confirm(response))
+				{
+					$.ajax({
+						type: "POST",
+						url: "website_code/php/management/disable_users_based_on_last_login.php",
+						data : {
+							last_login_date: last_login_date.val(),
+						},
+					}).done(function(response){
+						if (response != "") {
+							alert(response);
+						}
+						changeUserSelection_active_users('previous', true);
+					})
+				}
+			}
+		}).fail(function (){
+			alert("something went wrong");
+		});
+	}
+	else {
+		alert("Please select a date to disable users based on their last login.");
+	}
+}
+function changeUserSelection_user_roles(){
+		let role_user_select = document.getElementById("user_roles");
+		if(role_user_select){
+				$.ajax({
+						type: "POST",
+						url: "website_code/php/management/get_user_roles.php",
+						data : {
+								userid: role_user_select.value,
+						},
+				}).done(function (response){
+						document.getElementById("manage_user_roles").innerHTML = response;
+						$(".selectize").selectize();
+				}).fail(function (){
+						alert("something went wrong");
+				});
+		}
+}
+
+
+
+
+function manage_user_roles_select(user_id)
+{
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/management/get_user_roles.php",
+		data : {
+			userid: user_id
+		},
+	}).done(function (response){
+		document.getElementById("manage_user_roles").innerHTML = response;
+		$("#user_roles").selectize();
+	}).fail(function (){
+		alert("something went wrong");
+	});
+}
+
+function update_roles(userid){
+		// usage of fromdata because you don't have to hard code the roles
+		let formdata = new FormData(document.getElementById("roles"));
+		let data = {};
+		formdata.forEach((value, key) =>{
+				data[key] = value == "on"? true : value;
+		});
+		if(userid != null){
+				if(confirm("are you sure want to modify the roles of the user")){
+						data["id"]=userid;
+						$.ajax({
+								type: "POST",
+								url: "website_code/php/management/modify_roles.php",
+								data: data
+						}).done(function (response) {
+								alert(response);
+								users_list();
+						}).fail(function () {
+								alert("failed to load modify_roles.php");
+								users_list();
+						});
+						
+				}
+		}
+}
+
+function template_submit()
+{
+	var form = document.getElementById("form-template-upload");
+	var formData = new FormData(form);
+	$("#upload-button").prop('disabled', true);
+	$.ajax({
+		type: "POST",
+		processData: false,
+		contentType: false,
+		url: "website_code/php/management/upload.php",
+		data: formData
+	})
+		.done(function(response){
+			//$("#upload-button").prop('disabled', false);
+			$("body").css("cursor", "default");
+			alert(response);
+			// Refresh templates list
+			templates_list();
+		})
+		.fail(function(response){
+			//$("#upload-button").prop('disabled', false);
+			$("body").css("cursor", "default");
+			alert(response);
+		});
+}
+
+function theme_submit(){
+	var form = document.getElementById("form-theme-upload");
+	var formData = new FormData(form);
+	$.ajax({
+		type: "POST",
+		processData: false,
+		contentType: false,
+		url: "website_code/php/management/upload_theme.php",
+		data: formData
+	})
+		.done(function(response){
+			$("body").css("cursor", "default");
+			alert(response);
+			themes_list()
+		})
+		.fail(function(response){
+			$("body").css("cursor", "default");
+			alert(response);
+		});
+}
+
+function theme_disable(theme, type, displayname, btn_enable_txt, btn_disable_txt){
+	if (window.confirm(THEME_DELETE)) {
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/management/theme_enable_disable.php",
+			data: {
+				theme: theme,
+				type: type,
+			},
+		})
+		.done(function (response) {
+			$('#'+ type + '_' + theme).html("<s>" + displayname + " (" + theme + ")</s><button class='xerte_button theme_enable' onclick=\"javascript:theme_enable('" + theme + "','" + type + "','" + displayname + "','" + btn_enable_txt + "','" + btn_disable_txt + "')\">" + btn_enable_txt + "</button>");
+		});
+	}
+}
+
+function theme_enable(theme, type, displayname, btn_enable_txt, btn_disable_txt){
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/management/theme_enable_disable.php",
+		data: {
+			theme: theme,
+			type: type,
+		},
+	})
+	.done(function (response) {
+		$('#'+ type + '_' + theme).html(displayname + " (" + theme + ")<button class='xerte_button theme_disable' onclick=\"javascript:theme_disable('" + theme + "','" + type + "','" + displayname + "','" + btn_enable_txt + "','" + btn_disable_txt + "')\">" + btn_disable_txt + "</button>");
+	});
+}
+
+ 

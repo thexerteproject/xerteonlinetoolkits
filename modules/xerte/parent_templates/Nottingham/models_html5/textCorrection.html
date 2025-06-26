@@ -33,10 +33,8 @@
             };
 
             this.sizeChanged = function() {
-                if (x_browserInfo.mobile === false) {
-                    var $panel = $("#pageContents .panel");
-                    $panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-                }
+                const $panel = $("#pageContents .panel");
+                $panel.height(x_getAvailableHeight([$panel]));
 
                 var $mainPanel = $("#mainPanel");
                 var padding = $mainPanel.innerWidth() - $mainPanel.width();
@@ -131,10 +129,7 @@
 					var correctLabel = x_currentPageXML.getAttribute("correctLabel") !== null ? x_currentPageXML.getAttribute("correctLabel") : 'Correct Answer',
 						convertedAnswer = '<p>' + answer.replace(/(?:\r\n|\r|\n)/g, '<br>') + '</p>';
 					
-					$answer
-						.append("<h3 class='fbLabel'>" + correctLabel + "</h3>")
-						.append(convertedAnswer)
-						.hide();
+					$answer.data("fb", "<h3 class='fbLabel'>" + correctLabel + "</h3>" + convertedAnswer);
 				} else {
 					$answer.remove();
 				}
@@ -153,10 +148,7 @@
 						.data('placeHolder', placeHolder);
                 }
 
-                $("#FurtherClarification")
-					.append("<h3 class='fbLabel'>" + x_currentPageXML.getAttribute("FurtherClarificationLabel") + "</h3>")
-                    .append(x_currentPageXML.getAttribute("FurtherClarification"))
-					.hide();
+                $("#FurtherClarification").data("fb", "<h3 class='fbLabel'>" + x_currentPageXML.getAttribute("FurtherClarificationLabel") + "</h3>" + x_currentPageXML.getAttribute("FurtherClarification"));
 
 				var correctIcon = '<span class="markIcon fa fa-fw fa-x-tick"></span>';
                 var incorrectIcon = '<span class="markIcon fa fa-fw fa-x-cross"></span>';
@@ -204,7 +196,7 @@
                         {
                             label = x_currentPageXML.getAttribute("trackinglabel");
                         }
-                        XTEnterInteraction(x_currentPage, 0, "text", label, "",$pageContents.data('answer'), FurtherClarification);
+                        XTEnterInteraction(x_currentPage, 0, "text", label, "",$pageContents.data('answer'), x_currentPageXML.getAttribute("FurtherClarification"));
 						
 						var $correctOrNot = $("#correctOrNot");
                         $correctOrNot.html("");
@@ -230,16 +222,16 @@
 								$attempts.hide();
 								$textArea.attr('readonly','true');
 							}
-							
-							// feedback
-                            if (x_currentPageXML.getAttribute("showFurtherClarification") !== "false" && x_currentPageXML.getAttribute("FurtherClarification") != undefined && x_currentPageXML.getAttribute("FurtherClarification").trim() != '') {
-                                $('#FurtherClarification').show();
+
+                            // show the correct answer unless answer entered is correct or show answer optional property is off
+                            if (input !== $pageContents.data('answer')) {
+                                $answer.html($answer.data("fb"));
                             }
 
-							// show the correct answer unless answer entered is correct or show answer optional property is off
-                            if (input !== $pageContents.data('answer')) {
-                                $answer.show();
-							}
+							// feedback
+                            if (x_currentPageXML.getAttribute("showFurtherClarification") !== "false" && x_currentPageXML.getAttribute("FurtherClarification") != undefined && x_currentPageXML.getAttribute("FurtherClarification").trim() != '') {
+                                $('#FurtherClarification').html($('#FurtherClarification').data("fb"));
+                            }
                         }
                     });
 					
@@ -259,7 +251,7 @@
     <div class="splitScreen">
         <div id="textHolder" class="left"></div>
         <div id="infoHolder" class="right">
-            <div id="mainPanel" class="panel">
+            <div id="mainPanel" class="panel" tabindex="0">
                 <div id="question">
 
                 </div>
@@ -267,10 +259,12 @@
                     <div class="answer"><textarea id="text" rows="5" cols="50" spellcheck="false"></textarea></div>
                 </div>
                 <button id="checkButton"></button>
-                <div id="attempts"></div>
-                <div id="correctOrNot"></div>
-				<div id="answer"></div>
-                <div id="FurtherClarification"></div>
+                <div id="fbBlock" aria-live="polite">
+                    <div id="attempts"></div>
+                    <div id="correctOrNot"></div>
+                    <div id="answer"></div>
+                    <div id="FurtherClarification"></div>
+                </div>
             </div>
         </div>
     </div>

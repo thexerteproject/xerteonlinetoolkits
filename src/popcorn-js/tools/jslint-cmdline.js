@@ -2867,7 +2867,6 @@ var JSLINT = (function () {
             if (ids[u] === true) {
                 warning("Duplicate id='{a}'.", nexttoken, v);
             }
-            debugger;
             if (!/^[A-Za-z][A-Za-z0-9._:\-]*$/.test(v)) {
                 warning("Bad id: '{a}'.", nexttoken, v);
             } else if (option.adsafe) {

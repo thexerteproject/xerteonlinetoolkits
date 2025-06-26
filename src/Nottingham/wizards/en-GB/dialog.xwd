@@ -1,8 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <dialog><![CDATA[<dialog name="Enter Page Title" text="Enter text for the page here" attempts="2" panelWidth="Large" tryTxt="Try again" correctTxt="The correct answer is shown." moveOnTxt="Press enter to move on."
-	  submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog>
+      <dialog><![CDATA[<dialog name="Enter Page Title" text="" attempts="2" panelWidth="Large" tryTxt="Try again" correctTxt="The correct answer is shown." submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog>
     </newNodes>
   </pageWizard>
 
@@ -10,20 +9,22 @@
   <dialog menu="Interactivity" menuItem="Dialogue" hint="An interaction comprising a sequence of text-entry interactions forming a short dialogue." icon="icScript" thumb="thumbs/dialog.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#dialogue" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_dialogue" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text  label="Page Text" type="TextArea" height="100"/>
+    <text  label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
     <attempts label="Attempts Before Hint" options="0,1,2,3,4" type="ComboBox" width="100" data="0,1,2,3,4"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Large" width="100" mandatory="true"/>
+	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity." />
+	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" condition="judge!='false'" defaultValue="1.0" /> 
 
     <tryTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <correctTxt label="Correct Text" type="TextInput" wysiwyg="true" language="true"/>
-    <moveOnTxt label="Move On Text" type="TextInput" wysiwyg="true" language="true"/>
+    <moveOnTxt label="Move On Text" type="TextInput" wysiwyg="true" language="true" deprecated="This language string is no longer used"/>
 	<submitBtnTxt label="Submit Button Text" type="TextInput" wysiwyg="true" language="true" />
 	<nextBtnTxt label="Next Button Text" type="TextInput" wysiwyg="true" language="true" />
     <answerDelimeter label="Answer Delimiter" type="textInput" defaultValue="," optional="true" tooltip="The character separating the possible correct answers for each question"/>
     <casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" optional="true" tooltip="Treat answers as case sensitive"/>
 
     <newNodes>
-      <dialogStep><![CDATA[<dialogStep name="Question - tree label" question="Enter question text here" answer="Enter answer here" hint="Enter hint here"/>]]></dialogStep>
+      <dialogStep><![CDATA[<dialogStep name="Question" question="" answer="" hint=""/>]]></dialogStep>
     </newNodes>
 
   </dialog>
@@ -31,8 +32,8 @@
 
   <dialogStep menuItem="Question" icon="icComment" remove="true" max="12">
 
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question - tree label" />
-    <question label="Question" type="TextArea" height="100"/> 
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make questions easier to locate for editing at a later date." />
+    <question label="Question" type="TextArea" height="100" placeholder="Enter question text here"/>
     <answer label="Answer" type="TextInput" wysiwyg="true" tooltip="Where there is more than possible correct answer, list each one separated by a comma"/>
     <commentary label="Commentary" type="TextArea" height="100" deprecated="This property is deprecated."/> 
     <hint label="Hint" type="TextInput" wysiwyg="true"/>

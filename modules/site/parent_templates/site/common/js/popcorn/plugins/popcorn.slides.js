@@ -270,6 +270,7 @@ optional: caption captionPosV captionPosH
 						}
 						$slide.show();
 					}
+					x_pageContentsUpdated();
 				}
 
 				resizeImage = function(slide){

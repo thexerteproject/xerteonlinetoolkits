@@ -86,9 +86,9 @@ function make_new_template($type, $zip_path)
      * See if we have been given a name, if not, use a fixed one.
      */
 
-    if ($_POST['templatename'] != "") {
+    if (isset($_POST['templatename']) && $_POST['templatename'] !== "") {
 
-        $template_name = $_POST['templatename'];
+        $template_name = x_clean_input($_POST['templatename'], 'string');
 
     } else {
 
@@ -379,7 +379,6 @@ function test_unrecognised_import($test_array, $check) {
 }
 
 /* Check on POST and FILES */
-
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") {
     if (!isset($_FILES['filenameuploaded']['name'])) {
         if (isset($php_errormsg)) {
@@ -392,9 +391,11 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") {
 /*
  * Check who made the template
  */
+$filename = x_clean_input($_FILES['filenameuploaded']['name'], 'string');
 
 if (!empty($_POST['replace'])) {
-    if (!is_user_creator($_POST['replace'])) {
+    $replace = x_clean_input($_POST['replace'], 'numeric');
+    if (!is_user_creator($replace)) {
         die(IMPORT_OWNER_FILE . "****");
     }
 }
@@ -405,7 +406,7 @@ $folder_id = "";
  * Check the file is the right type
  */
 
-if (substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded']['name']) - 3, 3) === "zip") {
+if (substr($filename, strlen($filename) - 3, 3) === "zip") {
 
 
     $this_dir = rand() . "/";
@@ -420,13 +421,22 @@ if (substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded
         _debug("Warning: we had problems either creating the temp dir {$xerte_toolkits_site->import_path}$this_dir or chmod'ing it 0777.");
     }
 
-    $new_file_name = $xerte_toolkits_site->import_path . $this_dir . time() . $_FILES['filenameuploaded']['name'];
+    $new_file_name = $xerte_toolkits_site->import_path . $this_dir . time() . $filename;
 
+    x_check_path_traversal_newpath($_FILES['filenameuploaded']['tmp_name']);
+    x_check_path_traversal_newpath($new_file_name);
     if (@move_uploaded_file($_FILES['filenameuploaded']['tmp_name'], $new_file_name)) {
 
         require_once dirname(__FILE__) . "/../dUnzip2.inc.php";
 
-         $zip = new dUnzip2($new_file_name);
+        // Quick fix to check zip file is valid
+        $zip = new ZipArchive();
+        $x = $zip->open($new_file_name);
+        x_check_zip($zip);
+        $zip->close();
+
+        // Should really rewrite the function using ZipArchive
+        $zip = new dUnzip2($new_file_name);
 
         $zip->debug = false;
 
@@ -456,7 +466,14 @@ if (substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded
 
             $y = $x['file_name'];
             if (!(strpos($y, "media/") === false)) {
-                $string = $zip->unzip($y, false, 0777);
+                // if last charcter is not '/' then it is a file and we can unzip it
+                if (substr($y, -1) !== "/") {
+                    $string = $zip->unzip($y, false, 0777);
+                }
+                else
+                {
+                    $string = false;
+                }
                 $file_to_create = array($y, $string, "media");
                 if ($file_to_create[0] != "") {
                     $pos = strrpos($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], '/');
@@ -467,14 +484,16 @@ if (substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded
                             mkdir($dir, 0777, true);
                         }
                     }
+                    if ($string !== false) {
 
-                    $fp = fopen($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], "w");
+                        $fp = fopen($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], "w");
 
-                    fwrite($fp, $file_to_create[1]);
+                        fwrite($fp, $file_to_create[1]);
 
-                    fclose($fp);
+                        fclose($fp);
 
-                    chmod($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], 0777);
+                        chmod($xerte_toolkits_site->import_path . $this_dir . $file_to_create[0], 0777);
+                    }
                 }
             }
 
@@ -665,13 +684,14 @@ if (substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded
         }
         _debug("Import: folder found is " . $folder);
 
-        if (!empty($_POST['replace'])) {
+
+        if (isset($replace)) {
 
             $prefix = $xerte_toolkits_site->database_table_prefix;
 
             $query = "SELECT template_framework FROM {$prefix}templatedetails, {$prefix}originaltemplatesdetails "
                 . "where {$prefix}templatedetails.template_type_id = {$prefix}originaltemplatesdetails.template_type_id AND {$prefix}templatedetails.template_id =?";
-            $params = array($_POST['replace']);
+            $params = array($replace);
 
             $row = db_query_one($query, $params);
             if (empty($row)) {
@@ -734,7 +754,7 @@ if (substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded
         } else {
 
             if (isset($_POST['folder'])) {
-                $folder_id = $_POST['folder'];
+                $folder_id = x_clean_input($_POST['folder'], 'numeric');
             }
 
             folder_loop($xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path);
@@ -827,7 +847,7 @@ if (substr($_FILES['filenameuploaded']['name'], strlen($_FILES['filenameuploaded
 
 } else {
 
-    echo $_FILES['filenameuploaded']['type'] . "<Br>";
+    echo x_clean_input($_FILES['filenameuploaded']['type']) . "<Br>";
 
     echo IMPORT_ZIP_FAIL . ".****";
 

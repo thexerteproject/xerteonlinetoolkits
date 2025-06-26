@@ -1,84 +1,84 @@
 <wizard menus="Media">
+    <pageWizard remove="true" duplicate="false">
+        <newNodes>
+            <SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="" error="There is no image" />]]></SictTimeline>
+        </newNodes>
+    </pageWizard>
 
-  <pageWizard remove="true" duplicate="false">
-    <newNodes>
-      <SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="Enter text for the page here" error="There is no image" />]]></SictTimeline>
-    </newNodes>
-  </pageWizard>
-
+    <!-- TIMELINE MEDIA ================================= -->
     <SictTimeline menu="Media" menuItem="Timeline Media" icon="icTimeline" hint="A scrollable timeline containing sections of text and media." thumb="thumbs/sictTimeline.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#timelinemedia" wiki="https://xerte.org.uk/wiki/doku.php?id=media_timeline_media_page" remove="true">
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
-        <text label="Page Text" type="TextArea" height="150"/>
-        <image type="group" label="Image" optional="true">
-          <url label="File" type="media" defaultValue="Select Media" optional="true"/>
-          <tip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
-        </image>
-        <error label="Error Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-        <newNodes>
-        <!--  <timelinedate><![CDATA[<timelinedate name="" text="" date="Choose Date"/>]]></timelinedate> -->
-          <timeLineText><![CDATA[<timeLineText name="Enter Item Title" text="Enter text for the item here" align="Left" url="" tip="" date="Choose Date"/>]]></timeLineText>
-          <timelineimage><![CDATA[<timelineimage name="Enter Item Title" text="Enter text for the item here" align="Left" url="Select an Image" tip="" date="Choose Date"/>]]></timelineimage>
-          <timelinevideo><![CDATA[<timelinevideo name="Enter Item Title" url="Select a Video" text="" pause="True" erase="True" date="Choose Date"/>]]></timelinevideo>
-          <timeLineAudio><![CDATA[<timeLineAudio name="Enter Item Title" url="Select an Audio File" text="" pause="True" erase="True" date="Choose Date"/>]]></timeLineAudio>
+        <text label="Page Text" type="TextArea" height="150" placeholder="Enter text for the page here"/>
 
+        <image type="group" label="Image" optional="true">
+            <url label="File" type="media" defaultValue="" placeholder="Select an image" optional="true"/>
+            <tip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
+        </image>
+
+        <error label="Error Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+
+        <newNodes>
+            <timeLineText><![CDATA[<timeLineText name="Enter Item Title" text="" align="Left" url="" tip="" date="Choose Date"/>]]></timeLineText>
+            <timelineimage><![CDATA[<timelineimage name="Enter Item Title" text="" align="Left" url="" tip="" date="Choose Date"/>]]></timelineimage>
+            <timelinevideo><![CDATA[<timelinevideo name="Enter Item Title" url="" text="" pause="True" erase="True" date="Choose Date"/>]]></timelinevideo>
+            <timeLineAudio><![CDATA[<timeLineAudio name="Enter Item Title" url="" text="" pause="True" erase="True" date="Choose Date"/>]]></timeLineAudio>
         </newNodes>
+
     </SictTimeline>
 
-  <!--  <timelinedate menuItem="Item" icon="icPageWhite" max="12" remove="true">
-      <date label="Date" type="dateField" defaultValue="" />
-      <name label="Name" type="TextInput" wysiwyg="true"/>
-      <text label="Description" type="TextArea" height="100"/>
+    <timeLineText menuItem="Text Item" icon="icPageWhiteText" remove="true">
+        <date label="Date" type="dateField" defaultValue=""/>
+        <name label="Title" type="TextInput" wysiwyg="true"/>
+        <text label="Text" type="TextArea" height="150" placeholder="Enter text for the item here"/>
 
-    </timelinedate> -->
+        <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 
-    <timeLineText menuItem="Text Item" icon="icPageWhite" remove="true">
-      <date label="Date" type="dateField" defaultValue=""/>
-      <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-
-      <name label="Title" type="TextInput" wysiwyg="true"/>
-      <text label="Text" type="TextArea" height="150"/>
         <TimeLineEndDate type="group" label="End Date" optional="true">
-      		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-                  <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+            <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
         </TimeLineEndDate>
     </timeLineText>
 
-    <timelineimage menuItem="Image Item" icon="icPageWhite" max="12" remove="true">
-      <date label="Date" type="dateField" defaultValue="" />
-      <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-      <name label="Title" type="TextInput" wysiwyg="true"/>
-      <text label="Text" type="TextArea" height="150"/>
-      <image type="group" label="Image">
-        <url label="File" type="media"/>
-        <tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
-      </image>
-      <TimeLineEndDate type="group" label="End Date" optional="true">
-            		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-                        <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-              </TimeLineEndDate>
+    <timelineimage menuItem="Image Item" icon="icImage" remove="true">
+        <date label="Date" type="dateField" defaultValue="" />
+        <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+        <name label="Title" type="TextInput" wysiwyg="true"/>
+        <text label="Text" type="TextArea" height="150" placeholder="Enter text for the item here"/>
+
+        <image type="group" label="Image">
+            <url label="File" type="media" placeholder="Select an image"/>
+            <tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
+        </image>
+
+        <TimeLineEndDate type="group" label="End Date" optional="true">
+            <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+        </TimeLineEndDate>
     </timelineimage>
 
-    <timelinevideo menuItem="Video Item" icon="icPageWhite" max="12" remove="true">
-      <date label="Date" type="dateField" defaultValue=""/>
-      <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-      <name label="Title" type="TextInput" wysiwyg="true"/>
-      <url label="Video" type="Media"/>
-      <TimeLineEndDate type="group" label="End Date" optional="true">
-            		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-                        <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-              </TimeLineEndDate>
+    <timelinevideo menuItem="Video Item" icon="icPageWhiteFilm" remove="true">
+        <date label="Date" type="dateField" defaultValue=""/>
+        <name label="Title" type="TextInput" wysiwyg="true"/>
+        <url label="Video" type="Media" placeholder="Select a video file or enter a URL/embed code"/>
+
+        <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+
+        <TimeLineEndDate type="group" label="End Date" optional="true">
+            <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+        </TimeLineEndDate>
     </timelinevideo>
 
-    <timeLineAudio menuItem="Audio Item" icon="icPageWhite" max="12" remove="true">
-          <date label="Date" type="dateField" defaultValue=""/>
-          <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-          <name label="Title" type="TextInput" wysiwyg="true"/>
-          <url label="Audio" type="Media"/>
-          <TimeLineEndDate type="group" label="End Date" optional="true">
-                		      <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-                            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-                  </TimeLineEndDate>
+    <timeLineAudio menuItem="Audio Item" icon="icSound" remove="true">
+        <date label="Date" type="dateField" defaultValue=""/>
+        <name label="Title" type="TextInput" wysiwyg="true"/>
+        <url label="Audio" type="Media" placeholder="Select an audio file"/>
+
+        <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+
+        <TimeLineEndDate type="group" label="End Date" optional="true">
+            <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+        </TimeLineEndDate>
     </timeLineAudio>
-
-
 </wizard>

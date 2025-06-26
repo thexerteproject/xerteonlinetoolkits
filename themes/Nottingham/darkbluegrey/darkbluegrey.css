@@ -37,9 +37,39 @@
   background-color: #FCBC2B;
 }
 
-.titlePageTxt {
-  width: 98% !important;
-  overflow: hidden;
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: #ffffff;
+  background-color: #3F4957;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #2196F3;
+}
+
+/* page resources */
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+  color: #ffffff;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: #FCBC2B;
+  color: #000000;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: #027ab3;
+  color: #ffffff;
+}
+
+.resourceLink, .resourceLink:visited, .resourceLink:focus,
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: #ffffff;
+}
+
+#x_resourceTable tr {
+  border-color: #ffffff;
 }
 
 a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active {
@@ -96,6 +126,14 @@ a.x_glossary:link, a.x_glossary:visited, a.x_glossary:hover, a.x_glossary:active
   border-radius: 0;
   background: #9A9A9A;
   color: #ffffff;
+}
+
+.ui-accordion .ui-accordion-content.chapterPageHolder {
+  background: #3F4957;
+}
+
+.ui-accordion .ui-accordion-content.chapterPageHolder button.menuItem {
+  border: none;
 }
 
 .ui-accordion .ui-accordion-header {
@@ -344,6 +382,19 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
+.x_gapFill_page #targetHolder.outline .target.highlight {
+  border: 1px dashed #ffffff;
+}
+
+.x_gapFill_page #targetHolder.underline .target.highlight {
+  border-bottom: 1px solid #ffffff;
+  border-top: 1px solid transparent;
+}
+
+.x_gapFill_page .target.highlight {
+  color: #000000;
+}
+
 a.hotspot, a.hotspot.selected {
   background: none;
 }
@@ -549,6 +600,12 @@ table.footer.shaded tbody tr:last-child,
 table.headerCol.shaded td.header {
   background: #000000;
   color: #ffffff;
+}
+
+#hotspot_bubble {
+  color: #ffffff;
+  background: #3F4957;
+  border-color: #9A9A9A;
 }
 
 #x_footerBlock {
@@ -778,6 +835,15 @@ table.headerCol.shaded td.header {
   color: #3F4957;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: #ffffff;
+}
+
+.pbBar {
+  background-color: #2196F3;
+}
+
 @media only screen and (max-width: 500px) {
   #x_footerProgress {
     display: block;
@@ -794,8 +860,8 @@ table.headerCol.shaded td.header {
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /*font-size: 1em;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
@@ -804,7 +870,6 @@ table.headerCol.shaded td.header {
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }
@@ -932,6 +997,7 @@ table.headerCol.shaded td.header {
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #C4551F;
 }
@@ -945,6 +1011,7 @@ table.headerCol.shaded td.header {
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #418545;
 }
@@ -958,6 +1025,7 @@ table.headerCol.shaded td.header {
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #4078C0;
 }
@@ -971,6 +1039,7 @@ table.headerCol.shaded td.header {
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #278384;
 }
@@ -984,6 +1053,7 @@ table.headerCol.shaded td.header {
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #603784;
 }
@@ -997,6 +1067,7 @@ table.headerCol.shaded td.header {
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #D13759;
 }
@@ -1262,10 +1333,12 @@ tt {
 ::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.8);
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 10px;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.8);
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
@@ -1295,7 +1368,6 @@ tt {
 [type=range]::-webkit-slider-runnable-track {
   cursor: pointer;
   height: 8px;
-  -webkit-transition: all 0.2s ease;
   transition: all 0.2s ease;
   width: 100%;
   box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2), 0 0 1px rgba(13, 13, 13, 0.2);
@@ -1317,7 +1389,6 @@ tt {
 [type=range]::-moz-range-track {
   cursor: pointer;
   height: 8px;
-  -moz-transition: all 0.2s ease;
   transition: all 0.2s ease;
   width: 100%;
   box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2), 0 0 1px rgba(13, 13, 13, 0.2);
@@ -1337,7 +1408,6 @@ tt {
 [type=range]::-ms-track {
   cursor: pointer;
   height: 8px;
-  -ms-transition: all 0.2s ease;
   transition: all 0.2s ease;
   width: 100%;
   background: transparent;
@@ -1437,6 +1507,10 @@ a:visited {
 }
 
 a:hover {
+  color: #ffffff;
+}
+
+#x_pageDiv span.x_glossary, #x_pageDiv span.x_glossary:link, #x_pageDiv span.x_glossary:visited, #x_pageDiv span.x_glossary:hover, #x_pageDiv span.x_glossary:active {
   color: #ffffff;
 }
 
@@ -1579,4 +1653,6 @@ img {
 
 .fa-x-copy:before {
   content: "Å";
-}/*# sourceMappingURL=darkbluegrey.css.map */
+}
+
+/*# sourceMappingURL=darkbluegrey.css.map */

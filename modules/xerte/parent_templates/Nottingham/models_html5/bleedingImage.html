@@ -26,6 +26,10 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $("#pageContents");
+
+			if (x_currentPageXML.getAttribute("magnifier") == "true") {
+				this.setUpMagnifierEscape();
+			}
 		}
 		
 		// function called every time the size of the LO is changed
@@ -131,6 +135,11 @@
 					$("#linkImgA").attr("aria-labelledby", "linkWarning");
 				}
 			}
+
+			if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+				$pageImg.wrap('<figure></figure>');
+				$pageImg.parent("figure").append('<figcaption>' + x_currentPageXML.getAttribute("caption") + '</figcaption>');
+			}
 			
 			if (addMargin != "true") {
 				$panel
@@ -142,8 +151,8 @@
 			if (x_currentPageXML.getAttribute("size") != undefined) {
 				$textHolder.css("font-size", Number(x_currentPageXML.getAttribute("size")) + "pt");
 			}
-			
-			$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+
+			$textHolder.html(x_currentPageXML.childNodes[0] == undefined ? '' : x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 			
 			var maxWH = this.getMaxDimensions();
 			
@@ -168,12 +177,12 @@
 		this.getMaxDimensions = function() {
 			var imgMaxW, imgMaxH,
 				imageSize = x_currentPageXML.getAttribute("imagesize"); // responsive(small|medium|large)|auto|full screen - auto is actually a fixed size but is still called this for backwards compatibility
-			
+
 			if (imageSize == "full screen") {
 				if (parseInt($x_pageHolder.css("margin-top")) != 0) {
 					imgMaxW = $x_pageDiv.width();
-					imgMaxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height());
-					
+					imgMaxH = x_getAvailableHeight([], [$("#linkImgA")], true);
+
 					var offset = this.calculateOffset();
 					imgMaxW -= offset[0];
 					imgMaxH -= offset[1];
@@ -182,9 +191,7 @@
 			} else {
 				if (imageSize == "small" || imageSize == "medium" || imageSize == "large") {
 					imgMaxW = $x_pageDiv.width();
-					imgMaxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height());
-					
-					
+					imgMaxH = x_getAvailableHeight([], [$("#linkImgA")], true);
 					
 					if (imageSize == "small") {
 						imgMaxW = imgMaxW * 0.4;
@@ -240,6 +247,9 @@
 			if (x_currentPageXML.getAttribute("link") != undefined && x_currentPageXML.getAttribute("link") != "") {
 				offset.splice(1, 1, offset[1] + $("#linkImg").outerHeight());
 			}
+			if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+				offset.splice(1, 1, offset[1] + $("#pageImg").parents("figure").find("figcaption").outerHeight());
+			}
 			return offset;
 		}
 		
@@ -268,8 +278,26 @@
 						.attr('alt', x_currentPageXML.getAttribute("tip"))
 						.addClass('x_noLightBox');
 				}
+
+				this.setUpMagnifierEscape();
 			}
-			
+		}
+
+		this.setUpMagnifierEscape = function() {
+			if (x_currentPageXML.getAttribute("magnifier") == "true") {
+				$(document).off(".pageEvent");
+				$(".magnifiedImg").removeClass("escape");
+
+				// escape key will close any open magnifiers
+				$(document).on("keydown.pageEvent", function (e) {
+					// has .pageEvent namespace so it can be removed on page change from xenith.js
+					var charCode = e.charCode || e.keyCode;
+					if (charCode == 27 && $(".magnifier").is(":visible") && !$(".magnifiedImg").hasClass("escape")) {
+						$(".magnifiedImg").addClass("escape");
+						$(".magnifier").hide();
+					}
+				});
+			}
 		}
 	}
 

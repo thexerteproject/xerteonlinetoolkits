@@ -35,14 +35,14 @@ _load_language_file("/website_code/php/properties/name_select_gift_template.inc"
 $search = $_POST['search_string'];
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
-if (!isset($_SESSION['toolkits_logon_username']))
+if (!isset($_SESSION['toolkits_logon_id']))
 {
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");
 }
 
 if(is_numeric($_POST['template_id'])){
-    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_admin()){
+    if(is_user_creator_or_coauthor($_POST['template_id'])||is_user_permitted("projectadmin")){
         $tutorial_id = (int)$_POST['template_id'];
 
         $database_id = database_connect("Template name select share access database connect success", "Template name select share database connect failed");
@@ -55,17 +55,22 @@ if(is_numeric($_POST['template_id'])){
 
             $query_for_names = "SELECT login_id, firstname, surname, username from {$prefix}logindetails WHERE "
                 . "((firstname like ? ) or (surname like ?) or (username like ?) ) "
-                . "AND login_id not in( SELECT creator_id from {$prefix}templatedetails where template_id= ? ) ORDER BY firstname ASC";
+                . "AND disabled=0 AND login_id not in( SELECT creator_id from {$prefix}templatedetails where template_id= ? ) ORDER BY firstname ASC";
 
             $params = array("$search%", "$search%", "$search%", $tutorial_id);
             $rows = db_query($query_for_names, $params);
 
             if (sizeof($rows) > 0) {
+				
+				echo "<ul class=\"share_form_results\">";
 
                 foreach ($rows as $row) {
-                    echo "<p>" . $row['firstname'] . "  " . $row['surname'] . " (" . $row['username'] . ") - <button type=\"button\" class=\"xerte_button\" onclick=\"gift_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "', 'keep')\"><i class=\"fa fa-user-plus\"></i>&nbsp;" . NAME_SELECT_GIFT_CLICK . "</button>" . NAME_SELECT_GIFT_INSTRUCTION . "</p>";
+					
+                    echo "<li>" . $row['firstname'] . "  " . $row['surname'] . " (" . $row['username'] . ") <button type=\"button\" class=\"xerte_button\" onclick=\"gift_this_template('" . $tutorial_id . "', '" . $row['login_id'] . "', 'keep')\"><i class=\"fa fa-plus\"></i>&nbsp;" . NAME_SELECT_GIFT_CLICK . "<span class=\"sr-only\"> (" . $row['firstname'] . "  " . $row['surname'] . " - " . $row['username'] . ")</span></button></li>";
 
                 }
+				
+				echo "</ul>";
 
             } else {
 

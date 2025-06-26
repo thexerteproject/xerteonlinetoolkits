@@ -14,16 +14,38 @@ require_once(dirname(__FILE__) . "/../../../../website_code/php/user_library.php
 function checkOldPassword(){
     global $authmech, $xerte_toolkits_site;
 
-    if (!isset($authmech)) {
+    if (!isset($authmech))
+    {
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     }
-    if ($xerte_toolkits_site->altauthentication != "" && isset($_SESSION['altauth'])) {
-        $xerte_toolkits_site->authentication_method = $xerte_toolkits_site->altauthentication;
-        $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+    if ($authmech->check() && $authmech->canManageUser($jsscript))
+    {
+        $authmech_can_manage_users = true;
+    }
+    else
+    {
+        $authmech_can_manage_users = false;
+    }
+    if ($xerte_toolkits_site->altauthentication != "")
+    {
+        $altauthmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->altauthentication);
+        if ($altauthmech->check() && $altauthmech->canManageUser($jsscript))
+        {
+            $altauthmech_can_manage_users = true;
+        }
+        else
+        {
+            $altauthmech_can_manage_users = false;
+        }
     }
 
     if ($authmech->canManageUser($jsscript)){
-        return $authmech->login($_SESSION['toolkits_logon_username'], $_POST['oldpass']);
+        if ($authmech_can_manage_users) {
+            return $authmech->login($_SESSION['toolkits_logon_username'], $_POST['oldpass']);
+        }
+        else if ($altauthmech_can_manage_users) {
+            return $altauthmech->login($_SESSION['toolkits_logon_username'], $_POST['oldpass']);
+        }
     }else{
         return false;
     }
@@ -31,4 +53,3 @@ function checkOldPassword(){
 }
 
 
-?>

@@ -1,0 +1,31 @@
+<wizard menus="Chapters">
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <chapter><![CDATA[<chapter name="Enter Chapter Title" includeInHeader="Chart Title"/>]]></chapter>
+    </newNodes>
+  </pageWizard>
+
+  <!-- CHAPTER================================== -->
+
+  <chapter menu="Chapters" menuItem="Chapter" hint="Chapters are shown on the table of contents and can be used to group a number of related pages together" icon="icFolder" remove="true">
+
+    <name label="Chapter Title" type="TextInput" wysiwyg="true"/>
+    <includeInHeader label="Include in Header" type="CheckBox" conditionTrigger="true" defaultValue="false" tooltip="Include the chapter title in the header bar titles in the format 'Chapter title: Page title'"/>
+
+    <headerName label="Header Text" type="TextInput" wysiwyg="true" defaultValue="" optional="true" condition="includeInHeader=='true'" tooltip="By default, when the chapter title is shown on the header bar before the page title, the full chapter title will be used. Specify a different chapter title for use on the header bar here, e.g. an abbreviated version"/>
+
+    <chapterIDGroup type="group" label="Chapter ID" optional="true" tooltip="Create a customised URL to this chapter" info="Create a link directly to this chapter by adding #yourChapterID to the end of the project URL&lt;br/&gt;Avoid using spaces, special characters and the words 'page' and 'section' in chapter IDs">
+      <chapterID label="Chapter ID" type="TextInput" optional="true"/>
+    </chapterIDGroup>
+
+    <linkGroupChapter type="group" label="Stand-Alone Chapter" optional="true" tooltip="Remove the chapter and its pages from page menu / table of contents so they can only be accessed via Xerte page links">
+      <linkPageChapter label="Stand-Alone" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
+      <linkTargetChapter label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" condition="linkPageChapter=='true'" optional="true" tooltip="Determines how links to pages within this chapter are opened"/>
+      <headerHideChapter label="Hide Header" type="Checkbox" defaultValue="false" condition="linkPageChapter=='true'" optional="true" tooltip="When checked, the header bar will be hidden when viewing pages within this chapter. This may be desirable when viewing the pages in a lightbox."/>
+      <footerHideChapter label="Hide Footer" type="CheckBox" defaultValue="true" condition="linkPageChapter=='true'" optional="true" tooltip="When checked, the footer bar containing the navigation buttons will be hidden when viewing pages within this chapter. This is likely to be desirable when viewing the pages in a lightbox."/>
+      <reqProgressChapter label="Include in Project Progress" type="CheckBox" defaultValue="false" condition="linkPageChapter=='true'&amp;&amp;(parent.progressBar!=undefined||parent.progressBarType=='true'||((parent.progressBarType=='header1'||parent.progressBarType=='header2'||parent.progressBarType=='header3')&amp;&amp;parent.progressSub=='false'))" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include pages within this chapter in project progress calculations."/>
+    </linkGroupChapter>
+
+  </chapter>
+
+</wizard>

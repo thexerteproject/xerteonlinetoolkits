@@ -82,15 +82,35 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 }
 #menuItems .menuItem {
   background: $lightestcolor;
-  color:$blackordarkest;
 }
 #menuItems .menuItem:hover {
-  background: $contrastcolor;
+  background: $darkestcolor;
   color:$whiteorlightest;
 }
-
+#menuItems .menuItem .ui-button-text{
+  color:$fontcolorforlightestcolor;
+}
+#menuItems .menuItem:hover .ui-button-text{
+  color:$whiteorlightest;
+}
 #menuItems .menuItem.current {
-  border: 2px solid $contrastcolor;
+  border-color: transparent;
+  background-color: $brightcolor;
+}
+.chapterItem.ui-state-active a, .chapterItem.ui-state-active a:link, .chapterItem.ui-state-active a:visited {
+  color: $whiteorlightest !important;
+  border-color: $contrastcolor;
+  background-color: $contrastcolor;
+}
+.chapterItem.ui-state-active a {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.ui-accordion .chapterPageHolder.ui-accordion-content {
+  background-color: $contrastcolor;
+  border: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 //*****SIDE BAR****/
@@ -133,6 +153,14 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 	color: $whiteorlightest;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: $bodybackgroundcolor;
+}
+.pbBar {
+  background-color: $contrastcolor;
+}
+
 //******** Smartphones 600px (portrait) change progress bar display-----------/
 @media only screen
 and (max-width:600px) {
@@ -153,13 +181,13 @@ and (max-width:600px) {
     font-size: 12px;
   }
   #x_footerBlock button{
-    font-size: 1.4rem;
-    width: 1em;
+    /*font-size: 1.4rem;
+    width: 1em;*/
     margin-left: 5px;
   }
   #x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
-    font-size: 1.4rem;
-    width: 1em;
+    /*font-size: 1.4rem;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
@@ -168,7 +196,6 @@ and (max-width:600px) {
   }
   .pbTxt {
     display:block;
-    font-size: 6px;
     text-align: center;
   }
 }
@@ -206,7 +233,6 @@ and (max-width:320px) {
     margin-top: 1.2em;
   }
   .pbTxt {
-    font-size: 6px;
     text-align: center;
   }
 }

@@ -1,0 +1,56 @@
+//*---colours to use - rgbo:  Red Green Blue Orange---*/
+//*define color pallette*/
+$darkestcolor: #222222; /*black*/
+$lightestcolor:#cfcfcf;/*was orange changed to the same as midgrey below*/
+$lightestcolor2:#f86718;/*added to still use orange where needed*/
+$brightcolor:#C4551F;
+$contrastcolor:#4078C0; /*blue*/
+$whiteorlightest:#ffffff;
+$blackordarkest:#000000;
+
+$accent1: #418545;
+$accent2:#278384;
+$accent3:#D13759;
+/*grey shades for panels and menu etc*/
+$lightgrey: #ebebeb;
+$midgrey: #cfcfcf;
+$darkergrey: #bdbdbd;
+
+/*set background colors*/
+$bodybackgroundcolor:#BFBFBF;
+$defaultpagebackground:$whiteorlightest;
+$progressBarColor: #2196F3; /* default #2196F3;*/
+
+/*set font family*/
+$mainfonts: Arial, sans-serif;
+$secondaryfonts:Arial, sans-serif;;
+
+/*define font colors to match the background colors*/
+$mainfontcolour: $darkestcolor;
+$fontcolorfordarkestcolor:#ffffff;
+$fontcolorforlightestcolor:#000000;
+$fontcolorfobrightcolor:#ffffff;
+$fontcolorforcontrastcolor:#ffffff;
+$linkcolor:blue;
+$linkvisited: green;
+$linkhover:red;
+
+/*define rounded corner and other sizes*/
+$largeroundedcorners: 3vmin;/*6vmin;*/
+$mediumroundedcorners: 2vmin;/*2vmin;*/
+$smallroundedcorners: 1vmin;/*1vmin;*/
+$imageroundedcorners: 0;/*2vmin;*/
+$contentmargin: 2%;
+$interfaceboxshadow:none; /*3px 3px 5px grey*/
+$defaultpagepadding:2%;
+
+/*define hr appearances*/
+$hrLine: 3px;
+$hrLineThick: 6px;
+$hrColour: $lightgrey;
+
+@mixin dropShadow {
+  -webkit-box-shadow: 0 10px 6px -6px $darkergrey;
+  -moz-box-shadow: 0 10px 6px -6px $darkergrey;
+  box-shadow: 0 10px 6px -6px $darkergrey;
+}

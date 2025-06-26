@@ -1,75 +1,77 @@
 body{
   background-color: #212529;
+  height: 100vh !important;
 }
 
 .header{
-  color:white;
-    padding: 5px 0px 5px 10px;
+  color: white;
+  padding: 5px 0px 5px 10px;
 }
 
 table {
-    empty-cells: show;
+  empty-cells: show;
 }
 
 .popover {
     /* set to 276px in bootstrap.css so override here */
     max-width: none;
-    max-height: 600px;
+    max-height: 80vh;
     /* overflow-y:auto; */
     overfow: none;
 }
 
 .journeyOverview, .journeyOverviewModal{
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .journeyOverviewModal{
-    background: #eee;
-    padding: 2%;
+  background: #eee;
+  padding: 2%;
 }
 
 .journeyOverviewActivity.row {
-    background:#ffffff;
-    border-radius: 5px;
+  background:#ffffff;
+  border-radius: 5px;
 }
 
 .journeyOverviewActivity{
-    margin-left: -1rem;
-    margin-right: -1rem;
+  margin-left: -1rem;
+  margin-right: -1rem;
 }
 
 .journeyOverviewActivity a{
-    width: 100%;
+  width: 100%;
 }
 
 .journeyOverviewActivityModal.row {
   background:#ffffff;
-    border-radius: 5px;
+  border-radius: 5px;
 }
 
 .journeyOverviewActivityModal{
-    margin-left: -1rem;
-    margin-right: -1rem;
+  margin-left: -1rem;
+  margin-right: -1rem;
 }
 
 .journeyOverviewActivityModal a{
-    width: 100%;
+  width: 100%;
 }
 
 .row.journeyTable {
-    background: #ffffff;
-    border-radius: 5px;
+  background: #ffffff;
+  border-radius: 5px;
 }
 
 button#pageButtonLeft {
-    margin-left: -6px;
+  margin-left: -6px;
 }
 
 .journeyTable .table{
   overflow-x: scroll;
   border: 0px;
-    padding-left: 10px;
+  padding-left: 10px;
+  max-height: calc(100vh - 250px);
 }
 
 .journeyTable th{
@@ -83,17 +85,17 @@ button#pageButtonLeft {
 }
 
 #print-overview{
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .status-indicator{
-    height: 100%;
-    width: 21px;
-    position: relative;
-    border-radius: 4px;
-    margin: auto;
-    text-decoration: none;
+  height: 100%;
+  width: 21px;
+  position: relative;
+  border-radius: 4px;
+  margin: auto;
+  text-decoration: none;
 }
 
 td a{
@@ -101,84 +103,87 @@ td a{
 }
 
 .col-widget{
-    margin-top: 1rem;
-    /* border-style: solid; */
-    /* border-width: 1px; */
-    /* border-color: #007bff; */
-    border-radius: 5px;
-    height: 100px;
-    text-align: center;
-    margin-right:1%;
-    background: white;
+  margin-top: 1rem;
+  /* border-style: solid; */
+  /* border-width: 1px; */
+  /* border-color: #007bff; */
+  border-radius: 5px;
+  height: 100px;
+  text-align: center;
+  margin-right:1%;
+  background: white;
 }
 
 .col-widget:last-of-type {
-    margin-right: 0;
+  margin-right: 0;
 }
 
 .col-2 {
-    -ms-flex: 0 0 15.83333333333333;
-    flex: 0 0 15.83333333333333%;
-    max-width: 15.83333333333333%;
+  -ms-flex: 0 0 15.83333333333333;
+  flex: 0 0 15.83333333333333%;
+  max-width: 15.83333333333333%;
 }
 
 
 .col-widget h2{
-    font-weight: initial;
-    color: #f86718;
-    margin-top: .5rem;
-    font-size: 2.0rem;
+  font-weight: initial;
+  color: #f86718;
+  margin-top: .5rem;
+  font-size: 2.0rem;
 }
 
 .col-widget h5{
-    margin-top: .5rem;
-    font-size: 0.8rem;
+  margin-top: .5rem;
+  font-size: 0.8rem;
 }
 
 #options-div label{
-    margin-right: 5px;
-    margin-bottom: 0px;
+  margin-right: 5px;
+  margin-bottom: 0px;
 }
 
-#options-div
-{
-    width: 100%;
-    background-color: #ededed;
-    border-radius: 5px;
-
+#options-div {
+  width: 100%;
+  background-color: #ededed;
+  border-radius: 5px;
 }
 
 .status-gray{
-    font-size: x-large;
+  font-size: x-large;
 }
 .status-green{
-    /* background-color: #7FB821 !important; */
-    color: #7FB821;
-    font-size: x-large;
+  /* background-color: #7FB821 !important; */
+  color: #7FB821;
+  font-size: x-large;
+}
+
+.status-blue{
+  color: #007bff;
+  font-size: x-large;
 }
 
 .status-red{
-    /* background-color: #D93223 !important; */
-    color: #D93223;
-    font-size: x-large;
+  /* background-color: #D93223 !important; */
+  color: #D93223;
+  font-size: x-large;
 }
 
 .status-orange{
-    /* background-color: #F2A01B !important; */
-    color: #F2A01B;
-    font-size: x-large;
+  /* background-color: #F2A01B !important; */
+  color: #F2A01B;
+  font-size: x-large;
 }
 
 .status-gray{
-    /* background-color: #67666A !important; */
-    color: #67666A;
-    font-size: x-large;
+  /* background-color: #67666A !important; */
+  color: #67666A;
+  font-size: x-large;
 }
 
 .card{
-    background-color: #eee;
-    border-color: #333;
-    margin-left: 100px;
+  background-color: #eee;
+  border-color: #333;
+  margin-left: 100px;
 }
 
 
@@ -200,20 +205,20 @@ td a{
 }
 
 #graph_link_6{
-    width: 100%;
+  width: 100%;
 }
 
 .graph-svg-wrapper
 {
-    /* border: solid 1px; */
-    /* border-radius: 10px; */
-    height:250px
+  /* border: solid 1px; */
+  /* border-radius: 10px; */
+  height:250px
 }
 
 #project_information .graph-svg-wrapper {
-    border: solid 1px #ddd;
-    border-radius: 10px;
-    height: 250px;
+  border: solid 1px #ddd;
+  border-radius: 10px;
+  height: 250px;
 }
 
 .icon-header{
@@ -249,194 +254,202 @@ td a{
 }
 
 #overview svg{
-    color: black;
-    background-color: white;
-    height: 200px;
-    width: 500px;
+  color: black;
+  background-color: white;
+  height: 200px;
+  width: 500px;
 }
 
 .modebar {
-    display: none !important;
+  display: none !important;
 }
 
 .show-display-options-button, .show-question-overview-button, .dashboard-print-button{
-    float: right;
-    padding:5px;
+  float: right;
+  padding: 5px;
 }
 
 .class-overview-box{
-    display:flex;
+  display: flex;
 }
 
 #model-question-overview .modal-body{
-    max-height: calc(100vh - 100px);
-    overflow-y: auto;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
 }
 
 .close-button {
-    float: right;
-    padding:5px;
+  float: right;
+  padding:5px;
 }
 
 .dash-row {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: block;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    margin-right: -15px;
-    margin-left: -15px;
-    color: #a01a13;
-    padding-left:20px;
-    padding-right:20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: block;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-right: -15px;
+  margin-left: -15px;
+  color: #a01a13;
+  padding-left:20px;
+  padding-right:20px;
 }
+
 .dash-row input[type=text] {
-
-    width:100px;
+  width:100px;
 }
 
-.dash-col-1
-{
-    display: inline-block;
-    padding:5px;
+.dash-col-1 {
+  display: inline-block;
+  padding: 5px;
 }
+
 .dash-col {
-    float: left;
-    padding:5px;
+  float: left;
+  padding:5px;
 }
 
 th.x-dashboard-page {
-    color: #fff;
-    vertical-align: top;
+  color: #fff;
+  vertical-align: top;
 }
 
 th.x-dashboard-page.x-dashboard-has-children a {
-    margin-right:20px;
+  margin-right:20px;
 }
 
 th.x-dashboard-interaction {
-    font-size: smaller;
-    margin-top:4px;
+  font-size: smaller;
+  margin-top:4px;
 }
 
-#journeyData
-{
-    position: absolute;
-    top: 64px;
-    bottom: 5px;
-    left: 5px;
-    right: 5px;
-    overflow-y:scroll !important;
-    overflow-x:hidden !important;
-    padding: 0px 30px 20px 25px;
+#journeyData {
+  position: absolute;
+  top: 68px;
+  bottom: 5px;
+  left: 5px;
+  right: 5px;
+  overflow-y: scroll !important;
+  overflow-x: hidden !important;
+  padding: 0px 30px 20px 25px;
 }
 
 .journeyData th a{
-    font-family: Arial;
-    color: #000;
+  font-family: Arial;
+  color: #000;
 }
 
 .pdfContent {
-    background: #eee;
-    color: #000;
+  background: #eee;
+  color: #000;
 
-    padding: 10px;
-    border-radius: 4px;
+  padding: 10px;
+  border-radius: 4px;
 }
 
 .dashboard .table th {
-    padding: 5px;
-    font-size: 0.8rem;
-    font-weight: normal;
+  font-size: 0.8rem;
+  font-weight: normal;
+  padding: 5px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .dashboard .table td {
-    padding:2px;
+  padding: 2px;
 }
 
 .dashboard .table tr.session-row.hide {
-    display: none;
+  display: none;
 }
 
 .dashboard .table .session-row td.align-right, .td-right {
-    text-align: right;
+  text-align: right;
 }
 
 .dashboard .table .session-row td.showresult {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .dashboard .table .session-row td.align-left, .td-left {
-    text-align: left;
+  text-align: left;
 }
 
 tr.attempt td:first-child {
-    padding-left: 15px;
+  padding-left: 15px;
 }
 
 .dashboard .table .session-row td {
-    text-align: center;
-    vertical-align: middle;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .unanonymous-view {
-    display: none;
-    padding-top: 8px;
-    margin-right: 10px;
+  display: none;
+  padding-top: 8px;
+  margin-right: 10px;
 }
 
 .dashboard{
-    /*overflow-x: hidden !important;*/
-    position: absolute;
-    width: -moz-calc(100% - 100px) !important;
-    width: -webkit-calc(100% - 100px) !important;
-    width: calc(100% - 10px) !important;
-    height: -moz-calc(100% - 100px) !important;
-    height: -webkit-calc(100% - 100px) !important;
-    height: calc(100% - 10px) !important;
+  /*overflow-x: hidden !important;*/
+  position: absolute;
+  width: -moz-calc(100% - 100px) !important;
+  width: -webkit-calc(100% - 100px) !important;
+  width: calc(100% - 10px) !important;
+  height: -moz-calc(100% - 100px) !important;
+  height: -webkit-calc(100% - 100px) !important;
+  height: calc(100% - 10px) !important;
 }
 
 .dashboard-wrapper{
-    overflow-x: hidden;
-    overflow-y: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 td.x-dashboard-interaction
 {
-    background: #f4f4f4;
+  background: #f4f4f4;
 }
 
-.panel{
-    padding: 5px;
-    border: solid 1px lightgray;
-    border-radius: 5px;
-    margin-bottom:10px;
-    float:left;
+.panel {
+  padding: 5px;
+  border: solid 1px lightgray;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  margin-left: 1rem;
+  float:left;
+  word-break: break-all;
+}
+
+.panel.col-12 {
+  margin: 5px;
 }
 
 .panel.col-6 {
-    margin: 5px;
-    max-width: 49%;
+  margin: 5px;
+  max-width: 49%;
 }
 
 #loader {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 200px;
-    margin-left: -100px; /* -1 * div width / 2 */
-    margin-top: -32px;  /* -1 * image height / 2 */
-    display: block;
-    z-index: 10;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 200px;
+  margin-left: -100px; /* -1 * div width / 2 */
+  margin-top: -32px;  /* -1 * image height / 2 */
+  display: block;
+  z-index: 10;
 }
 #loader_image {
-    display: block;
-    margin-left: auto;
-    margin-right:auto;
+  display: block;
+  margin-left: auto;
+  margin-right:auto;
 }
 
 #loader_text {
-    text-align: center;
+  text-align: center;
 }
 
 /* FONT AWESOME BUTTON ICONS */
@@ -482,81 +495,81 @@ td.x-dashboard-interaction
 .fa-x-inprogress:before { content: "\f017"; color: orange; }
 /* Just the colour */
 .fa-x-tick {
-    font-family: FontAwesome; content: "\f00c"; color: #62c562;
+  font-family: FontAwesome; content: "\f00c"; color: #62c562;
 }
 .fa-x-cross {
-    content: "\f00d"; color: #ff0000;
+  content: "\f00d"; color: #ff0000;
 }
 
 .fa-x-inprogress { content: "\f017"; color: orange; }
 
 .jorneyData-container1{
-    overflow-x: scroll;
+  overflow-x: scroll;
 }
 
 #pageButtonRight{
-    float:right;
+  float:right;
 }
 
 .page-button{
-    margin: 5%;
+  margin: 5%;
 }
 
 #page-information {
-    padding-top: 10px;
-    font-size: 0.8rem;
+  padding-top: 10px;
+  font-size: 0.8rem;
 }
 
 #interaction-overview-print {
-    margin: auto;
+  margin: auto;
 }
 
 #print-overview .journeyData {
-    overflow-y: hidden !important;
+  overflow-y: hidden !important;
 }
 
 #print-overview .journeyTable .table {
-    overflow-x: unset;
+  overflow-x: unset;
 }
 
 #print-overview .journeyOverviewStats div, #print-overview .journeyOverviewActivity {
-    border: solid 1px;
+  border: solid 1px;
 }
 
 @media print {
-    .noprint {
-        display: none !important;
-    }
+  .noprint {
+    display: none !important;
+  }
 }
 
 .print_block {
-    page-break-inside: avoid;
+  page-break-inside: avoid;
 }
 
 td i.openclose {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 td i.openclose.disabled {
-    color: lightgray;
-    cursor: initial;
+  color: lightgray;
+  cursor: initial;
 }
 
 td  i.openclose.usedattempt {
-    color: #ff4500;
+  color: #ff4500;
 }
 
 td i.openclose.usedattempt.disabled {
-    color: rgba(255,69,0,0.5);
-    cursor: initial;
+  color: rgba(255,69,0,0.5);
+  cursor: initial;
 }
 
 
 td.td-center {
-    text-align: center;
+  text-align: center;
 }
 
 .dashboard .table td.duration, .dashboard .table td.start, .dashboard .table td.score, .dashboard .table td.completion {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
 }

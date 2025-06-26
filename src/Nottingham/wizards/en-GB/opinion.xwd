@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="Enter Instruction" showfeedback="true" feedback="Provide feedback here"
+      <opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="" feedback=""
 	  quesCount="Question {i} of {n}"
 	  onCompletion="You have completed the questionnaire" score="You answered {i} / {n}"
 	  submitBtnText="Submit"
@@ -15,25 +15,27 @@
   <!-- OPINION=============================== -->
     <opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#opinion" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_opinion_page" hint="Create an opinion with questions that can be slider or radio button interactions or a mix of both.">
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-	<instructions label="Instructions" type="textArea"  height="120"/>
+	<instructions label="Page Text" type="textArea"  height="120" placeholder="Enter text for the page here"/>
     <align label="Align Text" options="Left,Right" type="comboBox"  data="left,right" defaultValue="left" width="120"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
 	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
-    <showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" conditionTrigger="true" />
-    <feedback label="Feedback" type="textArea" height="120" condition="showfeedback!='false'"/>
+    <showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true" deprecated="This optional property is now deprecated"/>
+    <feedback label="Feedback" type="textArea" height="120" optional="true" defaultValue="" placeholder="Enter feedback here"/>
 
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true" />
     <submitBtnText label="Submit Button Label" type="TextInput" wysiwyg="true" language="true" />
     <resetBtnText label="Reset Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Reset" language="true" />
     <backBtnText label="Back Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Back" language="true" />
+    <noFeedBacckNoGraph label="No Feedback No Graph" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="&lt;p&gt;You have completed all the questions.&lt;/p&gt;" tooltip="Text to display on last page if there is not feedback and no graph to show at the end of the questionnaire."/>
 	<downloadBtnText label="Download Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Download" language="true" />
 
-	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
+	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
 
 	<imgGroup type="group" label="Image" optional="true">
-		<img label="File" type="media" defaultValue="Select an Image" optional="true"/>
+		<img label="File" type="media" defaultValue="" placeholder="Select an image" optional="true"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
+		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgGroup>
 
 	<graph label="Graph" type="group" optional="true">
@@ -42,7 +44,7 @@
 		<key label="Show Key" type="CheckBox" defaultValue="true" optional="true" condition="diagram!='true'" tooltip="Show a key listing page names and colours"/>
 	</graph>
 
-    <disableprinting label="Disable Download" type="CheckBox" optional="true" defaultValue="false" tooltip="Remove the button to download a PDF of the graph that appears once all answers have been submitted" condition="diagram!='true'" />
+    <disableprinting label="Disable PDF Export" type="CheckBox" optional="true" defaultValue="false" tooltip="Remove the button to download a PDF of the graph that appears once all answers have been submitted" condition="diagram!='true'" />
 
     <layout label="Layout" type="group" optional="true">
       <list label="Question Layout" type="ComboBox" options="One Per Page,List in Pages,List All" data="false,true,all" optional="true" defaultValue="false" conditionTrigger="true"/>
@@ -51,47 +53,59 @@
     </layout>
 
       <newNodes>
-        <opinionClass><![CDATA[<opinionClass title="Title used on graph" name="Class"/>]]></opinionClass>
+        <opinionClass><![CDATA[<opinionClass title="Class title" name="Class"/>]]></opinionClass>
       </newNodes>
 
   </opinion>
 
   <opinionClass menuItem="Class">
-      <title label="Title" type="TextInput" mandatory="true" defaultValue="Title used on graph" wysiwyg="true" />
-	  <name label="Label" type="TextInput" mandatory="true" defaultValue="Class" wysiwyg="false"/>
+      <title label="Title" type="TextInput" mandatory="true" defaultValue="Class title" wysiwyg="true" tooltip="The title that will appear on the graph for this class"/>
+	  <name label="Label" type="TextInput" mandatory="true" defaultValue="Class" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make classes easier to locate for editing at a later date."/>
 
     <newNodes>
-      <opinionQuestion><![CDATA[<opinionQuestion  name="Question" prompt="Enter a Prompt" scale="false" classWeight="1" interactivity="slider" />]]></opinionQuestion>
+      <opinionQuestion><![CDATA[<opinionQuestion  name="Question" prompt="" scale="false" classWeight="1" interactivity="slider" />]]></opinionQuestion>
+      <classFeedback><![CDATA[<classFeedback name="Enter Feedback Title" minScore="0" maxScore="50" feedbackTxt="" />]]></classFeedback>
     </newNodes>
+
   </opinionClass>
 
-  <opinionQuestion menuItem="Question">
-    <prompt label="Question" type="TextArea"  height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false"/>
+  <opinionQuestion menuItem="Question" icon="icComment">
+    <prompt label="Question" type="TextArea"  height="100" placeholder="Enter question text here"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" tooltip="The label is used to identify this question on the results page and when tracking results, e.g. via SCORM/LTI/xAPI"/>
     <classWeight label="Weighting" type="TextInput" wysiwyg="false" />
-	<interactivity label="Interactivity" options="Radio Buttons, Slider" mandatory="true" type="ComboBox" data="radio-buttons,slider" defaultValue="slider" width="120"/>
-	
+	<interactivity label="Interactivity" options="Radio Buttons, Slider" conditionTrigger="true" mandatory="true" type="ComboBox" data="radio-buttons,slider" defaultValue="slider" width="120"/>
+	<defaultSliderValue label="Default Slider Value" type="NumericStepper" min="0" max="100" step="1" optional="true" defaultValue="50" condition="interactivity=='slider'" tooltip="The default value for the slider"/>
 	<imgGroup type="group" label="Image" optional="true">
-		<image label="File" type="media" defaultValue="Select an Image" optional="true"/>
+		<image label="File" type="media" defaultValue="" placeholder="Select an image" optional="true"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
+		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgGroup>
 	
     <scale label="Reverse scale" type="CheckBox" />  
 	
 	<soundGroup type="group" label="Audio" optional="true" tooltip="Add an audio player below the question text">
-		<sound label="File" type="Media" optional="true"/>
+		<sound label="File" type="Media" optional="true" placeholder="Select an audio file"/>
 		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</soundGroup>
 		
     <newNodes>
-      <opinionOption><![CDATA[<opinionOption name="Answer" text="Here is an option" />]]></opinionOption>
+      <opinionOption><![CDATA[<opinionOption name="Answer" text="" />]]></opinionOption>
     </newNodes>
 
   </opinionQuestion>
 
   <opinionOption menuItem="Answer" icon="icBullet">
-    <text label="Text" type="TextArea" manadtory="true" defaultValue="Here is an option" wysiwyg="true" />
-	<name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
+    <text label="Text" type="TextArea" mandatory="true" defaultValue="" placeholder="Enter an answer option here" wysiwyg="true" />
+	<name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
   </opinionOption>
-  
+
+  <classFeedback menuItem="Tailored feedback" icon="icTranscript2" remove="true">
+      <name label="Title" type="TextInput" wysiwyg="true"/>
+      <feedbackTxt label="Text" type="TextArea" height="200" placeholder="Enter tailored feedback here" tooltip="The feedback text and title will be shown when the parameters below are met for this class"/>
+      <score type="group" label="Score" tooltip="The maximum and minimum (rounded down) score % values for this class used to determine whether the feedback will be shown">
+          <minScore label="Minimum value" defaultValue="0" type="TextInput"/>
+          <maxScore label="Maximum value" defaultValue="50" type="TextInput"/>
+      </score>
+  </classFeedback>
+
 </wizard>

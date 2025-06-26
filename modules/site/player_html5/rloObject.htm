@@ -43,25 +43,9 @@
     <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/MediasitePlayerIFrameAPI.js"></script>
     <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.mediaconstructor.js"></script>
     <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/popcorn-complete.js"></script>
-    <!-- <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.mcq.js"></script> -->
-    <!--
-    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.mediaplus.js"></script>
-    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.slides.js"></script>
-    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.sortholder.js"></script>
-    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.subtitleplus.js"></script>
-    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.textplus.js"></script>
-    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.xot.js"></script>
-    -->
 
-    <!-- <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn-complete.min.js"></script> -->
-           <!--popcorn css files-->
-    <!--
-    <link rel="stylesheet" href="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.mcq.css" />
-    <link rel="stylesheet" href="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.overlaygeneric.css" />
-    <link rel="stylesheet" href="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.slides.css" />
-    <link rel="stylesheet" href="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.subtitleplus.css" />
-    -->
-
+    <!-- config of mediasite and peertube urls -->
+    %POPCORN_CONFIG%
 
 	<!-- for lightboxes and lightbox gallery-->
     <script type="text/javascript" src="%TEMPLATEPATH%common/featherlight/featherlight.min.js%VERSION_PARAM%"></script>
@@ -82,17 +66,21 @@
     <link href="%TEMPLATEPATH%common/css/custom.css%VERSION_PARAM%" rel="stylesheet">
 
     <!--font awesome-->
-    <link rel="stylesheet" href="%TEMPLATEPATH%common/font-awesome-4.3.0/css/font-awesome.min.css">
-    <link href="%TEMPLATEPATH%common/fontawesome-5.6.3/css/all.min.css%VERSION_PARAM%" rel="stylesheet">
-    <link href="%TEMPLATEPATH%common/fontawesome-5.6.3/css/v4-shims.min.css%VERSION_PARAM%" rel="stylesheet">
+    <!-- link rel="stylesheet" href="%TEMPLATEPATH%common/font-awesome-4.3.0/css/font-awesome.min.css"-->
+    <link href="%TEMPLATEPATH%common/fontawesome-6.6.0/css/all.min.css%VERSION_PARAM%" rel="stylesheet">
+    <link href="%TEMPLATEPATH%common/fontawesome-6.6.0/css/v4-shims.min.css%VERSION_PARAM%" rel="stylesheet">
+    <link href="%TEMPLATEPATH%common/fontawesome-6.6.0/css/v5-font-face.min.css%VERSION_PARAM%" rel="stylesheet">
 
     <!--support for IE < 6-8 -->
     <script src="%TEMPLATEPATH%common/js/html5shiv.js%VERSION_PARAM%"></script>
 
     <!--media element and initialisation-->
-	<script type="text/javascript" src="%TEMPLATEPATH%common/mediaelement/mediaelement-and-player.min.js%VERSION_PARAM%"></script>
-	<script type="text/javascript" src="%TEMPLATEPATH%common/mediaelement/renderers/vimeo.min.js%VERSION_PARAM%"></script>
-	<link rel="stylesheet" href="%TEMPLATEPATH%common/mediaelement/mediaelementplayer-legacy.min.css%VERSION_PARAM%" />
+    <link rel="stylesheet" href="%TEMPLATEPATH%common/mediaelement/mediaelementplayer.min.css%VERSION_PARAM%" />
+    <script type="text/javascript" src="%TEMPLATEPATH%common/mediaelement/mediaelement-and-player.min.js%VERSION_PARAM%"></script>
+    <link rel="stylesheet" href="%TEMPLATEPATH%common/mediaelement/mediaelementplayer-legacy.min.css%VERSION_PARAM%" />
+
+    <!-- for audio & video players -->
+    <script type="text/javascript" src="%TEMPLATEPATH%common/js/mediaPlayerSite.js%VERSION_PARAM%"></script>
 
     <script type="text/javascript">
         var x_SiteUrl = "%SITEURL%";
@@ -139,61 +127,63 @@
 <div id="fb-root"></div>
 <script src="%TEMPLATEPATH%common/js/initFB.js%VERSION_PARAM%" defer></script>
 
-<div id="alwaysTop"></div>
+<div id="aboveFooter">
+    <div id="alwaysTop"><a id="skipLink" class="skip-link srskip" href="#mainContent"></a></div>
 
-<div class="navbar navbar-inverse navbar-fixed-top hide" id="topnav" role="navigation" aria-label="pages">
-    <div class="navbar-inner"><a class="srskip sr-only" href="#mainContent">Skip to main content</a>
+    <div class="navbar navbar-inverse navbar-fixed-top hide" id="topnav" role="navigation">
+        <div class="navbar-inner">
 
-        <div class="container">
+            <div class="container">
 
-            <button type="button" class="btn btn-navbar navbar-toggler" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+                <button id="pageNavBtn" class="btn btn-navbar navbar-toggler collapsed" data-toggle="collapse" data-target=".nav-collapse" aria-haspopup="true" aria-controls="nav">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
 
-            <div class="nav-collapse collapse">
-                <ul class="nav" id="nav">
-                    <!--<li class=""><a href="./index.html">Home</a></li>-->
-                </ul>
+                <div class="nav-collapse collapse">
+                    <ul class="nav" id="nav" aria-labelledby="pageNavBtn">
+                        <!--<li class=""><a href="./index.html">Home</a></li>-->
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!--Learning Object Title-->
-<header class="jumbotron hide" id="overview"><a class="skip-link srskip sr-only sr-only-focusable" href="#mainContent">Skip to main content</a>
+    <!--Learning Object Title-->
+    <header class="jumbotron hide" id="overview">
+        <div class="container">
+
+            <div class="logoL">
+                %LOGO_L%
+            </div>
+            <div class="logoR">
+                %LOGO_R%
+            </div>
+
+            <div class="titles">
+                <h1 id="pageTitle" aria-live="polite">Learning Object Title</h1>
+                <p id="pageSubTitle" aria-live="polite">Overview title for the content below</p>
+            </div>
+
+        </div>
+    </header>
+
+    <!--main page content: nav bar and sections-->
     <div class="container">
+        <div class="row-fluid">
+            <!--navigation-->
+            <div class="span3 bs-docs-sidebar" id="contentTable" role="navigation">
 
-		<div class="logoL">
-            %LOGO_L%
-        </div>
-        <div class="logoR">
-            %LOGO_R%
-        </div>
+                <ul class="nav nav-list bs-docs-sidenav affix" id="toc">
+                    <!--<li><a href="#section1ID">Section 1</a></li>-->
+                </ul>
+            </div>
 
-        <div class="titles">
-            <h1 id="pageTitle">Learning Object Title</h1>
-            <p id="pageSubTitle">Overview title for the content below</p>
-        </div>
+            <!--content-->
+            <div class="span9" id="mainContent" role="main">
 
-    </div>
-</header>
-
-<!--main page content: nav bar and sections-->
-<div class="container">
-    <div class="row-fluid">
-        <!--navigation-->
-        <div class="span3 bs-docs-sidebar" id="contentTable" role="navigation" aria-label="sections">
-
-            <ul class="nav nav-list bs-docs-sidenav affix" id="toc">
-                <!--<li><a href="#section1ID">Section 1</a></li>-->
-            </ul>
-        </div>
-
-        <!--content-->
-        <div class="span9" id="mainContent" role="main">
-
+            </div>
         </div>
     </div>
 </div>
@@ -201,14 +191,13 @@
 <footer class="footer">
     <div class="container">
         <div class="row-fluid">
-            <div class="span12">
-
+            <!--<div class="span12">
 				<div class="addthis_sharing_toolbox"></div>
-                <!--<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50f40a8436e8c4c5" async="async"></script>-->%ADDTHISSCRIPT%
-            </div>
+                %ADDTHISSCRIPT%
+            </div>-->
             <div class="wcagLink hidden">
-                    <a href="https://xot.xerte.org.uk/play.php?template_id=214#home" title="View the Xerte accessibility statement" target="_blank"><img class="wcagLogo" alt="WCAG WAI-AA logo and link to Xerte accessibility statement" height="32" src="%TEMPLATEPATH%common/img/wcag2.1AA-blue-v.png" width="88"> </a>
-                </div>
+                <a><img class="wcagLogo" height="32" src="%TEMPLATEPATH%common/img/wcag2.2AA-blue.png" width="88" alt=""> </a>
+            </div>
         </div>
     </div>
 </footer>

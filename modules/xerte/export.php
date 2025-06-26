@@ -87,10 +87,10 @@ if (!isset($tsugi))
 }
 
 if (isset($_REQUEST['html5'])) {
-    $export_html5 = ($_REQUEST['html5'] == 'true' ? true : false);
+    $export_html5 = (x_clean_input($_REQUEST['html5']) == 'true' ? true : false);
 }
 if (isset($_REQUEST['flash'])) {
-    $export_flash = ($_REQUEST['flash'] == 'true' ? true : false);
+    $export_flash = (x_clean_input($_REQUEST['flash']) == 'true' ? true : false);
 }
 if (!$export_html5 && !$export_flash) {
     if (isset($row['extra_flags'])) {
@@ -113,7 +113,7 @@ if (isset($_REQUEST['offline']))
     $fullArchive = false;
 }
 
-if (isset($_REQUEST['xAPI']) && $_REQUEST['xAPI'] == "true")
+if (isset($_REQUEST['xAPI']) && x_clean_input($_REQUEST['xAPI']) == "true")
 {
 	$xAPI = true;
 }
@@ -171,13 +171,27 @@ if ($fullArchive) {
     if ($export_html5) {
         _debug("  use html5");
         $models = $xml->getUsedModels();
+        // To please static code inspection tools, iterate over models and make sure there just model names
+        foreach ($models as $model) {
+            if (strpos($model, '/') !== false) {
+                die("Illegal model name detected!");
+            }
+            // Check whether the model only uses normal characters and numbers
+            if (!ctype_alnum($model)) {
+                die("Illegal model name detected!");
+            }
+        }
         if ($export_offline)
         {
             export_folder_loop($xerte_toolkits_site->root_file_path . "offline/");
             copy_extra_files();
 
-             // Create offline language file and replacement text
+            // Create offline language file and replacement text
             $language = $xml->getLanguage();
+            // To please static code inspection tools, make sure it matches pattern of a language code (aa-aa)
+            if (!preg_match('/^[a-z]{2}-[A-Z]{2}$/', $language)) {
+                die("Illegal language code detected!");
+            }
             create_offline_file("langxmlstr", $xerte_toolkits_site->root_file_path . "languages/engine_" . $language . ".xml", "offline/offline_engine_" . $language . ".js");
             $offline_includes .= "   <!-- Offline language -->\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_engine_" . $language . ".js\"></script>\n\n";
@@ -240,9 +254,14 @@ if ($fullArchive) {
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common_html5/js/timeline/timeline3.js\"></script>\n";
 
 
-            // Offline theme js file
+            // Offline theme
             $offline_includes .= "   <!-- theme file, normally loaded dynamically -->\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"themes/" . $row['parent_template'] . "/" . $xml->getTheme() . "/" . $xml->getTheme() . ".js\"></script>\n";
+
+            create_offline_file("themeinfo", "themes/" . $row['parent_template'] . "/" . $xml->getTheme() . "/" . $xml->getTheme() . ".info", "offline/offline_themeinfo.js");
+            $offline_includes .= "   <!-- Offline theme info -->\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"offline/offline_themeinfo.js\"></script>\n";
+            $offline_includes .= "\n";
         }
         else {
             foreach ($models as $model) {
@@ -305,6 +324,11 @@ if (!$export_offline) {
  * Theme support
  */
 $theme = $xml->getTheme();
+// To please static code inspection tools, make sure it matches pattern of a theme (all characters and numbers or '_' or '-', no other special characters)
+if (!preg_match('/^[a-zA-Z0-9_\-]+$/', $theme, $matches)) {
+    die("Illegal theme name detected!");
+}
+
 if ($theme == "")
 {
     $theme = "default";
@@ -312,10 +336,19 @@ if ($theme == "")
 // Add selected theme
 export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/' . $theme . '/');
 copy_extra_files();
+
 // Add colourChanger themes
 export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/blackonyellow/');
 copy_extra_files();
 export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/highcontrast/');
+copy_extra_files();
+export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/darkmode/');
+copy_extra_files();
+export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/lightmode/');
+copy_extra_files();
+
+// Add default theme
+export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/default/');
 copy_extra_files();
 
 
@@ -343,12 +376,17 @@ if ($export_flash) {
 /*
  * If scorm copy the scorm files as well
  */
-$scorm = $_GET['scorm'];
+$scorm =x_clean_input($_GET['scorm']);
+$language = $xml->getLanguage();
+// To please static code inspection tools, make sure it matches pattern of a language code (aa-aa)
+if (!preg_match('/^[a-z]{2}-[A-Z]{2}$/', $language)) {
+    die("Illegal language code detected!");
+}
 if ($scorm == "true") {
     export_folder_loop($scorm_path, false, null, "/");
     copy_extra_files();
     if ($xml->getLanguage() != 'en-GB') {
-        export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/' . $xml->getLanguage() . '/' . $scorm_language_relpath, false, null, "/languages/js/" . $xml->getLanguage() . "/");
+        export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/' . $language . '/' . $scorm_language_relpath, false, null, "/languages/js/" . $language . "/");
         copy_extra_files();
     }
     export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/en-GB/' . $scorm_language_relpath, false, null, "/languages/js/en-GB/");
@@ -357,8 +395,8 @@ if ($scorm == "true") {
     export_folder_loop($scorm2004_path, false, null, "/");
     copy_extra_files();
     if ($xml->getLanguage() != 'en-GB') {
-        if (is_dir($xerte_toolkits_site->root_file_path . 'languages/' . $xml->getLanguage() . '/' . $scorm2004_language_relpath)) {
-            export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/' . $xml->getLanguage() . '/' . $scorm2004_language_relpath, false, null, "/languages/js/" . $xml->getLanguage() . "/");
+        if (is_dir($xerte_toolkits_site->root_file_path . 'languages/' . $language . '/' . $scorm2004_language_relpath)) {
+            export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/' . $language . '/' . $scorm2004_language_relpath, false, null, "/languages/js/" . $language . "/");
             copy_extra_files();
         }
     }
@@ -371,7 +409,7 @@ if($xAPI)
 	export_folder_loop($xAPI_path, false, null, "/");
 	copy_extra_files();
 	if ($xml->getLanguage() != 'en-GB') {
-		export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/' . $xml->getLanguage() . '/' . $xAPI_language_relpath, false, null, "/languages/js/" . $xml->getLanguage() . "/");
+		export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/' . $language . '/' . $xAPI_language_relpath, false, null, "/languages/js/" . $language . "/");
 		copy_extra_files();
 	}
 	export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/en-GB/' . $xAPI_language_relpath, false, null, "/languages/js/en-GB/");
@@ -410,7 +448,7 @@ if ($xml->mediaIsUsed()) {
 /*
 * export logo
 */
-$LO_base_path = 'USER-FILES/' . $row['template_id'] . '-' . $row['username'] . '-' . $row['template_name'] . '/';
+$LO_base_path = $xerte_toolkits_site->users_file_area_short . $row['template_id'] . '-' . $row['username'] . '-' . $row['template_name'] . '/';
 $LO_icon_path = $xml->getIcon()->url;
 if (strpos($LO_icon_path, "FileLocation + '") !== false) {
     $LO_icon_path = str_replace("FileLocation + '" , $LO_base_path, $LO_icon_path);
@@ -541,7 +579,7 @@ elseif ($xAPI)
 else
 	$export_type = "_deployment";
 
-$row['zipname'] .= $export_engine . $export_type;
+$row['zipname'] .= $export_engine . '_' . $_GET['template_id'] . $export_type;
 
 /*
  * Add the files to the zip file, create the archive, then send it to the user
@@ -562,5 +600,3 @@ clean_up_files();
 @unlink($dir_path . "template.xml");
 
 @unlink($zipfile_tmpname);
-
-?>
