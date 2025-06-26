@@ -3735,8 +3735,7 @@ function setUpLightBox(thisPageInfo, thisSectionInfo, $section) {
 			if (altText != undefined && altText != '') {
 				this.$instance.find('.featherlight-content img').attr('alt', altText);
 			}
-
-			const caption = this.$currentTarget == undefined ? undefined : $(this.$currentTarget).next().is("figCaption") ? $(this.$currentTarget).next().html() : undefined;
+			const caption = this.$currentTarget == undefined ? undefined : $(this.$currentTarget).next().is("figCaption") ? $(this.$currentTarget).next().html() : $(this.$currentTarget).find("img").attr("alt");
 			const sectionCaption = e == undefined ? undefined : $(e.target).data('lightboxCaption');
 			if (caption != undefined && caption != '') {
 				// captions can be turned on at LO, page or section level
