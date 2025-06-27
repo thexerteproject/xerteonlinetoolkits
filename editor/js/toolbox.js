@@ -1187,7 +1187,7 @@ var EDITOR = (function ($, parent) {
         }
 
 		checkRowIds(grid);
-        debugger
+
         if (name == 'corpus'){
             function normalizePath(raw) {
                 // strip any surrounding single or double quotes, and trim whitespaces
@@ -1247,7 +1247,7 @@ var EDITOR = (function ($, parent) {
                 $('body, .featherlight, .featherlight-content').css("cursor", "wait");
 
                 const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
-                debugger
+
                 // Build grid row
                 let singleRow = {};
                 if (!useLoInCorpus) {
@@ -2693,7 +2693,7 @@ var EDITOR = (function ($, parent) {
 	},
 
     inputChanged = function (id, key, name, value, obj)
-    {debugger
+    {
         //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
         var actvalue = value;
 
@@ -4362,17 +4362,17 @@ var EDITOR = (function ($, parent) {
             // --- WYSIWYG / CKEditor Fields ---
             if (child.value.wysiwyg === 'true') {
                 //TODO: this should be a variable that checks of textarea OR textinput variant? Are we maybe keeping it limited to just textereas with this?
-                debugger
+
                 const $el = $(domContextSelector).find('textarea[name="' + child.name + '"]');
                 if ($el.length) {
                     $el.ckeditor(function () {
-                        debugger
+
                         let self = this;
                         // Restore value from formState
                         if (formState && formState[child.name] !== undefined) {
                             self.setData(formState[child.name]);
                         }
-                        debugger
+
                         // Attach event for persisting changes
                         this.on('change', function () {
                             var thisValue = self.getData();
@@ -4548,7 +4548,7 @@ var EDITOR = (function ($, parent) {
         }
 
         $('#lightboxbutton_' + group.name).on("click", function() {
-            debugger
+
             // Clean up old ck editors before initializing any new ones
             destroyAllLightboxCKEditors();
 
@@ -4595,6 +4595,7 @@ var EDITOR = (function ($, parent) {
                 if (inheritField !== undefined && inheritField !== "") {
                     const groupName = groupChildren[input]?.name;
                     formState[groupName] = attributes[inheritField];
+                    lo_data[key]['attributes'][groupName] = attributes[inheritField];
                 }
             }
         } else {
@@ -6242,7 +6243,7 @@ var EDITOR = (function ($, parent) {
                         }
 
                         img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject);
-
+                        html.prop('disabled', false);
                     });
                 break;
             case 'generatesuggestionbutton':

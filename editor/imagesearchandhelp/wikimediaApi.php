@@ -15,48 +15,70 @@ class wikimediaApi
         // Sanitize and URL-encode the query
         $query = urlencode(strip_tags($query));
 
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'];
+        $filteredPages = [];
+        $tries = 0;
+        $maxTries = 10;
+        $offset = ($page - 1) * $perPage;
 
+        while (count($filteredPages) < $perPage && $tries < $maxTries) {
+            // Construct the URL with the query, perPage, and offset
+            $url = "https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&generator=search"
+                . "&iiprop=url|user|canonicaltitle"
+                . "&gsrsearch={$query}"
+                . "&gsrlimit={$perPage}"
+                . "&gsrnamespace=6"
+                . "&gsroffset={$offset}";
 
-        // Construct the URL with the query, perPage, and page parameters
-        $url = "https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&generator=search&iiprop=url|user|canonicaltitle&gsrsearch={$query}&gsrlimit={$perPage}&gsrnamespace=6&gsroffset=" . (($page - 1) * $perPage);
+            if (isset($aiParams->width) && $aiParams->width !== 'unmentioned') {
+                $url .= "&iiurlwidth=" . urlencode($aiParams->width);
+            }
+            if (isset($aiParams->height) && $aiParams->height !== 'unmentioned') {
+                $url .= "&iiurlheight=" . urlencode($aiParams->height);
+            }
 
-        // Unsplash specific: append optional parameters for orientation and color, if provided
-        if (isset($aiParams->width) && $aiParams->width !== 'unmentioned') {
-            $url .= "&iiurlwidth=" . urlencode($aiParams->width);
-        }
-        if (isset($aiParams->height) && $aiParams->height !== 'unmentioned') {
-            $url .= "&iiurlheight=" . urlencode($aiParams->height);
-        }
+            // Initialize cURL
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            $result = curl_exec($curl);
 
-        // Initialize cURL
-        $curl = curl_init();
+            if (curl_errno($curl)) {
+                $error_msg = curl_error($curl);
+                curl_close($curl);
+                return (object)["status" => "error", "message" => "cURL error: " . $error_msg];
+            }
 
-        // Set cURL options
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-        // Execute cURL request and capture response
-        $result = curl_exec($curl);
-
-        // Check for cURL errors
-        if (curl_errno($curl)) {
-            $error_msg = curl_error($curl);
             curl_close($curl);
-            return (object)["status" => "error", "message" => "cURL error: " . $error_msg];
+            $resultDecoded = json_decode($result, true);
+
+            if (isset($resultDecoded['error'])) {
+                return (object)["status" => "error", "message" => "Error on API call: " . $resultDecoded['error']['info']];
+            }
+
+            $pages = $resultDecoded['query']['pages'] ?? [];
+
+            // Filter pages by extension
+            foreach ($pages as $page) {
+                $url = $page['imageinfo'][0]['url'] ?? '';
+                $ext = strtolower(pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION));
+                if (in_array($ext, $allowedExtensions)) {
+                    $filteredPages[$page['pageid']] = $page;
+                    if (count($filteredPages) >= $perPage) {
+                        break;
+                    }
+                }
+            }
+
+            $offset += $perPage;
+            $tries++;
         }
 
-        // Close the cURL session
-        curl_close($curl);
-
-        // Decode the JSON response
-        $resultDecoded = json_decode($result, true);
-
-        // Check for API errors
-        if (isset($resultDecoded['error'])) {
-            return (object)["status" => "error", "message" => "Error on API call: " . $resultDecoded['error']['info']];
-        }
-
-        return $resultDecoded;
+        // Return in same format as before
+        return [
+            'batchcomplete' => '',
+            'query' => ['pages' => $filteredPages]
+        ];
     }
 
     private function rewritePrompt($query, $conversation = [])
@@ -260,7 +282,9 @@ class wikimediaApi
         }
 
         // Save the image to the specified path
-        $savePath = $saveTo . '/' . basename(parse_url($imageUrl, PHP_URL_PATH));
+        $encodedName = basename(parse_url($imageUrl, PHP_URL_PATH));
+        $decodedName = urldecode($encodedName);
+        $savePath = $saveTo . '/' . $decodedName;
 
         // Write the image data to a file
         if (file_put_contents($savePath, $imageData) === false) {
@@ -306,7 +330,7 @@ class wikimediaApi
         $dateTime = date('d-m-Y_Hi');
 
         // Specify the directory to save images, including date and time
-        $path = $target . "/media/wikimedia/" . $dateTime;
+        $path = $target . "/media/wikimedia";
 
         // Ensure the directory exists and is writable
         if (!is_dir($path)) {
