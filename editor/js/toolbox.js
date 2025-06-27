@@ -4377,6 +4377,13 @@ var EDITOR = (function ($, parent) {
                         this.on('change', function () {
                             var thisValue = self.getData();
                             thisValue = thisValue.substr(0, thisValue.length - 1); // Strip extra linebreak (like original)
+                            //update field form value for consistency, avoid recursion by checking if it's already the correct value
+                            const $originalField = self.element.$;
+                            if ($originalField.value !== thisValue) {
+                                $originalField.value=thisValue;
+                            }
+
+                            //update field value in xml
                             inputChanged($el.attr('id'), key, child.name, thisValue, self);
                         });
 
