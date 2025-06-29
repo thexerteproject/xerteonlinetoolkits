@@ -144,15 +144,20 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
                 icons:	{secondary:"fa fa-x-btn-hide"},
                 label:	mediaData.transcriptBtnTxt ? mediaData.transcriptBtnTxt : "Transcript"
             })
+            .attr("aria-expanded", false)
             .click(function() {
                 // transcript slides in and out of view on click
                 var $transcript = $(this).next(".transcript");
                 if ($transcript.is(":hidden") == true) {
-                    $(this).button({icons: {secondary:"fa fa-x-btn-show"}});
+                    $(this)
+                        .attr("aria-expanded", true)
+                        .button({icons: {secondary:"fa fa-x-btn-show"}});
                     $transcript.slideDown();
                 } else {
                     $transcript.slideUp();
-                    $(this).button({icons: {secondary:"fa fa-x-btn-hide"}});
+                    $(this)
+                        .attr("aria-expanded", false)
+                        .button({icons: {secondary:"fa fa-x-btn-hide"}});
                 }
             });
         

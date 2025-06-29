@@ -43,25 +43,9 @@
     <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/MediasitePlayerIFrameAPI.js"></script>
     <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.mediaconstructor.js"></script>
     <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/popcorn-complete.js"></script>
-    <!-- <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.mcq.js"></script> -->
-    <!--
-    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.mediaplus.js"></script>
-    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.slides.js"></script>
-    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.sortholder.js"></script>
-    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.subtitleplus.js"></script>
-    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.textplus.js"></script>
-    <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.xot.js"></script>
-    -->
 
-    <!-- <script type="text/javascript" src="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn-complete.min.js"></script> -->
-           <!--popcorn css files-->
-    <!--
-    <link rel="stylesheet" href="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.mcq.css" />
-    <link rel="stylesheet" href="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.overlaygeneric.css" />
-    <link rel="stylesheet" href="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.slides.css" />
-    <link rel="stylesheet" href="%TEMPLATEPATH%common/js/popcorn/plugins/popcorn.subtitleplus.css" />
-    -->
-
+    <!-- config of mediasite and peertube urls -->
+    %POPCORN_CONFIG%
 
 	<!-- for lightboxes and lightbox gallery-->
     <script type="text/javascript" src="%TEMPLATEPATH%common/featherlight/featherlight.min.js%VERSION_PARAM%"></script>
@@ -146,7 +130,7 @@
 <div id="aboveFooter">
     <div id="alwaysTop"><a id="skipLink" class="skip-link srskip" href="#mainContent"></a></div>
 
-    <div class="navbar navbar-inverse navbar-fixed-top hide" id="topnav" role="navigation" aria-label="pages">
+    <div class="navbar navbar-inverse navbar-fixed-top hide" id="topnav" role="navigation">
         <div class="navbar-inner">
 
             <div class="container">
@@ -178,8 +162,8 @@
             </div>
 
             <div class="titles">
-                <h1 id="pageTitle">Learning Object Title</h1>
-                <p id="pageSubTitle">Overview title for the content below</p>
+                <h1 id="pageTitle" aria-live="polite">Learning Object Title</h1>
+                <p id="pageSubTitle" aria-live="polite">Overview title for the content below</p>
             </div>
 
         </div>
@@ -189,7 +173,7 @@
     <div class="container">
         <div class="row-fluid">
             <!--navigation-->
-            <div class="span3 bs-docs-sidebar" id="contentTable" role="navigation" aria-label="sections">
+            <div class="span3 bs-docs-sidebar" id="contentTable" role="navigation">
 
                 <ul class="nav nav-list bs-docs-sidenav affix" id="toc">
                     <!--<li><a href="#section1ID">Section 1</a></li>-->
@@ -212,7 +196,7 @@
                 %ADDTHISSCRIPT%
             </div>-->
             <div class="wcagLink hidden">
-                <a><img class="wcagLogo" height="32" src="%TEMPLATEPATH%common/img/wcag2.1AA-blue-v.png" width="88" alt=""> </a>
+                <a><img class="wcagLogo" height="32" src="%TEMPLATEPATH%common/img/wcag2.2AA-blue.png" width="88" alt=""> </a>
             </div>
         </div>
     </div>

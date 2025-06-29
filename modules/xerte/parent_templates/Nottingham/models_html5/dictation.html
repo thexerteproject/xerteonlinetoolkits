@@ -57,11 +57,9 @@
 		}
 
 		// function called every time the size of the LO is changed
-		this.sizeChanged = function(pageChg) {
-			var $panel = $("#pageContents .panel");
-			if (x_browserInfo.mobile == false) {
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt($panel.css("padding-top")) - parseInt($panel.css("padding-bottom")) - 5);
-			}
+		this.sizeChanged = function() {
+			const $panel = $("#pageContents .panel");
+			$panel.height(x_getAvailableHeight([$panel]));
 
 			var	audioBarW = 0,
 					$pageAudio = $("#pageAudio");
@@ -78,13 +76,13 @@
 
 		this.init = function() {
             $pageContents = $("#pageContents");
-			
+
 			//Add aria-label to answer box
 			var answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel");
 			if (answerFieldLabel === undefined | answerFieldLabel === null) {
 				answerFieldLabel = "Answer";
 			}
-			$("#answerTxt").attr({"aria-label" : answerFieldLabel});
+			$pageContents.data("answerFieldLabel", answerFieldLabel);
 
             // uses data from timedText file if there is one - otherwise use nested page info
             if (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined && x_currentPageXML.getAttribute("sound") != "" && x_currentPageXML.getAttribute("sound") != undefined) {
@@ -189,8 +187,11 @@
 					label:	showBtnTxt
 				})
 				.click(function() {
+					if ($pageContents.data("captionInfo").length <= 1) {
+						$(this).hide();
+					}
+
 					var feedback;
-					var $this = $(this);
 					$("#showBtn").button("disable");
 					//Formats the answer to te correct format, so we can compare it with the input to check if it is correct
 
@@ -198,34 +199,23 @@
 					//Checks if the answer is correct, and if so it adds one to the total of correct answers
 					var answer = $('#answerTxt').val();
 					var correct = false;
-					$("#answer").slideDown(function () {
-						if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
-							$("#showBtn").button("enable");
-						}
-						else {
-							if(XTGetMode() == "normal")
-							{
-								$("#showBtn").button("disable");
-							}
-							else {
-								$("#showBtn").button("enable");
-							}
-						}
-					});
+
+					$("#answer").html('<div><p>' + $pageContents.data("captionInfo")[$pageContents.data("current")].answer + '</p></div>');
+
 					if (answer == text) {
 						correct_answers++;
 						correct = true;
 						feedback="Correct";
 						if (x_currentPageXML.getAttribute("showCorrectness") != null && x_currentPageXML.getAttribute("showCorrectness") != "false")
 						{
-							$("#correct").show();
+							$("#correct").html('<p><span class="tick fa fa-fw fa-x-tick"><span class="ui-helper-hidden-accessible" aria-hidden="true">' + x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct") + ' </span></span>' + x_addLineBreaks(" " + correctText) + '</p>');
 						}
 					}
 					else {
 						feedback="Incorrect";
 						if (x_currentPageXML.getAttribute("showCorrectness") != null && x_currentPageXML.getAttribute("showCorrectness") != "false")
 						{
-							$("#incorrect").show();
+							$("#incorrect").html('<p><span class="tick fa fa-fw fa-x-cross"><span class="ui-helper-hidden-accessible" aria-hidden="true">' + x_getLangInfo(x_languageData.find("cross")[0], "title", "Incorrect") + ' </span></span>' + x_addLineBreaks(" " + incorrectText) + '</p>');
 						}
 					}
 					var result =
@@ -289,14 +279,21 @@
 				"captionInfo" : x_currentPageXML.getAttribute("randomise") == "true" ? x_shuffleArray($pageContents.data("captionInfo")) : $pageContents.data("captionInfo"),
 				"current" : 0
 			});
+
+			if ($pageContents.data("captionInfo").length <= 1) {
+				$("#answerTxt").attr("aria-label", $pageContents.data("answerFieldLabel"));
+				$("#nextBtn, #restartBtn").remove();
+			}
+
 			this.loadQ();
 		}
 
 		this.loadQ = function() {
-			if (count != "") {
+			if ($pageContents.data("captionInfo").length > 1) {
 				$("#count").html(x_currentPageXML.getAttribute("countText").replace("{i}", $pageContents.data("current") + 1).replace("{n}",  $pageContents.data("captionInfo").length));
+				$("#answerTxt").attr("aria-label", $("#count").text() + ": " + $pageContents.data("answerFieldLabel"));
 			} else {
-				$("#count").hide();
+				$("#count").remove();
 			}
 
 			if (x_addLineBreaks($pageContents.data("captionInfo")[$pageContents.data("current")].prompt == "")) {
@@ -306,23 +303,9 @@
 						.show()
 						.html(x_addLineBreaks($pageContents.data("captionInfo")[$pageContents.data("current")].prompt));
 			}
-			$("#answerTxt").val("");
+			$("#answerTxt").val("").focus();
 
-			//Correct answer
-			var answer = $("<div/>").html('<p>' + $pageContents.data("captionInfo")[$pageContents.data("current")].answer + '</p>');
-
-			// Answer to be shown
-			$("#answer").hide()
-					.html(answer);
-
-			// Show incorrect if requested
-			$("#incorrect")
-					.hide()
-					.html('<p><span class="tick fa fa-fw fa-x-cross"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "label", "Incorrect") + '</span></span>' + x_addLineBreaks(" " + incorrectText) + '</p>');
-			//Show correct if requested
-			$("#correct")
-					.hide()
-					.html('<p><span class="tick fa fa-fw fa-x-tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Correct") + '</span></span>' + x_addLineBreaks(" " + correctText) + '</p>');
+			$("#answer,#incorrect,#correct").empty();
 
 			this.loadAudio($pageContents.data("captionInfo")[$pageContents.data("current")]);
 			var name = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].name).text().replace(/(\r\n|\n|\r)/gm,"");
@@ -401,7 +384,7 @@
 		<div id="textHolder" class="left"></div>
 		
 		<div class="right">
-			<div class="panel">
+			<div class="panel" tabindex="0">
 				<p id="count" aria-live="polite"></p>
 				<div id="panelContent">
 					<div id="prompt"></div>
@@ -415,8 +398,8 @@
 						<button id="restartBtn"></button>
 					</div>
 					<div id="answer" aria-live="polite"/>
-					<div id="correct"aria-live="polite"></div>
-					<div id="incorrect"aria-live="polite"></div>
+					<div id="correct" aria-live="polite"></div>
+					<div id="incorrect" aria-live="polite"></div>
 				</div>
 			</div>
 		</div>

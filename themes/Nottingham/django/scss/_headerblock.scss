@@ -35,3 +35,18 @@
 	color: white;
 	background-color: #A40000;
 }
+
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: white;
+  background-color: rgb(0, 92, 202);
+}
+#x_headerProgress .progressMarker.complete {
+  border-color: #A40000;
+}
+
+/* page resources */
+
+.resourceDownloadBtn, .resourceDownloadBtn:-webkit-any-link, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: #555 !important;
+}

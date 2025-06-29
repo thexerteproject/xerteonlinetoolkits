@@ -38,9 +38,8 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			if (x_browserInfo.mobile == false) {
-				var	$panel = $("#pageContents .panel"),
-					$footerInfo = $("#footerInfo");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - $footerInfo.height() - parseInt($footerInfo.css("padding-top")) * 2 - 5);
+				const $panel = $("#pageContents .panel");
+				$panel.height(x_getAvailableHeight([$panel], [$("#footerInfo")]));
 
 				if ($panel.width() >= imgDimensions[0]) {
 					imgScale = 1;
@@ -61,6 +60,8 @@
 
 		this.init = function() {
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			$(".panel").prepend('<span class="sr-only">' + (x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") != undefined ? x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") : "This page type is not compatible with screen readers.") +  '</span>');
 
 			var nextBtnTxt = x_currentPageXML.getAttribute("nextBtnTxt");
 			if (nextBtnTxt == undefined) {

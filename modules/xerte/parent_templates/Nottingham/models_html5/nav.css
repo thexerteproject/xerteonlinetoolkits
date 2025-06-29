@@ -87,7 +87,7 @@
 		padding: 0 4px;
 	}
 	
-	.x_mobile #pageContents.col .navChild, .x_mobile #pageContents.col #textHolder + #navHolder .navChild:first-of-type {
+	.x_mobile #pageContents.col .navChild:not(:first-of-type) {
 		padding-top: 10px;
 		border-top:	1px solid gray;
 	}
@@ -154,5 +154,12 @@
 	
 	#pageContents.tab #paneHolder {
 		overflow: hidden;
+	}
+
+
+	/* __accordion__ */
+	#pageContents.acc .navChildTitle:focus,
+	#pageContents.acc .navChild:focus {
+		outline: auto; /* ensures the browser focus is shown - the jquery ui css removes this */
 	}
 	

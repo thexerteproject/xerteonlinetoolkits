@@ -3275,7 +3275,6 @@ quail.appletContainsTextEquivalent = function(quail, test, Case) {
 
 quail.ariaOrphanedContent = function(quail, test, Case) {
   var $scope = test.get('$scope');
-  //debugger;
   $scope.each(function() {
     var $local = $(this);
     // Determine if the scope has a role.
@@ -5128,7 +5127,6 @@ quail.languageChangesAreIdentified = function(quail, test, Case) {
       }
       matches = text.match(regularExpression);
       if (matches && matches.length && noCharactersMatch($element, code, matches, regularExpression)) {
-      //debugger;
         test.add(Case({
           element: element,
           expected: (function (element) {
@@ -5146,7 +5144,6 @@ quail.languageChangesAreIdentified = function(quail, test, Case) {
       }
       matches = text.match(script.regularExpression);
       if (matches && matches.length && noCharactersMatch($element, code, matches, regularExpression)) {
-      //debugger;
         test.add(Case({
           element: element,
           expected: (function (element) {
@@ -5161,7 +5158,6 @@ quail.languageChangesAreIdentified = function(quail, test, Case) {
     if (typeof guessLanguage !== 'undefined' && !$element.find('[lang]').length && $element.text().trim().length > 400) {
       guessLanguage.info($element.text(), function(info) {
         if (info[0] !== currentLanguage) {
-      //debugger;
           test.add(Case({
             element: element,
             expected: (function (element) {

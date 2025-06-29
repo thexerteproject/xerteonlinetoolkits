@@ -6,8 +6,8 @@
   </pageWizard>
 
   <!-- COMPARE IMAGE INTERACTION============================= -->
-  <imageCompare menu="Media" menuItem="Image Comparison" hint="An interaction allowing you to compare two image" icon="icImageCompare" thumb="thumbs/imageCompare.jpg" example=" https://xot.xerte.org.uk/play_116#imagecompare"
- wiki="https://xerte.org.uk/wiki/doku.php?id=media_image_comparison_page" remove="true">
+  <imageCompare menu="Media" menuItem="Compare Images" hint="An interaction allowing you to compare two images." icon="icImageCompare" thumb="thumbs/imageCompare.jpg" example="https://xot.xerte.org.uk/play_116#imagecompare"
+ wiki="https://xerte.org.uk/wiki/doku.php?id=media_image_compare_page" remove="true">
 
 	<name label="Page Title" type="TextInput" wysiwyg="true"/>
 	

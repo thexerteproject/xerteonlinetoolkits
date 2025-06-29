@@ -32,6 +32,7 @@ $youtube_api_key = "";
 if (file_exists(dirname(__FILE__) . "/../../../api_keys.php")){
     include_once(dirname(__FILE__) . "/../../../api_keys.php");
 }
+require_once(dirname(__FILE__) . "/../config/popcorn.php");
 
 function lmsmanifest_create($name, $flash, $lo_name) {
 
@@ -268,17 +269,7 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
     $buffer = str_replace("%PLUGINS%", 'var plugins=' . json_encode($plugins), $buffer);
 
     // Check popcorn mediasite and peertube config files
-    $popcorn_config = "";
-    $mediasite_config_js = $common_folder . "/js/popcorn/config/mediasite_urls.js";
-    if (file_exists($template_path . $mediasite_config_js))
-    {
-        $popcorn_config .= "<script type=\"text/javascript\" src=\"{$mediasite_config_js}?version=" . $version . "\"></script>\n";
-    }
-    $peertube_config_js = $common_folder . "/js/popcorn/config/peertube_urls.js";
-    if (file_exists($template_path . $peertube_config_js))
-    {
-        $popcorn_config .= "<script type=\"text/javascript\" src=\"{$peertube_config_js}?version=" . $version . "\"></script>\n";
-    }
+    $popcorn_config = popcorn_config($template_path . $common_folder . '/', $version, $common_folder . '/');
     $buffer = str_replace("%POPCORN_CONFIG%", $popcorn_config, $buffer);
 
     if ($type == 'site')

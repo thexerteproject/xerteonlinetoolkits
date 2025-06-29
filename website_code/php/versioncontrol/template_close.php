@@ -42,8 +42,9 @@ $users_array = array();
 $file_path = x_clean_input($_POST['file_path']);
 $temp_array = explode("-", $file_path);
 
-$lockfile_path = $xerte_toolkits_site->users_file_area_full . $file_path . "lockfile.txt";
+$lockfile_path = $xerte_toolkits_site->users_file_area_full . $file_path;
 x_check_path_traversal($lockfile_path, $xerte_toolkits_site->users_file_area_full, "Invalid file path");
+$lockfile_path = $lockfile_path . "lockfile.txt";
 
 if (count($temp_array) !== 3)
 {

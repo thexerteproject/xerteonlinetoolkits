@@ -364,14 +364,17 @@ function get_meta_data($template_id, $template_name, $creator_user_name="", $tem
                 $xerteMetaObj->domain[] = $data["label"];
                 $xerteMetaObj->domainId[] = $data["taxon"];
                 $xerteMetaObj->domainSource[] = $data["source_url"];
-                if ($data["parent_id"] !== null and !in_array($data["parent_id"], $parents)){
+                while ($data["parent_id"] !== null and !in_array($data["parent_id"], $parents)){
                     $parents[] = $data["parent_id"];
+                    $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_categories where category_id=?";
+                    $params = array($data["parent_id"]);
+                    $data = db_query_one($q, $params);
                 }
             }
         }
         if (!empty($parents)){
             $parents_str = implode(",", $parents);
-            $q = "select taxon, label, source_url from {$xerte_toolkits_site->database_table_prefix}oai_categories where category_id in ($parents_str)";
+            $q = "select taxon, label, source_url from {$xerte_toolkits_site->database_table_prefix}oai_categories where category_id in ($parents_str) ORDER BY FIND_IN_SET(category_id,'{$parents_str}') ";
             $response = db_query($q);
             foreach ($response as $data){
                 $xerteMetaObj->domain[] = $data["label"];
@@ -405,14 +408,17 @@ function get_meta_data($template_id, $template_name, $creator_user_name="", $tem
             if ($data !== false and $data !== null) {
                 $xerteMetaObj->level[] = $data["label"];
                 $xerteMetaObj->levelId[] = $data["term_id"];
-                if ($data["parent_id"] !== null and !in_array($data["parent_id"], $parents)){
+                while ($data["parent_id"] !== null and !in_array($data["parent_id"], $parents)){
                     $parents[] = $data["parent_id"];
+                    $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_education where education_id=?";
+                    $params = array($data["parent_id"]);
+                    $data = db_query_one($q, $params);
                 }
             }
         }
         if (!empty($parents)){
             $parents_str = implode(",", $parents);
-            $q = "select term_id, label from {$xerte_toolkits_site->database_table_prefix}oai_education where education_id in ($parents_str)";
+            $q = "select term_id, label from {$xerte_toolkits_site->database_table_prefix}oai_education where education_id in ($parents_str) ORDER BY FIND_IN_SET(education_id,'{$parents_str}') ";
             $response = db_query($q);
             foreach ($response as $data){
                 $xerteMetaObj->level[] = $data["label"];

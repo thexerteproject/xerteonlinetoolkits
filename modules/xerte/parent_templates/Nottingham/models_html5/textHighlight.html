@@ -43,15 +43,8 @@
 				var $thisPanel = $('.' + panels[i]),
 					$thisPanelPaneHolder = $thisPanel.find('.paneHolder'),
 					$thisPanelTabHolder = $thisPanel.find('.tabHolder');
-				
-				var availH;
-				if (x_browserInfo.mobile == true) {
-					availH = $x_mobileScroll.height() - $x_footerBlock.height() - mainBtnHolderH - (parseInt($thisPanel.css('padding-top')) * 2) - 4;
-				} else {
-					availH = $x_pageHolder.height() - textHolderH - mainBtnHolderH - (parseInt($x_pageDiv.css('padding-top')) * 2) - (parseInt($thisPanel.css('padding-top')) * 2) - 4;
-				}
-				
-				$thisPanel.height(availH);
+
+				$thisPanel.height(x_getAvailableHeight([$thisPanel], [(x_browserInfo.mobile == true ? 0 : textHolderH), mainBtnHolderH]));
 				
 				// this resizing is for if the panel is a tabbed navigator
 				$thisPanelPaneHolder.height($thisPanel.height() - $thisPanelTabHolder.outerHeight());
@@ -66,8 +59,10 @@
 		
 		// function resizes contenteditable div
 		this.resizeEditable = function($editableDiv) {
-			var btnHolderH = $editableDiv.parent().find('.btnHolder').length > 0 ? $editableDiv.parent().find('.btnHolder').outerHeight() : 0;
-			$editableDiv.innerHeight(Math.floor($editableDiv.parents('.panel, .navChild').height() - btnHolderH));
+			if (!$editableDiv.is($("#suggestedTxt"))) {
+				var btnHolderH = $editableDiv.parent().find('.btnHolder').length > 0 ? $editableDiv.parent().find('.btnHolder').outerHeight() : 0;
+				$editableDiv.innerHeight(Math.floor($editableDiv.parents('.panel, .navChild').height() - btnHolderH));
+			}
 		};
 
         this.leavePage = function() {
@@ -146,7 +141,7 @@
 				index++;
 				
 				if (x_currentPageXML.getAttribute('download') == 'true') {
-					var txtInfo = { pageName: x_currentPageXML.getAttribute("textTitle"), pageText: x_currentPageXML.getAttribute("text") };
+					var txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("textTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("text") };
 					docData.pages.push(txtInfo);
 				}
 			}
@@ -156,7 +151,7 @@
 			index++;
 			
 			if (x_currentPageXML.getAttribute('download') == 'true') {
-				var txtInfo = { pageName: x_currentPageXML.getAttribute("initialTitle"), pageText: x_currentPageXML.getAttribute("initialText") };
+				var txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("initialTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("initialText") };
 				docData.pages.push(txtInfo);
 			}
 			
@@ -166,7 +161,7 @@
 				index++;
 				
 				if (x_currentPageXML.getAttribute('download') == 'true') {
-					var txtInfo = { pageName: x_currentPageXML.getAttribute("notesTitle"), pageText: x_currentPageXML.getAttribute("notesText") != undefined ? x_currentPageXML.getAttribute("notesText") : '' };
+					var txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("notesTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("notesText") != undefined ? x_currentPageXML.getAttribute("notesText") : '' };
 					docData.pages.push(txtInfo);
 				}
 			}
@@ -178,7 +173,7 @@
 				index++;
 				
 				if (x_currentPageXML.getAttribute('download') == 'true') {
-					var txtInfo = { pageName: x_currentPageXML.getAttribute("feedbackTitle"), pageText: x_currentPageXML.getAttribute("feedback") };
+					var txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("feedbackTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("feedback") };
 					docData.pages.push(txtInfo);
 				}
 			}
@@ -189,7 +184,7 @@
 				index++;
 				
 				if (x_currentPageXML.getAttribute('download') == 'true') {
-					var txtInfo = { pageName: x_currentPageXML.getAttribute("suggestedTitle"), pageText: x_currentPageXML.getAttribute("suggestedText") };
+					var txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("suggestedTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("suggestedText") };
 					docData.pages.push(txtInfo);
 				}
 			}
@@ -293,7 +288,7 @@
 						var $holder = $('.' + info[i].class);
 					
 						if (info[i].class == 'initTxt' || info[i].class == 'notesTxt' || info[i].class == 'suggestedTxt') {
-							$holder.append('<div id="' + info[i].class + '" contenteditable="true" spellcheck="false" class="editableDiv">' + info[i].txt + '</div>');
+							$holder.append('<div id="' + info[i].class + '" contenteditable="' + (info[i].class != 'suggestedTxt') + '" spellcheck="false" class="editableDiv">' + info[i].txt + '</div>');
 							
 							if (info[i].class == 'initTxt') {
 								$holder.append('<div id="' + info[i].class + 'BtnHolder" class="btnHolder"></div>');
@@ -436,6 +431,7 @@
 								span = document.createElement("span");
 							
 							span.setAttribute('class', 'selected');
+							span.setAttribute('role', 'mark');
 							span.setAttribute('style', $pageContents.data('selectedStyle'));
 							span.appendChild(selectedTxt);
 							
@@ -655,7 +651,6 @@
 		
 		// function triggers the download of word document containing all the info on the screen
 		this.postData = function (data) {
-			debugger
 			var form = document.createElement("form");
 			form.method = 'post';
 			form.target = 'displayjson';

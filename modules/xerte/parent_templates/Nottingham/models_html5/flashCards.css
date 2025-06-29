@@ -107,7 +107,8 @@
 
 	}
 	
-	#cards.hideOverflow .cardInner {
+	#cards.hideOverflow .cardInner,
+	#cards .panel.hideOverflow .cardInner {
 		overflow: hidden;
 	}
 	
@@ -208,4 +209,8 @@
 		display: flex;
 		flex-direction: column;
 		height: calc(100% - 2.4em /* flip button height offset */ - 1em /* card-inner margin offset */ );
+	}
+
+	.card .front, .card .back {
+		box-sizing: border-box;
 	}

@@ -32,7 +32,7 @@ $youtube_api_key = "";
 if (file_exists(dirname(__FILE__) . "/../../../api_keys.php")){
 	include_once(dirname(__FILE__) . "/../../../api_keys.php");
 }
-
+require_once(dirname(__FILE__) . "/../config/popcorn.php");
 
 function get_logo_file($LO_icon_path, $theme_path, $template_path) {
 	$extensions = ['svg',  'png', 'jpg', 'gif'];
@@ -250,17 +250,7 @@ function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $langua
 	$scorm_html_page_content = str_replace("%PLUGINS%", 'var plugins=' . json_encode($plugins), $scorm_html_page_content);
 
 	// Check popcorn mediasite and peertube config files
-	$popcorn_config = "";
-	$mediasite_config_js = $common_folder . "/js/popcorn/config/mediasite_urls.js";
-	if (file_exists($template_path . $mediasite_config_js))
-	{
-		$popcorn_config .= "<script type=\"text/javascript\" src=\"{$mediasite_config_js}?version=" . $version . "\"></script>\n";
-	}
-	$peertube_config_js = $common_folder . "/js/popcorn/config/peertube_urls.js";
-	if (file_exists($template_path . $peertube_config_js))
-	{
-		$popcorn_config .= "<script type=\"text/javascript\" src=\"{$peertube_config_js}?version=" . $version . "\"></script>\n";
-	}
+	$popcorn_config = popcorn_config($template_path . $common_folder . '/', $version, $common_folder . '/');
 	$scorm_html_page_content = str_replace("%POPCORN_CONFIG%", $popcorn_config, $scorm_html_page_content);
 
 

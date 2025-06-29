@@ -565,3 +565,7 @@ ul.share_form_results, ul.share_users:not(.show_list) {
 .publish {
 	padding-left: 20px;
 }
+
+.elevated .properties_main {
+	background-color: #e3670b;
+}

@@ -19,6 +19,8 @@
  */
 
 require("module_functions.php");
+require_once(dirname(__FILE__) .  '/../../website_code/php/config/popcorn.php');
+
 global $youtube_api_key;
 $youtube_api_key = "";
 if (file_exists(dirname(__FILE__) . "/../../api_keys.php")){
@@ -272,13 +274,15 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         }
         $theme_path = 'themes/' . $row['parent_template'] . '/' . $xmlFixer->getTheme();
         $page_content = process_logos($LO_icon_path, $theme_path, $template_path, $page_content);
-        
+        $page_content = process_sidebar_logo($theme_path, $page_content);
+
         $page_content = str_replace("%VERSION%", $version , $page_content);
         $page_content = str_replace("%LANGUAGE%", $language_ISO639_1code, $page_content);
         $page_content = str_replace("%VERSION_PARAM%", "?version=" . $version , $page_content);
         $page_content = str_replace("%TITLE%", $title , $page_content);
         $page_content = str_replace("%TEMPLATEPATH%", $template_path, $page_content);
         $page_content = str_replace("%TEMPLATEID%", $row['template_id'], $page_content);
+        $page_content = str_replace("%SITEURL%", $xerte_toolkits_site->site_url, $page_content);
         $page_content = str_replace("%XMLPATH%", $string_for_flash, $page_content);
         $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
         $page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);
@@ -348,8 +352,17 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
                 $tracking .= "  var lrsUsername = '';\n";
                 $tracking .= "  var lrsPassword  = '';\n";
                 $tracking .= "  var lrsAllowedUrls = '" . $row["dashboard_allowed_links"] . "';\n";
-                if (isset($_SESSION['XAPI_PROXY']) && $_SESSION['XAPI_PROXY']['db']) {
-                    $tracking .= "  var lrsUseDb = true;\n";
+                if (isset($_SESSION['XAPI_PROXY'])){
+                    if ($_SESSION['XAPI_PROXY']['db']) {
+                        $tracking .= "  var lrsUseDb = true;\n";
+                    }
+                    else
+                    {
+                        $tracking .= "  var lrsUseDb = false;\n";
+                    }
+                    if ($_SESSION['XAPI_PROXY']['extra_install'] && $_SESSION['XAPI_PROXY']['extra_install'] != "") {
+                        $tracking .= "  var lrsExtraInstall = " . json_encode($_SESSION['XAPI_PROXY']['extra_install']) . ";\n";
+                    }
                 }
                 else
                 {
@@ -440,7 +453,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
             else{
                 $embedsupport = "    var x_embed = true;\n";
                 $embedsupport .= "    var x_embed_activated = false;\n";
-                $embedsupport .= "    var x_embed_activation_url = '" . x_clean_input($_SERVER['REQUEST_URI']) . "&activated=true';\n";
+                $embedsupport .= "    var x_embed_activation_url = '" . $_SERVER['REQUEST_URI'] . "&activated=true';\n";
             }
         }
 		else
@@ -450,17 +463,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         $page_content = str_replace("%EMBED_SUPPORT%", $embedsupport, $page_content);
 
         // Check popcorn mediasite and peertube config files
-        $popcorn_config = "";
-        $mediasite_config_js = $template_path . "common_html5/js/popcorn/config/mediasite_urls.js";
-        if (file_exists($mediasite_config_js))
-        {
-            $popcorn_config .= "<script type=\"text/javascript\" src=\"$mediasite_config_js?version=" . $version . "\"></script>\n";
-        }
-        $peertube_config_js = $template_path . "common_html5/js/popcorn/config/peertube_urls.js";
-        if (file_exists($peertube_config_js))
-        {
-            $popcorn_config .= "<script type=\"text/javascript\" src=\"$peertube_config_js?version=" . $version . "\"></script>\n";
-        }
+        $popcorn_config = popcorn_config($template_path . "common_html5/", $version);
         $page_content = str_replace("%POPCORN_CONFIG%", $popcorn_config, $page_content);
         $page_content = str_replace("%TOKEN%", $_SESSION['token'], $page_content);
 

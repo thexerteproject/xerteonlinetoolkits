@@ -43,10 +43,24 @@ body {
 	color:		#7c097d;
 	font-weight: bold;
 }
-.pbTxt{
-	color:purple;
-}
 
+/* progress bar */
+.pbTxt {
+	color: #7c097d;
+}
+.pbContainer {
+	background-color: #FF9900;
+}
+.pbBar {
+	background-color: #7c097d;
+}
+#x_headerProgress .progressMarker {
+	border-color: #FF9900;
+	background-color: #fffff0;
+}
+#x_headerProgress .progressMarker.complete {
+	border-color: #7c097d;
+}
 h1 {
 	font-size:	1em;
 	margin:		0px;

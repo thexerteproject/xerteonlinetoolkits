@@ -38,13 +38,107 @@ DashboardState.prototype.clear = function () {
   this.pageIndex = 0;
 };
 
-DashboardState.prototype.getStatements = function (q, one, callback) {
-  if (this.info.lrs.aggregate) {
+DashboardState.prototype.getStatements = function (q, one, callback, force_xapi=false) {
+  if (this.info.lrs.db && callback != null && !force_xapi)
+  {
+    this.getStatementsFromDB(q, one).then(() => callback());
+  }
+  else if (this.info.lrs.aggregate && !force_xapi) {
     this.getStatementsAggregate(q, one, callback);
   } else {
     this.getStatementsxAPI(q, one, callback);
   }
 };
+
+DashboardState.prototype.httpGetStatements = async function(url, query)
+{
+  const auth = btoa(this.info.lrs.lrskey + ":" + this.info.lrs.lrssecret);
+  try {
+    const result = await $.ajax({
+      url: url,
+      type: "POST",
+      headers: {
+        'X-XERTE-USEDB': 'true',
+        'Authorization': 'Basic ' + auth
+      },
+      data: query,
+      dataType: "json"
+    });
+    return result;
+  }
+  catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
+DashboardState.prototype.getStatementsFromDB = async function(q, one)
+{
+  let search = {};
+  let activity = "";
+  if (q['filter_current_users'] != undefined) {
+    if (q['filter_current_users'] == 'true') {
+      const lti_user_list = lti_users.split(',');
+      search['actor'] = lti_user_list;
+    }
+    delete q['filter_current_users'];
+  }
+  if (q['activity'] != undefined && typeof this.info.lrs.extra != 'undefined' && this.info.lrs.extra['source'] != undefined > 0 && q['activity'].indexOf(this.info.lrs.extra['source']) == 0) {
+    search['xapiobjectid'] = [q['activity'], q['activity'].replace(this.info.lrs.extra['source'], this.info.lrs.extra['extra'])];
+    activity = q['activity'];
+    delete q['activity'];
+  }
+  $.each(q, function(i, value) {
+    search[i] = value;
+  });
+  if (one) {
+    limit=1;
+  } else {
+    limit = 5000;
+  }
+  search['unsorted']=1;
+
+  let query = 'statements=1&realtime=1&query=' + JSON.stringify(search) + '&limit=' + limit + '&offset=0';
+  this.clear();
+  $this = this;
+  do
+  {
+    const response = await this.httpGetStatements(this.info.lrs.lrsendpoint, query);
+    $this.rawData = [...$this.rawData, ...response.statements];
+    $('#loader_text').html(
+        XAPI_DASHBOARD_DATA_RETRIEVE_DATA + " " + Math.round(($this.rawData.length * 100) / response.nrrecords) + "%"
+    );
+    if (response.more) {
+      query = response.more;
+    }
+    else
+    {
+      query = null;
+    }
+  } while (query != null && query != "");
+  $('#loader_text').html(
+        XAPI_DASHBOARD_DATA_PREPARE_GRAPHS
+  );
+  // Transform the statements to the correct activity
+  if (typeof this.info.lrs.extra != 'undefined' && this.info.lrs.extra['extra'] != undefined > 0 && activity.indexOf(this.info.lrs.extra['extra']) == 0) {
+    for (let i = 0; i < $this.rawData.length; i++) {
+      if ($this.rawData[i].object.id.indexOf(this.info.lrs.extra['extra']) == 0) {
+        $this.rawData[i].object.id.replace(this.info.lrs.extra['extra'], this.info.lrs.extra['source']);
+      }
+    }
+  }
+  // Sort statements in descending order
+  $this.rawData.sort((a, b) => {
+      if (a.timestamp < b.timestamp) {
+        return 1;
+      }
+      return -1;
+    });
+  $this.rawDatamap = [];
+  for (var i = 0; i < $this.rawData.length; i++)
+    $this.rawDatamap[i] = i;
+}
+
 
 DashboardState.prototype.getStatementsxAPI = function (q, one, callback) {
   //ADL.XAPIWrapper.log.debug = true;
@@ -365,7 +459,7 @@ DashboardState.prototype.retrieveDataThroughAggregate = function (
   }
   // Create a week array
   var periods = [];
-  var currindex = 99;
+  var currindex = 49;
   var currDate = endDate;
   var beginOfPeriod;
   while (currindex < data.length) {
@@ -378,7 +472,7 @@ DashboardState.prototype.retrieveDataThroughAggregate = function (
         '" }}}'
     );
     currDate = moment(data[currindex].timestamp);
-    currindex += 100;
+    currindex += 50;
   }
   periods.push(
     '{"timestamp": { "$gte": { "$dte": "' +
@@ -1285,7 +1379,7 @@ DashboardState.prototype.filterNotPassedFailed = function (allInteractions) {
 };
 
 DashboardState.prototype.getInteractions = function (learningObject) {
-  if (this.interactions === undefined || this.interactions.length === 0) {
+  if (this.interactions === undefined || Object.keys(this.interactions).length === 0) {
     this.getAllInteractions();
   }
   return this.interactions[learningObject];

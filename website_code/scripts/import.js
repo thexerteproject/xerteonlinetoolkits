@@ -77,7 +77,6 @@ function iframe_check_upload() {
             window["upload_iframe"].document.body.innerHTML = "";
 
         } else {
-            //debugger;
             clearInterval(iframe_interval);
 
             string = window["upload_iframe"].document.body.innerHTML.substr(window["upload_iframe"].document.body.innerHTML.indexOf(">") + 1);
@@ -410,7 +409,6 @@ function import_template() {
 function load_button_spinner(this1) {
 
     var string = this1.innerHTML;
-    //debugger;
     if (string.indexOf('fa-upload') != -1) {
         if (typeof IMPORT_BUTTON_IMPORT !== 'undefined' && string.indexOf('</i> ' + IMPORT_BUTTON_IMPORT) != -1) {
             string = string.replace('<i class="fa fa-upload"></i> ' + IMPORT_BUTTON_IMPORT, '<i class="fa fa-spinner fa-spin"></i> ' + IMPORT_BUTTON_IMPORTING);

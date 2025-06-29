@@ -1,10 +1,4 @@
-//***********************************Text*************************************
-//*****title page******
-.titlePageTxt {
-  //*without reducing the width here horizontal scroll bars show when the theme selected isn't 100% width*/
-  width:96% !important;
-  overflow: hidden;
-}
+
 //***********************************Media*************************************
 //default highlight if not overriden
 .highlight {
@@ -40,7 +34,8 @@
   background: $contrastcolor;
   color:#ffffff;
 }
-.ui-accordion .ui-accordion-header a {
+.ui-accordion .ui-accordion-header a,
+.chapterItem.ui-state-active a, .chapterItem.ui-state-active a:link, .chapterItem.ui-state-active a:visited {
   border-radius: $smallroundedcorners;
   color: $whiteorlightest !important; //doesn't work without important
   background: darken($lightestcolor, 40%);
@@ -50,6 +45,9 @@
   background: darken($lightestcolor, 70%) !important;
   border-radius: $smallroundedcorners;
   color: $blackordarkest;
+}
+.ui-accordion.chapterHolder .ui-state-active a, .ui-accordion.chapterHolder .ui-state-active a:link, .ui-accordion.chapterHolder .ui-state-active a:visited {
+  background: darken($lightestcolor, 40%) !important;
 }
 
 .ui-tabs-panel a:visited, .ui-accordion-content a:visited {

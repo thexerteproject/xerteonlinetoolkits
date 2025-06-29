@@ -278,7 +278,8 @@ var EDITOR = (function ($, parent) {
         $([
             {name:language.chkShowLanguage.$label, tooltip: language.chkShowLanguage.$tooltip, id:'language_cb', disabled: true, click:showLanguage},
             {name:language.chkShowAdvanced.$label, tooltip: language.chkShowAdvanced.$tooltip, id:'advanced_cb', disabled: true, click:showAdvanced},
-            {name:language.chkShowToolbar.$label, tooltip: language.chkShowToolbar.$tooltip, id:'toolbar_cb', disabled: false, click:showToolbar}
+            {name:language.chkShowToolbar.$label, tooltip: language.chkShowToolbar.$tooltip, id:'toolbar_cb', disabled: false, click:showToolbar},
+            {name:language.chkShowGroups.$label, tooltip: language.chkShowGroups.$tooltip, id:'groups_cb', disabled: false, click:expandGroups}
         ]).each(function(index, value) {
             var checkbox = $('<input>')
                 .attr('id', value.id)
@@ -288,8 +289,9 @@ var EDITOR = (function ($, parent) {
                 .on('change', value.click)
 
             checkboxes.append(checkbox);
-            var span = $('<span>')
+            var span = $('<label>')
                 .attr('id', value.id + "_span")
+                .attr('for', value.id)
                 .addClass(value.disabled ? "disabled" : "enabled")
                 .append(value.name);
             checkboxes.append(span);
@@ -516,6 +518,29 @@ var EDITOR = (function ($, parent) {
         parent.toolbox.showToolBar($('#toolbar_cb').prop('checked'));
     },
 
+    expandGroups = function(){
+        if ($('#groups_cb').prop('checked')) {
+            // expand optional property groups
+            $('.wizardgroup.wizardoptional.collapsed:not(.wizardnestedgroup) .legend_label').click();
+        } else {
+            // collapse optional property groups
+            $('.wizardgroup.wizardoptional:not(.collapsed):not(.wizardnestedgroup) .legend_label').click();
+        }
+    },
+
+    expandTree = function(){
+        if ($('#expand_tree').prop('checked')) {
+            // expand page tree items
+            const tree = $.jstree.reference("#treeview");
+            $("#treeview").jstree("open_all");
+        } else {
+            // collapse page tree items
+            $("#treeview #treeroot li.jstree-open").each(function() {
+                $("#treeview").jstree().close_node({ "id": this.id });
+            });
+        }
+    },
+
     duplicateNodes = function(tree, id, parent_id, pos, select)
     {
         var current_node = tree.get_node(id, false);
@@ -534,11 +559,12 @@ var EDITOR = (function ($, parent) {
 
         // Create node text based on xml, do not use text of original node, as this is not correct
         var deprecatedIcon = toolbox.getExtraTreeIcon(key, "deprecated", [wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated, wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecatedLevel], wizard_data[lo_data[key].attributes.nodeName].menu_options.deprecated);
-        var hiddenIcon = toolbox.getExtraTreeIcon(key, "hidden", lo_data[key].attributes.hidePage == "true");
+        var hiddenIcon = toolbox.getExtraTreeIcon(key, "hidden", lo_data[key].attributes.hidePage == "true" || lo_data[key].attributes.hideContent == "true", lo_data[key].attributes.hidePage == "true" ? language.hidePage.$tooltip : language.hideContent.$tooltip);
         var passwordIcon = toolbox.getExtraTreeIcon(key, "password", lo_data[key].attributes.password != undefined && lo_data[key].attributes.password != '');
-        var standaloneIcon = toolbox.getExtraTreeIcon(key, "standalone", lo_data[key].attributes.linkPage == "true");
+        var standaloneIcon = toolbox.getExtraTreeIcon(key, "standalone", lo_data[key].attributes.linkPage == "true" || lo_data[key].attributes.linkPageChapter == "true");
         var unmarkIcon = toolbox.getExtraTreeIcon(key, "unmark", lo_data[key].attributes.unmarkForCompletion == "true" && parent_id == 'treeroot');
 		var advancedIcon = toolbox.getExtraTreeIcon(key, "advanced", simple_mode && !disable_advanced && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
+        var milestoneIcon = toolbox.getExtraTreeIcon(key, "milestone", lo_data[key].attributes.milestone == "true");
         // Be careful. You cannot just find $("#" + current_node.id + "_text").html(), because if the node is collapsed this will return undefined!
         // var nodeText = $("#" + current_node.id + "_text").html();
         var nodeText = $("<div>").html(current_node.text).find("#" + current_node.id + "_text").html();
@@ -548,7 +574,7 @@ var EDITOR = (function ($, parent) {
             nodeText = current_node.text;
         }
 
-        var treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + nodeText + '</span>';
+        var treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + milestoneIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + nodeText + '</span>';
         // Create the tree node
         var this_json = {
             id : key,
@@ -633,7 +659,7 @@ var EDITOR = (function ($, parent) {
             return false;
         }
 
-        if (!confirm(language.Alert.deletenode.confirm.prompt)) {
+        if (!confirm(nodeName == "chapter" ? language.Alert.deletenode.confirm.chapterPrompt : language.Alert.deletenode.confirm.prompt)) {
             return;
         }
 
@@ -667,19 +693,28 @@ var EDITOR = (function ($, parent) {
      */
 
     showNodeData = function(key, keepScrollPos, scrollToId) {
+        // any expanded optional property groups will be kept expanded on wizard reload
+        const expandedGroups = [];
+        $('#mainPanel .wizard fieldset.wizardgroup').each(function() {
+            if ($(this).find('.table_holder').is(':visible')) {
+                expandedGroups.push($(this).parents('.wizardattribute').attr('id'));
+            }
+        });
+        if (scrollToId !== undefined) {
+            expandedGroups.push(scrollToId);
+        }
         setTimeout(function()
         {
             var scrollPos = 0;
             if (keepScrollPos != null && keepScrollPos == true) {
                 scrollPos = $("#content").scrollTop();
             }
-            buildPage(key, scrollPos, scrollToId);
+            buildPage(key, scrollPos, scrollToId, expandedGroups);
         }, 350);
     },
 
     // Refresh the page when a new node is selected
-    buildPage = function (key, scrollPos, scrollToId) {
-		
+    buildPage = function (key, scrollPos, scrollToId, expandedGroups) {
         // Cleanup all current CKEDITOR instances!
         for(name in CKEDITOR.instances)
         {
@@ -1023,7 +1058,10 @@ var EDITOR = (function ($, parent) {
                                 .append(button));
 
                         if (sorted_options['optional'][i].value.common) {
-                            table2.append(tablerow);
+                            // chapter folders don't share general optional properties with pages
+                            if (node_name != "chapter") {
+                                table2.append(tablerow);
+                            }
                         } else {
                             table.append(tablerow);
                         }
@@ -1268,6 +1306,19 @@ var EDITOR = (function ($, parent) {
 			$("#delete_button").addClass("disabled");
 		}
 
+        // keep the currently expanded groups expanded
+        for (let i=0; i<expandedGroups.length; i++) {
+            const $expandedGroup = $('#' + expandedGroups[i]);
+            if ($expandedGroup.find('fieldset.wizardgroup').length > 0) {
+                $expandedGroup
+                    .find('fieldset.wizardgroup:not(.wizardnestedgroup)').removeClass('collapsed')
+                    .find('.legend_label:eq(0) .minMaxIcon').removeClass('fa-caret-down').addClass('fa-caret-up');
+
+                $expandedGroup
+                    .find('.table_holder:eq(0)').slideDown(0, toolbox.resizeDataGrids);
+            }
+        }
+
         // And finally, scroll to the scrollPos, or place scrollToId (if defined) into view
         if (scrollToId === undefined) {
             setTimeout(function () {
@@ -1389,10 +1440,11 @@ var EDITOR = (function ($, parent) {
         var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
         var passwordIcon = toolbox.getExtraTreeIcon(lkey, "password", false);
         var standaloneIcon = toolbox.getExtraTreeIcon(lkey, "standalone", false);
+        var milestoneIcon = toolbox.getExtraTreeIcon(lkey, "milestone", false);
         var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
 		var advancedIcon = toolbox.getExtraTreeIcon(lkey, "advanced", simple_mode && !disable_advanced && template_sub_pages.indexOf(nodeName) == -1);
 
-        var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + advancedIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
+        var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + milestoneIcon + passwordIcon + standaloneIcon + advancedIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
         var this_json = {
             id : lkey,
             text : treeLabel,
@@ -1534,13 +1586,14 @@ var EDITOR = (function ($, parent) {
     build = function (xml) {
         var xmlData = $.parseXML(xml);
         topLevelObject = xmlData.childNodes[0].nodeName;
+        let allChildPages = [];
         var tree_json = toolbox.build_lo_data($(xmlData).find(topLevelObject), null),
 
         create_node_type = function (page_name, children) {
             // clone children
             var lchildren = children.slice();
 
-            // Check defaults, and see whther there are children, that are NOT new_nodes
+            // Check defaults, and see whether there are children, that are NOT new_nodes
             // As an example see tableData within table
             for (var i=0; i<wizard_data[topLevelObject].new_nodes.length; i++)
             {
@@ -1566,6 +1619,15 @@ var EDITOR = (function ($, parent) {
                     }
                 });
             }
+
+            // everything that's accepted as a child of LO is also accepted as a child of a chapter
+            if (page_name == "learningObject") {
+                allChildPages = lchildren.slice();
+                allChildPages.splice($.inArray("chapter", allChildPages), 1);
+            } else if (page_name == "chapter" && allChildPages.length > 0) {
+                lchildren = allChildPages;
+            }
+
             return {
                 icon: parent.toolbox.getIcon(page_name),
                 valid_children: lchildren
@@ -1710,7 +1772,14 @@ var EDITOR = (function ($, parent) {
             .append($('<i>').addClass('fa').addClass(value.icon).addClass("xerte-icon").height(14));
         buttons.append(button);
         });
+
         $('.ui-layout-west .footer').append(buttons);
+
+        // add a checkbox that expands / collapses all pages / nested items in the tree
+        $('<span id="tree_checks"><input id="expand_tree" type="checkbox" title="' + language.chkExpandTree.$tooltip + '"><label id="expand_tree_label" for="expand_tree" class="enabled">' + language.chkExpandTree.$label + '</label></span>').prependTo(buttons);
+        $('#expand_tree').on("change", function() {
+            expandTree();
+        });
     };
 
     my.setup = setup;

@@ -79,11 +79,11 @@ if(count($parameters)!=1){
 
             if ($xerte_toolkits_site->apache == "true") {
 
-                echo "<p><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . "RSS/" . $row_name['firstname'] . "_" . $row_name['surname'] . "/" . str_replace(" ", "_", $row_template_name['folder_name']) . "/\">" . $xerte_toolkits_site->site_url . "RSS/" . $row_name['firstname'] . "_" . $row_name['surname'] . "/" . str_replace(" ", "_", $row_template_name['folder_name']) . FOLDER_RSS_LINKS . "/</a></p>";
+                echo "<p><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . "RSS/" . $row_name['firstname'] . "_" . $row_name['surname'] . "/" . str_replace(" ", "_", $row_template_name['folder_name']) . "/\">" . $xerte_toolkits_site->site_url . "RSS/" . $row_name['firstname'] . "_" . $row_name['surname'] . "/" . str_replace(" ", "_", $row_template_name['folder_name']) . "/</a>" . FOLDER_RSS_LINKS . "</p>";
 
             } else {
 
-                echo "<p><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . "rss.php?username=" . $row_name['firstname'] . "_" . $row_name['surname'] . "&folder_name=" . str_replace(" ", "_", $row_template_name['folder_name']) . "\">" . $xerte_toolkits_site->site_url . "rss.php?username=" . $row_name['firstname'] . "_" . $row_name['surname'] . "&folder_name=" . str_replace(" ", "_", $row_template_name['folder_name']) . FOLDER_RSS_LINKS . "</a></p>";
+                echo "<p><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . "rss.php?username=" . $row_name['firstname'] . "_" . $row_name['surname'] . "&folder_name=" . str_replace(" ", "_", $row_template_name['folder_name']) . "\">" . $xerte_toolkits_site->site_url . "rss.php?username=" . $row_name['firstname'] . "_" . $row_name['surname'] . "&folder_name=" . str_replace(" ", "_", $row_template_name['folder_name']) . "</a>" .  FOLDER_RSS_LINKS . "</p>";
 
             }
         }else{

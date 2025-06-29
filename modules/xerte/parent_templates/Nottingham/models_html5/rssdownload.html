@@ -29,10 +29,8 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			}
+			const $panel = $("#pageContents .panel");
+			$panel.height(x_getAvailableHeight([$panel]));
 		};
 		
 		this.init = function() {
@@ -143,16 +141,17 @@
 					//hide or show the feed header based on optional property
 					if (optfeedheader !="false" && optfeedheader !=null) {
 							$pageContents.find("#headerHolder").html("<h3>" + feed.rss.channel.description + "</h3>");
+					} else {
+						$pageContents.find("#headerHolder").remove();
 					}
-
-
 
 					$.each(feed.rss.channel.item, function (index, item) {
 						var xertefeed = (typeof item.xertedescription != "undefined");
 						var description = (typeof item.xertedescription != "undefined" ? item.xertedescription : item.description);
 						var templatename = (typeof item.xertetemplatename != "undefined" ? item.xertetemplatename : "");
 						var author = (typeof item.xerteauthor != "undefined" ? item.xerteauthor : (typeof item.author != "undefined" ? item.author : ""));
-						resultsString += '<div><a target="_blank" href="' + item.link + '"><i class="fa fa-globe" aria-hidden="true"></i> View ' + item.title + '</a><br><br>';
+						const faIcon = '<i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>';
+						resultsString += '<div><a target="_blank" href="' + item.link + '"><i class="fa fa-globe" aria-hidden="true"></i> View ' + item.title + ' ' + faIcon + '</a><br><br>';
 						if (typeof item.exportlink != "undefined" && optdeployment !="false")
 						{
 							resultsString += '<span class="rssDownloadDeployment"><a target="_blank" href="' + item.exportlink + '"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Download Deployment</a></span>';

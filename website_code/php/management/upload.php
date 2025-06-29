@@ -42,6 +42,11 @@ if (!is_user_permitted("templateadmin"))
     die("Session is invalid or expired");
 }
 
+if (!isset($_FILES['fileToUpload']))
+{
+    exit(TEMPLATE_UPLOAD_NO_FILE_SELECTED);
+}
+
 if($_FILES['fileToUpload']['error'] == 4)
 {
     exit(TEMPLATE_UPLOAD_NO_FILE_SELECTED);
@@ -335,7 +340,7 @@ function checkParent($templateName)
 
     $row = db_query_one($query, $params);
 
-    if(strcasecmp($templateName, $row['parent_template']) === 0)
+    if($row != null && strcasecmp($templateName, $row['parent_template']) === 0)
     {
         return true;
     }

@@ -228,6 +228,9 @@ function _do_cleanup()
         'setup/xampp.txt',
         'setup/xampp_database.txt',
         'rloObject.js',
+        'package.json',
+        'package-lock.json',
+        'modules/xerte/parent_templates/Nottingham/common_html5/js/jsPDF/jspdf.min.js',
     );
 
     foreach ($filelist as $file)
@@ -1600,5 +1603,36 @@ function upgrade_49()
     else
     {
         return "Default theme decision field already present - ok ? true";
+    }
+}
+
+function upgrade_50()
+{
+    //Extend notes fields in database (make it text fields)
+    $table = table_by_key('templaterights');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `notes` `notes` TEXT;");
+    $message = "Changing notes column of templaterights to text - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    // Extend description and keywords field in database (make it text fields)
+    $table = table_by_key('templatesyndication');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `description` `description` TEXT;");
+    $message .= "Changing description column of templatesyndication to text - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `keywords` `keywords` TEXT;");
+    $message .= "Changing keywords column of templatesyndication to text - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+}
+
+function upgrade_51()
+{
+    // Add disabled flag to logindetails
+    if (! _db_field_exists('logindetails', 'disabled')) {
+        $error1 = _db_add_field('logindetails', 'disabled', 'tinyint(1)', '0', 'surname');
+
+        return "Creating disabled field in logindetails - ok ? " . ($error1 ? 'true' : 'false');
+    }
+    else
+    {
+        return "Disabled field in logindetails already present - ok ? true";
     }
 }

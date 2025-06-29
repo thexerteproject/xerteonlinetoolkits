@@ -64,8 +64,11 @@
 		
 		this.isgdJSON = function (response) {
 			if (response.shorturl && response.shorturl != '') {
-				link = "<a target='_blank' href=" + response.shorturl + ">" + response.shorturl + "</a>";
+				const faIcon = '<i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>';
+				link = "<a target='_blank' href=" + response.shorturl + ">" + response.shorturl + " " + faIcon + "</a>";
 				$("#shorturltodisplay").html(link);
+			} else {
+				$("#shorturltodisplay").html("");
 			}
 		}
 		
@@ -115,7 +118,6 @@
 		}
 		
 		this.getMaxDimensions = function() {
-			// ** when hide text is on
 			var imgMaxW, imgMaxH,
 				imageSize = x_currentPageXML.getAttribute("imagesize");
 
@@ -123,15 +125,13 @@
 				imgMaxW = 250; // mobile
 				imgMaxH = 250;
 			} else if (x_currentPageXML.getAttribute("align") == "Hide text") {
-				imgMaxW = $x_pageDiv.width();
-				imgMaxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height());
-				imgMaxW -= ($("#imgHolder .panel").outerWidth() - $("#imgHolder .panel").width());
-				imgMaxH -= ($("#imgHolder .panel").outerHeight() - $("#imgHolder .panel").height());
+				imgMaxW = $x_pageDiv.width() - ($("#imgHolder .panel").outerWidth() - $("#imgHolder .panel").width());
+				imgMaxH = x_getAvailableHeight([$("#imgHolder .panel")]);
 				
 			} else if (imageSize != undefined) {
 				imgMaxW = $x_pageDiv.width();
-				imgMaxH = $x_pageHolder.height() - ($x_pageDiv.outerHeight() - $x_pageDiv.height());
-				
+				imgMaxH = x_getAvailableHeight([$("#imgHolder .panel")]);
+
 				if (imageSize == "small") {
 					imgMaxW = imgMaxW * 0.2;
 				} else if (imageSize == "medium") {
@@ -141,14 +141,13 @@
 				}
 				
 				imgMaxW -= ($("#imgHolder .panel").outerWidth() - $("#imgHolder .panel").width());
-				imgMaxH -= ($("#imgHolder .panel").outerHeight() - $("#imgHolder .panel").height());
 				
 			} else { // fixed (this isn't an option now but was default before imagesize added to xwd)
 				imgMaxW = 400; // desktop / tablet
 				imgMaxH = 400;
 			}
-			
-			imgMaxH -= $("#shorturltodisplay").outerHeight();
+
+			imgMaxH -= $("#shorturltodisplay").outerHeight(true);
 			
 			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
 				imgMaxH -= x_audioBarH;

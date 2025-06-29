@@ -74,7 +74,7 @@
 			$('.spinnerHolder').append('<div class="spinner"></div>')
 
 			var imgMaxW = Math.round($x_pageHolder.width());
-			var imgMaxH = Math.round($x_pageHolder.height());
+			var imgMaxH = Math.round(x_getAvailableHeight([], [], true));
 
 			$('.spinnerHolder').css({
 				'background-color' : 'grey',
@@ -230,8 +230,7 @@
 				language:lan
 			}
 
-			var pageHeight = $('#x_pageHolder').height();
-			$('#timeline-embed').css('height', pageHeight-70);
+			$('#timeline-embed').css('height', x_getAvailableHeight([],[],true));
 
 			window.timeline = new TL.Timeline('timeline-embed', timeline_json, additionalOptions);
 
@@ -306,7 +305,9 @@
 				})
 				 SictTimeline.resizeImg();
 				$('.spinnerHolder').remove();
-				$('.tl-media-content').wrap('<a data-featherlight="image" href="' + img[0].src + '" class="lightboxWrapper">');
+				if (img[0] != undefined) {
+					$('.tl-media-content').wrap('<a data-featherlight="image" href="' + img[0].src + '" class="lightboxWrapper">');
+				}
 				$('.tl-text-content')[0].innerHTML = x_currentPageXML.getAttribute("text");
 			}, 3000);
 
@@ -321,8 +322,8 @@
 				// TODO mobile implementation
 			}else{
 
-				var pageHeight = $('#x_pageHolder').height();
-				$('#timeline-embed').css('height', pageHeight-70);
+				const pageHeight = x_getAvailableHeight();
+				$('#timeline-embed').css('height', pageHeight);
 
 				var storyslider = pageHeight*0.60
 				$(".tl-storyslider").css({
@@ -336,7 +337,7 @@
 				img = $item.find('.tl-media-item');
 
 				var imgMaxW = Math.round($slideContent.width() * 0.50 - 20);
-				var imgMaxH = Math.round($pageContents.height() - 50);
+				var imgMaxH = Math.round(pageHeight - 50);
 
 				var big = imgMaxH*0.7;
 				var normal = imgMaxH*0.6;
@@ -349,34 +350,33 @@
 				var className = $item.attr('class')
 
 				var imgPath = img
-				if(imgPath !== undefined){
+				if(img.length > 0){
 					imgPath = imgPath[0].src
-				}
+					if(imgPath !== "" && imgPath !== undefined){
+						$(".tl-storyslider").css("height", big+"px");
+						$item.find(".tl-media-content-container").css("height", small+"px");
+						$item.find(".tl-media").css("height", small+"px");
+						$item.find(".tl-media-content").css("height", normal+"px");
+						img.css("max-width", imgMaxW + "px");
 
-				if(imgPath !== "" && imgPath !== undefined){
-					$(".tl-storyslider").css("height", big+"px");
-					$item.find(".tl-media-content-container").css("height", small+"px");
-					$item.find(".tl-media").css("height", small+"px");
-					$item.find(".tl-media-content").css("height", normal+"px");
-					img.css("max-width", imgMaxW + "px");
+						$item.find('img').css({
+							"max-height": normal +"px",
+							"max-width": imgMaxW +"px"
+						});
 
-					$item.find('img').css({
-						"max-height": normal +"px",
-						"max-width": imgMaxW +"px"
-					});
-
-					var margT = img.css('margin-left')
-					var margB = img.css('marginBottom')
-					margB = parseInt( margB.slice(0,  margB.length - 2));
-					margB *= 0.66
-					margB.toString()
-					$item.find('div.tl-caption').each(function() {
-						$(this).after('<figcaption class="tl-caption">' + $(this).html() + '</figcaption>');
-						$(this).parents('.tl-media-content-container').wrap('<figure></figure>');
-						$(this).remove();
-					});
-					$item.find('.tl-caption').css("marginLeft", margT)
-					$item.find('.tl-caption').css("margin-top", "-" + margB+"px")
+						var margT = img.css('margin-left')
+						var margB = img.css('marginBottom')
+						margB = parseInt( margB.slice(0,  margB.length - 2));
+						margB *= 0.66
+						margB.toString()
+						$item.find('div.tl-caption').each(function() {
+							$(this).after('<figcaption class="tl-caption">' + $(this).html() + '</figcaption>');
+							$(this).parents('.tl-media-content-container').wrap('<figure></figure>');
+							$(this).remove();
+						});
+						$item.find('.tl-caption').css("marginLeft", margT)
+						$item.find('.tl-caption').css("margin-top", "-" + margB+"px")
+					}
 				}
 
 				if(className === "tl-slide tl-slide-media-only"){
@@ -424,6 +424,17 @@
 				$('.tl-headline-date, h2.tl-headline').each(function() {
 					if ($(this).html() == '') {
 						$(this).hide();
+					} else {
+						// changes the heading levels of the date & title for each event
+						// h2 is only used for page title on header bar so start with h3
+						let attrs = {};
+						$.each(this.attributes, function(i, attr) {
+							attrs[attr.nodeName] = attr.nodeValue;
+						});
+
+						const newType = $(this).hasClass("tl-headline-date") ? "h3" : $(this).parents(".tl-slider-item-container").length > 0 ? "h4" : "p";
+						const $newElement = $("<" + newType + "/>", attrs).append($(this).contents());
+						$(this).replaceWith($newElement);
 					}
 				});
 

@@ -222,8 +222,12 @@
   font-weight: bold;
 }
 
-#menuItems .menuItem {
+#menuItems .menuItem, #menuItems .chapterItem {
   background: #ffffff;
+  color: #000000;
+}
+
+#menuItems .chapterItem a {
   color: #000000;
 }
 
@@ -233,7 +237,7 @@
 }
 
 #menuItems .menuItem.current {
-  border: 2px solid #84849a;
+  border: 2px solid #152c51;
 }
 
 #x_sideBar {
@@ -274,6 +278,24 @@
   color: #ffffff;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: white;
+}
+
+.pbBar {
+  background-color: #cd0438;
+}
+
+#x_headerProgress .progressMarker {
+  border-color: white;
+  background-color: #152c51;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #cd0438;
+}
+
 @media only screen and (max-width: 500px) {
   #x_footerProgress {
     display: block;
@@ -290,8 +312,8 @@
     font-size: 12px;
   }
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /*font-size: 1em;
+    width: 1em;*/
     margin-left: 5px;
   }
   .pbContainer {
@@ -300,7 +322,6 @@
   }
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }
@@ -1016,14 +1037,24 @@ p .panel #iFrame, p .panel iframe {
   font-size: 1.2em;
 }
 
-#menuItems .menuItem {
+#menuItems .menuItem, #menuItems .chapterItem {
   background: #eee;
   font-family: Roboto, sans-serif;
+  border-color: #000000;
 }
 
-#menuItems .menuItem:hover {
+#menuItems .chapterHolder {
+  margin-bottom: 5px;
+}
+
+#menuItems .menuItem:hover, #menuItems .chapterItem:hover {
   background: white;
   color: black;
+}
+
+.chapterPageHolder {
+  border-color: #000000;
+  background: #eee;
 }
 
 #pageContents {
@@ -1313,7 +1344,7 @@ img {
   margin-right: 1px;
 }
 
-.ui-button {
+.ui-button, .chapterHolder .menuItem.ui-button, .chapterHolder .chapterItem {
   border: 1px solid;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
@@ -1654,10 +1685,6 @@ var {
     max-width: 1280px !important;
   }
 }
-.pbBar {
-  background-color: #cd0438;
-}
-
 .pbTxt {
   color: #EEE;
 }
@@ -1735,6 +1762,11 @@ var {
 
 .x_audioRecord_page .deleteClipBtn {
   box-shadow: none;
+}
+
+/* page resources */
+#x_resourceTable th {
+  vertical-align: middle;
 }
 
 /*# sourceMappingURL=cesicardiff.css.map */

@@ -64,7 +64,7 @@ $template_id = x_clean_input($_POST['template_id'], 'numeric');
 $folder_id = x_clean_input($_POST['folder_id']);
 $template_name = x_clean_input($_POST['template_name']);
 
-if (!preg_match('/^[a-zA-Z0-9_]+$/',$template_name))
+if (!preg_match('/^[a-zA-Z0-9_ ]+$/',$template_name))
 {
     die("Invalid template name");
 }

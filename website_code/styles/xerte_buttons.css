@@ -115,7 +115,7 @@
     top:1px;
 }
 
-.xerte_button.disabled {
+.xerte_button.disabled, .xerte_button:disabled {
     background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #cacaca), color-stop(1, #adadad) );
     background:-moz-linear-gradient( center top, #cacaca 5%, #adadad 100% );
     filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fefefe', endColorstr='#ebebeb');
@@ -127,6 +127,7 @@
     font-size:12px;
 		padding:3px 6px;
     text-decoration:none;
+    cursor: initial;
 }
 
 

@@ -135,7 +135,7 @@ function properties_display($xerte_toolkits_site, $template_id, $change, $msgtyp
 
         echo "<br/><a target=\"new\" href='" . $xerte_toolkits_site->site_url .
                 url_return("play", $template_id) . "'>" .
-                $xerte_toolkits_site->site_url . url_return("play", $template_id) . PROPERTIES_LIBRARY_PROJECT_LINKS . "</a></p>";
+                $xerte_toolkits_site->site_url . url_return("play", $template_id) . "</a>" .  PROPERTIES_LIBRARY_PROJECT_LINKS . "</p>";
 
 		$template = explode("_", get_template_type($template_id));
 
@@ -248,7 +248,7 @@ function publish_display($template_id)
 		
 		if($template_access!="Private"){
 		
-			echo "<p>" . PUBLISH_WEB_ADDRESS . ": <a target='_blank' href='" . $xerte_toolkits_site->site_url . url_return("play",$template_id) . "'>" . $xerte_toolkits_site->site_url . url_return("play",$template_id) . PUBLISH_LINKS . "</a></p>";
+			echo "<p>" . PUBLISH_WEB_ADDRESS . ": <a target='_blank' href='" . $xerte_toolkits_site->site_url . url_return("play",$template_id) . "'>" . $xerte_toolkits_site->site_url . url_return("play",$template_id) . "</a>" . PUBLISH_LINKS . "</p>";
 		
 			if(!is_template_rss($template_id)){
 
@@ -371,7 +371,7 @@ function peer_display($xerte_toolkits_site,$change, $template_id){
 	
 	if(!empty($row)) {
 		
-		echo "<p>" . PROPERTIES_LIBRARY_PEER_LINK . ":<br/><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("peerreview", $template_id) . "\">" .  $xerte_toolkits_site->site_url . url_return("peerreview", $template_id)  . PROPERTIES_LIBRARY_PEER_LINKS . "</a></p>";
+		echo "<p>" . PROPERTIES_LIBRARY_PEER_LINK . ":<br/><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("peerreview", $template_id) . "\">" .  $xerte_toolkits_site->site_url . url_return("peerreview", $template_id)  . "</a>" . PROPERTIES_LIBRARY_PEER_LINKS . "</p>";
 		
 	}
 	
@@ -448,7 +448,7 @@ function syndication_display($xerte_toolkits_site, $template_id, $change){
     
 	echo "<div id=\"mainContent\">";
 
-    echo "<p>" . PROPERTIES_LIBRARY_SYNDICATION_EXPLAINED . ": <a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_syndicate",null) . "\">" . $xerte_toolkits_site->site_url . url_return("RSS_syndicate",null) . PROPERTIES_LIBRARY_SYNDICATION_LINKS . "</a></p>";
+    echo "<p>" . PROPERTIES_LIBRARY_SYNDICATION_EXPLAINED . ": <a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_syndicate",null) . "\">" . $xerte_toolkits_site->site_url . url_return("RSS_syndicate",null) . "</a>" .  PROPERTIES_LIBRARY_SYNDICATION_LINKS . "</p>";
 
     $prefix =  $xerte_toolkits_site->database_table_prefix;
 
@@ -772,7 +772,7 @@ function statistics_prepare($template_id, $force=false)
             {
                 $info->published = false;
             }
-            if ($row['tsugi_xapi_enabled'] && ($row['tsugi_xapi_useglobal'] || ($row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != "")) && template_access_settings($template_id)!='Private') {
+            if ($row['tsugi_xapi_enabled'] && ($row['tsugi_xapi_useglobal'] || ($row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != "")) && (template_access_settings($template_id)!='Private' || $row['tsugi_published'])) {
                 $info->info = $html;
                 $info->xapi_linkinfo = PROJECT_INFO_XAPI_PUBLISHED;
                 $info->xapi_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
@@ -785,10 +785,11 @@ function statistics_prepare($template_id, $force=false)
                 {
                     $lrsendpoint['lrsendpoint'] = $row['tsugi_xapi_endpoint'];
                 }
-                $lrsendpoint = CheckLearningLocker($lrsendpoint);
+                $lrsendpoint = CheckLearningLocker($lrsendpoint, true);
                 $lrs = new stdClass();
                 $lrs->lrsendpoint = $xerte_toolkits_site->site_url . "xapi_proxy.php";
                 $lrs->aggregate = $lrsendpoint['aggregate'];
+                $lrs->db = $lrsendpoint['db'];
 
                 $lrs->lrskey = "";
                 $lrs->lrssecret = "";
@@ -925,26 +926,32 @@ function sharing_info($template_id)
 {
     global $xerte_toolkits_site;
 
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
     if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
         return "";
     }
 
     $sql = "SELECT template_id, user_id, firstname, surname, username, role, folder FROM " .
-        " {$xerte_toolkits_site->database_table_prefix}templaterights tr, {$xerte_toolkits_site->database_table_prefix}logindetails ld WHERE " .
+        " {$prefix}templaterights tr, {$prefix}logindetails ld WHERE " .
         " ld.login_id = tr.user_id and template_id= ?";
 
     $query_sharing_rows = db_query($sql, array($template_id));
 
-    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}template_group_rights tgr, " .
-        "{$xerte_toolkits_site->database_table_prefix}user_groups ug WHERE template_id = ? AND tgr.group_id = ug.group_id";
+    $sql = "SELECT group_name, role FROM {$prefix}template_group_rights tgr, " .
+        "{$prefix}user_groups ug WHERE template_id = ? AND tgr.group_id = ug.group_id";
 
     $query_group_sharing_rows = db_query($sql, array($template_id));
 
-    $sql = "SELECT folder FROM {$xerte_toolkits_site->database_table_prefix}templaterights where template_id = ? and role =?";
-    $query_folder_id = db_query($sql, array($template_id, "creator"));
+    $sql = "SELECT folder FROM {$prefix}templaterights where template_id = ?";
+    $query_folder_ids = db_query($sql, array($template_id));
 
-    $sql = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id = ?";
-    $query_folders = db_query($sql, array($query_folder_id[0]["folder"]));
+    $folder_ids_string = implode(",", array_map(function($item) {
+        return $item['folder'];
+    }, $query_folder_ids));
+
+    $sql = "SELECT * FROM {$prefix}folderrights where folder_id in ({$folder_ids_string})";
+    $query_folders = db_query($sql);
 
     $related_folders = array();
     $params = array();
@@ -953,7 +960,7 @@ function sharing_info($template_id)
     if(!empty($related_folders)){
         for($i =0;  $i < count($related_folders) ; $i++){
             if($related_folders[$i]["folder_id"] != 0){
-                $sql = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id = ? and folder_parent != 0";
+                $sql = "SELECT * FROM {$prefix}folderrights where folder_id = ? and folder_parent != 0";
                 $query_folders = db_query($sql, array($related_folders[$i]["folder_parent"]));
                 foreach ($query_folders as $folder){
                     if($folder["role"] == "creator"){
@@ -967,8 +974,8 @@ function sharing_info($template_id)
         }
     }
 
-    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role, folder_id, folder_parent FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
-    $sql_grouped = "SELECT ld.login_id as user_id, firstname, surname, username FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
+    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role, folder_id, folder_parent FROM {$prefix}folderrights fr join {$prefix}logindetails ld on fr.login_id = ld.login_id";
+    $sql_grouped = "SELECT ld.login_id as user_id, firstname, surname, username FROM {$prefix}folderrights fr join {$prefix}logindetails ld on fr.login_id = ld.login_id";
     foreach ($params as $index=>$param){
         if($index != 0){
             $sql .= " or ld.login_id = ?";
@@ -1027,8 +1034,8 @@ function sharing_info($template_id)
     }
 
     $params = array();
-    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}folder_group_rights fgr, " .
-        "{$xerte_toolkits_site->database_table_prefix}user_groups ug WHERE fgr.group_id = ug.group_id and ";
+    $sql = "SELECT group_name, role FROM {$prefix}folder_group_rights fgr, " .
+        "{$prefix}user_groups ug WHERE fgr.group_id = ug.group_id and ";
 
     foreach ($related_folders as $index =>$rf){
         if($index != 0){
@@ -1072,7 +1079,6 @@ function sharing_info($template_id)
         if (!$found)
         {
             // Add $row to $query_shared_folder_users
-            $index = count($query_shared_folder_users);
             $query_shared_folder_users[] = $row;
             if ($row['role'] == "creator") {
                 // Change the role of the user to co-author
@@ -1940,11 +1946,11 @@ function rss_display($xerte_toolkits_site,$tutorial_id,$change){
 	
 	echo "<h3>" . PROPERTIES_LIBRARY_RSS_FEEDS . ":</h3>";
 
-    echo "<p>" . PROPERTIES_LIBRARY_RSS_SITE_LINK . ": <a target=\"_blank\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS",null)  . "\">" . $xerte_toolkits_site->site_url . url_return("RSS",null) . PROPERTIES_LIBRARY_RSS_LINKS . "</a>";
+    echo "<p>" . PROPERTIES_LIBRARY_RSS_SITE_LINK . ": <a target=\"_blank\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS",null)  . "\">" . $xerte_toolkits_site->site_url . url_return("RSS",null) . "</a>" . PROPERTIES_LIBRARY_RSS_LINKS;
 	
 	echo "<br/>" . PROPERTIES_LIBRARY_RSS_SITE_DESCRIPTION . "</p>";
 	
-	echo "<p>" . PROPERTIES_LIBRARY_RSS_PERSONAL . ": <a target=\"_blank\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_user", ($row_name['firstname'] . "_" . $row_name['surname'])) . "\">" . $xerte_toolkits_site->site_url . url_return("RSS_user", $row_name['firstname'] . "_" . $row_name['surname']) . PROPERTIES_LIBRARY_RSS_LINKS . "</a>. ";
+	echo "<p>" . PROPERTIES_LIBRARY_RSS_PERSONAL . ": <a target=\"_blank\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_user", ($row_name['firstname'] . "_" . $row_name['surname'])) . "\">" . $xerte_toolkits_site->site_url . url_return("RSS_user", $row_name['firstname'] . "_" . $row_name['surname']) . "</a>" . PROPERTIES_LIBRARY_RSS_LINKS . ".";
 	
 	echo "<br/>" . PROPERTIES_LIBRARY_RSS_MINE . "</p>";
 
@@ -2009,7 +2015,7 @@ function tsugi_display($id, $lti_def, $mesg = "")
 			<label for="pubChk"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH; ?></label>
 		</div>
 		<div id="publish" class="publish <?php echo($lti_def->published ? "" : "disabled"); ?>">
-            <input type="checkbox" <?php echo($lti_def->tsugi_published ? "" : "disabled"); ?> name="tsugi_publish_in_store" id="tsugi_publish_in_store" <?php echo ($lti_def->tsugi_publish_in_store ? "checked" : "");?>>
+            <input type="checkbox" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_publish_in_store" id="tsugi_publish_in_store" <?php echo ($lti_def->tsugi_publish_in_store ? "checked" : "");?>>
             <label for="tsugi_publish_in_store"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH_IN_STORE; ?></label><br>
 			<input type="checkbox" onchange="javascript:tsugi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_useglobal" id="tsugi_useglobal" <?php echo ($lti_def->tsugi_useglobal ? "checked" : "");?>>
 			<label for="tsugi_useglobal"><?php echo PROPERTIES_LIBRARY_TSUGI_USEGLOBAL; ?></label><br>
@@ -2129,10 +2135,10 @@ function tsugi_display($id, $lti_def, $mesg = "")
     if($lti_def->published)
     {
         echo "<p class='lti_launch_url'>" . PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br>";
-		echo "<a class='lti_launch_url' href='" . $lti_def->url . "' target='_blank'>" . $lti_def->url . " " . PROPERTIES_LIBRARY_PROJECT_LINKS . "</a>";
+		echo "<a class='lti_launch_url' href='" . $lti_def->url . "' target='_blank'>" . $lti_def->url . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
         echo "</p>";
 		echo "<p>" . PROPERTIES_LIBRARY_TSUGI_LTI13_LAUNCH_URL . "<br>";
-		echo "<a class='lti_launch_url' href='" . $lti_def->url13 . " target='_blank'>" . $lti_def->url13 . " " . PROPERTIES_LIBRARY_PROJECT_LINKS . "</a>";
+		echo "<a class='lti_launch_url' href='" . $lti_def->url13 . "' target='_blank'>" . $lti_def->url13 . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
 		echo "</p>";
     }
     else if ($lti_def->xapi_enabled)
@@ -2140,7 +2146,7 @@ function tsugi_display($id, $lti_def, $mesg = "")
 		// Show xapionly url
 		echo "<p class='lti_launch_url'>";
 		echo PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br>";
-		echo "<a class='lti_launch_url' href='" . $lti_def->xapionly_url . "' target='_blank'>" . $lti_def->xapionly_url . " " . PROPERTIES_LIBRARY_PROJECT_LINKS . "</a>";
+		echo "<a class='lti_launch_url' href='" . $lti_def->xapionly_url . "' target='_blank'>" . $lti_def->xapionly_url . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
 		echo "</p>";
     }
     ?>

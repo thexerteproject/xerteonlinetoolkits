@@ -60,7 +60,7 @@
         'NotoSerif-Bold.js',
         'NotoSerif-Normal.js',
         'FileSaver.min.js',
-        'jspdf.min.js',
+        'jspdf.umd.min.js',
         'jspdf.plugin.autotable.min.js'
       ],
       // PDF Settings
@@ -129,12 +129,6 @@
     };
 
     this.init = function() {
-      if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
-        $('#txtHolder').html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-      } else {
-        $('#txtHolder').remove();
-      }
-
       // load files used to create pdf
       var loadFiles = true;
       if (xot_offline) {

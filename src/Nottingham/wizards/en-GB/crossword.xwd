@@ -2,7 +2,7 @@
 
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1" capitalise="true"
+      <crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1" capitalise="true" align="Left"
 	  acrossLabel="Across"
 	  downLabel="Down"
 	  checkLabel="Submit"
@@ -15,13 +15,13 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <attempts label="Attempts" type="TextInput" defaultValue="1" tooltip="Attempts allowed before correct answers are given"></attempts>
 	<capitalise label="Force Capitalisation" type="CheckBox" defaultValue="false" mandatory="true" tooltip="Force the letters entered in the crossword to appear capitalised"/>
+    <align label="Clue Position" options="Left,Bottom,Right" type="ComboBox" defaultValue="Right" data="Left,Bottom,Right" width="100" mandatory="true"/>
 	
 	<textGroup type="group" label="Page Text" optional="true">
 		<text label="Text" type="TextArea" defaultValue="" placeholder="Enter text for the page here" height="100" optional="true"/>
 		<textPos label="Position" options="Top,Above Clues" type="ComboBox" data="Top,Above" defaultValue="Top" width="100" optional="true"/>
 	</textGroup>
 	<feedback label="Feedback" type="TextArea" defaultValue="" placeholder="Enter feedback text here" wysiwyg="true" height="100" optional="true"/>
-    <align label="Clue Position" options="Left,Bottom,Right" type="ComboBox" defaultValue="Right" data="Left,Bottom,Right" width="100" optional="true"/>
 	
 	<acrossLabel label="Across Clue Title" type="TextInput" wysiwyg="true" divider="true" language="true" mandatory="true" defaultValue="Across"/>
 	<downLabel label="Down Clue Title" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Down"/>

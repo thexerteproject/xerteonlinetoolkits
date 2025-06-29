@@ -229,10 +229,10 @@ var EDITOR = (function ($, parent) {
                 }
             case "hidden":
                 if (enabled) {
-                    return '<i class="hiddenIcon iconEnabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
+                    return '<i class="hiddenIcon iconEnabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + tooltip + '"></i>';
                 }
                 else {
-                    return '<i class="hiddenIcon iconDisabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + language.hidePage.$tooltip + '"></i>';
+                    return '<i class="hiddenIcon iconDisabled fa fa-eye-slash " id="' + key + '_hidden" title ="' + tooltip + '"></i>';
                 }
 			case "advanced":
                 if (enabled) {
@@ -255,6 +255,13 @@ var EDITOR = (function ($, parent) {
                 else {
                     return '<i class="passwordIcon iconDisabled fa fa-lock " id="' + key + '_password" title ="' + language.passwordPage.$tooltip + '"></i>';
                 }
+            case "milestone":
+                if (enabled) {
+                    return '<i class="milestoneIcon iconEnabled fa fa-location-dot " id="' + key + '_milestone" title ="' + language.milestonePage.$tooltip + '"></i>';
+                }
+                else {
+                    return '<i class="milestoneIcon iconDisabled fa fa-location-dot " id="' + key + '_milestone" title ="' + language.milestonePage.$tooltip + '"></i>';
+                }
         }
     },
 
@@ -263,9 +270,11 @@ var EDITOR = (function ($, parent) {
         // Get icon states
         var deprecatedState = ($("#"+key+"_deprecated.iconEnabled").length > 0);
         var hiddenState = ($("#"+key+"_hidden.iconEnabled").length > 0);
+        var hiddenContentState = ($("#"+key+"_hidden.iconEnabled").length > 0);
 		var passwordState = ($("#"+key+"_password.iconEnabled").length > 0);
 		var standaloneState = ($("#"+key+"_standalone.iconEnabled").length > 0);
         var unmarkState = ($("#"+key+"_unmark.iconEnabled").length > 0);
+        var milestoneState = ($("#"+key+"_milestone.iconEnabled").length > 0);
         var change = false;
         var tooltip = "";
 		var level;
@@ -277,6 +286,10 @@ var EDITOR = (function ($, parent) {
                 break;
             case "hidden":
                 if (hiddenState != enabled)
+                    change = true;
+                break;
+            case "hiddenContent":
+                if (hiddenContentState != enabled)
                     change = true;
                 break;
 			case "password":
@@ -291,6 +304,10 @@ var EDITOR = (function ($, parent) {
                 if (unmarkState != enabled)
                     change = true;
                 break;
+            case "milestone":
+                if (milestoneState != enabled)
+                    change = true;
+                break;
             case "text":
                 change = true;
                 break;
@@ -303,12 +320,17 @@ var EDITOR = (function ($, parent) {
             if (deprecatedState) {
                 tooltip = $("#" + key + '_deprecated')[0].attributes['title'];
 				level = $("#" + key + '_deprecated').hasClass('deprecatedLevel_low') ? 'low' : undefined;
+            } else if (item == "hidden") {
+                tooltip = language.hidePage.$tooltip;
+            } else if (item == "hiddenContent") {
+                tooltip = language.hideContent.$tooltip;
             }
             var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [item == "deprecated" ? enabled : deprecatedState, level], tooltip);
-            var hiddenIcon = getExtraTreeIcon(key, "hidden", (item == "hidden" ? enabled : hiddenState));
+            var hiddenIcon = getExtraTreeIcon(key, "hidden", (item == "hidden" || item == "hiddenContent" ? enabled : hiddenState), tooltip);
 			var passwordIcon = getExtraTreeIcon(key, "password", (item == "password" ? enabled : passwordState));
 			var standaloneIcon = getExtraTreeIcon(key, "standalone", (item == "standalone" ? enabled : standaloneState));
             var unmarkIcon = getExtraTreeIcon(key, "unmark", (item == "unmark" ? enabled : unmarkState));
+            var milestoneIcon = getExtraTreeIcon(key, "milestone", (item == "milestone" ? enabled : milestoneState));
             var nodetext;
             if (item == "text")
             {
@@ -317,7 +339,7 @@ var EDITOR = (function ($, parent) {
             else {
                 nodetext = $("#" + key + '_text').text();
             }
-            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
+            nodetext = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + milestoneIcon + passwordIcon + standaloneIcon + deprecatedIcon + '</span><span id="' + key + '_text">' + nodetext + '</span>';
             tree.rename_node(node, nodetext);
             //tree.set_text(node, nodetext);
             //tree.refresh();
@@ -402,13 +424,14 @@ var EDITOR = (function ($, parent) {
         }
 
         var deprecatedIcon = getExtraTreeIcon(key, "deprecated", [wizard_data[xmlData[0].nodeName].menu_options.deprecated, wizard_data[xmlData[0].nodeName].menu_options.deprecatedLevel], wizard_data[xmlData[0].nodeName].menu_options.deprecated);
-        var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true");
+        var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true" || xmlData[0].getAttribute("hideContent") == "true", xmlData[0].getAttribute("hidePage") == "true" ? language.hidePage.$tooltip : language.hideContent.$tooltip);
         var passwordIcon = getExtraTreeIcon(key, "password", xmlData[0].getAttribute("password") != undefined && xmlData[0].getAttribute("password") != '');
-        var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true");
+        var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true" || xmlData[0].getAttribute("linkPageChapter") == "true");
         var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
-		var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && !disable_advanced && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
+		var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
+		var milestoneIcon = getExtraTreeIcon(key, "milestone", xmlData[0].getAttribute("milestone") == "true");
 
-        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
+        treeLabel = '<span id="' + key + '_container">' + unmarkIcon + hiddenIcon + milestoneIcon + passwordIcon + standaloneIcon + deprecatedIcon + advancedIcon + '</span><span id="' + key + '_text">' + treeLabel + '</span>';
 
         var this_json = {
             id : key,
@@ -826,7 +849,7 @@ var EDITOR = (function ($, parent) {
 		}
 
 		if (options.group == undefined) { // nested groups aren't collapsible
-			$('<i class="minMaxIcon fa fa-caret-up"></i>').appendTo(legend.find('.legend_label'));
+			$('<i class="minMaxIcon fa fa-caret-down"></i>').appendTo(legend.find('.legend_label'));
 			
 			legend.find('.legend_label').click(function() {
 				var $icon = $(this).find('i.minMaxIcon');
@@ -842,7 +865,7 @@ var EDITOR = (function ($, parent) {
 					});
 
 				} else {
-					$fieldset.find('.table_holder').slideDown(400);
+					$fieldset.find('.table_holder').slideDown(400, resizeDataGrids);
 
 					$icon
 						.removeClass('fa-caret-down')
@@ -875,6 +898,12 @@ var EDITOR = (function ($, parent) {
 		
 		if (options.group == undefined) {
 			$(id).append(tr);
+
+            // collapse optional property groups initially on wizard load unless expand groups box is checked (they will be expanded when just added)
+            if (group.hasClass('wizardoptional') && !$('#groups_cb').prop('checked')) {
+                group.addClass('collapsed');
+                group.find('.table_holder').slideUp(0);
+            }
 		} else {
 			$('#groupTable_' + options.group).append(tr);
 		}
@@ -941,25 +970,20 @@ var EDITOR = (function ($, parent) {
         var key = parent.tree.getSelectedNodeKeys();
 
 		for (var i=0; i<toDelete.length; i++) {
-			if (toDelete[i] == "hidePage") {
+			if (toDelete[i] == "hidePage" || toDelete[i] == "hideContent") {
 			    changeNodeStatus(key, "hidden", false);
-                //var hiddenIcon = $("#" + key + "_hidden");
-                //if (hiddenIcon) {
-                //    hiddenIcon.switchClass('iconEnabled', 'iconDisabled');
-                //}
 			}
 			if (toDelete[i] == "password") {
 			    changeNodeStatus(key, "password", false);
 			}
-			if (toDelete[i] == "linkPage") {
+			if (toDelete[i] == "linkPage" || toDelete[i] == "linkPageChapter") {
 			    changeNodeStatus(key, "standalone", false);
 			}
+            if (toDelete[i] == "milestone") {
+                changeNodeStatus(key, "milestone", false);
+            }
             if (toDelete[i] == "unmarkForCompletion"){
                 changeNodeStatus(key, "unmark", false);
-                //var unmarkIcon = $("#" + key + "_unmark");
-                //if (unmarkIcon) {
-                //    unmarkIcon.switchClass('iconEnabled', 'iconDisabled');
-                //}
             }
 
 			if (toDelete[i] in lo_data[key]["attributes"])
@@ -1307,10 +1331,90 @@ var EDITOR = (function ($, parent) {
 		// can set different wysiwyg setting for each field by having list e.g. 'false,full,full' - otherwise all fields will have same setting
 		var wysiwyg = options.wysiwyg != undefined ? options.wysiwyg.split(',') : 'false';
 
+        // if cellType is media or pageList then we will do something different
+		const cellType = options.cellType != undefined ? options.cellType.split(',') : 'false';
+
 		$('#' + ids[0].id + ' textarea:visible, #' + ids[0].id + ' input:visible').each(function(i) {
 			var col_id = this.id;
 
-			if ((wysiwyg.length == 1 && i > 0 && wysiwyg[0] != 'false' && wysiwyg[0] != undefined) || wysiwyg[i] != 'false' && wysiwyg[i] != undefined) {
+            if (cellType != 'false' && i <= cellType.length-1 && (cellType[i] == "media" || cellType[i] == "pageList")) {
+                if (cellType[i] == "media") {
+                    // allow file upload - add the upload & preview buttons
+                    if (!$(this).hasClass("media")) {
+                        $(this)
+                            .addClass("media")
+                            .width("auto");
+
+                        // add a button that opens media browser when clicked
+                        $(this).parent().append('<button id="' + 'browse_' + col_id + '" title="' + language.compMedia.$tooltip + '" class="xerte_button media_browse"></button>');
+                        $(this).parent().find("#browse_" + col_id)
+                            .click(function () {
+                                browseFile(col_id);
+                            })
+                            .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon'));
+
+                        // add a button that shows preview of file when clicked
+                        $(this).parent().append('<button id="' + 'preview_' + col_id + '" title="' + language.compPreview.$tooltip + '" class="xerte_button"></button>');
+                        $(this).parent().find("#preview_" + col_id)
+                            .click(function () {
+                                previewFile($(this).parents("tr").find(".CaptionTD").html(), $(this).parents("tr").find(".media")[0].value);
+                            })
+                            .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon'));
+                    }
+
+                } else {
+                    // allow Xerte page to be selected from a drop-down menu
+                    $(this).parents("tr").find(".CaptionTD").attr("id", "label_" + col_id);
+
+                    if (!$(this).hasClass("pageList")) {
+                        $(this).addClass("pageList")
+
+                        // add a select field containing all pages
+                        const $pageSelect = $("<select id='" + col_id + "_pageBrowse' aria-labelledby='label_" + col_id + "' class='page_browse'>")
+                            .change(function() {
+                                // add info about what's been selected to the input field as this is where the saved data for this cell is
+                                // saved in odd format as we want the page name, not the page ID to be visible in the datagrid
+                                $("#" + col_id).val('<span data-pageID="' + this.value + '">' + $(this).find("option:eq(" + this.selectedIndex + ")").text() + '</span>');
+                            });
+
+                        // add empty entry
+                        let $option = $('<option>').attr('value', "");
+                        $option.append("&nbsp;");
+                        $pageSelect.append($option);
+
+                        $.each(getPageList(), function (page) {
+                            $option = $('<option>').attr('value', this[1]);
+                            $option.append(this[0]);
+                            $pageSelect.append($option);
+                        });
+
+                        $(this).before($pageSelect);
+
+                        // hide the normal input field but don't remove it
+                        // not just using $(this).hide() as it then doesn't always show the correct info when editing multiple datagrid lines
+                        $(this)
+                            .attr({
+                                "tabindex": "-1",
+                                "aria-hidden": "true"
+                            })
+                            .css({
+                                "visibility": "hidden",
+                                "width": "0"
+                            });
+                    }
+
+                    // ensure the correct, current item is selected
+                    const thisValue = $(this.value).length > 0 && $(this.value).attr("data-pageID") != undefined ? $(this.value).attr("data-pageID") : "";
+                    $("#" + col_id + "_pageBrowse option").each(function(i) {
+                        if ((i==0 && thisValue == "") || $(this).attr("value") == thisValue) {
+                            $(this).prop('selected', true);
+                        } else {
+                            $(this).prop('selected', false);
+                        }
+                    });
+                }
+
+            } else if ((wysiwyg.length == 1 && i > 0 && wysiwyg[0] != 'false' && wysiwyg[0] != undefined) || wysiwyg[i] != 'false' && wysiwyg[i] != undefined) {
 				// destroy editor for all columns
 				var myCkOptions = ckoptions;
 
@@ -1347,6 +1451,11 @@ var EDITOR = (function ($, parent) {
 			}
 
 		});
+
+        // there is some text to display when editing the grid - insert above the table
+        if (options.gridTxt !== undefined && options.gridTxt != "" && $(".gridTxt").length == 0) {
+            $("form.FormGrid table.EditTable").before('<div class="gridTxt">' + options.gridTxt + '<hr/></div>');
+        }
 
 		// resize the dialog to make sure they fit on screen once ckeditor has loaded
 		setTimeout(function(){
@@ -1689,7 +1798,6 @@ var EDITOR = (function ($, parent) {
         jqGridsColSel = {};
 
         $.each(datagrids, function(i, options){
-
 			var thisGrid = this;
 			// Get the data for this grid
             var data = lo_data[options.key].attributes[options.name];
@@ -1744,6 +1852,16 @@ var EDITOR = (function ($, parent) {
             {
                 colWidths = gridoptions.colWidths.split(',');
             }
+            let cellType;
+            if (gridoptions.cellType)
+            {
+                cellType = gridoptions.cellType.split(',');
+            }
+            let gridTxt;
+            if (gridoptions.gridTxt)
+            {
+                gridTxt = gridoptions.gridTxt;
+            }
 
             // set up the jqGrid column model
             // Add unique hidden column as key for records
@@ -1780,6 +1898,10 @@ var EDITOR = (function ($, parent) {
                     col['width'] = (colWidths[i] ? colWidths[i] : Math.round(parseInt(gridoptions.width) / nrCols));
                 }
                 col['editable'] = (editable[i] !== undefined ? (editable[i] == "1" ? true : false) : true);
+
+                col['cellType'] = (cellType !== undefined && cellType[i] !== undefined ? cellType[i] : null);
+                col['gridTxt'] = gridTxt;
+
                 if (i==0) {
                     col['sortable'] = true;
                 } else {col['sortable'] = false;}
@@ -2000,20 +2122,23 @@ var EDITOR = (function ($, parent) {
 				});
 
 				$(window).on("resizeEnd", function() {
-					$("#mainPanel .ui-jqgrid").hide();
-					var newWidth = $("#mainPanel .ui-jqgrid").parent().width();
-					$("#mainPanel .ui-jqgrid").show();
-					$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
+                    resizeDataGrids();
 				});
 				
 				// make sure datagrid is correct width when first loaded
-				$("#mainPanel .ui-jqgrid").hide();
-				var newWidth = $("#mainPanel .ui-jqgrid").parent().width();
-				$("#mainPanel .ui-jqgrid").show();
-				$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
+                resizeDataGrids();
 
 				jqGridSetUp == true;
 			}
+        });
+    },
+
+    resizeDataGrids = function() {
+        $("#mainPanel .ui-jqgrid").each(function() {
+            $(this).hide();
+            var newWidth = $(this).parent().width();
+            $(this).show();
+            $(this).find("table").jqGrid("setGridWidth", newWidth, true);
         });
     },
 
@@ -2068,12 +2193,20 @@ var EDITOR = (function ($, parent) {
             changeNodeStatus(key, "hidden", value == "true");
         }
 
+        if (name == "hideContent") {
+            changeNodeStatus(key, "hiddenContent", value == "true");
+        }
+
         if (name == "password") {
             changeNodeStatus(key, "password", value != "");
         }
 
-        if (name == "linkPage") {
+        if (name == "linkPage" || name == "linkPageChapter") {
             changeNodeStatus(key, "standalone", value == "true");
+        }
+
+        if (name == "milestone") {
+            changeNodeStatus(key, "milestone", value == "true");
         }
 
         if (name == "unmarkForCompletion") {
@@ -2302,18 +2435,20 @@ var EDITOR = (function ($, parent) {
 
     browseFile = function (id, key, name, value, obj)
     {
-        //console.log('Browse file: ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
-
         window.elFinder = {};
         window.elFinder.callBack = function(file) {
             // Actions with url parameter here
             var url = decodeURIComponent(file.url);
-            //console.log('Browse file: url=' + url);
             pos = url.indexOf(rlourlvariable);
-            if (pos >=0)
+            if (pos >=0) {
                 url = "FileLocation + '" + url.substr(rlourlvariable.length + 1) + "'";
+            }
             $('#' + id).attr("value", url);
-            setAttributeValue(key, [name], [url]);
+
+            // if this field is in a datagrid then we don't set attribute value immediately
+            if (key !== undefined && name !== undefined) {
+                setAttributeValue(key, [name], [url]);
+            }
             window.elFinder = null;
         };
         window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2) + '&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable, 'Browse file', "height=600, width=800");
@@ -2415,14 +2550,13 @@ var EDITOR = (function ($, parent) {
      */
 	getPageList = function(thisKey, thisTarget)
 	{
-
 		var tree = $.jstree.reference("#treeview");
 		var pages=[];
 
 		// list of everything at same level or everything at parent's level
 		if (thisTarget != undefined) {
-			
 			// 0 finds nodes at this level, 1 finds nodes at parent level, 2 finds nodes at parent's parent level....
+            // for example, this is used on decision tree page where answers can link to other steps on the same page but not other pages in the project
 			// * makes it include all the children too
 			var children = false;
 			if (thisTarget.indexOf('*') != -1) {
@@ -2436,8 +2570,8 @@ var EDITOR = (function ($, parent) {
 			$.each(lo_node.children, function(i, key){
 				var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
 				var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-				var hidden = lo_data[key]['attributes'].hidePage;
-				
+				var hidden = lo_data[key]['attributes'].hidePage || lo_data[key]['attributes'].hideContent;
+
 				if (linkID.found && linkID.value != "") {
 					var page = [];
 					// Also make sure we only take the text from the name, and not the full HTML
@@ -2451,7 +2585,7 @@ var EDITOR = (function ($, parent) {
 						$.each(childNode.children, function(i, key){
 							var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
 							var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-							var hidden = lo_data[key]['attributes'].hidePage;
+							var hidden = lo_data[key]['attributes'].hidePage || lo_data[key]['attributes'].hideContent;
 							
 							if (linkID.found && linkID.value != "") {
 								var page = [];
@@ -2477,37 +2611,40 @@ var EDITOR = (function ($, parent) {
 			var lo_node = tree.get_node("treeroot", false);
 			
 			$.each(lo_node.children, function(i, key){
-					var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-					var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-					var hidden = lo_data[key]['attributes'].hidePage;
-					
-					if (linkID.found && linkID.value != "")
-					{
-						
-						var page = [];
-						// Also make sure we only take the text from the name, and not the full HTML
-						page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
-						page.push(/*pageID.found ? pageID.value :*/ linkID.value);
-						pages.push(page);
+                function checkNode(key, checkChildren, child) {
+                    const name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+                    const linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+                    const hidden = lo_data[key]['attributes'].hidePage || lo_data[key]['attributes'].hideContent;
 
-						// Now we do the children (if deeplinking is allowed)
-						if (wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
-							var childNode = tree.get_node(key, false);
-							$.each(childNode.children, function(i, key){
-								var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-								//var pageID = getAttributeValue(lo_data[key]['attributes'], 'pageID', [], key);
-								var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-								if (/*(pageID.found && pageID.value != "") || */(linkID.found && linkID.value != ""))
-								{
-									var page = [];
-									// Also make sure we only take the text from the name, and not the full HTML
-									page.push(getTextFromHTML("&nbsp;- "+name.value));
-									page.push(/*pageID.found ? pageID.value :*/ linkID.value);
-									pages.push(page);
-								}
-							});
-						}
-					}
+                    if (linkID.found && linkID.value != "") {
+                        // Also make sure we only take the text from the name, and not the full HTML
+                        const page = [];
+                        const prependTxt = child ? "&nbsp;- " : "";
+                        let extraTxt = hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '';
+                        extraTxt += lo_data[key].attributes.nodeName == 'chapter' ? "[" + language.chapter.$title + "] " : ''; // **
+                        page.push(extraTxt + getTextFromHTML(prependTxt + name.value));
+                        page.push(linkID.value);
+                        pages.push(page);
+
+                        // Now we do the children (if deeplinking is allowed)
+                        if (checkChildren && wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
+                            const childNode = tree.get_node(key, false);
+                            $.each(childNode.children, function(k, key){
+                                checkNode(key, false, true);
+                            });
+                        }
+                    }
+                }
+
+                checkNode(key, true);
+
+                // list pages inside a chapter too
+                if (lo_data[key].attributes.nodeName == "chapter") {
+                    const childNode = tree.get_node(key, false);
+                    $.each(childNode.children, function(j, key) {
+                        checkNode(key, true);
+                    });
+                }
 			});
 		}
 		
@@ -5099,6 +5236,7 @@ var EDITOR = (function ($, parent) {
 	my.convertIconPickers = convertIconPickers;
     my.convertDataGrids = convertDataGrids;
     my.convertTreeSelect = convertTreeSelect;
+    my.resizeDataGrids = resizeDataGrids;
     my.showToolBar = showToolBar;
     my.getIcon = getIcon;
     my.insertOptionalProperty = insertOptionalProperty;

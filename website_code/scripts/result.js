@@ -57,11 +57,11 @@
             if (numLoaded < 2) {
                 var fileToLoad;
                 if (numLoaded == 0) {
-                    fileToLoad = "common_html5/js/jspdf.min.js";
+                    fileToLoad = "common_html5/js/jsPDF/jspdf.umd.min.js";
                 }
                 else
                 {
-                    fileToLoad = "common_html5/js/jspdf.plugin.autotable.min.js";
+                    fileToLoad = "common_html5/js/jsPDF/jspdf.plugin.autotable.min.js";
                 }
 
                 $.getScript(x_templateLocation + fileToLoad)
@@ -636,8 +636,8 @@ function XTResults(fullcompletion, trackingState) {
                         matchSub.correct = (learnerAnswer === correctAnswer);
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
-												matchSub.judge = trackingState.interactions[i].result.judge ?? true;
-												judge &= matchSub.judge;
+                        matchSub.judge = (trackingState.interactions[i].result != undefined && trackingState.interactions[i].result.judge != undefined ? trackingState.interactions[i].result.judge : true);
+                        judge &= matchSub.judge;
                         results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
                     break;

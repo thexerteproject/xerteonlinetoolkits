@@ -2,9 +2,9 @@
 
   <noPages label="This project does not contain any pages."/>
 
-  <nextButton label="Next"/>
+  <nextButton label="Next page"/>
   
-  <backButton label="Back"/>
+  <backButton label="Previous page"/>
   
   <tocButton label="Contents"/>
   
@@ -22,7 +22,7 @@
   
   <pageIntroButton label="Page Introduction"/>
   
-  <progressBar label="COMPLETE"/>
+  <progressBar label="COMPLETE" title="Progress bar" markers="Buttons navigate directly to pages or chapters marked on the progress bar" chapter="Chapter" page="Page" milestone="Milestone" complete="Complete" incomplete="Incomplete"/>
   
   <footerTools hide="Hide footer tools" show="Show footer tools"/>
   
@@ -46,7 +46,9 @@
   <errorPage label="No template is currently available for this page type."/>
   
   <errorBrowser label="Your browser does not fully support this page type."/>
-  
+
+  <errorScreenReader label="This page type is not compatible with screen readers."/>
+
   <errorEmbed label="You have embedded an XOT project preview. You must make the project public and embed the public facing URL."/>
   
   <pageDeprecatedCeased label="This page has been deprecated as the service has ceased."/>
@@ -60,10 +62,12 @@
   <hiddenPage label="This page will be hidden in live projects" hidden="This page is currently hidden in live projects" shown="This page is currently shown in live projects" until="Hide until" from="Hide from"/>
   
   <hiddenSection label="This section will be hidden in live projects" hidden="This section is currently hidden in live projects" shown="This section is currently shown in live projects" until="Hide until" from="Hide from"/>
+
+  <hiddenContent label="This content will be hidden in live projects" hidden="This content is currently hidden in live projects" shown="This content is currently shown in live projects" until="Hide until" from="Hide from"/>
   
-  <tick label="Tick"/>
+  <tick label="Tick" title="Correct"/>
   
-  <cross label="Cross"/>
+  <cross label="Cross" title="Incorrect" corrected="Corrected answer"/>
 
   <viewed label="Viewed"/>
  
@@ -100,7 +104,7 @@
 
   <microphoneError label="&lt;p&gt;Unable to access your microphone. Common reasons for this problem include:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;No microphone detected&lt;/li&gt;&lt;li&gt;This web page has been blocked from accessing the microphone&lt;/li&gt;&lt;li&gt;The microphone is already in use by another program or browser tab&lt;/li&gt;&lt;/ul&gt;"/>
   
-  <interactions>
+  <interactions required="required">
 	  <button name="Button"/>
 	  <radioButton selected="selected. Use the arrow keys to choose from the options"/>
 	  <checkBox selected="selected" deselected="deselected"/>
@@ -109,7 +113,8 @@
 	  <hotObject name="HotObject" toSelect="Press Space to select." selected="Hot Object Selected"/>
 	  <textEntry name="Text Entry Box" selected="Text entry box selected"/>
 	  <targetArea name="Target Area" description="Drop zone for" toSelect="Press space to drop the selected item."/>
-	  <draggableItem name="Draggable Item" selected="Item Selected" toSelect="Press space to select" deSelected="No item selected." />
+	  <blank name="Blank"/>
+	  <draggableItem name="Draggable Item" selected="Item Selected" toSelect="Press space to select" deSelected="No item selected." noSelect="Not selected" />
 	  <moreInfoItem name="Learn more" reveal="Reveal information" toSelect="Press space to select" selected="Selected" moreInfo="Press space to learn more" />
 	  <question name="Question"/>
 	  <answer name="Answer"/>
@@ -131,28 +136,40 @@
 
   <colourChanger label="Accessibility Options" description="Change the colours." tooltip="Accessibility Options">
 	  <closeButton label="" description="Close Accessibility Options"/>
-	  <selectTxt label="Please select from the options below"/>
-	  <adviceTxt label="Need more advice? Visit the &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Online Toolkits guide to accessibility&lt;/a&gt;."/>
+	  <selectTxt label="Select a theme for this project"/>
+	  <adviceTxt label="Accessibility advice is available in the &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=151&apos;&gt;Xerte Online Toolkits guide to accessibility&lt;/a&gt;."/>
 	  <wcagTxt label="View the Xerte accessibility statement"/>
 	  <wcagLogo label="WCAG WAI-AA logo"/>
 	  <wcagURL label="https://xot.xerte.org.uk/play.php?template_id=214#home"/>
-	  <off label="Default theme for this resource"/>
-	  <noBg label="Remove Background Images (default theme)"/>
-	  <invert label="Invert, High contrast theme, no background images"/>
-	  <blackYellow label="Black on Yellow theme, no background images"/>
+	  <off label="Default"/>
+	  <invert label="High contrast"/>
+	  <blackYellow label="Black on yellow"/>
+	  <dark label="Dark mode"/>
+	  <light label="Light mode"/>
+	  <noBg label="Remove background images"/>
+	  <responsiveTxt label="Responsive text" tip="When responsive text is turned on, the text size will adapt to the size of the screen you are viewing this project on. If you use the browser zoom to increase the text size then you may get a better experience if you turn responsive text off."/>
   </colourChanger>
 
-  <screenReaderInfo label="Screen Reader Information" newWindow="This link will open in a new window" shortNewWindow="opens in new window" thisWindow="This link will open in this window" dialog="This button will open a dialog window">
-	  <!--<tabNav description="This page contains a tabbed panel where the selection of a tab changes the information presented. To select a tab: Click Enter twice (Jaws) or click Shift-Enter (NVDA)."/>
-	  <accNav description="This page contains an accordion panel where the selection of a tab changes the information presented. To select a tab click Enter or Space."  click="Click to reveal information"/>-->
-	  <buttonNav description="This page contains a series of buttons where each one reveals some related information." click="Click to reveal information"/>
-	  <slideshow description="This page contains a slideshow where clicking the next and previous buttons changes the information presented."/>
-	  <audioSlideshow description="This page displays content in synch with an audio files. New content is added to the page as the audio plays."/>
-	  <videoSynch description="This page displays content in synch with a video. New content is added to the page as the video plays."/>
-	  <list description="This page contains a series of links where each one reveals some related information." click="Click to reveal information"/>
+  <resources label="Resources" text="{x} Resources Available" completeText="{y}/{x} Resources Complete">
+	  <table title="Title" description="Description" actions="Actions" complete="Mark as complete" downloadBtn="Download resource" viewBtn="Open resource"/>
+	  <warning suppress="Don't show this message again" continue="Continue anyway" review="Review the resources"/>
+  </resources>
+
+  <screenReaderInfo label="Screen Reader Information" newWindow="opens in a new window" shortNewWindow="opens in a new window" thisWindow="opens in this window" dialog="opens in a dialog window">
+	  <buttonNav description="This page contains a series of tabs where each one reveals some related information. Use the tab key to select the current tab and the arrow keys to move between tabs. When a tab is selected, using the tab key again will move you to the content on that tab." click="Click to reveal information"/>
+	  <tabNav description="This page contains a series of tabs where each one reveals some related information. Use the tab key to select the current tab and the arrow keys to move between tabs. When a tab is selected, using the tab key again will move you to the content on that tab."/>
+	  <accNav description="This page contains a series of tabs where each one reveals some related information. Use the tab key to select the current tab and the arrow keys to move between tabs. When a tab is selected, using the tab key again will move you to the content on that tab."/>
+	  <slideshow description="This page contains sub-pages where clicking the next and previous buttons changes the information presented."/>
+	  <audioSlideshow description="This page displays content in sync with an audio file. New content is added to the page as the audio plays." prompt="Slide changed"/>
+	  <videoSynch description="This page displays content in sync with a video. New content is added to the page as the video plays." prompt="Content changed"/>
+	  <mediaLesson description="This page displays content in sync with a video or a piece of audio. New content is added to the page as the media plays." prompt="Content added"/>
+	  <interactiveVideo description="This page displays content in sync with a video. New content is added to the page as the video plays." prompt="Content added"/>
+	  <list description="This page contains a list of links where each one reveals some related information." click="Click to reveal information"/>
 	  <modelAnswerResults selected="Text selected"/>
-	  <mcq description="This page contains a multiple choice question. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
-	  <quiz description="This page contains a series of multiple choice questions. Use the tab and up/down arrow keys to explore possible answers and click Space to select your answer."/>
+	  <mcq description="This page contains a multiple choice question. Use the tab and up/down arrow keys to explore possible answers and click the space bar to select your answer."/>
+	  <quiz description="This page contains a series of multiple choice questions. Use the tab and up/down arrow keys to explore possible answers and click the space bar to select your answer."/>
+	  <crossword description="This page contains a crossword. Tab to the across and down clues and use the space bar or enter key to select a clue to complete. You will be moved to the puzzle grid where you can type in your answer."/>
+	  <imageCompare slideHint="Image slider"/>
   </screenReaderInfo>
 
   <saveSession label="Save Session" description="Save session and stop tracking" tooltip="Save Session" tooltip_ltionly="Stop Session">
@@ -202,6 +219,7 @@
   <submitConfirmMsg label="Your answers have been submitted"/>
   <closeBtnLabel label="Close"/>
 
+  <bootstrapNavigation pages="Pages" sections="Sections" subSections="Sub-sections"/>
   <pageMenu label="Page menu"/>
   <top label="Top"/>
   <skip label="Skip to main content"/>
@@ -215,6 +233,6 @@
 
   <scormTrackingAlert warning="Please note: SCORM mode is '{0}'. This means that your progress, interactions and results from this viewing will not be tracked or saved. For tracking you should start a new attempt."/>
 
-  <carousel label="Carousel" slide="slide" next="Next slide" prev="Previous slide" current="{x} of {y}"/>
+  <carousel label="Carousel" slide="slide" next="Next slide" prev="Previous slide" current="{x} of {y}" play="Play slideshow" pause="Pause slideshow"/>
 
 </language>

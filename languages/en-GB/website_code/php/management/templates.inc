@@ -68,6 +68,8 @@
 
 	define("TEMPLATE_ADD_EXPLANATION", "<h3>Sub-templates</h3><p>Import an exported learning object as a new sub-template. If the sub-template already exists it will be replaced. The 'Template name' field identifies the sub-template. The 'Template display name' is the name shown to the user.</p><p>Do not use spaces or any other special characters in the template name, as this name is used as a foldername. If you do use special characters or spaces, these will be replaced by  a '_' character.</p>");
 
+    define("TEMPLATE_UPLOAD_WAIT", "<p>Important: Upload and import of a sub-template can take a while and without indication of progress - only click the upload button once and then wait for a confirmation pop-up message.</p>");
+
     define("TEMPLATE_ADD", "Add template");
 
     define("TEMPLATE_UPLOAD_FILE", "Upload file");

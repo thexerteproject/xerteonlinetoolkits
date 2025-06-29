@@ -23,8 +23,8 @@ require_once ("../themes_library.php");
 
 _load_language_file("/website_code/php/management/theme_enable_disable.inc");
 
-if(!is_user_permitted("useradmin")) {
-    exit(THEME_NO_ACCESS);
+if (!is_user_permitted("templateadmin")) {
+        exit(THEME_NO_ACCESS);
 }
 if (isset($_POST["theme"]) && isset($_POST["type"])) {
 

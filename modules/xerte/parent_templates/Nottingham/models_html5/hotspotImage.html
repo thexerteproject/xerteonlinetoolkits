@@ -128,10 +128,9 @@
 			const maxH = 1;
 				
 			let imgMaxW = Math.round($x_pageHolder.width() * maxW),
-				imgMaxH = Math.round($x_pageHolder.height() * maxH);
+				imgMaxH = Math.round(x_getAvailableHeight([$("#panel"), $("#mapster_wrap_0")], [$("#btnHolder")], true) * maxH);
 			
 			imgMaxW -= ($("#panel").outerWidth(true) - $("#panel").width()) + ($("#x_pageDiv").outerWidth(true) - $("#x_pageDiv").width());
-			imgMaxH -= ($("#panel").outerHeight(true) - $("#panel").height()) + $("#btnHolder").outerHeight(true) + ($("#x_pageDiv").outerHeight(true) - $("#x_pageDiv").height()) + ($("#mapster_wrap_0").outerHeight(true) - $("#mapster_wrap_0").height());
 
 			$img.mapster('unbind');
 
@@ -248,7 +247,6 @@
 						.click(function() {
 							if (x_currentPageXML.getAttribute("textNear") == "in") {
 								if (!$("#hotspot_bubble").length){
-									debugger
 									$(this).append('<div id="hotspot_bubble" class="hotspot_bubble">' + '</div>');
 									$hotspot_bubble = $("#hotspot_bubble");
 									//todo make pretty

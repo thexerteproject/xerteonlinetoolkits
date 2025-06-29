@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-// php categories.php https://vdex.kennisnet.nl/kennisnetset/2015.01/mbo_opleidingsdomeinen_studierichtingen-knset.xml https://vdex.kennisnet.nl/kennisnetset/2015.01/bve_domeinoverstijgende_vakken-knset.xml
+// php categories.php https://vdex.kennisnet.nl/kennisnetset/2015.01/mbo_opleidingsdomeinen_studierichtingen-knset.xml vocabularies/bve_domeinoverstijgende_vakken-2015.01.vdex.xml
 
 (PHP_SAPI !== 'cli' || isset($_SERVER['HTTP_USER_AGENT'])) && die('cli only');
 
@@ -62,7 +62,7 @@ if ($argc > 1) {
 else
 {
     echo "Specify all the desired references i.e.\n";
-    echo "php categories.php https://vdex.kennisnet.nl/kennisnetset/2015.01/mbo_opleidingsdomeinen_studierichtingen-knset.xml https://vdex.kennisnet.nl/kennisnetset/2015.01/bve_domeinoverstijgende_vakken-knset.xml
+    echo "php categories.php https://vdex.kennisnet.nl/kennisnetset/2015.01/mbo_opleidingsdomeinen_studierichtingen-knset.xml vocabularies/bve_domeinoverstijgende_vakken-2015.01.vdex.xml
 \n";
 }
 

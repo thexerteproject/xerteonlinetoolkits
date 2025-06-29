@@ -235,6 +235,13 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     {
         $user_roles = array("super");
     }
+
+    $body_class = "";
+    if ($xerte_toolkits_site->rights == 'elevated')
+    {
+        $body_class = ' class="elevated"';
+    }
+
     _debug("Starting editor page");
 ?>
 <!DOCTYPE html>
@@ -280,7 +287,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <![endif]-->
 
 </head>
-<body>
+<body <?php echo $body_class; ?> >
 <img id="loader" src="editor/img/loading16.gif" />
 <div class="hide ui-layout-west">
 

@@ -3210,6 +3210,27 @@
     };
   };
 
+  Popcorn.getVimeoHashFromURL = function getHash(vimeoUrl) {
+    // Get hash from query string
+    let paramString = vimeoUrl.split('?')[1];
+    if (paramString != undefined) {
+      let params_arr = paramString.split('&');
+      for (let i = 0; i < params_arr.length; i++) {
+        let pair = params_arr[i].split('=');
+        if (pair[0] === 'h') {
+          return pair[1];
+        }
+      }
+    }
+
+    // Search URL segments for hash
+    let result = vimeoUrl.match(/^https?:\/\/(www\.)?(player\.)?vimeo.com\/(channels\/[a-zA-Z0-9]*\/)?(?<id>[0-9]*)(\/(?<hash>[a-zA-Z0-9]+)).*$/);
+    if (result != undefined && result['groups'] != undefined) {
+      return result['groups'].hash;
+    }
+
+    return false;
+  }
   // Based somewhat on these regexps for YouTube and Vimeo (check there for updates)
   //   https://stackoverflow.com/questions/19377262/regex-for-youtube-url
   //   https://stackoverflow.com/questions/5008609/vimeo-video-link-regex
@@ -3218,7 +3239,15 @@
     let result = url.match(/(^|<iframe.+?src=["'])((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?.*?(<\/iframe>|$)$/);
     if (result) return "https://www.youtube.com/watch?v=" + result[7] + (result[8] !== undefined ? result[8] : "");
     result = url.match(/(^|<iframe.+?src=["'])(?:http|https)?:?\/?\/?(?:www\.)?(?:player\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|video\/|)(\d+)(?:|\/\?).*?(<\/iframe>|$)/);
-    if (result) return "https://vimeo.com/" + result[2];
+    if (result)
+    {
+      let hash = this.getVimeoHashFromURL(url);
+      if (hash)
+      {
+        return "https://player.vimeo.com/video/" + result[2] + '?h=' + hash;
+      }
+      return "https://vimeo.com/" + result[2];
+    }
     return url;
   }
 
@@ -5113,7 +5142,6 @@
     //Called when the player script has loaded
     function onReady()
     {
-      debugger;
       player = new YujaPlayer(elem);
 
       player.getDuration();
