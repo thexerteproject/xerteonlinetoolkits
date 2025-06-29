@@ -72,6 +72,7 @@ function init(){
 		}
 	});
 
+
 	loadContent();
 	// Setup beforeunload
 	window.onbeforeunload = XTTerminate;
@@ -142,24 +143,38 @@ function initVideo(element) {
 			trackMedia: false,
 		}, false);
 
-	$('#' + id)
-		.width(width)
-		.height(height);
-	//resizeEmbededMedia($('#' + id + ' .popcornMedia'), {ratio: aspectRatio});
 
-	var heightCalc = $('.popcornMedia').width();
-	var heightCalc2 = heightCalc / aspectRatio;
+		$('#' + id)
+			.width(width)
+			.height(height);
+		resizeEmbededMedia($('#' + id + ' .popcornMedia'), {ratio: 16/9});
 
-	$('#'+ id + '.x_videoContainer').css('width', '99%');
-	$('#'+ id + ' .popcornMedia').css('width', '100%');
-	$('#'+ id + '.x_videoContainer').css('height', height);
-	$('#'+ id + ' .popcornMedia').css('height', height);
-	$(window).resize(function () {
-		setTimeout(function () {
-			//resizeEmbededMedia($('#' + id + ' .popcornMedia'), {ratio: aspectRatio});
-		}, 200);
-	});
-}
+
+        $(window).resize(function() {
+                if (!sessionStorage.getItem('hasReloaded')) {
+                sessionStorage.setItem('hasReloaded', 'true');
+                location.reload();
+            }
+        });
+
+		// var heightCalc = $('.popcornMedia').width();
+		// var heightCalc2 = heightCalc * 9 / 16;
+
+		// $('.x_videoContainer').css('width', '100%');
+		// $('.popcornMedia').css('width', '100%');
+		// $('.x_videoContainer').css('height', height);
+		// $('.popcornMedia').css('height', height);
+		// $(window).resize(function() {
+		// 	setTimeout(function() {
+		// 		$('.x_videoContainer').css('width', width);
+		// 		$('.popcornMedia').css('width', width);
+		// 		$('.x_videoContainer').css('height',  height);
+		// 		$('.popcornMedia').css('height',  height);
+
+		// 	}, 200);
+		// });
+
+	}
 
 // called after all content loaded to set up mediaelement.js players
 function initAudio(element){
@@ -229,16 +244,21 @@ function videoResize($popcorn) {
 function initSidebar(){
 	var $window = $(window)
 	var top = $window.width() <= 980 ? 290 : 210
-	var bottom = 270
-
+	var bottom = 370
+	var navbarheight2 = $('.navbar-fixed-top');
 	//TOC
+
+    // Check computed style for 'position'
+    if (navbarheight2.css('position') === 'sticky') {
+        var heightnavbar = navbarheight2.outerHeight();
+    }
 	$('.bs-docs-sidenav').affix
 	(
 		{
 			offset:
 			{
-				top: top,
-				bottom: bottom
+				top: top ,
+				bottom: bottom - heightnavbar
 			}
 		}
 	)
@@ -776,6 +796,7 @@ function setup() {
 
 	// set up search functionality
 	if ($(data).find('learningObject').attr('search') == 'true' || $(data).find('learningObject').attr('category') == 'true') {
+
 
 		var $searchHolder = $('<div id="searchHolder"></div>'),
 			$searchInner = $('<div id="searchInner"></div>');
@@ -1687,27 +1708,13 @@ function x_CheckBanner(index){
 		$("#x_clickableWrapper").remove();
 	}
 }
-debugger
-if (fixedheader=="true")
-	{
-		debugger
-		fixedheader = true;
-		// let height=-1;
-		if ($(data).find('page').eq(index).attr('fixedheader') === 'true')
-		{
-			debugger
-			//sectie menu onder menu balk en menu balk sticky
-			$(".navbar-fixed-top").css("position", "sticky");
 
-		}
-		// fixedheight = height;
-	}
-	else
-	{
-		// fixedheight = false;
-	}
+
+
+
 //this is the main scroll function
 $(window).scroll(function () {
+
 	if ($(document).scrollTop() > 20) {
 		if (collapseBanner) {
 			$(".x_scale").addClass("x_shrink");
@@ -1795,6 +1802,8 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 					}
 				});
 			});
+
+
 		});
 	}
 
@@ -1884,7 +1893,20 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 					$(".jumbotron").show();
 				}
 			}
+            // let height=-1;
+            if (page.attr('fixedheader') == 'true')
+            {
+                fixedheader = true;
 
+                //sectie menu onder menu balk en menu balk sticky
+                $(".navbar-fixed-top").css("position", "sticky");
+
+            }
+            else
+            {
+            $(".navbar-fixed-top").css("position", "static");
+                // fixedheight = false;
+            }
 			// nav bar can be hidden on standalone pages
 			if (standAlonePage && page.attr('navbarHide') == 'hidden') {
 				$("#topnav").hide();
@@ -2687,9 +2709,11 @@ function updateMenu(listID) {
 
 // jump to specified section of current page
 function goToSection(pageId) {
+
 	sectionJump = document.getElementById(pageId);
 	if (sectionJump != undefined) {
-		var top = sectionJump.offsetTop;
+		var navbarHeight = document.querySelector('.navbar-fixed-top').offsetHeight;
+		var top = sectionJump.offsetTop - navbarHeight;
 		window.scrollTo(0, top);
 	}
 }
