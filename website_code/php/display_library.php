@@ -439,7 +439,7 @@ function get_group_folder_contents($group_id, $tree_id, $sort_type, $copy_only=f
     */
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
-    $query = "select fd.folder_id, fd.folder_name from {$prefix}folderdetails fd, {$prefix}folder_group_rights fgr "
+    $query = "select fd.folder_id, fd.folder_name, fgr.role from {$prefix}folderdetails fd, {$prefix}folder_group_rights fgr "
         . " where fd.folder_id = fgr.folder_id AND fgr.group_id = ?";
     $params = array($group_id);
 
