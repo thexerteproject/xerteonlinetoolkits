@@ -30,7 +30,9 @@
 
 	define("PROPERTIES_LIBRARY_XML_SAVE", "Your changes have been saved");
 
-	define("PROPERTIES_LIBRARY_XML_ERROR", "Only the creator and co-authors of the project can set up XML sharing");
+    define("PROPERTIES_LIBRARY_XML_LINK", "The link for xml sharing is ");
+
+    define("PROPERTIES_LIBRARY_XML_ERROR", "Only the creator and co-authors of the project can set up XML sharing");
 
 	//PROJECT INFO PANEL IN THE WORKSPACE - MORE TERSE TEXT
 	define ("PROJECT_INFO_NAME", "Name");
