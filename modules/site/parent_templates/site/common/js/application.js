@@ -3473,6 +3473,11 @@ function loadXotContent($this) {
 	{
 		xotLink += separator + 'site=' + x_TemplateId;
 		xotLink = xotLink.replace('play.php?', peditEndpoint);
+		xotLink += separator + 'param=' + urlParams.param;
+		if (typeof urlParams.aloConnectionKey != "undefined")
+		{
+			xotLink += separator + 'aloConnectionKey=' + urlParams.aloConnectionKey;
+		}
 	}
 	else if (typeof xapi_enabled != 'undefined' && xapi_enabled)
 	{
