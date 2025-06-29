@@ -3,6 +3,9 @@ require_once("../../config.php");
 require_once("../../website_code/php/display_library.php");
 require_once("../../website_code/php/user_library.php");
 require_once("../../website_code/php/xmlInspector.php");
+
+$version = getVersion();
+
 ?>
 
 <script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
