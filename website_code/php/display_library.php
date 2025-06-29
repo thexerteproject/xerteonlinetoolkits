@@ -774,9 +774,9 @@ function get_shared_folder_contents($folder_id, $role, $tree_id, $sort_type, $co
         . " join {$prefix}templaterights tr3 on td.template_id=tr3.template_id and tr3.role='creator' "
         . " join {$prefix}folderdetails fd3 on tr3.folder=fd3.folder_id "
         . " left join {$prefix}templaterights tr2 on td.template_id=tr2.template_id ";
-    if ($copy_only) {
-        $sql .= " and (tr.role = 'creator' or tr.role ='co-author') ";
-    }
+    //if ($copy_only) {
+    //    $sql .= " and (tr.role = 'creator' or tr.role ='co-author') ";
+    //}
     $sql .= " group by td.template_id, td.creator_id, td.template_name, td.date_created, otd.template_name,td.access_to_whom, td.tsugi_published, otd.parent_template, otd.template_framework, tr.role, tr.folder,fd3.folder_name ";
     if ($sort_type == "alpha_down") {
         $sql .= " order by td.template_name DESC";
@@ -803,10 +803,14 @@ function get_shared_folder_contents($folder_id, $role, $tree_id, $sort_type, $co
         $item->parent = $folders[$row['folder']]['id'];
         $item->text = $row['project_name'];
         // $item->role = $role;
-        if($row["creator_id"] == $_SESSION["toolkits_logon_id"]){
+        if ($row["creator_id"] == $_SESSION["toolkits_logon_id"]) {
             $item->role = $row['role'];
-        }else{
+        } else {
             $item->role = $role;
+        }
+        if ($copy_only) {
+            if ($item->role !== 'creator' && $item->role !== 'co-author')
+                continue;
         }
 
         $shared = "";

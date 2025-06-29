@@ -62,6 +62,7 @@ for($i=count($workspace->items) - 1; $i>=0; $i--)
     }
     $temptype = str_replace("_group", "", $item->type);
     $temptype = str_replace("_shared", "", $temptype);
+    $temptype = str_replace("sub_", "", $temptype);
     if ((($template == "xerte" && $temptype != "nottingham") || ($template == "site" && $temptype != "site")) && $temptype != "workspace" && $temptype != "folder" && $temptype != "group")
     {
         unset($workspace->nodes->{$item->id});
