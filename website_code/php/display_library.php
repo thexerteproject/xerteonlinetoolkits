@@ -832,10 +832,7 @@ function get_shared_folder_contents($folder_id, $role, $tree_id, $sort_type, $co
         }
         $items[] = $item;
     }
-    // Sort the items by id
-    usort($items, function ($a, $b) {
-        return strcmp($a->id, $b->id);
-    });
+    
     return $items;
 }
 
