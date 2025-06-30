@@ -77,8 +77,9 @@
 		</headerGroup>
         
         <navbarGroup type="group" label="Navigation Bar" optional="true">
+			<fixedheader type="Checkbox" defaultValue="false" conditionTrigger="false" optional="true" label="Fix navigation bar" tooltip="The menu bar is fixed to the top of the window"/>
+			<navbarPos type="ComboBox" data="above,below" options="Above Header,Below Header" optional="true" label="Position" defaultValue="above" width="175"/>
 			<navbarHide label="Hide Navigation Bar" type="Checkbox" defaultValue="false" optional="true" conditionTrigger="true"/>
-			<navbarPos type="ComboBox" data="above,below" options="Above Header,Below Header" optional="true" label="Position" defaultValue="above" width="175" condition="navbarHide!='true'"/>
 			<navBarColours type="group" label="Customise Colours" optional="true" condition="navbarHide!='true'">
 				<navbarColour type="ColourPicker" optional="true" label="Background" condition="navbarHide!='true'"/>
 				<navbarTextColour type="ColourPicker" optional="true" label="Text" condition="navbarHide!='true'"/>
@@ -142,7 +143,7 @@
 			<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true" conditionTrigger="true"/>
 			<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" condition="lightbox!='false'" tooltip="Add a caption to lightbox images. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 		</lightboxGroup>
-		
+
 		<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/USER-FILES/156-fay-Nottingham/media/Variables_Documentation.pdf' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for help creating and using variables">
 			<variables optional="true" label="Variable Data" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | "/>
 			<decimalseparator label="Decimal Separator" type="ComboBox" options="Period,Comma" data="period,comma" width="100" defaultValue="period" optional="true" tooltip="Specify the character used as the decimal separator when numeric variables are used"/>
