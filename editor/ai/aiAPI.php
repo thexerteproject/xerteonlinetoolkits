@@ -19,8 +19,8 @@ require_once(dirname(__FILE__) . "/../../config.php");
 
 
 $prompt_params = $_POST["prompt"] ?? null;
-$type = $_POST["type"];
-$ai_api = $_POST["api"] ?? 'openai';
+$type = $_POST["type"]; // page
+$ai_api = $_POST["api"] ?? 'openai'; // model selection
 $file_url = $_POST["url"] ?? 'None';
 $textSnippet = $_POST["textSnippet"];
 $context = $_POST["context"] ?? 'None';
@@ -54,6 +54,14 @@ verify_LO_folder(prev($url_parts), '/RAG/corpus');
 //dynamically initiate correct api class
 $api_type = $ai_api . 'Api';
 $aiApi = new $api_type($ai_api);
+
+$prompt_params_str = print_r($prompt_params, true);
+$global_instructions_str = print_r($global_instructions, true);
+$useCorpus_str = print_r($useCorpus, true);
+$fileList_str = print_r($fileList, true);
+$restrictCorpusToLo_str = print_r($restrictCorpusToLo, true);
+
+file_put_contents("ai.txt", "prompt_params: $prompt_params_str\ntype: $type\nbaseUrl:$baseUrl\nglobal_instructions: $global_instructions_str\n useCorpus: $useCorpus_str\n fileList: $fileList_str\n restrictCorpusToLo: $restrictCorpusToLo_str\n\n\n", FILE_APPEND);
 switch ($ai_api){
     case 'openai':
     case 'mistral':

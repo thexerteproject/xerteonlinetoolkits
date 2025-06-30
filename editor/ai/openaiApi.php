@@ -16,6 +16,7 @@ class openaiApi
         $this->xerte_toolkits_site = $xerte_toolkits_site;
         require_once (str_replace('\\', '/', __DIR__) . "/rag/BaseRAG.php");
         require_once (str_replace('\\', '/', __DIR__) . "/rag/MistralRAG.php");
+        require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/load_model.php");
     }
     //check if answer conforms to model
     private function clean_gpt_result($answer)
@@ -32,22 +33,24 @@ class openaiApi
 
     //general class for interactions with the openai API
     //this should only be called if the user passed all checks
-   private function POST_OpenAi($prompt, $settings)
+   private function POST_OpenAi($prompt, $payload, $url)
     {
 
         $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openai_key;
 
         //add user supplied prompt to payload
-        $settings["payload"]["messages"][max(sizeof($settings["payload"]["messages"]) - 1, 0)]["content"] = $prompt;
-        $payload = json_encode($settings["payload"]);
-
+        $payload["messages"][max(sizeof($payload["messages"])-1, 0)]["content"] = $prompt;
+        $new_payload = json_encode($payload);
+		
+		$payload_str = print_r($payload, true);
+		file_put_contents("./ai_payloads.txt", $payload_str, FILE_APPEND);
         //start api interaction
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_URL, $settings["url"]);
+        curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_HTTPHEADER, [$authorization, "Content-Type: application/json"]);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $new_payload);
 
         $result = curl_exec($curl);
 
@@ -66,21 +69,24 @@ class openaiApi
         return $resultConform;
     }
 
-    private function POST_OpenAi_Assistant($prompt, $settings)
+    private function POST_OpenAi_Assistant($prompt, $payload, $url)
     {
         $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openai_key;
 
         //add user supplied prompt to payload
-        $settings["payload"]["thread"]["messages"][max(sizeof($settings["payload"]["thread"]["messages"])-1, 0)]["content"] = $prompt;
-        $payload = json_encode($settings["payload"]);
+        $payload["messages"][max(sizeof($payload["thread"]["messages"])-1, 0)]["content"] = $prompt;
+        $new_payload = json_encode($payload);
+		
+		$payload_str = print_r($payload, true);
+		file_put_contents("./ai_payloads.txt", $payload_str, FILE_APPEND);
 
         //start api interaction
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_URL, $settings["url"]);
+        curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_HTTPHEADER, [$authorization, "Content-Type: application/json", "OpenAI-Beta: assistants=v2"]);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $new_payload);
 
         $result = curl_exec($curl);
         curl_close($curl);
@@ -212,9 +218,9 @@ class openaiApi
     //generates prompt for openai from preset prompts and user input
     //todo maybe add some validation for missing fields?
     //to help with pinpointing wrong/missing front end fields
-    private function generatePrompt($p, $type, $globalInstructions): string {
+    private function generatePrompt($p, $model, $globalInstructions): string {
         $prompt = '';
-        foreach ($this->preset_models->prompt_list[$type] as $prompt_part) {
+        foreach ($model->get_prompt_list() as $prompt_part) {
             if ($p[$prompt_part] == null) {
                 $prompt .= $prompt_part;
             } else {
@@ -297,8 +303,11 @@ class openaiApi
         if ($this->xerte_toolkits_site->openai_key == "") {
             return (object) ["status" => "error", "message" => "there is no corresponding API key"];
         }
+	
+		$model = load_model($type, $_POST["model"], $_POST["context"], $_POST["prompt"]["subtype"], $_POST["modelTemplate"], !empty($_POST['url']) || !empty($_POST['textSnippet']), $_POST['asst_id']);
 
-        $prompt = $this->generatePrompt($p, $type, $globalInstructions);
+        $prompt = $this->generatePrompt($p, $model, $globalInstructions);
+		$payload = $model->get_payload();
 
         if ($useCorpus || $fileList != null || $restrictCorpusToLo){
             $apiKey = $this->xerte_toolkits_site->mistralenc_key;
@@ -341,9 +350,9 @@ class openaiApi
 
                 if (isset($this->preset_models->type_list[$type]['payload']['assistant_id'])){
                     // Insert the new messages into the original $settings array
-                    array_splice($this->preset_models->type_list[$type]['payload']['thread']['messages'], 2, 0, $new_messages);
+                    array_splice($payload['thread']['messages'], 2, 0, $new_messages);
                 }else{
-                    array_splice($this->preset_models->type_list[$type]['payload']['messages'], 2, 0, $new_messages);
+                    array_splice($payload['messages'], 2, 0, $new_messages);
                 }
             }
         }
@@ -351,11 +360,11 @@ class openaiApi
         $results = array();
 
         if (isset($this->preset_models->type_list[$type]['payload']['assistant_id'])) {
-                $results[] = $this->POST_OpenAi_Assistant($prompt, $this->preset_models->type_list[$type]);
+                $results[] = $this->POST_OpenAi_Assistant($prompt, $payload, $model->get_chat_url());
         }
         else {
             //Post using non-assistant chat completion endpoint
-            $results[] = $this->POST_OpenAi($prompt, $this->preset_models->type_list[$type]);
+            $results[] = $this->POST_OpenAi($prompt, $payload, $model->get_chat_url());
         }
 
 

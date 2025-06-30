@@ -13,6 +13,8 @@ class mistralApi
         $this->xerte_toolkits_site = $xerte_toolkits_site;
         require_once (str_replace('\\', '/', __DIR__) . "/rag/BaseRAG.php");
         require_once (str_replace('\\', '/', __DIR__) . "/rag/MistralRAG.php");
+        require_once (str_replace('\\', '/', __DIR__) . "/rag/MistralRAG.php");
+        require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/load_model.php");
     }
 
     private function clean_result($answer) {
@@ -26,18 +28,21 @@ class mistralApi
         return $tmp;
     }
 
-    private function POST_mistralai($prompt, $settings) {
+    private function POST_mistralai($prompt, $payload, $url) {
         $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->mistral_key;
 
-        $settings["payload"]["messages"][max(sizeof($settings["payload"]["messages"])-1, 0)]["content"] = $prompt;
-        $payload = json_encode($settings["payload"]);
+        $payload["messages"][max(sizeof($payload["messages"])-1, 0)]["content"] = $prompt;
+        $new_payload = json_encode($payload);
+		
+		$payload_str = print_r($payload, true);
+		file_put_contents("./ai_payloads.txt", $payload_str, FILE_APPEND);
 
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_URL, $settings["url"]);
+        curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_HTTPHEADER, [$authorization, "Content-Type: application/json", 'Accept: application/json']);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $new_payload);
 
         $result = curl_exec($curl);
 
@@ -55,9 +60,9 @@ class mistralApi
         return $resultConform;
     }
 
-    private function generatePrompt($p, $type, $globalInstructions): string {
+    private function generatePrompt($p, $model, $globalInstructions): string {
         $prompt = '';
-        foreach ($this->preset_models->prompt_list[$type] as $prompt_part) {
+        foreach ($model->get_prompt_list() as $prompt_part) {
             if ($p[$prompt_part] == null) {
                 $prompt .= $prompt_part;
             } else {
@@ -166,7 +171,10 @@ class mistralApi
             return (object) ["status" => "error", "message" => "there is no corresponding API key"];
         }
 
-        $prompt = $this->generatePrompt($p, $type, $globalInstructions);
+		$model = load_model($type, $_POST["model"], $_POST["context"], $_POST["prompt"]["subtype"]);
+
+        $prompt = $this->generatePrompt($p, $model, $globalInstructions);
+		$payload = $model->get_payload();
 
         if ($useCorpus || $fileList != null || $restrictCorpusToLo){
             $apiKey = $this->xerte_toolkits_site->mistralenc_key;
@@ -206,13 +214,13 @@ class mistralApi
                 ),
             );
 
-            array_splice($this->preset_models->type_list[$type]['payload']['messages'], 2, 0, $new_messages);
+            array_splice($payload['messages'], 2, 0, $new_messages);
             }
         }
 
         $results = array();
 
-        $results[] = $this->POST_mistralai($prompt, $this->preset_models->type_list[$type]);
+        $results[] = $this->POST_mistralai($prompt, $payload, $model->get_chat_url());
 
         $answer = "";
         foreach ($results as $result) {
