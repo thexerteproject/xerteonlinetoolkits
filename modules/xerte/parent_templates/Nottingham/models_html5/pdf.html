@@ -111,17 +111,14 @@
 				}
 			}
 
-			pdf.setUp();
-			x_pageLoaded();
-		}
-		
-		this.setUp = function() {
 			if (x_browserInfo.iOS == true) {
-				$("#pdfPage").html('<div id="pdfCover" /><object onload="pdf.createCover()" "id="pdfDoc" data="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" type="application/pdf" width="' + pdf.calcWidth() + '" height="auto"><param name="src" value="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '"></object>');
+				$("#pdfPage").html('<div id="pdfCover" /><object onload="pdf.createCover()" id="pdfDoc" data="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" type="application/pdf" width="' + pdf.calcWidth() + '"><param name="src" value="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '"></object>');
 			} else {
-				this.createLink();
-				$("#pdfPage").prepend('<object id="pdfDoc" data="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" type="application/pdf" width="100%" height="' + pdf.calcHeight() + '"><param name="src" value="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '"></object>');
+				$("#pdfPage").prepend('<object id="pdfDoc" data="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" type="application/pdf" width="100%"><param name="src" value="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '"></object>');
 			}
+			this.createLink();
+
+			x_pageLoaded();
 		}
 		
 		this.createCover = function() {
@@ -136,7 +133,11 @@
 		}
 		
 		this.createLink = function() {
-			$("#pdfPage").append('<div id="link"><hr/><a id="pdfLink" href="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" target="_blank">' + (x_currentPageXML.getAttribute("open") == "" || x_currentPageXML.getAttribute("open") == undefined ? "Open PDF in new tab" : x_currentPageXML.getAttribute("open")) + '</a></div>');
+			const faIcon = '<i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>';
+			$("#pdfPage").append('<div id="link"><hr/><a id="pdfLink" href="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" target="_blank">' + (x_currentPageXML.getAttribute("open") == "" || x_currentPageXML.getAttribute("open") == undefined ? "Open PDF in new tab" : x_currentPageXML.getAttribute("open")) + ' ' + faIcon + '</a></div>');
+
+			//this.calcHeight();
+			$("#pdfDoc").height(this.calcHeight());
 		}
 		
 		this.calcWidth = function() {
@@ -148,15 +149,7 @@
 		}
 		
 		this.calcHeight = function() {
-			var height;
-			
-			if (x_browserInfo.mobile == false) {
-				height = $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - (parseInt($("div.panel").css("padding-top")) * 2) - (parseInt($("div.panel").css("border-top-width")) * 2) - $("#link").outerHeight(true) - 20;
-			} else {
-				height = $x_mobileScroll.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3;
-			}
-			
-			return height;
+			return x_getAvailableHeight([$("div.panel"), $("#pdfDoc")], [$("#link"), $("#link hr").height(), parseInt($("#link hr").css("margin-top"))], true);
 		}
 	}
 	

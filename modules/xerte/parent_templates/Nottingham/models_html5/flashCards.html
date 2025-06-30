@@ -17,7 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var flashCards = new function () {
@@ -93,13 +92,7 @@
 			}
 			
 			if (cardHeight == 'default') {
-				
-				var totalSpace = $x_pageHolder.height() - (parseInt($x_pageDiv.css('padding-top')) * 2);
-				
-				if (x_browserInfo.mobile == true) {
-					totalSpace = $x_mobileScroll.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3;
-				}
-				
+				const totalSpace = x_getAvailableHeight([], [], true);
 				var spaceTaken = (x_browserInfo.mobile == true ? 0 : $('#textHolder').outerHeight(true)) + $('#cardNoHolder').height() + parseInt($cards.find('div.card').css('margin-top')) + parseInt($cards.find('div.card').css('margin-bottom')) + 10;
 				var maxH = Math.floor(totalSpace - spaceTaken);
 				
@@ -281,21 +274,19 @@
 			
 			// Empty cards collection first
 			$cards.empty();
-			
+
+			const cardTxt = x_currentPageXML.getAttribute('cardTxt') != undefined ? x_currentPageXML.getAttribute('cardTxt') : 'Card';
+			const sideTxt = x_currentPageXML.getAttribute('sideTxt') != undefined ? x_currentPageXML.getAttribute('sideTxt') : 'Side';
+
 			// Now loop through new cards array and rebuild
 			$(cardArray).each(function(i){
 				var thisInfo = this;
 				
 				$thisCard = $('<div>')
 								.addClass('card')
-								.append(
-									$('<div>')
-										.addClass('front panel')
-								)
-								.append(
-									$('<div>')
-										.addClass('back panel')
-								)
+								.append('<div class="front panel" role="region" aria-labelledby="card' + i + '_0Title"/>')
+								.append('<div class="back panel" role="region" aria-labelledby="card' + i + '_1Title"/>');
+
 				$thisCard.appendTo($cards);
 
 				$thisCard.attr('id', 'card' + i);
@@ -304,13 +295,15 @@
 				
 				$thisFront.add($thisBack).each(function(j) {
 					var $this = $(this),
-						$thisInner = $('<div class="cardInner"></div>');
+						$thisInner = $('<div class="cardInner"></div>'),
 						index = j + 1,
 						$contentHolder = $('<div class="text-content">');
 					
 					$this.append($thisInner)
 					if (thisInfo.getAttribute('name') != '') {
-						$thisInner.append('<h3>' + thisInfo.getAttribute('name') + '</h3>');
+						$thisInner.append('<h3 id="card' + i + '_' + j + 'Title">' + thisInfo.getAttribute('name') + '<span class="sr-only"> ' + sideTxt + index + '</span></h3>');
+					} else {
+						$thisInner.append('<span id="card' + i + '_' + j + 'Title" class="sr-only">' + cardTxt + (i+1) + ' - ' + sideTxt + index + '</span>');
 					}
 					$thisInner.append($contentHolder);
 			
@@ -471,7 +464,6 @@
 						text: false
 					})
 					.click(function() {
-						
 						$('.cardVideo video, .cardAudio audio').each(function() {
 							this.pause();
 						});
@@ -525,13 +517,13 @@
 					$('.cardVideo video, .cardAudio audio').each(function() {
 						this.pause();
 					});
-					
-					// scroll to top the side that's about to come into view
-					var hiddenSide = $(this).closest('.card').data("flip-model").isFlipped == true ? 0 : 1;
-					$(this).closest('.card').find('.panel:eq(' + hiddenSide + ') .cardInner').scrollTop(0);
-					
+
+					const $card = $(this).closest('.card');
+
+					flashCards.activateCard($card, $card.data("flip-model").isFlipped, true);
+
 					// then flip
-					$(this).closest('.card').flip('toggle');
+					$card.flip('toggle');
 				})
 			
 			if (displayStyle != 'horizontal' && displayStyle != 'vertical') {
@@ -559,6 +551,10 @@
 				
 			if ($('#pageContents').data('displayStyle') != 'horizontal' && $('#pageContents').data('displayStyle') != 'vertical' && $('.card').length > 1) {	
 				flashCards.dealCard();
+			} else {
+				$(".card").each(function() {
+					flashCards.activateCard($(this), true);
+				});
 			}
 		}
 		
@@ -585,9 +581,8 @@
 		
 		// function slides in a new card
 		this.dealCard = function(next) {
-			
-			var $thisCard = $('#card' + $pageContents.data('currentCard'));
-			
+			const $thisCard = $('#card' + $pageContents.data('currentCard'));
+			flashCards.activateCard($thisCard, true, true);
 			$thisCard.flip(false);
 			$('#cards').addClass('hideOverflow');
 			
@@ -596,6 +591,27 @@
 			if ($thisCard.find('.mediaHolder video, .mediaHolder audio').length > 0) {
 				this.resizeMedia();
 			}
+		}
+
+		this.activateCard = function($card, isFlipped, focus) {
+			const currentSide = isFlipped == true ? 1 : 0;
+			const $currentSide = $card.find('.panel:eq(' + currentSide + ')');
+			const hiddenSide = isFlipped == true ? 0 : 1;
+			const $hiddenSide = $card.find('.panel:eq(' + hiddenSide + ')');
+
+			// force tabindex to be on for elements on visible side & off for elements on hidden side
+			// otherwise you can tab to elements that aren't shown
+			$hiddenSide
+					.removeClass("hideOverflow")
+					.attr("aria-hidden", "false");
+			$hiddenSide.find('a, button').attr("tabindex", "0");
+			$hiddenSide.find('.cardInner').scrollTop(0);
+			if (focus) {
+				$hiddenSide.find('.flipBtn').focus();
+			}
+
+			$currentSide.addClass("hideOverflow").attr("aria-hidden", "true");
+			$currentSide.find('a, button').attr("tabindex", "-1");
 		}
 		
 		// function called after card slide has finished
@@ -609,13 +625,13 @@
 					
 					flashCards.dealCard($pageContents.data('next'));
 					
-				// show the card no. when new card has been dealed
+				// show the card no. when new card has been dealt
 				} else {
 					$('#cardNoTxt')
 						.html('<p>' + x_currentPageXML.getAttribute('cardNoTxt').replace('{i}', $pageContents.data('currentCard') + 1).replace('{n}', $('#cards .card').length) + '</p>')
 						.fadeIn();
 					
-					// reenable required buttons
+					// re-enable required buttons
 					if (next == true) {
 						
 						flashCards.toggleBtn($('#prevBtn'), 'enable');
@@ -719,9 +735,9 @@
 	
 	<div id="textHolder"></div>
 	
-	<div id="cardHolder">
+	<div id="cardHolder" role="presentation">
 		
-		<div id="cardCtrls">
+		<div id="cardCtrls" role="presentation">
 		
 			<div id="leftBtn" class="btnHolder">
 				<button id="prevBtn"></button>

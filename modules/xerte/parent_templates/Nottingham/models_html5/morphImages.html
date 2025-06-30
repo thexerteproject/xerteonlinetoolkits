@@ -92,7 +92,7 @@
 				.one("load", function() {
 					var $this = $(this);
 					$this.data("origSize", [$this.width(), $this.height()]);
-					
+
 					var offset = morphImages.calculateOffset();
 					
 					$this.css({
@@ -176,7 +176,7 @@
 						"state0"	:[$img1.width(), 0, 0, 1], // zoomed out info
 						"state1"	:[Math.round($img1.width() * scale2), 0 - marginLeft, 0 - marginTop, 0], // zoomed in info
 					});
-					
+
 					x_pageLoaded();
 				})
 				.css({

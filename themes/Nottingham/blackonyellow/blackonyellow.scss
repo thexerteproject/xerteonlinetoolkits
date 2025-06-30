@@ -1,11 +1,10 @@
 @import "scss/_allvariables"; /*start here and set the default values for all the variables*/
 @import "scss/_header";
-@import "scss/_pagetypes";
 @import "scss/_footer";
-@import "scss/_animations";
+@import "scss/_pagetypes";
 @import "scss/editorstyles";
-@import "scss/_webkitCustoms";
 @import "scss/_sliders";
+@import "scss/_webkitCustoms";
 /* Important note: unlike some other Xerte themes this theme has been developed using sass and scss files */
 /*You should not edit the .css files directly or change values directly unless you wish to override something*/
 /*Use SASS and the file in the scss folder name _allvariables.scss to start any customisation*/
@@ -15,8 +14,9 @@ body {
 	color:$mainfontcolour;
 	font-family: $mainfonts;
 }
+
 .cke_editable {
-	background: $defaultpagebackground;
+	background: $bodybackgroundcolor;
 }
 
 /******Fonts******/
@@ -26,6 +26,7 @@ body {
 /*Note: these font-sizes will be ignored when responsive text is on*/
 p{
 	font-size:1.1em;
+	color:$mainfontcolour;
 }
 h1 {
 	font-size:	1em;
@@ -40,11 +41,37 @@ h3 {
 	margin:		0;
 }
 
-a{color:$linkcolor;}
-a:hover{color:$linkhover;}
-a:visited{color:$linkvisited;}
+a, .ui-widget-content a {color:$linkcolor;}
+a:visited, .ui-widget-content a:visited {color:$linkvisited;}
+a:hover, .ui-widget-content a:hover {color:$linkhover;}
 
-#x_mainHolder{
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br, .ui-corner-top, .ui-corner-left, .ui-corner-bl {
+	border-radius: $smallroundedcorners;
+}
+
+input, select, textarea {
+	background: $yellow;
+	border: 1px solid $bordercolor;
+	caret-color: $blackordarkest;
+	color: $mainfontcolour;
+}
+
+#x_pageDiv span.x_glossary, #x_pageDiv span.x_glossary:link, #x_pageDiv span.x_glossary:visited {
+	color: $linkcolor;
+}
+#x_pageDiv span.x_glossary:visited {
+	color: $linkvisited;
+}
+#x_pageDiv span.x_glossary:hover, #x_pageDiv span.x_glossary:active {
+	color: $linkhover;
+}
+#x_glossaryHover {
+	color: $headerfontcolor;
+	background: $blackordarkest;
+	border-color: $bordercolor;
+}
+
+#x_mainHolder {
 	background:$defaultpagebackground;
 	border-top-right-radius:$largeroundedcorners;
 	border-bottom-left-radius:$largeroundedcorners;
@@ -58,33 +85,60 @@ a:visited{color:$linkvisited;}
 }
 #infoHolder{
 	border-radius:$mediumroundedcorners;
-	background: $lightestcolor;
+}
+.focusBorder {
+	border-color: $darkestyellow;
+}
+.highlight {
+	background-image: none;
+}
+.x_tooltip {
+	border-radius: 0;
+	background: $headerbackgroundcolor;
+	color: $headerfontcolor;
 }
 /*****panel all pages with a panel*****/
 .panel {
 	border-radius: $mediumroundedcorners;
-	background:$lightestcolor;
+	background:$panelcolor;
 	box-shadow: none;
-	color:$blackordarkest;
-	border: solid 1px;
+	color:$mainfontcolour;
+	border-color: $bordercolor;
 }
 .panelPage{
 	padding:1%;
-	color:$blackordarkest;
+	color:$mainfontcolour;
 }
 /*****all images*****/
 img {
 	border-radius: $imageroundedcorners;
 }
+.fa-x-cross:before {
+	color: $red;
+}
+.fa-x-tick:before {
+	color: $green;
+}
+.alertBorder {
+	border: 1px dashed $red;
+}
 /******lightboxes******/
 .featherlight .featherlight-content {
-	background-color: $defaultpagebackground;
+	background-color: $panelcolor;
+	border: 1px solid $bordercolor;
 }
-/*code snippet*/
-.hljs {
-	background: #f0f179;
+.featherlight .featherlight-close-icon {
+	margin-top: 2px;
+	margin-right: 2px;
+	background-color: $panelcolor;
+	color: $btntxtcolor;
+	border: 1px solid $bordercolor;
 }
-
+.featherlight .featherlight-close-icon:hover, .featherlight .featherlight-close-icon:focus, .featherlight .featherlight-close-icon:active {
+	background-color: $btntxtcolor;
+	color: $panelcolor;
+	border: 1px solid $btntxtcolor;
+}
 /******@media changes******/
 @media (min-width: 1366px) {
 	/*tablet and above css below here*/
@@ -115,206 +169,4 @@ and (orientation : portrait) {
 		bottom: 0;
 		right: 0;
 	}
-}
-
-/*******lightbox styles********/
-/* Lity - v2.2.2 - 2017-07-17 */
-/* http://sorgalla.com/lity */
-/* Copyright (c) 2015-2017 Jan Sorgalla; Licensed MIT */
-.lity {
-	z-index: 9990;
-	position: fixed;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	white-space: nowrap;
-	background: #0b0b0b;
-	background: rgba(0, 0, 0, 0.9);
-	outline: none !important;
-	opacity: 0;
-	-webkit-transition: opacity 0.3s ease;
-	-o-transition: opacity 0.3s ease;
-	transition: opacity 0.3s ease;
-}
-.lity.lity-opened {
-	opacity: 1;
-}
-.lity.lity-closed {
-	opacity: 0;
-}
-.lity * {
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-}
-.lity-wrap {
-	z-index: 9990;
-	position: fixed;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	text-align: center;
-	outline: none !important;
-}
-.lity-wrap:before {
-	content: '';
-	display: inline-block;
-	height: 100%;
-	vertical-align: middle;
-	margin-right: -0.25em;
-}
-.lity-loader {
-	z-index: 9991;
-	color: #fff;
-	position: absolute;
-	top: 50%;
-	margin-top: -0.8em;
-	width: 100%;
-	text-align: center;
-	font-size: 14px;
-	font-family: Arial, Helvetica, sans-serif;
-	opacity: 0;
-	-webkit-transition: opacity 0.3s ease;
-	-o-transition: opacity 0.3s ease;
-	transition: opacity 0.3s ease;
-}
-.lity-loading .lity-loader {
-	opacity: 1;
-}
-.lity-container {
-	z-index: 9992;
-	position: relative;
-	text-align: left;
-	vertical-align: middle;
-	display: inline-block;
-	white-space: normal;
-	max-width: 100%;
-	max-height: 100%;
-	outline: none !important;
-}
-.lity-content {
-	z-index: 9993;
-	width: 100%;
-	-webkit-transform: scale(1);
-	-ms-transform: scale(1);
-	-o-transform: scale(1);
-	transform: scale(1);
-	-webkit-transition: -webkit-transform 0.3s ease;
-	transition: -webkit-transform 0.3s ease;
-	-o-transition: -o-transform 0.3s ease;
-	transition: transform 0.3s ease;
-	transition: transform 0.3s ease, -webkit-transform 0.3s ease, -o-transform 0.3s ease;
-}
-.lity-loading .lity-content,
-.lity-closed .lity-content {
-	-webkit-transform: scale(0.8);
-	-ms-transform: scale(0.8);
-	-o-transform: scale(0.8);
-	transform: scale(0.8);
-}
-.lity-content:after {
-	content: '';
-	position: absolute;
-	left: 0;
-	top: 0;
-	bottom: 0;
-	display: block;
-	right: 0;
-	width: auto;
-	height: auto;
-	z-index: -1;
-	-webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
-	box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
-}
-.lity-close {
-	z-index: 9994;
-	width: 35px;
-	height: 35px;
-	position: fixed;
-	right: 0;
-	top: 0;
-	-webkit-appearance: none;
-	cursor: pointer;
-	text-decoration: none;
-	text-align: center;
-	padding: 0;
-	color: #fff;
-	font-style: normal;
-	font-size: 35px;
-	font-family: Arial, Baskerville, monospace;
-	line-height: 35px;
-	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-	border: 0;
-	background: none;
-	outline: none;
-	-webkit-box-shadow: none;
-	box-shadow: none;
-}
-.lity-close::-moz-focus-inner {
-	border: 0;
-	padding: 0;
-}
-.lity-close:hover,
-.lity-close:focus,
-.lity-close:active,
-.lity-close:visited {
-	text-decoration: none;
-	text-align: center;
-	padding: 0;
-	color: #fff;
-	font-style: normal;
-	font-size: 35px;
-	font-family: Arial, Baskerville, monospace;
-	line-height: 35px;
-	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-	border: 0;
-	background: none;
-	outline: none;
-	-webkit-box-shadow: none;
-	box-shadow: none;
-}
-.lity-close:active {
-	top: 1px;
-}
-/* Image */
-.lity-image img {
-	max-width: 100%;
-	display: block;
-	line-height: 0;
-	border: 0;
-}
-/* iFrame */
-.lity-iframe .lity-container,
-.lity-youtube .lity-container,
-.lity-vimeo .lity-container,
-.lity-facebookvideo .lity-container,
-.lity-googlemaps .lity-container {
-	width: 100%;
-	max-width: 964px;
-}
-.lity-iframe-container {
-	width: 100%;
-	height: 0;
-	padding-top: 56.25%;
-	overflow: auto;
-	pointer-events: auto;
-	-webkit-transform: translateZ(0);
-	transform: translateZ(0);
-	-webkit-overflow-scrolling: touch;
-}
-.lity-iframe-container iframe {
-	position: absolute;
-	display: block;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	-webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
-	box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
-	background: #000;
-}
-.lity-hide {
-	display: none;
 }

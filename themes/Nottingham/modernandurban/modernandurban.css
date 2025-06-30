@@ -45,9 +45,37 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   background-color: #F9BA32;
 }
 
-.titlePageTxt {
-  width: 98% !important;
-  overflow: hidden;
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: white;
+  background-color: #426E86;
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #F9BA32;
+}
+
+/* page resources */
+#x_pageResourcesBtn:not(.ui-button-icon-only) {
+  border: 1px solid #ffffff;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: #F9BA32;
+  color: #2F3131;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: #2F3131;
+  color: #ffffff;
+}
+
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: #ffffff;
 }
 
 .highlight {
@@ -709,16 +737,42 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 
 #menuItems .menuItem {
   background: #F8F1E5;
-  color: #2F3131;
 }
 
 #menuItems .menuItem:hover {
-  background: #426E86;
+  background: #2F3131;
+  color: #ffffff;
+}
+
+#menuItems .menuItem .ui-button-text {
+  color: #2F3131;
+}
+
+#menuItems .menuItem:hover .ui-button-text {
   color: #ffffff;
 }
 
 #menuItems .menuItem.current {
-  border: 2px solid #ffffff;
+  border-color: transparent;
+  background-color: #F9BA32;
+}
+
+.chapterItem.ui-state-active a, .chapterItem.ui-state-active a:link, .chapterItem.ui-state-active a:visited {
+  color: #ffffff !important;
+  border-color: #426E86;
+  background-color: #426E86;
+}
+
+.chapterItem.ui-state-active a {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.ui-accordion .chapterPageHolder.ui-accordion-content {
+  background-color: #426E86;
+  border: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 #x_sideBar {
@@ -760,6 +814,15 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   color: #ffffff;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: white;
+}
+
+.pbBar {
+  background-color: #F9BA32;
+}
+
 @media only screen and (max-width: 500px) {
   #x_footerProgress {
     display: block;
@@ -778,8 +841,8 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   }
 
   #x_footerBlock button {
-    font-size: 1em;
-    width: 1em;
+    /*font-size: 1em;
+    width: 1em;*/
     margin-left: 5px;
   }
 
@@ -790,7 +853,6 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
 
   .pbTxt {
     display: block;
-    font-size: 6px;
     text-align: center;
   }
 }

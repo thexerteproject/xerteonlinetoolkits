@@ -1,0 +1,6 @@
+@media only screen
+and (max-width :500px) {
+  #x_footerBlock button {
+    font-size: inherit;
+  }
+}

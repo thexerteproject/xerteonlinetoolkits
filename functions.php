@@ -486,3 +486,13 @@ function set_token()
         $_SESSION['token'] = uid();
     }
 }
+
+function x_set_session_name()
+{
+    global $xerte_toolkits_site;
+    $hash = hash('sha256', $xerte_toolkits_site->site_url);
+    $hash = substr($hash, -6);
+    $hash = str_replace('=', '', $hash);
+    $current_session_name = session_name();
+    session_name($current_session_name . "_" . $hash);
+}

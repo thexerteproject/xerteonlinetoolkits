@@ -35,10 +35,8 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			}
+			const $panel = $("#pageContents .panel");
+			$panel.height(x_getAvailableHeight([$panel]));
 		};
 		
 		this.init = function() {
@@ -132,10 +130,11 @@
 
 						$.each(response.items, function (index, item) {
 
+							const faIcon = '<i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>';
 							if (x_browserInfo.iOS == true || x_browserInfo.mobile) {
 								hyperlink = '<a href="https://www.youtube.com/watch?v=' + item.id.videoId + '">' + item.snippet.title + '</a>';
 							} else {
-								hyperlink = '<a target="_blank" href="https://www.youtube.com/watch?v=' + item.id.videoId + '">' + item.snippet.title + '</a>';
+								hyperlink = '<a target="_blank" href="https://www.youtube.com/watch?v=' + item.id.videoId + '">' + item.snippet.title + ' ' + faIcon + '</a>';
 							}
 
 							resultsHolder += '<div><img src="' + item.snippet.thumbnails.default.url + '" alt="' + item.snippet.description + ', thumbnail" />';

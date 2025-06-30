@@ -24,6 +24,10 @@
 		padding: 0 5px;
 	}
 
+	#targetHolder .target.selected {
+		border: 2px solid green !important;
+	}
+
 	#targetHolder.underline .target.highlight {
 		border-bottom: 1px solid black;
 		border-top: 1px solid transparent;
@@ -35,7 +39,8 @@
 		background-image: none;
 	}
 
-	#targetHolder.outline:not(.noCompress) .target.ui-droppable-disabled, #targetHolder.bg:not(.noCompress):not(.gapStyle_false) .target.ui-droppable-disabled {
+	#targetHolder.outline:not(.noCompress) .target.ui-droppable-disabled,
+	#targetHolder.bg:not(.noCompress):not(.gapStyle_false) .target.ui-droppable-disabled {
 		padding-left: 5px;
 		padding-right: 5px;
 	}
@@ -58,7 +63,7 @@
 	
 	#targetHolder input.incorrect, #targetHolder input[incorrect] {
 		color: 			#EB0000;
-		font-weight:600;
+		/*font-weight:600;*/
 	}
 	
 	#targetHolder .target.incorrect {
@@ -104,9 +109,7 @@
 		/*gap fill: drop down show answers styling*/
 		opacity:1.0;
 		font-weight:400;
-		border-color: unset;
-		border-width:2px;
-		border-style:outset;
+		border: none;
 		background:#ffffff;
 		cursor: default;
 		padding:initial !important;
@@ -146,10 +149,10 @@
 	
 	#btnHolder {
 		overflow: auto;
+		float: right;
 	}
 	
 	#submitBtn, #showBtn {
-		float:	right;
 		margin-bottom:	10px;
 	}
 	
@@ -166,7 +169,7 @@
 	color:unset;
 	color: green;
 	opacity:1.0;
-	font-weight:400;
+	/*font-weight:400;*/
 	/*border-color: unset;
 	border-width:2px;
 	border-style:outset;
@@ -181,7 +184,10 @@
 }
 
 /* add ticks to correct answers */
-#targetHolder input[readonly].judged.correct+span:before, #targetHolder input[correct].judged+span:before, #targetHolder .target.correct+span:before, #targetHolder select[disabled].correct+span:before {
+#targetHolder input[readonly].judged.correct+span:before,
+#targetHolder input[correct].judged+span:before,
+#targetHolder .target.correct+span:before,
+#targetHolder select[disabled].correct+span:before {
 	font-family: FontAwesome;
 	content: "\f00c";
 	color: green;
@@ -189,7 +195,9 @@
 }
 
 /*gap fill: show red crosses when incorrect and in tracking mode*/
-#targetHolder select[disabled]+span:before, #targetHolder .target.incorrect+span:before, #pageContents input[readonly].judeged+span:before{
+#targetHolder select[disabled]+span:before,
+#targetHolder .target.incorrect+span:before,
+#pageContents input[readonly].judged.incorrect:not(.answerShown)+span:before{
 	font-family: FontAwesome;
 	content: "\f00d";
 	color: red;
@@ -199,10 +207,11 @@
 /*gap fill: styling of disabled/incorrect responses when in tracking mode*/
 #targetHolder select[disabled], #targetHolder .target.incorrect, #targetHolder input[readonly]{
 	opacity:1.0;
-	font-weight:400;
-	border-color: unset;
+	/*font-weight:400;*/
+	/*border-color: unset;
 	border-width:2px;
-	border-style:outset;
+	border-style:outset;*/
+	border: none;
 	background:#ffffff;
 	cursor: default;
 	padding:initial !important;

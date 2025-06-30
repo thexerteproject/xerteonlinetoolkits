@@ -35,9 +35,9 @@
 		}
 
 		// function called every time the size of the LO is changed
-		this.sizeChanged = function(pageChg) {
+		this.sizeChanged = function() {
 			const $panel = $pageContents.find(".panel");
-			$panel.height($x_pageHolder.height() - ($x_pageDiv.outerHeight(true)-$x_pageDiv.height()) - ($panel.outerHeight(true) - $panel.height()) - 1);
+			$panel.height(x_getAvailableHeight([$panel]));
 
 			audioRecord.reloadAudio();
 		}
@@ -520,7 +520,7 @@
 		<div id="textHolder" class="left"></div>
 		
 		<div class="right">
-			<div class="panel">
+			<div class="panel" tabindex="0">
 				<div id="panelTop">
 					<p id="count" aria-live="polite"></p>
 					<div id="btnHolder">

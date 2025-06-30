@@ -41,10 +41,9 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			var $panel = $("#pageContents #mainPanel");
-			if (x_browserInfo.mobile == false) {
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			}
+			const $panel = $("#pageContents #mainPanel");
+			$panel.height(x_getAvailableHeight([$panel]));
+
 			if (x_currentPageXML.getAttribute("panelWidth") != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
 				this.loadVideo();
 			}
@@ -532,7 +531,7 @@
             // last question answered - show results
             var $pageContents = $("#pageContents");
             $("#qNo").html($pageContents.data("onCompletionText"));
-            var fbTxt = "<p>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</p>";
+            var fbTxt = "<div>" + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + "</div>";
 
             var myScore = 0;
             for (var i=0; i<quiz.myProgress.length; i++) {
@@ -755,6 +754,8 @@
 					source	:soundFile,
 					width	:"100%"
 				});
+
+				$audio.show();
 				
 				// manually add a transcript button to the end of the audio bar
 				if (transcript != undefined && transcript != '') {
@@ -777,7 +778,7 @@
 
 		<div id="infoHolder" class="right">
 		
-			<div id="mainPanel" class="panel ">
+			<div id="mainPanel" class="panel" tabindex="0">
 				
 				<fieldset class="noStyle">
 

@@ -50,12 +50,7 @@
 		this.setPanelSize = function(firstLoad) {
 			var $btnHolder = $("#btnHolder");
 
-			if (x_browserInfo.mobile == false) {
-				this.$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt(this.$panel.css("padding-top")) - parseInt(this.$panel.css("padding-bottom")) - 5);
-			} else {
-				this.$panel.height($x_mainHolder.height() - $x_headerBlock.height() - $x_footerBlock.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt(this.$panel.css("padding-top")) - parseInt(this.$panel.css("padding-bottom")) - 5);
-			}
-
+			this.$panel.height(x_getAvailableHeight([this.$panel], [], true));
 			$("#flickrHolder").height(this.$panel.height() - $btnHolder.outerHeight(true));
 			
 			if (firstLoad == 1) {
@@ -261,7 +256,7 @@
 			var ccInfo = data.photo.title._content;
 			ccInfo += ' © ' + data.photo.owner.realname + ', ' + data.photo.dates.taken.split('-')[0] + '<br />';
 			ccInfo += '<a href="' + ccLicenses[data.photo.license-1].url;
-			ccInfo += '" target="_blank">' + ccLicenses[data.photo.license-1].desc + '</a>';
+			ccInfo += '" target="_blank">' + ccLicenses[data.photo.license-1].desc + ' <i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i></a>';
 			x_pageInfo[x_currentPage].savedData.pictureInfo = ccInfo;
 
 			var url =  "https://api.flickr.com/services/rest/";
@@ -364,7 +359,7 @@
 				
 				<div id="flickrHolder">
 					<div id="container">
-						<div id="headerHolder">
+						<div id="headerHolder" aria-live="polite">
 						</div>
 						<div id="pictureHolder">
 							<div id="loadingSpinner"><div class="spinner"></div><p></p></div>

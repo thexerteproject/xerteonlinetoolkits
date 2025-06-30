@@ -74,7 +74,7 @@
 			$('.spinnerHolder').append('<div class="spinner"></div>')
 
 			var imgMaxW = Math.round($x_pageHolder.width());
-			var imgMaxH = Math.round($x_pageHolder.height());
+			var imgMaxH = Math.round(x_getAvailableHeight([], [], true));
 
 			$('.spinnerHolder').css({
 				'background-color' : 'grey',
@@ -230,8 +230,7 @@
 				language:lan
 			}
 
-			var pageHeight = $('#x_pageHolder').height();
-			$('#timeline-embed').css('height', pageHeight-70);
+			$('#timeline-embed').css('height', x_getAvailableHeight([],[],true));
 
 			window.timeline = new TL.Timeline('timeline-embed', timeline_json, additionalOptions);
 
@@ -323,8 +322,8 @@
 				// TODO mobile implementation
 			}else{
 
-				var pageHeight = $('#x_pageHolder').height();
-			    $('#timeline-embed').css('height', pageHeight-70);
+				const pageHeight = x_getAvailableHeight();
+				$('#timeline-embed').css('height', pageHeight);
 
 				var storyslider = pageHeight*0.60
 				$(".tl-storyslider").css({
@@ -421,10 +420,21 @@
 					"padding-top" : 20+"px",
 					"padding-bottom" : 10+"px"
 				})
-
+				
 				$('.tl-headline-date, h2.tl-headline').each(function() {
 					if ($(this).html() == '') {
 						$(this).hide();
+					} else {
+						// changes the heading levels of the date & title for each event
+						// h2 is only used for page title on header bar so start with h3
+						let attrs = {};
+						$.each(this.attributes, function(i, attr) {
+							attrs[attr.nodeName] = attr.nodeValue;
+						});
+
+						const newType = $(this).hasClass("tl-headline-date") ? "h3" : $(this).parents(".tl-slider-item-container").length > 0 ? "h4" : "p";
+						const $newElement = $("<" + newType + "/>", attrs).append($(this).contents());
+						$(this).replaceWith($newElement);
 					}
 				});
 

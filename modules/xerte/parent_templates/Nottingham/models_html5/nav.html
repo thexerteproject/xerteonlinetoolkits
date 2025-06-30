@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-	
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var nav = new function() {
@@ -57,22 +57,22 @@
 			if (x_currentPageXML.getAttribute("type") != "Col" && x_browserInfo.mobile == false && x_currentPageXML.getAttribute("panelHeight") != "fit") {
 				if (x_currentPageXML.getAttribute("type") == "Acc") {
 					$("#infoHolder")
-						.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 1)
+						.height(x_getAvailableHeight([$("#infoHolder")]))
 						.accordion("refresh");
 				} else if (x_currentPageXML.getAttribute("type") == "Tab") {
 					var $infoHolder = $("#infoHolder"),
 						$paneHolder = $("#paneHolder");
 					
 					$infoHolder
-						.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - 13)
+						.height(x_getAvailableHeight([$infoHolder]))
 						.tabs("refresh");
 					
-					$paneHolder.height($infoHolder.height() - $("#tabHolder").outerHeight());
-					$paneHolder.find(".navChild").height($paneHolder.height() - ($paneHolder.find(".navChild").outerHeight() - $paneHolder.find(".navChild").height()));
+					$paneHolder.height(x_getAvailableHeight([$infoHolder], [$("#tabHolder")]));
+					$paneHolder.find(".navChild").height(x_getAvailableHeight([$infoHolder, $paneHolder.find(".navChild")], [$("#tabHolder")]));
 					
 				} else {
 					var $panel = $("#navHolder .panel").length > 0 ? $("#navHolder .panel") : $("#pageContents > div.panel");
-					$("#infoHolder").height($x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - $("#btnHolder").outerHeight(true) - (parseInt($panel.css("padding-top")) * 2) - (parseInt($("#infoHolder").css("padding-top"))) - (parseInt($("#infoHolder").css("padding-bottom"))) - 5);
+					$("#infoHolder").height(x_getAvailableHeight([$("#infoHolder"), $panel], [$("#btnHolder")]));
 				}
 			}
 			
@@ -120,7 +120,7 @@
 				var $this = $(this);
 				var parentH = x_currentPageXML.getAttribute("type") == "Acc" || x_currentPageXML.getAttribute("type") == "Tab" ? $this.parents(".navChild").height() :
 						x_currentPageXML.getAttribute("type") == "Button" || x_currentPageXML.getAttribute("type") == "Slide" ? $this.parents("#infoHolder").height() :
-						$x_pageHolder.height() - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height()); // columns
+						x_getAvailableHeight(); // columns
 
 				$this.css({
 					"max-width": $this.parents(".navChild").width() - ($this.outerWidth(true) - $this.width()),
@@ -212,7 +212,7 @@
 				
 				if (x_currentPageXML.getAttribute("type") == "Slide") {
 					$(x_currentPageXML).children().each(function(i) {
-						$infoHolder.append('<div class="panelPage"><h3 class="navChildTitle" id="navChildTitle' + i + '"></h3><div id="navChild' + i + '" class="navChild"></div></div>');
+						$infoHolder.append('<div class="panelPage" aria-roledescription="' + x_getLangInfo(x_languageData.find("carousel")[0], "slide", "Slide") + '"><h3 class="navChildTitle" id="navChildTitle' + i + '"></h3><div id="navChild' + i + '" class="navChild"></div></div>');
 					});
 					
 					var $btnHolder = $('<div id="btnHolder"><p id="slideTxt" aria-live="polite"></p><div id="btns"><button id="prevBtn">1</button><button id="nextBtn">2</button></div><div class="clearBoth"></div></div>');
@@ -226,11 +226,9 @@
 					}
 					
 				} else if (x_currentPageXML.getAttribute("type") == "Button") {
-					// screen reader info
-					$pageContents.data("clickTxt", x_getLangInfo(x_languageData.find("screenReaderInfo").find("buttonNav")[0], "click", ""));
-					if ($pageContents.data("clickTxt") == null) {
-						$pageContents.data("clickTxt", "");
-					}
+					// treat the button navigation as a tabbed navigator for accessibility
+					// i.e. keyboard controls & info read to screen readers will be the same as those for tabbed navigator
+					$navHolderInner.attr("role", "tablist");
 					
 					var $btnHolder = $('<div id="btnHolder"></div>');
 					if (x_currentPageXML.getAttribute("buttonPos") != "Bottom" || x_browserInfo.mobile == true) {
@@ -242,23 +240,18 @@
 					}
 					
 					$(x_currentPageXML).children().each(function(i) {
-						$btnHolder.append('<button id="navChildTitle' + i + '" class="navChildTitle"></button>');
-						$infoHolder.append('<div id="navChild' + i + '" class="navChild"/>');
+						$btnHolder.append('<button id="navChildTitle' + i + '" class="navChildTitle" role="tab" aria-selected="false" aria-controls="navChild' + i + '" tabindex="-1"></button>');
+						$infoHolder.append('<div id="navChild' + i + '" class="navChild" role="tabpanel" aria-labelledby="navChildTitle' + i + '"/>');
 					});
 					
 				} else if (x_currentPageXML.getAttribute("type") == "Acc") {
-					// screen reader info
-					$pageContents.data("clickTxt", x_getLangInfo(x_languageData.find("screenReaderInfo").find("accNav")[0], "click", ""));
-					if ($pageContents.data("clickTxt") == null) {
-						$pageContents.data("clickTxt", "");
-					}
-					
 					$(x_currentPageXML).children().each(function(i) {
-						$infoHolder.append('<h3 class="navChildTitle"><a id="navChildTitle' + i + '" href="#"></a></h3> <div id="navChild' + i + '" class="navChild"></div>');
+						$infoHolder.append('<h3 class="navChildTitle"><a id="navChildTitle' + i + '" href="#" tabindex="-1"></a></h3> <div id="navChild' + i + '" class="navChild"></div>');
 					});
+
 				} else if (x_currentPageXML.getAttribute("type") == "Tab") {
 					var $tabHolder = $('<ul id="tabHolder"/>').appendTo($infoHolder),
-						$paneHolder = $('<div id="paneHolder"/>').appendTo($infoHolder);
+						$paneHolder = $('<div id="paneHolder" />').appendTo($infoHolder);
 					
 					$(x_currentPageXML).children().each(function(i) {
 						$tabHolder.append('<li class="navChildTitle"><a id="navChildTitle' + i + '" href="#navChild' + i + '"></a></li>');
@@ -395,19 +388,11 @@
 				
 				// type specific stuff
 				if (x_currentPageXML.getAttribute("type") == "Acc") {
-					$("#navChildTitle" + i).parent('.navChildTitle')
-						.data("name", this.getAttribute("name"))
-						.attr("aria-label", this.getAttribute("name") + (i != 0 ? " " + $pageContents.data("clickTxt") : ""));
+					$("#navChildTitle" + i).parent('.navChildTitle').data("name", this.getAttribute("name"));
 					
 				} else if (x_currentPageXML.getAttribute("type") == "Tab") {
 					$("#navChildTitle" + i).parent('.navChildTitle').attr("aria-hidden", "false");
-					
-				} else if (x_currentPageXML.getAttribute("type") == "Button") {
-					$("#navChildTitle" + i)
-						.data("name", this.getAttribute("name"))
-						.attr("aria-label", this.getAttribute("name") + " " + $("#pageContents").data("clickTxt"));
 				}
-				
 			});
 			
 			resizeEmbededMedia($(".popcornMedia.embed"), {width: "100%", height: "100%"});
@@ -426,12 +411,12 @@
 					activate: function(e, ui) {
 						ui.newPanel.find('.navMedia.audio .mejs-inner').show();
 						nav.resizeMedia();
-						
-						if ($("#pageContents").data("clickTxt") != "" && $("#pageContents").data("clickTxt") != null) {
-							ui.oldHeader.attr("aria-label", ui.oldHeader.data("name") + " " + $("#pageContents").data("clickTxt"));
-							ui.newHeader.attr("aria-label", ui.newHeader.data("name"));
+
+						// if accordion is opened because of deep link, there may be more than one accordion heading that can be tabbed to - force tabindex on all other headings to be off
+						if (ui.oldHeader.length == 0 && $("#infoHolder .navChildTitle[tabindex=0]").not(ui.newHeader).length > 0) {
+							$("#infoHolder .navChildTitle[tabindex=0]").not(ui.newHeader).attr("tabindex", "-1")
 						}
-						
+
 						ui.oldPanel
 							.data("height", ui.oldPanel.height())
 							.css({ display: "block", height: "0px;" }) // it won't do scrollTop when display is none
@@ -442,32 +427,74 @@
 						ui.newPanel.scrollTop(0);
 						ui.newPanel.find('.navMedia.audio .mejs-inner').hide();
 					}
-				});
+				})
+
+				$("#infoHolder .navChildTitle").keydown(function(e) {
+					const charCode = e.charCode || e.keyCode;
+					if (charCode == 37 || charCode == 38) {
+						// left/up arrow key - focus on previous button & select
+						if ($(this).prevAll(".navChildTitle").length != 0) {
+							$(this).prevAll(".navChildTitle").first().focus().click();
+						} else {
+							$(this).parent().find("h3:last-of-type").focus().click();
+						}
+					} else if (charCode == 39 || charCode == 40) {
+						// right/down arrow key - focus on next button & select
+						if ($(this).nextAll(".navChildTitle").length != 0) {
+							$(this).nextAll(".navChildTitle").first().focus().click();
+						} else {
+							$(this).parent().find("h3:first-of-type").focus().click();
+						}
+					}
+				})
 				
 			} else if (x_currentPageXML.getAttribute("type") == "Button") {
 				$('.navChild').hide();
 				
 				$('.navChildTitle')
 					.button()
+					.attr("role", "tab")
 					.on("click", function() {
 						var $thisNavChild = $('#navChild' + $(this).index());
 						if ($thisNavChild.is(":hidden")) {
-							if ($("#pageContents").data("clickTxt") != "") {
-								var $oldSelected = $("#btnHolder .navChildTitle:eq(" + $("#infoHolder .navChild:visible").index() + ")");
-								$oldSelected
-									.removeClass("selected")
-									.attr("aria-label", $oldSelected.data("name") + " " + $("#pageContents").data("clickTxt"));
-								
-								var $newSelected = $("#btnHolder .navChildTitle:eq(" + $thisNavChild.index() + ")");
-								$newSelected
-									.addClass("selected")
-									.attr("aria-label", $newSelected.data("name"));
-							}
-							
+							var $oldSelected = $("#btnHolder .navChildTitle:eq(" + $("#infoHolder .navChild:visible").index() + ")");
+							$oldSelected
+								.attr({
+									"aria-selected": "false",
+									"tabindex": "-1"
+								})
+								.removeClass("selected");
+
+							var $newSelected = $("#btnHolder .navChildTitle:eq(" + $thisNavChild.index() + ")");
+							$newSelected
+								.attr({
+									"aria-selected": "true",
+									"tabindex": "0"
+								})
+								.addClass("selected");
+
 							$('.navChild').hide();
 							$thisNavChild.show();
 							nav.resizeMedia();
 							$("#infoHolder").scrollTop(0);
+						}
+					})
+					.keydown(function (e) {
+						const charCode = e.charCode || e.keyCode;
+						if (charCode == 37 || charCode == 38) {
+							// left/up arrow key - focus on previous button & select
+							if ($(this).prev().length != 0) {
+								$(this).prev().focus().click();
+							} else {
+								$(this).parent().find("button:last-of-type").focus().click();
+							}
+						} else if (charCode == 39 || charCode == 40) {
+							// right/down arrow key - focus on next button & select
+							if ($(this).next().length != 0) {
+								$(this).next().focus().click();
+							} else {
+								$(this).parent().find("button:first-of-type").focus().click();
+							}
 						}
 					});
 				

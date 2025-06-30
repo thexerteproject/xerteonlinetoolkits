@@ -128,7 +128,6 @@ function CheckAll() {
 
 function getIcon(nodetype)
 {
-    debugger
     var nodetypetemp = nodetype;
     if (nodetype){
         nodetypetemp = nodetype.replace("_group", "");

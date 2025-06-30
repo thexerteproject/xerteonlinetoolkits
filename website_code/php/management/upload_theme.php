@@ -4,6 +4,8 @@ require_once("../../../config.php");
 require_once("../user_library.php");
 require_once("../folder_library.php");
 
+
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -16,6 +18,12 @@ if (!is_user_permitted("templateadmin"))
 {
     _debug("Session is invalid or expired");
     die("Session is invalid or expired");
+}
+
+if (!function_exists('str_ends_with')) {
+    function str_ends_with($str, $end) {
+        return (@substr_compare($str, $end, -strlen($end))==0);
+    }
 }
 
 if($_FILES['fileToUpload']['error'] == 4)
@@ -128,13 +136,3 @@ if($_FILES["fileToUpload"])
     }
 }
 
-if (!function_exists("str_ends_with")) {
-    function str_ends_with($val, $str)
-    {
-        if (mb_substr($val, -mb_strlen($str), mb_strlen($str)) == $str) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-}

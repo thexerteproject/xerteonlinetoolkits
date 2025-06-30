@@ -22,7 +22,7 @@ CKEDITOR.editorConfig = function( config ) {
         { name: 'others' }
     ];
 
-    config.extraPlugins = 'dialog,widget,extmathjax,image3,codemirror,oembed,xotlink,xotmarkword,fontawesome,uploadimage,html5audio,xotrecorder,xotcolumns,rubytext,wrapstyle,link,emoji,xotlightbox,numericinput,lineheight,codesnippet,a11ychecker,find,editorplaceholder';
+    config.extraPlugins = 'dialog,widget,extmathjax,image3,codemirror,oembed,xotlink,xotmarkword,fontawesome,uploadimage,html5audio,xotrecorder,xotcolumns,rubytext,wrapstyle,link,emoji,xotlightbox,numericinput,lineheight,codesnippet,a11ychecker,find,editorplaceholder,markTag';
     // The default plugins included in the basic setup define some buttons that
     // we don't want too have in a basic editor. We remove them here.
     config.removeButtons = 'Cut,Copy,Paste,Save,NewPage,Preview,Print,PageBreak,CreateDiv,Anchor,Smiley,Flash';

@@ -1,0 +1,706 @@
+//*****lines*****/
+.x_columnPage_page #textHolder, .x_textGraphics_page #imgCaption.transcript, .x_imageSequence_page #controlBar, .x_mediaLesson_page .panel h3, .x_nav_page #pageContents.col #textHolder,
+.x_nav_page #pageContents.slide #btnHolder.top, .x_tabNavExtra_page .paneList, .x_table_page #footnote,
+.x_decision_page #overviewHolder .overviewStep,
+.x_documentation_page #pages:not(:last-child),
+.x_gapFill_page #labelHolder, .x_gapFill_page #feedbackTxt,
+.x_interactiveText_page #pageContents.show2 #btnHolder,
+.x_interactiveText_page #pageContents.show #btnHolder,
+.x_interactiveText_page #pageContents.find #btnHolder, #pageContents.find2 #btnHolder,
+.x_interactiveText_page #groupInfo h3,
+.x_mcq_page #feedback h3,
+.x_quiz_page #feedbackGroup h3,
+.x_textCorrection_page h3.fbLabel,
+.x_crossword_page #x_pageDiv #clues-container h3, .x_crossword_page #x_pageDiv #clues h3,
+.x_results_page #txtHolder,
+.x_results_page #general_summary + #specific,
+.x_SictTimeline_page #pageContents .tl-text .tl-headline-date, .x_SictTimeline_page #pageContents .tl-text h3.tl-headline-date,
+.x_audioRecord_page #recordedClips .clip, .x_audioRecord_page #feedbackTxt {
+  border-color: $dark5;
+}
+
+//*****hrs*****/
+.x_mediaLesson_page hr,
+.x_dragDropLabel_page #pageContents #textHolder hr,
+.x_hotspotImage_page #infoHolder hr,
+.x_opinion_page .qSeparator hr {
+  background-color: $lightestpanel;
+}
+
+
+//***********************************Tables*************************************/
+//default background of table rows
+.x_grid_page table tr,
+.x_table_page table tr,
+.x_interactiveText_page table tr,
+.x_documentation_page table tr,
+.x_results_page table tr {
+  background: $panelcolor
+}
+//background of shaded/alternate rows
+table tr.shaded {
+  background: $blackordarkest;
+}
+// header/footer shaded
+table.header.shaded thead tr:first-child,
+table.header.shaded tr.header,
+table.header.shaded :not(tbody) > tr:first-child,
+.x_grid_page table.header.shaded tr:first-child,
+table.footer.shaded tbody tr:last-child,
+table.headerCol.shaded td.header {
+  background: $blackordarkest;
+}
+
+//***********************************Sliders************************************
+.ui-slider {
+  background: $blackordarkest;
+  border-color: $blackordarkest;
+  border-radius: 20px !important;
+}
+.ui-slider .ui-slider-handle {
+  border: 4px solid $mainfontcolour !important;
+  border-color: lighten($mainfontcolour, 30%);
+  background: $blackordarkest !important;
+  border-radius: 20px;
+}
+.ui-slider .ui-slider-handle:focus, .ui-slider .ui-slider-handle:hover {
+  border-color: $contrastcolor !important;
+  background: $blackordarkest !important;
+}
+
+//***********************************Media*************************************
+.ui-widget-content {
+  color: $whiteorlightest;
+}
+//*****audio slideshow********/
+.x_audioSlideshow_page .slide {
+  margin-left: 5px;
+}
+//*****multiple perspectives******/
+.x_perspectives_page #thumbHolder .thumbBox h3, .x_responsive #thumbHolder .thumbBox h3{
+  color: $blackordarkest;
+}
+.x_perspectives_page #thumbBar button { color: $lightbtncolor; }
+.x_perspectives_page #thumbBar button.ui-state-hover { color: $lightbtnselected; }
+.x_perspectives_page #thumbBar button.ui-state-focus { color: $lightbtnselected; }
+.x_perspectives_page #thumbBar button.ui-state-active { color: l$lightbtnselected; }
+
+.x_perspectives_page #thumbHolder .thumbBox.border {
+  background: $panelcolor;
+  border-color: $panelcolor;
+}
+.x_perspectives_page #thumbHolder .thumbBox.border.current {
+  border-color: $contrastcolor;
+}
+//*****image sequence*****/
+.x_imageSequence_page #seriesMenu > button { color: $lightbtncolor; }
+.x_imageSequence_page #seriesMenu > button.ui-state-hover { color: $lightbtnselected; }
+.x_imageSequence_page #seriesMenu > button.ui-state-focus { color: $lightbtnselected; }
+.x_imageSequence_page #seriesMenu > button.ui-state-active { color: l$lightbtnselected; }
+
+.x_imageSequence_page #seriesMenu .thumbs {
+  background: $panelcolor;
+}
+.x_imageSequence_page #seriesMenu .thumbs.selected {
+  background: $contrastcolor;
+}
+.x_imageSequence_page .magnifyLabel {
+  color: $mainfontcolour;
+}
+.x_imageSequence_page .slider {
+  background: $blackordarkest;
+}
+.x_imageSequence_page .sliderBar.ui-slider .ui-slider-handle {
+  border-color: lighten($mainfontcolour, 30%) !important;
+}
+.x_imageSequence_page .sliderBar.ui-slider .ui-slider-handle:hover, .x_imageSequence_page .sliderBar.ui-slider .ui-slider-handle:focus, .x_imageSequence_page .sliderBar.ui-slider .ui-slider-handle:active {
+  border-color: $contrastcolor !important;
+}
+.x_imageSequence_page input:hover + .slider, .x_imageSequence_page input:focus + .slider {
+  background: $dark5;
+}
+.x_imageSequence_page input + .slider:before, .x_imageSequence_page input + .slider:before {
+  background: $panelcolor;
+}
+.x_imageSequence_page input:hover:checked + .slider, .x_imageSequence_page input:focus:checked + .slider {
+  background: $contrastcolor;
+}
+//*****Synched Video*******/
+#x_mainHolder.x_videoSynch_page .right{
+  padding-top: 10px;
+  padding-left: 20px;
+}
+//*****transcript reader******/
+.x_transcriptReader_page .highlight {
+  background: $lighterpanel;
+}
+//*****image compare*****/
+.x_imageCompare_page #slider {
+  background: $dark1;
+}
+.x_imageCompare_page #slider_handle {
+  background: $dark1;
+  border: 4px solid lighten($mainfontcolour, 30%);
+}
+.x_imageCompare_page #slider:focus #slider_handle,.x_imageCompare_page #slider:hover #slider_handle {
+  border-color: $contrastcolor;
+}
+.x_imageCompare_page #slider_handle.vertical {
+  height: 10px;
+  bottom: 4px;
+}
+.x_imageCompare_page #slider_handle.horizontal {
+  width: 10px;
+  right: 4px;
+}
+//*****thumbnailViewer******/
+.x_thumbnailViewer_page #thumbOverlayLeft,
+.x_thumbnailViewer_page #thumbOverlayRight {
+  background: $bodybackgroundcolor;
+}
+.x_thumbnailViewer_page #thumbBar button { color: $lightbtncolor; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-hover { color: $lightbtnselected; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-focus { color: $lightbtnselected; }
+.x_thumbnailViewer_page #thumbBar button.ui-state-active { color: l$lightbtnselected; }
+
+.x_thumbnailViewer_page #thumbHolder .thumbBox.selected {
+  border-color: $contrastcolor;
+}
+.x_thumbnailViewer_page #panelTxt div {
+  background: $panelcolor;
+  color: $mainfontcolour;
+}
+.x_thumbnailViewer_page .ui-button#imgCloseBtn {
+  border: none;
+}
+.x_thumbnailViewer_page .ui-button#imgCloseBtn:hover, .x_thumbnailViewer_page .ui-button#imgCloseBtn:focus, .x_thumbnailViewer_page .ui-button#imgCloseBtn:active {
+  background: $selectedbutton;
+  color: $mainfontcolour;
+}
+//*****timeline media*****/
+.x_SictTimeline_page .tl-timeline {
+  color: $mainfontcolour;
+}
+.x_SictTimeline_page #pageContents .tl-text,
+.x_SictTimeline_page #pageContents .tl-text p,
+.x_SictTimeline_page #pageContents .tl-timemarker-text h2,
+.x_SictTimeline_page #pageContents .tl-text .tl-headline-date,
+.x_SictTimeline_page #pageContents .tl-text h3.tl-headline-date,
+.x_SictTimeline_page #pageContents .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-media-container [class^="tl-icon-"],
+.x_SictTimeline_page #pageContents .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-media-container [class*=" tl-icon-"],
+.x_SictTimeline_page #pageContents .tl-timeaxis .tl-timeaxis-content-container .tl-timeaxis-major .tl-timeaxis-tick,
+.x_SictTimeline_page #pageContents .tl-timeaxis .tl-timeaxis-content-container .tl-timeaxis-minor .tl-timeaxis-tick,
+.x_SictTimeline_page .tl-timeline h1, .x_SictTimeline_page .tl-timeline h2, .x_SictTimeline_page .tl-timeline h3, .x_SictTimeline_page .tl-timeline h4, .x_SictTimeline_page .tl-timeline h5, .x_SictTimeline_page .tl-timeline h6,
+.x_SictTimeline_page .tl-caption,
+.x_SictTimeline_page .tl-slidenav-previous .tl-slidenav-content-container .tl-slidenav-icon,
+.x_SictTimeline_page .tl-slidenav-next .tl-slidenav-content-container .tl-slidenav-icon,
+.x_SictTimeline_page .tl-slidenav-previous .tl-slidenav-content-container .tl-slidenav-title,
+.x_SictTimeline_page .tl-slidenav-next .tl-slidenav-content-container .tl-slidenav-title,
+.x_SictTimeline_page .tl-slidenav-previous .tl-slidenav-content-container .tl-slidenav-description,
+.x_SictTimeline_page .tl-slidenav-next .tl-slidenav-content-container .tl-slidenav-description {
+  color: $mainfontcolour !important;
+  text-shadow: none;
+}
+.x_SictTimeline_page .tl-slidenav-icon:hover:before, .x_SictTimeline_page .tl-slidenav-icon:focus:before {
+  color: $contrastcolor;
+}
+.x_SictTimeline_page .tl-timeline p a {
+  color: $mainfontcolour;
+}
+.x_SictTimeline_page .tl-timeline p a:hover, .x_SictTimeline_page .tl-timeline p a:focus, .x_SictTimeline_page .tl-timeline p a:active {
+  color: $contrastcolor;
+}
+.x_SictTimeline_page .tl-menubar-button {
+  background: none;
+}
+
+//***********************************Navigators*************************************/
+//*****Accordion page*******/
+.x_nav_page #pageContents.acc .ui-accordion .ui-accordion-content {
+  background: $panelcolor;
+  border-color: $panelcolor;
+}
+.x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header {
+  background: $lighterpanel;
+  border-color: $lighterpanel;
+}
+.x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header.ui-state-hover, .x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header.ui-state-focus {
+  background: $contrastcolor;
+  border-color: $contrastcolor;
+}
+.x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header a, .x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header .ui-accordion-header-icon {
+  color: $mainfontcolour;
+  background: none !important;
+}
+.x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header.ui-state-hover a, .x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header.ui-state-focus a,
+.x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header.ui-state-hover .ui-accordion-header-icon, .x_nav_page #pageContents.acc .ui-accordion .ui-accordion-header.ui-state-focus .ui-accordion-header-icon {
+  color: $fontcolorforlightestcolor !important;
+}
+.x_nav_page .ui-accordion .ui-accordion-content {
+  margin-top: 0;
+}
+//*****tabs*****/
+.ui-tabs {
+  background: $defaultpagebackground;
+  border-color: $defaultpagebackground;
+}
+.ui-tabs .ui-tabs-panel {
+  background: $lighterpanel;
+}
+.ui-tabs .ui-tabs-nav {
+  background: none;
+  padding: 0;
+  border: none;
+}
+.ui-tabs .ui-tabs-nav li {
+  background: $dark1;
+  border: none;
+}
+.ui-tabs .ui-tabs-nav li a, .ui-tabs .ui-tabs-nav li.ui-state-active a {
+  color: $mainfontcolour;
+}
+.ui-tabs .ui-tabs-nav li.ui-state-active,
+#tabHolder .navChildTitle.ui-tabs-active{
+  border-bottom: none !important;
+  background: $lighterpanel;
+}
+.ui-tabs .ui-tabs-nav li.ui-state-hover:not(.ui-state-active), .ui-tabs .ui-tabs-nav li.ui-state-focus:not(.ui-state-active) {
+  background: $contrastcolor;
+}
+.ui-tabs .ui-tabs-nav li.ui-state-hover:not(.ui-state-active) a, .ui-tabs .ui-tabs-nav li.ui-state-focus:not(.ui-state-active) a {
+  color: $fontcolorforlightestcolor;
+}
+.ui-tabs-panel a:visited, .ui-accordion-content a:visited {
+  color: $linkcolor;
+}
+.ui-tabs-panel a:link, .ui-accordion-content a:link {
+  color: $linkcolor;
+}
+.ui-tabs-panel a:hover, .ui-accordion-content a:hover {
+  color: $linkhover;
+}
+.x_tabNavExtra_page #topicHolder .topic,
+.x_list_page #listHolder .listItem {
+  border: 1px solid $whiteorlightest;
+  color: $whiteorlightest;
+  background: $defaultpagebackground;
+  margin-bottom: .2em;
+  font-weight: normal;
+}
+.x_tabNavExtra_page #topicHolder .topic.highlight,
+.x_list_page #listHolder .listItem.highlight {
+  border-color: $contrastcolor;
+  color: $contrastcolor;
+}
+.x_tabNavExtra_page #topicHolder .topic:not(.highlight):focus, .x_tabNavExtra_page #topicHolder .topic:not(.highlight):hover,
+.x_list_page #listHolder .listItem:not(.highlight):focus, .x_list_page #listHolder .listItem:not(.highlight):hover {
+  background: $contrastcolor;
+  border-color: $contrastcolor;
+  color: $fontcolorforlightestcolor;
+}
+//*****button navigator*****/
+.ui-button {
+  border-radius: $smallroundedcorners;
+  background: $defaultpagebackground;
+  border: 1px solid $btntxtcolor;
+  color: $btntxtcolor;
+}
+.panel .ui-button, .featherlight-content .ui-button {
+  background: $blackordarkest;
+}
+.ui-button:not(.ui-button-disabled):hover, .ui-button:not(.ui-button-disabled):active, .ui-button:not(.ui-button-disabled):focus,
+.ui-button:not(.ui-button-disabled):hover p, .ui-button:not(.ui-button-disabled):active p, .ui-button:not(.ui-button-disabled):focus p {
+  background: $contrastcolor;
+  color: $lightbtntxt;
+  border-color: $contrastcolor;
+}
+.ui-buttonset .ui-button {
+  margin-left: 0;
+  margin-right: .2em;
+}
+.ui-state-active{
+  border-radius: $smallroundedcorners;
+  color: $whiteorlightest;
+}
+.x_nav_page #pageContents.button button.selected {
+  border-color: $contrastcolor;
+  //background: $blackordarkest;
+  color: $contrastcolor;
+}
+//***Flash cards***/
+.x_flashCards_page .front.panel{
+  background:$panelcolor;
+  border-color:$panelcolor;
+  color:$mainfontcolour;
+}
+.x_flashCards_page .back.panel{
+  background:$panelcolor;
+  border-color:$panelcolor;
+  color:$mainfontcolour;
+}
+.x_flashCards_page .circleBtn.ui-button {
+  background: $defaultpagebackground;
+  color: $btntxtcolor;
+  border-color: $btntxtcolor;
+}
+.x_flashCards_page .panel .circleBtn.ui-button {
+  background: $blackordarkest;
+  color: $mainfontcolour;
+}
+.x_flashCards_page .circleBtn.ui-button:hover, .x_flashCards_page .circleBtn.ui-button:focus, .x_flashCards_page .circleBtn.ui-button:active {
+  background: $lightbtnselected;
+  border-color: $lightbtnselected;
+}
+.x_flashCards_page .circleBtn.ui-button:hover .ui-icon, .x_flashCards_page .circleBtn.ui-button:focus .ui-icon, .x_flashCards_page .circleBtn.ui-button:active .ui-icon {
+  color: $fontcolorforlightestcolor;
+}
+.x_flashCards_page .circleBtn .ui-button-icon-primary {
+  color: $mainfontcolour;
+}
+.x_flashCards_page #cardCtrls .btnHolder button {
+  color: $lightbtncolor;
+}
+.x_flashCards_page #cardCtrls .btnHolder button:hover, .x_flashCards_page #cardCtrls .btnHolder button:focus, .x_flashCards_page #cardCtrls .btnHolder button:active {
+  color: $lightbtnselected;
+}
+//*****hyperlinks******/
+.x_links_page #linkHolder a{
+  color:$linkcolor;
+}
+.x_links_page #linkHolder a:visited{
+  color:$linkvisited;
+}
+.x_links_page #linkHolder a:hover{
+  color:$linkhover;
+}
+
+//***********************************Interactivity*************************************/
+//*****draggable labels*****/
+.label.panel.ui-draggable,
+.x_categories_page .label.panel {
+  background: $lightestpanel;
+  color:$whiteorlightest;
+  border: 2px solid $lightestpanel !important;
+}
+.x_categories_page .label.panel,
+.x_timeline_page .label.panel.ui-draggable,
+.x_textMatch_page .label.panel.ui-draggable {
+  border: 2px solid $blackordarkest !important;
+}
+.label.panel.ui-draggable.selected, .label.panel.ui-draggable.focus,
+.x_categories_page #dragDropHolder .label.selected, .x_categories_page #dragDropHolder .label.focus{
+  border-color: $contrastcolor !important;
+}
+//*****highlight text******/
+.x_textHighlight_page #selectBtn {
+  border-radius: $smallroundedcorners;
+  background: $defaultpagebackground;
+  border: 1px solid $btntxtcolor;
+  color: $btntxtcolor;
+}
+.x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):hover, .x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):active, .x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):focus,
+.x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):hover p, .x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):active p, .x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):focus p {
+  background: $contrastcolor;
+  color: $lightbtntxt;
+  border-color: $contrastcolor;
+}
+.x_textHighlight_page .paneHolder {
+  background: $lighterpanel;
+}
+//*****annotated diagram******/
+#listholder a.listitem, a:visited {
+  color:$mainfontcolour;
+}
+.x_annotatedDiagram_page .highlight{
+  background:$panelcolor;
+}
+.x_annotatedDiagram_page .hotspot{
+  background:none;
+}
+.x_annotatedDiagram_page #infoHolder{
+  background:$defaultpagebackground;
+}
+//*****audio record page*****/
+.x_audioRecord_page #recBtn.recording .ui-icon, .x_audioRecord_page #recBtn.recording .ui-button-text {
+  color: $whiteorlightest;
+}
+//*****categories*****/
+.x_categories_page #categoryHolder h3 {
+  color:$whiteorlightest;
+}
+.x_categories_page #dragDropHolder {
+  padding:10px;
+}
+.x_categories_page #categoryHolder .highlight {
+  background: $panelcolor;
+}
+//*******decision tree********//
+.x_decision_page .ui-slider {
+  height: 10px;
+}
+.x_decision_page .highlight{
+  background: none;
+}
+.x_decision_page .optionGroup.highlight {
+  background: none;
+}
+.x_decision_page .ui-slider .ui-slider-handle {
+  top: -6px;
+  height: 14px;
+  width: 14px;
+  border-color: lighten($mainfontcolour, 30%) !important;
+}
+.x_decision_page .ui-slider .ui-slider-handle:hover, .x_decision_page .ui-slider .ui-slider-handle:focus, .x_decision_page .ui-slider .ui-slider-handle:active {
+  border-color: $contrastcolor !important;
+}
+//*****Dictation*****/
+.x_dictation_page #answerTxt {
+  width: 98%;
+  margin-bottom: 10px;
+  border-radius: $mediumroundedcorners;
+  padding:10px;
+}
+//*****gap fill*****/
+.x_gapFill_page #targetHolder .target {
+  border-radius: $mediumroundedcorners;
+}
+.x_gapFill_page #targetHolder input[readonly].judged.correct+span:before,
+.x_gapFill_page #targetHolder input[correct].judged+span:before,
+.x_gapFill_page #targetHolder .target.correct+span:before,
+.x_gapFill_page #targetHolder select[disabled].correct+span:before,
+.x_gapFill_page #targetHolder input[readonly].correct,
+.x_gapFill_page #targetHolder .target.correct,
+.x_gapFill_page #targetHolder input[correct] {
+  color: $accent1;
+}
+.x_gapFill_page #targetHolder .highlight {
+  background: $lighterpanel;
+}
+.x_gapFill_page #targetHolder input[readonly].correct,
+.x_gapFill_page #targetHolder:not(.underline):not(.outline) .target.correct,
+.x_gapFill_page #targetHolder input[correct],
+.x_gapFill_page #targetHolder select[disabled].correct {
+  background: inherit;
+  border: 1px solid $dark5;
+}
+.x_gapFill_page #targetHolder select[disabled].answerShown,
+.x_gapFill_page #targetHolder input[readonly] {
+  background: inherit;
+  border: 1px solid $dark5;
+  color: $accent4;
+}
+.x_gapFill_page #targetHolder select[disabled] {
+  background: inherit;
+}
+.x_gapFill_page #targetHolder .target.selected {
+  border-color: $contrastcolor !important;
+}
+.x_gapFill_page #targetHolder input.incorrect, #targetHolder input[incorrect] {
+  color: $accent3;
+}
+.x_gapFill_page #targetHolder .target.answerShown {
+  color: $whiteorlightest;
+}
+.x_gapFill_page #targetHolder.outline .target.highlight {
+  border: 1px dashed $whiteorlightest;
+  background: inherit;
+}
+.x_gapFill_page #targetHolder.underline .target.highlight {
+  border-bottom: 1px solid $whiteorlightest;
+  border-top: 1px solid transparent;
+  background: inherit;
+}
+.x_gapFill_page #labelHolder .label.panel.ui-draggable {
+  background: $blackordarkest;
+}
+.x_gapFill_page #labelHolder .label.panel.ui-draggable:not(.selected) {
+  border-color: $blackordarkest !important;
+}
+//*****audio record*****/
+.x_audioRecord_page .deleteClipBtn:hover, .x_audioRecord_page .deleteClipBtn:focus {
+  color: $contrastcolor;
+}
+//*****hotspot image*****/
+a.hotspot, a.hotspot.selected {
+  background: none;
+}
+.hsinfo{
+  padding:1%;
+}
+//******Interactive lists*******/
+.x_list_page a.listItem:link {
+	background: $selectedbutton !important;
+}
+//******Interactive text*******/
+.x_list_page #pageContents a.listItem:link, #passageHolder a.listItem:link, #passageHolder a.listItem:visited, #passageHolder a.listItem:hover, #passageHolder a.listItem:active {
+  color: $whiteorlightest !important;
+}
+.x_interactiveText_page .highlight{
+  background: $selectedbutton;
+}
+.x_interactiveText_page .optionGroup.highlight {
+  background: none;
+}
+//*********matching texts*********/
+.x_textMatch_page .target.highlight {
+  background: $panelcolor;
+}
+//*****model answer*****/
+.x_modelAnswer_page #answerTxt {
+  border-radius: $mediumroundedcorners;
+  width: 98%;
+}
+.x_modelAnswer_page #copyTxt {
+  color: $accent3;
+}
+//*****opinion********/
+.x_opinion_page #pageContents input {
+  padding-left: 0;
+}
+.x_opinion_page .sliderHolder .labelHolder a p {
+  color: $mainfontcolour;
+}
+.x_opinion_page .qSeparator hr {
+  border-color: $lightestpanel;
+}
+//*****sortable grid*****/
+.x_grid_page #grid .listHolder li.shadow {
+  box-shadow: none;
+}
+.x_grid_page #grid .listHolder li.ui-draggable-dragging {
+  background: $lightestpanel;
+  border-color: $mainfontcolour;
+}
+.x_grid_page #grid .listHolder li.selected {
+  border-color: $contrastcolor;
+}
+.x_grid_page #grid ul:not(.preview) li.ui-state-highlight {
+  border-color: $contrastcolor;
+}
+.x_grid_page #grid ul li{
+  background:$dark5;
+  border-color: $blackordarkest;
+  color:$whiteorlightest !important;
+}
+.x_grid_page #grid ul li.static {
+  background: none;
+  border-color: transparent;
+}
+/*****timeline matching pairs*****/
+.x_timeline_page #targetHolder .target.bg {
+  background-color: $panelcolor;
+}
+//***********************************Charts*************************************/
+//***Charts Table***/
+.x_table_page table.header.simple tr:first-child {
+  border:none;
+}
+.x_table_page table.simple {
+  border: none;
+}
+//***********************************Games*************************************/
+//*****Crossword*****/
+.x_crossword_page .crossword-input[type=text] {
+  background: $panelcolor;
+}
+.x_crossword_page .highlighted .crossword-input[type=text] {
+  background: $lightestpanel;
+}
+.x_crossword_page #crossword .correct {
+  background: $accent1;
+}
+//*****games memory*****/
+.x_memory_page #pageContents .card {
+  border-radius: $smallroundedcorners;
+}
+.x_memory_page #cardTopHolder .card.focus {
+  border-color: $contrastcolor;
+}
+//*****memory******/
+.x_memory_page #pageContents .card {
+  background-color:$lighterpanel;
+}
+.x_memory_page #cardBottomHolder .card .label {
+  background-color: $panelcolor;
+}
+.x_memory_page #cardTopHolder .card {
+  background-image: url('card_back.svg') !important; //doesn't work without important
+}
+//*****wordsearch*****/
+.x_wordsearch_page #puzzle {
+  background: $lighterpanel;
+}
+.x_wordsearch_page #puzzle .puzzleSquare {
+  background: none;
+  color: $mainfontcolour;
+}
+.x_wordsearch_page #puzzle .puzzleSquare.found {
+  background: $accent1;
+}
+.x_wordsearch_page #puzzle .puzzleSquare.selected {
+  background: $accent4;
+  color: $fontcolorforlightestcolor;
+}
+.x_wordsearch_page #puzzle .puzzleSquare.solved {
+  background: $accent6;
+  color: $fontcolorforlightestcolor;
+}
+.x_wordsearch_page #words .wordFound {
+  color: $accent1;
+}
+#puzzle {
+  border-radius: $mediumroundedcorners;
+}
+//***********************************Misc*************************************/
+//*****youtube feed page*****/
+.x_youtuberss_page #resultsHolder div {
+  width:97%;
+  min-height: 50px;
+  padding-top: 5px;
+  border-radius: $mediumroundedcorners;
+  background-color: $lightestpanel;
+  margin:.5em;
+}
+.x_youtuberss_page .shadedDiv {
+  background-color: $lighterpanel !important; //doesn't work without important
+  border-radius: $mediumroundedcorners;
+}
+//*****RSS feed******/
+.x_rss_page #resultsHolder .shadedDiv {
+  background-color: $lighterpanel !important;
+}
+//*****RSS feed******/
+.x_rssdownload_page #resultsHolder .shadedDiv {
+  background-color: $lighterpanel !important;
+}
+//*****results page*****/
+.x_results_page #general_summary, .x_results_page #general_summary td, .x_results_page #general_summary th,
+.x_results_page #questionScores, .x_results_page #questionScores td, .x_results_page #questionScores th,
+.x_results_page #fullResults table, .x_results_page #fullResults td, .x_results_page #fullResults th {
+  border: 1px solid $mainfontcolour;
+}
+.x_results_page th, .x_results_page tr.alt td {
+  background: inherit;
+}
+.x_results_page .fas.fa-times-circle {
+  color: $accent3;
+}
+.x_results_page .fas.fa-check-circle {
+  color: $accent1;
+}
+.x_results_page .fas.fa-times-circle, .x_results_page .fas.fa-check-circle {
+  background: none;
+}
+.x_results_page .blue {
+  color: $contrastcolor;
+}
+.x_results_page th {
+  color: $mainfontcolour;
+}
+
+//*****hotspot image connector*****/
+#hotspot_bubble {
+  color: $mainfontcolour;
+  background: $panelcolor;
+  border-color: $panelcolor;
+}

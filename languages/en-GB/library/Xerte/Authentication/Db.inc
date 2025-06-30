@@ -16,6 +16,7 @@ define("AUTH_DB_PASSWORD", "Password");
 define("AUTH_DB_EMAIL", "Email");
 define("AUTH_DB_ADDUSER", "Create user");
 define("AUTH_DB_MODUSER", "Modify user");
+define("AUTH_DB_SELECT_USER", "Select a user to modify their details");
 define("AUTH_DB_USEREXISTS", "User already exists");
 define("AUTH_DB_USERDOESNOTEXIST", "User does not exist");
 define("AUTH_DB_USERADDFAILED", "Error when adding user to the Db, do you have write permissions for MySQL?");

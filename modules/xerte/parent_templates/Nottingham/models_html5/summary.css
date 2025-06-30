@@ -3,4 +3,31 @@
 	.summaryGroup {
 		margin-bottom: 1.5em;
 	}
-	
+
+	#x_mainHolder:not(.x_mobile) #mediaHolder {
+		margin: 0 0 20px 20px;
+		padding: 0 !important;
+	}
+
+	#x_mainHolder.x_mobile #mediaHolder {
+		margin-bottom: 1em;
+	}
+
+	#x_pageDiv:not(.autoLayout) #pageContents {
+		height: 100%;
+	}
+
+	#x_mainHolder.x_mobile .pageAudio,
+	#x_mainHolder.x_mobile .pageVideo {
+		width: 100%;
+		margin-left: 0;
+		margin-right: 0;
+	}
+
+	#x_mainHolder:not(.x_mobile) .pageAudio:not(.pageImg) {
+		width: 48%;
+	}
+
+	.pageVideo.youtubeVimeo .mejs-overlay-button {
+		display: none;
+	}

@@ -610,6 +610,10 @@ div.ui-layout-north div.content {
 	background-image: url(../img/warning.png);
 }
 
+.elevated div.ui-layout-north div.content {
+	background-image: url(../img/warning.png);
+}
+
 div.ui-layout-west, div.ui-layout-east {
     background: #b3b3b5;
     padding: 8px 8px 8px 8px;
@@ -783,8 +787,8 @@ td.wizardlabel {
     min-width: 155px;
 }
 
-.wizardgroup .column_table td.wizardlabel {
-	/*min-width: auto;*/
+.wizardgroup .column_table > tbody > tr > td {
+	vertical-align: top;
 }
 
 td.wizardvalue {
@@ -823,7 +827,7 @@ fieldset.wizardgroup .group_info {
 	padding: 0 15px 15px 15px;
 }
 
-#parameter_checkboxes span {
+#parameter_checkboxes label {
     margin-right: 15px;
 }
 img.optional {
@@ -1159,6 +1163,8 @@ div#top_buttons button img {height: 20px!important;}
 div#top_buttons button:last-of-type {margin-right: 0px;}
 
 div#bottom_buttons .xerte-icon,  div#top_buttons .xerte-icon {cursor: pointer;}
+#bottom_buttons #up_button, #bottom_buttons #down_button { float: right; }
+#expand_tree { margin-top: .5em; }
 #merge_center label {cursor: pointer; display:block;}
 #merge.xerte_button_dark { background: #f0f0f0; font-size: 1.3em;
 	padding-top: 0px!important;
@@ -1308,6 +1314,10 @@ i.tooltipIcon {
 .passwordIcon {
 	margin-right: 5px;
 	color: #444;
+}
+.milestoneIcon {
+	margin-right: 5px;
+	color: #663399;
 }
 .iconEnabled
 {

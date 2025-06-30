@@ -83,6 +83,7 @@ a {
 	height:			auto;
 	position:		absolute;
 	top:			0px;
+	overflow-y: auto;
 }
 
 #x_headerBlock div, #x_pageDiv {
@@ -91,6 +92,10 @@ a {
 
 #x_headerBlock img {
 	max-height: 200px;
+}
+
+#x_pageTitle {
+	vertical-align: middle;
 }
 
 #x_pageHolder {
@@ -177,6 +182,8 @@ button.ui-button-icon-only {
 
 #x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button {
 	height:		40px;
+	min-height: 1.4em;
+	width: 1.4em;
 	cursor:		pointer;
 	padding: 	0 41px 0 0;
 	/* override JQuery UI css from buttons on footer */
@@ -191,13 +198,14 @@ button.ui-button-icon-only {
 	margin-right:	3px;
 }
 
-.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home, .ui-icon.x_saveSession, .ui-icon.x_projectIntro {
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home, .ui-icon.x_saveSession, .ui-icon.x_projectIntro, .ui-icon.x_resourceIcon {
 	height:					40px;
 	background-position:	center;
 }
 
-.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_home, .ui-icon.x_saveSession, .ui-icon.x_projectIntro {
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_home, .ui-icon.x_saveSession, .ui-icon.x_projectIntro, .ui-icon.x_resourceIcon {
 	width:	41px;
+	min-width: 1.4em;
 }
 
 .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist {
@@ -489,7 +497,8 @@ fieldset.noStyle legend {
 
 /* TABLE STYLES */
 
-#x_pageDiv table {
+#x_pageDiv table,
+table#x_resourceTable {
 	text-align:			left;
 	border-collapse:	collapse;
 }
@@ -621,7 +630,7 @@ table.headerCol.simple th:first-child {
     margin-top: -0.5em;
 }
 
-.ui-icon.fa {
+.ui-icon.fa, .ui-icon.fas, .ui-icon.fa, .ui-icon.fab {
 	overflow: visible;
 }
 
@@ -649,13 +658,11 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 /*styling for optional show/hider footer tools*/
 #x_footerChevron{
     cursor: pointer;
-}
-
-#x_footerChevron{
     color: white;
 	background: none;
 	border: none;
 	height:45px;
+	min-height: 1.4em;
 	font-size: 14px !important;
 	width:25px !important;
 }
@@ -668,45 +675,175 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
     float:left;
 }
 
-/* PROGRESS BAR */
+/* --PROGRESS BAR---------------- */
 #x_footerProgress {
 	box-sizing: border-box;
+	margin: auto;
+	width: 20%;
+	text-align: center;
+}
+#x_headerBlock #x_headerProgress {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	margin: 0;
+	padding: 10px;
+}
+#x_headerBlock #x_headerProgress.progressMarkers {
+	padding: 15px 20px 15px;
+}
+#x_headerBlock #x_headerProgress div:not(.pbTxt),
+#x_headerBlock #x_headerProgress .progressMarker {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+/* -- pb between headers -- */
+#x_headerBlock.pbBetween #x_headerProgress,
+#x_headerBlock.pbBetween #x_headerProgress.progressMarkers {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+/* -- pb below header -- */
+#x_mainHolder #x_headerBlock.pbBelow #x_headerProgress {
+	padding: 0 10px 10px 10px;
+}
+#x_mainHolder:not(.x_mobile) #x_headerBlock.pbBelow #x_headerProgress {
+	/*float: left;*/
+}
+#x_mainHolder #x_headerBlock.pbBelow #x_headerProgress.progressMarkers {
+	padding: 0 20px 15px;
 }
 
+/* the whole bar */
 .pbContainer {
-	width: 50%;
+	width: 100%;
 	height: 6px;
 	margin: auto;
-	margin-top: 15px;
-	background-color: #ddd;
+	margin-top: .5em;
+	background-color: #fff;
+}
+#x_headerProgress .pbContainer {
+	border-radius: 10px;
+	position: relative;
+}
+#x_mainHolder:not(.x_mobile) #x_headerBlock #x_headerProgress .pbTxt + .pbContainer {
+	margin-top: -1.2em;
+}
+#x_mainHolder:not(.x_mobile) #x_headerBlock #x_headerProgress.progressMarkers .pbTxt + .pbContainer {
+	margin-top: -1.1em;
 }
 
-.pbPercent {
+/* the highlighted parts of the bar */
+.pbBar {
 	text-align: right;
 	padding-right: 2px;
 	line-height: 6px;
 	color: #ffffff;
-}
-
-.pbBar {
-	width: 10%;
+	width: 0;
 	font-size: 8px;
 	background-color: #2196F3;
+	height: 100%;
+	box-sizing: border-box;
+}
+.pbBarContainer {
+	width: 100%;
+}
+#x_headerProgress .pbBar:first-of-type {
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+#x_headerProgress.complete .pbBar:last-of-type, .pbBar.sub:last-of-type {
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+#x_headerProgress .pbBar.sub {
+	position: absolute;
 }
 
+/* the text next to the progress bar */
 .pbTxt {
-	font-size: 10px;
+	font-size: max(.8em, 10px);
 	text-align: center;
+	padding-top: .5em;
+}
+#x_mainHolder #x_headerProgress .pbTxt {
+	font-size: 1em;
+	text-align: left;
+}
+#x_mainHolder:not(.x_mobile) #x_headerProgress .pbTxt {
+	display: inline-block;
+	padding: 0 5px 5px;
+}
+#x_headerProgress.progressMarkers .pbTxt {
+	padding: 0 5px 10px;
+}
+#x_mainHolder.x_mobile #x_headerProgress .pbTxt {
+	padding: 0 0 10px 0;
+}
+/* -- pb between headers -- */
+#x_headerBlock.pbBetween #x_headerProgress .pbTxt {
+	padding-left: 0;
+}
+/* -- pb above header -- */
+#x_headerBlock.pbAbove #x_headerProgress.progressMarkers .pbTxt {
+	margin-top: -5px;
+}
+
+/* progress markers on the progress bar */
+#x_headerProgress .progressMarker {
+	width: 20px;
+	height: 20px;
+	border: 6px solid #fff;
+	background: black;
+	border-radius: 20px;
+	position: absolute;
+}
+#x_headerProgress .progressMarker.complete {
+	border-color: #2196F3;
+}
+.pbMarkerContainer {
+	position: absolute;
+	top: -7px;
+	left: 0;
+	right: 0;
 }
 
 
 /* --PASSWORD PROTECTION BLOCK-------------------------------------------------------------- */
 .x_pswdInfo {
-	margin-bottom: 2vmin;
+	margin-bottom: 1em;
 }
 
-.x_pswdInput:not(.old) {
+#x_pagePswd {
+	margin-left: .5em;
+	margin-right: .5em;
+}
+
+.vault-door-dial #x_pagePswd {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.x_pswdInput.old input#x_pagePswd {
+	margin-right: .5em;
+	margin-bottom: .5em;
+}
+
+.x_pswdInput #x_pagePswdBtn.old {
+	margin-left: .5em;
+	margin-right: .5em;
+	margin-top: .5em;
+}
+
+.x_pswdBlock:not(.old) .x_pswdInfo,
+.x_pswdBlock.centered .x_pswdInput {
+	text-align: center;
+}
+
+.x_pswdBlock:not(.centered) .x_pswdInput:not(.old) {
 	width: 90vmin;
+	max-width: 100%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -732,7 +869,7 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 }
 
 :not(.old) .x_pswdError {
-	text-align: centers;
+	text-align: center;
 }
 
 .x_pswdInput.old {
@@ -743,10 +880,6 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 input#x_pagePswd.old {
 	margin-bottom: 0;
 }
-
-/* #x_pagePswdBtn.old { */
-/* 	margin-top: 1em; */
-/* } */
 
 .vault {
 	width: 50%;
@@ -801,7 +934,7 @@ input#x_pagePswd.old {
 		"four   five   six   "
 		"seven  eight  nine  "
 		"unused zero   reset "
-		"button button button";1
+		"button button button";
 }
 
 .vault-door-dial{
@@ -856,7 +989,7 @@ input#x_pagePswd.old {
 	font-weight: bold;
 }
 
-.vault input:focus, .vault input:hover{
+.vault input:focus, .vault input:hover {
 	border: 2px solid #ffffff;
 	outline: none;
 }
@@ -868,18 +1001,22 @@ input#x_pagePswd.old {
 }
 
 .vault button {
-	font-size: 3vmin;
 	background-color: #808080;
 	border: 2px solid #505050 !important;
 }
 
-.vault button:not(#x_pagePswdBtn){
+.vault button:not(#x_pagePswdBtn) {
+	font-size: 1.5em;
 	border-radius: 0px;
 	height: calc(100% - 1px);
 	margin: 1px;
 }
 
-.vault button:hover, .vault button:focus {
+.vault button:disabled:not(#x_pagePswdBtn) {
+	opacity: 1;
+}
+
+.vault button:hover:enabled, .vault button:focus:enabled {
 	background-color: #bdbdbd;
 	border-color: #4A4A4A;
 }
@@ -962,6 +1099,7 @@ button.customIconBtn:after {
 #x_introH1.x_introImgH1 {
 	background: inherit;
 	position: absolute;
+	padding-right: 1em;
 }
 
 #x_introStartBtn.x_introImgBtn {
@@ -976,21 +1114,34 @@ button.customIconBtn:after {
 	}
 }
 
-.featherlight-content.pageIntroVideo.max {
+.featherlight-content.pageIntroVideo.max,
+.featherlight-content.resourceVideo.max,
+.featherlight-content.splashVideo.max {
 	width: 90vw;
 	height: 90vh;
 }
 
-.featherlight-content.pageIntroVideo.hidden {
+.featherlight-content.pageIntroVideo.hidden,
+.featherlight-content.resourceVideo.hidden,
+.featherlight-content.splashVideo.hidden {
 	opacity: 0;
 }
 
-.featherlight-content.pageIntroVideo.youTube .mejs-layers, .featherlight-content.pageIntroVideo.youTube .mejs-controls {
+.featherlight-content.pageIntroVideo.youTube .mejs-layers, .featherlight-content.pageIntroVideo.youTube .mejs-controls,
+.featherlight-content.resourceVideo.youTube .mejs-layers, .featherlight-content.resourceVideo.youTube .mejs-controls,
+.featherlight-content.splashVideo.youTube .mejs-layers, .featherlight-content.splashVideo.youTube .mejs-controls {
 	display: none;
 }
 
-.featherlight .featherlight-content.pageIntroVideo.max.youTube iframe {
+.featherlight .featherlight-content.pageIntroVideo.max.youTube iframe,
+.featherlight .featherlight-content.resourceVideo.max.youTube iframe,
+.featherlight .featherlight-content.splashVideo.max.youTube iframe {
 	width: 100%;
+}
+
+.featherlight:has(.featherlight-content.splashVideo), .featherlight .featherlight-content.splashVideo {
+	background: white;
+	overflow: hidden;
 }
 
 #x_headerBlock #x_pageIntroBtn {
@@ -1016,7 +1167,7 @@ button.customIconBtn:after {
 	position: relative;
 	margin: auto;
 	left: auto;
-	top: -.5em;
+	top: -.8em;
 	font-size: 0.5em;
 }
 
@@ -1140,7 +1291,7 @@ button.customIconBtn:after {
 .ui-helper-hidden-accessible {
 	position:absolute;
 	left:-10000px;
-	top:auto;
+	top:-1000px;
 	width:1px;
 	height:1px;
 	overflow:hidden;
@@ -1272,9 +1423,35 @@ a:focus .wcagLogo {
 	font-size: 20px;
 	background: none;
 	border: none;
-	border-bottom: 1px #666 solid;
+	border-color: #666;
+	border-style: solid;
+	border-top-width: 0;
+	border-left-width: 0;
+	border-right-width: 0;
+	border-bottom-width: 1px;
 	border-radius: 0;
 	color: #212121;
+	display: block;
+}
+
+#x_sideBar.toggleSide #x_sideBarToggleBtn {
+	width: 30px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	right: 0;
+	border-top-width: 0;
+	border-bottom-width: 0;
+	border-right-width: 0;
+	border-left-width: 1px;
+	margin: 0;
+}
+
+.sb_right #x_sideBar.toggleSide #x_sideBarToggleBtn {
+	right: auto;
+	left: 0;
+	border-left-width: 0;
+	border-right-width: 1px;
 }
 
 #x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
@@ -1285,6 +1462,7 @@ a:focus .wcagLogo {
 .sb_left #x_sideBarToggleBtn .ui-button-icon-primary {
 	text-align: right;
 	right: 5px;
+	margin-left: -1em;
 }
 
 .sb_right #x_sideBarToggleBtn .ui-button-icon-primary {
@@ -1292,22 +1470,46 @@ a:focus .wcagLogo {
 	left: 13px;
 }
 
-#x_sideBarBtnHolder {
-	padding-top: 1em;
-	margin-left: 15px;
-	margin-right: 15px;
+#x_sideBar #x_sideBarToggleBtn .ui-button-icon-primary {
+	top: 15px;
 }
 
-#x_sideBarBtnHolder button {
+#x_sideBarBtnHolder, #x_sideBarTocHolder {
+	box-sizing: border-box;
+	padding-top: 1em;
+	padding-bottom: 1em;
+	padding-left: 15px;
+	padding-right: 15px;
+	overflow: auto;
+}
+
+.sb_left #x_sideBar.toggleSide #x_sideBarBtnHolder, .sb_left #x_sideBar.toggleSide #x_sideBarTocHolder {
+	margin-right: 30px;
+}
+
+.sb_right #x_sideBar.toggleSide #x_sideBarBtnHolder, .sb_right #x_sideBar.toggleSide #x_sideBarTocHolder {
+	margin-left: 30px;
+}
+
+#x_sideBar #x_sideBarLogo {
+	margin: 0 .2em 1em;
+}
+
+#x_sideBar #x_sideBarLogo img {
+	max-width: 100%;
+}
+
+#x_sideBar #x_sideBarBtnHolder button {
 	color: #212121;
 	background: none;
 	border: none;
 	border-radius: 0px;
 	display: block;
 	height: auto !important;
+	width: 100%;
 }
 
-#x_sideBarBtnHolder button:not(.customIconBtn) .ui-icon {
+#x_sideBar #x_sideBarBtnHolder button:not(.customIconBtn) .ui-icon {
 	font-family: "Font Awesome 5 Free";
 	font-weight: 900;
 	text-indent: 0;
@@ -1315,6 +1517,7 @@ a:focus .wcagLogo {
 
 #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(.customIconBtn) .ui-icon {
 	float: left;
+	margin-top: .4em;
 }
 
 #x_sideBar.sideBarLarge #x_sideBarBtnHolder button {
@@ -1323,8 +1526,6 @@ a:focus .wcagLogo {
 }
 
 #x_sideBar.sideBarSmall #x_sideBarBtnHolder button {
-	white-space: nowrap;
-	width: auto;
 	box-sizing: border-box;
 	text-align: left;
 	padding: 1em 5px 1em;
@@ -1343,7 +1544,7 @@ a:focus .wcagLogo {
 	display: inline-block;
 }
 
-#x_sideBarBtnHolder button span.ui-icon {
+#x_sideBar #x_sideBarBtnHolder button span.ui-icon {
 	position: static;
 	box-sizing: border-box;
 	margin-top: 0;
@@ -1373,7 +1574,7 @@ a:focus .wcagLogo {
 	margin: 0 auto;
 }
 
-#x_sideBarBtnHolder button span.ui-button-text {
+#x_sideBar #x_sideBarBtnHolder button span.ui-button-text {
 	font-size: 1em;
 	padding: 0;
 }
@@ -1392,6 +1593,264 @@ a:focus .wcagLogo {
 	color: white;
 }
 
+#x_sideBar #x_sideBarBtnHolder {
+	overflow-x: hidden;
+}
+
 [data-cke-editorplaceholder]::before {
 	padding: 0.3em;
+}
+
+
+/* page menu - moved from menu.css as the page model is no longer always loaded */
+#menuItems .menuItem, #menuItems .chapterItem {
+	width: 100%;
+	display: block;
+	margin-bottom: 5px;
+	text-align: left;
+	box-sizing: border-box;
+	overflow: auto;
+}
+
+#menuItems .chapterItem a {
+	padding-right: 1em;
+}
+
+#menuItems .chapterPageHolder .menuItem:last-of-type {
+	margin-bottom: 0;
+}
+
+#menuItems {
+	width: 100%;
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+#menuItems .menuItem.current {
+	border: 2px solid #FF9900;
+}
+
+#menuItems .menuItem.current, #menuItems .chapterItem.current {
+	font-weight: bold;
+}
+
+#menuItems .menuItem .notvisited:not(.beforeText), #menuItems .chapterItem .notvisited:not(.beforeText) {
+	display: none;
+}
+
+#menuItems .menuItem .notvisited.beforeText:before, #menuItems .chapterItem .notvisited.beforeText:before {
+	content:"\f111";
+	font-weight: 300;
+	opacity: .1;
+}
+
+#menuItems .chapterHolder .chapterPageHolder {
+	padding: .1em;
+	box-sizing: border-box;
+	margin-bottom: 5px;
+}
+
+#menuItems .chapterHolder .chapterPageHolder .menuItem {
+	margin-right: 0;
+}
+
+#menuItems .chapterItem.ui-accordion-header-active {
+	margin-bottom: 0;
+}
+
+#menuItems .ui-accordion .ui-accordion-header .ui-icon {
+	left: 0.3em;
+}
+
+#tocMenuLightBox {
+	height: 99%;
+}
+
+#tocMenuLightBox #menuItems {
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+/* make sure ticks are aligned whether ticks are for chapters or pages (inside or outside of chapters) */
+#menuItems .menuItem .viewTick:not(.beforeText),
+#menuItems .chapterItem .viewTick:not(.beforeText) {
+	float: right;
+	margin-top: 0.2em;
+}
+
+#menuItems .chapterItem .viewTick:not(.beforeText) {
+	padding-right: .1em;
+}
+
+#menuItems > .menuItem .viewTick:not(.beforeText) {
+	padding-right: .1em;
+}
+
+#menuItems .chapterPageHolder .menuItem .viewTick.beforeText {
+	margin-left: -.1em;
+}
+
+/* accessibility options dialog / lightbox */
+#x_colourChanger #colourChangerHolder {
+	padding: 0 5px;
+}
+
+#x_colourChanger .optionGroup {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+#x_colourChanger #colourChangerOptions input {
+	float: left;
+	display: block;
+}
+
+#x_colourChanger #colourChangerOptions label {
+	position: relative;
+	margin-left: 2em;
+	display: block;
+}
+
+#x_colourChanger #colourChangerOptions label p {
+	padding-top: 0;
+}
+
+#x_colourChanger .checkGroup {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+/* --RESOURCES-------------------------------------------------------------- */
+
+/* page resources button & lightbox */
+#x_headerBlock #x_pageResourcesBtn {
+	float: right;
+	padding: 0;
+	margin: 0 0 5px 10px;
+	font-size: min(1.5em, 30px);
+}
+
+#x_pageResourcesBtn.ui-button-icon-only {
+	width: 2em;
+	height: 1.5em;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only .ui-icon {
+	margin-left: -.65em;
+}
+
+#x_pageResourcesBtn:not(.ui-button-icon-only) .ui-button-text {
+	font-size: .5em;
+	padding-left: 4em;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+	background: black;
+	color: white;
+	width: .8em;
+	height: .8em;
+	border-radius: 1em;
+	position: absolute;
+	top: .1em;
+	right: .1em;
+	padding: 0;
+}
+
+#x_pageResourcesBtn .resourceNumber .resourceNumberTxt {
+	padding: 0;
+	font-size: .5em;
+	margin-top: .2em;
+}
+
+#x_resourceHeader {
+	margin-bottom: .5em;
+}
+
+#x_resources p {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+#x_resourceTable {
+	width: 100%;
+	margin-top: .5em;
+}
+
+#x_resourceTable tr {
+	border-color: #ccc;
+}
+
+#x_resourceTable th,
+#x_resourceTable td {
+	padding: .2em .4em .2em 0;
+}
+
+#x_resourceTable th:last-of-type,
+#x_resourceTable td:last-of-type {
+	padding-right: 0;
+}
+
+#x_resourceTable th {
+	vertical-align: bottom;
+}
+
+#x_resourceTable .completeCell,
+#x_resourceTable th.actionCell {
+	text-align: center;
+}
+
+#x_resourceTable td.actionCell {
+	text-wrap: nowrap;
+}
+
+#x_resourceTable td.titleCell .resourceLinkHolder,
+#x_resourceTable td.actionCell .actionBtnHolder {
+	display: flex;
+	align-items: center;
+}
+
+.resourceIcon {
+	border: 1px solid #ccc;
+	padding: .5em;
+	margin-right: 1em;
+	box-sizing: content-box !important;
+	flex-shrink: 0;
+}
+
+.actionCell .ui-button-icon-only .ui-icon[class*=" fa-"] {
+	margin-left: -.5em;
+	margin-top: -.5em;
+	overflow: visible;
+}
+
+.resourceViewBtn + .resourceDownloadBtn {
+	margin-left: .2em;
+}
+
+.resourceDownloadBtn {
+	width: 2.4em;
+	height: 2.4em;
+}
+
+.resourceLink, .resourceLink:visited, .resourceLink:focus,
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+	color: #000;
+}
+
+button.resourceLink {
+	background: none;
+	border: none;
+	padding: 0;
+	text-decoration: underline;
+	cursor: pointer;
+	text-align: left;
+}
+
+#suppressWarningCheck, #suppressWarningBtnHolder {
+	margin-top: 1em;
+}
+
+.resourceContinueBtn {
+	margin-right: .5em;
 }

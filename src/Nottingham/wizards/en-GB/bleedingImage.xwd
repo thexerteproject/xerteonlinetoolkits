@@ -28,7 +28,7 @@
 		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</soundGroup>	
 	
-	<linkInfo type="group" label="Link" optional="true">
+	<linkInfo type="group" label="Link" optional="true" deprecated="This property has been deprecated. Links should be added within the page text.">
 		<link label="URL" type="textInput" optional="true" defaultValue="" placeholder="Enter a URL"/>
 		<linkIntro label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter link description for accessibility"/>
 		<linktarget label="Target" type="textInput" width="70" defaultValue="_blank" optional="true" />

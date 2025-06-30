@@ -24,7 +24,6 @@ CKEDITOR.dialog.add('xotcolumns', function (editor) {
   function cWD (name, ...params) {
     console.log(name, ...params);
     window[/*'widget_' + */name] = {...params};
-    debugger;
   }
 
   function blackOrWhite(colour) {

@@ -28,16 +28,16 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-            if (x_browserInfo.mobile == false) {
-                var $panel = $("#infoHolder .panel");
-                $panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-            }
+            const $panel = $("#infoHolder .panel");
+            $panel.height(x_getAvailableHeight([$panel]));
 		}
 		
 		this.init = function() {
 			var $closeText = $("#closingText"),
                 $splitScreen = $("#pageContents .splitScreen");
-            $closeText.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+            if (x_currentPageXML.childNodes[0] !== undefined) {
+                $closeText.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+            }
             // ignores superscript support data in xml as it will do it automatically with <sub> <sup> tags
 			if (x_currentPageXML.getAttribute("textWidth") != null) {
                 if (x_currentPageXML.getAttribute("textWidth") == "small") {

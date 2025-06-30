@@ -46,13 +46,9 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel"),
-					$btnHolder = $("#btnHolder");
-				
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) - parseInt($x_pageDiv.css("padding-bottom")) - parseInt($panel.css("padding-top")) - parseInt($panel.css("padding-bottom")) - 5);
-				$("#contentHolder").height($panel.height() - $btnHolder.outerHeight(true));
-			}
+			const $panel = $("#pageContents .panel");
+			$panel.height(x_getAvailableHeight([$panel]));
+			$("#contentHolder").height(x_getAvailableHeight([$panel], [$("#btnHolder")]));
 		}
 		
 		this.init = function() {
@@ -529,7 +525,7 @@
 					}
 				}
 				
-				$stepHolder.prepend('<div class="step"><div class="instruction"></div></div>');
+				$stepHolder.prepend('<fieldset class="step noStyle"><legend class="instruction"></legend></fieldset>');
 				$stepHolder.find('.instruction').append(authorSupport).append($text);
 				var $thisStep = $stepHolder.children(".step");
 				
@@ -574,7 +570,7 @@
 								}
 								
 							} else {
-								var $parent = $thisStep;
+								var $parent ;
 								if (i == 0) {
 									$parent = $('<div id="optionHolder" class="radioAnswers"/>').appendTo($thisStep);
 								} else {
@@ -665,17 +661,31 @@
 						var $slider = $thisStep.find("#slider"),
 							$amount = $thisStep.find("#labelHolder #amount");
 						
-						$slider.slider({
-							value:	Number(currentStepInfo.value),
-							min:	Number(currentStepInfo.min),
-							max:	Number(currentStepInfo.max),
-							step:	Number(currentStepInfo.step),
-							slide:	function(event, ui) {
-								$amount.val(ui.value);
-								
-								$(".x_popupDialog").parent().detach();
-							}
-						})
+						$slider
+							.slider({
+								value:	Number(currentStepInfo.value),
+								min:	Number(currentStepInfo.min),
+								max:	Number(currentStepInfo.max),
+								step:	Number(currentStepInfo.step),
+								slide:	function(event, ui) {
+									const $toggle = $(this).find(".ui-slider-handle");
+									$toggle.attr({
+										"aria-valuenow": ui.value,
+										"aria-valuetext": ui.value + ": " + (x_currentPageXML.getAttribute("fromRangeString") ? x_currentPageXML.getAttribute("fromRangeString") : "From range") + " " + Number(currentStepInfo.min) + "-" + Number(currentStepInfo.max)
+									});
+
+									$amount.val(ui.value);
+									$(".x_popupDialog").parent().detach();
+								}
+							})
+							.find(".ui-slider-handle").attr({
+								"role": "slider",
+								"tabindex": "0",
+								"aria-valuemin": Number(currentStepInfo.min),
+								"aria-valuenow": Number(currentStepInfo.value),
+								"aria-valuemax": Number(currentStepInfo.max),
+								"aria-valuetext": Number(currentStepInfo.value) + ": " + (x_currentPageXML.getAttribute("fromRangeString") ? x_currentPageXML.getAttribute("fromRangeString") : "From range") + " " + Number(currentStepInfo.min) + "-" + Number(currentStepInfo.max)
+							});
 						
 						$amount
 							.val($slider.slider("value"))
@@ -698,6 +708,12 @@
 									$amount.val(value);
 								}
 								$slider.slider({value: value});
+
+								const $toggle = $slider.find(".ui-slider-handle");
+								$toggle.attr({
+									"aria-valuenow": value,
+									"aria-valuetext": value + ": " + (x_currentPageXML.getAttribute("fromRangeString") ? x_currentPageXML.getAttribute("fromRangeString") : "From range") + " " + Number(currentStepInfo.min) + "-" + Number(currentStepInfo.max)
+								});
 								
 								$(".x_popupDialog").parent().detach();
 							});
@@ -903,7 +919,7 @@
 					if (thisStep.type == "mcqStep") {
 						if (type == "html") {
 							// include details of answers which weren't chosen too
-							string += '<div class="overviewAnswer"><i class="fa fa-fw fa-chevron-right"></i> &nbsp;' + x_addLineBreaks($(thisStep.options[decisionHistory[i].option]).attr("name")) + '</div>';
+							string += '<div class="overviewAnswer"><i class="fa fa-fw fa-chevron-right"></i> &nbsp;' + (x_currentPageXML.getAttribute("yourAnswerString") != undefined && x_currentPageXML.getAttribute("yourAnswerString") != "" ? x_currentPageXML.getAttribute("yourAnswerString") + ": " : "") + x_addLineBreaks($(thisStep.options[decisionHistory[i].option]).attr("name")) + '</div>';
 							string += '<div class="extraInfo"><i class="fa fa-fw fa-chevron-right"/> &nbsp;' + (x_currentPageXML.getAttribute("posAnswerString") ? x_currentPageXML.getAttribute("posAnswerString") : "Other possible answers") + ': ';
 							
 							thisStep.options.each(function(j) {
@@ -1036,9 +1052,9 @@
 		<div class="right">
 			<div class="panel">
 				
-				<div id="contentHolder">
+				<div id="contentHolder" tabindex="0">
 					
-					<div id="stepHolder">
+					<div id="stepHolder" aria-live="polite">
 						<button id="helpBtn"></button>
 						<button id="submitBtn"></button>
 					</div>
