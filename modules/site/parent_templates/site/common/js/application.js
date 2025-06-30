@@ -1742,7 +1742,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 				}
 			}
 							// let height=-1;
-		if (page.attr('fixedheader') == 'true')
+		if ($(data).find('learningObject').attr('fixedheader') == 'true')
 		{
 			fixedheader = true;
 			
