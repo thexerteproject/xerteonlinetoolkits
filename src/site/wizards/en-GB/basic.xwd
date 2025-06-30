@@ -38,6 +38,7 @@
 		</headerGroup>
         
         <navbarGroup type="group" label="Navigation Bar" optional="true">
+			<fixedheader type="Checkbox" defaultValue="false" conditionTrigger="false" optional="true" label="Fixed nav"/>
 			<navbarPos type="ComboBox" data="above,below" options="Above Header,Below Header" optional="true" label="Position" defaultValue="above" width="175"/>
 			<navbarColour type="ColourPicker" optional="true" label="Background Colour"/>
 			<navbarTextColour type="ColourPicker" optional="true" label="Text Colour"/>
