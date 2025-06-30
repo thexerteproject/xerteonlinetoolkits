@@ -832,7 +832,7 @@ function get_shared_folder_contents($folder_id, $role, $tree_id, $sort_type, $co
         }
         $items[] = $item;
     }
-    
+
     return $items;
 }
 
@@ -1062,43 +1062,6 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
                     }
                 }
             }
-            /*
-            if ($folder['folder_id'] == 278)
-            {
-                $uniqueItems = array();
-                foreach ($files as $item => $value){
-                    $counter = 0;
-                    if(count($uniqueItems) > 0){
-                        foreach ($uniqueItems as $uniqueItem){
-                            if($value->id != $uniqueItem->id){
-                                $counter++;
-                            }else{
-                                break;
-                            }
-                        }
-
-                        if(count($uniqueItems) == $counter){
-                            $uniqueItems[$item] = $value;
-                        }
-                    }else{
-                        $uniqueItems[$item] = $value;
-                    }
-                }
-
-                //Dump $items2 and $files to a csv file for comparison
-                $fp = fopen('items2.csv', 'w');
-                foreach ($items2 as $fields) {
-                    fputcsv($fp, (array)$fields);
-                }
-                fclose($fp);
-                $fp = fopen('files.csv', 'w');
-                foreach ($uniqueItems as $fields) {
-                    fputcsv($fp, (array)$fields);
-                }
-                fclose($fp);
-            }
-            */
-
         }
         else {
             $foldertemplates = array_filter($templates, function ($template) use ($item) {
@@ -1212,12 +1175,6 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
         }
     }
 
-    // Dump $items to a csv file for comparison
-    $fp = fopen('files.csv', 'w');
-    foreach ($uniqueItems as $fields) {
-        fputcsv($fp, (array)$fields);
-    }
-    fclose($fp);
     return $uniqueItems;
 }
 
