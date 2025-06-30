@@ -1412,7 +1412,7 @@ function folder_sharing_info($folder_id)
                             $query_shared_folder_users[$indexUser]["role"] = "creator";
                             // Change the role of the user to co-author
                             foreach ($query_shared_folder_users as $indexUser2 => $user2) {
-                                if ($user2['user_id'] != $row['user_id'] && $user2['role'] == "creator") {
+                                if ($user2['user_id'] != $row['login_id'] && $user2['role'] == "creator") {
                                     $query_shared_folder_users[$indexUser2]["role"] = "co-author";
                                     break;
                                 }

@@ -1087,12 +1087,12 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
                 $titem->published = $template['access_to_whom'] != 'Private' || $template['tsugi_published'] == 1;
                 $titem->shared = $template['nrshared'] > 1;
                 if (!isset($xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']})) {
-                    $item->editor_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['parent_template']}->editor_size;
-                    $item->preview_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['parent_template']}->preview_size;
+                    $titem->editor_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['parent_template']}->editor_size;
+                    $titem->preview_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['parent_template']}->preview_size;
                 }
                 else {
-                    $item->editor_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size;
-                    $item->preview_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size;
+                    $titem->editor_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->editor_size;
+                    $titem->preview_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size;
                 }
 
                 $items[] = $titem;
@@ -1137,14 +1137,14 @@ function get_workspace_contents($folder_id, $tree_id, $sort_type, $copy_only=fal
 		}
 		else
 		{
-			$titem->editor_size="1280, 768";
+            $titem->editor_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['parent_template']}->editor_size;
 		}
 		if (isset($xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size)) {
 			$titem->preview_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['template_name']}->preview_size;
 		}
 		else
 		{
-			$titem->preview_size="802, 602";
+            $titem->preview_size = $xerte_toolkits_site->learning_objects->{$template['template_framework'] . "_" . $template['parent_template']}->preview_size;
 		}
         $items[] = $titem;
     }
@@ -1477,7 +1477,7 @@ function get_workspace_templates($folder_id, $tree_id, $sort_type, $copy_only=fa
     } else {
         //select templates the same way as regularly, however, now check for group_id in template_group_rights
         $query = "select td.template_name as project_name, otd.template_name,td.access_to_whom, td.tsugi_published, "
-            . " otd.parent_template, otd.template_framework, td.template_id, tgr.role, 2 as nrshared from {$prefix}templatedetails td, "
+           . " otd.parent_template, otd.template_framework, td.template_id, tgr.role, 2 as nrshared from {$prefix}templatedetails td, "
             . " {$prefix}template_group_rights tgr, {$prefix}originaltemplatesdetails otd where td.template_id = tgr.template_id and tgr.group_id = ? "
             . " and otd.template_type_id = td.template_type_id ";
         $params = array($type);
