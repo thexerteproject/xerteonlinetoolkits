@@ -3520,6 +3520,11 @@ function loadXotContent($this) {
 	{
 		xotLink += separator + 'site=' + x_TemplateId;
 		xotLink = xotLink.replace('play.php?', peditEndpoint);
+		xotLink += separator + 'param=' + urlParams.param;
+		if (typeof urlParams.aloConnectionKey != "undefined")
+		{
+			xotLink += separator + 'aloConnectionKey=' + urlParams.aloConnectionKey;
+		}
 	}
 	else if (typeof xapi_enabled != 'undefined' && xapi_enabled)
 	{
@@ -3782,8 +3787,7 @@ function setUpLightBox(thisPageInfo, thisSectionInfo, $section) {
 			if (altText != undefined && altText != '') {
 				this.$instance.find('.featherlight-content img').attr('alt', altText);
 			}
-
-			const caption = this.$currentTarget == undefined ? undefined : $(this.$currentTarget).next().is("figCaption") ? $(this.$currentTarget).next().html() : undefined;
+			const caption = this.$currentTarget == undefined ? undefined : $(this.$currentTarget).next().is("figCaption") ? $(this.$currentTarget).next().html() : $(this.$currentTarget).find("img").attr("alt");
 			const sectionCaption = e == undefined ? undefined : $(e.target).data('lightboxCaption');
 			if (caption != undefined && caption != '') {
 				// captions can be turned on at LO, page or section level
