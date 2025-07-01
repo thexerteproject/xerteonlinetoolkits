@@ -304,7 +304,7 @@ class openaiApi
             return (object) ["status" => "error", "message" => "there is no corresponding API key"];
         }
 	
-		$model = load_model($type, $_POST["model"], $_POST["context"], $_POST["prompt"]["subtype"], $_POST["modelTemplate"], !empty($_POST['url']) || !empty($_POST['textSnippet']), $_POST['asst_id']);
+		$model = load_model_op($type, $_POST["model"], $_POST["context"], $_POST["prompt"]["subtype"], $_POST["modelTemplate"], !empty($_POST['url']) || !empty($_POST['textSnippet']), $_POST['asst_id']);
 
         $prompt = $this->generatePrompt($p, $model, $globalInstructions);
 		$payload = $model->get_payload();

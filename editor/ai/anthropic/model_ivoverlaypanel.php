@@ -1,5 +1,5 @@
 <?php
-class anthropic_ai {
+class anthropic_ai_ivoverlaypanel extends anthropic_ai {
 
 	public function __construct($type, $model = null, $context = "standard", $sub_type = null){
 		if($model != null) {

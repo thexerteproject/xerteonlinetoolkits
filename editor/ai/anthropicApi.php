@@ -12,7 +12,7 @@ class anthropicApi
         $this->xerte_toolkits_site = $xerte_toolkits_site;
         require_once (str_replace('\\', '/', __DIR__) . "/rag/BaseRAG.php");
         require_once (str_replace('\\', '/', __DIR__) . "/rag/MistralRAG.php");
-        require_once (str_replace('\\', '/', __DIR__) . "/" . $api . "/model.php");
+        require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/load_model.php");
     }
 
     private function clean_result($answer) {
@@ -140,8 +140,8 @@ class anthropicApi
             return (object) ["status" => "error", "message" => "there is no corresponding API key"];
         }
 
-		$model = new anthropic_ai($type, $_POST["model"], $_POST["context"], $_POST["prompt"]["subtype"]);
 
+		$model = load_model_an($type, $_POST["model"], $_POST["context"], $_POST["prompt"]["subtype"]);
         $prompt = $this->generatePrompt($p, $model, $globalInstructions);
 		$payload = $model->get_payload();
 

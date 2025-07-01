@@ -4,8 +4,11 @@ foreach(glob(str_replace('\\', '/', __DIR__) . "/model_*.php") as $file){
 	require_once($file);
 }
 
-function load_model($type, $model = null, $context = "standard", $sub_type = null){
+function load_model_an($type, $model = null, $context = "standard", $sub_type = null){
 	$name = "anthropic_ai_" . $type;
+	if($context == null){
+		$context = "standard";
+	}
 	if(class_exists($name)) {
 		return new $name($type, $model, $context, $sub_type);
 	}else {

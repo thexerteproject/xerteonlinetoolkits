@@ -171,7 +171,7 @@ class mistralApi
             return (object) ["status" => "error", "message" => "there is no corresponding API key"];
         }
 
-		$model = load_model($type, $_POST["model"], $_POST["context"], $_POST["prompt"]["subtype"]);
+		$model = load_model_mi($type, $_POST["model"], $_POST["context"], $_POST["prompt"]["subtype"]);
 
         $prompt = $this->generatePrompt($p, $model, $globalInstructions);
 		$payload = $model->get_payload();
