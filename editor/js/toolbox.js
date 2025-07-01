@@ -6204,6 +6204,10 @@ var EDITOR = (function ($, parent) {
                         let api = constructorObject['imgApi'] !== undefined ? constructorObject['imgApi'] : 'pexels';
                         delete constructorObject.imgApi;
 
+                        if (api==='dalle3'){
+                            constructorObject['nri'] = '1';
+                        }
+
                         var query;
                         //query select option for specific pages
                         let querySelect = constructorObject['imgQuerySelect'] !== undefined ? constructorObject['imgQuerySelect'] : 'custom';

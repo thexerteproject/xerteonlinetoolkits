@@ -1783,8 +1783,45 @@ var EDITOR = (function ($, parent) {
         $('body').css("cursor", "wait");
         //console.log("start pexels api request please wait");
 				let image_preview = $("<div class=\"img_search_preview\"><div class=\"img_search_loading\">loading...</div></div>");
+        let keepClicked = false;
         let selection_window = $.featherlight(image_preview, {
-						closeOnClick: false,
+            closeOnClick: false,
+            beforeClose: function() {
+                    if (keepClicked) return true;
+
+                    let $boxes = image_preview.find("input[type='checkbox']");
+                    let allIndices = $.makeArray($boxes).map(cb => +cb.name);
+                    let keptIndices = $.makeArray($boxes)
+                        .filter(cb => cb.checked)
+                        .map(cb => +cb.name);
+
+                    // if they’d checked something, ask whether to keep them
+                    let toDelete;
+                        if (keptIndices.length) {
+                            let keep = confirm(
+                                "You’ve selected " + keptIndices.length + " image(s).\n\n" +
+                                "OK = keep those and delete the rest\n" +
+                                "Cancel = delete all images"
+                            );
+                            toDelete = keep
+                                ? allIndices.filter(i => keptIndices.indexOf(i) === -1)
+                                : allIndices;
+                        }
+                        else {
+                            // nothing checked → just delete everything
+                            toDelete = allIndices;
+                        }
+
+                        // send the cleanup
+                        let form = new FormData();
+                        toDelete.forEach(i => form.append("indices_to_delete[]", i));
+                        navigator.sendBeacon(
+                            "editor/imagesearchandhelp/imgSelection.php",
+                            form
+                        );
+
+                        return true;  // now let the lightbox close
+                    }
 				});
 				image_preview = $(".img_search_preview");
         $.ajax({
@@ -1798,6 +1835,7 @@ var EDITOR = (function ($, parent) {
 								let image_preview_images = $("<div class=\"image_preview_images\"></div>");
 								image_preview.append(image_preview_images);
 								let submit_button = $("<input type=\"submit\" value=\"" + language.imageSelection.keepButtonText + "\">").click(function() {
+                                        keepClicked = true;
 										let indices_to_delete = [];
 										for(let input of $.makeArray(image_preview.find("input[type=\"checkbox\"]"))){
 												if(!input.checked){
