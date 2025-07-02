@@ -5615,9 +5615,9 @@ var EDITOR = (function ($, parent) {
 						.addClass('media')
 						.change({id:id, key:key, name:name, group:options.group, trigger:conditionTrigger}, function(event)
 						{
-                            if (mode === "none") {
-                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                            }
+                            //On change, inputChanged should be triggered so that manually added paths or links also persist, for both normal media buttons an buttons in forms regardless of mode.
+                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+
                             if (event.data.trigger)
                             {
                                 //no lightbox so redraw entire page
@@ -6223,14 +6223,14 @@ var EDITOR = (function ($, parent) {
                                 }
                                 break;
                             case 'side1':
-                                query = constructorObject['side1'] !== undefined ? constructorObject['side1'] : "";
+                                query = constructorObject['imgQuerySide1'] !== undefined ? constructorObject['imgQuerySide1'] : "";
                                 delete constructorObject.side1;
                                 if (!query || query.trim() === ""){
                                     query = null;
                                 }
                                 break;
                             case 'side2':
-                                query = constructorObject['side2'] !== undefined ? constructorObject['side2'] : "";
+                                query = constructorObject['imgQuerySide2'] !== undefined ? constructorObject['imgQuerySide2'] : "";
                                 delete constructorObject.side2;
                                 if (!query || query.trim() === ""){
                                     query = null;
@@ -6478,6 +6478,7 @@ var EDITOR = (function ($, parent) {
                             }
 
                             const payload = { name, baseURL, gridData: [singleRow], corpusGrid, useLoInCorpus };
+                            $('body, .featherlight, .featherlight-content').css("cursor", "wait");
 
                             // 2. Send it off
                             // Return a Promise that resolves or rejects with the AJAX result
@@ -6489,13 +6490,16 @@ var EDITOR = (function ($, parent) {
                                     data: JSON.stringify(payload),
                                     success: function(resp) {
                                         console.log('Corpus sync succeeded:', resp);
-                                        alert('✅ Synced ' + payload.gridData.length + ' files to corpus.');
+                                        alert('✅ Synced ' + payload.gridData.length + ' file to corpus. Please press \'generate\' again to continue with your request.');
                                         resolve(resp);
                                     },
                                     error: function(xhr, status, err) {
                                         console.error('Corpus sync failed:', err);
                                         alert('⚠️ Corpus sync error: ' + err);
                                         reject(err);
+                                    }, complete: function() {
+                                        // Always reset cursor
+                                        $('body, .featherlight, .featherlight-content').css("cursor", "default");
                                     }
                                 });
                             });
@@ -6505,6 +6509,7 @@ var EDITOR = (function ($, parent) {
                         // Returns a Promise that resolves with the corpus data
                         function fetchCorpus() {
                             const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+                            $('body, .featherlight, .featherlight-content').css("cursor", "wait");
                             return new Promise((resolve, reject) => {
                                 $.ajax({
                                     url: 'editor/ai/rag/getCorpus.php',
@@ -6530,6 +6535,10 @@ var EDITOR = (function ($, parent) {
                                         console.error('Failed to fetch corpus:', err);
                                         alert('⚠️ Error loading corpus data: ' + err);
                                         reject(err);
+                                    },
+                                    complete: function() {
+                                        // Always reset cursor
+                                        $('body, .featherlight, .featherlight-content').css("cursor", "default");
                                     }
                                 });
                             });
@@ -6552,7 +6561,7 @@ var EDITOR = (function ($, parent) {
                                         alert('File found in corpus. Proceeding with AI request, using only this file as the context.');
                                         return match.metaData.source;  // file found
                                     } else {
-                                        if (confirm("The file you've selected has not yet been processed. Would you like to add it to the context for this learning object?")){
+                                        if (confirm("The file you've selected has not yet been processed, and cannot be used as context for generation. Would you like to add it to the context for this learning object? For videos or larger files, this might take several minutes.")){
                                             await updateCorpus(fileUrl, false);
                                             return false; // not found, but added
                                         } else {
@@ -6593,7 +6602,7 @@ var EDITOR = (function ($, parent) {
                             loSettings['restrictCorpusToLo'] = true;
                         }
                         const requiredUploadTypes = ['ivOverlayPanel'];
-                        if (requiredLoTypes.includes(aiSettings['type'])){
+                        if (requiredLoTypes.includes(aiSettings['type']) || requiredUploadTypes.includes(aiSettings['type']) ){
                             uploadPrompt = 'true';
                         }
 
@@ -6601,32 +6610,13 @@ var EDITOR = (function ($, parent) {
                             aiSettings['useCorpus'] = true;
                         }
 
-                        if (loSettings['useLoInCorpus'] === true ||
-                            loSettings['restrictCorpusToLo'] === true ||
-                            aiSettings['fileUrl'] !== null){
-                            const fileUrl = aiSettings['fileUrl'];
-                            let fileStatus = null;
-                            fileStatus = await doCorpusCheck(fileUrl, loSettings);
-                            if (fileStatus === false){
-                                html.prop('disabled', false);
-                                return;
-                            } else if (loSettings['restrictCorpusToLo'] === true){
-                                aiSettings['fileList'] = [];
-                            }
-                            else {
-                                aiSettings['fileList'] = [normalizePath(fileStatus)];
-                            }
-                        }
-
-                        aiSettings['loSettings'] = loSettings;
-
 
                         if (hasApiKeyInstalled('ai', aiSettings['modelSelection']) && confirm(language.vendorApi.overideContentMsg)) {
                             try {
                                 let fullUrl = null;
                                 if (uploadPrompt === 'true') {
                                     if (aiSettings['fileUrl'] === null) {
-                                        alert("You've selected the 'file upload' option but haven't selected a file or provided a valid link.");
+                                        alert("You've selected the 'file upload' option but haven't selected a file or provided a valid link. Please select an uploaded file, upload a new file, or use a youtube, vimeo or video.dlearning link.");
                                         return;
                                     }
                                     let cleanFileUrl = aiSettings['fileUrl'].replace("FileLocation + '", "").replace("'", "");
@@ -6635,6 +6625,26 @@ var EDITOR = (function ($, parent) {
                                     alert("You've selected the 'Submit Snippet' option but haven't included any text.");
                                     return;
                                 }
+
+                                if (loSettings['useLoInCorpus'] === true ||
+                                    loSettings['restrictCorpusToLo'] === true ||
+                                    aiSettings['fileUrl'] !== null){
+                                    const fileUrl = aiSettings['fileUrl'];
+                                    let fileStatus = null;
+                                    fileStatus = await doCorpusCheck(fileUrl, loSettings);
+                                    if (fileStatus === false){
+                                        html.prop('disabled', false);
+                                        return;
+                                    } else if (loSettings['restrictCorpusToLo'] === true){
+                                        aiSettings['fileList'] = [];
+                                    }
+                                    else {
+                                        aiSettings['fileList'] = [normalizePath(fileStatus)];
+                                    }
+                                }
+
+                                aiSettings['loSettings'] = loSettings;
+
                                 aiSettings['fullUrl'] = fullUrl;
 
                                 await ai_content_generator(aiSettings, constructorObject);

@@ -317,7 +317,7 @@ class openaiApi
                     ];
                     $context = $rag->getWeightedContext($promptReference, $fileList, $weights, 25);
                 }else{
-                    $context = $rag->getWeightedContext($promptReference, $fileList);
+                    $context = $rag->getWeightedContext($promptReference, $fileList, '', 5);
                 }
 
                 $new_messages = array(
