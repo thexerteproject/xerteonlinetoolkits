@@ -8,7 +8,7 @@ function build_xerte_xml(xml_tree, parent_name, parser){
         for (var i = 0; i < basic_xml.attributes.length; i++){
             var attr = basic_xml.attributes[i];
             if (xml_tree.getAttribute(attr.name) == null) {
-                xml_tree.setAttribute(attr.name, attr.value)
+                xml_tree.setAttribute(attr.name, attr.value);
             }
         }
     }
@@ -72,33 +72,37 @@ function xml_to_xerte_content(data, key, pos, tree, realParent) {
         var parser = new DOMParser();
         var result = JSON.parse(data);
         if (result.status == 'success') {
-            //rename x eventually
-            var x = parser.parseFromString(result["result"], "text/xml").children[0];
+            var llmResultXml = parser.parseFromString(result["result"], "text/xml").children[0];
+            //add p tags where needed to wysiwyc results
+            //add_p_to_wysiwyg(llmResultXml);
+
             // Merge Xerte object root with AI result at root level.
-            for (var prop in x.attributes) {
-                if (Object.prototype.hasOwnProperty.call(x.attributes, prop)) {
-                    const prop_name = x.attributes[prop];
+            for (var prop in llmResultXml.attributes) {
+                if (Object.prototype.hasOwnProperty.call(llmResultXml.attributes, prop)) {
+                    const prop_name = llmResultXml.attributes[prop];
                     if (Object.prototype.hasOwnProperty.call(lo_data[key].attributes, prop_name.nodeName)) {
-                        lo_data[key].attributes[prop_name.nodeName] = x.attributes[prop].value;
+                        lo_data[key].attributes[prop_name.nodeName] = llmResultXml.attributes[prop].value;
                     } else {
-                        lo_data[key].attributes[prop_name.nodeName] = x.attributes[prop].value;
+                        lo_data[key].attributes[prop_name.nodeName] = llmResultXml.attributes[prop].value;
                     }
                 }
             }
-            if (lo_data[key].data !== null && x.textContent !== null) {
-                if (x.firstChild && x.firstChild.nodeType === 4) {
-                    lo_data[key].data = x.textContent;
+            if (lo_data[key].data !== null && llmResultXml.textContent !== null) {
+                if (llmResultXml.firstChild && llmResultXml.firstChild.nodeType === 4) {
+                    lo_data[key].data = llmResultXml.textContent;
                 }
 
             }
-            console.log(x.tagName);
+            console.log(llmResultXml.tagName);
 
+            build_xerte_xml(llmResultXml, llmResultXml.tagName, parser);
 
             //var children = x.children;
-            var children = x.childNodes;
+            var children = llmResultXml.childNodes;
             var size = children.length;
             // Add all populated children of top level object for example "quiz"
             // Or if nodes exist, update attributes of children
+            //todo this should be a recursive function now only works for 1 level in tree.
             for (let i = 0; i < size; i++) {
                 const child = children[i];
                 // Try to get linkID, but if it's a non-element node, default to undefined
@@ -125,7 +129,8 @@ function xml_to_xerte_content(data, key, pos, tree, realParent) {
                     addAINodeToTree(key, pos, child.tagName, child, tree, true, true);
                 }
             }
-            build_xerte_xml(x, x.tagName, parser);
+
+
             var node = tree.get_node(key, false);
             if (node) {
                 // Refresh the node to reflect the updated attributes

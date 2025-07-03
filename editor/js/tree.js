@@ -924,6 +924,7 @@ var EDITOR = (function ($, parent) {
                 .addClass("optButtonContainer");
             var table = $('<table>'); // contains opt props specific to this page type
             var table2 = $('<table>'); // contains opt props used on all page types
+            var tableLightbox = $('<table>'); //contains opt props using lightboxes
             var flashonly = $('<img>')
                 .attr('src', 'editor/img/flashonly.png')
                 .attr('alt', 'Flash only attribute');
@@ -1056,15 +1057,19 @@ var EDITOR = (function ($, parent) {
                             .append($('<td>')
                                 .append(button));
 
-                        if (sorted_options['optional'][i].value.common) {
-                            // chapter folders don't share general optional properties with pages
-                            if (node_name != "chapter") {
-                                table2.append(tablerow);
-                            }
+                        if (sorted_options['optional'][i].value.lightbox === 'form') {
+                            tableLightbox.append(tablerow);
                         } else {
-                            table.append(tablerow);
-                        }
+                            if (sorted_options['optional'][i].value.common) {
+                                // chapter folders don't share general optional properties with pages
+                                if (node_name != "chapter") {
+                                    table2.append(tablerow);
+                                }
+                            } else {
+                                table.append(tablerow);
+                            }
 
+                        }
                     }
                 }
             }
@@ -1076,6 +1081,15 @@ var EDITOR = (function ($, parent) {
                     table.prepend(tablerow);
                 }
                 html.append(table);
+            }
+
+            if (tableLightbox.find("tr").length > 0) {
+                if (menu_options.menu != undefined) {
+                    var tablerow = $('<tr>')
+                        .append('<td class="optPropTitle">' + (language.optionalAssistantPropHTML && language.optionalAssistantPropHTML.$general ? language.optionalAssistantPropHTML.$general : "Assistend") + '</td>');
+                    tableLightbox.prepend(tablerow);
+                }
+                html.append(tableLightbox);
             }
 
             if (table2.find("tr").length > 0) {
@@ -1317,6 +1331,7 @@ var EDITOR = (function ($, parent) {
             }
         }
 
+        //open lightbox when added to the page for the first time.
         if (lightboxGroup !== undefined && lightboxGroup !== "") {
             $('#lightboxbutton_' + lightboxGroup).trigger("click");
             $('.featherlight').css('background', 'rgba(0,0,0,.8)')
@@ -1768,8 +1783,45 @@ var EDITOR = (function ($, parent) {
         $('body').css("cursor", "wait");
         //console.log("start pexels api request please wait");
 				let image_preview = $("<div class=\"img_search_preview\"><div class=\"img_search_loading\">loading...</div></div>");
+        let keepClicked = false;
         let selection_window = $.featherlight(image_preview, {
-						closeOnClick: false,
+            closeOnClick: false,
+            beforeClose: function() {
+                    if (keepClicked) return true;
+
+                    let $boxes = image_preview.find("input[type='checkbox']");
+                    let allIndices = $.makeArray($boxes).map(cb => +cb.name);
+                    let keptIndices = $.makeArray($boxes)
+                        .filter(cb => cb.checked)
+                        .map(cb => +cb.name);
+
+                    // if they’d checked something, ask whether to keep them
+                    let toDelete;
+                        if (keptIndices.length) {
+                            let keep = confirm(
+                                "You’ve selected " + keptIndices.length + " image(s).\n\n" +
+                                "OK = keep those and delete the rest\n" +
+                                "Cancel = delete all images"
+                            );
+                            toDelete = keep
+                                ? allIndices.filter(i => keptIndices.indexOf(i) === -1)
+                                : allIndices;
+                        }
+                        else {
+                            // nothing checked → just delete everything
+                            toDelete = allIndices;
+                        }
+
+                        // send the cleanup
+                        let form = new FormData();
+                        toDelete.forEach(i => form.append("indices_to_delete[]", i));
+                        navigator.sendBeacon(
+                            "editor/imagesearchandhelp/imgSelection.php",
+                            form
+                        );
+
+                        return true;  // now let the lightbox close
+                    }
 				});
 				image_preview = $(".img_search_preview");
         $.ajax({
@@ -1783,6 +1835,7 @@ var EDITOR = (function ($, parent) {
 								let image_preview_images = $("<div class=\"image_preview_images\"></div>");
 								image_preview.append(image_preview_images);
 								let submit_button = $("<input type=\"submit\" value=\"" + language.imageSelection.keepButtonText + "\">").click(function() {
+                                        keepClicked = true;
 										let indices_to_delete = [];
 										for(let input of $.makeArray(image_preview.find("input[type=\"checkbox\"]"))){
 												if(!input.checked){
@@ -1794,7 +1847,7 @@ var EDITOR = (function ($, parent) {
 												type: "POST",
 												data: {indices_to_delete: indices_to_delete},
 												success: function(data){
-														alert("success");
+														alert("Kept images successfully saved to media folder.");
 														selection_window.close();
 												},
 												error: function(xhr, status, error){
@@ -1805,6 +1858,72 @@ var EDITOR = (function ($, parent) {
 								});
 								image_preview.append("<br>").append(submit_button);
 								image_preview_images.height($(".img_search_preview").innerHeight() - submit_button.outerHeight(true) - header.outerHeight(true));
+
+                                // ─────────────── POP-UP TIP INJECTION ───────────────
+
+                                // 1) make lightbox a positioning context
+                                image_preview.css("position", "relative");
+
+                                // 2) build the floating tip
+                                                const tip = $(`
+                                  <div class="tip-floating">
+                                    <button class="close-tip">&times;</button>
+                                    <h4>💡 Tip</h4>
+                                    <p>
+                                      <strong>1.</strong> Left-click the images you want to <strong>keep</strong>.<br>
+                                      <strong>2.</strong> Then, <strong>right-click</strong> the image you want to use immediately and select <kbd>Copy image</kbd>.<br>
+                                      <strong>3.</strong> Press the <strong>Keep</strong> button to save your selected images to the media folder.<br>
+                                      <strong>4.</strong> You can now <kbd>Ctrl</kbd> + <kbd>V</kbd> to paste the copied image into any text field on any page!
+                                    </p>
+                                  </div>
+                                `);
+                                                image_preview.append(tip);
+
+                                // 3) wire up close button
+                                                tip.find(".close-tip").on("click", () => tip.remove());
+
+                                // 4) inject scoped styles
+                                                $("<style>").prop("type", "text/css").html(`
+                                  .tip-floating {
+                                    position: absolute;
+                                    bottom: 20px;
+                                    right: 20px;
+                                    max-width: 250px;
+                                    background: rgba(255,255,255,0.95);
+                                    padding: 1em;
+                                    border-radius: 6px;
+                                    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                                    z-index: 1000;
+                                    font-size: 0.9em;
+                                    line-height: 1.3;
+                                  }
+                                  .tip-floating h4 {
+                                    margin: 0 0 0.5em;
+                                    font-size: 1em;
+                                  }
+                                  .tip-floating p {
+                                    margin: 0;
+                                  }
+                                  .tip-floating .close-tip {
+                                    position: absolute;
+                                    top: 4px;
+                                    right: 6px;
+                                    border: none;
+                                    background: none;
+                                    font-size: 1.1em;
+                                    cursor: pointer;
+                                  }
+                                  .tip-floating kbd {
+                                    background: #eee;
+                                    border: 1px solid #ccc;
+                                    border-radius: 3px;
+                                    padding: 0 4px;
+                                    font-size: 0.85em;
+                                  }
+                                `).appendTo("head");
+
+
+                // ───────────── END POP-UP TIP ─────────────
 
 								$(window).on("resize", function() {
 										let width = ($(".img_search_preview .image_preview_images").innerWidth()/5) - 20 /*padding*/ - credits_button_width;

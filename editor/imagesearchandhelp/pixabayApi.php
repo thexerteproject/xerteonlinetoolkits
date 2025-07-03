@@ -243,7 +243,9 @@ class pixabayApi
         }
 
         // Save the image to the specified path
-        $savePath = $saveTo . '/' . basename($imageUrl);
+        $encodedName = basename(parse_url($imageUrl, PHP_URL_PATH));
+        $decodedName = urldecode($encodedName);
+        $savePath = $saveTo . '/' . $decodedName;
 
         // Write the image content to a file
         if (file_put_contents($savePath, $imageContent) === false) {
@@ -289,7 +291,7 @@ class pixabayApi
         $dateTime = date('d-m-Y_Hi');
 
         // Specify the directory to save images, including date and time
-        $path = $target . "/media/pixabay/" . $dateTime;
+        $path = $target . "/media/pixabay";
 
         // Ensure the directory exists and is writable
         if (!is_dir($path)) {

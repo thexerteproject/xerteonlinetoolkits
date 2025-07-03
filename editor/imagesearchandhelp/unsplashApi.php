@@ -245,7 +245,9 @@ class unsplashApi
         }
 
         // Save the image to the specified path
-        $savePath = $saveTo . '/' . basename(parse_url($imageUrl, PHP_URL_PATH));
+        $encodedName = basename(parse_url($imageUrl, PHP_URL_PATH));
+        $decodedName = urldecode($encodedName);
+        $savePath = $saveTo . '/' . $decodedName;
 
         // Write the image data to a file
         if (file_put_contents($savePath, $imageData) === false) {
@@ -331,7 +333,7 @@ class unsplashApi
         $dateTime = date('d-m-Y_Hi');
 
         // Specify the directory to save images, including date and time
-        $path = $target . "/media/unsplash/" . $dateTime;
+        $path = $target . "/media/unsplash";
 
         // Ensure the directory exists and is writable
         if (!is_dir($path)) {

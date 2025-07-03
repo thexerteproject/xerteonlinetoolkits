@@ -1188,6 +1188,164 @@ var EDITOR = (function ($, parent) {
 
 		checkRowIds(grid);
 
+        if (name == 'corpus'){
+            function normalizePath(raw) {
+                // strip any surrounding single or double quotes, and trim whitespaces
+                raw = raw.replace(/^['"]+|['"]+$/g, '').trim();
+
+                // 1) Full URLs with scheme (http:// or https://)
+                if (/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(raw)) {
+                    try {
+                        const u = new URL(raw);
+                        if (u.origin !== window.location.origin) {
+                            // External URL => leave intact
+                            return raw;
+                        }
+                        // Same-origin URL => strip after /RAG/corpus/ or preview.xml if present
+                        const idxCorpus = u.pathname.indexOf('/RAG/corpus/');
+                        const idxPreview = u.pathname.indexOf('preview.xml');
+                        if (idxCorpus !== -1) {
+                            return u.pathname.slice(idxCorpus + 1).replace(/^['"]+|['"]+$/g, '');
+                        }
+                        if (idxPreview !== -1) {
+                            return u.pathname.slice(idxPreview).replace(/^['"]+|['"]+$/g, '');
+                        }
+                        return raw;
+                    } catch {
+                        alert(`Malformed URL: ${raw}\nPlease check and try again.`);
+                        throw new Error(`Malformed URL: ${raw}`);
+                    }
+                }
+
+                // 2) Bare hostnames without scheme => user error
+                if (/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/|$)/.test(raw)) {
+                    alert(`Invalid URL: ${raw}\nPlease include http:// or https:// if you mean a web link.`);
+                    throw new Error(`Invalid URL: ${raw}`);
+                }
+
+                // 3) Anywhere the text "RAG/corpus/" or "preview.xml" appears, pull out from there
+                const idxAny = raw.indexOf('RAG/corpus/');
+                const idxPreviewAny = raw.indexOf('preview.xml');
+                if (idxAny !== -1) {
+                    // slice and strip quotes again just in case
+                    return raw.slice(idxAny).replace(/^['"]+|['"]+$/g, '');
+                }
+                if (idxPreviewAny !== -1) {
+                    // slice and strip quotes again just in case
+                    //When normalizing in the corpus, if we see preview.xml, we update the LO in corpus.
+                    updateCorpusSingle(false, true);
+                    return raw.slice(idxPreviewAny).replace(/^['"]+|['"]+$/g, '');
+                }
+
+                // 4) Nothing matched → error
+                alert(`Unrecognized path: ${raw}\nMust be a full URL or contain “corpus/” in it.`);
+                throw new Error(`Unrecognized path: ${raw}`);
+            }
+            //Upload a single file to the corpus
+            async function updateCorpusSingle(postData, corpusGrid = false, useLoInCorpus) {
+                //  Show wait cursor
+                $('body, .featherlight, .featherlight-content').css("cursor", "wait");
+
+                const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+
+                // Build grid row
+                let singleRow = {};
+                if (!useLoInCorpus) {
+                    singleRow = {
+                        col_1: postData['col_1'],
+                        col_2: normalizePath(postData['col_2']),
+                        col_3: postData['col_3'],
+                        col_4: ""
+                    };
+                } else {
+                    singleRow = {
+                        col_1: "",
+                        col_2: [],
+                        col_3: "",
+                        col_4: ""
+                    };
+                }
+
+                const payload = { name, baseURL, gridData: [singleRow], corpusGrid, useLoInCorpus };
+
+                // Return Promise and reset cursor in finally
+                try {
+                    return await new Promise((resolve, reject) => {
+                        $.ajax({
+                            url: 'editor/ai/rag/syncCorpus.php',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(payload),
+                            success: function(resp) {
+                                console.log('Corpus sync succeeded:', resp);
+                                alert('✅ Synced ' + payload.gridData.length + ' files to corpus.');
+                                resolve(resp);
+                            },
+                            error: function(xhr, status, err) {
+                                console.error('Corpus sync failed:', err);
+                                alert('⚠️ Corpus sync error: ' + err);
+                                reject(err);
+                            }
+                        });
+                    });
+                } finally {
+                    // Reset cursor no matter what
+                    $('body, .featherlight, .featherlight-content').css("cursor", "default");
+                }
+            }
+
+            function updateGrid(name, id) {
+                const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+
+                $.ajax({
+                    url: 'editor/ai/rag/getCorpus.php',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify({
+                        name: name,
+                        baseURL: baseURL,
+                        type: name,
+                        gridId: id,
+                        format: "csv"
+                    }),
+                    success: function(resp) {
+                        if (!resp?.corpus) {
+                            alert('No corpus data returned. Please check the server response.');
+                            return;
+                        }
+                        var gridId = '#' + resp.gridId + '_jqgrid';
+                        $(gridId).jqGrid('clearGridData');
+                        setAttributeValue(key, [resp.type], [resp.corpus]);
+                        var rows = readyLocalJgGridData(key, resp.type);
+                        $(gridId).jqGrid('setGridParam', {data: rows});
+                        $(gridId).trigger('reloadGrid');
+
+                        // show a count
+                        let totalFiles = 0;
+                        if (resp.corpus && typeof resp.corpus === "string") {
+                            // Remove leading/trailing whitespace, split on newlines, filter out empty lines
+                            totalFiles = resp.corpus.trim().split('\n').filter(line => line.trim() !== '').length;
+                            //alert(`✅ Grid updated.`);
+                        }
+                    },
+                    error: function(xhr, status, err) {
+                        console.error('Failed to fetch corpus:', err);
+                        alert('⚠️ Error loading corpus data: ' + err);
+                    }
+                });
+            }
+            (async () => {
+                try {
+                    await updateCorpusSingle(postdata, false, false);
+                    updateGrid(name, id);
+                } catch (e) {
+                    console.error(e);
+                }
+            })();
+
+        }
+
         // !!! the most important step: skip ajax request to the server
         this.processing = true;
         return {};
@@ -1206,6 +1364,151 @@ var EDITOR = (function ($, parent) {
 
         var xerte = convertjqGridData(jqGrGridData[gridId]);
         setAttributeValue(key, [name], [xerte]);
+
+        if (name == 'corpus'){
+            function normalizePath(raw) {
+                // strip any surrounding single or double quotes, and trim whitespaces
+                raw = raw.replace(/^['"]+|['"]+$/g, '').trim();
+
+                // 1) Full URLs with scheme (http:// or https://)
+                if (/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(raw)) {
+                    try {
+                        const u = new URL(raw);
+                        if (u.origin !== window.location.origin) {
+                            // External URL => leave intact
+                            return raw;
+                        }
+                        // Same-origin URL => strip after /RAG/corpus/ or preview.xml if present
+                        const idxCorpus = u.pathname.indexOf('/RAG/corpus/');
+                        const idxPreview = u.pathname.indexOf('preview.xml');
+                        if (idxCorpus !== -1) {
+                            return u.pathname.slice(idxCorpus + 1).replace(/^['"]+|['"]+$/g, '');
+                        }
+                        if (idxPreview !== -1) {
+                            return u.pathname.slice(idxPreview).replace(/^['"]+|['"]+$/g, '');
+                        }
+                        return raw;
+                    } catch {
+                        alert(`Malformed URL: ${raw}\nPlease check and try again.`);
+                        throw new Error(`Malformed URL: ${raw}`);
+                    }
+                }
+
+                // 2) Bare hostnames without scheme => user error
+                if (/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/|$)/.test(raw)) {
+                    alert(`Invalid URL: ${raw}\nPlease include http:// or https:// if you mean a web link.`);
+                    throw new Error(`Invalid URL: ${raw}`);
+                }
+
+                // 3) Anywhere the text "RAG/corpus/" or "preview.xml" appears, pull out from there
+                const idxAny = raw.indexOf('RAG/corpus/');
+                const idxPreviewAny = raw.indexOf('preview.xml');
+                if (idxAny !== -1) {
+                    // slice and strip quotes again just in case
+                    return raw.slice(idxAny).replace(/^['"]+|['"]+$/g, '');
+                }
+                if (idxPreviewAny !== -1) {
+                    // slice and strip quotes again just in case
+                    //When normalizing in the corpus, if we see preview.xml, we update the LO in corpus.
+                    updateCorpusSingle(false, true);
+                    return raw.slice(idxPreviewAny).replace(/^['"]+|['"]+$/g, '');
+                }
+
+                // 4) Nothing matched → error
+                alert(`Unrecognized path: ${raw}\nMust be a full URL or contain “corpus/” in it.`);
+                throw new Error(`Unrecognized path: ${raw}`);
+            }
+
+            function corpusUpdate(grid, name, id) {
+                const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+
+                const allRows = grid.map(row => {
+                    const raw = row['col_2'];
+                    row['col_2'] = normalizePath(raw);
+                    return row;
+                });
+
+                const payload = { name, baseURL, gridData: allRows };
+
+                //  Show wait cursor
+                $('body, .featherlight, .featherlight-content').css("cursor", "wait");
+
+                //  Return a Promise so this can be awaited
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: 'editor/ai/rag/syncCorpus.php',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(payload),
+                        success: function(resp) {
+                            alert('✅ Synced ' + payload.gridData.length + ' files to corpus.');
+                            resolve(resp);
+                        },
+                        error: function(xhr, status, err) {
+                            alert('⚠️ Corpus sync error: ' + err);
+                            reject(err);
+                        },
+                        complete: function() {
+                            //  Reset cursor no matter what
+                            $('body, .featherlight, .featherlight-content').css("cursor", "default");
+                        }
+                    });
+                });
+            }
+
+            function updateGrid(name, id) {
+                //confirm("A list of processed files for AI use will replace the current resource list, and any changes not yet synced will be lost. Proceed with loading?");
+                const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+
+                $.ajax({
+                    url: 'editor/ai/rag/getCorpus.php',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify({
+                        name: name,
+                        baseURL: baseURL,
+                        type: name,
+                        gridId: id,
+                        format: "csv"
+                    }),
+                    success: function(resp) {
+                        if (!resp?.corpus) {
+                            alert('No corpus data returned. Please check the server response.');
+                            return;
+                        }
+                        var gridId = '#' + resp.gridId + '_jqgrid';
+                        $(gridId).jqGrid('clearGridData');
+                        setAttributeValue(key, [resp.type], [resp.corpus]);
+                        var rows = readyLocalJgGridData(key, resp.type);
+                        $(gridId).jqGrid('setGridParam', {data: rows});
+                        $(gridId).trigger('reloadGrid');
+
+                        // show a count
+                        let totalFiles = 0;
+                        if (resp.corpus && typeof resp.corpus === "string") {
+                            // Remove leading/trailing whitespace, split on newlines, filter out empty lines
+                            totalFiles = resp.corpus.trim().split('\n').filter(line => line.trim() !== '').length;
+                            //alert(`✅ Grid updated with ${totalFiles} file(s).`);
+                        }
+                    },
+                    error: function(xhr, status, err) {
+                        console.error('Failed to fetch corpus:', err);
+                        alert('⚠️ Error loading corpus data: ' + err);
+                    }
+                });
+            }
+
+            (async () => {
+                try {
+                    await corpusUpdate(jqGrGridData[gridId], name, id);
+                    updateGrid(name, id);
+                } catch (e) {
+                    console.error(e);
+                }
+            })();
+        }
+
     },
 
     addColumn = function(id, key, name, colnr)
@@ -4054,7 +4357,155 @@ var EDITOR = (function ($, parent) {
         parent.tree.showNodeData(key, true);
     };
 
-    lightboxSetUp = function(group, attributes, node_options, key, formState="", mode) {
+    function attachEditorsToLightbox(groupChildren, key, domContextSelector = '.featherlight-content', formState = {}) {
+        groupChildren.forEach(child => {
+            // --- WYSIWYG / CKEditor Fields ---
+            if (child.value.wysiwyg === 'true') {
+                //TODO: this should be a variable that checks of textarea OR textinput variant? Are we maybe keeping it limited to just textereas with this?
+
+                const $el = $(domContextSelector).find('textarea[name="' + child.name + '"]');
+                if ($el.length) {
+                    $el.ckeditor(function () {
+
+                        let self = this;
+                        // Restore value from formState
+                        if (formState && formState[child.name] !== undefined) {
+                            self.setData(formState[child.name]);
+                        }
+
+                        // Attach event for persisting changes
+                        this.on('change', function () {
+                            var thisValue = self.getData();
+                            thisValue = thisValue.substr(0, thisValue.length - 1); // Strip extra linebreak (like original)
+                            //update field form value for consistency, avoid recursion by checking if it's already the correct value
+                            const $originalField = self.element.$;
+                            if ($originalField.value !== thisValue) {
+                                $originalField.value=thisValue;
+                            }
+
+                            //update field value in xml
+                            inputChanged($el.attr('id'), key, child.name, thisValue, self);
+                        });
+
+                        // Special logic for "name" field, as in original
+                        let lastValue = "";
+                        this.on('change', function () {
+                            if (child.name == 'name') {
+                                var thisValue = self.getData();
+                                var thisText = getTextFromHTML(thisValue);
+                                thisValue = stripP(thisValue.substr(0, thisValue.length - 1));
+                                if (lastValue != thisValue) {
+                                    lastValue = thisValue;
+                                    changeNodeStatus(key, "text", true, thisText);
+                                    if ($('#mainleveltitle').length) {
+                                        $('#mainleveltitle').html(thisText);
+                                    }
+                                }
+                            }
+                        });
+
+                        // Fix for webkit browsers
+                        this.on('focus', function () {
+                            this.setReadOnly(false);
+                        });
+                        // Add to global destroy list if not already present
+                        const id = $el.attr('id');
+                        if (id && window.lightboxCKEditorIds.indexOf(id) === -1) {
+                            window.lightboxCKEditorIds.push(id);
+                        }
+                        }, {
+                        toolbar: [
+                            ['Font', 'FontSize', 'TextColor', 'BGColor'],
+                            ['Bold', 'Italic', 'Underline', 'Superscript', 'Subscript', 'rubytext'],
+                            ['FontAwesome'],
+                            ['RemoveFormat'],
+                            ['Sourcedialog']
+                        ],
+                        filebrowserBrowseUrl: 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir=' + rlopathvariable + '&uploadURL=' + rlourlvariable.substr(0, rlourlvariable.length - 1),
+                        filebrowserImageBrowseUrl: 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir=' + rlopathvariable + '&uploadURL=' + rlourlvariable.substr(0, rlourlvariable.length - 1),
+                        filebrowserFlashBrowseUrl: 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir=' + rlopathvariable + '&uploadURL=' + rlourlvariable.substr(0, rlourlvariable.length - 1),
+                        uploadUrl: 'editor/uploadImage.php?mode=dragdrop&uploadPath=' + rlopathvariable + '&uploadURL=' + rlourlvariable.substr(0, rlourlvariable.length - 1),
+                        uploadAudioUrl: 'editor/uploadAudio.php?mode=record&uploadPath=' + rlopathvariable + '&uploadURL=' + rlourlvariable.substr(0, rlourlvariable.length - 1),
+                        mathJaxClass: 'mathjax',
+                        mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
+                        extraPlugins: 'sourcedialog,image3,fontawesome,rubytext,editorplaceholder',
+                        language: language.$code.substr(0, 2),
+                    });
+                }
+            }
+            // --- "Code"/TextArea (CodeMirror) Fields ---
+            else if (child.value.codemirror === 'true') { // Assuming you set this flag for code fields!
+                const $el = $(domContextSelector).find('textarea[name="' + child.name + '"]');
+                if ($el.length) {
+                    var codemirroroptions = {
+                        theme: 'default',
+                        lineNumbers: true,
+                        lineWrapping: true,
+                        matchBrackets: true,
+                        autoCloseTags: true,
+                        autoCloseBrackets: true,
+                        enableSearchTools: true,
+                        enableCodeFolding: true,
+                        enableCodeFormatting: true,
+                        autoFormatOnStart: true,
+                        autoFormatOnModeChange: true,
+                        autoFormatOnUncomment: true,
+                        highlightActiveLine: true,
+                        mode: 'htmlmixed',
+                        showSearchButton: true,
+                        showTrailingSpace: true,
+                        highlightMatches: true,
+                        showFormatButton: true,
+                        showCommentButton: true,
+                        showUncommentButton: true,
+                        showAutoCompleteButton: true
+                    };
+
+                    if (child.value.options && child.value.options.height) {
+                        var height = parseInt(child.value.options.height) + 20;
+                        codemirroroptions['height'] = height;
+                    }
+                    if (child.value.options && child.value.options.type == 'html') {
+                        codemirroroptions['mode'] = 'htmlmixed';
+                    }
+                    if (child.value.options && child.value.options.type == 'script') {
+                        codemirroroptions['mode'] = 'javascript';
+                    }
+
+                    var textArea = $el[0];
+                    // Restore value from formState **before** CodeMirror replaces it!
+                    if (formState && formState[child.name] !== undefined) {
+                        $(textArea).val(formState[child.name]);
+                    }
+                    var codemirror = CodeMirror.fromTextArea(textArea, codemirroroptions);
+                    codemirror.on("change", function(){
+                        inputChanged($el.attr('id'), key, child.name, codemirror.getValue(), codemirror);
+                    });
+                    if (child.value.options && child.value.options.height) {
+                        var height = parseInt(child.value.options.height) + 20;
+                        codemirror.setSize(null, height);
+                    }
+                    $('.CodeMirror').resizable({
+                        resize: function() {
+                            codemirror.setSize($(this).width(), $(this).height());
+                            codemirror.refresh();
+                        }
+                    });
+                }
+            }
+            // --- Regular textarea/input fallback (not wysiwyg, not codemirror) ---
+            else {
+                // Value restoration for standard inputs (not needed?)
+                const $el = $(domContextSelector).find('[name="' + child.name + '"]');
+                if ($el.length && formState && formState[child.name] !== undefined) {
+                    $el.val(formState[child.name]);
+                }
+            }
+        });
+    }
+
+
+    lightboxSetUp = function(group, attributes, node_options, key, formState="", mode, originalGroup) {
 
         let groupChildren = group.value.children;
         var lightboxHtml = $("<form id='lightbox_" + group.name + "' style='width: 50vw' ></form>");
@@ -4082,15 +4533,43 @@ var EDITOR = (function ($, parent) {
             //create editor button to open lightbox manually
             displayParameter(
                 '#mainPanel .wizard #groupTable_' + group.name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
-                [{name: group.name, value: {type: "lightboxbutton", label: "Lightbox"}}],
+                [{name: group.name, value: {type: "lightboxbutton", label: group.value.label ? group.value.label : ""}}],
                 group.name,
                 "",
                 key
             );
         }
+
+        // ensure global is always present
+        window.lightboxCKEditorIds = window.lightboxCKEditorIds || [];
+
+        function destroyAllLightboxCKEditors() {
+            if (window.lightboxCKEditorIds) {
+                window.lightboxCKEditorIds.forEach(function(id) {
+                    if (CKEDITOR.instances[id]) {
+                        CKEDITOR.instances[id].destroy(true);
+                    }
+                });
+                window.lightboxCKEditorIds = [];
+            }
+        }
+
         $('#lightboxbutton_' + group.name).on("click", function() {
-            $.featherlight(lightboxHtml, {persist: true});
-        })
+
+            // Clean up old ck editors before initializing any new ones
+            destroyAllLightboxCKEditors();
+
+            $.featherlight(lightboxHtml, {
+                persist: true,
+                afterOpen: function(event) {
+                    var attributes = lo_data[key]['attributes'];
+                    formState = { ...attributes };
+                    attachEditorsToLightbox(groupChildren, key, '.featherlight-content', formState);
+                }
+            });
+        });
+
+
 
         if (mode === "redraw") {
             $('#lightboxbutton_' + group.name).trigger('click');
@@ -4103,8 +4582,9 @@ var EDITOR = (function ($, parent) {
         let formState = {};
         let formInputValues = $('#lightbox_' + group + ' :input').add($('#lightbox_' + group + ' .inlinewysiwyg'));
 
+        var attributes = lo_data[key]['attributes'];
+        formState = { ...attributes };
         if (mode === 'initialize') {
-            var attributes = lo_data[key]['attributes'];
             //if not exists or empty option =>
             for (let input = 0; input < groupChildren.length; input++) {
                 //get data from previous ai generation
@@ -4115,6 +4595,14 @@ var EDITOR = (function ($, parent) {
                     formState[groupChildren[input].name] = groupChildren[input].value.defaultValue;
                 } else {
                     formState[groupChildren[input].name] = "";
+                }
+
+                //inherit any fields.
+                const inheritField = groupChildren[input]?.value?.inheritField;
+                if (inheritField !== undefined && inheritField !== "") {
+                    const groupName = groupChildren[input]?.name;
+                    formState[groupName] = attributes[inheritField];
+                    lo_data[key]['attributes'][groupName] = attributes[inheritField];
                 }
             }
         } else {
@@ -4136,7 +4624,7 @@ var EDITOR = (function ($, parent) {
         let currentNodeType = lo_data[key]['attributes'].nodeName;
         let groupId = wizard_data[currentNodeType].node_options.all.find((option) => option.name == group);
         $.featherlight.close();
-        lightboxSetUp(groupId, "", "", key, formState, mode);
+        lightboxSetUp(groupId, "", "", key, formState, mode, group);
     };
 
     validateFormInput = function (regexCondition, inputValue, name) {
@@ -4196,7 +4684,6 @@ var EDITOR = (function ($, parent) {
                 if (formFieldName === undefined) {
                     formFieldName = "noName";
                 }
-
                 constructorObject[formFieldName] = formFieldValue;
             }
         });
@@ -5128,9 +5615,9 @@ var EDITOR = (function ($, parent) {
 						.addClass('media')
 						.change({id:id, key:key, name:name, group:options.group, trigger:conditionTrigger}, function(event)
 						{
-                            if (mode === "none") {
-                                inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                            }
+                            //On change, inputChanged should be triggered so that manually added paths or links also persist, for both normal media buttons an buttons in forms regardless of mode.
+                            inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+
                             if (event.data.trigger)
                             {
                                 //no lightbox so redraw entire page
@@ -5717,6 +6204,10 @@ var EDITOR = (function ($, parent) {
                         let api = constructorObject['imgApi'] !== undefined ? constructorObject['imgApi'] : 'pexels';
                         delete constructorObject.imgApi;
 
+                        if (api==='dalle3'){
+                            constructorObject['nri'] = '1';
+                        }
+
                         var query;
                         //query select option for specific pages
                         let querySelect = constructorObject['imgQuerySelect'] !== undefined ? constructorObject['imgQuerySelect'] : 'custom';
@@ -5732,14 +6223,14 @@ var EDITOR = (function ($, parent) {
                                 }
                                 break;
                             case 'side1':
-                                query = constructorObject['side1'] !== undefined ? constructorObject['side1'] : "";
+                                query = constructorObject['imgQuerySide1'] !== undefined ? constructorObject['imgQuerySide1'] : "";
                                 delete constructorObject.side1;
                                 if (!query || query.trim() === ""){
                                     query = null;
                                 }
                                 break;
                             case 'side2':
-                                query = constructorObject['side2'] !== undefined ? constructorObject['side2'] : "";
+                                query = constructorObject['imgQuerySide2'] !== undefined ? constructorObject['imgQuerySide2'] : "";
                                 delete constructorObject.side2;
                                 if (!query || query.trim() === ""){
                                     query = null;
@@ -5763,7 +6254,7 @@ var EDITOR = (function ($, parent) {
                         }
 
                         img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject);
-
+                        html.prop('disabled', false);
                     });
                 break;
             case 'generatesuggestionbutton':
@@ -5987,6 +6478,7 @@ var EDITOR = (function ($, parent) {
                             }
 
                             const payload = { name, baseURL, gridData: [singleRow], corpusGrid, useLoInCorpus };
+                            $('body, .featherlight, .featherlight-content').css("cursor", "wait");
 
                             // 2. Send it off
                             // Return a Promise that resolves or rejects with the AJAX result
@@ -5998,13 +6490,16 @@ var EDITOR = (function ($, parent) {
                                     data: JSON.stringify(payload),
                                     success: function(resp) {
                                         console.log('Corpus sync succeeded:', resp);
-                                        alert('✅ Synced ' + payload.gridData.length + ' files to corpus.');
+                                        alert('✅ Synced ' + payload.gridData.length + ' file to corpus. Please press \'generate\' again to continue with your request.');
                                         resolve(resp);
                                     },
                                     error: function(xhr, status, err) {
                                         console.error('Corpus sync failed:', err);
                                         alert('⚠️ Corpus sync error: ' + err);
                                         reject(err);
+                                    }, complete: function() {
+                                        // Always reset cursor
+                                        $('body, .featherlight, .featherlight-content').css("cursor", "default");
                                     }
                                 });
                             });
@@ -6014,6 +6509,7 @@ var EDITOR = (function ($, parent) {
                         // Returns a Promise that resolves with the corpus data
                         function fetchCorpus() {
                             const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+                            $('body, .featherlight, .featherlight-content').css("cursor", "wait");
                             return new Promise((resolve, reject) => {
                                 $.ajax({
                                     url: 'editor/ai/rag/getCorpus.php',
@@ -6039,6 +6535,10 @@ var EDITOR = (function ($, parent) {
                                         console.error('Failed to fetch corpus:', err);
                                         alert('⚠️ Error loading corpus data: ' + err);
                                         reject(err);
+                                    },
+                                    complete: function() {
+                                        // Always reset cursor
+                                        $('body, .featherlight, .featherlight-content').css("cursor", "default");
                                     }
                                 });
                             });
@@ -6061,7 +6561,7 @@ var EDITOR = (function ($, parent) {
                                         alert('File found in corpus. Proceeding with AI request, using only this file as the context.');
                                         return match.metaData.source;  // file found
                                     } else {
-                                        if (confirm("The file you've selected has not yet been processed. Would you like to add it to the context for this learning object?")){
+                                        if (confirm("The file you've selected has not yet been processed, and cannot be used as context for generation. Would you like to add it to the context for this learning object? For videos or larger files, this might take several minutes.")){
                                             await updateCorpus(fileUrl, false);
                                             return false; // not found, but added
                                         } else {
@@ -6088,7 +6588,7 @@ var EDITOR = (function ($, parent) {
                         if (aiSettings['updateLoOnRequest'] === "true"){
                             loSettings['useLoInCorpus'] = true;
                         }
-                        debugger
+
                         if (uploadPrompt == 'lo'){
                             loSettings['restrictCorpusToLo'] = true;
                         }
@@ -6102,7 +6602,7 @@ var EDITOR = (function ($, parent) {
                             loSettings['restrictCorpusToLo'] = true;
                         }
                         const requiredUploadTypes = ['ivOverlayPanel'];
-                        if (requiredLoTypes.includes(aiSettings['type'])){
+                        if (requiredLoTypes.includes(aiSettings['type']) || requiredUploadTypes.includes(aiSettings['type']) ){
                             uploadPrompt = 'true';
                         }
 
@@ -6110,32 +6610,13 @@ var EDITOR = (function ($, parent) {
                             aiSettings['useCorpus'] = true;
                         }
 
-                        if (loSettings['useLoInCorpus'] === true ||
-                            loSettings['restrictCorpusToLo'] === true ||
-                            aiSettings['fileUrl'] !== null){
-                            const fileUrl = aiSettings['fileUrl'];
-                            let fileStatus = null;
-                            fileStatus = await doCorpusCheck(fileUrl, loSettings);
-                            if (fileStatus === false){
-                                html.prop('disabled', false);
-                                return;
-                            } else if (loSettings['restrictCorpusToLo'] === true){
-                                aiSettings['fileList'] = [];
-                            }
-                            else {
-                                aiSettings['fileList'] = [normalizePath(fileStatus)];
-                            }
-                        }
-
-                        aiSettings['loSettings'] = loSettings;
-
 
                         if (hasApiKeyInstalled('ai', aiSettings['modelSelection']) && confirm(language.vendorApi.overideContentMsg)) {
                             try {
                                 let fullUrl = null;
                                 if (uploadPrompt === 'true') {
                                     if (aiSettings['fileUrl'] === null) {
-                                        alert("You've selected the 'file upload' option but haven't selected a file or provided a valid link.");
+                                        alert("You've selected the 'file upload' option but haven't selected a file or provided a valid link. Please select an uploaded file, upload a new file, or use a youtube, vimeo or video.dlearning link.");
                                         return;
                                     }
                                     let cleanFileUrl = aiSettings['fileUrl'].replace("FileLocation + '", "").replace("'", "");
@@ -6144,6 +6625,26 @@ var EDITOR = (function ($, parent) {
                                     alert("You've selected the 'Submit Snippet' option but haven't included any text.");
                                     return;
                                 }
+
+                                if (loSettings['useLoInCorpus'] === true ||
+                                    loSettings['restrictCorpusToLo'] === true ||
+                                    aiSettings['fileUrl'] !== null){
+                                    const fileUrl = aiSettings['fileUrl'];
+                                    let fileStatus = null;
+                                    fileStatus = await doCorpusCheck(fileUrl, loSettings);
+                                    if (fileStatus === false){
+                                        html.prop('disabled', false);
+                                        return;
+                                    } else if (loSettings['restrictCorpusToLo'] === true){
+                                        aiSettings['fileList'] = [];
+                                    }
+                                    else {
+                                        aiSettings['fileList'] = [normalizePath(fileStatus)];
+                                    }
+                                }
+
+                                aiSettings['loSettings'] = loSettings;
+
                                 aiSettings['fullUrl'] = fullUrl;
 
                                 await ai_content_generator(aiSettings, constructorObject);
@@ -6176,7 +6677,7 @@ var EDITOR = (function ($, parent) {
                         .attr('id', id + '_addcolumns')
                         .addClass('jqgridAddColumnsContainer'));
 
-                $('<input type="button" name="corpusSubmit" value="Sync to Context">')
+                /*$('<input type="button" name="corpusSubmit" value="Sync to Context">')
                     .css({
                         'background': '#EFEFEF',
                         'border': '1px solid #767676',
@@ -6228,7 +6729,7 @@ var EDITOR = (function ($, parent) {
                         function() { $(this).css({'background': '#EFEFEF', 'border': '1px solid #767676'}); }
                     )
                     .click(function() { updateCorpusSingle(false, true); })
-                    .appendTo(html);
+                    .appendTo(html); */
 
             function normalizePath(raw) {
                 // strip any surrounding single or double quotes, and trim whitespaces
@@ -6298,6 +6799,7 @@ var EDITOR = (function ($, parent) {
                 }
 
                 const payload = { name, baseURL, gridData: [singleRow], corpusGrid, useLoInCorpus };
+                    $('body, .featherlight, .featherlight-content').css("cursor", "wait");
 
                 // 2. Send it off
                 // Return a Promise that resolves or rejects with the AJAX result
@@ -6316,6 +6818,10 @@ var EDITOR = (function ($, parent) {
                             console.error('Corpus sync failed:', err);
                             alert('⚠️ Corpus sync error: ' + err);
                             reject(err);
+                        },
+                        complete: function() {
+                            // Always reset cursor
+                            $('body, .featherlight, .featherlight-content').css("cursor", "default");
                         }
                     });
                 });
@@ -6356,8 +6862,8 @@ var EDITOR = (function ($, parent) {
             }
 
             function updateGrid(name, id) {
-                confirm("A list of processed files for AI use will replace the current resource list, and any changes not yet synced will be lost. Proceed with loading?");
-                // If you need the same baseURL logic:
+                //the load happens on page load or instantiation, we dont need to do this for everything
+                //confirm("A list of processed files for AI use will replace the current resource list, and any changes not yet synced will be lost. Proceed with loading?");
                 const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
 
                 $.ajax({
@@ -6374,7 +6880,7 @@ var EDITOR = (function ($, parent) {
                     }),
                     success: function(resp) {
                         if (!resp?.corpus) {
-                            alert('No corpus data returned. Please check the server response.');
+                            alert('No corpus data found!');
                             return;
                         }
                         var gridId = '#' + resp.gridId + '_jqgrid';
@@ -6389,15 +6895,16 @@ var EDITOR = (function ($, parent) {
                         if (resp.corpus && typeof resp.corpus === "string") {
                             // Remove leading/trailing whitespace, split on newlines, filter out empty lines
                             totalFiles = resp.corpus.trim().split('\n').filter(line => line.trim() !== '').length;
-                            alert(`✅ Grid updated with ${totalFiles} file(s).`);
+                            alert(`✅ AI context resources are up to date!`);
                         }
                     },
                     error: function(xhr, status, err) {
                         console.error('Failed to fetch corpus:', err);
-                        alert('⚠️ Error loading corpus data: ' + err);
+                        alert('⚠️ Error loading corpus data: ');
                     }
                 });
             }
+                updateGrid(name, id);
 
                 //return xml
                 datagrids.push({id: id, key: key, name: name, options: options});
@@ -6410,6 +6917,7 @@ var EDITOR = (function ($, parent) {
                 html = $('<button>')
                     .attr('id', id)
                     .attr('class', 'lightboxbutton')
+                    //.text('language.lightbox.settingsButton');
                     .text('Open AI Settings');
 
                 break;
