@@ -340,7 +340,7 @@
 	</mediaFile>
 
     <newNodes>
-    <QRcode><![CDATA[<QRcode name="Enter Page Title" url="" tip="" imagesize="large"></QRcode>]]></QRcode><SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="" error="There is no image" />]]></SictTimeline><accNav><![CDATA[<accNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction=""></adaptiveContent>]]></adaptiveContent><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="" url="" panelWidth="Medium" tip="" colour="0xFFFF00" shape="Rectangle" align="Left"/>]]></annotatedDiagram><audioRecord><![CDATA[<audioRecord name="Enter Page Title" text="" panelWidth="Medium" randomise="false"
+    <QRcode><![CDATA[<QRcode name="Enter Page Title" url="" tip="" imagesize="large"></QRcode>]]></QRcode><SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="" error="Loading" />]]></SictTimeline><accNav><![CDATA[<accNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction=""></adaptiveContent>]]></adaptiveContent><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="" url="" panelWidth="Medium" tip="" colour="0xFFFF00" shape="Rectangle" align="Left"/>]]></annotatedDiagram><audioRecord><![CDATA[<audioRecord name="Enter Page Title" text="" panelWidth="Medium" randomise="false"
 	    prevText="Previous" nextText="Next" restartText="Restart" restartConfirmText="Restarting will remove all recordings. Do you want to restart?" countText="Clip {i} of {n}" recText="Record" stopText="Stop" downloadText="Download all" downloadText2="Download example" downloadText3="Download recordings" deleteText="Delete" clipNameLabel="Enter audio clip name" defaultClipName="Unnamed clip" clipNameRenameLabel="Edit audio clip name" micErrorLabel="Try Again"
 	  />]]></audioRecord><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="" text="" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left" url="" tip="" imagesize="medium"></bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showPanel="0" showBullets="0" panelWidth="Full"></bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="" prompt="" feedback="" align="Left" panelWidth="Medium" label="Check" />]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="" intro="" align="Left" panelWidth="Medium"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="" prompt="" align="Left" panelWidth="Medium"
 	  confirmBtnTxt="Confirm" 
@@ -591,7 +591,7 @@
             <tip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
         </image>
 
-        <error label="Error Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+        <error label="Loading Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
         <newNodes>
             <timeLineText><![CDATA[<timeLineText name="Enter Item Title" text="" align="Left" url="" tip="" date="Choose Date"/>]]></timeLineText>
@@ -680,7 +680,7 @@
 
         <TimeLineEndDate type="group" label="End Date" optional="true">
             <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="" optional="true"/>
         </TimeLineEndDate>
     </timeLineText><timelineimage menuItem="Image Item" icon="icImage" remove="true">
         <date label="Date" type="dateField" defaultValue=""/>
@@ -695,29 +695,31 @@
 
         <TimeLineEndDate type="group" label="End Date" optional="true">
             <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="" optional="true"/>
         </TimeLineEndDate>
     </timelineimage><timelinevideo menuItem="Video Item" icon="icPageWhiteFilm" remove="true">
         <date label="Date" type="dateField" defaultValue=""/>
         <name label="Title" type="TextInput" wysiwyg="true"/>
         <url label="Video" type="Media" placeholder="Select a video file or enter a URL/embed code"/>
+        <text label="Text" type="TextArea" height="150" placeholder="Enter text for the item here"/>
 
         <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 
         <TimeLineEndDate type="group" label="End Date" optional="true">
             <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="" optional="true"/>
         </TimeLineEndDate>
     </timelinevideo><timeLineAudio menuItem="Audio Item" icon="icSound" remove="true">
         <date label="Date" type="dateField" defaultValue=""/>
         <name label="Title" type="TextInput" wysiwyg="true"/>
         <url label="Audio" type="Media" placeholder="Select an audio file"/>
+        <text label="Text" type="TextArea" height="150" placeholder="Enter text for the item here"/>
 
         <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 
         <TimeLineEndDate type="group" label="End Date" optional="true">
             <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="" optional="true"/>
         </TimeLineEndDate>
     </timeLineAudio><accNav deprecated="This page type is deprecated but will continue to work in this project. The Multi-Navigator page can be used to create new accordion navigators." deprecatedLevel="low" menu="Navigators" menuItem="Accordion Navigator" hint="A group of panes to present related text and graphical content." icon="icAccordion" thumb="thumbs/accNav.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#accordionnavigator" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true" placeholder="Enter page title"/>

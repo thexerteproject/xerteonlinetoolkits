@@ -1,7 +1,7 @@
 <wizard menus="Media">
     <pageWizard remove="true" duplicate="false">
         <newNodes>
-            <SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="" error="There is no image" />]]></SictTimeline>
+            <SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="" error="Loading" />]]></SictTimeline>
         </newNodes>
     </pageWizard>
 
@@ -15,7 +15,7 @@
             <tip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
         </image>
 
-        <error label="Error Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+        <error label="Loading Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
         <newNodes>
             <timeLineText><![CDATA[<timeLineText name="Enter Item Title" text="" align="Left" url="" tip="" date="Choose Date"/>]]></timeLineText>
@@ -35,7 +35,7 @@
 
         <TimeLineEndDate type="group" label="End Date" optional="true">
             <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="" optional="true"/>
         </TimeLineEndDate>
     </timeLineText>
 
@@ -52,7 +52,7 @@
 
         <TimeLineEndDate type="group" label="End Date" optional="true">
             <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="" optional="true"/>
         </TimeLineEndDate>
     </timelineimage>
 
@@ -60,12 +60,13 @@
         <date label="Date" type="dateField" defaultValue=""/>
         <name label="Title" type="TextInput" wysiwyg="true"/>
         <url label="Video" type="Media" placeholder="Select a video file or enter a URL/embed code"/>
+        <text label="Text" type="TextArea" height="150" placeholder="Enter text for the item here"/>
 
         <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 
         <TimeLineEndDate type="group" label="End Date" optional="true">
             <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="" optional="true"/>
         </TimeLineEndDate>
     </timelinevideo>
 
@@ -73,12 +74,13 @@
         <date label="Date" type="dateField" defaultValue=""/>
         <name label="Title" type="TextInput" wysiwyg="true"/>
         <url label="Audio" type="Media" placeholder="Select an audio file"/>
+        <text label="Text" type="TextArea" height="150" placeholder="Enter text for the item here"/>
 
         <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 
         <TimeLineEndDate type="group" label="End Date" optional="true">
             <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="" optional="true"/>
         </TimeLineEndDate>
     </timeLineAudio>
 </wizard>

@@ -123,6 +123,7 @@
   <fetchResults label="Fetching results..."/>
   <loadError label="Error loading"/>
   <noResults label="No results returned"/>
+  <noData label="No page data"/>
 
 	<rssDLAuthor label="Created by:"/>
 	<rssDLLicense label="License:"/>
