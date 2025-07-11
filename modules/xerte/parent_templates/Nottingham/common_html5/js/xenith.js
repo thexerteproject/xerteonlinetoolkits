@@ -4372,22 +4372,49 @@ function x_sortInitObject(initObj) {
     return initObject;
 }
 
-// function selects text (e.g. when users are to be prompted to copy text on screen)
-function x_selectText(element) {
-    var     text = document.getElementById(element),
-        range;
+// function copies text to the clipboard
+async function x_copyText(toCopy, errorTxt, toSelect, selectedTxt) {
+	try {
+		await navigator.clipboard.writeText(toCopy.text());
+		alert(x_getLangInfo(x_languageData.find("copy")[0], "success", "Text copied to clipboard"));
+		return true;
 
-    if (document.body.createTextRange) {
-        range = document.body.createTextRange();
-        range.moveToElementText(text);
-        range.select();
-    } else if (window.getSelection) {
-        var selection = window.getSelection();
-        range = document.createRange();
-        range.selectNodeContents(text);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    }
+	} catch(e) {
+		// failed to copy to clipboard - show alert with warning
+		if (errorTxt != undefined) {
+			alert(errorTxt);
+		}
+
+		// fallback to select text instead
+		if (toSelect != undefined) {
+			x_selectText(toSelect, selectedTxt);
+		}
+
+		return false;
+	}
+}
+
+// function selects text (e.g. when users are to be prompted to copy text on screen)
+function x_selectText(toSelect, selectedTxt) {
+	const text = document.getElementById(toSelect);
+	let range;
+
+	if (document.body.createTextRange) {
+		range = document.body.createTextRange();
+		range.moveToElementText(text);
+		range.select();
+	} else if (window.getSelection) {
+		var selection = window.getSelection();
+		range = document.createRange();
+		range.selectNodeContents(text);
+		selection.removeAllRanges();
+		selection.addRange(range);
+	}
+
+	// prompt for screen readers that text has been selected
+	if (selectedTxt != undefined) {
+		$("#screenReaderInfo").html(selectedTxt);
+	}
 }
 
 // function deals with hex values that might be abbreviated ones from the flash editor

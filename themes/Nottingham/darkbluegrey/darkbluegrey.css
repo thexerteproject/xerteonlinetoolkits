@@ -433,11 +433,6 @@ a.hotspot, a.hotspot.selected {
   color: #ffffff;
 }
 
-.x_modelAnswer_page #answerTxt {
-  border-radius: 0;
-  width: 98%;
-}
-
 .x_opinion_page #pageContents input {
   padding-left: 0;
 }

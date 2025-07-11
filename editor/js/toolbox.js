@@ -400,13 +400,22 @@ var EDITOR = (function ($, parent) {
         // cdata-section
         lo_data[key] = {};
         lo_data[key]['attributes'] = attributes;
-        if (xmlData[0].firstChild && xmlData[0].firstChild.nodeType == 4) {
-            lo_data[key]['data'] = makeAbsolute(xmlData[0].firstChild.data);
 
-			if (!alreadyUpgraded)
-			{
-				lo_data[key]['data'] = addLineBreaks(lo_data[key]['data']);
-			}
+        if (xmlData[0].firstChild && xmlData[0].firstChild.nodeType == 4) {
+            // CDATA text in model answer results page is moved to an attribute instead as the page may now contain nested items
+            if (lo_data[key].attributes.nodeName == "modelAnswerResults") {
+                lo_data[key].attributes.text = makeAbsolute(xmlData[0].firstChild.data);
+                if (!alreadyUpgraded)
+                {
+                    lo_data[key]['data'] = addLineBreaks(lo_data[key].attributes.text);
+                }
+            } else {
+                lo_data[key]['data'] = makeAbsolute(xmlData[0].firstChild.data);
+                if (!alreadyUpgraded)
+                {
+                    lo_data[key]['data'] = addLineBreaks(lo_data[key]['data']);
+                }
+            }
         }
 
         // Build the JSON object for the treeview
@@ -2548,8 +2557,13 @@ var EDITOR = (function ($, parent) {
      *
      * Also make sure we only take the text from the name, and not the full HTML
      */
-	getPageList = function(thisKey, thisTarget)
+	getPageList = function(settings)
 	{
+        if (settings == undefined) { settings = {}; }
+        const thisKey = settings.key;
+        let thisTarget = settings.listTarget;
+        const thisType = settings.pageTypes != undefined ? settings.pageTypes.split(",") : [];
+
 		var tree = $.jstree.reference("#treeview");
 		var pages=[];
 
@@ -2568,70 +2582,78 @@ var EDITOR = (function ($, parent) {
 			var lo_node = tree.get_node(tree.get_node(thisKey, false).parents[level], false);
 			
 			$.each(lo_node.children, function(i, key){
-				var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-				var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-				var hidden = lo_data[key]['attributes'].hidePage || lo_data[key]['attributes'].hideContent;
+                // list pages of specified types only if pageType set, or all page types if not specified
+                if (thisType.length === 0 || thisType.indexOf(getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value) > -1) {
+                    var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+                    var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+                    var hidden = lo_data[key]['attributes'].hidePage || lo_data[key]['attributes'].hideContent;
 
-				if (linkID.found && linkID.value != "") {
-					var page = [];
-					// Also make sure we only take the text from the name, and not the full HTML
-					page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
-					page.push(linkID.value);
-					pages.push(page);
-					
-					// Now we do the children
-					if (children == true) {
-						var childNode = tree.get_node(key, false);
-						$.each(childNode.children, function(i, key){
-							var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-							var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-							var hidden = lo_data[key]['attributes'].hidePage || lo_data[key]['attributes'].hideContent;
-							
-							if (linkID.found && linkID.value != "") {
-								var page = [];
-								// Also make sure we only take the text from the name, and not the full HTML
-								page.push("&nbsp;- " + (hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
-								page.push(linkID.value);
-								pages.push(page);
-							}
-						});
-					}
-				}
+                    if (linkID.found && linkID.value != "") {
+                        var page = [];
+                        // Also make sure we only take the text from the name, and not the full HTML
+                        page.push((hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
+                        page.push(linkID.value);
+                        pages.push(page);
+
+                        // Now we do the children
+                        if (children == true) {
+                            var childNode = tree.get_node(key, false);
+                            $.each(childNode.children, function (i, key) {
+                                var name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+                                var linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+                                var hidden = lo_data[key]['attributes'].hidePage || lo_data[key]['attributes'].hideContent;
+
+                                if (linkID.found && linkID.value != "") {
+                                    var page = [];
+                                    // Also make sure we only take the text from the name, and not the full HTML
+                                    page.push("&nbsp;- " + (hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '') + getTextFromHTML(name.value));
+                                    page.push(linkID.value);
+                                    pages.push(page);
+                                }
+                            });
+                        }
+                    }
+                }
 			});
 			
 		// list of all pages & their children (if deep linking allowed)
 		} else if (moduleurlvariable == "modules/xerte/" || moduleurlvariable == "modules/site/") {
-			pages = [
-						[language.XotLinkRelativePages.firstpage,'[first]'],
-						[language.XotLinkRelativePages.lastpage,'[last]'],
-						[language.XotLinkRelativePages.prevpage,'[previous]'],
-						[language.XotLinkRelativePages.nextpage,'[next]']
-					];
+            if (thisType.length === 0) {
+                pages = [
+                    [language.XotLinkRelativePages.firstpage,'[first]'],
+                    [language.XotLinkRelativePages.lastpage,'[last]'],
+                    [language.XotLinkRelativePages.prevpage,'[previous]'],
+                    [language.XotLinkRelativePages.nextpage,'[next]']
+                ];
+            }
 			
 			var lo_node = tree.get_node("treeroot", false);
 			
 			$.each(lo_node.children, function(i, key){
                 function checkNode(key, checkChildren, child) {
-                    const name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
-                    const linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
-                    const hidden = lo_data[key]['attributes'].hidePage || lo_data[key]['attributes'].hideContent;
+                    // list pages of specified types only if pageType set, or all page types if not specified
+                    if (thisType.length === 0 || thisType.indexOf(getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value) > -1) {
+                        const name = getAttributeValue(lo_data[key]['attributes'], 'name', [], key);
+                        const linkID = getAttributeValue(lo_data[key]['attributes'], 'linkID', [], key);
+                        const hidden = lo_data[key]['attributes'].hidePage || lo_data[key]['attributes'].hideContent;
 
-                    if (linkID.found && linkID.value != "") {
-                        // Also make sure we only take the text from the name, and not the full HTML
-                        const page = [];
-                        const prependTxt = child ? "&nbsp;- " : "";
-                        let extraTxt = hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '';
-                        extraTxt += lo_data[key].attributes.nodeName == 'chapter' ? "[" + language.chapter.$title + "] " : ''; // **
-                        page.push(extraTxt + getTextFromHTML(prependTxt + name.value));
-                        page.push(linkID.value);
-                        pages.push(page);
+                        if (linkID.found && linkID.value != "") {
+                            // Also make sure we only take the text from the name, and not the full HTML
+                            const page = [];
+                            const prependTxt = child ? "&nbsp;- " : "";
+                            let extraTxt = hidden == 'true' ? '-- ' + language.hidePage.$title + ' -- ' : '';
+                            extraTxt += lo_data[key].attributes.nodeName == 'chapter' ? "[" + language.chapter.$title + "] " : ''; // **
+                            page.push(extraTxt + getTextFromHTML(prependTxt + name.value));
+                            page.push(linkID.value);
+                            pages.push(page);
 
-                        // Now we do the children (if deeplinking is allowed)
-                        if (checkChildren && wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
-                            const childNode = tree.get_node(key, false);
-                            $.each(childNode.children, function(k, key){
-                                checkNode(key, false, true);
-                            });
+                            // Now we do the children (if deeplinking is allowed)
+                            if (checkChildren && wizard_data[getAttributeValue(lo_data[key]['attributes'], 'nodeName', [], key).value].menu_options.deepLink == "true") {
+                                const childNode = tree.get_node(key, false);
+                                $.each(childNode.children, function(k, key){
+                                    checkNode(key, false, true);
+                                });
+                            }
                         }
                     }
                 }
@@ -4210,7 +4232,7 @@ var EDITOR = (function ($, parent) {
 
 				}
 				break;
-			case 'pagelist':
+            case 'pagelist':
 				// Implement differently than in the flash editor
 				// Leave PageIDs untouched, and prefer to use the PageID over the linkID
 				var id = 'select_' + form_id_offset;
@@ -4232,13 +4254,10 @@ var EDITOR = (function ($, parent) {
 					option.prop('selected', true);
 				option.append("&nbsp;");
 				html.append(option);
-				// by default the drop down will list all pages (& relevant nested pages) - can also be set to target everything at this level or at this item's parent level
-				var pages;
-				if (options.listTarget != undefined) {
-					pages = getPageList(key, options.listTarget);
-				} else {
-					pages = getPageList();
-				}
+				// by default the drop down will list all pages (& relevant nested pages)
+                // can also be set to target everything at this level or at this item's parent level
+                // & also only show pages of particular type
+				var pages = getPageList({ key: key, listTarget: options.listTarget, pageTypes: options.pageTypes });
 				
 				$.each(pages, function(page)
 				{

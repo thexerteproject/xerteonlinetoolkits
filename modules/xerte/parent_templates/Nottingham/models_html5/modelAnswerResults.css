@@ -23,4 +23,14 @@
 		padding-top: 1em;
 		border-top: 1px solid #ccc;
 	}
+
+	.pageBlock h4, .pageBlock h5 {
+		padding-left: 0.3em;
+		padding-right: 0.3em;
+		margin: 0;
+	}
+
+	.questionBlock:not(:first-of-type), .dataPageFb {
+		margin-top: 1em;
+	}
 	
