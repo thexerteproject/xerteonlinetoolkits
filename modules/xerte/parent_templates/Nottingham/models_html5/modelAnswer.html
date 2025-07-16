@@ -381,12 +381,13 @@
 			x_pageLoaded();
 		};
 
-		// function saves data to pageData array in xenith.js so it can be used later by modelAnswerResults page
+		// function saves data to savedData in xenith.js so it can be used later by modelAnswerResults page
 		this.saveData = function() {
 			// create the text string that will be shown on the model answer results page for this page
-			// the 'data' classes are used in model answer results page - do not remove them
+			// the 'data' & 'standalone' classes are used in model answer results page - do not remove them
 			const langStrings = $("#pageContents").data("langStrings");
-			let stringToSave = '<div class="pageBlock">';
+			const isStandalone = x_pageInfo[x_currentPage].standalone && x_pages[x_currentPage].getAttribute('linkTarget') === 'lightbox' && parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current();
+			let stringToSave = '<div class="pageBlock' + (isStandalone ? ' standalone' : '') + '">';
 			let hLevel;
 
 			$(".prompt").each(function(i) {
@@ -444,7 +445,16 @@
 
 			stringToSave += "</div>";
 
+			// save the data to x_pageInfo.savedData
 			x_pageInfo[x_currentPage].savedData = stringToSave;
+
+			// if this is a standalone page showing in a lightbox, also ensure we save in a way that data can later be retrieved by model answer results pages
+			if (x_pageInfo[x_currentPage].standalone && x_pages[x_currentPage].getAttribute('linkTarget') == 'lightbox'
+					&& parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current()
+					&& parent.window.x_pageInfo != undefined && parent.window.x_pageInfo[x_currentPage] != undefined) {
+				parent.window.x_pageInfo[x_currentPage].savedData = stringToSave;
+
+			}
 		};
 
         this.finishTracking = function() {

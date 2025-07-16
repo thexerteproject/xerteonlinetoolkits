@@ -148,12 +148,17 @@
 				}
 			});
 
+			// if this results page is a standalone page opening in a lightbox, ensure it gets the data about model answer pages from the parent project
+			const isStandalone = x_pageInfo[x_currentPage].standalone && x_pages[x_currentPage].getAttribute('linkTarget') === 'lightbox'
+					&& parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current() && parent.window.x_pageInfo != undefined;
+			const thisPageInfo = isStandalone ? parent.window.x_pageInfo : x_pageInfo;
+
 			let dataString = "";
 			let dataFound = true;
 			const pageString = x_currentPageXML.getAttribute("pageTxt") != undefined ? x_currentPageXML.getAttribute("pageTxt") : "Page";
 			const pageUnviewed = x_currentPageXML.getAttribute("notViewed") != undefined ? x_currentPageXML.getAttribute("notViewed") : "Page not viewed";
-			for (let i=0; i<x_pageInfo.length; i++) {
-				const thisObject = x_pageInfo[i];
+			for (let i=0; i<thisPageInfo.length; i++) {
+				const thisObject = thisPageInfo[i];
 				// only show info for modelAnswer pages, that have not been skipped, & have been selected to be shown (or all if not set)
 				let includeUnviewed = x_currentPageXML.getAttribute("unviewed") === "true" ? true : false;
 				if (thisObject.type == "modelAnswer" && (thisObject.savedData != undefined || includeUnviewed) && (pages.length === 0 || pages.indexOf(thisObject.linkID) !== -1)) {
@@ -163,7 +168,7 @@
 					} else {
 						// page was not viewed
 						const thisLink = '<a href="#" class="dataPageLink" onclick="x_navigateToPage(false,{type:\'linkID\',ID:\'' + x_pages[i].getAttribute("linkID") + '\'}); return false;">';
-						if (x_pageInfo[i].standalone != true && x_pages[i] !== "menu") {
+						if (thisObject.standalone != true && x_pages[i] !== "menu") {
 							dataString += '<div class="pageBlock"><h3 class="dataPageH">';
 							if (x_pages[i].getAttribute("name") != undefined && x_pages[i].getAttribute("name") !== "") {
 								dataString += thisLink + x_pages[i].getAttribute("name") + '</a>';
