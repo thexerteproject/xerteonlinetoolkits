@@ -276,10 +276,46 @@
 								label: x_currentPageXML.getAttribute("downloadTxt") != undefined ? x_currentPageXML.getAttribute("downloadTxt") : "Download"
 							})
 							.click(function() {
-								/*
-								x_currentPageXML.getAttribute("filename")
-								x_currentPageXML.getAttribute("fileOrientation")
-								 */
+								// download a Word doc containing the text shown in the #panelTxt div
+
+								// styles used in downloaded word doc
+								let styles = 'body, .ui-widget { font-family: Arial, sans-serif; -webkit-font-smoothing: antialiased; color: black; font-size: 12pt; } ';
+								styles += 'table.tableDoc { font-size: 1em; margin: 0.2em; padding: 0.2em; width: 100%; border-collapse: collapse; } ';
+
+								// remove page text & links from the text data
+								let $downloadTxt = $(x_pageInfo[x_currentPage].savedData);
+								$downloadTxt.find(".dataPageTxt").remove();
+								$downloadTxt.find("a.dataPageLink").contents().unwrap();
+
+								const docData = {
+									"filename": x_currentPageXML.getAttribute("filename") != undefined && x_currentPageXML.getAttribute("filename").trim() !== "" ? x_currentPageXML.getAttribute("filename") : "model_answer_results",
+									"orientation": x_currentPageXML.getAttribute("fileOrientation") != undefined ? x_currentPageXML.getAttribute("fileOrientation") : "portrait",
+									"documentName": '<h1>' + x_params.name + '</h1><h2>' + x_currentPageXML.getAttribute('name') + '</h2>',
+									"pages": [{ pageName: "", pageText: $downloadTxt.html() }], // add all data into one 'page' (download.php was written for documentation page so expects info in specific format)
+
+									// these styles are the same as those used in documentation page model
+									"styles": styles,
+									"size": x_currentPageXML.getAttribute('fileOrientation') == 'landscape' ? '841.7pt 595.45pt' : '595.45pt 841.7pt',
+									"h1": "20px",
+									"h2": "18px",
+									"h3": "16px",
+									"p": "15px"
+								}
+
+								let form = document.createElement("form");
+								form.method = 'post';
+								form.target = 'displayjson';
+								form.action = (typeof x_downloadURL != 'undefined') ? x_downloadURL : 'download.php';
+
+								$('<input type="hidden">') // IE compatibility
+										.attr({
+											name: 'data',
+											value: JSON.stringify(docData)
+										})
+										.appendTo(form);
+								document.body.appendChild(form);
+								form.submit();
+								document.body.removeChild(form);
 							})
 							.hide();
 				} else {
@@ -452,9 +488,11 @@
 				<div id="prompt"></div>
 				<div id="answer">
 					<div id="fbTxt" aria-live="polite"/>
-					<button id="copyBtn"/>
-					<button id="downloadBtn"/>
-					<button id="button"></button>
+					<div id="btnHolder">
+						<button id="button"></button>
+						<button id="copyBtn"/>
+						<button id="downloadBtn"/>
+					</div>
 				</div>
 			</div>
 		</div>

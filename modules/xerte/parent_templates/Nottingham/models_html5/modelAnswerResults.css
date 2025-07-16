@@ -3,9 +3,9 @@
 	#pageContents .panel {
 		overflow:	auto;
 	}
-	
-	#copyBtn {
-		margin-top:	1em;
+
+	#btnHolder {
+		text-align: right;
 	}
 	
 	#copyTxt {

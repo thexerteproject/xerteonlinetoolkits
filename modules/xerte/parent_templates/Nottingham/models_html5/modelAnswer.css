@@ -4,9 +4,8 @@
 		overflow:	auto;
 	}
 	
-	#pageContents button {
-		margin:		10px;
-		float:		right;
+	#btnHolder {
+		text-align: right;
 	}
 	
 	#answer {

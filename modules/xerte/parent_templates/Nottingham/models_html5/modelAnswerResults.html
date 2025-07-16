@@ -53,17 +53,9 @@
 			const pageText = x_currentPageXML.childNodes[0] == undefined || x_currentPageXML.childNodes[0] == "" || x_currentPageXML.childNodes[0].nodeValue == undefined ? (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") !== "" ? x_currentPageXML.getAttribute("text") : "") : x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue);
 			$("#textHolder").html(pageText);
 
-			if (pageText !== "") {
-				$("<hr class='txtDivider'/>")
-						.appendTo($("#textHolder"))
-						.hide();
-			}
-
 			// set up copy to clipboard button
 			// this is either turned on with an optional property (>v3.15) or will be on if copypasteinfo exists
 			if (x_currentPageXML.getAttribute("copyPaste") === 'true' || (x_currentPageXML.getAttribute("copyPaste") !== 'false' && (x_currentPageXML.getAttribute("copyPaste") !== 'false' && x_currentPageXML.getAttribute("copypasteinfo") != undefined && x_currentPageXML.getAttribute("copypasteinfo") !== ""))) {
-				$("#panelTxt").after('<button id="copyBtn"/>');
-
 				$("#copyBtn")
 						.button({
 							label: x_currentPageXML.getAttribute("copyBtn2Label") != undefined ? x_currentPageXML.getAttribute("copyBtn2Label") : "Copy"
@@ -77,23 +69,60 @@
 							setTimeout(function() { $("#screenReaderInfo").html(""); }, 100)
 						})
 						.hide();
+			} else {
+				$("#copyBtn").remove();
 			}
 
 			// set up download button
 			if (x_currentPageXML.getAttribute("showDownload") === 'true') {
-				$("#textHolder").append('<button id="downloadBtn"/>');
-
 				$("#downloadBtn")
 						.button({
 							label: x_currentPageXML.getAttribute("downloadTxt") != undefined ? x_currentPageXML.getAttribute("downloadTxt") : "Download"
 						})
 						.click(function() {
-							/*
-                            x_currentPageXML.getAttribute("filename")
-                            x_currentPageXML.getAttribute("fileOrientation")
-                             */
+							// download a Word doc containing the text shown in the #panelTxt div
+
+							// styles used in downloaded word doc
+							let styles = 'body, .ui-widget { font-family: Arial, sans-serif; -webkit-font-smoothing: antialiased; color: black; font-size: 12pt; } ';
+							styles += 'table.tableDoc { font-size: 1em; margin: 0.2em; padding: 0.2em; width: 100%; border-collapse: collapse; } ';
+
+							// remove page links from the text data
+							let $panelTxt = $("#panelTxt").clone();
+							$panelTxt.find("a.dataPageLink").contents().unwrap();
+
+							const docData = {
+								"filename": x_currentPageXML.getAttribute("filename") != undefined && x_currentPageXML.getAttribute("filename").trim() !== "" ? x_currentPageXML.getAttribute("filename") : "model_answer_results",
+								"orientation": x_currentPageXML.getAttribute("fileOrientation") != undefined ? x_currentPageXML.getAttribute("fileOrientation") : "portrait",
+								"documentName": '<h1>' + x_params.name + '</h1><h2>' + x_currentPageXML.getAttribute('name') + '</h2>',
+								"pages": [{ pageName: "", pageText: $panelTxt.html() }], // add all data into one 'page' (download.php was written for documentation page so expects info in specific format)
+
+								// these styles are the same as those used in documentation page model
+								"styles": styles,
+								"size": x_currentPageXML.getAttribute('fileOrientation') == 'landscape' ? '841.7pt 595.45pt' : '595.45pt 841.7pt',
+								"h1": "20px",
+								"h2": "18px",
+								"h3": "16px",
+								"p": "15px"
+							}
+
+							let form = document.createElement("form");
+							form.method = 'post';
+							form.target = 'displayjson';
+							form.action = (typeof x_downloadURL != 'undefined') ? x_downloadURL : 'download.php';
+
+							$('<input type="hidden">') // IE compatibility
+									.attr({
+										name: 'data',
+										value: JSON.stringify(docData)
+									})
+									.appendTo(form);
+							document.body.appendChild(form);
+							form.submit();
+							document.body.removeChild(form);
 						})
 						.hide();
+			} else {
+				$("#downloadBtn").remove();
 			}
 
 			const data = this.getData();
@@ -157,10 +186,6 @@
 
 			if (dataString.length > 0) {
 				$("#copyBtn, #downloadBtn").show();
-
-				if ($("#copyBtn, #downloadBtn").length > 0) {
-					$(".txtDivider").show();
-				}
 			} else {
 				dataFound = false;
 			}
@@ -208,6 +233,10 @@
 		<div id="infoHolder" class="right">
 			<div class="panel" tabindex="0">
 				<div id="panelTxt"></div>
+				<div id="btnHolder">
+					<button id="copyBtn"/>
+					<button id="downloadBtn"/>
+				</div>
 			</div>
 		</div>
 		
