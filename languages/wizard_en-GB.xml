@@ -50,6 +50,7 @@
     <chkShowGroups label="Expand Groups" tooltip="Expand all optional property groups by default."/>
 	<compMedia tooltip="Import Media"/>
 	<compPreview tooltip="Preview" error="Preview unavailable"/>
+	<compai tooltip="AI Image"/>
 	<calendar tooltip="Select Date"/>
 	<chapter title="CHAPTER"/>
 	<hidePage title="HIDDEN" tooltip="This page is hidden"/>

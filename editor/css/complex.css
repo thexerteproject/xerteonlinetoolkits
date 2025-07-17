@@ -1460,11 +1460,11 @@ div.hotspot360Icon span.icon360Holder .icon360 {
 	border: 4px transparent solid;
 }
 
-.img_search_container input[type="checkbox"] {
+.img_search_container input{
 	display: none;
 }
 
-.img_search_container input[type="checkbox"]:checked + label img {
+.img_search_container input:checked + label img {
 	border-color: blue;
 }
 

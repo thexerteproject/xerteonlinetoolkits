@@ -1779,8 +1779,16 @@ var EDITOR = (function ($, parent) {
         });
     };
 
-    img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings){
+    img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings, single_image_selection = false){
+				if(window.imageSearchSingle){
+						window.imageSearchSingle = false;
+				}
         $('body').css("cursor", "wait");
+				let input_type = "checkbox";
+				let image_data;
+				if(single_image_selection) {
+						input_type = "radio";
+				}
         //console.log("start pexels api request please wait");
 				let image_preview = $("<div class=\"img_search_preview\"><div class=\"img_search_loading\">loading...</div></div>");
         let keepClicked = false;
@@ -1789,8 +1797,8 @@ var EDITOR = (function ($, parent) {
             beforeClose: function() {
                     if (keepClicked) return true;
 
-                    let $boxes = image_preview.find("input[type='checkbox']");
-                    let allIndices = $.makeArray($boxes).map(cb => +cb.name);
+                    let $boxes = image_preview.find("input[type='" + input_type + "']");
+                    let allIndices = $.makeArray($boxes).map(cb => +cb.value);
                     let keptIndices = $.makeArray($boxes)
                         .filter(cb => cb.checked)
                         .map(cb => +cb.name);
@@ -1831,15 +1839,19 @@ var EDITOR = (function ($, parent) {
             success: function(data_json) {
 								image_preview.find(".img_search_loading").remove();
 								let header = $("<h1>" + language.imageSelection.title + "</h1>");
+								image_data = JSON.parse(data_json);
 								image_preview.append(header);
 								let image_preview_images = $("<div class=\"image_preview_images\"></div>");
 								image_preview.append(image_preview_images);
 								let submit_button = $("<input type=\"submit\" value=\"" + language.imageSelection.keepButtonText + "\">").click(function() {
                                         keepClicked = true;
 										let indices_to_delete = [];
-										for(let input of $.makeArray(image_preview.find("input[type=\"checkbox\"]"))){
+										let indices_selected = [];
+										for(let input of $.makeArray(image_preview.find("input[type=\"" + input_type + "\"]"))){
 												if(!input.checked){
-														indices_to_delete.push(+input.name);
+														indices_to_delete.push(+input.value);
+												}else {
+														indices_selected.push(+input.value);
 												}
 										}
 										$.ajax({
@@ -1849,6 +1861,10 @@ var EDITOR = (function ($, parent) {
 												success: function(data){
 														alert("Kept images successfully saved to media folder.");
 														selection_window.close();
+														if(single_image_selection) {
+																$("html").data("image", image_data.paths[indices_selected[0]]);
+																console.log(image_data.paths[indices_selected[0]]);
+														}
 												},
 												error: function(xhr, status, error){
 														console.log("Error deleting images: ", error);
@@ -1935,19 +1951,18 @@ var EDITOR = (function ($, parent) {
 										});
 								});
 								
-								let data = JSON.parse(data_json);
 								let credits_button_width = 0;
                 //console.log("The image results have successfully been retrieved:", data);
-								for(let i = 0; i < data.paths.length; i++){
-										let image_url = data.paths[i];
-										let checkbox = $("<input type=\"checkbox\" id=\"check" + i + "\" name=\"" + i + "\"></input>");
+								for(let i = 0; i < image_data.paths.length; i++){
+										let image_url = image_data.paths[i];
+										let select_input = $("<input type=\"" + input_type + "\" id=\"check" + i + "\" name=\"image\" value=\"" + i + "\"></input>");
 										let image = $("<img class=\"img_search_preview_image\"></img>");
 										let label = $("<label for=\"check" + i + "\"></label>").append(image);
 										let container = $("<div class=\"img_search_container\"></div>");
 										image.attr("src", image_url);
-										image.attr("title", data.credits[i]);
+										image.attr("title", image_data.credits[i]);
 										image_preview_images.append(container);
-										container.append(checkbox).append(label);//.append("<div>" + credits_texts[0] + "</div><div>" + credits_texts[1] + "</div>");
+										container.append(select_input).append(label);//.append("<div>" + credits_texts[0] + "</div><div>" + credits_texts[1] + "</div>");
 										let enlarge_button = $("<button title=\"Enlarge\" type=\"button\" class=\"enlarge_button\"><i class=\"fa fa-lg fa-search xerte-icon\"></i></button>").click(function() {
 												$.featherlight(image_url);
 										});

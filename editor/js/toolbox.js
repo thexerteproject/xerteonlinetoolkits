@@ -1686,6 +1686,12 @@ var EDITOR = (function ($, parent) {
                                 previewFile($(this).parents("tr").find(".CaptionTD").html(), $(this).parents("tr").find(".media")[0].value);
                             })
                             .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon'));
+                        $(this).parent().append('<button id="' + 'ai_' + col_id + '" title="' + language.compai.$tooltip + '" class="xerte_button"></button>');
+                        $(this).parent().find("#ai_" + col_id)
+                            .click(function () {
+                                previewFile($(this).parents("tr").find(".CaptionTD").html(), $(this).parents("tr").find(".media")[0].value);
+                            })
+                            .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon'));
                     }
 
                 } else {
@@ -5656,6 +5662,30 @@ var EDITOR = (function ($, parent) {
 					})
 					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon')));
 
+				btnHolder.append($('<button>')
+					.attr('id', 'ai_' + id)
+					.attr('title', language.compai.$tooltip)
+                    .attr('type', 'button')
+					.addClass("xerte_button")
+					.click({id:id, key:key, name:name}, function(event)
+					{
+						let input = $(this).closest('tr').find('input')[0];
+						console.log(event, options);
+						window.imageSearchSingle = true;
+						$("#lightboxbutton_imgSearchAndHelpGroup").click();
+						let callback = () => {
+								if($("html").data("image")){
+										let src = $("html").data("image");
+										debugger;
+										input.value = $("html").data("image").replace("//media", "/media");
+								} else {
+										setTimeout(callback, 500);
+								}
+						};
+						setTimeout(callback, 0);
+					})
+					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon')));
+
 				html = $('<div>')
 					.attr('id', 'container_' + id)
 					.addClass('media_container');
@@ -6253,7 +6283,7 @@ var EDITOR = (function ($, parent) {
                             return;
                         }
 
-                        img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject);
+                        img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject, window.imageSearchSingle ?? false);
                         html.prop('disabled', false);
                     });
                 break;
@@ -6858,7 +6888,7 @@ var EDITOR = (function ($, parent) {
                         console.error('Corpus sync failed:', err);
                         alert('⚠️ Corpus sync error: ' + err);
                     }
-                });
+                })
             }
 
             function updateGrid(name, id) {
