@@ -33,4 +33,8 @@
 	.questionBlock:not(:first-of-type), .dataPageFb {
 		margin-top: 1em;
 	}
+
+	#btnHolder {
+		margin-top: 1em;
+	}
 	
