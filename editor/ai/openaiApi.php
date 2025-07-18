@@ -3,32 +3,107 @@
 //file name must be $api . Api.php for example openaiApi.php when adding new api
 //class name AiApi mandatory when adding new api
 
-use rag\MistralRAG;
-
-class openaiApi
+class openaiApi extends BaseAiApi
 {
-    //constructor must be like this when adding new api
-    function __construct(string $api) {
-        global $xerte_toolkits_site;
-        require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/load_preset_models.php");
-        $this->preset_models = $openAI_preset_models;
-        require_once (str_replace('\\', '/', __DIR__) . "/../../config.php");
-        $this->xerte_toolkits_site = $xerte_toolkits_site;
-        require_once (str_replace('\\', '/', __DIR__) . "/rag/BaseRAG.php");
-        require_once (str_replace('\\', '/', __DIR__) . "/rag/MistralRAG.php");
-        require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/load_model.php");
+    protected function POST_request($prompt, $payload, $url, $type){
+        if (isset($this->preset_models->type_list[$type]['payload']['assistant_id'])) {
+            $results = $this->POST_OpenAi_Assistant($prompt, $payload, $url);
+        }
+        else {
+            //Post using non-assistant chat completion endpoint
+            $results = $this->POST_OpenAi($prompt, $payload, $url);
+        }
+        return $results;
     }
-    //check if answer conforms to model
-    private function clean_gpt_result($answer)
-    {
-        //TODO idea: if not correct drop until last closed xml and close rest manually?
 
-        //TODO ensure answer contains no html and xml has no data fields aka remove spaces
-        //IMPORTANT GPT really wants to add \n into answers
-        $tmp = str_replace('\n', "", $answer);
-        $tmp = preg_replace('/\s+/', ' ', $tmp);
-        $tmp = str_replace('> <', "><", $tmp);
-        return $tmp;
+    protected function buildQueries(array $inputs): array
+    {
+        // 1. Load key
+        $apiKey = $this->xerte_toolkits_site->openai_key;
+        // 2. Build the payload for the Responses API
+        $payload = [
+            'model'         => 'gpt-4o-mini',   // pick any model that supports Structured Outputs
+            'messages'=> [
+                [ 'role'=>'developer', 'content'=><<<SYS
+                You are a query‐builder assistant.
+                Given user inputs (as JSON), output *strictly* a JSON object with two fields:
+                  • "frequency_query": a single query string for TF–IDF matching  
+                  • "vector_query":   a single query string for vector embedding similarity  
+                Do not wrap your response in any extra text.
+                SYS
+                ],
+                [ 'role'=>'user', 'content'=> json_encode($inputs, JSON_THROW_ON_ERROR) ]
+            ],
+                'response_format' => [
+                    'type' => 'json_schema',
+                    'json_schema' => [
+                        'name'   => 'TwoQueries',
+                        'schema' => [
+                            'type'                 => 'object',
+                            'properties'           => [
+                                'frequency_query'    => ['type' => 'string'],
+                                'vector_query'       => ['type' => 'string'],
+                            ],
+                            'required'             => ['frequency_query','vector_query'],
+                            'additionalProperties' => false,
+                        ],
+                        'strict' => false,
+                    ],
+                ],
+        ];
+
+        // 3. Send the creation request
+        $ch = curl_init('https://api.openai.com/v1/chat/completions');
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_HTTPHEADER     => [
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $apiKey,
+            ],
+            CURLOPT_POSTFIELDS     => json_encode($payload, JSON_THROW_ON_ERROR),
+        ]);
+
+        $resp = curl_exec($ch);
+        if ($resp === false) {
+            throw new \Exception('cURL error on create: ' . curl_error($ch));
+        }
+        curl_close($ch);
+
+        // 4. Decode the creation response
+        $decoded = json_decode($resp, true, 512, JSON_THROW_ON_ERROR);
+
+        // 5. Extract the generated JSON payload
+        if (isset($decoded['choices'][0]['message']['content'])) {
+            // content is a JSON‐string with our two fields
+            $content = $decoded['choices'][0]['message']['content'];
+            $queries = json_decode(
+                $content,
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            );
+        } else {
+            throw new \Exception('Unexpected response format: ' . $resp);
+        }
+
+        // 7. Return the two queries
+        return $queries;
+    }
+
+    protected function parseResponse($results)
+    {
+        $answer = "";
+        foreach ($results as $result) {
+            // Ensure choices exist and contain at least one response
+            if (isset($result->choices) && is_array($result->choices) && count($result->choices) > 0) {
+                $choice = $result->choices[0];
+
+                // Concatenate content in case of streaming or partial responses
+                $answer .= $choice->message->content;
+            }
+        }
+        return $answer;
     }
 
     //general class for interactions with the openai API
@@ -57,7 +132,7 @@ class openaiApi
         curl_close($curl);
 
 
-        $resultConform = $this->clean_gpt_result($result);
+        $resultConform = $this->clean_result($result);
         $resultConform = json_decode($resultConform);
 
         if ($resultConform->error) {
@@ -111,7 +186,7 @@ class openaiApi
             $lastMessageContent = $this->GET_last_message_from_thread($threadId);
         }
 
-        $resultConform = $this->clean_gpt_result($lastMessageContent);
+        $resultConform = $this->clean_result($lastMessageContent);
         $resultConform = json_decode($resultConform);
 
         $thread = $this->deleteThread($threadId);
@@ -135,7 +210,7 @@ class openaiApi
         $result = curl_exec($curl);
         curl_close($curl);
 
-        $resultConform = $this->clean_gpt_result($result);
+        $resultConform = $this->clean_result($result);
         $resultConform = json_decode($resultConform);
 
         $status = $resultConform->status;
@@ -213,177 +288,6 @@ class openaiApi
         }
         curl_close($curl);
         return $result;
-    }
-
-    //generates prompt for openai from preset prompts and user input
-    //todo maybe add some validation for missing fields?
-    //to help with pinpointing wrong/missing front end fields
-    private function generatePrompt($p, $model, $globalInstructions): string {
-        $prompt = '';
-        foreach ($model->get_prompt_list() as $prompt_part) {
-            if ($p[$prompt_part] == null) {
-                $prompt .= $prompt_part;
-            } else {
-                $prompt .= $p[$prompt_part];
-            }
-        }
-
-        // Append global instructions at the end if not empty
-        if (!empty($globalInstructions)) {
-            // Join the array into a single string with a newline between instructions
-            $globalInstructionsStr = implode("\n", $globalInstructions);
-            $prompt .= "\n" . $globalInstructionsStr;
-        }
-
-        return $prompt;
-    }
-
-    private function prepareURL($uploadPath){
-        $basePath = __DIR__ . '/../../'; // Moves up from ai -> editor -> xot
-        $finalPath = realpath($basePath . $uploadPath);
-
-        if ($finalPath === false) {
-            throw new Exception("File does not exist: $finalPath");
-        }
-
-        return $finalPath;
-    }
-
-    private function cleanXmlCode($xmlString) {
-        // Check if the string starts with ```xml and remove it
-        if (strpos($xmlString, "```xml") === 0) {
-            $xmlString = substr($xmlString, strlen("```xml"));
-            $xmlString = ltrim($xmlString); // Trim any leading whitespace after ```xml
-        }
-
-        // Check if the string ends with ``` and remove it
-        if (substr($xmlString, -3) === "```") {
-            $xmlString = substr($xmlString, 0, -3);
-            $xmlString = rtrim($xmlString); // Trim any trailing whitespace before ```
-        }
-
-        return $xmlString;
-    }
-
-    private function cleanJsonCode($jsonString) {
-        // Check if the string starts with ```json and remove it
-        if (strpos($jsonString, "```json") === 0) {
-            $jsonString = substr($jsonString, strlen("```json"));
-            $jsonString = ltrim($jsonString); // Trim any leading whitespace after ```json
-        }
-
-        // Check if the string ends with ``` and remove it
-        if (substr($jsonString, -3) === "```") {
-            $jsonString = substr($jsonString, 0, -3);
-            $jsonString = rtrim($jsonString); // Trim any trailing whitespace before ```
-        }
-
-        return $jsonString;
-    }
-
-    //meant to remove citations which openAI assistant will automatically add between chinese brackets
-    //These will break the xml if not cleaned out.
-    function removeBracketsAndContent($text) {
-        // Define the regex pattern to match the brackets and the content inside
-        $pattern = '/【.*?】/u';
-        // Use preg_replace to remove the matched patterns
-        $cleanedText = preg_replace($pattern, '', $text);
-        // Return the cleaned text
-        return $cleanedText;
-    }
-
-    //public function must be ai_request($p, $type) when adding new api
-    //todo Timo maybe change this to top level object and extend with api functions?
-    public function ai_request($p, $type, $baseUrl, $globalInstructions, $useCorpus = false, $fileList = null, $restrictCorpusToLo = false)
-    {
-        if (is_null($this->preset_models->type_list[$type]) or $type == "") {
-            return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
-        }
-
-        if ($this->xerte_toolkits_site->openai_key == "") {
-            return (object) ["status" => "error", "message" => "there is no corresponding API key"];
-        }
-	
-		$model = load_model_op($type, $_POST["model"], $_POST["context"], $_POST["prompt"]["subtype"], $_POST["modelTemplate"], !empty($_POST['url']) || !empty($_POST['textSnippet']), $_POST['asst_id']);
-
-        $prompt = $this->generatePrompt($p, $model, $globalInstructions);
-		$payload = $model->get_payload();
-
-        if ($useCorpus || $fileList != null || $restrictCorpusToLo){
-            $apiKey = $this->xerte_toolkits_site->mistralenc_key;
-            $encodingDirectory = $this->prepareURL($baseUrl);
-            $rag = new MistralRAG($apiKey, $encodingDirectory);
-            if ($rag->isCorpusValid()){
-                $promptReference = x_clean_input($p['subject']);
-
-                if ($restrictCorpusToLo){
-                    $fileList = [$encodingDirectory . '/preview.xml'];
-                    $weights = [
-                        'embedding_cosine' => 0.3,
-                        'embedding_euclidean' => 0.2,
-                        'tfidf_cosine' => 0.3,
-                        'tfidf_euclidean' => 0.2
-                    ];
-                    $context = $rag->getWeightedContext($promptReference, $fileList, $weights, 25);
-                }else{
-                    $context = $rag->getWeightedContext($promptReference, $fileList, '', 5);
-                }
-
-                $new_messages = array(
-                    array(
-                        'role' => 'user',
-                        'content' => 'Great job! That\'s a great example of what I need. Now, I want to send you the context of the learning object you are generating these XMLs for. Bear in mind, the context can take different forms: transcripts or text. In the future, please generate the xml based on the context I will provide.',
-                    ),
-                    array(
-                        'role' => 'assistant',
-                        'content' => 'Understood. I\'m happy to help you with your task. Please provide the current context of the learning object. I will keep in mind that for transcripts, I dont have to include the timestamps in my response unless otherwise specified. Once you do, we can proceed to generating new XML objects using the exact same structure I used in my previous message, this time taking the new context into account.',
-                    ),
-                    array(
-                        'role' => 'user',
-                        'content' => 'Ok. Remember, when you generate the new XML, it should do so with the context here in mind! I\'ve compiled the data for you here: [START OF CONTEXT]' . $context[0]['chunk'] . $context[1]['chunk'] . $context[2]['chunk'] . $context[3]['chunk'] . $context[4]['chunk'] . " [END OF CONTEXT]",
-                    ),
-                    array(
-                        'role' => 'assistant',
-                        'content' => 'Great! Now that we know the context of the sort of information I am working with, I can proceed with generating a new XML with the exact same XML structure as the first one I made, but with content adapted to the context. Please specify any of the other requirements for the XML, and I will return the XML directly with no additional commentary, so that you can immediately use my message as the XML.',
-                    ),
-                );
-
-                if (isset($this->preset_models->type_list[$type]['payload']['assistant_id'])){
-                    // Insert the new messages into the original $settings array
-                    array_splice($payload['thread']['messages'], 2, 0, $new_messages);
-                }else{
-                    array_splice($payload['messages'], 2, 0, $new_messages);
-                }
-            }
-        }
-
-        $results = array();
-
-        if (isset($this->preset_models->type_list[$type]['payload']['assistant_id'])) {
-                $results[] = $this->POST_OpenAi_Assistant($prompt, $payload, $model->get_chat_url());
-        }
-        else {
-            //Post using non-assistant chat completion endpoint
-            $results[] = $this->POST_OpenAi($prompt, $payload, $model->get_chat_url());
-        }
-
-
-        $answer = "";
-        $total_tokens_used = 0;
-        //if status is set something went wrong
-        foreach ($results as $result) {
-            if ($result->status) {
-                return $result;
-            }
-            $total_tokens_used += $result->usage->total_tokens;
-            $answer = $answer . $result->choices[0]->message->content;
-        }
-
-        $answer = $this->removeBracketsAndContent($answer);
-        $answer = $this->cleanXmlCode($answer);
-        $answer = $this->cleanJsonCode($answer);
-        $answer = preg_replace('/&(?!#\d+;|amp;|lt;|gt;|quot;|apos;)/', '&amp;', $answer);
-        return $answer;
     }
 
 }

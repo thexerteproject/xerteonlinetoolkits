@@ -4,8 +4,8 @@ foreach(glob(str_replace('\\', '/', __DIR__) . "/model_*.php") as $file){
 	require_once($file);
 }
 
-function load_model_op($type, $model = null, $context = "standard", $sub_type = null, $model_template = null, $assistantOn = false, $assistantId = null){
-	$name = "openai_ai_" . $type;
+function load_model($type, $api, $model = null, $context = "standard", $sub_type = null, $model_template = null, $assistantOn = false, $assistantId = null){
+    $name = $api . "_ai_" . $type;
 
 	if($context == null){
 		$context = "standard";

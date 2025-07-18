@@ -24,6 +24,7 @@ $ai_api = $_POST["api"] ?? 'openai'; // model selection
 $file_url = $_POST["url"] ?? 'None';
 $textSnippet = $_POST["textSnippet"];
 $context = $_POST["context"] ?? 'None';
+$subtype = $_POST["prompt"]["subtype"] ?? null;
 $useContext = $_POST["useContext"] ?? 'false';
 $baseUrl = $_POST["baseUrl"];
 $contextScope = $_POST["contextScope"];
@@ -35,7 +36,8 @@ $restrictCorpusToLo = $_POST['restrictCorpusToLo'];
 
 $allowed_apis = ['openai', 'anthropic', 'mistral'];
 //$global_instructions = ["When handling text enclosed in attribute tags, all text enclosed within the following attributes: 'text', 'goals', 'audience', 'prereq', 'howto', 'summary', 'nextsteps', 'pageintro', 'tip', 'side1', 'side2', 'txt', 'instruction', 'prompt', 'answer', 'intro', 'feedback', 'unit', 'question', 'hint', 'label', 'passage', 'initialtext', 'initialtitle', 'suggestedtext', 'suggestedtitle', 'generalfeedback', 'instructions', 'p1', 'p2', 'title', 'introduction', 'wrongtext', 'wordanswer', 'words' must be formatted with relevant HTML encoding tags (headers, paragraphs, etc. if needed), you have to use EXCLUSIVELY HTML entities. On the other hand, when handling text in CDATA nodes, only IF there is text inside CDATA nodes in the first response you gave, format it using at minimum paragraph tags, or other relevant tags if needed. Otherwise, do NOT wrap text which belongs in attributes into CDATA nodes."];
-$global_instructions = '';
+//$global_instructions = ['Make sure to return the content of the xml in Spanish!'];
+$global_instructions = [];
 
 //todo combine with api check from admin page
 if (!in_array($ai_api, $allowed_apis)){
@@ -43,6 +45,7 @@ if (!in_array($ai_api, $allowed_apis)){
 }
 
 //dynamically load needed api methods
+require_once(dirname(__FILE__) . "/" . "BaseAiApi.php");
 require_once(dirname(__FILE__) . "/" . $ai_api ."Api.php");
 
 ob_start();
@@ -67,7 +70,7 @@ switch ($ai_api){
     case 'openai':
     case 'mistral':
     case 'anthropic':
-        $result = $aiApi->ai_request($prompt_params, $type, $baseUrl, $global_instructions, $useCorpus, $fileList, $restrictCorpusToLo);
+        $result = $aiApi->ai_request($prompt_params, $type, $subtype, $context, $baseUrl, $global_instructions, $useCorpus, $fileList, $restrictCorpusToLo);
         break;
 }
 
