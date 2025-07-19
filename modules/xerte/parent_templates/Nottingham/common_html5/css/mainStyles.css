@@ -773,7 +773,7 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 }
 #x_mainHolder:not(.x_mobile) #x_headerProgress .pbTxt {
 	display: inline-block;
-	padding: 0 5px 5px;
+	padding: 0 10px 5px;
 }
 #x_headerProgress.progressMarkers .pbTxt {
 	padding: 0 5px 10px;

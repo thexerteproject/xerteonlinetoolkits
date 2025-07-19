@@ -6281,11 +6281,9 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 			// on smaller screens the % text goes above the progress bar - on larger screens the text is next to the progress bar
 			if (x_browserInfo.mobile != true && progressBarPosition != "footer") {
-				$pbTxt.css({
-					"width": $pbTxt.width() + parseInt($pbTxt.css("padding-left")),
-					"margin-left": -$pbTxt.outerWidth(true)
-				});
-				$pbHolder.css("padding-left", $pbTxt.outerWidth() + Math.round($("#x_headerBlock .x_floatLeft .x_icon").width()));
+				$pbTxt.css({ "width": $pbTxt.width() + parseInt($pbTxt.css("padding-left")) });
+				$pbTxt.css({ "margin-left": -$pbTxt.outerWidth(true) });
+				$pbHolder.css("padding-left", $pbTxt.outerWidth() + Math.round($("#x_headerBlock .x_floatLeft.x_icon").width()));
 			} else if (progressBarPosition != "footer") {
 				$pbHolder.css("padding-left", Math.round($("#x_headerBlock .x_icon").width()) + 10);
 			}
