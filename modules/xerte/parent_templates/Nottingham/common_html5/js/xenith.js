@@ -6301,8 +6301,14 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			}
 		}
 
-		$pbContainer = $('<div class="pbContainer"></div>').appendTo($pbHolder);
+		$pbContainer = $('<div class="pbContainer"></div>');
 		$pbBar = $('<div class="pbPercent pbBar">&nbsp;</div>');
+
+		if (progressBarPosition == "footer") {
+			$pbContainer.prependTo($pbHolder);
+		} else {
+			$pbContainer.appendTo($pbHolder);
+		}
 
 		const $pbBarContainer = $('<div class="pbBarContainer"/>');
 		const $pbMarkerContainer = $('<div class="pbMarkerContainer"/>');
