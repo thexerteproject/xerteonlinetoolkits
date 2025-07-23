@@ -6283,7 +6283,19 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			if (x_browserInfo.mobile != true && progressBarPosition != "footer") {
 				$pbTxt.css({ "width": $pbTxt.width() + parseInt($pbTxt.css("padding-left")) });
 				$pbTxt.css({ "margin-left": -$pbTxt.outerWidth(true) });
-				$pbHolder.css("padding-left", $pbTxt.outerWidth() + Math.round($("#x_headerBlock .x_floatLeft.x_icon").width()));
+
+				// left logo
+				if ($("#x_headerBlock .x_floatLeft.x_icon:visible").length > 0) {
+					$pbHolder.css("padding-left", $pbTxt.outerWidth() + Math.round($("#x_headerBlock .x_floatLeft.x_icon").width()));
+				} else {
+					$pbHolder.css("padding-left", $pbTxt.outerWidth());
+				}
+
+				// right logo
+				if ($("#x_headerBlock .x_floatRight.x_icon:visible").length > 0) {
+					$pbHolder.css("padding-right", Math.round($("#x_headerBlock .x_floatRight.x_icon").width()) + 10);
+				}
+
 			} else if (progressBarPosition != "footer") {
 				$pbHolder.css("padding-left", Math.round($("#x_headerBlock .x_icon").width()) + 10);
 			}
