@@ -1899,8 +1899,12 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
                 fixedheader = true;
 
                 //sectie menu onder menu balk en menu balk sticky
-                $(".navbar-fixed-top").css("position", "sticky");
-
+				if ($("#pageLinks").length > 0) {
+					// nav bar is set to be below header
+					$("#pageLinks").addClass("stickyTop");
+				} else {
+					$(".navbar-fixed-top").addClass("stickyTop");
+				}
             }
             else
             {
