@@ -21,9 +21,9 @@ class openai_ai_modelanswer extends openai_ai {
 	public function get_payload() {
 		return [
 			"model" => $this->model,
-			"max_tokens" => $this->max_tokens,
+			//"max_tokens" => $max_tokens,
 			"n" => 1,
-			"temperature" => $this->temperature,
+			//"temperature" => $this->temperature,
 			"messages" => [
 				["role" => "system", "content" => MODEL_SYSTEM],
 				["role" => "user", "content" => ""]

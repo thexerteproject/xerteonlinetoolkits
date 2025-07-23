@@ -47,7 +47,7 @@ class openai_ai {
 			$this->instructions = "Follow the instructions in the last message from the user. Use the appropriate uploaded transcript or file as your source. If no source has been uploaded or the source does not contain information relevant to the subject, and you have been given explicit permission to use knowledge outside of the uploaded file, try to fulfil the request using general knowledge about the specified subject. Regardless of what you end up doing, never return anything except the XML in plaintext. Do not use markdown to denote the xml. Do not add any explanations before or after the xml.";
 		}
 
-		_load_language_file("/editor/ai_models/anthropic_model_" . $type . "_ai.inc");
+		_load_language_file("/editor/ai_models/openai_model_" . $type . "_ai.inc");
 		$upper_type = strtoupper($type);
 		if ($context === 'standard') {
 			$this->learning_prompt = constant("LEARNING_PROMPT_" . $upper_type);

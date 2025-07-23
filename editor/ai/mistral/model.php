@@ -19,7 +19,7 @@ class mistral_ai {
 		}else { 
 			$this->model = $model;
 		}
-		_load_language_file("/editor/ai_models/anthropic_model_" . $type . "_ai.inc");
+		_load_language_file("/editor/ai_models/mistral_model_" . $type . "_ai.inc");
 		$upper_type = strtoupper($type);
 		if ($context === 'standard') {
 			$this->leaning_prompt = constant("LEARNING_PROMPT_" . $upper_type);
