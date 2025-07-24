@@ -33,7 +33,12 @@ class MistralRAG extends BaseRAG
         curl_close($ch);
 
         $decoded = json_decode($response, true);
-        return $decoded["data"][0]["embedding"] ?? [];
+        $embeddings = $decoded["data"][0]["embedding"] ?? [];
+        if (empty($embeddings)) {
+            throw new Exception('Embedding failed.');
+        }
+
+        return $embeddings;
     }
 
     /*Retrieve embeddings in batches, in line with the maximum allowed token size of the mistral embed model
@@ -84,6 +89,10 @@ class MistralRAG extends BaseRAG
                     $embeddings[] = $embedding["embedding"] ?? [];
                 }
             }
+        }
+
+        if (empty($embeddings)) {
+            throw new Exception('Embedding failed.');
         }
 
         return $embeddings;

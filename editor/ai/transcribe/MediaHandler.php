@@ -348,7 +348,8 @@ class MediaHandler {
             } elseif (in_array($mimeType, $audioMimeTypes)) {
                 return $this->transcriber->transcribeAudioTimestamped($filePath);
             } else {
-                throw new Exception("Unsupported media type for transcription: " . $mimeType);
+                //throw new Exception("Unsupported media type for transcription: " . $mimeType);
+                throw new Exception("Unsupported media type for transcription.");
             }
         }
     }

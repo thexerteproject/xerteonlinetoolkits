@@ -6,6 +6,13 @@ abstract class BaseAiApi
 //constructor must be like this when adding new api
     private string $api;
 
+    private string $languageName;
+
+    protected string $languageMessage;
+
+    //protected $global_instructions = ["When handling text enclosed in attribute tags, all text enclosed within the following attributes: 'text', 'goals', 'audience', 'prereq', 'howto', 'summary', 'nextsteps', 'pageintro', 'tip', 'side1', 'side2', 'txt', 'instruction', 'prompt', 'answer', 'intro', 'feedback', 'unit', 'question', 'hint', 'label', 'passage', 'initialtext', 'initialtitle', 'suggestedtext', 'suggestedtitle', 'generalfeedback', 'instructions', 'p1', 'p2', 'title', 'introduction', 'wrongtext', 'wordanswer', 'words' must be formatted with relevant HTML encoding tags (headers, paragraphs, etc. if needed), you have to use EXCLUSIVELY HTML entities. On the other hand, when handling text in CDATA nodes, only IF there is text inside CDATA nodes in the first response you gave, format it using at minimum paragraph tags, or other relevant tags if needed. Otherwise, do NOT wrap text which belongs in attributes into CDATA nodes."];
+     protected $globalInstructions = [];
+
     function __construct(string $api) {
         global $xerte_toolkits_site;
         $this->api = $api;
@@ -33,8 +40,35 @@ abstract class BaseAiApi
 
     abstract protected function parseResponse($results);
 
-    protected function generatePrompt($p, $model, $globalInstructions): string {
-        $prompt = '';
+    protected function setupLanguageInstructions ($selectedCode){
+        $languages = [
+            'en-GB' => ['English', 'IMPORTANT: All non-structural output within the XML should be in English!'],
+            'nl-NL' => ['Nederlands', 'BELANGRIJK: Alle niet-structurele output binnen de XML moet in het Nederlands zijn!'],
+            'nl-BE' => ['Vlaams', 'BELANGRIJK: Alle niet-structurele output binnen de XML moet in het Vlaams zijn!'],
+            'fr-FR' => ['Français', 'IMPORTANT : Toute sortie non structurelle dans le XML doit être en français !'],
+            'es-ES' => ['Español', 'IMPORTANTE: Toda salida no estructural dentro del XML debe estar en español.'],
+            'cs-CZ' => ['Czech', 'DŮLEŽITÉ: Veškerý nestrukturovaný výstup v XML by měl být v češtině!'],
+            'cy-GB' => ['Cymraeg', 'PWYSIG: Dylai’r holl allbwn nad yw’n strwythurol o fewn yr XML fod yn Gymraeg!'],
+            'pl-PL' => ['Polish', 'WAŻNE: Cała nie-strukturalna zawartość w XML powinna być w języku polskim!'],
+            'ru-RU' => ['Russian', 'ВАЖНО: Весь нестуктурированный вывод в XML должен быть на русском языке!'],
+            'nb-NO' => ['Norsk bokmål', 'VIKTIG: All ikke-strukturell output i XML skal være på norsk!'],
+            'it-IT' => ['Italiano', 'IMPORTANTE: Tutto l’output non strutturale all’interno dell’XML deve essere in italiano!'],
+            'ja-JP' => ['Japanese', '重要：XML内の構造化されていないすべての出力は日本語である必要があります！'],
+            'pt-BR' => ['Portugues', 'IMPORTANTE: Toda a saída não estrutural dentro do XML deve estar em português!'],
+            'de-DE' => ['Deutsch', 'WICHTIG: Alle nicht-strukturellen Inhalte im XML müssen auf Deutsch sein!'],
+            'tr-TR' => ['Türkçe', 'ÖNEMLİ: XML içindeki tüm yapısal olmayan çıktı Türkçe olmalıdır!'],
+            'uk-UA' => ['Українська', 'ВАЖЛИВО: Усі неструктуровані дані в XML мають бути українською мовою!'],
+            'el-GR' => ['Ελληνικά', 'ΣΗΜΑΝΤΙΚΟ: Όλη η μη δομική έξοδος μέσα στο XML πρέπει να είναι στα ελληνικά!'],
+        ];
+
+        if (array_key_exists($selectedCode, $languages)) {
+            $this->languageName = $languages[$selectedCode][0];
+            $this->languageMessage = $languages[$selectedCode][1];
+        }
+    }
+
+    protected function generatePrompt($p, $model): string {
+        $prompt = $this->languageMessage. " ";
         foreach ($model->get_prompt_list() as $prompt_part) {
             if ($p[$prompt_part] == null) {
                 $prompt .= $prompt_part;
@@ -44,12 +78,13 @@ abstract class BaseAiApi
         }
 
         // Append global instructions at the end if not empty
-        if (!empty($globalInstructions)) {
+        if (!empty($this->globalInstructions)) {
             // Join the array into a single string with a newline between instructions
-            $globalInstructionsStr = implode("\n", $globalInstructions);
+            $globalInstructionsStr = implode("\n", $this->globalInstructions);
             $prompt .= "\n" . $globalInstructionsStr;
         }
 
+        $prompt .= "\n" . $this->languageMessage;
         return $prompt;
     }
 
@@ -135,7 +170,7 @@ abstract class BaseAiApi
         return $finalPath;
     }
 
-    public function ai_request($p, $type, $subtype, $context, $baseUrl, $globalInstructions, $useCorpus = false, $fileList = null, $restrictCorpusToLo = false){
+    public function ai_request($p, $type, $subtype, $context, $baseUrl, $selectedCode, $useCorpus = false, $fileList = null, $restrictCorpusToLo = false){
         /*
         if (is_null($this->preset_models->type_list[$type]) or $type == "") {
             return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
@@ -145,9 +180,16 @@ abstract class BaseAiApi
             return (object) ["status" => "error", "message" => "there is no corresponding API key"];
         }*/
 
+
+        $this->setupLanguageInstructions($selectedCode);
+
+        //We add this as a prompt param for prompts which might make use of the language information.
+        //When making any prompt, the stand-in for the language must therefore be 'responseLanguage'
+        $p['responseLanguage'] = $this->languageName;
+
         $model = load_model($type, $this->api, null, $context, $subtype);
 
-        $prompt = $this->generatePrompt($p, $model, $globalInstructions);
+        $prompt = $this->generatePrompt($p, $model);
         $payload = $model->get_payload();
 
         if ($useCorpus || $fileList != null || $restrictCorpusToLo){
@@ -158,7 +200,7 @@ abstract class BaseAiApi
                 //$promptReference = x_clean_input($p['subject']);
                 $promptReferences = $this->buildQueries($p);
                 $promptReference = $promptReferences['vector_query'];
-                $testReference = $promptReferences['frequency_query'];
+                //$testReference = $promptReferences['frequency_query'];
                 if ($restrictCorpusToLo){
                     $fileList = [$encodingDirectory . '/preview.xml'];
                     $weights = [
@@ -170,7 +212,7 @@ abstract class BaseAiApi
                     $context = $rag->getWeightedContext($promptReference, $fileList, $weights, 25);
                 }else{
                     $context = $rag->getWeightedContext($promptReference, $fileList, '', 5);
-                    $testContext = $rag->getWeightedContext($testReference, $fileList, '', 5);
+                    //$testContext = $rag->getWeightedContext($testReference, $fileList, '', 5);
                 }
 
                 $new_messages = array(

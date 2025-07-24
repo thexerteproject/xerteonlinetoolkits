@@ -33,11 +33,9 @@ $useCorpus = $_POST["useCorpus"] ?? false;
 $fileList = $_POST["fileList"] ?? null;
 $useLoInCorpus = $_POST['useLoInCorpus'];
 $restrictCorpusToLo = $_POST['restrictCorpusToLo'];
+$selectedCode = $_POST['language'];
 
 $allowed_apis = ['openai', 'anthropic', 'mistral'];
-//$global_instructions = ["When handling text enclosed in attribute tags, all text enclosed within the following attributes: 'text', 'goals', 'audience', 'prereq', 'howto', 'summary', 'nextsteps', 'pageintro', 'tip', 'side1', 'side2', 'txt', 'instruction', 'prompt', 'answer', 'intro', 'feedback', 'unit', 'question', 'hint', 'label', 'passage', 'initialtext', 'initialtitle', 'suggestedtext', 'suggestedtitle', 'generalfeedback', 'instructions', 'p1', 'p2', 'title', 'introduction', 'wrongtext', 'wordanswer', 'words' must be formatted with relevant HTML encoding tags (headers, paragraphs, etc. if needed), you have to use EXCLUSIVELY HTML entities. On the other hand, when handling text in CDATA nodes, only IF there is text inside CDATA nodes in the first response you gave, format it using at minimum paragraph tags, or other relevant tags if needed. Otherwise, do NOT wrap text which belongs in attributes into CDATA nodes."];
-//$global_instructions = ['Make sure to return the content of the xml in Spanish!'];
-$global_instructions = [];
 
 //todo combine with api check from admin page
 if (!in_array($ai_api, $allowed_apis)){
@@ -60,17 +58,16 @@ $api_type = $ai_api . 'Api';
 $aiApi = new $api_type($ai_api);
 
 $prompt_params_str = print_r($prompt_params, true);
-$global_instructions_str = print_r($global_instructions, true);
 $useCorpus_str = print_r($useCorpus, true);
 $fileList_str = print_r($fileList, true);
 $restrictCorpusToLo_str = print_r($restrictCorpusToLo, true);
 
-file_put_contents("ai.txt", "prompt_params: $prompt_params_str\ntype: $type\nbaseUrl:$baseUrl\nglobal_instructions: $global_instructions_str\n useCorpus: $useCorpus_str\n fileList: $fileList_str\n restrictCorpusToLo: $restrictCorpusToLo_str\n\n\n", FILE_APPEND);
+file_put_contents("ai.txt", "prompt_params: $prompt_params_str\ntype: $type\nbaseUrl:$baseUrl\n useCorpus: $useCorpus_str\n fileList: $fileList_str\n restrictCorpusToLo: $restrictCorpusToLo_str\n\n\n", FILE_APPEND);
 switch ($ai_api){
     case 'openai':
     case 'mistral':
     case 'anthropic':
-        $result = $aiApi->ai_request($prompt_params, $type, $subtype, $context, $baseUrl, $global_instructions, $useCorpus, $fileList, $restrictCorpusToLo);
+        $result = $aiApi->ai_request($prompt_params, $type, $subtype, $context, $baseUrl, $selectedCode, $useCorpus, $fileList, $restrictCorpusToLo);
         break;
 }
 

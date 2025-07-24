@@ -1668,6 +1668,7 @@ var EDITOR = (function ($, parent) {
                     type: "POST",
                     data: {
                         type: aiSettings['type'],
+                        language: aiSettings['language'],
                         prompt: constructorObject,
                         api: aiSettings['modelSelection'],
                         url: aiSettings['fullUrl'],

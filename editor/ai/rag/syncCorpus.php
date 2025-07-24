@@ -76,10 +76,15 @@ try {
     x_check_path_traversal($mediaDir);
     //x_check_path_traversal($corpusDir);
 
-    $gladiaKey = $xerte_toolkits_site->gladia_key;
-    $transcriber = new GladiaTranscribe($gladiaKey);
-    $mediaHandler = new MediaHandler($baseDir, $transcriber);
-
+    try {
+        $gladiaKey = $xerte_toolkits_site->gladia_key;
+        //$whisperKey = $xerte_toolkits_site->whisper_key;
+        $transcriber = new GladiaTranscribe($gladiaKey);
+        //$transcriber = new OpenAITranscribe($whisperKey);
+        $mediaHandler = new MediaHandler($baseDir, $transcriber);
+    } catch (Exception $e){
+        throw new Exception('Error intiializing transcription service. Make sure a transcription service is enabled or contact your system administrator.');
+    }
     $transcriptPath = $mediaHandler->returnMediaPath();
 
     if (!is_dir($transcriptPath)) {
@@ -92,8 +97,12 @@ try {
     //$corpusSync = new CorpusSynchronizer($transcriptDir, $corpusDir);
     $transcriptMgr = new TranscriptManager($registryHandler, $mediaHandler, /*$corpusSync*/);
 
-    $mistralKey = $xerte_toolkits_site->mistralenc_key;
-    $rag = new MistralRAG($mistralKey, $baseDir);
+    try {
+        $mistralKey = $xerte_toolkits_site->mistralenc_key;
+        $rag = new MistralRAG($mistralKey, $baseDir);
+    } catch (Exception $e){
+        throw new Exception('Error initializing encoding service. Make sure an encoding service is enabled or contact your system administrator.');
+    }
 
     $results = [];
 
@@ -105,8 +114,9 @@ try {
             if (!$uploadUrl) {
                 $results[] = [
                     'file'  => null,
-                    'error' => 'Missing col_2 value',
+                    'status' => 'Missing col_2 (source) value',
                 ];
+                $row['col_2'] = 'ERROR/SKIP';
                 continue;
             }
 
@@ -117,22 +127,38 @@ try {
                 // 3) Record success
                 $results[] = [
                     'file'       => $uploadUrl,
-                    'transcript' => $transcript,
+                    'status' => 'Transcribed Successfully',
                 ];
 
                 // 4a) Mutate the grid row in place: replace col_2 with the transcript path; add original source (video file, audio file, or link) to col_4
                 $row['col_2'] = $transcript['transcript_path'];
                 $row['col_4'] = $transcript['source'];
             } catch (Exception $e) {
-                // 4b) Record the error, leave col_2 untouched
-                $results[] = [
-                    'file'  => $uploadUrl,
-                    'error' => $e->getMessage(),
-                ];
+                if ($e->getMessage()!="Unsupported media type for transcription."){
+                    // 4b) Record the error
+                    $results[] = [
+                        'file'  => $uploadUrl,
+                        'status' =>'Error: ' . $e->getMessage(),
+                    ];
+                    $row['col_2'] = 'ERROR/SKIP'; //Hey alek this is dumb because apparently some of the errors are allowed
+                    //like if you can't transcribe it because its a non-transcribable filetype, it still counts as an error...
+                    //It kinda shouldn't do that?
+                }else{
+
+                    /*$results[] = [
+                        'file'       => $uploadUrl,
+                        'status' => 'Transcription unecessary.'
+                    ];*/
+                }
             }
         }
         // break the reference
         unset($row);
+
+        //Filter any errors, as failing the transcript step likely means there's an error with the file path, file type or otherwise
+        $gridData = array_filter($gridData, function($row) {
+            return isset($row['col_2']) && trim($row['col_2']) !== 'ERROR/SKIP';
+        });
 
         // 5. Once all transcripts are accounted for, run the RAG on all listed files, including the transcripts
         // 5.1 Create a list of all file objects with the relevant data to be processed
@@ -169,22 +195,77 @@ try {
     }
 
     //5.2 encode all files in the file list and register them as processed
-    $rag->processFileList($fileObjects, $corpusScope);
+    try {
+        $ragResults = $rag->processFileList($fileObjects, $corpusScope);
+    } catch (Exception $e){
+        throw new Exception('An error occured while processing your file: ' . $e );
+    }
 
     $debugOutput = ob_get_contents();
     ob_end_clean();
 
+    //TODO: Merge results with ragResults here? Atm if we have transcription errors they don't make it to the front end
+    //TODO: Make the returned files from ragResults be with the file source, not the original file  name, and then filter,
+    //so it's only what comes after corpus rag whatever... that way people know in the error message what it is without getting
+    //the whole link blasted.
+
+    // 1) Normalization helper
+    function normalize_id(string $str): string {
+        // URLs stay as‑is
+        if (filter_var($str, FILTER_VALIDATE_URL)) {
+            return $str;
+        }
+        // unify slashes and look for "RAG/corpus/"
+        $p = str_replace('\\', '/', $str);
+        $needle = 'RAG/corpus/';
+        if (false !== $pos = strpos($p, $needle)) {
+            // strip off everything before "RAG/corpus/"
+            return substr($p, $pos);
+        }
+        // fallback
+        return $str;
+    }
+
+// 2) Seed from transcription‐step results
+    $map = [];
+    foreach ($results as $row) {
+        $id = normalize_id($row['file']);
+        $map[$id] = [
+            'id'                      => $id,
+            'file'                    => $row['file'],
+            'transcription_status'    => $row['status'],
+            // you could copy other fields here if needed
+        ];
+    }
+
+// 3) Merge in RAG results
+    foreach ($ragResults as $row) {
+        $id = normalize_id($row['source']);
+        if (!isset($map[$id])) {
+            // no transcription entry for this id, so start a fresh one
+            $map[$id] = [
+                'id'   => $id,
+                'file' => null,
+            ];
+        }
+        // attach the RAG status
+        $map[$id]['rag_status'] = trim($row['status']);
+    }
+
+// 4) Re‐index as a zero‑based array
+    $fullResults = array_values($map);
+
     // 6. Return JSON
     echo json_encode([
         'success' => true,
-        'results' => $results
+        'results' => $fullResults
     ], JSON_THROW_ON_ERROR);
 
 } catch (Exception $ex) {
-    http_response_code(500);
+    //http_response_code(500);
     echo json_encode([
         'success' => false,
-        'message' => $ex->getMessage()
+        'rag_results' => $ex->getMessage()
     ], JSON_THROW_ON_ERROR);
 }
 

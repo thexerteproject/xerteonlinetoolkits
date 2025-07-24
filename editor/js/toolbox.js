@@ -1278,7 +1278,12 @@ var EDITOR = (function ($, parent) {
                             data: JSON.stringify(payload),
                             success: function(resp) {
                                 console.log('Corpus sync succeeded:', resp);
-                                alert('✅ Synced ' + payload.gridData.length + ' files to corpus.');
+                                const first = resp.results?.[0] || {};
+                                const displaymsg =
+                                    first.rag_status ||
+                                    first.transcription_status ||
+                                    'No status available';
+                                alert(displaymsg);
                                 resolve(resp);
                             },
                             error: function(xhr, status, err) {
@@ -4583,6 +4588,7 @@ var EDITOR = (function ($, parent) {
         let formInputValues = $('#lightbox_' + group + ' :input').add($('#lightbox_' + group + ' .inlinewysiwyg'));
 
         var attributes = lo_data[key]['attributes'];
+        var lo_attributes = lo_data['treeroot']['attributes'];
         formState = { ...attributes };
         if (mode === 'initialize') {
             //if not exists or empty option =>
@@ -4601,8 +4607,13 @@ var EDITOR = (function ($, parent) {
                 const inheritField = groupChildren[input]?.value?.inheritField;
                 if (inheritField !== undefined && inheritField !== "") {
                     const groupName = groupChildren[input]?.name;
-                    formState[groupName] = attributes[inheritField];
-                    lo_data[key]['attributes'][groupName] = attributes[inheritField];
+                    // try attributes, otherwise lo_attributes
+                    const value =
+                        attributes[inheritField] !== undefined && attributes[inheritField] !== null
+                            ? attributes[inheritField]
+                            : lo_attributes[inheritField];
+                    formState[groupName] = value;
+                    lo_data[key].attributes[groupName] = value;
                 }
             }
         } else {
@@ -6366,6 +6377,8 @@ var EDITOR = (function ($, parent) {
                         aiSettings['key'] = event.data.key;
                         aiSettings['type'] = lo_data[key].attributes.nodeName;
 
+                        aiSettings['language'] = lo_data['treeroot']['attributes']['language'];
+
                         aiSettings['modelSelection'] = constructorObject['aiSelector'] !== undefined ? constructorObject['aiSelector'] : 'No type selected';
                         delete constructorObject.aiSelector;
 
@@ -6811,7 +6824,7 @@ var EDITOR = (function ($, parent) {
                         data: JSON.stringify(payload),
                         success: function(resp) {
                             console.log('Corpus sync succeeded:', resp);
-                            alert('✅ Synced ' + payload.gridData.length + ' files to corpus.');
+                            alert('✅ Synced ' + payload.gridData.length + ' files to corpus.' + resp.results);
                             resolve(resp);
                         },
                         error: function(xhr, status, err) {
