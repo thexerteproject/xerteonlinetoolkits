@@ -113,10 +113,11 @@ abstract class BaseRAG
             }
 
             try {
-                $res = $this->processFileChunks($path, $meta);
+                $res = $this->processFileChunks($path, $meta, $source);
                 $results[] = [
                     'file'   => $path,
-                    'result' => $res,
+                    'source' => $source,
+                    'status' => $res,
                 ];
 
                 // Compute its hash and then update the stored metadata in corpus.json
@@ -135,7 +136,8 @@ abstract class BaseRAG
             } catch (Exception $e) {
                 $results[] = [
                     'file'  => $path,
-                    'error' => $e->getMessage(),
+                    'source' => $source,
+                    'status' => $e->getMessage(),
                 ];
             }
         }
@@ -269,9 +271,9 @@ abstract class BaseRAG
      *
      * @param string $filePath The path to the file.
      */
-    public function processFileChunks($filePath, $meta)
+    public function processFileChunks($filePath, $meta, $fileSource)
     {
-        $fileName = basename($filePath);
+        $fileName = basename($fileSource);
         $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
 
         // Define supported file types.
@@ -364,7 +366,7 @@ abstract class BaseRAG
         // 4) Finally, record this hash as processed
         $this->isHashProcessed($fileHash, $fileName, true, $meta);
         echo "Processed chunks for {$fileName}.\n";
-        return "Processed chunks for {$fileName}.\n";
+        return "Processed content for {$fileName} successfully.\n";
     }
 
     /**
