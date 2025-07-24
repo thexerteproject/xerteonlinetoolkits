@@ -4511,7 +4511,7 @@ var EDITOR = (function ($, parent) {
     }
 
 
-    lightboxSetUp = function(group, attributes, node_options, key, formState="", mode, originalGroup) {
+    lightboxSetUp = function(group, attributes, node_options, key, formState="", mode, alternative_button = "") {
 
         let groupChildren = group.value.children;
         var lightboxHtml = $("<form id='lightbox_" + group.name + "' style='width: 50vw' ></form>");
@@ -4560,7 +4560,9 @@ var EDITOR = (function ($, parent) {
             }
         }
 
-        $('#lightboxbutton_' + group.name).on("click", function() {
+				let groupname = alternative_button != "" ? alternative_button : group.name;
+
+        $('#lightboxbutton_' + groupname).on("click", function() {
 
             // Clean up old ck editors before initializing any new ones
             destroyAllLightboxCKEditors();
@@ -4578,12 +4580,12 @@ var EDITOR = (function ($, parent) {
 
 
         if (mode === "redraw") {
-            $('#lightboxbutton_' + group.name).trigger('click');
+            $('#lightboxbutton_' + groupname).trigger('click');
         }
 
     }
 
-    triggerRedrawForm = function (group, key, groupChildren="", mode) {
+    triggerRedrawForm = function (group, key, groupChildren="", mode, alternative_button = "") {
         //store current form state for rebuild
         let formState = {};
         let formInputValues = $('#lightbox_' + group + ' :input').add($('#lightbox_' + group + ' .inlinewysiwyg'));
@@ -4630,7 +4632,7 @@ var EDITOR = (function ($, parent) {
         let currentNodeType = lo_data[key]['attributes'].nodeName;
         let groupId = wizard_data[currentNodeType].node_options.all.find((option) => option.name == group);
         $.featherlight.close();
-        lightboxSetUp(groupId, "", "", key, formState, mode, group);
+        lightboxSetUp(groupId, "", "", key, formState, mode, alternative_button);
     };
 
     validateFormInput = function (regexCondition, inputValue, name) {
@@ -5663,16 +5665,17 @@ var EDITOR = (function ($, parent) {
 					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon')));
 
 				btnHolder.append($('<button>')
-					.attr('id', 'ai_' + id)
+					.attr('id', 'lightboxbutton_' + options.group)
 					.attr('title', language.compai.$tooltip)
                     .attr('type', 'button')
 					.addClass("xerte_button")
-					.click({id:id, key:key, name:name}, function(event)
+					.click({id:id, key:key, name:name, group: options.group}, function(event)
 					{
 						let input = $(this).closest('tr').find('input')[0];
 						console.log(event, options);
 						window.imageSearchSingle = true;
-						$("#lightboxbutton_imgSearchAndHelpGroup").click();
+						triggerRedrawForm("imgSearchAndHelpGroup", key, "", "redraw", options.group);
+						//$("#lightboxbutton_imgSearchAndHelpGroup").click();
 						let callback = () => {
 								if($("html").data("image")){
 										let src = $("html").data("image");
