@@ -186,7 +186,11 @@ abstract class BaseRAG
         // Recompute any new embeddings, clean up artifacts, refresh TF-IDF
         $this->processNewEmbeddings();
         if ($corpusGrid === true){
+            //first clean up anything not in list, then recompute idf + tf_idf on what's left
             $this->cleanupStaleArtifacts();
+        } else {
+            // Re‑build IDF + TF‑IDF
+            $this->generateTfidfPersistent();
         }
         return $results;
     }
@@ -731,7 +735,10 @@ abstract class BaseRAG
             if ($allowedFileHashes !== null && !in_array($data['fileHash'], $allowedFileHashes)) {
                 continue;
             }
-            $chunksMap[$data['id']] = $data['chunk'];
+            $chunksMap[$data['id']] = [
+                'file'  => $data['fileHash'],
+                'chunk' => $data['chunk'],
+            ];
         }
         fclose($handle);
 
@@ -759,7 +766,8 @@ abstract class BaseRAG
         foreach ($topIds as $id) {
             $results[] = [
                 'id' => $id,
-                'chunk' => $chunksMap[$id] ?? "",
+                'chunk' => $chunksMap[$id]['chunk'] ?? "",
+                'file' => $chunksMap[$id]['file'] ?? "",
                 'score' => $similarities[$id]
             ];
         }
@@ -817,7 +825,10 @@ abstract class BaseRAG
         while (($line = fgets($handle)) !== false) {
             $data = json_decode($line, true);
             if (!$data) continue;
-            $chunksMap[$data['id']] = $data['chunk'];
+            $chunksMap[$data['id']] = [
+                'file'  => $data['fileHash'],
+                'chunk' => $data['chunk'],
+            ];
         }
         fclose($handle);
 
@@ -842,7 +853,8 @@ abstract class BaseRAG
         foreach ($topIds as $id) {
             $results[] = [
                 'id' => $id,
-                'chunk' => $chunksMap[$id] ?? "",
+                'chunk' => $chunksMap[$id]['chunk'] ?? "",
+                'file' => $chunksMap[$id]['file'] ?? "",
                 'score' => $similarities[$id]
             ];
         }
@@ -987,7 +999,11 @@ abstract class BaseRAG
             if ($allowedFileHashes !== null && !in_array($data['fileHash'], $allowedFileHashes)) {
                 continue;
             }
-            $chunksMap[$data['id']] = $data['chunk'];
+
+            $chunksMap[$data['id']] = [
+                'file'  => $data['fileHash'],
+                'chunk' => $data['chunk'],
+            ];
         }
         fclose($handle);
 
@@ -1015,7 +1031,8 @@ abstract class BaseRAG
         foreach ($topIds as $id) {
             $results[] = [
                 'id' => $id,
-                'chunk' => $chunksMap[$id] ?? "",
+                'chunk' => $chunksMap[$id]['chunk'] ?? "",
+                'file' => $chunksMap[$id]['file'] ?? "",
                 'score' => $similarities[$id]
             ];
         }
@@ -1041,7 +1058,7 @@ abstract class BaseRAG
         $tfidfFileToUse = $allowedFileHashes === null ? $this->tfidfFile : ($this->tempTfidfFile);
 
         // Load the precomputed global IDF dictionary.
-        $idfHandle = fopen($this->idfFile, 'r');
+        $idfHandle = fopen($idfFileToUse, 'r');
         if (!$idfHandle) {
             echo("Error opening IDF file: {$idfFileToUse}");
             return [];
@@ -1072,7 +1089,10 @@ abstract class BaseRAG
         while (($line = fgets($handle)) !== false) {
             $data = json_decode($line, true);
             if (!$data) continue;
-            $chunksMap[$data['id']] = $data['chunk'];
+            $chunksMap[$data['id']] = [
+                'file'  => $data['fileHash'],
+                'chunk' => $data['chunk'],
+            ];
         }
         fclose($handle);
 
@@ -1098,7 +1118,8 @@ abstract class BaseRAG
         foreach ($topIds as $id) {
             $results[] = [
                 'id' => $id,
-                'chunk' => $chunksMap[$id] ?? "",
+                'chunk' => $chunksMap[$id]['chunk'] ?? "",
+                'file' => $chunksMap[$id]['file'] ?? "",
                 'score' => $similarities[$id]
             ];
         }
@@ -1269,7 +1290,7 @@ abstract class BaseRAG
             while (($line = fgets($handle)) !== false) {
                 $data = json_decode($line, true);
                 if (!$data) continue;
-                $file = $data['file'];
+                $file = $data['fileHash'];
                 if (!isset($chunksGrouped[$file])) {
                     $chunksGrouped[$file] = [];
                 }
