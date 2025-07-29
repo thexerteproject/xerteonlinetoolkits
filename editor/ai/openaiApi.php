@@ -150,7 +150,7 @@ class openaiApi extends BaseAiApi
         $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openai_key;
 
         //add user supplied prompt to payload
-        $payload["messages"][max(sizeof($payload["thread"]["messages"])-1, 0)]["content"] = $prompt;
+        $payload['thread']["messages"][max(sizeof($payload["thread"]["messages"])-1, 0)]["content"] = $prompt;
         $new_payload = json_encode($payload);
 		
 		$payload_str = print_r($payload, true);
