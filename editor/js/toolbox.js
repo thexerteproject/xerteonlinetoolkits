@@ -4579,7 +4579,6 @@ var EDITOR = (function ($, parent) {
         if (mode === "redraw") {
             $('#lightboxbutton_' + group.name).trigger('click');
         }
-
     }
 
     triggerRedrawForm = function (group, key, groupChildren="", mode) {
@@ -6559,9 +6558,9 @@ var EDITOR = (function ($, parent) {
 
                         async function doCorpusCheck(fileUrl, loSettings) {
                             if (loSettings['useLoInCorpus'] === true){
-                                alert('Updating to latest learning object preview.');
+                                alert('Updating to latest learning object preview. Depending on learning object size, this may take a few minutes.');
                                 await updateCorpus(fileUrl, false, true);
-                                return true; //updated lo
+                                return false; //updated lo
                             } else if (!loSettings['restrictCorpusToLo']){
                                 try {
                                     const corpusResp = await fetchCorpus(); // returns { hashes: [...] }
@@ -6610,6 +6609,8 @@ var EDITOR = (function ($, parent) {
                         }
 
                         const requiredLoTypes = ['summary', 'orient'];
+                        //useLoInCorpus->add the current learning object preview to corpus
+                        //restrictCorpusToLo->make sure the only thing being used for knowledge retreival is the LO
                         if (requiredLoTypes.includes(aiSettings['type'])){
                             loSettings['useLoInCorpus'] = true;
                             loSettings['restrictCorpusToLo'] = true;
@@ -6627,7 +6628,7 @@ var EDITOR = (function ($, parent) {
                         if (hasApiKeyInstalled('ai', aiSettings['modelSelection']) && confirm(language.vendorApi.overideContentMsg)) {
                             try {
                                 let fullUrl = null;
-                                if (uploadPrompt === 'true') {
+                                if ((uploadPrompt === 'true')&&(!(loSettings['useLoInCorpus'] && loSettings['restrictCorpusToLo']))) {
                                     if (aiSettings['fileUrl'] === null) {
                                         alert("You've selected the 'file upload' option but haven't selected a file or provided a valid link. Please select an uploaded file, upload a new file, or use a youtube, vimeo or video.dlearning link.");
                                         return;

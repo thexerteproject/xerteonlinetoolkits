@@ -1481,7 +1481,7 @@ var EDITOR = (function ($, parent) {
             if (wizard_data[nodeName] && wizard_data[nodeName]['menu_options']) {
                 // add nodes, skip validation for CDATA nodes
                 if (validateInsert(key, nodeName, tree)) {
-                    var newkey = tree.create_node(key, this_json, pos, function () {
+                    tree.create_node(key, this_json, pos, function () {
                         if (select) {
                             tree.deselect_all();
                             tree.select_node(lkey);

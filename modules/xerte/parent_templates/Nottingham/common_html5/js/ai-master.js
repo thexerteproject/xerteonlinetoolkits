@@ -136,6 +136,7 @@ function xml_to_xerte_content(data, key, pos, tree, realParent) {
                 // Refresh the node to reflect the updated attributes
                 //tree.refresh_node(node);
                 realParent.tree.showNodeData(node.id, true);
+                tree.refresh();
             }
 
             // Resolve targets for decision_tree children
