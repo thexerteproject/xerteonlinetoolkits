@@ -2,14 +2,14 @@
 class openai_ai {
 	private $model = "gpt-4o";
 	private $assistantId = "asst_IyiBKzr8nvwddAzVKuh6OnlC";
-	private $chat_url = "https://api.openai.com/v1/chat/completions";
-	private $temperature = 0.2;
-	private $max_tokens = 3096;
-	private $learning_prompt;
-	private $object;
-	private $defaultPrompt;
-	private $assistantOn = false;
-	private $instructions = "Follow the instructions in the last message from the user. Use the appropriate uploaded transcript as your source. If no source has been uploaded or the source does not contain information relevant to the subject, and you have been given explicit permission to use knowledge outside of the uploaded file, try to fulfil the request using general knowledge about the specified subject. Regardless of what you end up doing, never return anything except the XML in plaintext. Do not use markdown to denote the xml. Do not add any explanations before or after the xml.";
+	protected $chat_url = "https://api.openai.com/v1/chat/completions";
+	protected $temperature = 0.2;
+	protected $max_tokens = 3096;
+	protected $learning_prompt;
+	protected $object;
+	protected $defaultPrompt;
+	protected $assistantOn = false;
+	private $instructions = "Follow the instructions in the last message from the user. Use the appropriate transcript, which has been mentioned in the message history, as your source. If no source has been provided or the source does not contain information relevant to the subject, try to fulfil the request using general knowledge about the specified subject. Regardless of what you end up doing, never return anything except the XML in plaintext. Do not use markdown to denote the xml. Do not add any explanations before or after the xml.";
 	private $additionalInstructions = "When following XML examples, make sure you follow it exactly. This includes formatting, special characters, node structure and everything else. Do not deviate from the example AND how it is presented other than the content and the amount of each type of node and the contents therein. Notably, do NOT use markdown syntax when formatting your answer! Only return plain text.";
 
 	public function __construct($type, $model = null, $context = "standard", $sub_type = null, $model_template = null, $assistantOn = false, $assistantId = null){
@@ -97,10 +97,10 @@ class openai_ai {
 					// ],
 
 					// Optional: Uncomment and override the tools available for this run
-					"tools" => [
+					//"tools" => [
 						//     ["type" => "code_interpreter"],
-						["type" => "file_search"]
-					],
+						//["type" => "file_search"]
+					//],
 
 					// Optional: Uncomment and set temperature to control the randomness of the output (between 0 and 2)
 					// "temperature" => 0.7,
@@ -124,7 +124,7 @@ class openai_ai {
 					// ],
 
 					// Optional: Uncomment and set tool_choice to control which tool (if any) is called by the model
-					"tool_choice" => "required",
+					//"tool_choice" => "required",
 
 					// Optional: Uncomment and set response_format to specify the format that the model must output
 					// "response_format" => ["type" => "json_object"],

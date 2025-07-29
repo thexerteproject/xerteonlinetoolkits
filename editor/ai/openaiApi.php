@@ -6,13 +6,14 @@
 class openaiApi extends BaseAiApi
 {
     protected function POST_request($prompt, $payload, $url, $type){
-        if (isset($this->preset_models->type_list[$type]['payload']['assistant_id'])) {
+        $results = $this->POST_OpenAi_Assistant($prompt, $payload, $url);
+        /*if (isset($payload['assistant_id'])) {
             $results = $this->POST_OpenAi_Assistant($prompt, $payload, $url);
-        }
-        else {
+        }*/
+        /*else {
             //Post using non-assistant chat completion endpoint
             $results = $this->POST_OpenAi($prompt, $payload, $url);
-        }
+        }*/
         return $results;
     }
 
@@ -91,7 +92,7 @@ class openaiApi extends BaseAiApi
         return $queries;
     }
 
-    protected function parseResponse($results)
+    protected function parseResponse($results): string
     {
         $answer = "";
         foreach ($results as $result) {
