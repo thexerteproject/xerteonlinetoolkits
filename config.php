@@ -212,6 +212,10 @@ if (file_exists(__DIR__ . "/reverse_proxy_conf.php"))
     require_once(__DIR__ . "/reverse_proxy_conf.php");
 }
 $host = (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '');
+if (isset($_SERVER['HTTP_X_FORWARDED_HOST']))
+{
+    $host = $_SERVER['HTTP_X_FORWARDED_HOST'];
+}
 $port = (isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : 80);
 $scheme = (isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : false) || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https://' : 'http://';
 
