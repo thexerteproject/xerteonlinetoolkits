@@ -27,13 +27,10 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			// panel will be fixed height (100% of available height) unless there is text above &/or below the panel
-			const $panel = $("#panel");
-			if ($("#textTopHolder, #textBottomHolder").length === 0 && (x_currentPageXML.getAttribute("panelWidth") !== "Full" || ($("#textHolder").length === 0 && x_currentPageXML.getAttribute("panelStyle") !== "true"))) {
-				$panel.height(x_getAvailableHeight([$panel]));
-			}
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
 
-			// ** this probably isn't right now panel layout has changed
+			// ** this probably isn't right now panel layout can be changed
 			if (x_browserInfo.mobile == false && $(".panelImg img").length > 0) {
 				// makes sure image doesn't take up too much vertical space & will try to fit text, image, answer box on screen without scrolling if possible
 				let totalHeight = 0;
@@ -89,93 +86,34 @@
 			langStrings.pageFeedbackTxt = x_currentPageXML.getAttribute("feedbackTxt") != undefined ? x_currentPageXML.getAttribute("feedbackTxt") : "Page feedback";
 
 			$("#pageContents").data("langStrings", langStrings);
-			
-			// set up page layout - panel size & position
-			const panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			const $splitScreen = $("#pageContents .splitScreen");
-			const $textHolder = $("#textHolder");
-			const $prompt = $("#prompt");
 
-			if (panelWidth == "Full") {
-				// move textHolder & panel to be children of pageContents & not in splitScreen or infoHolder divs
-				//$("#panel").unwrap();
-				$splitScreen.children().unwrap();
-				$("#infoHolder").addClass("full");
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
-				// pre 3.15, page text was never shown with full panel
-				// there's now a checkbox to determine whether hidden or not
-				// needs to be hidden if checkbox checked but also if undefined for backwards compatibility
-				if (x_currentPageXML.getAttribute("removeTxt") === "false" && x_addLineBreaks(x_currentPageXML.getAttribute("text")).trim() !== "") {
-					$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				} else {
-					$textHolder.remove();
-				}
-
-			} else {
-				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-
-				if (x_currentPageXML.getAttribute("align") != "Right") {
-					if (panelWidth == "Small") {
-						$splitScreen.addClass("large");
-					} else if (panelWidth == "Large") {
-						$splitScreen.addClass("small");
-					} else if (panelWidth == "Custom" && x_currentPageXML.getAttribute("panelWidthCustom") != undefined) {
-						$splitScreen.addClass("custom");
-						$splitScreen.find(".left").css("flex", "0 0 calc(" + (100 - Number(x_currentPageXML.getAttribute("panelWidthCustom"))) + "% - " + (parseInt($(".splitScreen").css("column-gap")) / 2) + "px)");
-						$splitScreen.find(".right").css("flex", "0 0 calc(" + Number(x_currentPageXML.getAttribute("panelWidthCustom")) + "% - " + (parseInt($(".splitScreen").css("column-gap")) / 2) + "px)");
-					} else {
-						$splitScreen.addClass("medium");
-					}
-				} else {
-					$textHolder
-						.removeClass("left")
-						.addClass("right")
-						.appendTo($splitScreen);
-					$("#infoHolder")
-						.removeClass("right")
-						.addClass("left");
-					if (panelWidth == "Small") {
-						$splitScreen.addClass("medium");
-					} else if (panelWidth == "Large") {
-						$splitScreen.addClass("xlarge");
-					} else if (panelWidth == "Custom" && x_currentPageXML.getAttribute("panelWidthCustom") != undefined) {
-						$splitScreen.addClass("custom");
-						$splitScreen.find(".left").css("flex", "0 0 calc(" + Number(x_currentPageXML.getAttribute("panelWidthCustom")) + "% - " + (parseInt($(".splitScreen").css("column-gap")) / 2) + "px)");
-						$splitScreen.find(".right").css("flex", "0 0 calc(" + (100 - Number(x_currentPageXML.getAttribute("panelWidthCustom"))) + "% - " + (parseInt($(".splitScreen").css("column-gap")) / 2) + "px)");
-					} else {
-						$splitScreen.addClass("large");
-					}
-				}
+			// get the info needed to set up the split screen layout & call function in xenith that deals with this
+			const options = {
+				panelWidth: x_currentPageXML.getAttribute("panelWidth"),
+				panelWidthCustom: x_currentPageXML.getAttribute("panelWidthCustom"),
+				panelPosition: x_currentPageXML.getAttribute("align") !== "Right" ? "Right" : "Left", // these are reverses as property used to be called 'Align text'
+				panelStyle: x_currentPageXML.getAttribute("panelStyle"),
+				removeTxt: x_currentPageXML.getAttribute("removeTxt"),
+				topTxtWidth: x_currentPageXML.getAttribute("textTopWidth"),
+				bottomTxtWidth: x_currentPageXML.getAttribute("textBottomWidth")
 			}
 
-			// remove panel styling
-			if (x_currentPageXML.getAttribute("panelStyle") === "true") {
-				// move panel to be child of splitScreen & not in infoHolder div as some themes use infoHolder for panel styling
-				/*if ($("#infoHolder").hasClass("right")) {
-					$("#panel").addClass("right").unwrap();
-				} else if ($("#infoHolder").hasClass("left")) {
-					$("#panel").addClass("left").unwrap();
-				}*/
-
-				$("#panel").removeClass("panel");
+			const content = {
+				pageTxt: x_currentPageXML.getAttribute("text"),
+				topTxt: x_currentPageXML.getAttribute("textTop"),
+				bottomTxt: x_currentPageXML.getAttribute("textBottom")
 			}
 
-			// add optional text above &/or below the panel
-			// these might be full width even when panel is not full width
-			if (x_addLineBreaks(x_currentPageXML.getAttribute("textTop")) != undefined && x_addLineBreaks(x_currentPageXML.getAttribute("textTop")).trim() !== "") {
-				if (x_currentPageXML.getAttribute("textTopWidth") === "true" && panelWidth !== "Full") {
-					$("#pageContents").prepend('<div id="textTopHolder">' + x_addLineBreaks(x_currentPageXML.getAttribute("textTop")) + '</div>');
-				} else {
-					$("#panel").before('<div id="textTopHolder">' + x_addLineBreaks(x_currentPageXML.getAttribute("textTop")) + '</div>');
-				}
+			const elements = {
+				holder: $("#pageContents"),
+				splitScreen: $("#pageContents .splitScreen"),
+				textColumn: $("#textHolder"),
+				panelColumn: $("#infoHolder"),
+				panel: $("#panel")
 			}
-			if (x_addLineBreaks(x_currentPageXML.getAttribute("textBottom")) != undefined && x_addLineBreaks(x_currentPageXML.getAttribute("textBottom")).trim() !== "") {
-				if (x_currentPageXML.getAttribute("textBottomWidth") === "true" && panelWidth !== "Full") {
-					$("#pageContents").append('<div id="textBottomHolder">' + x_addLineBreaks(x_currentPageXML.getAttribute("textBottom")) + '</div>');
-				} else {
-					$("#panel").after('<div id="textBottomHolder">' + x_addLineBreaks(x_currentPageXML.getAttribute("textBottom")) + '</div>');
-				}
-			}
+			XENITH.SPLITSCREEN.init(options, content, elements);
 
 			// original version had a single prompt & feedback at page level
 			// newer version allows you to add multiple text areas
@@ -226,6 +164,7 @@
 				}
 			});
 
+			const $prompt = $("#prompt");
 			if (names.length > 0) {
 				let label = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
 				if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "") {
@@ -424,7 +363,7 @@
 
 			} else {
 				// there are no answer prompts - remove panel
-				$splitScreen.children().unwrap();
+				$(".splitScreen").children().unwrap();
 				$("#infoHolder").addClass("full").removeClass("left right");
 				$("#panel").remove();
 				$("#textHolder").removeClass("left right");
@@ -542,25 +481,21 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
 		
-		<div id="textHolder" class="left"></div>
-		
-		<div id="infoHolder" class="right">
-			<div id="panel" class="panel">
-				<div id="prompt"></div>
-				<div id="answer">
-					<div id="fbTxt" aria-live="polite"/>
-					<div id="btnHolder">
-						<button id="button"></button>
-						<button id="copyBtn"/>
-						<button id="downloadBtn"/>
-					</div>
+	<div id="textHolder"></div>
+
+	<div id="infoHolder">
+		<div id="panel" class="panel">
+			<div id="prompt"></div>
+			<div id="answer">
+				<div id="fbTxt" aria-live="polite"/>
+				<div id="btnHolder">
+					<button id="button"></button>
+					<button id="copyBtn"/>
+					<button id="downloadBtn"/>
 				</div>
 			</div>
 		</div>
-		
 	</div>
 	
 </div>

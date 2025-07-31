@@ -7608,3 +7608,135 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 	return parent;
 
 })(jQuery, XENITH || {});
+
+
+// ***** SPLIT SCREEN LAYOUT *****
+// Sets up the split screen layout that used in many page models
+var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
+	// declare local variables
+	let pageData = [];
+
+	// function adds resources button to header / side bar if any pages in the project have some associated resources
+	function init(options, content, elements) {
+		// TODO ** look at whether xwd properties &/or html elements are always names consistently on pages that use splitScreen - might be able to just reference them here rather than passing into function
+		const panelWidth = options.panelWidth;
+		const panelWidthCustom = options.panelWidthCustom;
+		const panelPosition = options.panelPosition;
+		const panelStyle = options.panelStyle;
+		const removeTxt = options.removeTxt;
+		const topTxtWidth = options.topTxtWidth;
+		const bottomTxtWidth = options.bottomTxtWidth;
+
+		const pageTxt = content.pageTxt;
+		const topTxt = content.topTxt;
+		const bottomTxt = content.bottomTxt;
+
+		const $holder = elements.holder;
+		const $textColumn = elements.textColumn; // column containing text only
+		const $panelColumn = elements.panelColumn; // column containing panel
+		const $panel = elements.panel;
+
+		// set up layout with panel at correct size & on left or right of screen (unless full width)
+		if (panelWidth === "Full") {
+			$panelColumn.addClass("full");
+
+			// pre 3.15, page text was never shown with full panel
+			// there's now a checkbox to determine whether hidden or not
+			// needs to be hidden if checkbox checked but also if undefined for backwards compatibility
+			if (removeTxt !== "false" || x_addLineBreaks(pageTxt).trim() === "") {
+				$textColumn.remove();
+				delete elements.textColumn;
+			}
+
+		} else {
+			// two columns
+			$textColumn.add($panelColumn).wrapAll('<div class="splitScreen"></div>');
+			const $splitScreen = $(".splitScreen");
+
+			if (panelPosition === "Right") {
+				$textColumn.addClass("left");
+				$panelColumn.addClass("right").appendTo($splitScreen);
+
+				if (panelWidth === "Small") {
+					$splitScreen.addClass("large"); // 60 | 40
+				} else if (panelWidth === "Large") {
+					$splitScreen.addClass("small"); // 20 | 80
+				} else if (panelWidth === "Custom" && panelWidthCustom != undefined) {
+					$splitScreen.addClass("custom");
+					const shrink = Number(panelWidthCustom) > 50 ? [1,0] : [0,1]; // allow larger column to shrink if needed
+					$splitScreen.find(".left").css("flex", "0 " + shrink[1] + " calc(" + (100 - Number(panelWidthCustom)) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+					$splitScreen.find(".right").css("flex", "0 " + shrink[0] + " calc(" + Number(panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+				} else {
+					$splitScreen.addClass("medium"); // 40 | 60
+				}
+			} else {
+				$panelColumn.addClass("left");
+				$textColumn.addClass("right").appendTo($splitScreen);
+
+				if (panelWidth === "Small") {
+					$splitScreen.addClass("medium"); // 40 | 60
+				} else if (panelWidth === "Large") {
+					$splitScreen.addClass("xlarge"); // 80 | 20
+				} else if (panelWidth === "Custom" && panelWidthCustom != undefined) {
+					$splitScreen.addClass("custom");
+					const shrink = Number(panelWidthCustom) > 50 ? [1,0] : [0,1]; // allow larger column to shrink if needed
+					$splitScreen.find(".left").css("flex", "0 " + shrink[0] + " calc(" + Number(panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+					$splitScreen.find(".right").css("flex", "0 " + shrink[1] + " calc(" + (100 - Number(panelWidthCustom)) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+				} else {
+					$splitScreen.addClass("large"); // 60 | 40
+				}
+			}
+		}
+		//debugger;
+		// remove panel styling
+		if (panelStyle === "true") {
+			$panel.removeClass("panel");
+		}
+
+		// add optional text above &/or below the panel
+		// these might be full width even when panel is not full width
+		if (x_addLineBreaks(topTxt) != undefined && x_addLineBreaks(topTxt).trim() !== "") {
+			if (topTxtWidth === "true" && panelWidth !== "Full") {
+				$holder.prepend('<div id="textTopHolder">' + x_addLineBreaks(topTxt) + '</div>');
+			} else {
+				$panel.before('<div id="textTopHolder">' + x_addLineBreaks(topTxt) + '</div>');
+			}
+
+			elements.topTxt = $("#textTopHolder");
+		}
+		if (x_addLineBreaks(bottomTxt) != undefined && x_addLineBreaks(bottomTxt).trim() !== "") {
+			if (bottomTxtWidth === "true" && panelWidth !== "Full") {
+				$holder.append('<div id="textBottomHolder">' + x_addLineBreaks(bottomTxt) + '</div>');
+			} else {
+				$panel.after('<div id="textBottomHolder">' + x_addLineBreaks(bottomTxt) + '</div>');
+			}
+
+			elements.bottomTxt = $("#textBottomHolder");
+		}
+
+		// store data for later use in resize function
+		pageData.push({
+			page: x_currentPage,
+			options: options,
+			content: content,
+			elements: elements
+		});
+	}
+
+	// function sets panel in split screen layout to be full height, if required
+	function resizePanel() {
+		// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+		// this will be overridden on smaller screens (where columns are rearranged into rows) and panel height be 'auto'
+		const data = pageData.find(obj => obj.page === x_currentPage);
+		if (data.options.panelStyle !== "true" && (data.elements.topTxt == undefined || data.elements.topTxt === 0) && (data.elements.bottomTxt == undefined || data.elements.bottomTxt.length === 0) && (data.options.panelWidth !== "Full" || data.elements.textColumn == undefined || data.elements.textColumn.length === 0)) {
+			data.elements.panel.height(x_getAvailableHeight([data.elements.panel]));
+		}
+	}
+
+	// make some public methods
+	self.init = init;
+	self.resizePanel = resizePanel;
+
+	return parent;
+
+})(jQuery, XENITH || {});

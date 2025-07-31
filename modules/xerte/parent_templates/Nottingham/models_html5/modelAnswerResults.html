@@ -35,23 +35,41 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $("#pageContents .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
 		}
 		
 		this.init = function() {
-			const panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			if (panelWidth == "Small") {
-				$("#pageContents .splitScreen").addClass("large");
-			} else if (panelWidth == "Large") {
-				$("#pageContents .splitScreen").addClass("small");
-			} else {
-				$("#pageContents .splitScreen").addClass("medium");
-			}
-
 			// page text might be in cdata (3.14 & earlier) or in text attribute
 			const pageText = x_currentPageXML.childNodes[0] == undefined || x_currentPageXML.childNodes[0] == "" || x_currentPageXML.childNodes[0].nodeValue == undefined ? (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") !== "" ? x_currentPageXML.getAttribute("text") : "") : x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue);
 			$("#textHolder").html(pageText);
+
+			// get the info needed to set up the split screen layout & call function in xenith that deals with this
+			const options = {
+				panelWidth: x_currentPageXML.getAttribute("panelWidth"),
+				panelWidthCustom: x_currentPageXML.getAttribute("panelWidthCustom"),
+				panelPosition: x_currentPageXML.getAttribute("align") !== "Left" ? "Right" : "Left", // ** this is the opposite of property in modelAnswer
+				panelStyle: x_currentPageXML.getAttribute("panelStyle"),
+				removeTxt: x_currentPageXML.getAttribute("removeTxt"),
+				topTxtWidth: x_currentPageXML.getAttribute("textTopWidth"),
+				bottomTxtWidth: x_currentPageXML.getAttribute("textBottomWidth")
+			}
+
+			const content = {
+				pageTxt: pageText,
+				topTxt: x_currentPageXML.getAttribute("textTop"),
+				bottomTxt: x_currentPageXML.getAttribute("textBottom")
+			}
+
+			const elements = {
+				holder: $("#pageContents"),
+				splitScreen: $("#pageContents .splitScreen"),
+				textColumn: $("#textHolder"),
+				panelColumn: $("#infoHolder"),
+				panel: $("#panel")
+			}
+
+			XENITH.SPLITSCREEN.init(options, content, elements);
 
 			// set up copy to clipboard button
 			// this is either turned on with an optional property (>v3.15) or will be on if copypasteinfo exists
@@ -230,23 +248,19 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
 		
-		<div id="textHolder" class="left"></div>
-		
-		<div id="infoHolder" class="right">
-			<div class="panel" tabindex="0">
-				<div id="panelTxt"></div>
-				<div id="btnHolder">
-					<button id="copyBtn"/>
-					<button id="downloadBtn"/>
-				</div>
+	<div id="textHolder"></div>
+
+	<div id="infoHolder">
+		<div id="panel" class="panel" tabindex="0"> <!-- ** is tabindex needed here? if so, is it needed in model answer too? -->
+			<div id="panelTxt"></div>
+			<div id="btnHolder">
+				<button id="copyBtn"/>
+				<button id="downloadBtn"/>
 			</div>
 		</div>
-		
-		<div id="screenReaderInfo" class="ui-helper-hidden-accessible" aria-live="polite"/>
-		
 	</div>
 	
 </div>
+
+<div id="screenReaderInfo" class="ui-helper-hidden-accessible" aria-live="polite"></div>

@@ -19,10 +19,10 @@
 
     <layoutGroup label="Page Layout" type="group">
       <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
-      <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" mandatory="true" condition="panelWidth=='Custom'"/>
+      <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
       <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
-      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" mandatory="true"/>
-      <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" mandatory="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">

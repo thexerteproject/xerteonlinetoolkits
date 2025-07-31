@@ -1863,14 +1863,14 @@ button.resourceLink {
 }
 
 .splitScreen.small .left { flex: 0 0 calc(20% - .5em); } /* using calc to exclude 1/2 of column-gap */
-.splitScreen.small .right {	flex: 0 0 calc(80% - .5em); }
+.splitScreen.small .right {	flex: 0 1 calc(80% - .5em); }
 .splitScreen.medium2 .left { flex: 0 0 calc(30% - .5em); }
-.splitScreen.medium2 .right { flex: 0 0 calc(70% - .5em); }
+.splitScreen.medium2 .right { flex: 0 1 calc(70% - .5em); }
 .splitScreen.medium .left {	flex: 0 0 calc(40% - .5em); }
-.splitScreen.medium .right { flex: 0 0 calc(60% - .5em); }
-.splitScreen.large .left { flex: 0 0 calc(60% - .5em); }
+.splitScreen.medium .right { flex: 0 1 calc(60% - .5em); }
+.splitScreen.large .left { flex: 0 1 calc(60% - .5em); }
 .splitScreen.large .right { flex: 0 0 calc(40% - .5em); }
-.splitScreen.xlarge .left { flex: 0 0 calc(80% - .5em); }
+.splitScreen.xlarge .left { flex: 0 1 calc(80% - .5em); }
 .splitScreen.xlarge .right { flex: 0 0 calc(20% - .5em); }
 
 /* add padding between text & panels when stacked vertically */
