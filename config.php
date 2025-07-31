@@ -319,6 +319,9 @@ if(!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true
     else {
 
         ini_set('session.cookie_httponly', '1');
+        if (isset($scheme) && $scheme == 'https://') {
+            ini_set('session.cookie_secure', '1');
+        }
         session_start();
     }
 }
