@@ -6,7 +6,7 @@ class anthropic_ai_ivoverlaypanel extends anthropic_ai {
 			$this->model = $model;
 		}
 		$this->context = $context;
-		_load_language_file("/editor/ai_models/anthropic_model_" . $type . "_ai.inc");
+		_load_language_file("/editor/ai_models/anthropic_model_" . strtolower($type) . "_ai.inc");
 		if ($context === 'standard') {
 			$subtype = "text_object";
 			if($sub_type != null) {

@@ -15,7 +15,7 @@ class openai_ai_modelanswer extends openai_ai {
 			$this->model = $model;
 		}
 
-		_load_language_file("/editor/ai_models/anthropic_model_" . $type . "_ai.inc");
+		_load_language_file("/editor/ai_models/anthropic_model_" . strtolower($type) . "_ai.inc");
 	}
 
 	public function get_payload() {
