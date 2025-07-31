@@ -60,7 +60,7 @@ body {
 }
 
 /* displays as one column on mobiles */
-.splitScreen .left {
+/*.splitScreen .left {
 	width:		100%;
 	height:		auto;
 }
@@ -80,7 +80,7 @@ body {
 .splitScreen .right .panel {
 	margin-right:	0px;
 	height:			auto;
-}
+}*/
 
 .panel {
 	margin-bottom:	10px;

@@ -1800,8 +1800,8 @@ body:not(.sb_right):not(.sb_left) #x_mainHolder {
 }
 
 #infoHolder {
-  border-radius: 0;
-  background: #ebebeb;
+  /*border-radius:$mediumroundedcorners;
+  background: $lightgrey;*/
 }
 
 .panel {

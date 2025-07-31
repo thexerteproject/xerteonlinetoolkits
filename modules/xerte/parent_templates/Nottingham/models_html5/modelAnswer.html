@@ -29,11 +29,11 @@
 		this.sizeChanged = function() {
 			// panel will be fixed height (100% of available height) unless there is text above &/or below the panel
 			const $panel = $("#panel");
-			if ($("#textTopHolder, #textBottomHolder").length === 0 && (x_currentPageXML.getAttribute("panelWidth") !== "Full" || x_currentPageXML.getAttribute("panelStyle") !== "true")) {
+			if ($("#textTopHolder, #textBottomHolder").length === 0 && (x_currentPageXML.getAttribute("panelWidth") !== "Full" || ($("#textHolder").length === 0 && x_currentPageXML.getAttribute("panelStyle") !== "true"))) {
 				$panel.height(x_getAvailableHeight([$panel]));
 			}
 
-			// ** this probably isn't right any more now panel layout has changed
+			// ** this probably isn't right now panel layout has changed
 			if (x_browserInfo.mobile == false && $(".panelImg img").length > 0) {
 				// makes sure image doesn't take up too much vertical space & will try to fit text, image, answer box on screen without scrolling if possible
 				let totalHeight = 0;
@@ -95,12 +95,12 @@
 			const $splitScreen = $("#pageContents .splitScreen");
 			const $textHolder = $("#textHolder");
 			const $prompt = $("#prompt");
-			// ** potential theme issue - .panel class may not always be there - use #panel instead
 
 			if (panelWidth == "Full") {
 				// move textHolder & panel to be children of pageContents & not in splitScreen or infoHolder divs
 				//$("#panel").unwrap();
 				$splitScreen.children().unwrap();
+				$("#infoHolder").addClass("full");
 
 				// pre 3.15, page text was never shown with full panel
 				// there's now a checkbox to determine whether hidden or not
@@ -120,10 +120,9 @@
 					} else if (panelWidth == "Large") {
 						$splitScreen.addClass("small");
 					} else if (panelWidth == "Custom" && x_currentPageXML.getAttribute("panelWidthCustom") != undefined) {
-						$splitScreen
-								.addClass("custom")
-								.css("padding-left", (100 - Number(x_currentPageXML.getAttribute("panelWidthCustom"))) + "%");
-						$splitScreen.find(".left").width((100 - Number(x_currentPageXML.getAttribute("panelWidthCustom"))) + "%");
+						$splitScreen.addClass("custom");
+						$splitScreen.find(".left").css("flex", "0 0 calc(" + (100 - Number(x_currentPageXML.getAttribute("panelWidthCustom"))) + "% - " + (parseInt($(".splitScreen").css("column-gap")) / 2) + "px)");
+						$splitScreen.find(".right").css("flex", "0 0 calc(" + Number(x_currentPageXML.getAttribute("panelWidthCustom")) + "% - " + (parseInt($(".splitScreen").css("column-gap")) / 2) + "px)");
 					} else {
 						$splitScreen.addClass("medium");
 					}
@@ -140,10 +139,9 @@
 					} else if (panelWidth == "Large") {
 						$splitScreen.addClass("xlarge");
 					} else if (panelWidth == "Custom" && x_currentPageXML.getAttribute("panelWidthCustom") != undefined) {
-						$splitScreen
-								.addClass("custom")
-								.css("padding-left", x_currentPageXML.getAttribute("panelWidthCustom") + "%");
-						$splitScreen.find(".left").width(x_currentPageXML.getAttribute("panelWidthCustom") + "%");
+						$splitScreen.addClass("custom");
+						$splitScreen.find(".left").css("flex", "0 0 calc(" + Number(x_currentPageXML.getAttribute("panelWidthCustom")) + "% - " + (parseInt($(".splitScreen").css("column-gap")) / 2) + "px)");
+						$splitScreen.find(".right").css("flex", "0 0 calc(" + (100 - Number(x_currentPageXML.getAttribute("panelWidthCustom"))) + "% - " + (parseInt($(".splitScreen").css("column-gap")) / 2) + "px)");
 					} else {
 						$splitScreen.addClass("large");
 					}
@@ -426,11 +424,10 @@
 
 			} else {
 				// there are no answer prompts - remove panel
-				// ** check if still works ok
-				$("#infoHolder, #panel").remove();
-				$("#textHolder")
-						.removeClass("left right")
-						.parents(".splitScreen").removeClass("splitScreen medium");
+				$splitScreen.children().unwrap();
+				$("#infoHolder").addClass("full").removeClass("left right");
+				$("#panel").remove();
+				$("#textHolder").removeClass("left right");
 			}
 
 			this.sizeChanged();
