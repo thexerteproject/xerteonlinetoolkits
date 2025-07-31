@@ -57,6 +57,10 @@
 	position:	relative;
 }
 
+.splitScreen.custom {
+	padding: 0;
+}
+
 .splitScreen.small {
 	padding:	0 0 0 20%;
 }
