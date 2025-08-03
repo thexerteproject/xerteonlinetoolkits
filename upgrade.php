@@ -1622,3 +1622,40 @@ function upgrade_50()
 
     return $message;
 }
+
+function upgrade_51()
+{
+    // Add disabled flag to logindetails
+    if (! _db_field_exists('logindetails', 'disabled')) {
+        $error1 = _db_add_field('logindetails', 'disabled', 'tinyint(1)', '0', 'surname');
+
+        return "Creating disabled field in logindetails - ok ? " . ($error1 ? 'true' : 'false');
+    }
+    else
+    {
+        return "Disabled field in logindetails already present - ok ? true";
+    }
+}
+
+function upgrade_52()
+{
+    // Add the following extensions to the blacklisted extensions:
+    //php1,php2,php3,php4,php5,php6,php7,php8,phar,phtml,inc,py,bat,cmd,ps,htaccess
+    global $xerte_toolkits_site;
+    $table = table_by_key('sitedetails');
+    $res = db_query_one("SELECT file_extensions FROM $table");
+    if (isset($res['file_extensions']) && strlen($res['file_extensions']) > 0) {
+        $extensions = explode(',', $res['file_extensions']);
+        $extensions = array_map('trim', $extensions);
+        $extensions = array_unique($extensions);
+        $newExtensions = array_merge($extensions, ['php1', 'php2', 'php3', 'php4', 'php5', 'php6', 'php7', 'php8', 'phar', 'phtml', 'inc', 'py', 'bat', 'cmd', 'ps', 'htaccess']);
+        $newExtensions = array_unique($newExtensions);
+        $newExtensions = implode(',', $newExtensions);
+        $ok = db_query("UPDATE $table SET file_extensions = ?", array($newExtensions));
+        if ($ok !== false) {
+            return "Adding new extensions to the blacklisted extensions - ok ? true";
+        } else {
+            return "Adding new extensions to the blacklisted extensions - ok ? false";
+        }
+    }
+}

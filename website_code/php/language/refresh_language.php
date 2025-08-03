@@ -34,6 +34,7 @@ _load_language_file("/website_code/php/language/delete_language.inc");
 
 if(!is_user_permitted("system")){
     management_fail();
+    die("Access deniad!");
 }
 
 echo "****";

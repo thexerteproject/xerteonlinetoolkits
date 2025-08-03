@@ -87,7 +87,7 @@ else {
     echo "<p>Whether the file extension check should be enabled for imported files <textarea name=\"enable_file_ext_check\" disabled=\"true\">False. The file extension check requires the PHP 'pathinfo' function.</textarea></p>";
 }
 
-echo "<p>The blacklisted file extensions for imported files are <textarea name=\"file_extensions\">php,php5,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm</textarea>
+echo "<p>The blacklisted file extensions for imported files are <textarea name=\"file_extensions\">php,php1,php2,php3,php4,php5,php6,php7,php8,phar,phtml,inc,py,bat,cmd,ps,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm</textarea>
     </p>";
 
 echo "<p>Whether the antivirus check should be enabled for imported files<textarea name=\"enable_clamav_check\">false</textarea></p>";
