@@ -108,7 +108,7 @@ if($_FILES["fileToUpload"]["name"])
         $zip = new ZipArchive();
         $x = $zip->open($importfile);
 
-        x_check_zip($zip);
+        x_check_zip($zip, 'template');
 
         $templateFound = false;
         $mediaFound = false;

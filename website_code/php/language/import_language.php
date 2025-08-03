@@ -35,6 +35,7 @@ ini_set('memory_limit','64M');
 
 if(!is_user_permitted("system")){
     management_fail();
+    die("Access denied!");
 }
 
 if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FILES['filenameuploaded']['type']=="application/zip")||($_FILES['filenameuploaded']['type']=="application/octet-stream")){
@@ -86,7 +87,7 @@ if(($_FILES['filenameuploaded']['type']=="application/x-zip-compressed")||($_FIL
         // Quick fix to check zip file is valid
         $zip = new ZipArchive();
         $x = $zip->open($new_file_name);
-        x_check_zip($zip);
+        x_check_zip($zip, 'language_pack');
         $zip->close();
 
         $zip = new dUnzip2($new_file_name);
