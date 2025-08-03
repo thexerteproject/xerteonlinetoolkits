@@ -67,7 +67,7 @@ if($_FILES["fileToUpload"])
     {
         $zip = new ZipArchive();
         $x = $zip->open($importfile);
-        x_check_zip($zip);
+        x_check_zip($zip, 'theme_pack');
         $infoFound = false;
         $folderFound = false;
         $otherFound = false;
