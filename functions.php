@@ -488,11 +488,23 @@ function x_check_path_traversal($path, $expected_path=null, $message=null)
         }
         if ($expected_path == $xerte_toolkits_site->users_file_area_full) {
             // Check whether the path is inside a folder of the users_file_area_full
-            // Remove the users_file_area_full from the path
-            $rpath = substr($rpath, strlen($rexpected_path));
-            if (strpos($rpath, DIRECTORY_SEPARATOR) === false) {
-                _debug($mesg);
-                die($mesg);
+            // First determine whether rpath is a folder
+            if (is_dir($rpath))
+            {
+                // It must be different from the users_file_area_full
+                if ($rpath === $xerte_toolkits_site->users_file_area_full) {
+                    _debug($mesg);
+                    die($mesg);
+                }
+            }
+            else
+            {
+                // Remove the users_file_area_full from the path
+                $rpath = substr($rpath, strlen($rexpected_path));
+                if (strpos($rpath, DIRECTORY_SEPARATOR) === false) {
+                    _debug($mesg);
+                    die($mesg);
+                }
             }
         }
     }
