@@ -80,6 +80,7 @@ while (file_exists($media_path . $final)) {
 }
 $filename = $final;
 
+x_check_blacklisted_extensions($filename);
 
 // pull the raw binary data from the POST array, decode and write to disk
 $data = substr($_POST['recorded_data'], strpos($_POST['recorded_data'], ",") + 1);

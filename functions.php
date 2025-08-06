@@ -367,8 +367,25 @@ function x_clean_input_json($input)
     return $sanitized;
 }
 
+function x_check_blacklisted_extensions($filename)
+{
+    global $xerte_toolkits_site;
+    $ext = pathinfo($filename, PATHINFO_EXTENSION);
+    // Do not allow .php,.php[0-9],.phar,.inc and all other blacklisted extensions
+    if (in_array(strtolower($ext), array('php', 'php1', 'php2', 'php3', 'php4', 'php5', 'php6', 'php7', 'php8', 'phar', 'inc'))) {
+        die("File has invalid file extension: " . x_clean_input($filename));
+    }
+    if (in_array(strtolower($ext), $xerte_toolkits_site->file_extensions))
+    {
+        die("File has invalid file extension specified on management page: " . x_clean_input($filename));
+    }
+    // Take special care with .htaccess
+    if (strtolower($ext) == 'htaccess') {
+        die("File is .htaccess, which is not allowed: " . x_clean_input($filename));
+    }
+}
 
-function x_check_zip($zip)
+function x_check_zip($zip, $type="")
 {
     // Iterate over files in ZipArchive object to check for any files that are not allowed
     for ($i = 0; $i < $zip->numFiles; $i++) {
@@ -379,22 +396,80 @@ function x_check_zip($zip)
         if (strpos($filename, '/') === 0) {
             die("Zip archive contains files with absolute paths: " . x_clean_input($filename));
         }
+        if ($type == "language_pack")
+        {
+            // Check whether the file is a valid language pack file
+            if (strpos($filename, 'languages/') !== 0
+                && strpos($filename, 'Nottingham/') !== 0
+                && strpos($filename, 'site/') !== 0
+                && strpos($filename, 'wizards/') !== 0)
+            {
+                die("Zip archive contains files that are not in one of the expected language pack folders or an invalid folder is encountered: " . x_clean_input($filename));
+            }
+            // If it is one of those folders, continue
+            if ($filename === 'languages/' || $filename === 'Nottingham/' || $filename === 'site/' || $filename === 'wizards/') {
+                continue;
+            }
+            // Only allow .js or .inc files
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+            if ($ext != 'js' && $ext != 'inc' && $ext != 'xwd' && $ext != 'xml') {
+                die("Zip archive contains files with invalid file extension: " . x_clean_input($filename));
+            }
+        }
+        else if ($type == "template" || $type == "theme_package")
+        {
+            global $xerte_toolkits_site;
+            // Check whether the file is a valid template file
+            //Do not allow .php,.php[0-9],.phar,.inc and all other blacklisted extensions
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+            if (in_array(strtolower($ext), array('php', 'php1', 'php2', 'php3', 'php4', 'php5', 'php6', 'php7', 'php8', 'phar', 'inc'))) {
+                die("Zip archive contains files with invalid file extension: " . x_clean_input($filename));
+            }
+            if (in_array(strtolower($ext), $xerte_toolkits_site->file_extensions))
+            {
+                die("Zip archive contains files with invalid file extension specified on management page: " . x_clean_input($filename));
+            }
+            // Take special care with .htaccess
+            if (strtolower($ext) == 'htaccess') {
+                die("Zip archive contains .htaccess file, which is not allowed: " . x_clean_input($filename));
+            }
+        }
+        else
+        {
+            global $xerte_toolkits_site;
+            // Check whether the file is a valid theme file
+            //Do not allow .php,.php[0-9],.phar,.inc and all other blacklisted extensions
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+            if (in_array(strtolower($ext), array('php', 'php1', 'php2', 'php3', 'php4', 'php5', 'php6', 'php7', 'php8', 'phar', 'inc'))) {
+                die("Zip archive contains files with invalid file extension: " . x_clean_input($filename));
+            }
+            if (in_array(strtolower($ext), $xerte_toolkits_site->file_extensions))
+            {
+                die("Zip archive contains files with invalid file extension specified on management page: " . x_clean_input($filename));
+            }
+            // Take special care with .htaccess
+            if (strtolower($ext) == 'htaccess') {
+                die("Zip archive contains .htaccess file, which is not allowed: " . x_clean_input($filename));
+            }
+        }
     }
 }
 
 function x_check_path_traversal($path, $expected_path=null, $message=null)
 {
+    global $xerte_toolkits_site;
     $mesg = ($message != null ? $message : "Path traversal detected!");
     // Account for Windows, because realpath changes / to \
     if(DIRECTORY_SEPARATOR !== '/') {
         $rpath = str_replace('/', DIRECTORY_SEPARATOR, $path);
         if ($expected_path != null) {
-            $expected_path = str_replace('/', DIRECTORY_SEPARATOR, $expected_path);
+            $rexpected_path = str_replace('/', DIRECTORY_SEPARATOR, $expected_path);
         }
     }
     else
     {
         $rpath = $path;
+        $rexpected_path = $expected_path;
     }
     // Trim dangling DIRECTORY_SEPARATOR
     $rpath = rtrim($rpath, '/\\');
@@ -407,9 +482,30 @@ function x_check_path_traversal($path, $expected_path=null, $message=null)
     }
     if ($expected_path != null) {
         // Check whether path is as expected
-        if (strpos($rpath, $expected_path) !== 0) {
+        if (strpos($rpath, $rexpected_path) !== 0) {
             _debug($mesg);
             die($mesg);
+        }
+        if ($expected_path == $xerte_toolkits_site->users_file_area_full) {
+            // Check whether the path is inside a folder of the users_file_area_full
+            // First determine whether rpath is a folder
+            if (is_dir($rpath))
+            {
+                // It must be different from the users_file_area_full
+                if ($rpath === $xerte_toolkits_site->users_file_area_full) {
+                    _debug($mesg);
+                    die($mesg);
+                }
+            }
+            else
+            {
+                // Remove the users_file_area_full from the path
+                $rpath = substr($rpath, strlen($rexpected_path));
+                if (strpos($rpath, DIRECTORY_SEPARATOR) === false) {
+                    _debug($mesg);
+                    die($mesg);
+                }
+            }
         }
     }
 }
