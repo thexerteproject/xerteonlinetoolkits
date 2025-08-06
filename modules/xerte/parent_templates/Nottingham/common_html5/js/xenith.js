@@ -7620,7 +7620,7 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 	function init(options, content, elements) {
 		// TODO ** look at whether xwd properties &/or html elements are always names consistently on pages that use splitScreen - might be able to just reference them here rather than passing into function
 		const panelWidth = options.panelWidth;
-		const panelWidthCustom = options.panelWidthCustom;
+		const panelWidthCustom = options.panelWidthCustom == undefined ? 50 : Number(options.panelWidthCustom);
 		const panelPosition = options.panelPosition;
 		const panelStyle = options.panelStyle;
 		const removeTxt = options.removeTxt;
@@ -7661,11 +7661,11 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 					$splitScreen.addClass("large"); // 60 | 40
 				} else if (panelWidth === "Large") {
 					$splitScreen.addClass("small"); // 20 | 80
-				} else if (panelWidth === "Custom" && panelWidthCustom != undefined) {
+				} else if (panelWidth === "Custom") {
 					$splitScreen.addClass("custom");
-					const shrink = Number(panelWidthCustom) > 50 ? [1,0] : [0,1]; // allow larger column to shrink if needed
-					$splitScreen.find(".left").css("flex", "0 " + shrink[1] + " calc(" + (100 - Number(panelWidthCustom)) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
-					$splitScreen.find(".right").css("flex", "0 " + shrink[0] + " calc(" + Number(panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+					const shrink = panelWidthCustom > 50 ? [1,0] : [0,1]; // allow larger column to shrink if needed
+					$splitScreen.find(".left").css("flex", "0 " + shrink[1] + " calc(" + (100 - panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+					$splitScreen.find(".right").css("flex", "0 " + shrink[0] + " calc(" + panelWidthCustom + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
 				} else {
 					$splitScreen.addClass("medium"); // 40 | 60
 				}
@@ -7677,19 +7677,20 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 					$splitScreen.addClass("medium"); // 40 | 60
 				} else if (panelWidth === "Large") {
 					$splitScreen.addClass("xlarge"); // 80 | 20
-				} else if (panelWidth === "Custom" && panelWidthCustom != undefined) {
+				} else if (panelWidth === "Custom") {
 					$splitScreen.addClass("custom");
-					const shrink = Number(panelWidthCustom) > 50 ? [1,0] : [0,1]; // allow larger column to shrink if needed
-					$splitScreen.find(".left").css("flex", "0 " + shrink[0] + " calc(" + Number(panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
-					$splitScreen.find(".right").css("flex", "0 " + shrink[1] + " calc(" + (100 - Number(panelWidthCustom)) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+					const shrink = panelWidthCustom > 50 ? [1,0] : [0,1]; // allow larger column to shrink if needed
+					$splitScreen.find(".left").css("flex", "0 " + shrink[0] + " calc(" + panelWidthCustom + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+					$splitScreen.find(".right").css("flex", "0 " + shrink[1] + " calc(" + (100 - panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
 				} else {
 					$splitScreen.addClass("large"); // 60 | 40
 				}
 			}
 		}
-		//debugger;
+
 		// remove panel styling
 		if (panelStyle === "true") {
+			//$textColumn.find(".panel").removeClass("panel"); // ** add option for both columns for have panel style?
 			$panel.removeClass("panel");
 		}
 

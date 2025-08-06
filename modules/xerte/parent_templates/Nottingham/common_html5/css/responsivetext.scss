@@ -289,29 +289,9 @@ table {
 //}
 
 // --LANDSCAPE PHONES--------------------------------------------------------------
-@media (max-width: 480px) {
-  /* split screen layout used in lots of page models - stack vertically on smaller screens */
-  .splitScreen {
-    flex-direction: column;
-    row-gap: 1em;
-  }
+//@media (max-width: 480px) {
 
-  .splitScreen.small .left,
-  .splitScreen.small .right,
-  .splitScreen.medium2 .left,
-  .splitScreen.medium2 .right,
-  .splitScreen.medium .left,
-  .splitScreen.medium .right,
-  .splitScreen.large .left,
-  .splitScreen.large .right,
-  .splitScreen.xlarge .left,
-  .splitScreen.xlarge .right { flex: 0 0 100%; }
-
-  .splitScreen #panel,
-  #infoHolder.full #panel {
-    height: auto !important;
-  }
-}
+//}
 
 
 @media only screen

@@ -242,29 +242,6 @@
     height: 2.5vmin;
   }
 }
-@media (max-width: 480px) {
-  /* split screen layout used in lots of page models - stack vertically on smaller screens */
-  .splitScreen {
-    flex-direction: column;
-    row-gap: 1em;
-  }
-  .splitScreen.small .left,
-  .splitScreen.small .right,
-  .splitScreen.medium2 .left,
-  .splitScreen.medium2 .right,
-  .splitScreen.medium .left,
-  .splitScreen.medium .right,
-  .splitScreen.large .left,
-  .splitScreen.large .right,
-  .splitScreen.xlarge .left,
-  .splitScreen.xlarge .right {
-    flex: 0 0 100%;
-  }
-  .splitScreen #panel,
-  #infoHolder.full #panel {
-    height: auto !important;
-  }
-}
 @media only screen and (max-width: 500px) {
   /*hide progress bar by default when viewed in portrait mode on mobiles*/
   /*if required change to display:block on themes where FA buttons are used*/
