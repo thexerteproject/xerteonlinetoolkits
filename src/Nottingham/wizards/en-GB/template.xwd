@@ -423,7 +423,9 @@
 	  feedbackBtnTxt="Submit" pageTxt="Page" questionTxt="Question" responseHeaderTxt="Your response:"
 	  noAnswerHeaderTxt="No response submitted" exampleHeaderTxt="Feedback:" feedbackTxt="Page feedback"
 	  copyBtn2Label="Copy" copyShortcutTxt="Press Ctrl+C to copy" downloadTxt="Download" answerFieldLabel="Answer"
-	  />]]></modelAnswer><modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title" text="" panelWidth="Medium" dataPageLink="true"
+	  />]]></modelAnswer><modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title" text=""
+      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      dataPageLink="true"
 	  copyBtn2Label="Copy" downloadTxt="Download" pageTxt="Page" notViewed="Page not viewed"
 	  ></modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Page Title"  instruction="" text="" prompt="" answer="" answerType="true"
 	   answerHeaderTxt="Write your answer here:" feedbackBtnTxt="Feedback" answerFieldLabel="Answer"
@@ -490,9 +492,10 @@
              answerFieldLabel="Answer"
 	         checkBtnTxt="Submit"
 			 noattemptTxt="Please attempt the activity"/>]]></topXQ><transcriptReader><![CDATA[<transcriptReader name="Enter Page Title" sound="" text="" panelWidth="Medium"/>]]></transcriptReader><videoSynch><![CDATA[<videoSynch name="Enter Page Title" url="" text="" pause="True" erase="True"/>]]></videoSynch><wiki><![CDATA[<wiki name="Enter Page Title" text="Enter Page text" url="Enter Article URL" align="Left"/>]]></wiki><wordsearch><![CDATA[<wordsearch name="Enter Page Title" text="" words="" solveBtnTxt="Solve Puzzle" fillChars="" retryBtnTxt="Restart Puzzle"
-	  />]]></wordsearch><xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model" errorTxt="You can not view this type of content in the HTML viewer." />]]></xerteModel><youtube><![CDATA[<youtube name="Enter Page Title" text="">Enter Embed Code Here</youtube>]]></youtube><youtuberss><![CDATA[<youtuberss name="Enter Page Title" text="" url="" results="20" panelWidth="Medium"
-                           	  resultsTxt="YouTube results for term"
-                           	  apiErrorMesg="The Youtube API returned the following error: '{0}'&lt;br&gt;If no API key is set, ask your admin to set up a key in api_keys.php (see api_keys.dist.php for a template)." />]]></youtuberss></newNodes>
+	  />]]></wordsearch><xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model" errorTxt="You can not view this type of content in the HTML viewer." />]]></xerteModel><youtube><![CDATA[<youtube name="Enter Page Title" text="">Enter Embed Code Here</youtube>]]></youtube><youtuberss><![CDATA[<youtuberss name="Enter Page Title" text="" url="" results="20"
+      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      resultsTxt="YouTube results for term"
+      apiErrorMesg="The YouTube API returned the following error: '{0}'&lt;br&gt;If no API key is set, ask your admin to set up a key in api_keys.php (see api_keys.dist.php for a template)." />]]></youtuberss></newNodes>
 
   </learningObject>
 
@@ -7062,10 +7065,10 @@
 
     <layoutGroup label="Page Layout" type="group">
       <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
-      <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" mandatory="true" condition="panelWidth=='Custom'"/>
+      <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
       <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
-      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" mandatory="true"/>
-      <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" mandatory="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
@@ -7215,11 +7218,29 @@
 
   </modelAnswerField><modelAnswerResults menu="Interactivity" menuItem="Model Answer Results" hint="Displays collated results from all viewed Model Answer pages which can then be reviewed and copied or downloaded." icon="icFolderPage" thumb="thumbs/modelAnswerResult.jpg" remove="true" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_model_answer_results_page">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="280" placeholder="Enter text for the page here" mandatory="true" defaultValue=""/>
-	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100" mandatory="true"/>
+    <text label="Page Text" type="TextArea" height="280" placeholder="Enter text for the page here" mandatory="true" defaultValue="" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
+
+    <layoutGroup label="Page Layout" type="group">
+      <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" mandatory="true" conditionTrigger="true"/>
+      <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+      <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
     <dataPageLink label="Link to Model Answer Pages" type="CheckBox" condition="dataPageH=='true'||dataPageH==undefined" defaultValue="false" mandatory="true"/>
 
     <info><![CDATA[<p>By default, the results from all viewed Model Answer pages will be displayed on this page. To collate results from a limited number of pages instead, add new 'Page Results' to specify the pages used.</p>]]></info>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+      <textTop label="Text" type="TextArea" height="100" optional="true"/>
+      <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+      <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+      <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
 
     <dataGroup label="Customise results" type="group" optional="true" tooltip="Customise the type of data from viewed Model Answer pages that will be shown on this page" info="Customise the data from viewed Model Answer pages that will be shown on this on this page.">
       <dataPageGroup label="Page" type="group" optional="true">
@@ -11405,14 +11426,31 @@
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></youtube><youtuberss menuItem="YouTube Feed" menu="Media" remove="true" thumb="thumbs/youtubefeed.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#youtubefeed" wiki="https://xerte.org.uk/wiki/doku.php?id=media_youtube_feed_page" hint="Include YouTube videos in your project. Enter a search term to display videos matching the term from YouTube." icon="icYoutube">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
-    <text type="textArea" label="Instructions" height="200" placeholder="Enter text for the page here"/>
+    <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
     <url type="textInput" label="Search Term"/>
     <results type="NumericStepper" min="5" max="50" step="1" label="Number of Results"/>
-	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true"/>
+
+    <layoutGroup label="Page Layout" type="group">
+      <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true" mandatory="true"/>
+      <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+      <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+      <textTop label="Text" type="TextArea" height="100" optional="true"/>
+      <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+      <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+      <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
 	
 	<resultsTxt label="Results Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
-    <apiErrorMesg label="Google Youtube API error message" type="textInput" language="true"/>
+    <apiErrorMesg label="Google YouTube API error message" type="textInput" language="true"/>
   <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    

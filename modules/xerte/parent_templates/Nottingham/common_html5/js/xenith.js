@@ -7636,7 +7636,7 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 			holder: $("#pageContents"), // parent of text & panel columns
 			textColumn: $(".splitScreen_A"), // column containing text only
 			panelColumn: $(".splitScreen_B"), // column containing panel
-			panel: $(".splitScreen_B .panel")
+			panel: $(".splitScreen_B .panelContent")
 		}
 
 		// for pages that don't use attributes/elements above, the info will be passed into this function
@@ -7724,21 +7724,21 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 		// these might be full width even when panel is not full width
 		if (x_addLineBreaks(attributes.topTxt) != undefined && x_addLineBreaks(attributes.topTxt).trim() !== "") {
 			if (attributes.topTxtWidth === "true" && attributes.panelWidth !== "full") {
-				elements.holder.prepend('<div id="textTopHolder">' + x_addLineBreaks(attributes.topTxt) + '</div>');
+				elements.holder.prepend('<div class="textTopHolder">' + x_addLineBreaks(attributes.topTxt) + '</div>');
 			} else {
-				elements.panel.before('<div id="textTopHolder">' + x_addLineBreaks(attributes.topTxt) + '</div>');
+				elements.panel.before('<div class="textTopHolder">' + x_addLineBreaks(attributes.topTxt) + '</div>');
 			}
 
-			elements.topTxt = $("#textTopHolder");
+			elements.topTxt = $(".textTopHolder");
 		}
 		if (x_addLineBreaks(attributes.bottomTxt) != undefined && x_addLineBreaks(attributes.bottomTxt).trim() !== "") {
 			if (attributes.bottomTxtWidth === "true" && attributes.panelWidth !== "full") {
-				elements.holder.append('<div id="textBottomHolder">' + x_addLineBreaks(attributes.bottomTxt) + '</div>');
+				elements.holder.append('<div class="textBottomHolder">' + x_addLineBreaks(attributes.bottomTxt) + '</div>');
 			} else {
-				elements.panel.after('<div id="textBottomHolder">' + x_addLineBreaks(attributes.bottomTxt) + '</div>');
+				elements.panel.after('<div class="textBottomHolder">' + x_addLineBreaks(attributes.bottomTxt) + '</div>');
 			}
 
-			elements.bottomTxt = $("#textBottomHolder");
+			elements.bottomTxt = $(".textBottomHolder");
 		}
 
 		// store data for later use in resize function

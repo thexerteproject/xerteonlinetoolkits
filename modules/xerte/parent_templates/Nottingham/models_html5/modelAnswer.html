@@ -36,11 +36,11 @@
 			if (x_browserInfo.mobile == false && $(".panelImg img").length > 0) {
 				// makes sure image doesn't take up too much vertical space & will try to fit text, image, answer box on screen without scrolling if possible
 				let totalHeight = 0;
-				$panel.children().each(function() {
+				$("#panel").children().each(function() {
 					totalHeight = totalHeight + $(this).outerHeight(true);
 				});
 				totalHeight -= $(".panelImg img").height();
-				$(".panelImg img").css("max-height", Math.max($panel.innerHeight() - totalHeight, 100));
+				$(".panelImg img").css("max-height", Math.max($("#panel").innerHeight() - totalHeight, 100));
 			}
 		};
 
@@ -469,7 +469,7 @@
 	<div id="textHolder" class="splitScreen_A"></div>
 
 	<div id="infoHolder" class="splitScreen_B">
-		<div id="panel" class="panel">
+		<div id="panel" class="panelContent panel">
 			<div id="prompt"></div>
 			<div id="answer">
 				<div id="fbTxt" aria-live="polite"/>
