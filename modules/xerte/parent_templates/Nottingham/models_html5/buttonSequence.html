@@ -30,50 +30,23 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $("#myPanel");
-			$panel.height(x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
 		}
 		
 		this.init = function() {
-			// buttonWidth attribute not used as button will be sized automatically
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
-				$splitScreen = $("#pageContents .splitScreen"),
-				$textHolder = $("#textHolder"),
-				$panel = $("#myPanel");
-			
-			if (panelWidth == "Full") {
-				$panel.appendTo($("#pageContents"));
-				$splitScreen.remove();
-			} else {
-				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				var textAlign = x_currentPageXML.getAttribute("align");
-				if (textAlign != "Right") {
-					if (panelWidth == "Small") {
-						$splitScreen.addClass("large");
-					} else if (panelWidth == "Large") {
-						$splitScreen.addClass("small");
-					} else {
-						$splitScreen.addClass("medium");
-					}
-				} else {
-					$textHolder
-						.removeClass("left")
-						.addClass("right")
-						.appendTo($splitScreen);
-					$("#infoHolder")
-						.removeClass("right")
-						.addClass("left");
-					if (panelWidth == "Small") {
-						$splitScreen.addClass("medium");
-					} else if (panelWidth == "Large") {
-						$splitScreen.addClass("xlarge");
-					} else {
-						$splitScreen.addClass("large");
-					}
-				}
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// panel position data is reversed as the property used to be called 'Align text' rather than 'Panel position'
+			// send amended data to split screen function as otherwise layout will be reversed
+			const attributes = {
+				panelPosition: x_currentPageXML.getAttribute("align") !== "Right" ? "Right" : "Left"
 			}
-			
-			var $infoGroup = $(".infoGroup:first");
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
+
+			const $panel = $("#myPanel");
+			const $infoGroup = $(".infoGroup:first");
 			
 			$(x_currentPageXML).children()
 				.each(function(i) {
@@ -121,20 +94,16 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
-		
-		<div id="textHolder" class="left"></div>
-		
-		<div id="infoHolder" class="right">
-			<div id="myPanel" class="panel" tabindex="0">
-				<div class="infoGroup">
-					<div class="infoTxt" aria-live="polite">&nbsp;</div>
-					<button class="infoBtn"></button>
-				</div>
+
+	<div id="textHolder" class="splitScreen_A"></div>
+
+	<div id="infoHolder" class="splitScreen_B">
+		<div id="myPanel" class="panelContent panel" tabindex="0">
+			<div class="infoGroup">
+				<div class="infoTxt" aria-live="polite">&nbsp;</div>
+				<button class="infoBtn"></button>
 			</div>
 		</div>
-		
 	</div>
 	
 </div>

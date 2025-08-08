@@ -7680,23 +7680,7 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 			elements.textColumn.add(elements.panelColumn).wrapAll('<div class="splitScreen"></div>');
 			const $splitScreen = $(".splitScreen");
 
-			if (attributes.panelPosition === "right") {
-				elements.textColumn.addClass("left");
-				elements.panelColumn.addClass("right").appendTo($splitScreen);
-
-				if (attributes.panelWidth === "small") {
-					$splitScreen.addClass("large"); // 60 | 40
-				} else if (attributes.panelWidth === "large") {
-					$splitScreen.addClass("small"); // 20 | 80
-				} else if (attributes.panelWidth === "custom") {
-					$splitScreen.addClass("custom");
-					const shrink = attributes.panelWidthCustom > 50 ? [1,0] : [0,1]; // allow larger column to shrink if needed
-					$splitScreen.find(".left").css("flex", "0 " + shrink[1] + " calc(" + (100 - attributes.panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
-					$splitScreen.find(".right").css("flex", "0 " + shrink[0] + " calc(" + attributes.panelWidthCustom + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
-				} else {
-					$splitScreen.addClass("medium"); // 40 | 60
-				}
-			} else {
+			if (attributes.panelPosition === "left") {
 				elements.panelColumn.addClass("left");
 				elements.textColumn.addClass("right").appendTo($splitScreen);
 
@@ -7711,6 +7695,22 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 					$splitScreen.find(".right").css("flex", "0 " + shrink[1] + " calc(" + (100 - attributes.panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
 				} else {
 					$splitScreen.addClass("large"); // 60 | 40
+				}
+			} else {
+				elements.textColumn.addClass("left");
+				elements.panelColumn.addClass("right").appendTo($splitScreen);
+
+				if (attributes.panelWidth === "small") {
+					$splitScreen.addClass("large"); // 60 | 40
+				} else if (attributes.panelWidth === "large") {
+					$splitScreen.addClass("small"); // 20 | 80
+				} else if (attributes.panelWidth === "custom") {
+					$splitScreen.addClass("custom");
+					const shrink = attributes.panelWidthCustom > 50 ? [1,0] : [0,1]; // allow larger column to shrink if needed
+					$splitScreen.find(".left").css("flex", "0 " + shrink[1] + " calc(" + (100 - attributes.panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+					$splitScreen.find(".right").css("flex", "0 " + shrink[0] + " calc(" + attributes.panelWidthCustom + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+				} else {
+					$splitScreen.addClass("medium"); // 40 | 60
 				}
 			}
 		}

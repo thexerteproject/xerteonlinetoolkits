@@ -1,7 +1,9 @@
 <wizard menus="Interactivity">
     <pageWizard remove="true" dublicate="false">
         <newNodes>
-            <topXQ><![CDATA[<topXQ name="Enter Page Title" instruction="" prompt="" align="Left" panelWidth="Medium" numberAnswers="*" caseSensitivity="true"
+            <topXQ><![CDATA[<topXQ name="Enter Page Title" instruction="" prompt=""
+             panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
+             numberAnswers="*" caseSensitivity="true"
 			 feedbackLabel="Feedback"
 			 attemptLabel="Attempts remaining"
 			 correctAnswersLabel="Correct answers"
@@ -17,14 +19,30 @@
     <!-- TXQ PAGE=============================-->
 <topXQ menu = "Interactivity" menuItem = "Answer X of Y" hint = "Poses a question with multiple answers where the student can't see the answers like in a MCQ. The user can give the answers in any order." icon="icTopXQ" thumb="thumbs/topXQ.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#answerxofy" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_answer_x_of_y" remove="true">
     <name label = "Page Title" type = "TextInput" wysiwyg = "true"/>
-    <instruction label="Page Text" type = "TextArea" height="100" placeholder="Enter text for the page here"/>
+    <instruction label="Page Text" type = "TextArea" height="100" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
     <prompt label="Question" type="TextArea" height="100" placeholder="Enter question text here"/>
-	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <numberAnswers label="Number of Answers" type="TextInput" defaultValue="*" tooltip="Number of answer fields shown on the page. Specify a number or enter * to create an answer field for every possible answer."/>
 	<caseSensitivity label="Case Sensitive" defaultValue="true" type="CheckBox" tooltip="Treat answers as case sensitive" mandatory="true"/>
-	
-	<feedback type="TextArea" height="40" label="Feedback" optional="true" defaultValue="" placeholder="Enter feedback here"/>
+
+    <layoutGroup label="Page Layout" type="group">
+        <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
+        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
+
+    <feedback type="TextArea" height="40" label="Feedback" optional="true" defaultValue="" placeholder="Enter feedback here"/>
 	<showAnswers label="Show Answers" defaultValue="true" type="ComboBox" options="Show all answers,Show other possible answers,Show no answers" data="true,others,false" optional="true" tooltip="Control whether a list of answers (either all possible answers or only those not already found) is shown when activity is complete"/>
     <answerDelimiter label="Answer Delimiter" type="textInput" defaultValue="," optional="true" tooltip="The character separating the answers"/>
     <amountOfTries label="Attempts" type="TextInput" defaultValue="1" optional="true" condition="judge!='false'" tooltip="Attempts allowed before feedback is given"/>

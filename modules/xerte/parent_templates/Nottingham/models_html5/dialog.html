@@ -51,8 +51,8 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $("#pageContents .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
 		}
 
 		this.init = function() {
@@ -67,27 +67,17 @@
 			}
 			
             XTSetPageType(x_currentPage, 'numeric', $(x_currentPageXML).children().length, this.weighting);
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			if (panelWidth == "Full") {
-				$("#pageContents .right div:first").appendTo($("#pageContents"));
-				$("#pageContents .splitScreen").remove();
-			} else {
-				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				if (panelWidth == "Small") {
-					$("#pageContents .splitScreen").addClass("large");
-				} else if (panelWidth == "Medium") {
-					$("#pageContents .splitScreen").addClass("medium");
-				} else {
-					$("#pageContents .splitScreen").addClass("small");
-				}
-			}
-			
+
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init();
+
 			casesensitive = x_currentPageXML.getAttribute("casesensitive") != "true" && x_currentPageXML.getAttribute("casesensitive") != "1" ? false : true;
 			var answerDelimeter = x_currentPageXML.getAttribute("answerDelimeter");
 			if (answerDelimeter == undefined) {
 				answerDelimeter = ",";
 			}
-
 
 			// if language attributes aren't in xml will have to use english fall back
 			var tryTxt = x_currentPageXML.getAttribute("tryTxt");
@@ -342,25 +332,21 @@
 
 <div id="pageContents">
 
-	<div class="splitScreen">
+	<div id="textHolder" class="splitScreen_A"></div>
 
-		<div id="textHolder" class="left"></div>
-
-		<div id="infoHolder" class="right">
-			<div class="panel" tabindex="0">
-				<div id="questionGroup">
-					<div class="question">
-						<label></label>
-						<span class="tickTxt ui-helper-hidden-accessible" aria-live="polite"></span><span class="result fa fa-fw fa-x-tick"></span>
-						<input/>
-					</div>
-
+	<div id="infoHolder" class="splitScreen_B">
+		<div class="panelContent panel" tabindex="0">
+			<div id="questionGroup">
+				<div class="question">
+					<label></label>
+					<span class="tickTxt ui-helper-hidden-accessible" aria-live="polite"></span><span class="result fa fa-fw fa-x-tick"></span>
+					<input/>
 				</div>
-				<button id="submitBtn"></button>
-				<p id="feedback" aria-live="polite"></p>
-			</div>
-		</div>
 
+			</div>
+			<button id="submitBtn"></button>
+			<p id="feedback" aria-live="polite"></p>
+		</div>
 	</div>
 
 </div>
