@@ -1,7 +1,9 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="" prompt="" feedback="" align="Left" panelWidth="Medium" label="Check" />]]></buttonQuestion>
+      <buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="" prompt="" feedback=""
+      panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
+      label="Check" />]]></buttonQuestion>
     </newNodes>
   </pageWizard>
 
@@ -9,11 +11,27 @@
   <buttonQuestion menu="Interactivity" menuItem="Stimulating Question" hint="Pose a stimulating question to the user, with feedback available through a button." icon="icComment" thumb="thumbs/stimulus.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#stimulatingquestion" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_stimulating_question_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-    <instruction label="Instruction" type="TextArea" height="50" placeholder="Enter instructions here"/>
+    <instruction label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
     <prompt label="Question" type="TextArea" height="150" placeholder="Enter a question or prompt here"/>
     <feedback label="Feedback" type="TextArea" height="150" placeholder="Enter the feedback here"/>
-    <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
-    <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+
+    <layoutGroup label="Page Layout" type="group">
+      <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
+      <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+      <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+      <textTop label="Text" type="TextArea" height="100" optional="true"/>
+      <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+      <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+      <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
 
     <label label="Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
 	<labelWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100" language="true" deprecated="Width is now set automatically"/>

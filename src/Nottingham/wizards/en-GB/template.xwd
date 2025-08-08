@@ -342,7 +342,9 @@
     <newNodes>
     <QRcode><![CDATA[<QRcode name="Enter Page Title" url="" tip="" imagesize="large"></QRcode>]]></QRcode><SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="" error="Loading" />]]></SictTimeline><accNav><![CDATA[<accNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction=""></adaptiveContent>]]></adaptiveContent><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="" url="" panelWidth="Medium" tip="" colour="0xFFFF00" shape="Rectangle" align="Left"/>]]></annotatedDiagram><audioRecord><![CDATA[<audioRecord name="Enter Page Title" text="" panelWidth="Medium" randomise="false"
 	    prevText="Previous" nextText="Next" restartText="Restart" restartConfirmText="Restarting will remove all recordings. Do you want to restart?" countText="Clip {i} of {n}" recText="Record" stopText="Stop" downloadText="Download all" downloadText2="Download example" downloadText3="Download recordings" deleteText="Delete" clipNameLabel="Enter audio clip name" defaultClipName="Unnamed clip" clipNameRenameLabel="Edit audio clip name" micErrorLabel="Try Again"
-	  />]]></audioRecord><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="" text="" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left" url="" tip="" imagesize="medium"></bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showPanel="0" showBullets="0" panelWidth="Full"></bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="" prompt="" feedback="" align="Left" panelWidth="Medium" label="Check" />]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="" intro=""
+	  />]]></audioRecord><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="" text="" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left" url="" tip="" imagesize="medium"></bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showPanel="0" showBullets="0" panelWidth="Full"></bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="" prompt="" feedback=""
+      panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
+      label="Check" />]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="" intro=""
       panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="" prompt=""
       panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
 	  confirmBtnTxt="Confirm" 
@@ -415,7 +417,8 @@
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
 	  restartBtnText="Restart" 
-	  />]]></inventory><jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing><jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" size="Medium" initLook="Ball and Stick" colour="Default" controls="true"/>]]></jmol><links><![CDATA[<links name="Enter Page Title" text="" cols="3" />]]></links><list><![CDATA[<list name="Enter Page Title" text="" panelWidth="Large" openFirst="true"/>]]></list><map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a Description for Accessibility" link="true"/>]]></map><mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction><mcq><![CDATA[<mcq name="Enter Page Title" instruction="" prompt="" type="Single Answer" align="Left" panelWidth="Medium"
+	  />]]></inventory><jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing><jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" size="Medium" initLook="Ball and Stick" colour="Default" controls="true"/>]]></jmol><links><![CDATA[<links name="Enter Page Title" text="" cols="3" />]]></links><list><![CDATA[<list name="Enter Page Title" text="" panelWidth="Large" openFirst="true"/>]]></list><map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a Description for Accessibility" link="true"/>]]></map><mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction><mcq><![CDATA[<mcq name="Enter Page Title" instruction="" prompt="" type="Single Answer"
+      panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
 	  feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
 	  multiWrong="You have not selected the correct combination of answers" 
 	  checkBtnTxt="Check" />]]></mcq><media360><![CDATA[<media360 name="Enter Page Title" text="" size="large" position="right"
@@ -451,7 +454,11 @@
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
 	  restartBtnText="Restart" 
-	  />]]></quiz><raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity><results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="Results summary" givenameTxt="Your name" averageTxt="Score" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Detailed results" globalResultsTxt="Page overview" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Interactivity results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Complete" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter name for PDF" userNamePrompt="Name: " okButtonTxt="Ok" durationSecondsTxt="s"/>]]></results><rss><![CDATA[<rss name="Enter Page Title" text="" url="" align="Left" panelWidth="Medium"/>]]></rss><rssdownload><![CDATA[<rssdownload name="Enter Page Title" text="" url="" align="Left" panelWidth="Medium"/>]]></rssdownload><scenario><![CDATA[<scenario name="Scenario Name" title="Scenario Title" description="Description of scenario" navSetting="none"
+	  />]]></quiz><raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity><results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="Results summary" givenameTxt="Your name" averageTxt="Score" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Detailed results" globalResultsTxt="Page overview" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Interactivity results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Complete" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter name for PDF" userNamePrompt="Name: " okButtonTxt="Ok" durationSecondsTxt="s"/>]]></results><rss><![CDATA[<rss name="Enter Page Title" text="" url=""
+      panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
+      />]]></rss><rssdownload><![CDATA[<rssdownload name="Enter Page Title" text="" url=""
+      panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
+      />]]></rssdownload><scenario><![CDATA[<scenario name="Scenario Name" title="Scenario Title" description="Description of scenario" navSetting="none"
        imageButtonShow="Show Media" imageButtonHide="Hide Media" imageButtonWidth="100" continueButtonLabel="Continue" continueButtonWidth="100"
 	   scenarioPropsTitle="You can see..." scenarioPropsName="item(s)" inventoryEmpty="Nothing" inventoryTitle="You have with you..." inventoryItemName="item(s)"
 	   actionTitle="Actions you can take..." scoresTitle="Scores"
@@ -1684,11 +1691,27 @@
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></buttonNav><buttonQuestion menu="Interactivity" menuItem="Stimulating Question" hint="Pose a stimulating question to the user, with feedback available through a button." icon="icComment" thumb="thumbs/stimulus.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#stimulatingquestion" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_stimulating_question_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <instruction label="Instruction" type="TextArea" height="50" placeholder="Enter instructions here"/>
+    <instruction label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
     <prompt label="Question" type="TextArea" height="150" placeholder="Enter a question or prompt here"/>
     <feedback label="Feedback" type="TextArea" height="150" placeholder="Enter the feedback here"/>
-    <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
-    <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+
+    <layoutGroup label="Page Layout" type="group">
+      <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
+      <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+      <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+      <textTop label="Text" type="TextArea" height="100" optional="true"/>
+      <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+      <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+      <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
 
     <label label="Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	<labelWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="100" width="100" language="true" deprecated="Width is now set automatically"/>
@@ -6332,12 +6355,29 @@
   </overlay><mcq menu="Interactivity" menuItem="Multiple Choice Question" hint="Pose a question with multiple answer options. Create simple true - false questions, or more complex questions with multiple correct answers." icon="icComments" thumb="thumbs/mcq.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multiplechoicequestion" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_mcq_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
-    <instruction label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
+    <instruction label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
     <prompt label="Question" type="TextArea" height="100" placeholder="Enter question text here"/>
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
-    <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
-	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
+
+    <layoutGroup label="Page Layout" type="group">
+        <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
+        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
+
+    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <singleRight label="Single Answer Correct" type="TextInput" wysiwyg="true" language="true"/>
@@ -8707,12 +8747,29 @@
     </feedback><rss menuItem="RSS Feed" menu="Links / Feeds" hint="Include RSS feeds in your project. RSS feeds allow you to add dynamic content from a variety of sources. You can create your own RSS feeds using the RSS Feed template." icon="icRSS" thumb="thumbs/rss.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#rssfeed" wiki="https://xerte.org.uk/wiki/doku.php?id=linksfeeds_rssfeed_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="textArea" height="300" placeholder="Enter text for the page here"/>
-	<align label="Text Align" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+    <text label="Page Text" type="TextArea" height="300" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
     <url label="Feed URL" type="textInput" placeholder="Enter feed URL"/>
-	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true"/>
-	
-	<appearance label="Feed View" options="Title Only,Title &amp; Snippet" type="ComboBox" data="title,snippet" defaultValue="snippet" width="100" optional="true"/>
+
+    <layoutGroup label="Page Layout" type="group">
+        <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true" mandatory="true"/>
+        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
+
+
+      <appearance label="Feed View" options="Title Only,Title &amp; Snippet" type="ComboBox" data="title,snippet" defaultValue="snippet" width="100" optional="true"/>
 
   <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
@@ -8788,12 +8845,28 @@
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></rss><rssdownload menuItem="RSS Xerte Download Feed" menu="Links / Feeds" hint="Include Xerte specific RSS feeds from any version 3.8 or later Xerte installation to include download links for any projects that have been included in the RSS export feed." icon="icRSS" thumb="thumbs/rssdownload.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#rssxertedownloadfeed" wiki="https://xerte.org.uk/wiki/doku.php?id=linksfeeds_rssxertedownload_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="textArea" height="300" placeholder="Enter text for the page here"/>
-	<align label="Text Align" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+    <text label="Page Text" type="TextArea" height="300" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
     <url label="Feed URL" type="textInput" placeholder="Enter feed URL"/>
-	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true"/>
-	
-	<appearance label="Feed View" options="Title Only,Title &amp; Description" type="ComboBox" data="title,snippet" defaultValue="snippet" width="100" optional="true"/>
+
+    <layoutGroup label="Page Layout" type="group">
+        <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true" mandatory="true"/>
+        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
+
+    <appearance label="Feed View" options="Title Only,Title &amp; Description" type="ComboBox" data="title,snippet" defaultValue="snippet" width="100" optional="true"/>
 
 	<rssDLLinks type="group" label="Download Links &amp; Info" optional="true" tooltip="Customise which download links information elements are shown. Show/Hide items via these options - tick to show and untick to hide.">
         <deployment label="Deployment" type="CheckBox" defaultValue="true" optional="true"/>

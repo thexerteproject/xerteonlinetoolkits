@@ -23,9 +23,6 @@
 	var buttonSequence = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$("#myPanel .infoBtn").hide();
-			$("#myPanel .infoTxt").not(":eq(0)").empty();
-			$("#myPanel .infoGroup:eq(0) .infoBtn").show();
 		}
 		
 		// function called every time the size of the LO is changed

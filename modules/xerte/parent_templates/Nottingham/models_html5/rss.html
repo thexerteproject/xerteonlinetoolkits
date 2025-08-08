@@ -19,16 +19,12 @@
  */
  
 	var rss = new function() {
-		var $pageContents,
-			$textHolder,
-			$panel,
-			$resultsHolder,
-			rssURL;
+		var rssURL;
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $("#pageContents .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
 		};
 
 		this.init = function() {
@@ -53,43 +49,20 @@
 		};
 
 		this.begin = function() {
-			$pageContents = $("#pageContents");
-			$textHolder = $("#textHolder");
-			$panel = $("#pageContents .panel");
-			$resultsHolder = $pageContents.find("#resultsHolder");
 			$("#loadingSpinner p").html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
 			$("#loadingSpinner").show();
-			
+
 			rssURL = x_currentPageXML.getAttribute("url");
-			
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			if (panelWidth == "Full") {
-				$("#pageContents .right div:first").appendTo($("#pageContents"));
-				$("#pageContents .splitScreen").remove();
-			} else {
-				var align = x_currentPageXML.getAttribute("align") == "Right" ? "Right" : "Left";
-				if (align == "Right") {
-					var $splitScreen = $("#pageContents .splitScreen");
-					
-					$textHolder
-						.removeClass("left")
-						.addClass("right")
-						.appendTo($splitScreen);
-					
-					$("#rssHolder")
-						.removeClass("right")
-						.addClass("left");
-				}
-				
-				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				if (panelWidth == "Small") {
-					align == "Right" ? $("#pageContents .splitScreen").addClass("medium") : $("#pageContents .splitScreen").addClass("large");
-				} else if (panelWidth == "Large") {
-					align == "Right" ? $("#pageContents .splitScreen").addClass("xlarge") : $("#pageContents .splitScreen").addClass("small");
-				} else {
-					align == "Right" ? $("#pageContents .splitScreen").addClass("large") : $("#pageContents .splitScreen").addClass("medium");
-				}
+
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// panel position data is reversed as the property used to be called 'Align text' rather than 'Panel position'
+			// send amended data to split screen function as otherwise layout will be reversed
+			const attributes = {
+				panelPosition: x_currentPageXML.getAttribute("align") !== "Right" ? "Right" : "Left"
 			}
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
 			this.sizeChanged();
 			x_pageLoaded();
@@ -97,43 +70,43 @@
 		};
 		
 		this.listFeed = function(feed) {
-				var resultsString = "";
+			var resultsString = "";
 
-				if (feed.rss.channel.item == 0) {
-					resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>'
-				}
-				else {
-					$.each(feed.rss.channel.item, function (index, item) {
-						var xertefeed = (typeof item.xertedescription != "undefined");
-						var description = (typeof item.xertedescription != "undefined" ? item.xertedescription : item.description);
-						var templatename = (typeof item.xertetemplatename != "undefined" ? item.xertetemplatename : "");
-						var author = (typeof item.xerteauthor != "undefined" ? item.xerteauthor : (typeof item.author != "undefined" ? item.author : ""));
-						const faIcon = '<i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>';
-						resultsString += '<div class="s"><a target="_blank" href="' + item.link + '">'+ item.title + ' ' + faIcon + '</a><br><br>';
+			if (feed.rss.channel.item == 0) {
+				resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>'
+			}
+			else {
+				$.each(feed.rss.channel.item, function (index, item) {
+					var xertefeed = (typeof item.xertedescription != "undefined");
+					var description = (typeof item.xertedescription != "undefined" ? item.xertedescription : item.description);
+					var templatename = (typeof item.xertetemplatename != "undefined" ? item.xertetemplatename : "");
+					var author = (typeof item.xerteauthor != "undefined" ? item.xerteauthor : (typeof item.author != "undefined" ? item.author : ""));
+					const faIcon = '<i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>';
+					resultsString += '<div class="s"><a target="_blank" href="' + item.link + '">'+ item.title + ' ' + faIcon + '</a><br><br>';
 
 
-						if (x_currentPageXML.getAttribute("appearance") != 'title' && typeof item.description != "undefined") {
-							// snippet is a bit long so shorten it
-							if (description != "undefined" && description.length > 400) {
-								var cutOff = 400 + description.substr(400).indexOf(' ');
-								var $html = $('<div>').html(description.substring(0, cutOff));
-								resultsString += '<p class="rssDescription">' + $html.prop('outerHTML') + '...</p>';
-							} else {
-								var $html = $('<div>').html(description);
-								resultsString += '<p class="rssDescription">' + $html.prop('outerHTML') + '</p>';
-							}
+					if (x_currentPageXML.getAttribute("appearance") != 'title' && typeof item.description != "undefined") {
+						// snippet is a bit long so shorten it
+						if (description != "undefined" && description.length > 400) {
+							var cutOff = 400 + description.substr(400).indexOf(' ');
+							var $html = $('<div>').html(description.substring(0, cutOff));
+							resultsString += '<p class="rssDescription">' + $html.prop('innerHTML') + '...</p>';
+						} else {
+							var $html = $('<div>').html(description);
+							resultsString += '<p class="rssDescription">' + $html.prop('innerHTML') + '</p>';
 						}
+					}
 
-						resultsString += '</div>';
-					});
-				}
-				$resultsHolder
+					resultsString += '</div>';
+				});
+			}
+			$("#resultsHolder")
 					.html(resultsString)
 					.children("div:even").addClass("shadedDiv");
 		};
 
 		this.errorLoading = function(msg) {
-			$resultsHolder
+			$("#resultsHolder")
 				.html('<div><p>' + msg + '</p></div>');
 		};
 
@@ -145,18 +118,14 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
-		
-		<div id="textHolder" class="left"></div>
-		
-		<div id="rssHolder" class="right">
-			<div class="panel">
-				<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
-				<div id="resultsHolder"></div>
-			</div>
+
+	<div id="textHolder" class="splitScreen_A"></div>
+
+	<div id="rssHolder" class="splitScreen_B">
+		<div class="panelContent panel">
+			<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
+			<div id="resultsHolder"></div>
 		</div>
-		
 	</div>
 
 </div>
