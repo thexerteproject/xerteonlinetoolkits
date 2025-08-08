@@ -517,6 +517,10 @@ h3.contentTitle {
         opacity: 0.5;
     }
 
+    .navigator.tabbable {
+        margin-bottom: 1em;
+    }
+
 /* --SEARCH-------------------------------------------------------------- */
 
     #searchHolder .searchBtn, #searchHolder #partialMatchBtn {
