@@ -7616,72 +7616,99 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 	// declare local variables
 	let pageData = [];
 
-	// function adds resources button to header / side bar if any pages in the project have some associated resources
-	function init(options, content, elements) {
-		// TODO ** look at whether xwd properties &/or html elements are always names consistently on pages that use splitScreen - might be able to just reference them here rather than passing into function
-		const panelWidth = options.panelWidth;
-		const panelWidthCustom = options.panelWidthCustom == undefined ? 50 : Number(options.panelWidthCustom);
-		const panelPosition = options.panelPosition;
-		const panelStyle = options.panelStyle;
-		const removeTxt = options.removeTxt;
-		const topTxtWidth = options.topTxtWidth;
-		const bottomTxtWidth = options.bottomTxtWidth;
+	// function sets up the split screen layout, including the panel & any text above or below it
+	function init(pageInfo) {
+		// most pages use the xml attributes & html elements below
+		const attributes = {
+			panelWidth: x_currentPageXML.getAttribute("panelWidth"),
+			panelWidthCustom: x_currentPageXML.getAttribute("panelWidthCustom"),
+			panelPosition: x_currentPageXML.getAttribute("align") !== "Left" ? "Right" : "Left",
+			panelStyle: x_currentPageXML.getAttribute("panelStyle"),
+			removeTxt: x_currentPageXML.getAttribute("removeTxt"),
+			topTxtWidth: x_currentPageXML.getAttribute("textTopWidth"),
+			bottomTxtWidth: x_currentPageXML.getAttribute("textBottomWidth"),
+			pageTxt: x_currentPageXML.getAttribute("text"),
+			topTxt: x_currentPageXML.getAttribute("textTop"),
+			bottomTxt: x_currentPageXML.getAttribute("textBottom")
+		}
 
-		const pageTxt = content.pageTxt;
-		const topTxt = content.topTxt;
-		const bottomTxt = content.bottomTxt;
+		const elements = {
+			holder: $("#pageContents"), // parent of text & panel columns
+			textColumn: $(".splitScreen_A"), // column containing text only
+			panelColumn: $(".splitScreen_B"), // column containing panel
+			panel: $(".splitScreen_B .panel")
+		}
 
-		const $holder = elements.holder;
-		const $textColumn = elements.textColumn; // column containing text only
-		const $panelColumn = elements.panelColumn; // column containing panel
-		const $panel = elements.panel;
+		// for pages that don't use attributes/elements above, the info will be passed into this function
+		// override defaults with these
+		if (pageInfo != undefined) {
+			if (pageInfo.attributes != undefined) {
+				$.extend(attributes, pageInfo.attributes);
+			}
+			if (pageInfo.elements != undefined) {
+				$.extend(elements, pageInfo.elements);
+			}
+		}
+
+		// some page models have data for panel width/position capitalised - change all to lowercase to make things simpler
+		if (attributes.panelWidth != undefined) {
+			attributes.panelWidth = attributes.panelWidth.toLowerCase();
+		}
+		if (attributes.panelPosition != undefined) {
+			attributes.panelPosition = attributes.panelPosition.toLowerCase();
+		}
+
+		// ensure there's a custom panel width if none is set
+		if (attributes.panelWidth === "custom") {
+			attributes.panelWidthCustom = attributes.panelWidthCustom == undefined ? 50 : Number(attributes.panelWidthCustom);
+		}
 
 		// set up layout with panel at correct size & on left or right of screen (unless full width)
-		if (panelWidth === "Full") {
-			$panelColumn.addClass("full");
+		if (attributes.panelWidth === "full") {
+			elements.panelColumn.addClass("full");
 
 			// pre 3.15, page text was never shown with full panel
 			// there's now a checkbox to determine whether hidden or not
 			// needs to be hidden if checkbox checked but also if undefined for backwards compatibility
-			if (removeTxt !== "false" || x_addLineBreaks(pageTxt).trim() === "") {
-				$textColumn.remove();
+			if (attributes.removeTxt !== "false" || x_addLineBreaks(attributes.pageTxt).trim() === "") {
+				elements.textColumn.remove();
 				delete elements.textColumn;
 			}
 
 		} else {
 			// two columns
-			$textColumn.add($panelColumn).wrapAll('<div class="splitScreen"></div>');
+			elements.textColumn.add(elements.panelColumn).wrapAll('<div class="splitScreen"></div>');
 			const $splitScreen = $(".splitScreen");
 
-			if (panelPosition === "Right") {
-				$textColumn.addClass("left");
-				$panelColumn.addClass("right").appendTo($splitScreen);
+			if (attributes.panelPosition === "right") {
+				elements.textColumn.addClass("left");
+				elements.panelColumn.addClass("right").appendTo($splitScreen);
 
-				if (panelWidth === "Small") {
+				if (attributes.panelWidth === "small") {
 					$splitScreen.addClass("large"); // 60 | 40
-				} else if (panelWidth === "Large") {
+				} else if (attributes.panelWidth === "large") {
 					$splitScreen.addClass("small"); // 20 | 80
-				} else if (panelWidth === "Custom") {
+				} else if (attributes.panelWidth === "custom") {
 					$splitScreen.addClass("custom");
-					const shrink = panelWidthCustom > 50 ? [1,0] : [0,1]; // allow larger column to shrink if needed
-					$splitScreen.find(".left").css("flex", "0 " + shrink[1] + " calc(" + (100 - panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
-					$splitScreen.find(".right").css("flex", "0 " + shrink[0] + " calc(" + panelWidthCustom + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+					const shrink = attributes.panelWidthCustom > 50 ? [1,0] : [0,1]; // allow larger column to shrink if needed
+					$splitScreen.find(".left").css("flex", "0 " + shrink[1] + " calc(" + (100 - attributes.panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+					$splitScreen.find(".right").css("flex", "0 " + shrink[0] + " calc(" + attributes.panelWidthCustom + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
 				} else {
 					$splitScreen.addClass("medium"); // 40 | 60
 				}
 			} else {
-				$panelColumn.addClass("left");
-				$textColumn.addClass("right").appendTo($splitScreen);
+				elements.panelColumn.addClass("left");
+				elements.textColumn.addClass("right").appendTo($splitScreen);
 
-				if (panelWidth === "Small") {
+				if (attributes.panelWidth === "small") {
 					$splitScreen.addClass("medium"); // 40 | 60
-				} else if (panelWidth === "Large") {
+				} else if (attributes.panelWidth === "large") {
 					$splitScreen.addClass("xlarge"); // 80 | 20
-				} else if (panelWidth === "Custom") {
+				} else if (attributes.panelWidth === "custom") {
 					$splitScreen.addClass("custom");
-					const shrink = panelWidthCustom > 50 ? [1,0] : [0,1]; // allow larger column to shrink if needed
-					$splitScreen.find(".left").css("flex", "0 " + shrink[0] + " calc(" + panelWidthCustom + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
-					$splitScreen.find(".right").css("flex", "0 " + shrink[1] + " calc(" + (100 - panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+					const shrink = attributes.panelWidthCustom > 50 ? [1,0] : [0,1]; // allow larger column to shrink if needed
+					$splitScreen.find(".left").css("flex", "0 " + shrink[0] + " calc(" + attributes.panelWidthCustom + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+					$splitScreen.find(".right").css("flex", "0 " + shrink[1] + " calc(" + (100 - attributes.panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
 				} else {
 					$splitScreen.addClass("large"); // 60 | 40
 				}
@@ -7689,27 +7716,26 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 		}
 
 		// remove panel styling
-		if (panelStyle === "true") {
-			//$textColumn.find(".panel").removeClass("panel"); // ** add option for both columns for have panel style?
-			$panel.removeClass("panel");
+		if (attributes.panelStyle === "true") {
+			elements.panel.removeClass("panel");
 		}
 
 		// add optional text above &/or below the panel
 		// these might be full width even when panel is not full width
-		if (x_addLineBreaks(topTxt) != undefined && x_addLineBreaks(topTxt).trim() !== "") {
-			if (topTxtWidth === "true" && panelWidth !== "Full") {
-				$holder.prepend('<div id="textTopHolder">' + x_addLineBreaks(topTxt) + '</div>');
+		if (x_addLineBreaks(attributes.topTxt) != undefined && x_addLineBreaks(attributes.topTxt).trim() !== "") {
+			if (attributes.topTxtWidth === "true" && attributes.panelWidth !== "full") {
+				elements.holder.prepend('<div id="textTopHolder">' + x_addLineBreaks(attributes.topTxt) + '</div>');
 			} else {
-				$panel.before('<div id="textTopHolder">' + x_addLineBreaks(topTxt) + '</div>');
+				elements.panel.before('<div id="textTopHolder">' + x_addLineBreaks(attributes.topTxt) + '</div>');
 			}
 
 			elements.topTxt = $("#textTopHolder");
 		}
-		if (x_addLineBreaks(bottomTxt) != undefined && x_addLineBreaks(bottomTxt).trim() !== "") {
-			if (bottomTxtWidth === "true" && panelWidth !== "Full") {
-				$holder.append('<div id="textBottomHolder">' + x_addLineBreaks(bottomTxt) + '</div>');
+		if (x_addLineBreaks(attributes.bottomTxt) != undefined && x_addLineBreaks(attributes.bottomTxt).trim() !== "") {
+			if (attributes.bottomTxtWidth === "true" && attributes.panelWidth !== "full") {
+				elements.holder.append('<div id="textBottomHolder">' + x_addLineBreaks(attributes.bottomTxt) + '</div>');
 			} else {
-				$panel.after('<div id="textBottomHolder">' + x_addLineBreaks(bottomTxt) + '</div>');
+				elements.panel.after('<div id="textBottomHolder">' + x_addLineBreaks(attributes.bottomTxt) + '</div>');
 			}
 
 			elements.bottomTxt = $("#textBottomHolder");
@@ -7718,8 +7744,7 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 		// store data for later use in resize function
 		pageData.push({
 			page: x_currentPage,
-			options: options,
-			content: content,
+			attributes: attributes,
 			elements: elements
 		});
 	}
@@ -7729,7 +7754,7 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 		// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
 		// this will be overridden on smaller screens (where columns are rearranged into rows) and panel height be 'auto'
 		const data = pageData.find(obj => obj.page === x_currentPage);
-		if (data.options.panelStyle !== "true" && (data.elements.topTxt == undefined || data.elements.topTxt === 0) && (data.elements.bottomTxt == undefined || data.elements.bottomTxt.length === 0) && (data.options.panelWidth !== "Full" || data.elements.textColumn == undefined || data.elements.textColumn.length === 0)) {
+		if (data.attributes.panelStyle !== "true" && (data.elements.topTxt == undefined || data.elements.topTxt === 0) && (data.elements.bottomTxt == undefined || data.elements.bottomTxt.length === 0) && (data.attributes.panelWidth !== "full" || data.elements.textColumn == undefined || data.elements.textColumn.length === 0)) {
 			data.elements.panel.height(x_getAvailableHeight([data.elements.panel]));
 		}
 	}

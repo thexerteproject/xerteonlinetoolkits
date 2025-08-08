@@ -18,6 +18,8 @@
  * limitations under the License.
  */
 
+// ** allow top / bottom text to be copied / downloaded
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var modelAnswerResults = new function() {
@@ -44,32 +46,8 @@
 			const pageText = x_currentPageXML.childNodes[0] == undefined || x_currentPageXML.childNodes[0] == "" || x_currentPageXML.childNodes[0].nodeValue == undefined ? (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") !== "" ? x_currentPageXML.getAttribute("text") : "") : x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue);
 			$("#textHolder").html(pageText);
 
-			// get the info needed to set up the split screen layout & call function in xenith that deals with this
-			const options = {
-				panelWidth: x_currentPageXML.getAttribute("panelWidth"),
-				panelWidthCustom: x_currentPageXML.getAttribute("panelWidthCustom"),
-				panelPosition: x_currentPageXML.getAttribute("align") !== "Left" ? "Right" : "Left", // ** this is the opposite of property in modelAnswer
-				panelStyle: x_currentPageXML.getAttribute("panelStyle"),
-				removeTxt: x_currentPageXML.getAttribute("removeTxt"),
-				topTxtWidth: x_currentPageXML.getAttribute("textTopWidth"),
-				bottomTxtWidth: x_currentPageXML.getAttribute("textBottomWidth")
-			}
-
-			const content = {
-				pageTxt: pageText,
-				topTxt: x_currentPageXML.getAttribute("textTop"),
-				bottomTxt: x_currentPageXML.getAttribute("textBottom")
-			}
-
-			const elements = {
-				holder: $("#pageContents"),
-				splitScreen: $("#pageContents .splitScreen"),
-				textColumn: $("#textHolder"),
-				panelColumn: $("#infoHolder"),
-				panel: $("#panel")
-			}
-
-			XENITH.SPLITSCREEN.init(options, content, elements);
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init();
 
 			// set up copy to clipboard button
 			// this is either turned on with an optional property (>v3.15) or will be on if copypasteinfo exists
@@ -249,9 +227,9 @@
 
 <div id="pageContents">
 		
-	<div id="textHolder"></div>
+	<div id="textHolder" class="splitScreen_A"></div>
 
-	<div id="infoHolder">
+	<div id="infoHolder" class="splitScreen_B">
 		<div id="panel" class="panel" tabindex="0"> <!-- ** is tabindex needed here? if so, is it needed in model answer too? -->
 			<div id="panelTxt"></div>
 			<div id="btnHolder">
