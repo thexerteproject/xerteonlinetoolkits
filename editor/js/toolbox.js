@@ -651,6 +651,7 @@ var EDITOR = (function ($, parent) {
     {
         var options = (nodelabel ? wizard_data[name].menu_options : getOptionValue(all_options, name));
         var label = (nodelabel ? nodelabel : options.label);
+				console.log(options.label, nodelabel, options);
         var deprecated = false;
 		var	groupChild = $(id).parents('.wizardgroup').length > 0 ? true : false;
         //get input field value from value.
@@ -668,7 +669,7 @@ var EDITOR = (function ($, parent) {
             var flashonly = $('<img>')
                 .attr('src', 'editor/img/flashonly.png')
                 .attr('title', 'Flash only attribute');
-
+	
             if (options.condition)
             {
 
@@ -679,7 +680,31 @@ var EDITOR = (function ($, parent) {
                     return;
                 }
             }
+
             var tr = $('<tr>');
+
+						if(options.advanced == "true" && lightboxMode == "form"){
+								if(window.showAdvanced == undefined) {
+										window.showAdvanced = {};
+										console.log(arguments);
+										all_options.push({
+												name: "toggleAdvanced",
+												value: {
+														type: "toggleAdvanced",
+														label: "Show advanced options",
+														optional: "true",
+														group: options.group,
+												}
+										});
+								}
+								if(window.showAdvanced[key] == undefined) {
+										showAdvanced[key] = false;
+								}
+								if(!window.showAdvanced[key]) {
+										tr.css("display", "none");
+								}
+						}
+
             if (options.deprecated) {
                 var td = $('<td>')
                     .addClass("deprecated")
@@ -6675,6 +6700,26 @@ var EDITOR = (function ($, parent) {
                         }
 
                     });
+                break;
+        case 'toggleadvanced':
+				var id = 'toggleAdvanced_' + form_id_offset;
+				form_id_offset++;
+				let action = "show";
+				if(window.showAdvanced[key]) {
+					action = "hide";
+				}
+				html = $('<input type="checkbox">')
+					.attr('id', id)
+					.text(action + ' advanced options')
+					.attr('title', 'click to show advanced options')
+					.addClass('toggleAdvanced')
+					.click(() => {
+						window.showAdvanced[key] = !window.showAdvanced[key];
+						triggerRedrawForm(options.group, key, "", "redraw");
+					});
+				if(window.showAdvanced[key]){
+						html.attr("checked", "true");
+				}
                 break;
             case 'corpusgrid':
                 //Based on datagrid with some specific changes for the purposes of AI usage itself
