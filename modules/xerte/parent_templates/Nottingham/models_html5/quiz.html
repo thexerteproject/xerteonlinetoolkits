@@ -34,17 +34,17 @@
 			if ($(x_currentPageXML).children().length > 0) {
 				this.startQs();
 			}
-			if (x_currentPageXML.getAttribute("panelWidth") != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
+			if ($("#vidHolder").length > 0) {
 				this.loadVideo();
 			}
 		};
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $("#pageContents #mainPanel");
-			$panel.height(x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
 
-			if (x_currentPageXML.getAttribute("panelWidth") != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
+			if ($("#vidHolder").length > 0) {
 				this.loadVideo();
 			}
 			
@@ -564,67 +564,37 @@
         };
 
 		this.loadVideo = function() {
-			var $video = $("#pageVideo"),
-				videoDimensions = $video.data("dimensions"),
-				$textHolder = $("#textHolder"),
-				maxW = $textHolder.width() - parseInt($textHolder.find(".panel").css("padding-left")) * 2 - parseInt($textHolder.find(".panel").css("margin-left")) * 2;
+			const $video = $("#pageVideo");
+			let videoDimensions = $video.data("dimensions");
+			const padding = $video.parent("#vidHolder").outerWidth(true) - $video.parent("#vidHolder").width();
+			$video.hide(); // temporarily hide in case it's making text column too wide
+			const maxW = $("#textHolder").width() - padding;
+			$video.show();
 			
 			if (maxW < videoDimensions[0]) {
-				var scale = maxW / videoDimensions[0];
+				const scale = maxW / videoDimensions[0];
 				videoDimensions = [videoDimensions[0] * scale, videoDimensions[1] * scale];
 			}
 
 			$video.mediaPlayer({
-				type	:"video",
-				source	:$video.data("src"),
-				width	:Number(videoDimensions[0]),
-				height	:Number(videoDimensions[1])
+				type: "video",
+				source: $video.data("src"),
+				width: Number(videoDimensions[0]),
+				height: Number(videoDimensions[1])
 			});
 		}
 
 		this.init = function() {
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
-				$splitScreen = $("#pageContents .splitScreen"),
-				$textHolder = $("#textHolder");
+			const $textHolder = $("#textHolder");
 
             this.resultsShown = false;
-			if (panelWidth == "Full") {
-				$("#infoHolder .panel").appendTo($("#pageContents"));
-				$splitScreen.remove();
-			} else {
-				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
-				
-				var textAlign = x_currentPageXML.getAttribute("align");
-				if (textAlign != "right" || (x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "")) {
-					if (panelWidth == "Small") {
-						$splitScreen.addClass("large");
-					} else if (panelWidth == "Large") {
-						$splitScreen.addClass("small");
-					} else {
-						$splitScreen.addClass("medium");
-					}
-				} else {
-					$textHolder
-						.removeClass("left")
-						.addClass("right")
-						.appendTo($splitScreen);
-					$("#infoHolder")
-						.removeClass("right")
-						.addClass("left");
-					if (panelWidth == "Small") {
-						$splitScreen.addClass("medium");
-					} else if (panelWidth == "Large") {
-						$splitScreen.addClass("xlarge");
-					} else {
-						$splitScreen.addClass("large");
-					}
-				}
-			}
 
-			if (panelWidth != "Full" && x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
+			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
+
+			if (x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
 				$textHolder.append('<div id="vidHolder" class="panel inline"><div id="pageVideo"></div></div>');
 				var $pageVideo = $("#pageVideo"),
-					videoDimensions = [320,240]; // default video size
+						videoDimensions = [640,480]; // default video size
 				if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
 					var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
 					if (dimensions[0] != 0 && dimensions[1] != 0) {
@@ -637,8 +607,8 @@
 				});
 				quiz.loadVideo();
 			}
-			
-			if (panelWidth != "Full" && x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "") {
+
+			if (x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "") {
 				var imgString = '';
 				if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
 					imgString += '<figure>';
@@ -653,6 +623,15 @@
 				}
 				$textHolder.append(imgString);
 			}
+
+			// panel position data is reversed as the property used to be called 'Align text' rather than 'Panel position'
+			// send amended data to split screen function as otherwise layout will be reversed
+			const attributes = {
+				panelPosition: x_currentPageXML.getAttribute("align") !== "right" ? "right" : "left",
+				pageTxt: $("#textHolder").html().trim() // this will be empty or will contain instructions &/or video &/or image
+			}
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
 			// submitBtnWidth/nextBtnWidth/restartBtnWidth attributes not used as buttons will be sized automatically, submitBtnTip/nextBtnTip/restartBtnTip attributes also not used
 			// if language attributes aren't in xml will have to use english fall back
@@ -772,40 +751,36 @@
 
 <div id="pageContents">
 
-	<div class="splitScreen">
+	<div id="textHolder" class="splitScreen_A"></div>
 
-		<div id="textHolder" class="left"></div>
+	<div id="infoHolder" class="splitScreen_B">
 
-		<div id="infoHolder" class="right">
-		
-			<div id="mainPanel" class="panel" tabindex="0">
-				
-				<fieldset class="noStyle">
+		<div id="mainPanel" class="panelContent panel" tabindex="0">
 
-					<p id="qNo" aria-live="polite"></p>
-				
-					<span><legend id="qTxt"></legend></span>
-					
-					<div id="questionAudio"></div>
-					<div id="optionHolder"></div>
-					
-					<div id="buttonHolder">
-						<button id="checkBtn"></button>
-						<button id="nextBtn"></button>
-						<button id="restartBtn"></button>
-					</div>
-					
-					<div id="feedbackGroup" aria-live="polite">
-						<div id="feedbackHeader" class="feedbackBlock"></div>
-						<div id="topFeedback" class="feedbackBlock"></div>
-						<div id="middleFeedback" class="feedbackBlock"></div>
-						<div id="bottomFeedback" class="feedbackBlock"></div>
-					</div>
-					
-				</fieldset>
-				
-			</div>
-			
+			<fieldset class="noStyle">
+
+				<p id="qNo" aria-live="polite"></p>
+
+				<span><legend id="qTxt"></legend></span>
+
+				<div id="questionAudio"></div>
+				<div id="optionHolder"></div>
+
+				<div id="buttonHolder">
+					<button id="checkBtn"></button>
+					<button id="nextBtn"></button>
+					<button id="restartBtn"></button>
+				</div>
+
+				<div id="feedbackGroup" aria-live="polite">
+					<div id="feedbackHeader" class="feedbackBlock"></div>
+					<div id="topFeedback" class="feedbackBlock"></div>
+					<div id="middleFeedback" class="feedbackBlock"></div>
+					<div id="bottomFeedback" class="feedbackBlock"></div>
+				</div>
+
+			</fieldset>
+
 		</div>
 
 	</div>

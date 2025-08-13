@@ -58,11 +58,11 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $("#pageContents .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
 
 			var	audioBarW = 0,
-					$pageAudio = $("#pageAudio");
+				$pageAudio = $("#pageAudio");
 
 			$pageAudio.find(".mejs-inner .mejs-controls").children().each(function() {
 				audioBarW += $(this).outerWidth();
@@ -153,8 +153,6 @@
 
         this.setup =function() {
 
-            var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-
             this.initTracking();
 
 			if (XTGetMode() != "normal") {
@@ -167,20 +165,11 @@
 			restartBtnTxt = x_currentPageXML.getAttribute("restartText") != undefined && x_currentPageXML.getAttribute("restartText") != "" ? x_currentPageXML.getAttribute("restartText") : "Restart";
 			correctText = x_currentPageXML.getAttribute("correctText") != undefined && x_currentPageXML.getAttribute("correctText") != "" ? x_currentPageXML.getAttribute("correctText") : "Correct";
 			incorrectText = x_currentPageXML.getAttribute("incorrectText") != undefined && x_currentPageXML.getAttribute("incorrectText") != "" ? x_currentPageXML.getAttribute("incorrectText") : "Incorrect";
-			
-			if (panelWidth == "Full") {
-				$("#pageContents .panel").appendTo($pageContents);
-				$("#pageContents .splitScreen").remove();
-			} else {
-				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				if (panelWidth == "Small") {
-					$("#pageContents .splitScreen").addClass("large"); // make text area on left large so panel on right is small
-				} else if (panelWidth == "Large") {
-					$("#pageContents .splitScreen").addClass("small");
-				} else {
-					$("#pageContents .splitScreen").addClass("medium");
-				}
-			}
+
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init();
 
 			$("#showBtn")
 				.button({
@@ -379,31 +368,27 @@
 
 <div id="pageContents">
 
-	<div class="splitScreen">
+	<div id="textHolder" class="splitScreen_A"></div>
 
-		<div id="textHolder" class="left"></div>
-		
-		<div class="right">
-			<div class="panel" tabindex="0">
-				<p id="count" aria-live="polite"></p>
-				<div id="panelContent">
-					<div id="prompt"></div>
-					<div id="audioHolder">
-						<div id="pageAudio"></div>
-					</div>
-					<textarea id="answerTxt" rows="6"></textarea>
-					<div id="btnHolder">
-						<button id="showBtn"></button>
-						<button id="nextBtn"></button>
-						<button id="restartBtn"></button>
-					</div>
-					<div id="answer" aria-live="polite"/>
-					<div id="correct" aria-live="polite"></div>
-					<div id="incorrect" aria-live="polite"></div>
+	<div class="splitScreen_B">
+		<div class="panelContent panel" tabindex="0">
+			<p id="count" aria-live="polite"></p>
+			<div id="panelContent">
+				<div id="prompt"></div>
+				<div id="audioHolder">
+					<div id="pageAudio"></div>
 				</div>
+				<textarea id="answerTxt" rows="6"></textarea>
+				<div id="btnHolder">
+					<button id="showBtn"></button>
+					<button id="nextBtn"></button>
+					<button id="restartBtn"></button>
+				</div>
+				<div id="answer" aria-live="polite"/>
+				<div id="correct" aria-live="polite"></div>
+				<div id="incorrect" aria-live="polite"></div>
 			</div>
 		</div>
-
 	</div>
 
 </div>
