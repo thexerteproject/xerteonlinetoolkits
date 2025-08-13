@@ -1,9 +1,9 @@
-/* text.html */
-	
-	#pageContents p:first-child {
-		margin-top: 0px;
-	}
-	
+/* stopTracking.html */
+
+#pageContents p:first-child {
+	margin-top: 0px;
+}
+
 .center{
 	text-align: center;
 }

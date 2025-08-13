@@ -33,89 +33,101 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-
+            // panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+            XENITH.SPLITSCREEN.resizePanel();
 		}
 		
 		this.init = function() {
-			XENITH.PAGEMENU.build($("#tocMenuPage"));
+			XENITH.PAGEMENU.build($("#panel"));
 		}
 
+        // called from PAGEMENU in xenith after TOC has been set up
+        // continues set up of menu page with things that aren't relevant to TOC showing in dialog, lightbox or sidebar
 		this.setUpMenuPage = function() {
-            // now set up stuff that's specific to the menu page (not relevant to TOC showing in dialog, lightbox or sidebar)
-			const $menuItems = $("#menuItems");
-			const $menuHolder = $("#menuHolder");
+            // does the menu page contain an image?
+            if (x_params.menuImage != undefined && x_params.menuImage != "") {
+                x_checkMediaExists(x_evalURL(x_params.menuImage), function (mediaExists) {
+                    if (mediaExists) {
+                        if (x_params.menuImageProperties != "Full Screen") {
+                            // image in panel next to TOC
+                            $("#textHolder").append('<img class="panel centre" />');
 
-            $menuHolder.addClass('splitScreen');
-			$('<div class="right"></div>').insertAfter($menuItems);
-			$menuItems.wrap('<div class="left"></div>');
+                            $("#textHolder img")
+                                .one("load", function () {
+                                    menu.continueSetUp();
+                                })
+                                .attr({
+                                    "id": "pageImg",
+                                    "alt": x_params.menuImageAlt != undefined ? x_params.menuImageAlt : "",
+                                    "src": x_evalURL(x_params.menuImage)
+                                })
+                                .each(function () { // called if loaded from cache as in some browsers load won't automatically trigger
+                                    if (this.complete) {
+                                        $(this).trigger("load");
+                                    }
+                                });
 
-			if (x_params.menuImage != undefined && x_params.menuImage != "") {
-				x_checkMediaExists(x_evalURL(x_params.menuImage), function(mediaExists) {
-					if (mediaExists) {
+                        } else {
+                            // background image
+                            menu.setUpBg();
+                            menu.continueSetUp();
+                        }
 
-						if (x_params.menuImageProperties != "Full Screen") { // use panel
+                    } else {
+                        menu.continueSetUp();
+                    }
+                });
 
-							$("#menuHolder .right").append('<img class="panel centre" />');
+            } else {
+                menu.continueSetUp();
+            }
+        }
 
-							$("#menuHolder .right img")
-									.one("load", function() {
-										x_pageLoaded();
-									})
-									.attr({
-										"id":"pageImg",
-										"alt":x_params.menuImageAlt != undefined ? x_params.menuImageAlt : "",
-										"src":x_evalURL(x_params.menuImage)
-									})
-									.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
-										if (this.complete) {
-											$(this).trigger("load");
-										}
-									});
+        this.continueSetUp = function() {
+            if (x_params.menuText != undefined && x_params.menuText.trim() != "") {
+                $("#textHolder").append(x_params.menuText);
+            }
 
-						} else { // bg image
-							menu.setUpBg(true);
-						}
-					} else {
-						if (x_browserInfo.mobile == false) {
-							$("#menuItems").width("70%");
-						}
-					}
-				});
+            // all xml properties for menu page are named differently to normal page models
+            // send correct data to split screen function
+            const attributes = {
+                panelWidth: x_params.menuPanelWidth,
+                panelWidthCustom: x_params.menuPanelWidthCustom,
+                panelPosition: x_params.menuAlign != undefined ? x_params.menuAlign : "Left", // for backwards compatibility, default should be left if not set manually
+                panelStyle: x_params.menuPanelStyle != "true" ? "true" : "false", // data is reversed as the property is called 'Show in panel' rather than 'Remove panel style'
+                removeTxt: x_params.menuText != undefined && x_params.menuText != "" ? "false" : "true", // manually set value as it's not an option in editor
+                pageTxt: $("#textHolder").html().trim() // this will be empty or will contain menuTxt &/or menuImage
+            }
 
-			} else {
-				if (x_browserInfo.mobile == false) {
-					$("#menuItems").width("70%");
-				}
-			}
+            const elements = {
+                holder: $("#tocMenuPage") // parent of text & panel columns
+            }
 
+            // set up split screen layout
+            XENITH.SPLITSCREEN.init({"attributes": attributes, "elements": elements});
+
+            this.sizeChanged();
 			x_pageLoaded();
 		}
 		
 		// function sets up full screen bg image
-		this.setUpBg = function(firstLoad) {
-			x_checkMediaExists(x_evalURL(x_params.menuImage), function(mediaExists) {
-				if (mediaExists) {
-					$("#x_mainBg").hide();
-					
-					var $pageBg = $('<img id="pageBg' + x_currentPage + '" class="pageBg"/>');
-					$pageBg
-						.hide()
-						.one("load", function() {
-							$(this).fadeIn();
-							if (firstLoad == true) {
-								x_pageLoaded();
-							}
-						})
-						.attr("src", x_evalURL(x_params.menuImage))
-						.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
-							if (this.complete) {
-								$(this).trigger("load");
-							}
-						});
-					
-					$x_background.prepend($pageBg);
-				}
-			});
+		this.setUpBg = function() {
+            $("#x_mainBg").hide();
+
+            var $pageBg = $('<img id="pageBg' + x_currentPage + '" class="pageBg"/>');
+            $pageBg
+                .hide()
+                .one("load", function() {
+                    $(this).fadeIn();
+                })
+                .attr("src", x_evalURL(x_params.menuImage))
+                .each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+                    if (this.complete) {
+                        $(this).trigger("load");
+                    }
+                });
+
+            $x_background.prepend($pageBg);
 		}
 	}
 	
@@ -123,4 +135,12 @@
 
 </script>
 
-<div id="tocMenuPage"></div>
+<div id="tocMenuPage">
+
+    <div id="textHolder" class="splitScreen_A"></div>
+
+    <div id="infoHolder" class="splitScreen_B">
+        <div id="panel" class="panelContent panel"></div>
+    </div>
+
+</div>

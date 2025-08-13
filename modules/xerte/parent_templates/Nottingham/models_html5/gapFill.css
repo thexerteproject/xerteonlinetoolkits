@@ -8,10 +8,6 @@
 		overflow-x: hidden;
 	}
 	
-	#textHolder {
-		margin-bottom:	10px;
-	}
-	
 	#targetHolder .target {
 		display:		inline-block;
 		text-align:		center;

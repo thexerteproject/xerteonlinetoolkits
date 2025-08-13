@@ -60,11 +60,20 @@
 			<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true" condition="navigation!='Historic'"/>
 			<tocChapterNumbers optional="true" type="CheckBox" label="Chapter Numbering" defaultValue="false" condition="navigation!='Historic'"/>
 		</tocNumberGroup>
-		<menuImageGroup type="group" label="Menu Image" optional="true" condition="navigation=='Menu'||navigation=='Menu with Page Controls'" tooltip="Add an image to the menu page">
-			<menuImage optional="true" type="media" label="Image" defaultValue="" placeholder="Select an image" condition="navigation=='Menu'||navigation=='Menu with Page Controls'"/>
-			<menuImageAlt label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuImageProperties=='Use Panel'" optional="true"/>
-			<menuImageProperties optional="true" type="ComboBox" label="Position" conditionTrigger="true" options="Panel,Background" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel" condition="navigation=='Menu'||navigation=='Menu with Page Controls'"/>
-		</menuImageGroup>
+		<menuPageGroup type="group" label="Menu Page" optional="true" condition="navigation=='Menu'||navigation=='Menu with Page Controls'">
+			<menuText label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuPanelWidth!='Full'" optional="true" tooltip="Add text to the menu page (optional)"/>
+			<menuLayoutGroup label="Page Layout" type="group" optional="true" condition="navigation=='Menu'||navigation=='Menu with Page Controls'">
+				<menuPanelWidth label="Menu Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true" condition="navigation=='Menu'||navigation=='Menu with Page Controls'" optional="true"/>
+				<menuPanelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuPanelWidth=='Custom'" optional="true"/>
+				<menuAlign label="Menu Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Left" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuPanelWidth!='Full'" optional="true"/>
+				<menuPanelStyle label="Show in Panel" type="CheckBox" defaultValue="false" condition="navigation=='Menu'||navigation=='Menu with Page Controls'" optional="true"/>
+			</menuLayoutGroup>
+			<menuImageGroup type="group" label="Image" optional="true" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuPanelWidth!='Full'" tooltip="Add an image to the menu page (optional)">
+				<menuImage optional="true" type="media" label="Image" defaultValue="" placeholder="Select an image" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuPanelWidth!='Full'"/>
+				<menuImageAlt label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuPanelWidth!='Full'&amp;&amp;menuImageProperties=='Use Panel'" optional="true"/>
+				<menuImageProperties optional="true" type="ComboBox" label="Position" conditionTrigger="true" options="Panel,Background" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuPanelWidth!='Full'"/>
+			</menuImageGroup>
+		</menuPageGroup>
 	</toc>
 	
 	<homePageGroup type="group" label="Home Page" optional="true" tooltip="Customise which page is classed as the home page and create a link from the project title to the home page" info="The default home page is either the first page or the page menu (when navigation is menu or menu with page controls).">

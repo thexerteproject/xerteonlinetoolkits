@@ -33,11 +33,8 @@
             };
 
             this.sizeChanged = function() {
-                const $panel = $("#pageContents .panel");
-                $panel.height(x_getAvailableHeight([$panel]));
-
-                var $mainPanel = $("#mainPanel");
-                var padding = $mainPanel.innerWidth() - $mainPanel.width();
+                // panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+                XENITH.SPLITSCREEN.resizePanel();
             };
 
             this.leavePage = function () {
@@ -80,43 +77,15 @@
                 }
                 XTSetPageType(x_currentPage, "numeric", 1, weighting);
 
-				// page layout
-                var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
-                    $splitScreen = $("#pageContents .splitScreen");
-                var $textHolder = $("#textHolder");
+                $("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("introduction")));
 
-                if (panelWidth == "Full") {
-                    $("#pageContents .panel").appendTo($pageContents);
-                    $splitScreen.remove();
-                } else {
-                    $textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("introduction")));
-
-                    var textAlign = x_currentPageXML.getAttribute("align");
-                    if (textAlign != "Right") {
-                        if (panelWidth == "Small") {
-                            $splitScreen.addClass("large");
-                        } else if (panelWidth == "Large") {
-                            $splitScreen.addClass("small");
-                        } else {
-                            $splitScreen.addClass("medium");
-                        }
-                    } else {
-                        $textHolder
-                            .removeClass("left")
-                            .addClass("right")
-                            .appendTo($splitScreen);
-                        $("#infoHolder")
-                            .removeClass("right")
-                            .addClass("left");
-                        if (panelWidth == "Small") {
-                            $splitScreen.addClass("medium");
-                        } else if (panelWidth == "Large") {
-                            $splitScreen.addClass("xlarge");
-                        } else {
-                            $splitScreen.addClass("large");
-                        }
-                    }
+                // panel position data is reversed as the property used to be called 'Align text' rather than 'Panel position'
+                // send amended data to split screen function as otherwise layout will be reversed
+                const attributes = {
+                    panelPosition: x_currentPageXML.getAttribute("align") !== "Right" ? "Right" : "Left"
                 }
+                // set up split screen layout
+                XENITH.SPLITSCREEN.init({"attributes": attributes});
 
                 var $question = $("#question");
 				var originalQuestion = $('<div>').html(x_currentPageXML.getAttribute("wrongText")).text().trim();
@@ -248,24 +217,23 @@
 
 
 <div id="pageContents">
-    <div class="splitScreen">
-        <div id="textHolder" class="left"></div>
-        <div id="infoHolder" class="right">
-            <div id="mainPanel" class="panel" tabindex="0">
-                <div id="question">
 
-                </div>
-                <div id="optionHolder">
-                    <div class="answer"><textarea id="text" rows="5" cols="50" spellcheck="false"></textarea></div>
-                </div>
-                <button id="checkButton"></button>
-                <div id="fbBlock" aria-live="polite">
-                    <div id="attempts"></div>
-                    <div id="correctOrNot"></div>
-                    <div id="answer"></div>
-                    <div id="FurtherClarification"></div>
-                </div>
+    <div id="textHolder" class="splitScreen_A"></div>
+
+    <div id="infoHolder" class="splitScreen_B">
+        <div id="mainPanel" class="panelContent panel" tabindex="0">
+            <div id="question"></div>
+            <div id="optionHolder">
+                <div class="answer"><textarea id="text" rows="5" cols="50" spellcheck="false"></textarea></div>
+            </div>
+            <button id="checkButton"></button>
+            <div id="fbBlock" aria-live="polite">
+                <div id="attempts"></div>
+                <div id="correctOrNot"></div>
+                <div id="answer"></div>
+                <div id="FurtherClarification"></div>
             </div>
         </div>
     </div>
+
 </div>

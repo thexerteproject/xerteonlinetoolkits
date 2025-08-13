@@ -95,9 +95,9 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			// set panel to appropriate size (at least full height of page)
-			var $panel = $("#mainPanel");
-			$panel.css("min-height", x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
+
 			$pageContents.find("#hint").remove();
 
 			// resize any audio players in feedback blocks
@@ -149,23 +149,11 @@
             } else {
 				this.isTracked = false;
 			}
-			
-			// page layout
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			if (panelWidth == "Full") {
-				$("#mainText").remove();
-				$("#dragDropHolder").appendTo($pageContents);
-				$("#pageContents .splitScreen").remove();
-			} else {
-				$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				if (panelWidth == "Small") {
-					$("#pageContents .splitScreen").addClass("large");
-				} else if (panelWidth == "Large") {
-					$("#pageContents .splitScreen").addClass("small");
-				} else {
-					$("#pageContents .splitScreen").addClass("medium");
-				}
-			}
+
+			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init();
 
 			// origPassage is the gap fill text - replace p tags with br tags
 			var	origPassage = x_addLineBreaks(x_currentPageXML.getAttribute("passage"));
@@ -1730,28 +1718,24 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
-		
-		<div id="textHolder" class="left">
-			<div id="mainText"></div>
-		</div>
-		
-		<div id="dragDropHolder" class="right">
-			<div id="mainPanel" class="panel">
-				<div id="targetHolder"></div>
-				<div id="labelHolder"></div>
-				<div id="btnHolder">
-					<button id="showBtn"></button>
-					<button id="submitBtn"></button>
-				</div>
-				<div id="feedbackTxt">
-					<div id="txt" aria-live="polite"></div>
-					<div id="audioHolder"></div>
-				</div>
+
+	<div id="textHolder" class="splitScreen_A">
+		<div id="mainText"></div>
+	</div>
+
+	<div id="dragDropHolder" class="splitScreen_B">
+		<div id="mainPanel" class="panelContent panel">
+			<div id="targetHolder"></div>
+			<div id="labelHolder"></div>
+			<div id="btnHolder">
+				<button id="showBtn"></button>
+				<button id="submitBtn"></button>
+			</div>
+			<div id="feedbackTxt">
+				<div id="txt" aria-live="polite"></div>
+				<div id="audioHolder"></div>
 			</div>
 		</div>
-		
 	</div>
 	
 </div>
