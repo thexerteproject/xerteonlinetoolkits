@@ -7619,17 +7619,20 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 	// function sets up the split screen layout, including the panel & any text above or below it
 	function init(pageInfo) {
 		// most pages use the xml attributes & html elements below
-		const attributes = {
-			panelWidth: x_currentPageXML.getAttribute("panelWidth"),
-			panelWidthCustom: x_currentPageXML.getAttribute("panelWidthCustom"),
-			panelPosition: x_currentPageXML.getAttribute("align") !== "Left" ? "Right" : "Left",
-			panelStyle: x_currentPageXML.getAttribute("panelStyle"),
-			removeTxt: x_currentPageXML.getAttribute("removeTxt"),
-			topTxtWidth: x_currentPageXML.getAttribute("textTopWidth"),
-			bottomTxtWidth: x_currentPageXML.getAttribute("textBottomWidth"),
-			pageTxt: x_currentPageXML.getAttribute("text"),
-			topTxt: x_currentPageXML.getAttribute("textTop"),
-			bottomTxt: x_currentPageXML.getAttribute("textBottom")
+		const attributes = {};
+
+		if (!XENITH.PAGEMENU.isThisMenu()) {
+			// don't look for these if current page is menu page as x_currentPageXML will not be defined
+			attributes.panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			attributes.panelWidthCustom = x_currentPageXML.getAttribute("panelWidthCustom");
+			attributes.panelPosition = x_currentPageXML.getAttribute("align");
+			attributes.panelStyle = x_currentPageXML.getAttribute("panelStyle");
+			attributes.removeTxt = x_currentPageXML.getAttribute("removeTxt");
+			attributes.topTxtWidth = x_currentPageXML.getAttribute("textTopWidth");
+			attributes.bottomTxtWidth = x_currentPageXML.getAttribute("textBottomWidth");
+			attributes.pageTxt = x_currentPageXML.getAttribute("text");
+			attributes.topTxt = x_currentPageXML.getAttribute("textTop");
+			attributes.bottomTxt = x_currentPageXML.getAttribute("textBottom");
 		}
 
 		const elements = {
@@ -7657,8 +7660,9 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 		if (attributes.panelPosition != undefined) {
 			attributes.panelPosition = attributes.panelPosition.toLowerCase();
 		}
+		attributes.panelPosition = attributes.panelPosition !== "left" ? "right" : "left"; // right is default if not set
 
-		// ensure there's a custom panel width if none is set
+		// ensure there's a custom panel width (50%) if none is set
 		if (attributes.panelWidth === "custom") {
 			attributes.panelWidthCustom = attributes.panelWidthCustom == undefined ? 50 : Number(attributes.panelWidthCustom);
 		}
