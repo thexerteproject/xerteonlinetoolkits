@@ -46,9 +46,13 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $("#pageContents .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
-			$("#contentHolder").height(x_getAvailableHeight([$panel], [$("#btnHolder")]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
+
+			// when panel has fixed height set, keep buttons at bottom of panel by setting height of #contentHolder above it
+			if (panelH !== false) {
+				$("#contentHolder").height(x_getAvailableHeight([$("#pageContents .panelContent")], [$("#btnHolder")]));
+			}
 		}
 		
 		this.init = function() {
@@ -68,25 +72,13 @@
 				"currentStep": 0,
 				"currentStepInfo": 0
 			});
-			
-			// page layout
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			if (panelWidth == "Full") {
-				$("#pageContents .right div:first").appendTo($("#pageContents"));
-				$("#pageContents .splitScreen").remove();
-			} else {
-				// divs for every bit of display text are added to displayInfo div below as you go through steps - every div has class info* where * is step num that it goes with (so we can hide if we go backwards)
-				// divs will have class of clear if text from previous steps are to be hidden
-				$("#textHolder").html('<div id="intro">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div><div id="displayInfo"></div>');
-				
-				if (panelWidth == "Small") {
-					$("#pageContents .splitScreen").addClass("large"); // make text area on left large so accordion on right is small
-				} else if (panelWidth == "Large") {
-					$("#pageContents .splitScreen").addClass("small");
-				} else {
-					$("#pageContents .splitScreen").addClass("medium");
-				}
-			}
+
+			// divs for every bit of display text are added to displayInfo div below as you go through steps - every div has class info* where * is step num that it goes with (so we can hide if we go backwards)
+			// divs will have class of clear if text from previous steps are to be hidden
+			$("#textHolder").html('<div id="intro">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div><div id="displayInfo"></div>');
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init();
 			
 			if ($(x_currentPageXML).children().length == 0) {
 				$("#contentHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noQ", "No questions have been added") + '</span>');
@@ -209,7 +201,7 @@
 								// store resultTxt (optional) so it can be shown as collated result at the end
 								$pageContents.data("storedResultTxt").push($selected.data("resultTxt"));
 								
-								// add text to left side
+								// add text to textHolder
 								if ($selected.data("displayTxt") != undefined && $selected.data("displayTxt") != "") {
 									var clear = $selected.data("clear") == "true" ? " clear" : ""; // class used when previous info is to be cleared
 									$("#textHolder #displayInfo").append('<div class="info' + ($pageContents.data("currentStep") + 1) + clear + '">' + $selected.data("displayTxt") + '</div>');
@@ -223,7 +215,7 @@
 								// store resultTxt (optional) so it can be shown as collated result at the end
 								$pageContents.data("storedResultTxt").push($selected.data("resultTxt"));
 								
-								// add text to left side
+								// add text to textHolder
 								if ($selected.data("displayTxt") != undefined && $selected.data("displayTxt") != "") {
 									var clear = $selected.data("clear") == "true" ? " clear" : ""; // class used when previous info is to be cleared
 									$("#textHolder #displayInfo").append('<div class="info' + ($pageContents.data("currentStep") + 1) + clear + '">' + $selected.data("displayTxt") + '</div>');
@@ -247,7 +239,7 @@
 									// store resultTxt associated with this answer (optional) so it can be shown as collated result at the end
 									$pageContents.data("storedResultTxt").push($this.attr("resultTxt"));
 									
-									// add text to left side
+									// add text to textHolder
 									if ($this.attr("displayTxt") != undefined && $this.attr("displayTxt") != "") {
 										var clear = $this.attr("clear") == "true" ? " clear" : ""; // class used when previous info is to be cleared
 										$("#textHolder #displayInfo").append('<div class="info' + ($pageContents.data("currentStep") + 1) + clear + '">' + $this.attr("displayTxt") + '</div>');
@@ -1044,40 +1036,36 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
-		
-		<div id="textHolder" class="left"></div>
-		
-		<div class="right">
-			<div class="panel">
-				
-				<div id="contentHolder" tabindex="0">
-					
-					<div id="stepHolder" aria-live="polite">
-						<button id="helpBtn"></button>
-						<button id="submitBtn"></button>
-					</div>
-					
-					<div id="overviewHolder">
-					</div>
-					
+
+	<div id="textHolder" class="splitScreen_A"></div>
+
+	<div class="splitScreen_B">
+		<div class="panelContent panel">
+
+			<div id="contentHolder" tabindex="0">
+
+				<div id="stepHolder" aria-live="polite">
+					<button id="helpBtn"></button>
+					<button id="submitBtn"></button>
 				</div>
-				
-				<div id="btnHolder">
-					<div id="btnFloatL">
-						<button id="copyBtn"></button>
-					</div>
-					<div id="btnFloatR">
-						<button id="backBtn"></button>
-						<button id="newBtn"></button>
-						<button id="fwdBtn"></button>
-					</div>
+
+				<div id="overviewHolder">
 				</div>
-				
+
 			</div>
+
+			<div id="btnHolder">
+				<div id="btnFloatL">
+					<button id="copyBtn"></button>
+				</div>
+				<div id="btnFloatR">
+					<button id="backBtn"></button>
+					<button id="newBtn"></button>
+					<button id="fwdBtn"></button>
+				</div>
+			</div>
+
 		</div>
-		
 	</div>
 	
 </div>

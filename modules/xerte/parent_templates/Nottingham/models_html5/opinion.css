@@ -65,16 +65,6 @@
         color: #000;
     }
 
-    .sliderHolder .labelHolder .leftLabel
-    {
-        /* text-align: left; */
-    }
-
-    .sliderHolder .labelHolder .rightLabel
-    {
-        /* text-align: right; */
-    }
-
     .sliderHolder .labelHolder:after {
         content: '';
         width: 100%;
@@ -137,7 +127,7 @@
     }
 
 .qImg, .opinionImg {
-	max-width: 90%;
+	max-width: 100%;
 }
 
 #print-overlay {
@@ -160,6 +150,10 @@
 
 #x_mainHolder.x_opinion_page .fbBlock:not(:first-child) h3 {
     padding-top: .5em;
+}
+
+#txtContent + img.opinionImg, #txtContent + figure img.opinionImg, #txtContent + a img.opinionImg {
+    margin-top: 1em;
 }
 
 

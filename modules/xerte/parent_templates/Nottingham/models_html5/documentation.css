@@ -126,3 +126,17 @@
 	input, textarea {
 		box-sizing: border-box;
 	}
+
+	.panelContent {
+		overflow: auto;
+	}
+
+@media (max-width: 480px) {
+	#pages {
+		height: unset !important;
+	}
+
+	#pages .itemImg {
+		max-height: unset !important;
+	}
+}
