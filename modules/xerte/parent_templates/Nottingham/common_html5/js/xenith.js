@@ -1752,7 +1752,22 @@ function x_continueSetUp1() {
 		} else {
 			$logo.attr('aria-hidden', 'true');
 		}
-
+		// If the logo max height option is added
+		if (x_params.icMaxHeight != undefined && x_params.icMaxHeight != 'false') {
+			if (x_params.icMaxHeightVal != undefined && x_params.icMaxHeightVal != '') {
+				$logo.css('max-height', x_params.icMaxHeightVal);
+			} else {
+				$logo.css('max-height', '80px');
+			}
+			// If the logo padding option is added
+			if (x_params.icPadding != undefined && x_params.icPadding != 'false') {
+				if (x_params.icPaddingVal != undefined && x_params.icPaddingVal != '') {
+					$logo.css('padding', x_params.icPaddingVal);
+				} else {
+					$logo.css('padding', '10px 15px 0px 10px');
+				}
+			}
+		}
 		XENITH.RESOURCES.init();
 		XENITH.PROGRESSBAR.init();
 
