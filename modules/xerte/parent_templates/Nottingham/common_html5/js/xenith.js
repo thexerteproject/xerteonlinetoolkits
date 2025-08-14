@@ -7745,6 +7745,11 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 			elements.bottomTxt = $(".textBottomHolder");
 		}
 
+		// add class to pages where panel heights should never be auto, e.g. 360 image
+		if (attributes.fullH) {
+			elements.panelColumn.addClass("fullPanelH");
+		}
+
 		// store data for later use in resize function
 		pageData.push({
 			page: x_currentPage,
@@ -7756,10 +7761,14 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 	// function sets panel in split screen layout to be full height, if required
 	function resizePanel() {
 		// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
-		// this will be overridden on smaller screens (where columns are rearranged into rows) and panel height be 'auto'
+		// this will be overridden on smaller screens (where columns are rearranged into rows) and panel height will be 'auto'
 		const data = pageData.find(obj => obj.page === x_currentPage);
-		if (data.attributes.panelStyle !== "true" && (data.elements.topTxt == undefined || data.elements.topTxt === 0) && (data.elements.bottomTxt == undefined || data.elements.bottomTxt.length === 0) && (data.attributes.panelWidth !== "full" || data.elements.textColumn == undefined || data.elements.textColumn.length === 0)) {
-			data.elements.panel.height(x_getAvailableHeight([data.elements.panel]));
+		if (data.attributes.fullH || (data.attributes.panelStyle !== "true" && (data.elements.topTxt == undefined || data.elements.topTxt === 0) && (data.elements.bottomTxt == undefined || data.elements.bottomTxt.length === 0) && (data.attributes.panelWidth !== "full" || data.elements.textColumn == undefined || data.elements.textColumn.length === 0))) {
+			const panelH = x_getAvailableHeight([data.elements.panel], [], data.attributes.fullH);
+			data.elements.panel.height(panelH);
+			return panelH;
+		} else {
+			return false;
 		}
 	}
 

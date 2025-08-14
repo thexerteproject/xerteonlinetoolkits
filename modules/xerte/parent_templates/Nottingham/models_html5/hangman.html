@@ -37,9 +37,23 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
+
 			if (x_browserInfo.mobile == false) {
-				const $panel = $("#pageContents .panel");
-				$panel.height(x_getAvailableHeight([$panel], [$("#footerInfo")]));
+				const $panel = $("#pageContents .panelContent");
+				const $game = $("#game");
+
+				// when panel has fixed height set, keep exercise text at bottom of panel by setting height of #game above it
+				if (panelH !== false) {
+					$game.css("min-height", "");
+					const hideBtn = !$("#footerInfo #nextBtn").is(":visible");
+					$("#footerInfo #nextBtn").show();
+					$game.css("min-height", x_getAvailableHeight([$panel], [$("#footerInfo")]));
+					if (hideBtn) {
+						$("#footerInfo #nextBtn").hide();
+					}
+				}
 
 				if ($panel.width() >= imgDimensions[0]) {
 					imgScale = 1;
@@ -49,9 +63,9 @@
 
 				const bgSize = [imgDimensions[0]*imgScale*11, imgDimensions[1]*imgScale];
 				$("#img")
-					.width(imgDimensions[0]*imgScale)
 					.height(imgDimensions[1]*imgScale)
 					.css({
+						"max-width": imgDimensions[0]*imgScale,
 						"background-size": bgSize[0] + 'px ' + bgSize[1] + 'px',
 						"background-position": -(bgSize[0]/11) * attemptCount + "px 0px"
 					});
@@ -61,7 +75,14 @@
 		this.init = function() {
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
-			$(".panel").prepend('<span class="sr-only">' + (x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") != undefined ? x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") : "This page type is not compatible with screen readers.") +  '</span>');
+			// send amended data to split screen function
+			const attributes = {
+				panelWidth: x_currentPageXML.getAttribute("panelWidth") != undefined ? x_currentPageXML.getAttribute("panelWidth") : "Large" // default is large not medium for backwards compatibility
+			}
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
+
+			$(".panelContent").prepend('<span class="sr-only">' + (x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") != undefined ? x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") : "This page type is not compatible with screen readers.") +  '</span>');
 
 			var nextBtnTxt = x_currentPageXML.getAttribute("nextBtnTxt");
 			if (nextBtnTxt == undefined) {
@@ -356,24 +377,21 @@
 
 <div id="pageContents">
 
-	<div class="splitScreen small">
+	<div id="textHolder" class="splitScreen_A"></div>
 
-		<div id="textHolder" class="left"></div>
-
-		<div id="infoHolder" class="right">
-			<div class="panel centerAlign">
+	<div id="infoHolder" class="splitScreen_B">
+		<div class="panel panelContent centerAlign">
+			<div id="game">
 				<div id="clue"/>
 				<div id="img"/>
 				<div id="letters"/>
 				<div id="alphabet"/>
 			</div>
-
 			<div id="footerInfo" class="x_floatRight">
 				<button id="nextBtn"/>
 				<div id="qCount"/>
 			</div>
 		</div>
-
 	</div>
 
 </div>

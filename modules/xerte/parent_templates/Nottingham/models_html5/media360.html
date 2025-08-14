@@ -59,13 +59,12 @@
 		this.sizeChanged = function() {
 			// if this has been triggered from window.resize() called manually for video sizing then skip all this
 			if (videoResize == true) {
-				
 				if (window.$.featherlight.current() != null && firstLoad != true) {
 					window.$.featherlight.current().close();
 				}
 
-				const $panel = $("#pageContents .panel");
-				$panel.height(x_getAvailableHeight([$panel], [], true));
+				// panel will be fixed height (100% of available screen height) at all times
+				XENITH.SPLITSCREEN.resizePanel();
 				
 				if (thisPannellum != undefined) {
 					thisPannellum.resize();
@@ -97,59 +96,19 @@
 		
 		this.begin = function() {
 			firstLoad = true;
-			var $mainText = $("#mainText");
-		
-			var panelWidth = x_currentPageXML.getAttribute('size') == undefined ? 'large' : x_currentPageXML.getAttribute('size');
-				textContents = x_addLineBreaks(x_currentPageXML.getAttribute('text'));
-			
-			// no text & full width panel
-			if (panelWidth == "full" || textContents == undefined || textContents == "") {
-				
-				$mainText
-					.appendTo($pageContents)
-					.removeClass('left');
-				
-				$("#pageContents .panel").appendTo($pageContents);
-				$("#pageContents .splitScreen").remove();
-				
-				panelWidth == "full";
-				
-			// text shown alongside panel
-			} else {
-				$mainText.html(textContents);
-				
-				// swap positions of text & panel
-				if (x_currentPageXML.getAttribute('position') == 'left') {
-					
-					$('.splitScreen .right')
-						.removeClass('right')
-						.addClass('left');
-					
-					$mainText
-						.removeClass('left')
-						.addClass('right')
-						.insertAfter('.splitScreen.left');
-					
-					// Set the width of the panel
-					if (panelWidth == 'small') {
-						$('#pageContents .splitScreen').addClass('medium');
-					} else if (panelWidth == 'large') {
-						$('#pageContents .splitScreen').addClass('xlarge');
-					} else {
-						$('#pageContents .splitScreen').addClass('large');
-					}
-					
-				} else {
-					// Set the width of the pamel
-					if (panelWidth == 'small') {
-						$('#pageContents .splitScreen').addClass('large'); // make text area on left large so panel on right is small
-					} else if (panelWidth == 'large') {
-						$('#pageContents .splitScreen').addClass('small');
-					} else {
-						$('#pageContents .splitScreen').addClass('medium');
-					}
-				}
+
+			const panelWidth = x_currentPageXML.getAttribute('size') == undefined ? 'large' : x_currentPageXML.getAttribute('size'); // xml property is size not panelWidth that is used in most page models
+			const textContents = x_addLineBreaks(x_currentPageXML.getAttribute('text'));
+			$("#mainText").html(textContents);
+
+			// send data to split screen function as xml uses differently named properties to most page models
+			const attributes = {
+				panelWidth: textContents == undefined || textContents == "" ? "full" : panelWidth, // panel always full width if no page text added
+				panelPosition: x_currentPageXML.getAttribute("position"), // xml property is position not align that is used in most page models
+				fullH: true // force panel to be 100% height of screen at all times
 			}
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 			
 			// get the default hotspot colours & size to use - these might be override by opt property added to hotspot
 			this.colour1 = x_currentPageXML.getAttribute('colour1') != undefined && x_currentPageXML.getAttribute('colour1') != '' && x_currentPageXML.getAttribute('colour1') != '0x' ? x_currentPageXML.getAttribute('colour1') : '0x000000';
@@ -1048,19 +1007,15 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
 		
-		<div id="mainText" class="left"></div>
-		
-		<div class="right">
-			<div class="panel">
-				<div id="panoramaHolder">
-					<div id="panorama"></div>
-				</div>
+	<div id="mainText" class="splitScreen_A"></div>
+
+	<div class="splitScreen_B">
+		<div class="panelContent panel">
+			<div id="panoramaHolder">
+				<div id="panorama"></div>
 			</div>
 		</div>
-		
 	</div>
 	
 </div>
