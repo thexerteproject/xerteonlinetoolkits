@@ -651,7 +651,6 @@ var EDITOR = (function ($, parent) {
     {
         var options = (nodelabel ? wizard_data[name].menu_options : getOptionValue(all_options, name));
         var label = (nodelabel ? nodelabel : options.label);
-				console.log(options.label, nodelabel, options);
         var deprecated = false;
 		var	groupChild = $(id).parents('.wizardgroup').length > 0 ? true : false;
         //get input field value from value.
@@ -4541,6 +4540,8 @@ var EDITOR = (function ($, parent) {
         var lightboxHtml = $("<form id='lightbox_" + group.name + "' style='width: 50vw' ></form>");
         let lightboxTable = $("<table id='lightboxPanel' class='content'></table>");
         let lightboxId = "#lightbox_" + group.name;
+				let name = wizard_data[lo_data[key]['attributes'].nodeName].menu_options.menuItem + " ai settings";
+				lightboxHtml.append($("<div>").text(name));
 
         //build lightbox form content input by input
         for (var j = 0; j < groupChildren.length; j++) {
