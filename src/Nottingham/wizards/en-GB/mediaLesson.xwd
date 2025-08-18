@@ -43,7 +43,7 @@
 		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
 		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 		<audioPosition label="Audio Player Position" type="ComboBox" data="panel,bottom" options="In Panel,At Bottom" defaultValue="panel" optional="true"/>
-		<aspectRatio label="Media aspect ratio" type="ComboBox" data="1.333333,1.777777,2.333333" options="4:3,16:9,21:9" defaultValue="1.777777" optional="true" tooltip="The aspect ratio used for embedded videos from external sites, e.g. YouTube. The aspect ratio of MP4s uploaded to projects will be automatically detected."/>
+		<aspectRatio label="Media aspect ratio" type="ComboBox" data="1.333333,1.777777,2.333333,0.5625,0,428571" options="4:3,16:9,21:9,9:16,9:21" defaultValue="1.777777" optional="true" tooltip="The aspect ratio used for embedded videos from external sites, e.g. YouTube. The aspect ratio of MP4s uploaded to projects will be automatically detected."/>
 
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="" page="" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
