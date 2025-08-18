@@ -223,6 +223,10 @@
 		<ic optional="true" type="media" label="Image" condition="icHide=='false'" defaultValue="" tooltip="Upload an image to use as the header bar logo" placeholder="Select an image"/>
 		<icTip optional="true" type="TextInput" label="Description" condition="icHide=='false'" defaultValue="" placeholder="Enter a description for accessibility" tooltip="Enter a description of the logo for accessibility"/>
 		<icPosition optional="true" type="ComboBox" options="Left,Right" data="left,right" condition="icHide=='false'" label="Position" defaultValue="left" width="100" tooltip="The position of the logo on the header bar"/>
+		<icMaxHeight label="Reduce logo size" type="Checkbox" defaultValue="false" optional="true" condition="icHide=='false'" conditionTrigger='true' tooltip="If your logo is too large you can trigger a max-height value"/>
+        <icMaxHeightVal optional="true" type="TextInput" label="Max-height value" condition="icMaxHeight=='true'&amp;&amp;icHide=='false'" defaultValue="80px" tooltip="Use the default of 80px or change to a suitable max-height value for your particular logo. Be sure to include the unit e.g. 80px or perhaps 10vh if you want a responsive max-height"/>
+        <icPadding label="Add logo padding" type="Checkbox" defaultValue="false" optional="true" condition="icHide=='false'" conditionTrigger='true' tooltip="Add padding around your logo"/>
+        <icPaddingVal optional="true" type="TextInput" label="Padding values" condition="icPadding=='true'&amp;&amp;icHide=='false'" defaultValue="10px 15px 0px 10px" tooltip="Use the default values of Top Right Bottom Left e.g. 10px 15px 0px 10px or change to suit your particular logo. Be sure to include the unit e.g. px and you can add a single value for equal padding e.g. 10px or just two values for equal top and bottom and equal left and right e.g. 10px 15px"/>
 	</icon>
 	
 	<bg type="group" label="Background" optional="true" tooltip="Add a background image to the project. This can be overridden by background images added to individual pages.">
