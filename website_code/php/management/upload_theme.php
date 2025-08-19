@@ -51,7 +51,6 @@ if($_FILES["fileToUpload"])
     $importpath = $importpath . $theme_type . '/';
     $importfile = $importpath . "tmp_theme_storage.zip";
 
-    $importfile = str_replace('/','\\',$importfile);
     $isZip = strtolower($filename_parts[1]) == 'zip' ? true : false;
     $success = true;
 
@@ -67,7 +66,7 @@ if($_FILES["fileToUpload"])
     {
         $zip = new ZipArchive();
         $x = $zip->open($importfile);
-        x_check_zip($zip, 'theme_pack');
+        x_check_zip($zip, 'theme_package');
         $infoFound = false;
         $folderFound = false;
         $otherFound = false;
