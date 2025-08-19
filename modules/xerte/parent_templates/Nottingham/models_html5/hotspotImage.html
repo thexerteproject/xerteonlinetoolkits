@@ -65,10 +65,12 @@
 					"filter": 'alpha(opacity=0)'
 				})
 				.one("load", function() {
-					hotspotImage.resizeImg(true);
-					
-					// call this function in every model once everything's loaded
-					x_pageLoaded();
+					setTimeout(function() {
+						hotspotImage.resizeImg(true);
+
+						// call this function in every model once everything's loaded
+						x_pageLoaded();
+					}, 250);
 				})
 				.attr({
 					"src": x_evalURL(x_currentPageXML.getAttribute("url")),
@@ -184,20 +186,20 @@
 				render_highlight:
 						{
 							fill: false,
-							fillColor: fillColor.substr(1),
+							fillColor: fillColor.substring(1),
 							fillOpacity: fillOpacity,
 							stroke: stroke,
-							strokeColor: highlightColour.substr(1),
+							strokeColor: highlightColour.substring(1),
 							strokeOpacity: (strokeOpacity > 0 ? strokeOpacity : 1),
 							strokeWidth: strokeWidth
 						},
 				render_select:
 						{
 							fill: fill,
-							fillColor: fillColor.substr(1),
+							fillColor: fillColor.substring(1),
 							fillOpacity: fillOpacity,
 							stroke: stroke,
-							strokeColor: highlightColour.substr(1),
+							strokeColor: highlightColour.substring(1),
 							strokeOpacity: strokeOpacity,
 							strokeWidth: strokeWidth
 						},
