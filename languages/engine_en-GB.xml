@@ -70,7 +70,7 @@
   <cross label="Cross" title="Incorrect" corrected="Corrected answer"/>
 
   <viewed label="Viewed"/>
- 
+
   <sizes>
 	<item>Default</item>
 	<item>large</item>
@@ -125,9 +125,9 @@
   <noResults label="No results returned"/>
   <noData label="No page data"/>
 
-	<rssDLAuthor label="Created by:"/>
-	<rssDLLicense label="License:"/>
-	<rssDLModDate label="Last modified:"/>
+  <rssDLAuthor label="Created by:"/>
+  <rssDLLicense label="License:"/>
+  <rssDLModDate label="Last modified:"/>
   
   <timer>
 	  <remaining name="Time remaining"/>
