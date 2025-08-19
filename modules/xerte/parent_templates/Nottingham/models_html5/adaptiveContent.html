@@ -279,7 +279,7 @@
                     //todod add robustness
                     if (groupedData[user].actor.name != undefined || groupedData[user].actor.mbox != undefined) {
                         datasets.push({
-                            label: (groupedData[user].actor.name != undefined ? groupedData[user].actor.name : substring(groupedData[user].actor.mbox, 7)),
+                            label: (groupedData[user].actor.name != undefined ? groupedData[user].actor.name : groupedData[user].actor.mbox.substring(7)),
                             data: groupedData[user].attempts[0].graph.classvalues,
                             backgroundColor: bgColour,
                             borderColor: lnColour,
