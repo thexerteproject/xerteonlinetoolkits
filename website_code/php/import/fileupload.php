@@ -78,6 +78,8 @@ if(apply_filters('editor_upload_file', $_FILES)){
     $filetype = x_clean_input($_FILES['filenameuploaded']['type']);
     $tmp_name = x_clean_input($_FILES['filenameuploaded']['tmp_name']);
 
+    x_check_blacklisted_extensions($filename);
+
     x_check_path_traversal($tmp_name);
     if (strpos($filename, '/') !== false || strpos($filename, '\\') !== false || strpos($filename, '..') !== false){
         die("Invalid filename specified");

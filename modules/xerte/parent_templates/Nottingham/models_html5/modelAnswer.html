@@ -21,13 +21,8 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var modelAnswer = new function() {
-	    var tracked = false;
-
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$("#button").show();
-			$("#fbTxt").empty();
-			$("#copyBtn, #copyTxt").hide();
 		};
 		
 		// function called every time the size of the LO is changed
@@ -37,91 +32,72 @@
 
 			if (x_browserInfo.mobile == false && $(".panelImg img").length > 0) {
 				// makes sure image doesn't take up too much vertical space & will try to fit text, image, answer box on screen without scrolling if possible
-				var totalHeight = 0;
+				let totalHeight = 0;
 				$panel.children().each(function() {
 					totalHeight = totalHeight + $(this).outerHeight(true);
 				});
 				totalHeight -= $(".panelImg img").height();
-				var maxH = Math.max($panel.innerHeight() - totalHeight, 100);
-				$(".panelImg img").css("max-height", maxH);
+				$(".panelImg img").css("max-height", Math.max($panel.innerHeight() - totalHeight, 100));
 			}
 		};
 
         this.leavePage = function() {
-            if (this.tracked != true) {
-                this.finishTracking();
-            }
+            this.finishTracking();
         };
 
 		this.init = function() {
-			this.tracked = false;
-			// if language attributes aren't in xml will have to use english fall back
-			var instructA = x_currentPageXML.getAttribute("instructHeaderATxt");
-			if (instructA == undefined) {
-				instructA = "The instruction and question on page"
-			}
-			var instructB = x_currentPageXML.getAttribute("instructHeaderBTxt");
-			if (instructB == undefined) {
-				instructB = "was:"
-			}
-			var responseTxt = x_currentPageXML.getAttribute("responseHeaderTxt");
-			if (responseTxt == undefined) {
-				responseTxt = "Your response was:"
-			}
-			var noAnswerTxt = x_currentPageXML.getAttribute("noAnswerHeaderTxt");
-			if (noAnswerTxt == undefined) {
-				noAnswerTxt = "You didn't answer this question"
-			}
-			var exampleTxt = x_currentPageXML.getAttribute("exampleHeaderTxt");
-			if (exampleTxt == undefined) {
-				exampleTxt = "The example answer was:"
-			}
-			var pageNo = x_currentPage;
-			if (x_pageInfo[x_currentPage].standalone == true) {
-				// if the page is a standalone page then use the page name instead of page number
-				pageNo = "'" + x_currentPageXML.getAttribute("name") + "'";
+			// these strings will be used by model answer results pages when showing answers entered on this page
+			const langStrings = {};
+			if (x_currentPageXML.getAttribute("prompt") != undefined && $(x_currentPageXML).children().length == 0) {
+				// this is an old style model answer page with just one prompt added at page level - use the now deprecated language strings
+				langStrings.instructA = x_currentPageXML.getAttribute("instructHeaderATxt") != undefined ? x_currentPageXML.getAttribute("instructHeaderATxt") : "The instruction and question on page";
+				langStrings.instructB = x_currentPageXML.getAttribute("instructHeaderBTxt") != undefined ? x_currentPageXML.getAttribute("instructHeaderBTxt") : "was:";
+
+				let page;
+				if (x_pageInfo[x_currentPage].standalone == true) {
+					// if the page is a standalone page then use the page name instead of page number
+					page = "'" + x_currentPageXML.getAttribute("name") + "'";
+				} else {
+					page = x_normalPages.indexOf(x_currentPage)
+					if (x_pageInfo[0].type != "menu") {
+						page++;
+					}
+				}
+				langStrings.page = page;
+
 			} else {
-				if (x_pageInfo[0].type != "menu") {
-					pageNo++;
+				// this is a newer version of the model answer page with multiple prompts added - use newer language strings
+				langStrings.pageTxt = x_currentPageXML.getAttribute("name");
+				langStrings.questionTxt = x_currentPageXML.getAttribute("questionTxt") != undefined ? x_currentPageXML.getAttribute("questionTxt") : "Question";
+
+				if (langStrings.pageTxt.trim() === "" && x_pageInfo[x_currentPage].standalone !== true) {
+					// use the page no. if no name
+					let page = x_currentPage;
+					if (x_pageInfo[0].type != "menu") {
+						page++;
+					}
+					langStrings.pageTxt = (x_currentPageXML.getAttribute("pageTxt") != undefined ? x_currentPageXML.getAttribute("pageTxt") : "Page") + ": " + page;
 				}
 			}
+			langStrings.responseTxt = x_currentPageXML.getAttribute("responseHeaderTxt") != undefined ? x_currentPageXML.getAttribute("responseHeaderTxt") : "Your response:";
+			langStrings.noAnswerTxt = x_currentPageXML.getAttribute("noAnswerHeaderTxt") != undefined ? x_currentPageXML.getAttribute("noAnswerHeaderTxt") : "No response submitted";
+			langStrings.feedbackTxt = x_currentPageXML.getAttribute("exampleHeaderTxt") != undefined ? x_currentPageXML.getAttribute("exampleHeaderTxt") : "Feedback:";
+			langStrings.pageFeedbackTxt = x_currentPageXML.getAttribute("feedbackTxt") != undefined ? x_currentPageXML.getAttribute("feedbackTxt") : "Page feedback";
+
+			$("#pageContents").data("langStrings", langStrings);
 			
-			$("#pageContents").data({
-				"dataString"	:'<p class="pageBlock">' + instructA + ' ' + pageNo + ' ' + instructB + '</p>' + x_addLineBreaks(x_currentPageXML.getAttribute("prompt")) + '<p><br/>' + x_addLineBreaks(responseTxt) + '</p><p>' + '{A}' + '</p><p><br/>' + x_addLineBreaks(exampleTxt) + '</p>' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")),
-				"noAnswerTxt"	:'<p>' + noAnswerTxt + '</p>'
-			});
-
-            var label = $('<div>').html(pageTitle).text();
-            if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
-            {
-                label = x_currentPageXML.getAttribute("trackinglabel");
-            }
-
-            this.weighting = 1.0;
-            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
-            {
-                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
-            }
-			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
-				this.weighting= 0.0;
-			}
-            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
-
-			XTEnterInteraction(x_currentPage, 0, 'text', label, [], '-', [], x_currentPageXML.getAttribute("grouping"));
-			
-			// feedbackBtnWidth attribute not used as button will be sized automatically
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
-				$splitScreen = $("#pageContents .splitScreen"),
-				$textHolder = $("#textHolder"),
-				$prompt = $("#prompt");
+			// set up page layout - panel size & position
+			const panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			const $splitScreen = $("#pageContents .splitScreen");
+			const $textHolder = $("#textHolder");
+			const $prompt = $("#prompt");
 			
 			if (panelWidth == "Full") {
 				$("#pageContents .panel").appendTo($("#pageContents"));
 				$splitScreen.remove();
 			} else {
 				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				var textAlign = x_currentPageXML.getAttribute("align");
-				if (textAlign != "Right") {
+				if (x_currentPageXML.getAttribute("align") != "Right") {
 					if (panelWidth == "Small") {
 						$splitScreen.addClass("large");
 					} else if (panelWidth == "Large") {
@@ -146,179 +122,362 @@
 					}
 				}
 			}
-			
-			
-			var promptString = x_addLineBreaks(x_currentPageXML.getAttribute("prompt")),
-				url = x_currentPageXML.getAttribute("image");
-			if (url != undefined && url != "") {
-				if (url.split('.').pop().slice(0, -1) == "swf") {
-					promptString += '<div class="centerAlign"><div id="pageSWF"><p class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</p><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
+
+			// original version had a single prompt & feedback at page level
+			// newer version allows you to add multiple text areas
+			// need to ensure both these still work
+			const names = [];
+			const prompts = [];
+			const rows = [];
+			const feedback = [];
+			const images = [];
+
+			// get info from the old format prompts that are on the page itself
+			if (x_currentPageXML.getAttribute("prompt") != undefined && (x_currentPageXML.getAttribute("prompt").trim() !== "" || $(x_currentPageXML).children().length == 0)) {
+				names.push(names.length+1);
+				prompts.push(x_currentPageXML.getAttribute("prompt"));
+				rows.push(5);
+				feedback.push(x_currentPageXML.getAttribute("feedback"));
+				if (x_currentPageXML.getAttribute("image") != undefined && x_currentPageXML.getAttribute("image").trim() !== "") {
+					images.push({
+						url: x_currentPageXML.getAttribute("image"),
+						tooltip: x_currentPageXML.getAttribute("tooltip"),
+						caption: x_currentPageXML.getAttribute("caption")
+					});
 				} else {
-					if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
-						promptString += '<figure class="panelImg">';
-					} else {
-						promptString += '<div class="panelImg">';
-					}
-					promptString += '<img src="' + x_evalURL(url) + '"';
-					if (x_currentPageXML.getAttribute("tooltip") != undefined && x_currentPageXML.getAttribute("tooltip") != "") {
-						promptString += 'alt="' + x_currentPageXML.getAttribute("tooltip") + '" ';
-					}
-					promptString += '/>';
-					if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
-						promptString += '<figcaption>' + x_currentPageXML.getAttribute("caption") + '</figcaption></figure>';
-					} else {
-						promptString += '</div>';
-					}
+					images.push(null);
 				}
 			}
-			$prompt.html(promptString);
-			
-			if (url != undefined && url != "" && url.split('.').pop().slice(0, -1) == "swf") {
-				swfobject.embedSWF(x_evalURL(url), "pageSWF", "100", "100", "9.0.0", x_templateLocation + "common_html5/expressInstall.swf");
-			}
-			
-			
-			var copyTxt = x_currentPageXML.getAttribute("copypasteinfo2"),
-				copyTxtFlash = x_currentPageXML.getAttribute("copypasteinfo");
-			
-			// should instructions about copying & pasting answer be shown?
-			if ((copyTxt != undefined && copyTxt != "") || (copyTxtFlash != undefined && copyTxtFlash != "")) {
-				if (copyTxt == undefined || copyTxt == "") {
-					// the only copy text is for Flash version - the instructions need to be different for HTML version so am forced to use English fall back
-					copyTxt = "<p>Note: Click the 'Select Text' button to highlight the instruction, question, your response and the example answer and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference.</p>";
+
+			// get info from any child textArea nodes
+			$(x_currentPageXML).children().each(function() {
+				if (this.getAttribute("prompt") != undefined) {
+					if (this.getAttribute("name") != undefined && this.getAttribute("name").trim() !== "") {
+						names.push(this.getAttribute("name"));
+					} else {
+						names.push(names.length+1);
+					}
+					prompts.push(this.getAttribute("prompt"));
+					rows.push(Number(this.getAttribute("rows")));
+					feedback.push(this.getAttribute("feedback"));
+					if (this.getAttribute("image") != undefined && this.getAttribute("image").trim() !== "") {
+						images.push({
+							url: this.getAttribute("image"),
+							tooltip: this.getAttribute("tooltip"),
+							caption: this.getAttribute("caption")
+						});
+					} else {
+						images.push(null);
+					}
 				}
-				
-				var copyBtnLabel = x_currentPageXML.getAttribute("copyBtnLabel") != undefined ? x_currentPageXML.getAttribute("copyBtnLabel") : "Select Text",
-					copyBtnSRInfo = x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != "" && x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") != null ? " " + x_getLangInfo(x_languageData.find("screenReaderInfo")[0], "dialog", "") : "";
-				
-				$("#copyTxt")
-					.html(copyTxt)
-					.hide();
-				
-				$("#copyBtn")
-					.button({
-						label:	copyBtnLabel
-					})
-					.click(function() {
-						// unlike in Flash version we can't automatically copy text to clipboard - instead the text to copy is put together, shown highlighted in a dialog, and the user is prompted to Ctrl-C to copy
-						$(".x_popupDialog").parent().detach(); // removes any dialogs already open
-						var $thisDialog = $('<div id="modelAnswerDialog" class="x_popupDialog">' + x_pageInfo[x_currentPage].savedData + '</div>').appendTo($x_body);
-						
-						$thisDialog.dialog({
-							closeOnEscape:	true,
-							title:			copyShortcutTxt,
-							closeText:		x_getLangInfo(x_languageData.find("closeBtnLabel")[0], "label", "Close"),
-							close: function() {$thisDialog.parent().detach();},
-							create: function(event, ui) {
-								$(this).parent(".ui-dialog").find(".ui-dialog-titlebar-close .ui-icon")
-										.removeClass("ui-icon-closethick")
-										.addClass("fa fa-x-close");
+			});
+
+			if (names.length > 0) {
+				let label = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
+				if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "") {
+					label = x_currentPageXML.getAttribute("trackinglabel");
+				}
+				let weighting = 1.0;
+				if (x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false') {
+					weighting = 0.0;
+				} else if (x_currentPageXML.getAttribute("trackingWeight") != undefined) {
+					weighting = x_currentPageXML.getAttribute("trackingWeight");
+				}
+				XTSetPageType(x_currentPage, 'numeric', names.length, weighting);
+
+				// add all the prompts & text areas to the page
+				const answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel") != undefined ? x_currentPageXML.getAttribute("answerFieldLabel") : "Answer";
+				for (let i=0; i<names.length; i++) {
+					// create a string for this prompt & text area
+
+					// add prompt
+					let string = '<div class="prompt">';
+					let prompt = false;
+
+					if (prompts[i] != undefined && x_addLineBreaks(prompts[i]) !== "") {
+						prompt = true;
+						string += '<label class="promptTxt" for="response' + i + '">' + x_addLineBreaks(prompts[i]) + '</label>';
+					} else {
+						string += '<div class="promptTxt"/>';
+					}
+
+					// add image
+					const thisImage = images[i];
+					if (thisImage !== null) {
+						if (thisImage.caption != undefined && thisImage.caption !== "") {
+							string += '<figure class="panelImg">';
+						} else {
+							string += '<div class="panelImg">';
+						}
+						string += '<img src="' + x_evalURL(thisImage.url) + '"';
+						if (thisImage.tooltip != undefined && thisImage.tooltip !== "") {
+							string += 'alt="' + thisImage.tooltip + '" ';
+						}
+						string += '/>';
+						if (thisImage.caption != undefined && thisImage.caption !== "") {
+							string += '<figcaption>' + thisImage.caption + '</figcaption></figure>';
+						} else {
+							string += '</div>';
+						}
+					}
+
+					// add text area
+					string += '<textarea id="response' + i + '" name="response' + i + '" class="answerTxt" ' + (prompt === false ? 'aria-label="' + answerFieldLabel + ' ' + (i+1) + '" ' : '') + 'rows="' + rows[i] + '"></textarea>';
+
+					// add feedback
+					if (feedback[i] != undefined && feedback[i] !== "") {
+						string += '<div class="answer"><div class="fbTxt" aria-live="polite"/></div>';
+					}
+
+					string += '</div>';
+
+					// keep track of the feedback associated with this text area
+					const $item = $(string);
+					$item.find(".fbTxt").data("feedback", feedback[i]);
+
+					$prompt.append($item);
+
+					XTEnterInteraction(x_currentPage, i, 'text', names[i], [], '-', [feedback[i]], x_currentPageXML.getAttribute("grouping"));
+				}
+
+				// set up copy to clipboard button
+				// <3.15 this was turned on by adding the 'copy & paste info' optional property (there are two versions of this - pre & post Flash)
+				// 3.15 onwards this is turned on with 'copy button' check box
+				if (x_currentPageXML.getAttribute("copyPaste") === 'true' || (x_currentPageXML.getAttribute("copyPaste") !== 'false' && (x_currentPageXML.getAttribute("copypasteinfo2") != undefined && x_currentPageXML.getAttribute("copypasteinfo2") != "") || (x_currentPageXML.getAttribute("copypasteinfo") != undefined && x_currentPageXML.getAttribute("copypasteinfo") != ""))) {
+					$("#copyBtn")
+							.button({
+								label: x_currentPageXML.getAttribute("copyBtn2Label") != undefined ? x_currentPageXML.getAttribute("copyBtn2Label") : "Copy"
+							})
+							.click(async function() {
+								// remove elements which are in the saved data because they may be used on the model answer results page but which are not needed here
+								const $tempDiv = $('<div class="sr-only">' + x_pageInfo[x_currentPage].savedData + '</div>').appendTo("body");
+								$tempDiv.find(".dataPageTxt").remove();
+
+								// copy to clipboard using function in xenith.js
+								const copied = await x_copyText($tempDiv);
+								if (copied == false) {
+									// copy has failed - open text in lightbox, select it & show instructions to Ctrl+C to copy
+									$.featherlight('<p class="alert">' + x_getLangInfo(x_languageData.find("copy")[0], "fail", "Copying text to clipboard failed. Use Ctrl+C to manually copy the text to the clipboard.") + '</p><hr/><div id="toSelect">' + $tempDiv.find(".pageBlock").html() + '</div>');
+									x_selectText("toSelect", x_getLangInfo(x_languageData.find("copy")[0], "selected", "Text selected"));
+								}
+
+								$tempDiv.remove();
+							})
+							.hide();
+
+				} else {
+					$("#copyBtn").remove();
+				}
+
+				// set up download button
+				if (x_currentPageXML.getAttribute("showDownload") === 'true') {
+					$("#downloadBtn")
+							.button({
+								label: x_currentPageXML.getAttribute("downloadTxt") != undefined ? x_currentPageXML.getAttribute("downloadTxt") : "Download"
+							})
+							.click(function() {
+								// download a Word doc containing the text shown in the #panelTxt div
+
+								// styles used in downloaded word doc
+								let styles = 'body, .ui-widget { font-family: Arial, sans-serif; -webkit-font-smoothing: antialiased; color: black; font-size: 12pt; } ';
+								styles += 'table.tableDoc { font-size: 1em; margin: 0.2em; padding: 0.2em; width: 100%; border-collapse: collapse; } ';
+
+								// remove page text & links from the text data
+								let $downloadTxt = $(x_pageInfo[x_currentPage].savedData);
+								$downloadTxt.find(".dataPageTxt").remove();
+								$downloadTxt.find("a.dataPageLink").contents().unwrap();
+
+								const docData = {
+									"filename": x_currentPageXML.getAttribute("filename") != undefined && x_currentPageXML.getAttribute("filename").trim() !== "" ? x_currentPageXML.getAttribute("filename") : "model_answer_results",
+									"orientation": x_currentPageXML.getAttribute("fileOrientation") != undefined ? x_currentPageXML.getAttribute("fileOrientation") : "portrait",
+									"documentName": '<h1>' + x_params.name + '</h1><h2>' + x_currentPageXML.getAttribute('name') + '</h2>',
+									"pages": [{ pageName: "", pageText: $downloadTxt.html() }], // add all data into one 'page' (download.php was written for documentation page so expects info in specific format)
+
+									// these styles are the same as those used in documentation page model
+									"styles": styles,
+									"size": x_currentPageXML.getAttribute('fileOrientation') == 'landscape' ? '841.7pt 595.45pt' : '595.45pt 841.7pt',
+									"h1": "20px",
+									"h2": "18px",
+									"h3": "16px",
+									"p": "15px"
+								}
+
+								let form = document.createElement("form");
+								form.method = 'post';
+								form.target = 'displayjson';
+								form.action = (typeof x_downloadURL != 'undefined') ? x_downloadURL : 'download.php';
+
+								$('<input type="hidden">') // IE compatibility
+										.attr({
+											name: 'data',
+											value: JSON.stringify(docData)
+										})
+										.appendTo(form);
+								document.body.appendChild(form);
+								form.submit();
+								document.body.removeChild(form);
+							})
+							.hide();
+				} else {
+					$("#downloadBtn").remove();
+				}
+
+				// set up submit button
+				$("#button")
+						.button({
+							label: x_currentPageXML.getAttribute("feedbackBtnTxt") == undefined || x_currentPageXML.getAttribute("feedbackBtnTxt") == "" ? "Submit" : x_currentPageXML.getAttribute("feedbackBtnTxt")
+						})
+						.click(function() {
+							$("#fbTxt").empty();
+
+							if (x_currentPageXML.getAttribute("pageFeedback") != undefined && x_addLineBreaks(x_currentPageXML.getAttribute("pageFeedback")) !== "") {
+								$("#fbTxt")
+										.html(x_addLineBreaks(x_currentPageXML.getAttribute("pageFeedback")))
+										.addClass("border");
+							}
+
+							$(".fbTxt").each(function() {
+								$(this).html($(this).data("feedback"));
+							});
+
+							$("#copyBtn, #downloadBtn").show();
+
+							x_pageContentsUpdated();
+							modelAnswer.saveData();
+
+							modelAnswer.finishTracking();
+						});
+
+				// if answer is required, only show submit button when something has been typed in every text area
+				if (x_currentPageXML.getAttribute("required") == 'true') {
+					$("#button").prop("disabled", true);
+
+					$(".answerTxt").on('input', function() {
+						let complete = true;
+						$(".answerTxt").each(function() {
+							if ($(this).val().trim() == '') {
+								complete = false;
 							}
 						});
-						
-						$thisDialog.html(x_pageInfo[x_currentPage].savedData);
-						x_setDialogSize($thisDialog);
-						
-						x_selectText("modelAnswerDialog");
-					})
-					.attr("aria-label", copyBtnLabel + copyBtnSRInfo)
-					.hide();
-				
-			} else {
-				$("#copyBtn, #copyTxt").remove();
-			}
-			
-			$("#pageContents").data("feedback", x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
-			
-			var btnTxt = x_currentPageXML.getAttribute("feedbackBtnTxt");
-			if (btnTxt == undefined || btnTxt == "") {
-				btnTxt = "Feedback";
-			}
-			
-			// feedbackBtnTip attribute not used
-			$("#button")
-				.button({
-					label:	btnTxt
-				})
-				.click(function() {
-					var $this = $(this);
-					$this.hide();
-					$("#fbTxt")
-						.empty()
-						.html($("#pageContents").data("feedback"));
-					
-					$("#copyBtn, #copyTxt").show();
 
-					x_pageContentsUpdated();
-
-					modelAnswer.tracked = true;
-					modelAnswer.finishTracking();
-					if (x_currentPageXML.getAttribute("copypasteinfo") != undefined && x_currentPageXML.getAttribute("copypasteinfo") != "") {
-						
-					}
-				});
-			
-			if (x_currentPageXML.getAttribute("required") == 'true') {
-				$("#button").prop("disabled", true);
-			}
-			
-			$("#answerTxt").on('input', function() {
-				// if answer is required, only show submit button when something has been typed in box
-				if (x_currentPageXML.getAttribute("required") == 'true' && $("#answerTxt").val().trim() == '') {
-					$("#button").prop("disabled", true);
-				} else {
-					$("#button").prop("disabled", false);
+						if (complete) {
+							$("#button").prop("disabled", false);
+						} else {
+							$("#button").prop("disabled", true);
+						}
+					});
 				}
-				
-				modelAnswer.saveData();
-			});
-			
-			
-			var copyShortcutTxt = x_currentPageXML.getAttribute("copyShortcutTxt");
-			if (copyShortcutTxt == undefined) {
-				copyShortcutTxt = "Press Ctrl + C to copy"
+
+			} else {
+				// there are no answer prompts - remove panel
+				$("#infoHolder").remove();
+				$("#textHolder")
+						.removeClass("left right")
+						.parents(".splitScreen").removeClass("splitScreen medium");
 			}
-			
-			var answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel");
-			if (answerFieldLabel === undefined | answerFieldLabel === null) {
-				answerFieldLabel = "Answer";
-			}
-			$("#answerTxt").attr({"aria-label":answerFieldLabel});
-			
+
 			this.sizeChanged();
 			this.saveData();
 			x_pageLoaded();
 		};
 
-
-		// function saves data to pageData array in xenith.js so it can be used later by modelAnswerResults page
+		// function saves data to savedData in xenith.js so it can be used later by modelAnswerResults page
 		this.saveData = function() {
-			var $pageContents = $("#pageContents"),
-				stringToSave = $pageContents.data("dataString"),
-				answerTxt = $("#answerTxt").val();
-			
-			if (answerTxt.trim() == "") {
-				answerTxt = $pageContents.data("noAnswerTxt");
+			// create the text string that will be shown on the model answer results page for this page
+			// the 'data' & 'standalone' classes are used in model answer results page - do not remove them
+			const langStrings = $("#pageContents").data("langStrings");
+			const isStandalone = x_pageInfo[x_currentPage].standalone && x_pages[x_currentPage].getAttribute('linkTarget') === 'lightbox' && parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current();
+			let stringToSave = '<div class="pageBlock' + (isStandalone ? ' standalone' : '') + '">';
+			let hLevel;
+
+			$(".prompt").each(function(i) {
+				let thisString = "";
+				const $this = $(this);
+				hLevel = 3;
+				const thisLink = '<a href="#" class="dataPageLink" onclick="x_navigateToPage(false,{type:\'linkID\',ID:\'' + x_currentPageXML.getAttribute("linkID") + '\'}); return false;">';
+
+				if (langStrings.instructA != undefined) {
+					// this is an old style model answer page with just one prompt added at page level - use the now deprecated language strings
+					thisString += '<h3 class="dataPageH">' + langStrings.instructA + ' ' + thisLink + langStrings.page + '</a> ' + langStrings.instructB + '</h3>';
+					if ($("#textHolder").length > 0) {
+						thisString += '<div class="dataPageTxt">' + $("#textHolder").html() + '</div>';
+					}
+					thisString += '<div class="questionBlock">';
+
+				} else {
+					// this is a newer version of the model answer page with multiple prompts added - use newer language strings
+					if (i == 0) {
+						thisString += '<h3 class="dataPageH">' + thisLink + langStrings.pageTxt + '</a></h3>';
+						if ($("#textHolder").length > 0) {
+							thisString += '<div class="dataPageTxt">' + $("#textHolder").html() + '</div>';
+						}
+					}
+					thisString += '<div class="questionBlock">';
+					if ($(".prompt").length > 1) {
+						thisString += '<h4 class="dataQuestionH">' + langStrings.questionTxt + ' ' + (i + 1) + ':</h4>';
+						hLevel = 4;
+					}
+				}
+				hLevel++;
+
+				thisString += '<div class="dataQuestionTxt">' + $this.find(".promptTxt").html() + '</div><div class="answerTxt">';
+				if ($this.find(".answerTxt").val().trim() !== "") {
+					thisString += '<h' + hLevel + ' class="dataQuestionH dataQuestionAnswer">' + x_addLineBreaks(langStrings.responseTxt) + '</h' + hLevel + '><div class="dataQuestionAnswer"><p>' +  x_addLineBreaks($this.find(".answerTxt").val(), true) + '</p></div>';
+				} else {
+					// not answered
+					thisString += '<div class="dataQuestionAnswer">' + x_addLineBreaks('<p><em>' + langStrings.noAnswerTxt + '</em></p>') + '</div>';
+				}
+				thisString += '</div>';
+
+				if ($this.find(".fbTxt").length > 0 && $this.find(".fbTxt").html().trim() !== "") {
+					thisString += '<div class="dataQuestionFb"><h' + hLevel + ' class="dataQuestionH">' + langStrings.feedbackTxt + '</h' + hLevel + '>' + $this.find(".fbTxt").html() + '</div>';
+				}
+
+				thisString += '</div>';
+				stringToSave += thisString;
+			});
+
+			// add page level feedback
+			if ($("#fbTxt").length > 0 && $("#fbTxt").html().trim() !== "") {
+				hLevel--;
+				stringToSave += '<div class="dataPageFb"><h' + hLevel + ' class="dataPageH">' + langStrings.pageFeedbackTxt + ':</h' + hLevel + '>' + $("#fbTxt").html() + '</div>';
 			}
-			
-			stringToSave = stringToSave.replace("{A}", x_addLineBreaks(answerTxt, true));
+
+			stringToSave += "</div>";
+
+			// save the data to x_pageInfo.savedData
 			x_pageInfo[x_currentPage].savedData = stringToSave;
+
+			// if this is a standalone page showing in a lightbox, also ensure we save in a way that data can later be retrieved by model answer results pages
+			if (x_pageInfo[x_currentPage].standalone && x_pages[x_currentPage].getAttribute('linkTarget') == 'lightbox'
+					&& parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current()
+					&& parent.window.x_pageInfo != undefined && parent.window.x_pageInfo[x_currentPage] != undefined) {
+				parent.window.x_pageInfo[x_currentPage].savedData = stringToSave;
+
+			}
 		};
 
-        this.finishTracking = function()
-        {
-            var answerTxt = $("#answerTxt").val();
-			var correct = answerTxt.trim() != "" || !(x_currentPageXML.getAttribute("judge") != "false"); 
-            result =
-                {
-                    success: correct,
-                    score: (correct ? 100.0 : 0.0),
-					judge: x_currentPageXML.getAttribute("judge") != "false"
-                };
+        this.finishTracking = function() {
+			let score = 0;
 
-            XTExitInteraction(x_currentPage, 0, result, [], answerTxt, []);
-            XTSetPageScore(x_currentPage, (correct ? 100.0 : 0.0));
-            this.tracked = true;
+			$(".answerTxt").each(function(i) {
+				const answerTxt = $(this).val();
+				const correct = answerTxt.trim() != "" || x_currentPageXML.getAttribute("judge") === "false";
+
+				if (correct) {
+					score++;
+				}
+
+				const result = {
+					success: correct,
+					score: (correct ? 100.0 : 0.0),
+					judge: x_currentPageXML.getAttribute("judge") != "false"
+				};
+
+				XTExitInteraction(x_currentPage, i, result, [], answerTxt, []);
+			});
+
+            XTSetPageScore(x_currentPage, score / $(".answerTxt").length * 100);
         };
 
     };
@@ -334,17 +493,16 @@
 		
 		<div id="textHolder" class="left"></div>
 		
-		<div id="textToCopy"></div>
-		
 		<div id="infoHolder" class="right">
 			<div class="panel">
 				<div id="prompt"></div>
-				<textarea id="answerTxt" aria-label="Response" rows="5"></textarea>
-				<button id="button"></button>
 				<div id="answer">
 					<div id="fbTxt" aria-live="polite"/>
-					<div id="copyTxt"/>
-					<button id="copyBtn"/>
+					<div id="btnHolder">
+						<button id="button"></button>
+						<button id="copyBtn"/>
+						<button id="downloadBtn"/>
+					</div>
 				</div>
 			</div>
 		</div>

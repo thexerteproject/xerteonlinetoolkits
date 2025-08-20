@@ -50,7 +50,6 @@ function x_change_user_selection($mode, $include_header, $userids){
 	}
 
     if ($include_header) {
-        echo "<div id=\"active_user_management\">";
         echo "<h2>$title (" . count($result) . ")</h2>";
 
         echo "<select onchange=\"changeUserSelection_active_users()\" data-mode=\"" . $mode . "\" multiple id=\"users\" class=\"selectize selectize_multi\">";
@@ -88,7 +87,8 @@ function x_change_user_selection($mode, $include_header, $userids){
         if (isset($userids) && !in_array($row['login_id'], $userids)) {
             continue; // Skip users not in the provided userids array
         }
-        echo "<div class=\"template\" id=\"details_" . $row['login_id'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['surname'] . ", " . $row['firstname'] . " <button type=\"button\" class=\"xerte_button\" id=\"details_" . $row['login_id'] . "_btn\" onclick=\"javascript:templates_display('details_" . $row['login_id'] . "')\">" . USERS_TOGGLE . "</button></p></div><div class=\"template_details\" id=\"details_" . $row['login_id']  . "_child\">";
+        echo "<div class=\"template\" id=\"details_" . $row['login_id'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['surname'] . ", " . $row['firstname'] . " <button type=\"button\" class=\"xerte_button\" id=\"details_" . $row['login_id'] . "_btn\" onclick=\"javascript:templates_display('details_" . $row['login_id'] . "')\">" . USERS_TOGGLE . "</button></p></div>";
+        echo "<div class=\"template_details\" id=\"details_" . $row['login_id']  . "_child\">";
 
         echo "<p>" . USERS_ID . "<form><textarea id=\"user_id" . $row['login_id'] .  "\">" . $row['login_id'] . "</textarea></form></p>";
         echo "<p>" . USERS_FIRST . "<form><textarea id=\"firstname" . $row['login_id'] .  "\">" . $row['firstname'] . "</textarea></form></p>";
@@ -107,10 +107,6 @@ function x_change_user_selection($mode, $include_header, $userids){
     }
     echo "</div>";
 
-    if ($include_header)
-    {
-        echo "</div>";
-    }
 }
 
 

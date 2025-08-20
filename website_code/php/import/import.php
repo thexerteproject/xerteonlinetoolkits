@@ -388,6 +388,13 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") {
         }
     }
 }
+
+if (!isset($_SESSION['toolkits_logon_username']) && !is_user_admin())
+{
+    _debug("Session is invalid or expired");
+    die("Session is invalid or expired");
+}
+
 /*
  * Check who made the template
  */
@@ -432,7 +439,7 @@ if (substr($filename, strlen($filename) - 3, 3) === "zip") {
         // Quick fix to check zip file is valid
         $zip = new ZipArchive();
         $x = $zip->open($new_file_name);
-        x_check_zip($zip);
+        x_check_zip($zip, 'template');
         $zip->close();
 
         // Should really rewrite the function using ZipArchive

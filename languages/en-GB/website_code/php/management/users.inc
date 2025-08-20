@@ -13,6 +13,8 @@
 
 	define("USERS_TOGGLE", "Show");
 
+
+
     define("USERS_SHOW_ACTIVE", "Show active users");
     define("USERS_SHOW_INACTIVE", "Show inactive users");
     define("USERS_SHOW_ALL", "Show all users");
@@ -35,8 +37,9 @@
 
     define("USER_DISABLED", "Disabled");
 
-    define("USERS_MANAGE_AUTH", "Authorized users");
+    define("USERS_MANAGE_AUTH", "Manage Db auth users");
 
+    define("USERS_MANAGE_USERS", "Manage users");
     define("USERS_MANAGE_ACTIVE", "Active users");
     define("USERS_MANAGE_INACTIVE", "Inactive users");
     define("USERS_MANAGE_ALL", "All users");
@@ -54,6 +57,7 @@
     define("USERS_MANAGE_SELECT_USER", "Select a user to view their details");
 
     define("USERS_MANAGE_ROLES", "Manage user roles");
+    define("USERS_SHOW_ROLES", "Show user roles");
     define("USERS_MANAGE_ROLES_ASSIGN_ROLES", "Assign and edit user roles");
     define("USERS_MANAGE_ROLES_OVERVIEW", "Currently assigned roles");
     define("USERS_MANAGE_ROLES_OVERVIEW_USERNAME", "User");

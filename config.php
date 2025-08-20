@@ -135,6 +135,10 @@ $xerte_toolkits_site->enable_mime_check = true_or_false($row['enable_mime_check'
 $xerte_toolkits_site->mimetypes = explode(",", $row['mimetypes']);
 $xerte_toolkits_site->enable_file_ext_check = true_or_false($row['enable_file_ext_check']);
 $xerte_toolkits_site->file_extensions = explode(",", strtolower($row['file_extensions']));
+// Remove empty extensions
+$xerte_toolkits_site->file_extensions = array_filter($xerte_toolkits_site->file_extensions, function($ext) {
+    return !empty(trim($ext));
+});
 $xerte_toolkits_site->enable_clamav_check = true_or_false($row['enable_clamav_check']);
 $xerte_toolkits_site->name = $row['site_name'];
 $xerte_toolkits_site->demonstration_page = $xerte_toolkits_site->site_url . $row['demonstration_page'];
@@ -212,6 +216,10 @@ if (file_exists(__DIR__ . "/reverse_proxy_conf.php"))
     require_once(__DIR__ . "/reverse_proxy_conf.php");
 }
 $host = (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '');
+if (isset($_SERVER['HTTP_X_FORWARDED_HOST']))
+{
+    $host = $_SERVER['HTTP_X_FORWARDED_HOST'];
+}
 $port = (isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : 80);
 $scheme = (isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : false) || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https://' : 'http://';
 
@@ -315,6 +323,9 @@ if(!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true
     else {
 
         ini_set('session.cookie_httponly', '1');
+        if (isset($scheme) && $scheme == 'https://') {
+            ini_set('session.cookie_secure', '1');
+        }
         session_start();
     }
 }

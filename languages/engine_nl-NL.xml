@@ -1,4 +1,5 @@
 <language name="Nederlands">
+
   <noPages label="Dit leerobject bevat geen pagina's."/>
 
   <nextButton label="Volgende" description="Volgende pagina knop"/>
@@ -10,21 +11,27 @@
   <helpButton label="Help" description="Help knop "/>
 
   <mediaButton label="Media" description="Media knop. "/>
+
   <homeButton label="Home" description="Home knop"/>
   
-  <pageHelp name="Pagina help" description="Pagina help" toClose="Druk op spatie om help te sluiten"/>
-  <glossaryButton label="Woordenlijst" description="Woordenlijst knop"/>
-  
-  <continueButton label="Verder" description="Ga verder knop"/>
-  <progressBar label="COMPLEET"/>
+  <homeLink description="Ga naar Home pagina"/>
+
+  <glossaryButton label="Woordenlijst"/>
+
+  <projectIntroButton label="Introductie"/>
+
+  <pageIntroButton label="Pagina Introductie"/>
+
+  <progressBar label="COMPLEET" title="Voortgangsbalk" markers="De knoppen navigeren direct naar pagina's of hoofdstukken gemarkeerd op de voortgangsbalk" chapter="Hoofdstuk" page="Pagina" milestone="Mijlpaal" complete="Compleet" incomplete="Incompleet"/>
   
   <footerTools hide="Verberg voetbalk iconen" show="Toon voetbalk iconen"/>
-  
-  <toc label="Inhoudsopgave" description="inhoudsopgave. Gebruik de pijltjes toetsen om een pagina te selecteren. Druk op spatie om naar die pagina te gaan." htmlDescription="Gebruik de tab knop om de pagina te selecteren. Klik spatie om naar die pagina te gaan.">
-	  <contentsList label="" description=""/>
+
+  <sideBar hide="Verberg zijbalk" show="Toon zijbalk"/>
+
+  <toc label="Inhoudsopgave" htmlDescription="Gebruik de tab knop om de pagina te selecteren. Klik spatie om naar die pagina te gaan.">
 	  <closeButton label="" description="inhoudsopgave sluiten knop"/>
-	  <gotoPageButton label="Ga naar pagina" description="Ga naar pagina knop"/>
   </toc>
+
   <mediaWindow label="Toon media"/>
   
   <glossary label="Woordenlijst" description="Een lijst met woorden met hun uitleg.">
@@ -36,39 +43,34 @@
 	  <dialog instruction="Gebruik CAPS en SHIFT" on="AAN" off="UIT" caps="Caps"/>
   </kbLanguage>
   
-  <textToSpeech label="null" description="Tekst naar spraak"/>
-  <errorProject label="De project data is niet geladen."/>
-  
   <errorPage label="Er is geen template beschikbaar voor dit pagina type."/>
   
   <errorBrowser label="Uw browser ondersteunt dit pagina type niet (volledig)."/>
-  
+
+  <errorScreenReader label="Dit pagina type wordt niet ondersteund door screenreaders."/>
+
+  <errorEmbed label="U hebt een een XOT project voorvertoning ingesloten. U moet het project publiceren en de publike URL gebruiken voor het insluiten van het project."/>
+
+  <pageDeprecatedCeased label="Deze pagina werkt niet meer omdat de de onderliggende dienst niet meer bestaat."/>
+
   <errorQuestions noQ="Er zijn geen vragen toegevoegd." noA="Er zijn geen antwoorden toegevoegd" />
   
   <errorFlash label="U moet een Flash Player installeren om deze content te zien." description="Installeer de Flash Player"/>
   
   <authorSupport label="Autheur support staat AAN: tekst in het rood verschijnt niet in het live project."/>
   
-  <hiddenPage label="Deze pagina is verborgen in het live project"/>
-  
-  <hiddenSection label="Deze sectie is verborgen in live projecten"/>
-  
+  <hiddenPage label="Deze pagina is verborgen in het live project" hidden="Deze pagina is op dit moment verborgen in in live projecten" shown="Deze pagina is op dit momnt zichtbaar in live projecten" until="Verberg tot" from="Verberg vanaf"/>
+
+  <hiddenSection label="Deze sectie is verborgen in live projecten" hidden="Deze sectie is op dit moment verborgen in live projecten" shown="Deze sectie is op dit moment zichtbaar in live projecten" until="Verberg tot" from="Verberg vanaf"/>
+
+  <hiddenContent label="Deze content is verborgen in live projecten" hidden="Deze content is op dit mometn verborgen in live projecten" shown="Deze content is op dit moment zichtbaar in live projecten" until="Verberg tot" from="Verberg vanaf"/>
+
   <tick label="Markeer"/>
   
-  <cross label="Kruis"/>
+  <cross label="Kruis" title="Incorrect" corrected="Correct antwoord"/>
 
-  <themes label="--Kleur schemas--" description="Kleur schema opties">
-    <item>standaard</item>
-    <item>blauw</item>
-    <item>groen</item>
-    <item>rood</item>
-    <item>oranje</item>
-    <item>paars</item>
-    <item>grijs</item>
-    <item>hoog contrast 1</item>
-    <item>hoog contrast 2</item>
-  </themes>
- 
+  <viewed label="Bekeken"/>
+
   <sizes label="--Scherm grootte--" description="Scherm grootte opties">
 	<item>standaard</item>
 	<item>groot</item>
@@ -77,34 +79,10 @@
 	<item>vul venster</item>
   </sizes>
   
-  <fonts label="--Lettertype--" description="Lettertype opties">
-	  <item>standaard</item>
-  </fonts>
-  
-  <textSizes label="--Tekst grootte--" description="Tekst grootte opties">
-	  <item>standaard</item>
-	  <item>klein</item>
-	  <item>normaal</item>
-	  <item>groot</item>
-	  <item>groter</item>
-  </textSizes>
-  
-  <volumeControl label="Vol:" description="Volume regelaar"/>
-  <volumeControlSlider label="" description="Volume controle schuif"/>
-  
   <vocab>
 	  <page>Pagina</page>
 	  <of>van</of>
   </vocab>
-  
-  <soundController>
-	<stopButton label="Stop audio" description="Stop audio knop"/>
-	<playButton label="Speel audio af" description="Speel audio knop"/>
-	<pauseButton label="Pauseer audio" description="Pauseer audio knop"/>
-	<rwndButton label="Audio terug" description="Spoel audio terug knop"/>
-	<ffwdButton label="Audio vooruit" description="Spoel Audio vooruit knop"/>
-	<loader label="Bezig met laden: "/>
-  </soundController>
   
   <movieController>
 	<stopButton label="Stop video" description="Stop video knop"/>
@@ -114,14 +92,18 @@
 	<ffwdButton label="Video vooruit" description="Spoel video vooruit knop"/>
 	<loader label="Bezig met laden: "/>
   </movieController>
+
   <mediaElementControls video="Video" audio="Audio">
 	<stopButton label="Stop" description="Stop media knop"/>
 	<playPauseButton label="Speel/Pauze" description="Speel/Pauze media knop"/>
 	<muteButton label="Mute toggle" description="Toggle mute knop"/>
 	<fullscreenButton label="Volledig scherm" description="Volledig scherm media knop"/>
 	<captionsButton label="Onderschrift/Ondertitels" description="Toon/Verberg onderschrift knop"/>
+	<transcriptButton label="Transcript"/>
   </mediaElementControls>
-  
+
+  <microphoneError label="&lt;p&gt;Uw microfoon werkt niet. Mogelijke oorzaken voor dit probleem kunnen zijn:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Geen microfoon gevonden&lt;/li&gt;&lt;li&gt;Toegang tot de microfoon is geblokkeerd voor deze web pagina&lt;/li&gt;&lt;li&gt;De microfoon is al in gebruik door een ander programma of browser tab&lt;/li&gt;&lt;/ul&gt;"/>
+
   <interactions>
 	  <button name="Knop"/>
 	  <radioButton selected="geselecteerd. Gebruik de pijltjes toetsen om een optie te kiezen"/>
@@ -131,15 +113,22 @@
 	  <hotObject name="HotObject" toSelect="Druk op spatie om te selecteren." selected="HotObject geselecteerd"/>
 	  <textEntry name="Tekst veld" selected="Tekst veld geselecteerd"/>
 	  <targetArea name="Doelgebied" description="Doelgebied voor " toSelect="Druk op spatie om het geselecteerde object hier los te laten"/>
-	  <draggableItem name="Sleepbaar object" selected="Object geselecteerd" toSelect="Druk op spatie om te selecteren" deSelected="Geen object geselecteerd." />
-	  <moreInfoItem toSelect="Klik spatie om te selecteren" selected="Geselecteerd" moreInfo="Klik spatie voor meer info" />
-	  
+	  <blank name="Blanco" />
+	  <draggableItem name="Sleepbaar object" selected="Object geselecteerd" toSelect="Druk op spatie om te selecteren" deSelected="Geen object geselecteerd." noSelect="Niet geselecteerd" />
+	  <moreInfoItem name="Meer informatie" reveal="Toon informatie" toSelect="Klik spatie om te selecteren" selected="Geselecteerd" moreInfo="Klik spatie voor meer info" />
+	  <question name="Vraag"/>
+	  <answer name="Antwoord"/>
   </interactions>
+
   <fetchResults label="Resultaten ophalen..."/>
-  <errorResults label="Er is een foutmelding bij het laden van de resultaten"/>
   <loadError label="Foutmelding laden"/>
   <noResults label="Geen resultaten"/>
-  
+  <noData label="No pagina data"/>
+
+  <rssDLAuthor label="Gemaakt door:"/>
+  <rssDLLicense label="License:"/>
+  <rssDLModDate label="Laatst gewijzigd:"/>
+
   <timer>
 	  <remaining name="Beschikbare tijd"/>
 	  <timeUp name="Tijd verstreken"/>
@@ -150,23 +139,37 @@
 	  <closeButton label="" description="Sluit toegankelijkheid"/>
 	  <selectTxt label="Selecteer uit de onderstaande opties"/>
 	  <adviceTxt label="Meer advies nodig? Ga naar de &lt;a target=&apos;_blank&apos; href=&apos;https://xot.xerte.org.uk/play.php?template_id=168&apos;&gt;Xerte Toolkits toegankelijkheids gids&lt;/a&gt;."/>
+	  <wcagTxt label="Bekijk het Xerte toegankelijkheids verklaring"/>
+	  <wcagLogo label="WCAG WAI-AA logo"/>
+	  <wcagURL label="https://xot.xerte.org.uk/play.php?template_id=214#home"/>
 	  <off label="Uit"/>
-	  <noBg label="Verwijder achtergrond afbeeldingen"/>
-	  <invert label="Draai kleuren om"/>
+	  <invert label="Hoog contrast"/>
 	  <blackYellow label="Zwart op geel"/>
+	  <dark label="Dark mode"/>
+	  <light label="Light mode"/>
+	  <noBg label="Verwijder achtergrond afbeeldingen"/>
+	  <responsiveTxt label="Responsieve tekst" tip="Als resonsieve tekst aan staat, wordt de tekst grootte aangepast aand grootte van het scherm waar je dit project op bekijkt. Als je de browser zoom functie gebruikt om de tekst te vergroten dan raden we aan om de responsieve tekst uit te zetten voor een betere ervaring."/>
   </colourChanger>
-  
-  <screenReaderInfo label="Screenreader informatie" newWindow="Deze link opent een nieuw venster" thisWindow="Deze link opent in het huidige venster" dialog="Deze knop opent een dialoog venster" >
-	  <tabNav description="Deze pagina bevat tabs waarbij iedere tab andere informatie bevat. Om een tab te selecteren: Klik twee maal Enter (Jaws) of gebruik Shift-Enter (NVDA)."/>
-	  <accNav description="Deze pagina bevat accordeon tabs waarbij iedere tab andere informatie bevat. Om een tab te selecteren klik Enter of Spatie."  click="Klik om informatie te bekijken to reveal information"/>
-	  <buttonNav description="Deze pagina bevat een serie met knoppen waarbij iedere knop andere informatie bevat.." click="Klik om informatie te bekijken"/>
+
+  <resources label="Bronnen" text="{x} Bronnen Beschikbaar" completeText="{y} van {x} Bronnen bekekekn">
+ 	<table title="Titel" description="Omschrijving" actions="Acties" complete="Markeer als compleet" downloadBtn="Download bron" viewBtn="Open bron"/>
+ 	<warning suppress="Toon bericht niet nogmaals zien" continue="Toch verder gaan" review="Bekijk de bronnen"/>
+  </resources>
+
+	<screenReaderInfo label="Screenreader informatie" newWindow="Deze link opent een nieuw venster" thisWindow="Deze link opent in het huidige venster" dialog="Deze knop opent een dialoog venster" >
+      <buttonNav description="Deze pagina bevat een serie met knoppen waarbij iedere knop andere informatie bevat. Gebruik the tab toets om de huidige knop te kiezen en de pijltjes toetsen om tussen de knoppen te navigeren. Als een knop is geselcteerd, zal de tab toets navigeren naar de content van die knop." click="Klik om informatie te bekijken"/>
+	  <tabNav description="Deze pagina bevat tabs waarbij iedere tab andere informatie bevat. Gebruik the tab toets om de huidige tab te kiezen en de pijltjes toetsen om tussen de tabs te navigeren. Als een tab is geselcteerd, zal de tab toets navigeren naar de content van die tab."/>
+	  <accNav description="Deze pagina bevat accordeon tabs waarbij iedere tab andere informatie bevat. Gebruik the tab toets om de huidige tab te kiezen en de pijltjes toetsen om tussen de tabs te navigeren. Als een tab is geselcteerd, zal de tab toets navigeren naar de content van die tab."/>
 	  <slideshow description="Deze pagina bevat een slideshow waarbij klikken op de volgende en vorige knop informatie toont."/>
-	  <audioSlideshow description="Deze pagina toont content gesynchroniseerd met een audio bestand. Nieuwe content wordt toegevoegd gedurende de tijd dat de audio afspeelt."/>
-	  <videoSynch description="Deze pagina toont content gesynchroniseerd met een video. Nieuwe content wordt toegevoegd gedurende de tijd dat de video afspeelt."/>
+	  <audioSlideshow description="Deze pagina toont content gesynchroniseerd met een audio bestand. Nieuwe content wordt toegevoegd gedurende de tijd dat de audio afspeelt." prompt="Dia veranderd" />
+	  <videoSynch description="Deze pagina toont content gesynchroniseerd met een video. Nieuwe content wordt toegevoegd gedurende de tijd dat de video afspeelt." prompt="Inhoud toegevoegd"/>
+	  <mediaLesson description="Deze pagina toont inhoud in sync met een video of audio. Nieuwe content wordt toegevoegd gedurende de tijd dat de media afspeelt." prompt="Inhoud toegevoegd"/>
+	  <interactiveVideo description="Deze pagina toont inhoud in sync met een video. Nieuwe content wordt toegevoegd gedurende de tijd dat de video afspeelt." prompt="Inhoud toegevoegd"/>
 	  <list description="Deze pagina bevat een serie met links waarbij iedere link informatie toont." click="Klik om informatie te bekijken"/>
-	  <modelAnswerResults selected="Tekst geselecteerd"/>
 	  <mcq description="Deze pagina bevat een multiple choice vraag. Gebruik de tab en boven/onder pijltjestoetsen om de antwoorden te bekijken en klip op spatie om het antwoord te kiezen."/>
 	  <quiz description="Deze pagina bevat een serie van mulitiple choice vragen. Gebruik de tab en boven/onder pijltjestoetsen om de antwoorden te bekijken en klip op spatie om het antwoord te kiezen."/>
+	  <crossword description="Deze pagina toont een kruiswoordpuzzel. Tab naar de de horizointale en vertikale aanwijzingen en druk op de spatiebalk of entertoets om een aanwijzing te selecteren. De cursor zal in de krijswoord puzzel geplaatst worden om het antwoord in te kunnen tikken."/>
+	  <imageCompare slideHint="Afbeeldings lineaal"/>
   </screenReaderInfo>
 
 	<saveSession label="Sessie opslaan" description="Sla de sessie op en stop met de activiteit" tooltip="Sessie opslaan">
@@ -175,8 +178,10 @@
 		<closeTxt label="&lt;p&gt;Je sessie is opgeslagen. Je kunt nu het venster of het tabblad in je browser sluiten. Tot de volgende keer.&lt;/p&gt;"/>
 		<closeTxtEmbedded label="&lt;p&gt;Je sessie is opgeslagen. Je kunt de pagina verversen of opnieuw bezoeken om de sessie opnieuw te bekijken. Tot de volgende keer.&lt;/p&gt;"/>
 		<btnLabelTxt label="Deze sessie opslaan"/>
-
-
+		<trackingCloseTxtLtiOnly label="&lt;p&gt;Wil je stoppen met deze sessie? IDat kan. Klik op de onderstaande knop om de sessie af te sluiten en het resultaat naar het LMS sturen.&lt;/p&gt;"/>
+		<closeTxtLtiOnly label="&lt;p&gt;Je sessie is gestopt. Je kunt nu het venster of het tabblad in je browser sluiten.&lt;/p&gt;"/>
+		<closeTxtEmbeddedLtiOnly label="&lt;p&gt;Ye sessie is gestopt. Je kunt de pagina verversen of opnieuw bezoeken om de sessie opnieuw te bekijken.&lt;/p&gt;"/>
+		<btnLabelTxtLTiOnly label="Sluit deze sessie"/>
 	</saveSession>
 
 	<resumeSession label="Sessie hervatten" description="Ga verder met de laatste opgeslagen sessie" tooltip="Sessie hervatten">
@@ -214,13 +219,22 @@
   <submitConfirmMsg label="De antwoorden zijn verzonden"/>
   <closeBtnLabel label="Sluiten"/>
 
+  <bootstrapNavigation pages="Pagina's" sections="Secties" subSections="Sub-secties"/>
+  <pageMenu label="Pagina menu"/>
   <top label="Boven"/>
+  <skip label="Ga naar hoofd inhoud"/>
   <password label="Toegangs code" pageSupport="Om deze pagina te kunnen bekijken moet een toegangscode worden gegeven." sectionSupport="Om deze sectie te kunnen bekijken moet een toegangscode worden gegeven"/>
   <search title="Zoek" searchBtn="Zoek" goBtn="Zoek" newBtn="Nieuwe Zoekopdracht" resultTitle="Resultaten" matchTitle1="Gevonden" matchTitle2="Beste resultaten" matchTitle3="Gedeeltelijk gevoden" showMatch="Laat gedeeltelijke resultaten zien" noMatch1="Geen enkele pagina of sectie voldoet aan de zoekopdracht" noMatch2="Geen enkele pagina of sectie voldoet volledig aan uw zoekopdracht. Gedeeltelijke resultaten staan hieronder." />
   <print printBtn="Print pagina"/>
 
+  <tableInfo table="Tabel" row="Rij" column="Kollom"/>
+
   <fullScreenBannerInfo label="Scroll naar beneden voor meer informatie..."/>
 
   <scormTrackingAlert warning="Let op: de SCORM mode is '{0}'. Dat betekent dat je voortgang, interacties en resulaten van deze sessie niet getracked of opgeslagen worden. Start een nieuwe poging om tracking mogelijk te maken."/>
+
+  <carousel label="Carousel" slide="dia" next="Volgende dia" prev="Vorige dia" current="{x} van {y}" play="Diashow afspelen" pause="Diashow pauzeren"/>
+
+  <copy selected="Tekst geselecteerd" fail="Tekst kopiëren naar het klembord is mislukt. Gebruik Ctrl+C om de tekst met de hand te kopiëren." success="Tekst naar klembord gekopiëerd"/>
 
 </language>

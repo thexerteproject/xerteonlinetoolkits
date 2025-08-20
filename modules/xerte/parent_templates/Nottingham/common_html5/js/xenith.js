@@ -1725,6 +1725,49 @@ function x_continueSetUp1() {
 				});
 		}
 
+		// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
+		// it's overridden by logo in theme folder
+		// default & theme logos can also be overridden by images uploaded via Icon optional property
+		// Also make sure that the logo is set up before the progress bar is initialised
+
+		var $logo = $('#x_headerBlock img.x_icon');
+		$logo[x_params.icHide === 'true'  || $logo.attr('src') === '' ? 'hide' : 'show']();
+		//$('#x_headerBlock img.x_icon').data('defaultLogo', $('#x_headerBlock .x_icon').attr('src'));
+
+		// the theme logo is being used - add a class that will allow for the different size windows to display different logos
+		if (($logo.attr('src') || '').indexOf('themes/') > -1) $logo.addClass('themeLogo');
+
+		var icPosition = "x_floatLeft";
+		if (x_params.icPosition != undefined && x_params.icPosition != "") {
+			icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
+		}
+		// If the theme places the icon to the right, add the appropriate class
+		if ($logo.css('float') == 'right') {
+			icPosition = "x_floatRight";
+		}
+		$logo.addClass(icPosition);
+
+		if (x_params.icTip != undefined && x_params.icTip != "") {
+			$logo.attr('alt', x_params.icTip);
+		} else {
+			$logo.attr('aria-hidden', 'true');
+		}
+		// If the logo max height option is added
+		if (x_params.icMaxHeight != undefined && x_params.icMaxHeight != 'false') {
+			if (x_params.icMaxHeightVal != undefined && x_params.icMaxHeightVal != '') {
+				$logo.css('max-height', x_params.icMaxHeightVal);
+			} else {
+				$logo.css('max-height', '80px');
+			}
+			// If the logo padding option is added
+			if (x_params.icPadding != undefined && x_params.icPadding != 'false') {
+				if (x_params.icPaddingVal != undefined && x_params.icPaddingVal != '') {
+					$logo.css('padding', x_params.icPaddingVal);
+				} else {
+					$logo.css('padding', '10px 15px 0px 10px');
+				}
+			}
+		}
 		XENITH.RESOURCES.init();
 		XENITH.PROGRESSBAR.init();
 
@@ -1735,27 +1778,6 @@ function x_continueSetUp1() {
 
 		XENITH.ACCESSIBILITY.buildBtn();
 
-		// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
-		// it's overridden by logo in theme folder
-		// default & theme logos can also be overridden by images uploaded via Icon optional property
-		var $logo = $('#x_headerBlock img.x_icon');
-		$logo[x_params.icHide === 'true'  || $logo.attr('src') === '' ? 'hide' : 'show']();
-		//$('#x_headerBlock img.x_icon').data('defaultLogo', $('#x_headerBlock .x_icon').attr('src'));
-
-		var icPosition = "x_floatLeft";
-		if (x_params.icPosition != undefined && x_params.icPosition != "") {
-			icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
-		}
-		$logo.addClass(icPosition);
-
-		// the theme logo is being used - add a class that will allow for the different size windows to display different logos
-		if (($logo.attr('src') || '').indexOf('themes/') > -1) $logo.addClass('themeLogo');
-
-		if (x_params.icTip != undefined && x_params.icTip != "") {
-			$logo.attr('alt', x_params.icTip);
-		} else {
-			$logo.attr('aria-hidden', 'true');
-		}
 
 		// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
 		// add link to LO title?
@@ -4372,22 +4394,49 @@ function x_sortInitObject(initObj) {
     return initObject;
 }
 
-// function selects text (e.g. when users are to be prompted to copy text on screen)
-function x_selectText(element) {
-    var     text = document.getElementById(element),
-        range;
+// function copies text to the clipboard
+async function x_copyText(toCopy, errorTxt, toSelect, selectedTxt) {
+	try {
+		await navigator.clipboard.writeText(toCopy.text());
+		alert(x_getLangInfo(x_languageData.find("copy")[0], "success", "Text copied to clipboard"));
+		return true;
 
-    if (document.body.createTextRange) {
-        range = document.body.createTextRange();
-        range.moveToElementText(text);
-        range.select();
-    } else if (window.getSelection) {
-        var selection = window.getSelection();
-        range = document.createRange();
-        range.selectNodeContents(text);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    }
+	} catch(e) {
+		// failed to copy to clipboard - show alert with warning
+		if (errorTxt != undefined) {
+			alert(errorTxt);
+		}
+
+		// fallback to select text instead
+		if (toSelect != undefined) {
+			x_selectText(toSelect, selectedTxt);
+		}
+
+		return false;
+	}
+}
+
+// function selects text (e.g. when users are to be prompted to copy text on screen)
+function x_selectText(toSelect, selectedTxt) {
+	const text = document.getElementById(toSelect);
+	let range;
+
+	if (document.body.createTextRange) {
+		range = document.body.createTextRange();
+		range.moveToElementText(text);
+		range.select();
+	} else if (window.getSelection) {
+		var selection = window.getSelection();
+		range = document.createRange();
+		range.selectNodeContents(text);
+		selection.removeAllRanges();
+		selection.addRange(range);
+	}
+
+	// prompt for screen readers that text has been selected
+	if (selectedTxt != undefined) {
+		$("#screenReaderInfo").html(selectedTxt);
+	}
 }
 
 // function deals with hex values that might be abbreviated ones from the flash editor
@@ -6263,6 +6312,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 		}
 
 		// add the x% COMPLETE text holder to the progress bar
+		let leftOffset = 10;
 		if (progressBarPercentage !== false) {
 			$pbTxt = $('<div class="pbTxt">' + progressBarPercentage.replace("{x}", 100) + '</div>');
 
@@ -6273,19 +6323,39 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			}
 
 			// on smaller screens the % text goes above the progress bar - on larger screens the text is next to the progress bar
-			if (x_browserInfo.mobile != true && progressBarPosition != "footer") {
-				$pbTxt.css({
-					"width": $pbTxt.width() + parseInt($pbTxt.css("padding-left")),
-					"margin-left": -$pbTxt.outerWidth(true)
-				});
-				$pbHolder.css("padding-left", $pbTxt.outerWidth() + Math.round($("#x_headerBlock .x_icon").width()));
-			} else if (progressBarPosition != "footer") {
-				$pbHolder.css("padding-left", Math.round($("#x_headerBlock .x_icon").width()) + 10);
+			if (progressBarPosition != "footer") {
+				if (x_browserInfo.mobile !== true) {
+					$pbTxt.css({"width": $pbTxt.width() + parseInt($pbTxt.css("padding-left"))});
+					$pbTxt.css({"margin-left": -$pbTxt.outerWidth(true)});
+				}
+
+				leftOffset = x_browserInfo.mobile !== true ? $pbTxt.outerWidth() : leftOffset;
 			}
 		}
 
-		$pbContainer = $('<div class="pbContainer"></div>').appendTo($pbHolder);
+		// on smaller screens the % text goes above the progress bar - on larger screens the text is next to the progress bar
+		if (progressBarPosition != "footer") {
+			// left logo
+			if ($("#x_headerBlock .x_floatLeft.x_icon:visible").length > 0) {
+				$pbHolder.css("padding-left", leftOffset + Math.round($("#x_headerBlock .x_floatLeft.x_icon").outerWidth()));
+			} else {
+				$pbHolder.css("padding-left", leftOffset);
+			}
+
+			// right logo
+			if ($("#x_headerBlock .x_floatRight.x_icon:visible").length > 0) {
+				$pbHolder.css("padding-right", Math.round($("#x_headerBlock .x_floatRight.x_icon").width()) + 10);
+			}
+		}
+
+		$pbContainer = $('<div class="pbContainer"></div>');
 		$pbBar = $('<div class="pbPercent pbBar">&nbsp;</div>');
+
+		if (progressBarPosition == "footer") {
+			$pbContainer.prependTo($pbHolder);
+		} else {
+			$pbContainer.appendTo($pbHolder);
+		}
 
 		const $pbBarContainer = $('<div class="pbBarContainer"/>');
 		const $pbMarkerContainer = $('<div class="pbMarkerContainer"/>');

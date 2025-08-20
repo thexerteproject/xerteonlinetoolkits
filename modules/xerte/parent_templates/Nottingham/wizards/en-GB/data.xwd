@@ -224,6 +224,10 @@
 		<ic optional="true" type="media" label="Image" condition="icHide=='false'" defaultValue="" tooltip="Upload an image to use as the header bar logo" placeholder="Select an image"/>
 		<icTip optional="true" type="TextInput" label="Description" condition="icHide=='false'" defaultValue="" placeholder="Enter a description for accessibility" tooltip="Enter a description of the logo for accessibility"/>
 		<icPosition optional="true" type="ComboBox" options="Left,Right" data="left,right" condition="icHide=='false'" label="Position" defaultValue="left" width="100" tooltip="The position of the logo on the header bar"/>
+		<icMaxHeight label="Reduce logo size" type="Checkbox" defaultValue="false" optional="true" condition="icHide=='false'" conditionTrigger="true" tooltip="If your logo is too large you can trigger a max-height value"/>
+        <icMaxHeightVal optional="true" type="TextInput" label="Max-height value" condition="icMaxHeight=='true'&amp;&amp;icHide=='false'" defaultValue="80px" tooltip="Use the default of 80px or change to a suitable max-height value for your particular logo. Be sure to include the unit e.g. 80px or perhaps 10vh if you want a responsive max-height"/>
+        <icPadding label="Add logo padding" type="Checkbox" defaultValue="false" optional="true" condition="icHide=='false'" conditionTrigger="true" tooltip="Add padding around your logo"/>
+        <icPaddingVal optional="true" type="TextInput" label="Padding values" condition="icPadding=='true'&amp;&amp;icHide=='false'" defaultValue="10px 15px 0px 10px" tooltip="Use the default values of Top Right Bottom Left e.g. 10px 15px 0px 10px or change to suit your particular logo. Be sure to include the unit e.g. px and you can add a single value for equal padding e.g. 10px or just two values for equal top and bottom and equal left and right e.g. 10px 15px"/>
 	</icon>
 	
 	<bg type="group" label="Background" optional="true" tooltip="Add a background image to the project. This can be overridden by background images added to individual pages.">
@@ -340,7 +344,7 @@
 	</mediaFile>
 
     <newNodes>
-    <QRcode><![CDATA[<QRcode name="Enter Page Title" url="" tip="" imagesize="large"></QRcode>]]></QRcode><SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="" error="There is no image" />]]></SictTimeline><accNav><![CDATA[<accNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction=""></adaptiveContent>]]></adaptiveContent><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="" url="" panelWidth="Medium" tip="" colour="0xFFFF00" shape="Rectangle" align="Left"/>]]></annotatedDiagram><audioRecord><![CDATA[<audioRecord name="Enter Page Title" text="" panelWidth="Medium" randomise="false"
+    <QRcode><![CDATA[<QRcode name="Enter Page Title" url="" tip="" imagesize="large"></QRcode>]]></QRcode><SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="" error="Loading" />]]></SictTimeline><accNav><![CDATA[<accNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction=""></adaptiveContent>]]></adaptiveContent><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="" url="" panelWidth="Medium" tip="" colour="0xFFFF00" shape="Rectangle" align="Left"/>]]></annotatedDiagram><audioRecord><![CDATA[<audioRecord name="Enter Page Title" text="" panelWidth="Medium" randomise="false"
 	    prevText="Previous" nextText="Next" restartText="Restart" restartConfirmText="Restarting will remove all recordings. Do you want to restart?" countText="Clip {i} of {n}" recText="Record" stopText="Stop" downloadText="Download all" downloadText2="Download example" downloadText3="Download recordings" deleteText="Delete" clipNameLabel="Enter audio clip name" defaultClipName="Unnamed clip" clipNameRenameLabel="Edit audio clip name" micErrorLabel="Try Again"
 	  />]]></audioRecord><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="" text="" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left" url="" tip="" imagesize="medium"></bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showPanel="0" showBullets="0" panelWidth="Full"></bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="" prompt="" feedback="" align="Left" panelWidth="Medium" label="Check" />]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="" intro="" align="Left" panelWidth="Medium"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="" prompt="" align="Left" panelWidth="Medium"
 	  confirmBtnTxt="Confirm" 
@@ -418,14 +422,12 @@
 	  zoomInTxt="Zoom in" zoomOutTxt="Zoom out" fullScreenTxt="Full screen toggle"  sceneMenuTxt="Scene menu"
 	  pageError="Destination page not found"
 	  lockLabel="Password:" lockSubmit="Submit" lockPswdWrong="Incorrect password"
-	  />]]></media360><mediaLesson><![CDATA[<mediaLesson name="Enter Page Title" layout="grid" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><mediaPanel name="Enter Panel Title" media="" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><panel name="Enter Panel Title"/></mediaLesson>]]></mediaLesson><memory><![CDATA[<memory name="Enter Page Title" resetBtnTxt="Shuffle Cards"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="" prompt="" feedback="" panelWidth="Medium" align="left"
-	  feedbackBtnTxt="Feedback" 
-	  instructHeaderATxt="The instruction and question on page" instructHeaderBTxt="was:" responseHeaderTxt="Your response was:"
-	  noAnswerHeaderTxt="You didn't answer this question." exampleHeaderTxt="The example answer was:"
-	  copyBtnLabel="Select Text" copyShortcutTxt="Press Ctrl + C to copy" answerFieldLabel="Answer"
-	  />]]></modelAnswer><modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title" panelWidth="Medium" 
-	  copyBtnLabel="Select Text" 
-	  copypasteinfo="Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference."
+	  />]]></media360><mediaLesson><![CDATA[<mediaLesson name="Enter Page Title" layout="grid" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><mediaPanel name="Enter Panel Title" media="" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><panel name="Enter Panel Title"/></mediaLesson>]]></mediaLesson><memory><![CDATA[<memory name="Enter Page Title" resetBtnTxt="Shuffle Cards"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="" pageFeedback="" panelWidth="Medium" align="left"
+	  feedbackBtnTxt="Submit" pageTxt="Page" questionTxt="Question" responseHeaderTxt="Your response:"
+	  noAnswerHeaderTxt="No response submitted" exampleHeaderTxt="Feedback:" feedbackTxt="Page feedback"
+	  copyBtn2Label="Copy" copyShortcutTxt="Press Ctrl+C to copy" downloadTxt="Download" answerFieldLabel="Answer"
+	  />]]></modelAnswer><modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title" text="" panelWidth="Medium" dataPageLink="true"
+	  copyBtn2Label="Copy" downloadTxt="Download" pageTxt="Page" notViewed="Page not viewed"
 	  ></modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Page Title"  instruction="" text="" prompt="" answer="" answerType="true"
 	   answerHeaderTxt="Write your answer here:" feedbackBtnTxt="Feedback" answerFieldLabel="Answer"
 	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="" url="" tip1="" url2="" tip2="" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><nav><![CDATA[<nav name="Enter Page Title" text="" type="Tab" nextBtnTip="Next" prevBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></nav><newWindow><![CDATA[<newWindow name="Enter Page Title" text="" url="" descrip="" target="new" previewImage="" tip="" windowWidth="550" windowHeight="400"/>]]></newWindow><opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="" feedback=""
@@ -591,7 +593,7 @@
             <tip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
         </image>
 
-        <error label="Error Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+        <error label="Loading Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
         <newNodes>
             <timeLineText><![CDATA[<timeLineText name="Enter Item Title" text="" align="Left" url="" tip="" date="Choose Date"/>]]></timeLineText>
@@ -680,7 +682,7 @@
 
         <TimeLineEndDate type="group" label="End Date" optional="true">
             <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="" optional="true"/>
         </TimeLineEndDate>
     </timeLineText><timelineimage menuItem="Image Item" icon="icImage" remove="true">
         <date label="Date" type="dateField" defaultValue=""/>
@@ -695,29 +697,31 @@
 
         <TimeLineEndDate type="group" label="End Date" optional="true">
             <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="" optional="true"/>
         </TimeLineEndDate>
     </timelineimage><timelinevideo menuItem="Video Item" icon="icPageWhiteFilm" remove="true">
         <date label="Date" type="dateField" defaultValue=""/>
         <name label="Title" type="TextInput" wysiwyg="true"/>
         <url label="Video" type="Media" placeholder="Select a video file or enter a URL/embed code"/>
+        <text label="Text" type="TextArea" height="150" placeholder="Enter text for the item here"/>
 
         <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 
         <TimeLineEndDate type="group" label="End Date" optional="true">
             <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="" optional="true"/>
         </TimeLineEndDate>
     </timelinevideo><timeLineAudio menuItem="Audio Item" icon="icSound" remove="true">
         <date label="Date" type="dateField" defaultValue=""/>
         <name label="Title" type="TextInput" wysiwyg="true"/>
         <url label="Audio" type="Media" placeholder="Select an audio file"/>
+        <text label="Text" type="TextArea" height="150" placeholder="Enter text for the item here"/>
 
         <time label="Start Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
 
         <TimeLineEndDate type="group" label="End Date" optional="true">
             <endDate label="Date" type="dateField" defaultValue="" optional="true"/>
-            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+            <endTime label="Time (hh:mm)" type="TextInput" defaultValue="" optional="true"/>
         </TimeLineEndDate>
     </timeLineAudio><accNav deprecated="This page type is deprecated but will continue to work in this project. The Multi-Navigator page can be used to create new accordion navigators." deprecatedLevel="low" menu="Navigators" menuItem="Accordion Navigator" hint="A group of panes to present related text and graphical content." icon="icAccordion" thumb="thumbs/accNav.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#accordionnavigator" remove="true" deepLink="true">
     <name label="Page Title" type="TextInput" wysiwyg="true" placeholder="Enter page title"/>
@@ -6706,7 +6710,7 @@
 		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
 		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 		<audioPosition label="Audio Player Position" type="ComboBox" data="panel,bottom" options="In Panel,At Bottom" defaultValue="panel" optional="true"/>
-		<aspectRatio label="Media aspect ratio" type="ComboBox" data="1.333333,1.777777,2.333333" options="4:3,16:9,21:9" defaultValue="1.777777" optional="true"/>
+		<aspectRatio label="Media aspect ratio" type="ComboBox" data="1.333333,1.777777,2.333333,0.5625,0,428571" options="4:3,16:9,21:9,9:16,9:21" defaultValue="1.777777" optional="true" tooltip="The aspect ratio used for embedded videos from external sites, e.g. YouTube. The aspect ratio of MP4s uploaded to projects will be automatically detected."/>
 
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="" page="" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
@@ -7053,122 +7057,63 @@
     <url label="Image" type="Media" placeholder="Select an image"/>
 	<url2 label="Label Image" type="Media" optional="true" placeholder="Select an image"/>
 
-  </matchItem><modelAnswer menu="Interactivity" menuItem="Model Answer" hint="A text entry interaction, with feedback and the option to paste the response to clipboard." icon="icPageWhiteEdit" thumb="thumbs/modelAnswer.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#modelanswer" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_model_answer_page" remove="true">
+  </matchItem><modelAnswer menu="Interactivity" menuItem="Model Answer" hint="A text entry interaction, with feedback and the option to copy or download responses." icon="icPageWhiteEdit" thumb="thumbs/modelAnswer.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#modelanswer" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_model_answer_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
-    <prompt label="Prompt" type="TextArea" height="100" placeholder="Enter prompt text here"/>
-    
-    <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here"/>
+    <pageFeedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here" mandatory="true"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+
+    <textArea label="Text Area" type="group" deprecated="These options are deprecated as multiple text areas can now be added to the page. This text area will continue to work on this page but these options will not be available on new model answer pages.">
+        <prompt label="Prompt" type="TextArea" height="100" placeholder="Enter prompt text here" tooltip="The question or prompt shown before the associated text field"/>
+        <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here" tooltip="The feedback shown below the associated text field after answers have been submitted"/>
+    </textArea>
 
 	<judge label="Mark Answer" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
-    <feedbackBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-    <feedbackBtnTip label="Check Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
-    <feedbackBtnWidth label="Check Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
-    <instructHeaderATxt label="Instruction Header (a)" type="TextInput" wysiwyg="true" language="true"/>
-    <instructHeaderBTxt label="Instruction Header (b)" type="TextInput" wysiwyg="true" language="true"/>
-    <responseHeaderTxt label="Response Header" type="TextInput" wysiwyg="true" language="true"/>
-    <noAnswerHeaderTxt label="No Answer Header" type="TextInput" wysiwyg="true" language="true"/>
-    <exampleHeaderTxt label="Example Header" type="TextInput" wysiwyg="true" language="true"/>
-	<copyBtnLabel label="Select Button Label" type="TextInput" wysiwyg="true" language="true"/>
-    <copyShortcutTxt label="Copy Shortcut Text" type="TextInput" wysiwyg="true" language="true"/>
-	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that the text field where they should respond is labelled and the label is spoken to the screenreader user. e.g. Answer."/>
+    <copyPaste label="Copy Button" type="CheckBox" defaultValue="true" optional="true" tooltip="Include a button that allows users to easily select &amp; copy their responses"/>
 
-    <copypasteinfo label="Copy and Paste Info (Flash)" defaultValue="Note: the instruction  and question, your response and the example answer, have been copied to the clipboard which you can paste (ctrl + v) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true" deprecated="This property is no longer required"/>
-	<copypasteinfo2 label="Copy and Paste Info" defaultValue="Note: Click the 'Select Text' button to highlight the instruction, question, your response and the example answer and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true"/>
+    <downloadGroup label="Download Button" type="group" optional="true" tooltip="Include a button that allows users to download a copy their responses">
+        <showDownload label="Include button" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true"/>
+        <filename condition="showDownload!='false'" label="Filename (without extension)" type="TextInput" defaultValue="model_answer" optional="true"/>
+        <fileOrientation condition="showDownload!='false'" label="File orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
+    </downloadGroup>
+
+    <copypasteinfo2 label="Copy &amp; Paste Info" defaultValue="Note: Click the 'Select Text' button to highlight the instruction, question, your response and the feedback and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true" deprecated="This property is deprecated - use the 'Copy Button' optional property to add a button that copies responses to the clipboard"/>
+    <copypasteinfo label="Copy &amp; Paste Info (Flash)" defaultValue="Note: the instruction and question, your response and the feedback, have been copied to the clipboard which you can paste (ctrl + v) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true" deprecated="This property is no longer required"/>
     <label label="Button Label" defaultValue="deprecated - for backward compatibility only" type="TextInput" wysiwyg="true" optional="true" deprecated="This property is no longer required"/>
 	
-	<required label="Answer Required Before Feedback" type="CheckBox" optional="true" defaultValue="true"/>
+	<required label="Require Answer" type="CheckBox" optional="true" defaultValue="true" tooltip="Require text to be entered in all text areas before answers can be submitted"/>
 	
-	<imgInfo type="group" label="Image" optional="true">
+	<imgInfo type="group" label="Image" optional="true" deprecated="This optional property is deprecated as multiple text areas, with associated images, can now be added to the page. This image will continue to work on this page but this optional property will not be available on new model answer pages.">
 		<image label="File" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
 		<tooltip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgInfo>
 
-  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
-		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
-		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
-		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
-		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically move to the next page when the audio is played to the end"/>
-	</narrate><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled." common="true"/><navBtns type="group" label="Navigation Buttons" optional="true" tooltip="Disable individual navigation buttons on this page" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here." common="true">
-		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
-		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
-	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times by leaving the 'From' &amp; 'Until' fields empty or specify a date (and optional time) in the 'From' &amp; 'Until' fields to specify when it should be available." common="true">
-		<hidePage label="Hide Page" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
-		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="hidePage=='true'" conditionTrigger="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
-		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true" condition="hidePage=='true'&amp;&amp;hideOnDate!=''&amp;&amp;hideOnDate!=undefined"/>
-		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="hidePage=='true'" conditionTrigger="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
-		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true" condition="hidePage=='true'&amp;&amp;hideUntilDate!=''&amp;&amp;hideUntilDate!=undefined"/>
-	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu / table of contents so it can only be accessed via Xerte page links" common="true">
-		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" condition="linkPage=='true'" optional="true" tooltip="Determines how links to this page are opened"/>
-		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" condition="linkPage=='true'" optional="true" tooltip="When checked, the header bar will be hidden when viewing this page. This may be desirable when viewing the page in a lightbox."/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" condition="linkPage=='true'" optional="true" tooltip="When checked, the footer bar containing the navigation buttons will be hidden when viewing this page. This is likely to be desirable when viewing the page in a lightbox."/>
-		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" condition="linkPage=='true'&amp;&amp;(parent.progressBar!=undefined||parent.progressBarType=='true'||((parent.progressBarType=='header1'||parent.progressBarType=='header2'||parent.progressBarType=='header3')&amp;&amp;parent.progressSub=='false'))" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
-	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
-		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
-		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
-		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard (centred),Vault,Keypad" optional="true" defaultValue="standard" tooltip="Customise the appearance of the access code information on the page. The access code must be numeric when 'keypad' is used."/>
-		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
-		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
-		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
-	</passwordGroup><introGroup type="group" label="Introduction" optional="true" tooltip="Add a Page Introduction button to the footer tools, which opens information in a lightbox when clicked. This introduction can be set to open automatically when the page first loads." common="true">
-		<introType type="ComboBox" label="Content Type" defaultValue="text" options="Text,Image,Video,URL,File" data="text,image,video,url,file" conditionTrigger="true" optional="true" tooltip="The type of content used as an introduction for this page"/>
-		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
-		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
-		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
-		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
-		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
-		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
-		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
-		<introBtn type="CheckBox" label="Start Button" defaultValue="true" conditionTrigger="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include a 'start' button below the introduction that closes the lightbox when clicked"/>
-		<introBtnTxt label="Start Button Text" type="TextInput" defaultValue="Start" condition="introBtn=='true'&amp;&amp;(introType=='text'||introType==undefined||introType=='image')" wysiwyg="true" optional="true"/>
-		<introWidth label="Lightbox Width" options="Auto,Small,Medium,Large,Full" type="ComboBox" data="Auto,Small,Medium,Large,Full" defaultValue="Auto" condition="introType=='text'||introType==undefined" optional="true"/>
-		<introShow type="ComboBox" label="Auto-open" defaultValue="first" options="Every time this page is viewed,The first time this page is viewed,Never" data="always,first,never" optional="true" tooltip="Specify whether the introduction will automatically open when the page is viewed"/>
-	</introGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces, special characters and the words 'page' and 'section' in page IDs" common="true">
-		<pageID label="Page ID" type="TextInput" optional="true"/>
-	</customLinkGroup><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="true" tooltip="When the project is being tracked (e.g. using SCORM or xAPI), remove the requirement for this page to be completed in order for the project to be marked as complete" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="true" type="CheckBox" condition="parent.glossary!=undefined" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page" common="true"/><styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page" common="true"/><tracking type="group" label="Tracking" optional="true" tooltip="Properties relating to tracked projects (e.g. using SCORM or xAPI)" common="true">
-        <trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use (instead of page number) as tracking identifier"/>
-        <grouping label="Tracking Grouping" type="Grouping" optional="true" tooltip="Label to use for grouping of xAPI events, to be used for grouping in xAPI reports"/>
-	</tracking><scripts type="group" label="Script" optional="true" tooltip="Add JavaScript to run either on first load or every view of this page" common="true">
-		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
-		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
-	</scripts><background type="group" label="Background" optional="true" tooltip="Add a background image to this page. This will override any background image added at project level." common="true">
-		<bgImage label="Image" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
-		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit (cover),Show whole image (contain)" data="fill,cover,contain" defaultValue="cover" label="Scaling" tooltip="How the background image fills the available space. 'Stretch to fit' will stretch the image vertically or horizontally to fill the space, 'Crop to fit' will crop the image to fit without distorting it and 'Show whole image' will display the complete scaled image without distorting it. Note: this will have no effect in Internet Explorer."/>
-		<bgImageAlpha label="Opacity" type="NumericStepper" min="0" max="100" step="10" defaultValue="30" optional="true" tooltip="The opacity of the image, where 0 is completely transparent and 100 is not transparent at all"/>
-		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness" tooltip="Add a filter to darken the image, where 0 is not darkened at all and 100 is completely darkened (black)"/>
-		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" tooltip="Add a filter to change the image from colour to greyscale"/>
-	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
-		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true"/>
-		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" condition="showTimer=='true'" optional="true"/>
-		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up" condition="showTimer=='true'"/>
-		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining" condition="showTimer=='true'"/>
-	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" condition="parent.variables!=undefined" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
-		<varConfirm label="Submit Message" type="TextInput" condition="parent.variables!=undefined" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
-		<varUpdate label="Update Variables" type="CheckBox" condition="parent.variables!=undefined" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
-	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
-		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" conditionTrigger="true" optional="true"/>
-		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" condition="lightbox=='true'" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
-	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
-		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
-		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></modelAnswer><modelAnswerResults menu="Interactivity" menuItem="Model Answer Results" hint="Displays collated results from all the preceding model answer pages which can then be reviewed and copied to clipboard." icon="icFolderPage" thumb="thumbs/modelAnswerResult.jpg" type="text" label="Page Text" placeholder="Enter text for the page here" height="280" remove="true" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_model_answer_results_page">
-    <name label="Page Title" type="TextInput" wysiwyg="true"/>
-	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100" mandatory="true"/>
-    <copyBtnTxt label="Copy Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" deprecated="This property is no longer required"/>
-    <copyBtnTip label="Copy Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
-    <copyBtnWidth label="Copy Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="130" language="true" deprecated="Width is now set automatically"/>
-	<copyBtnLabel label="Select Button Label" type="TextInput" wysiwyg="true" language="true"/>
-	<copypasteinfo label="Copy and Paste Info" type="TextArea" height="50" language="true"/>
+    <pageTxt label="Page Text" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Page"/>
+    <questionTxt label="Question Text" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Question"/>
+    <responseHeaderTxt label="Response Text" type="TextInput" wysiwyg="true" language="true"/>
+    <noAnswerHeaderTxt label="No Answer Text" type="TextInput" wysiwyg="true" language="true"/>
+    <exampleHeaderTxt label="Feedback Text" type="TextInput" wysiwyg="true" language="true"/>
+    <feedbackTxt label="Main Feedback Text" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Page feedback"/>
+    <feedbackBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
+    <copyBtn2Label label="Copy Button Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Copy"/>
+    <copyShortcutTxt label="Copy Shortcut Text" type="TextInput" wysiwyg="true" language="true"/>
+    <downloadTxt label="Download Button Label" type="TextInput" condition="showDownload!='false'" mandatory="true" language="true" defaultValue="Download"/>
+    <answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that the text field where they should respond is labelled and the label is spoken to the screenreader user. e.g. Answer."/>
+
+    <copyBtnLabel label="Select Button Label" type="TextInput" wysiwyg="true" language="true" deprecated="This property is no longer required"/>
+    <instructHeaderATxt label="Instruction Header (a)" type="TextInput" wysiwyg="true" language="true" deprecated="This property is no longer required"/>
+    <instructHeaderBTxt label="Instruction Header (b)" type="TextInput" wysiwyg="true" language="true" deprecated="This property is no longer required"/>
+    <feedbackBtnTip label="Check Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
+    <feedbackBtnWidth label="Check Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
+
+    <newNodes>
+        <modelAnswerField><![CDATA[<modelAnswerField name="Text Area" prompt="" rows="5"/>]]></modelAnswerField>
+    </newNodes>
 
   <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
@@ -7241,7 +7186,142 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></modelAnswerResults><modify menu="Interactivity" menuItem="Modify Exercise" hint="Present a piece of text that the user must modify in some way, for example, by changing the tense." icon="icModify" thumb="thumbs/modify.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#modifyexercise" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_modify_exercise_page" remove="true">
+    </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></modelAnswer><modelAnswerField menuItem="Text Area" icon="icTextArea" remove="true">
+
+    <name label="Label" type="TextInput" wysiwyg="false" tooltip="The label is used to identify this text area on the results page and when tracking results, e.g. via SCORM/LTI/xAPI"/>
+    <prompt label="Prompt" type="TextArea" height="100" placeholder="Enter prompt text here" tooltip="The question or prompt shown before the associated text field"/>
+    <rows label="No. of lines" type="NumericStepper" min="1" max="15" defaultValue="5" tooltip="The number of lines in the text field"/>
+
+    <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here" optional="true" tooltip="The feedback shown below the associated text field after answers have been submitted"/>
+
+    <imgInfo type="group" label="Image" optional="true">
+        <image label="File" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
+        <tooltip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
+        <caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+    </imgInfo>
+
+  </modelAnswerField><modelAnswerResults menu="Interactivity" menuItem="Model Answer Results" hint="Displays collated results from all viewed Model Answer pages which can then be reviewed and copied or downloaded." icon="icFolderPage" thumb="thumbs/modelAnswerResult.jpg" remove="true" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_model_answer_results_page">
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <text label="Page Text" type="TextArea" height="280" placeholder="Enter text for the page here" mandatory="true" defaultValue=""/>
+	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100" mandatory="true"/>
+    <dataPageLink label="Link to Model Answer Pages" type="CheckBox" condition="dataPageH=='true'||dataPageH==undefined" defaultValue="false" mandatory="true"/>
+
+    <info><![CDATA[<p>By default, the results from all viewed Model Answer pages will be displayed on this page. To collate results from a limited number of pages instead, add new 'Page Results' to specify the pages used.</p>]]></info>
+
+    <dataGroup label="Customise results" type="group" optional="true" tooltip="Customise the type of data from viewed Model Answer pages that will be shown on this page" info="Customise the data from viewed Model Answer pages that will be shown on this on this page.">
+      <dataPageGroup label="Page" type="group" optional="true">
+        <dataPageH label="Title" type="CheckBox" conditionTrigger="true" optional="true" defaultValue="true"/>
+        <dataPageTxt label="Text" type="CheckBox" optional="true" defaultValue="false"/>
+        <dataPageFb label="Feedback" type="CheckBox" optional="true" defaultValue="true"/>
+      </dataPageGroup>
+      <dataQuestionGroup label="Exercise" type="group" optional="true">
+        <dataQuestionH label="Titles" type="CheckBox" optional="true" defaultValue="true"/>
+        <dataQuestionTxt label="Prompt" type="CheckBox" optional="true" defaultValue="true"/>
+        <dataQuestionAnswer label="Response" type="CheckBox" optional="true" defaultValue="true"/>
+        <dataQuestionFb label="Feedback" type="CheckBox" optional="true" defaultValue="true"/>
+      </dataQuestionGroup>
+    </dataGroup>
+
+    <unviewed label="Include unviewed pages" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true" tooltip="Include data from unviewed Model Answer pages"/>
+
+    <copyPaste label="Copy Button" type="CheckBox" defaultValue="true" optional="true" tooltip="Include a button that allows users to easily select &amp; copy their responses"/>
+
+    <downloadGroup label="Download Button" type="group" optional="true" tooltip="Include a button that allows users to download a copy their responses">
+      <showDownload label="Include button" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true"/>
+      <filename condition="showDownload!='false'" label="Filename (without extension)" type="TextInput" defaultValue="model_answer_results" optional="true"/>
+      <fileOrientation condition="showDownload!='false'" label="File orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
+    </downloadGroup>
+
+    <copypasteinfo label="Instructions" type="TextArea" height="50" defaultValue="Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference." optional="true" deprecated="This property is deprecated - use the 'Copy Button' optional property to add a button that copies responses to the clipboard"/>
+
+    <copyBtn2Label label="Copy Button Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Copy"/>
+    <downloadTxt label="Download Button Label" type="TextInput" condition="showDownload!='false'" mandatory="true" language="true" defaultValue="Download"/>
+    <pageTxt label="Page Number Text" type="TextInput" condition="unviewed=='true'" mandatory="true" language="true" defaultValue="Page"/>
+    <notViewed label="Not Viewed Text" type="TextInput" condition="unviewed=='true'" mandatory="true" language="true" defaultValue="Page not viewed"/>
+
+    <copyBtnLabel label="Select Button Label" type="TextInput" wysiwyg="true" language="true" deprecated="This property is no longer in use"/>
+
+    <newNodes>
+        <modelAnswerPage><![CDATA[<modelAnswerPage name="Model Answer Page" page=""/>]]></modelAnswerPage>
+    </newNodes>
+
+  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
+		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
+		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
+		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically move to the next page when the audio is played to the end"/>
+	</narrate><navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled." common="true"/><navBtns type="group" label="Navigation Buttons" optional="true" tooltip="Disable individual navigation buttons on this page" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here." common="true">
+		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
+		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
+	</navBtns><hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times by leaving the 'From' &amp; 'Until' fields empty or specify a date (and optional time) in the 'From' &amp; 'Until' fields to specify when it should be available." common="true">
+		<hidePage label="Hide Page" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
+		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="hidePage=='true'" conditionTrigger="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true" condition="hidePage=='true'&amp;&amp;hideOnDate!=''&amp;&amp;hideOnDate!=undefined"/>
+		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="hidePage=='true'" conditionTrigger="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true" condition="hidePage=='true'&amp;&amp;hideUntilDate!=''&amp;&amp;hideUntilDate!=undefined"/>
+	</hideShow><linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu / table of contents so it can only be accessed via Xerte page links" common="true">
+		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" condition="linkPage=='true'" optional="true" tooltip="Determines how links to this page are opened"/>
+		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" condition="linkPage=='true'" optional="true" tooltip="When checked, the header bar will be hidden when viewing this page. This may be desirable when viewing the page in a lightbox."/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" condition="linkPage=='true'" optional="true" tooltip="When checked, the footer bar containing the navigation buttons will be hidden when viewing this page. This is likely to be desirable when viewing the page in a lightbox."/>
+		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" condition="linkPage=='true'&amp;&amp;(parent.progressBar!=undefined||parent.progressBarType=='true'||((parent.progressBarType=='header1'||parent.progressBarType=='header2'||parent.progressBarType=='header3')&amp;&amp;parent.progressSub=='false'))" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
+	</linkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
+		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
+		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard (centred),Vault,Keypad" optional="true" defaultValue="standard" tooltip="Customise the appearance of the access code information on the page. The access code must be numeric when 'keypad' is used."/>
+		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
+		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
+		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
+	</passwordGroup><introGroup type="group" label="Introduction" optional="true" tooltip="Add a Page Introduction button to the footer tools, which opens information in a lightbox when clicked. This introduction can be set to open automatically when the page first loads." common="true">
+		<introType type="ComboBox" label="Content Type" defaultValue="text" options="Text,Image,Video,URL,File" data="text,image,video,url,file" conditionTrigger="true" optional="true" tooltip="The type of content used as an introduction for this page"/>
+		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
+		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
+		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
+		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
+		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
+		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
+		<introBtn type="CheckBox" label="Start Button" defaultValue="true" conditionTrigger="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include a 'start' button below the introduction that closes the lightbox when clicked"/>
+		<introBtnTxt label="Start Button Text" type="TextInput" defaultValue="Start" condition="introBtn=='true'&amp;&amp;(introType=='text'||introType==undefined||introType=='image')" wysiwyg="true" optional="true"/>
+		<introWidth label="Lightbox Width" options="Auto,Small,Medium,Large,Full" type="ComboBox" data="Auto,Small,Medium,Large,Full" defaultValue="Auto" condition="introType=='text'||introType==undefined" optional="true"/>
+		<introShow type="ComboBox" label="Auto-open" defaultValue="first" options="Every time this page is viewed,The first time this page is viewed,Never" data="always,first,never" optional="true" tooltip="Specify whether the introduction will automatically open when the page is viewed"/>
+	</introGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces, special characters and the words 'page' and 'section' in page IDs" common="true">
+		<pageID label="Page ID" type="TextInput" optional="true"/>
+	</customLinkGroup><unmarkForCompletion label="Completion Not Required" type="CheckBox" defaultValue="true" tooltip="When the project is being tracked (e.g. using SCORM or xAPI), remove the requirement for this page to be completed in order for the project to be marked as complete" optional="true" common="true"/><disableGlossary label="Disable Glossary" defaultValue="true" type="CheckBox" condition="parent.glossary!=undefined" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page" common="true"/><styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page" common="true"/><tracking type="group" label="Tracking" optional="true" tooltip="Properties relating to tracked projects (e.g. using SCORM or xAPI)" common="true">
+        <trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use (instead of page number) as tracking identifier"/>
+        <grouping label="Tracking Grouping" type="Grouping" optional="true" tooltip="Label to use for grouping of xAPI events, to be used for grouping in xAPI reports"/>
+	</tracking><scripts type="group" label="Script" optional="true" tooltip="Add JavaScript to run either on first load or every view of this page" common="true">
+		<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true"/>
+		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
+	</scripts><background type="group" label="Background" optional="true" tooltip="Add a background image to this page. This will override any background image added at project level." common="true">
+		<bgImage label="Image" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit (cover),Show whole image (contain)" data="fill,cover,contain" defaultValue="cover" label="Scaling" tooltip="How the background image fills the available space. 'Stretch to fit' will stretch the image vertically or horizontally to fill the space, 'Crop to fit' will crop the image to fit without distorting it and 'Show whole image' will display the complete scaled image without distorting it. Note: this will have no effect in Internet Explorer."/>
+		<bgImageAlpha label="Opacity" type="NumericStepper" min="0" max="100" step="10" defaultValue="30" optional="true" tooltip="The opacity of the image, where 0 is completely transparent and 100 is not transparent at all"/>
+		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness" tooltip="Add a filter to darken the image, where 0 is not darkened at all and 100 is completely darkened (black)"/>
+		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" tooltip="Add a filter to change the image from colour to greyscale"/>
+	</background><pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero" common="true">
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" condition="showTimer=='true'" optional="true"/>
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up" condition="showTimer=='true'"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining" condition="showTimer=='true'"/>
+	</pageTimer><notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><variables type="group" label="Variables" condition="parent.variables!=undefined" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property" common="true">
+		<varConfirm label="Submit Message" type="TextInput" condition="parent.variables!=undefined" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
+		<varUpdate label="Update Variables" type="CheckBox" condition="parent.variables!=undefined" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
+	</variables><lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only" common="true">
+		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" conditionTrigger="true" optional="true"/>
+		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" condition="lightbox=='true'" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
+		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
+		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
+    </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></modelAnswerResults><modelAnswerPage menuItem="Page Results" icon="icTextArea" remove="true">
+
+    <name label="Label" type="TextInput" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make pages easier to locate for editing at a later date."/>
+    <page label="Page" type="pageList" pageTypes="modelAnswer" tooltip="The data from this Model Answer page will be shown on this page"/>
+
+  </modelAnswerPage><modify menu="Interactivity" menuItem="Modify Exercise" hint="Present a piece of text that the user must modify in some way, for example, by changing the tense." icon="icModify" thumb="thumbs/modify.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#modifyexercise" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_modify_exercise_page" remove="true">
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <instruction label="Instruction" type="TextArea" height="100" placeholder="Enter text for the page here"/>

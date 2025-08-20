@@ -742,11 +742,6 @@ a.hotspot, a.hotspot.selected {
   background: #EDEDED;
 }
 
-.x_modelAnswer_page #answerTxt {
-  border-radius: 0;
-  width: 98%;
-}
-
 .x_modelAnswer_page #copyTxt {
   color: #D13759;
 }

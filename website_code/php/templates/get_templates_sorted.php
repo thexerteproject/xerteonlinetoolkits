@@ -29,6 +29,8 @@ if(empty($_SESSION['toolkits_logon_id'])) {
 
 $_SESSION['sort_type'] = $_POST['sort_type'];
 
+$start = time();
 $workspace = get_users_projects($_SESSION['sort_type']);
+_debug("get_users_projects of {$_SESSION['toolkits_logon_username']} took " . (time() - $start) . " seconds");
 echo $workspace;
 
