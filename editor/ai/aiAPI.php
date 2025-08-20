@@ -15,7 +15,7 @@
 //}
 
 require_once(dirname(__FILE__) . "/../../config.php");
-require_once (str_replace('\\', '/', __DIR__) . "/management/DataRetrievalHelper.php");
+require_once (str_replace('\\', '/', __DIR__) . "/management/dataRetrievalHelper.php");
 
 
 $prompt_params = $_POST["prompt"] ?? null;
