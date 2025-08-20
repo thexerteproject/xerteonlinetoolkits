@@ -640,6 +640,36 @@ var EDITOR = (function ($, parent) {
         return false;
     },
 
+    vendor_has_option = function(option, vendor = "all") {
+        if(vendor == "all") {
+            for(let i = 0; i < management_helper_table.length; i++){
+                let vender_options = management_helper_table[i];
+                if(option == "enabled"){
+                    return vender_options.enabled == "1";
+                }else {
+                    for(let j = 0; j < vender_options.sub_options.length; j++){
+                        return vender_options.sub_options[j] == "true";
+                    }
+                }
+            }
+        }else {
+            for(let i = 0; i < management_helper_table.length; i++){
+                let vender_options = management_helper_table[i];
+                if(vender_options.vendor == vendor) {
+                    if(option == "enabled"){
+                        return vender_options.enabled == "1";
+                    }else {
+                        for(let j = 0; j < vender_options.sub_options.length; j++){
+                            return vender_options.sub_options[j] == "true";
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return false;
+    },
+
     evaluateCondition = function(condition, key, formState, mode)
     {
         var tree = jsep(condition);

@@ -332,3 +332,14 @@ if (file_exists(dirname(__FILE__) . '/vendor_config.php'))
 {
     require_once(dirname(__FILE__) . '/vendor_config.php');
 }
+
+// vender, enabled, sub_options
+$management_helper_table_rows = db_query("select * from {$xerte_toolkits_site->database_table_prefix}management_helper");
+$xerte_toolkits_site->management_helper_table = array();
+foreach($management_helper_table_rows as $row){
+    $object = new stdClass();
+    $object->vendor = $row["vendor"];
+    $object->enabled = $row["enabled"];
+    $object->sub_options = json_decode($row["sub_options"]);
+    $xerte_toolkits_site->management_helper_table[] = $object;
+}

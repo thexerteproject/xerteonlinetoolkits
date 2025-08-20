@@ -447,6 +447,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "theme_list=" . json_encode($ThemeList) . ";\n";
     echo "vendor_options=" . json_encode($vendors) . ";\n";
     echo "corpus_upload_types=" . json_encode($corpus_upload_types) . ";\n";
+    echo "management_helper_table=" . json_encode($xerte_toolkits_site->management_helper_table) . ";\n";
     ?>
 
     function bunload(){
