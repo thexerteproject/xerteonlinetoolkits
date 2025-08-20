@@ -15,7 +15,7 @@
 //}
 
 require_once(dirname(__FILE__) . "/../../config.php");
-
+require_once (str_replace('\\', '/', __DIR__) . "/management/DataRetrievalHelper.php");
 
 
 $prompt_params = $_POST["prompt"] ?? null;
@@ -37,9 +37,12 @@ $selectedCode = $_POST['language'];
 
 $allowed_apis = ['openai', 'anthropic', 'mistral'];
 
-//todo combine with api check from admin page
+$managementSettings = get_block_indicators();
 if (!in_array($ai_api, $allowed_apis)){
-    die(json_encode(["status" => "error", "message" => "api is not allowed"]));
+    die(json_encode(["status" => "error", "message" => "API is not allowed"]));
+}
+if(!$managementSettings['ai']['active_vendor']){
+    die(json_encode(["status" => "error", "message" => "No active API found. Ensure at least one ai vendor is enabled with a valid api key."]));
 }
 
 //dynamically load needed api methods

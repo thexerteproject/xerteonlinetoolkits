@@ -1,4 +1,6 @@
 <?php
+namespace transcribe;
+use \Exception;
 /**
  * Abstract base class for AI-based transcription services.
  */
@@ -229,6 +231,7 @@ abstract class AITranscribe {
             $this->chunkTmpDir = null;
         }
     }
+
 }
 
 
@@ -590,3 +593,11 @@ class GladiaTranscribe extends AITranscribe {
         return true;
     }
 }
+
+//Serves as a fallback for when no transcription service is enabled
+class UninitializedTranscribe extends AITranscribe {
+    public function transcribeAudioTimestamped($filePath){
+    throw new Exception("Transcription service not enabled. Audio files, video files and video links, cannot be used for retrieval at this time. Please contact your administrator to enable a transcription service.");
+    }
+}
+

@@ -6,15 +6,14 @@ error_reporting(E_ALL);
 
 require_once (str_replace('\\', '/', __DIR__) . "/BaseRAG.php");
 require_once (str_replace('\\', '/', __DIR__) . "/MistralRAG.php");
-require_once (str_replace('\\', '/', __DIR__) . "/../transcribe/AITranscribe.php");
-require_once (str_replace('\\', '/', __DIR__) . "/../transcribe/MediaHandler.php");
-require_once (str_replace('\\', '/', __DIR__) . "/../transcribe/CorpusSynchronizer.php");
-require_once (str_replace('\\', '/', __DIR__) . "/../transcribe/RegistryHandler.php");
-require_once (str_replace('\\', '/', __DIR__) . "/../transcribe/TranscriptManager.php");
+require_once (str_replace('\\', '/', __DIR__) . "/../transcribe/TranscriberFactory.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../../../config.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../../../vendor_config.php");
+require_once (str_replace('\\', '/', __DIR__) . "/RagFactory.php");
+require_once (str_replace('\\', '/', __DIR__) . "/../management/dataRetrievalHelper.php");
 
-use rag\MistralRAG;
+use function rag\makeRag;
+use function transcribe\makeTranscriber;
 
 /**
  * Given a user-supplied relative path, resolve it against your project root
@@ -51,6 +50,10 @@ ob_start();
 
 try {
     global $xerte_toolkits_site;
+
+    //get settings from the management table, which help us decide which options to use
+    $managementSettings = get_block_indicators();
+
     // 1. Decode JSON payload
     $raw = file_get_contents('php://input');
     $input = json_decode($raw, true);
@@ -70,39 +73,29 @@ try {
         mkdir($mediaPath, 0777, true);
     }
     $mediaDir = realpath($mediaPath);
-    //$corpusDir = realpath($mediaDir . DIRECTORY_SEPARATOR . 'corpus');
 
     x_check_path_traversal($baseDir);
     x_check_path_traversal($mediaDir);
-    //x_check_path_traversal($corpusDir);
 
-    try {
-        $gladiaKey = $xerte_toolkits_site->gladia_key;
-        //$whisperKey = $xerte_toolkits_site->whisper_key;
-        $transcriber = new GladiaTranscribe($gladiaKey);
-        //$transcriber = new OpenAITranscribe($whisperKey);
-        $mediaHandler = new MediaHandler($baseDir, $transcriber);
-    } catch (Exception $e){
-        throw new Exception('Error intiializing transcription service. Make sure a transcription service is enabled or contact your system administrator.');
-    }
-    $transcriptPath = $mediaHandler->returnMediaPath();
+    $transcriptionKey = $xerte_toolkits_site->{$managementSettings['transcription']['key_name']};
 
-    if (!is_dir($transcriptPath)) {
-        mkdir($transcriptPath, 0777, true);
-    }
-    $transcriptDir = realpath($transcriptPath);
-    x_check_path_traversal($transcriptDir);
+    $provider = $managementSettings['transcription']['active_vendor'];
+    $cfgTranscribe = [
+        'api_key' => $transcriptionKey,
+        'basedir' => $baseDir,
+        'provider' => $provider
+    ];
 
-    $registryHandler = new RegistryHandler($transcriptDir);
-    //$corpusSync = new CorpusSynchronizer($transcriptDir, $corpusDir);
-    $transcriptMgr = new TranscriptManager($registryHandler, $mediaHandler, /*$corpusSync*/);
+    $transcriptMgr = makeTranscriber($cfgTranscribe);
 
-    try {
-        $mistralKey = $xerte_toolkits_site->mistralenc_key;
-        $rag = new MistralRAG($mistralKey, $baseDir);
-    } catch (Exception $e){
-        throw new Exception('Error initializing encoding service. Make sure an encoding service is enabled or contact your system administrator.');
-    }
+    $encodingKey = $xerte_toolkits_site->{$managementSettings['encoding']['key_name']};
+    $provider = $managementSettings['encoding']['active_vendor'];
+    $cfg = [
+            'api_key' => $encodingKey,
+            'encoding_directory' => $baseDir,
+            'provider' => $provider
+        ];
+    $rag = makeRag($cfg);
 
     $results = [];
 
@@ -140,15 +133,7 @@ try {
                         'file'  => $uploadUrl,
                         'status' =>'Error: ' . $e->getMessage(),
                     ];
-                    $row['col_2'] = 'ERROR/SKIP'; //Hey alek this is dumb because apparently some of the errors are allowed
-                    //like if you can't transcribe it because its a non-transcribable filetype, it still counts as an error...
-                    //It kinda shouldn't do that?
-                }else{
-
-                    /*$results[] = [
-                        'file'       => $uploadUrl,
-                        'status' => 'Transcription unecessary.'
-                    ];*/
+                    $row['col_2'] = 'ERROR/SKIP';
                 }
             }
         }
@@ -204,11 +189,6 @@ try {
     $debugOutput = ob_get_contents();
     ob_end_clean();
 
-    //TODO: Merge results with ragResults here? Atm if we have transcription errors they don't make it to the front end
-    //TODO: Make the returned files from ragResults be with the file source, not the original file  name, and then filter,
-    //so it's only what comes after corpus rag whatever... that way people know in the error message what it is without getting
-    //the whole link blasted.
-
     // 1) Normalization helper
     function normalize_id(string $str): string {
         // URLs stay as‑is
@@ -234,7 +214,7 @@ try {
             'id'                      => $id,
             'file'                    => $row['file'],
             'transcription_status'    => $row['status'],
-            // you could copy other fields here if needed
+            // you could copy other fields here if needed; it shouldn't break the frontend usage
         ];
     }
 
@@ -262,7 +242,6 @@ try {
     ], JSON_THROW_ON_ERROR);
 
 } catch (Exception $ex) {
-    //http_response_code(500);
     echo json_encode([
         'success' => false,
         'rag_results' => $ex->getMessage()
