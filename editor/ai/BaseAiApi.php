@@ -21,7 +21,7 @@ abstract class BaseAiApi
         require_once (str_replace('\\', '/', __DIR__) . "/../../config.php");
         $this->xerte_toolkits_site = $xerte_toolkits_site;
         require_once (str_replace('\\', '/', __DIR__) . "/rag/RagFactory.php");
-        require_once (str_replace('\\', '/', __DIR__) . "/management/DataRetrievalHelper.php");
+        require_once (str_replace('\\', '/', __DIR__) . "/management/dataRetrievalHelper.php");
         require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/load_model.php");
     }
 
