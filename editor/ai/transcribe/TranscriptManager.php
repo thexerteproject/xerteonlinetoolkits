@@ -1,9 +1,9 @@
 <?php
-
+namespace transcribe;
+use \Exception;
 class TranscriptManager {
     private $registry;
     private $mediaHandler;
-    private $synchronizer;
 
     public function __construct(RegistryHandler $registry, MediaHandler $mediaHandler) {
         $this->registry = $registry;
@@ -56,9 +56,6 @@ class TranscriptManager {
             'processed_at' => date('c')
         ];
         $this->registry->set($id, $entry);
-
-        // Sync the new transcript into the corpus directory
-        //$this->synchronizer->sync();
 
         return $entry;
     }

@@ -1,5 +1,6 @@
 <?php
-
+namespace transcribe;
+use \Exception;
 class MediaHandler {
     // Supported video hosts.
     protected $supportedHosts = ['youtube.com', 'youtu.be', 'vimeo.com', 'video.dlearning.nl'];

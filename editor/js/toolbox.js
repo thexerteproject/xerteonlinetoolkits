@@ -1466,12 +1466,6 @@ var EDITOR = (function ($, parent) {
                     // slice and strip quotes again just in case
                     return raw.slice(idxAny).replace(/^['"]+|['"]+$/g, '');
                 }
-                if (idxPreviewAny !== -1) {
-                    // slice and strip quotes again just in case
-                    //When normalizing in the corpus, if we see preview.xml, we update the LO in corpus.
-                    updateCorpusSingle(false, true);
-                    return raw.slice(idxPreviewAny).replace(/^['"]+|['"]+$/g, '');
-                }
 
                 // 4) Nothing matched → error
                 alert(`Unrecognized path: ${raw}\nMust be a full URL or contain “corpus/” in it.`);
@@ -1516,7 +1510,6 @@ var EDITOR = (function ($, parent) {
             }
 
             function updateGrid(name, id) {
-                //confirm("A list of processed files for AI use will replace the current resource list, and any changes not yet synced will be lost. Proceed with loading?");
                 const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
 
                 $.ajax({
@@ -1548,7 +1541,6 @@ var EDITOR = (function ($, parent) {
                         if (resp.corpus && typeof resp.corpus === "string") {
                             // Remove leading/trailing whitespace, split on newlines, filter out empty lines
                             totalFiles = resp.corpus.trim().split('\n').filter(line => line.trim() !== '').length;
-                            //alert(`✅ Grid updated with ${totalFiles} file(s).`);
                         }
                     },
                     error: function(xhr, status, err) {
@@ -6523,7 +6515,15 @@ var EDITOR = (function ($, parent) {
                             throw new Error(`Unrecognized path: ${raw}`);
                         }
 
-                        //Upload a single file to the corpus
+                        /* Upload a single file to the corpus.
+                        *
+                        * To maintain the proper shape for the back-end function, we approximate a grid by creating
+                        * one with a single row, based on the file indicated in the information source.
+                        *
+                        * If useLoInCorpus is true, we instead create an empty file list as there is no file URL,
+                        * and pass useLoInCorpus to the final requests which signals that we intend to use the latest preview.xml.
+                        *
+                        */
                         async function updateCorpus(fileUrl, corpusGrid = false, useLoInCorpus) {
                             const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
 
@@ -6558,7 +6558,12 @@ var EDITOR = (function ($, parent) {
                                     data: JSON.stringify(payload),
                                     success: function(resp) {
                                         console.log('Corpus sync succeeded:', resp);
-                                        alert('✅ Synced ' + payload.gridData.length + ' file to corpus. Please press \'generate\' again to continue with your request.');
+                                        const first = resp.results?.[0] || {};
+                                        const displaymsg =
+                                            first.rag_status ||
+                                            first.transcription_status ||
+                                            'No status available';
+                                        alert(displaymsg);
                                         resolve(resp);
                                     },
                                     error: function(xhr, status, err) {
@@ -6573,8 +6578,11 @@ var EDITOR = (function ($, parent) {
                             });
                         }
 
-                        //Fetch existing corpus files, alongside descriptive data. Returns a json.
-                        // Returns a Promise that resolves with the corpus data
+                        /* Fetch existing corpus files, alongside descriptive data.
+                         *
+                         * Returns a Promise that resolves with the corpus data which itself is a json.
+                         *
+                         */
                         function fetchCorpus() {
                             const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
                             $('body, .featherlight, .featherlight-content').css("cursor", "wait");
@@ -6612,11 +6620,26 @@ var EDITOR = (function ($, parent) {
                             });
                         }
 
+
+                        /*
+                        * Depending on the configuration, function does several things:
+                        *
+                        * If restrictCorpusToLo is true, inform the user that the latest LO preview will be processed and return true.
+                        *
+                        * If not, we first retrieve the existing corpus data and check the fileUrl found in the information
+                        * source against the results.
+                        *
+                        * If the file is found, return it.
+                        *
+                        * If the file is not found, prompt the user whether they wish to process this file.
+                        * Once the file is processed, return it.
+                        *
+                         */
                         async function doCorpusCheck(fileUrl, loSettings) {
                             if (loSettings['useLoInCorpus'] === true){
                                 alert('Updating to latest learning object preview. Depending on learning object size, this may take a few minutes.');
                                 await updateCorpus(fileUrl, false, true);
-                                return false; //updated lo
+                                return true; //updated lo
                             } else if (!loSettings['restrictCorpusToLo']){
                                 try {
                                     const corpusResp = await fetchCorpus(); // returns { hashes: [...] }
@@ -6630,8 +6653,8 @@ var EDITOR = (function ($, parent) {
                                         return match.metaData.source;  // file found
                                     } else {
                                         if (confirm("The file you've selected has not yet been processed, and cannot be used as context for generation. Would you like to add it to the context for this learning object? For videos or larger files, this might take several minutes.")){
-                                            await updateCorpus(fileUrl, false);
-                                            return false; // not found, but added
+                                            let fileStatus = await updateCorpus(fileUrl, false);
+                                            return fileStatus.results[0].id; // not found, but added -- return the id
                                         } else {
                                             // User cancelled
                                             return null; // or just let it be undefined
@@ -6650,7 +6673,7 @@ var EDITOR = (function ($, parent) {
                          *
                          * If the file(s) is present in the corpus, we allow the request to continue whilst indicating which file(s) the user selected.
                          *
-                         * If the file is not present, we alert the user and they can choose to add the file to the corpus, after which they can make a request again.
+                         * If the file is not present, we alert the user; they can then choose to add the file to the corpus, after which they can make a request again.
                          */
                         let loSettings = {};
                         if (aiSettings['updateLoOnRequest'] === "true"){
@@ -6767,193 +6790,9 @@ var EDITOR = (function ($, parent) {
                         .attr('id', id + '_addcolumns')
                         .addClass('jqgridAddColumnsContainer'));
 
-                /*$('<input type="button" name="corpusSubmit" value="Sync to Context">')
-                    .css({
-                        'background': '#EFEFEF',
-                        'border': '1px solid #767676',
-                        'border-radius': '2px',
-                        'padding': '4px 16px',
-                        'font-size': '0.9em',
-                        'float': 'left',
-                        'font-family': '"Open Sans", sans-serif',
-                        'cursor': 'pointer'
-                    })
-                    .hover(
-                        function() { $(this).css({'background': '#E5E5E5', 'border': '1px solid #4F4F4F'}); },
-                        function() { $(this).css({'background': '#EFEFEF', 'border': '1px solid #767676'}); }
-                    )
-                    .click(function() { corpusUpdate(name, id); })
-                    .appendTo(html);
-
-                $('<input type="button" value="Refresh Context Grid">')
-                    .css({
-                        'background': '#EFEFEF',
-                        'border': '1px solid #767676',
-                        'border-radius': '2px',
-                        'padding': '4px 16px',
-                        'font-size': '0.9em',
-                        'float': 'left',
-                        'font-family': '"Open Sans", sans-serif',
-                        'cursor': 'pointer'
-                    })
-                    .hover(
-                        function() { $(this).css({'background': '#E5E5E5', 'border': '1px solid #4F4F4F'}); },
-                        function() { $(this).css({'background': '#EFEFEF', 'border': '1px solid #767676'}); }
-                    )
-                    .click(() => updateGrid(name, id))
-                    .appendTo(html);
-
-                $('<input type="button" name="loToCorpusSubmit" value="Add Latest Learning Object Preview as Context Resource">')
-                    .css({
-                        'background': '#EFEFEF',
-                        'border': '1px solid #767676',
-                        'border-radius': '2px',
-                        'padding': '4px 16px',
-                        'font-size': '0.9em',
-                        'float': 'left',
-                        'font-family': '"Open Sans", sans-serif',
-                        'cursor': 'pointer'
-                    })
-                    .hover(
-                        function() { $(this).css({'background': '#E5E5E5', 'border': '1px solid #4F4F4F'}); },
-                        function() { $(this).css({'background': '#EFEFEF', 'border': '1px solid #767676'}); }
-                    )
-                    .click(function() { updateCorpusSingle(false, true); })
-                    .appendTo(html); */
-
-            function normalizePath(raw) {
-                // strip any surrounding single or double quotes, and trim whitespaces
-                raw = raw.replace(/^['"]+|['"]+$/g, '').trim();
-
-                // 1) Full URLs with scheme (http:// or https://)
-                if (/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(raw)) {
-                    try {
-                        const u = new URL(raw);
-                        if (u.origin !== window.location.origin) {
-                            // External URL => leave intact
-                            return raw;
-                        }
-                        // Same-origin URL => strip after /RAG/corpus/ or preview.xml if present
-                        const idxCorpus = u.pathname.indexOf('/RAG/corpus/');
-                        const idxPreview = u.pathname.indexOf('preview.xml');
-                        if (idxCorpus !== -1) {
-                            return u.pathname.slice(idxCorpus + 1).replace(/^['"]+|['"]+$/g, '');
-                        }
-                        if (idxPreview !== -1) {
-                            return u.pathname.slice(idxPreview).replace(/^['"]+|['"]+$/g, '');
-                        }
-                        return raw;
-                    } catch {
-                        alert(`Malformed URL: ${raw}\nPlease check and try again.`);
-                        throw new Error(`Malformed URL: ${raw}`);
-                    }
-                }
-
-                // 2) Bare hostnames without scheme => user error
-                if (/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/|$)/.test(raw)) {
-                    alert(`Invalid URL: ${raw}\nPlease include http:// or https:// if you mean a web link.`);
-                    throw new Error(`Invalid URL: ${raw}`);
-                }
-
-                // 3) Anywhere the text "RAG/corpus/" or "preview.xml" appears, pull out from there
-                const idxAny = raw.indexOf('RAG/corpus/');
-                const idxPreviewAny = raw.indexOf('preview.xml');
-                if (idxAny !== -1) {
-                    // slice and strip quotes again just in case
-                    return raw.slice(idxAny).replace(/^['"]+|['"]+$/g, '');
-                }
-                if (idxPreviewAny !== -1) {
-                    // slice and strip quotes again just in case
-                    //When normalizing in the corpus, if we see preview.xml, we update the LO in corpus.
-                    updateCorpusSingle(false, true);
-                    return raw.slice(idxPreviewAny).replace(/^['"]+|['"]+$/g, '');
-                }
-
-                // 4) Nothing matched → error
-                alert(`Unrecognized path: ${raw}\nMust be a full URL or contain “corpus/” in it.`);
-                throw new Error(`Unrecognized path: ${raw}`);
-            }
-                //Upload a single file to the corpus
-            async function updateCorpusSingle(corpusGrid = false, useLoInCorpus) {
-                const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
-
-                // 1. Construct a grid row with only fileUrl in col_2, others as empty strings
-                let singleRow = {};
-                if (useLoInCorpus) {{
-                    singleRow = {
-                        col_1: "",
-                        col_2: [],
-                        col_3: "",
-                        col_4: ""
-                    };
-                }
-
-                const payload = { name, baseURL, gridData: [singleRow], corpusGrid, useLoInCorpus };
-                    $('body, .featherlight, .featherlight-content').css("cursor", "wait");
-
-                // 2. Send it off
-                // Return a Promise that resolves or rejects with the AJAX result
-                return new Promise((resolve, reject) => {
-                    $.ajax({
-                        url: 'editor/ai/rag/syncCorpus.php',
-                        method: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(payload),
-                        success: function(resp) {
-                            console.log('Corpus sync succeeded:', resp);
-                            alert('✅ Synced ' + payload.gridData.length + ' files to corpus.' + resp.results);
-                            resolve(resp);
-                        },
-                        error: function(xhr, status, err) {
-                            console.error('Corpus sync failed:', err);
-                            alert('⚠️ Corpus sync error: ' + err);
-                            reject(err);
-                        },
-                        complete: function() {
-                            // Always reset cursor
-                            $('body, .featherlight, .featherlight-content').css("cursor", "default");
-                        }
-                    });
-                });
-            }
-            }
-
-
-            function corpusUpdate(name, id) {
-                const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
-                // 1. Grab all the row‐objects from the jqGrid
-                const gridSel = '#' + id + '_jqgrid';
-                const allRows = $(gridSel).jqGrid('getRowData');
-
-                const files = allRows.map(row => {
-                    const raw = row['col_2'];  // This is the value from the grid, could be a full URL or relative path
-                    row['col_2'] = normalizePath(raw); // Normalize the path if it's a local URL
-
-                    return row; // Return the modified row with updated col_2
-                });
-
-                const payload = { name, baseURL, gridData: allRows };
-
-                // 4. Send it off
-                $.ajax({
-                    url: 'editor/ai/rag/syncCorpus.php',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(payload),
-                    success: function(resp) {
-                        console.log('Corpus sync succeeded:', resp);
-                        alert('✅ Synced ' + payload.gridData.length + ' files to corpus.');
-                    },
-                    error: function(xhr, status, err) {
-                        console.error('Corpus sync failed:', err);
-                        alert('⚠️ Corpus sync error: ' + err);
-                    }
-                });
-            }
-
+            /*Retrieves the latest list of processed files for the corpus and updates the grid with the same values. */
             function updateGrid(name, id) {
-                //the load happens on page load or instantiation, we dont need to do this for everything
-                //confirm("A list of processed files for AI use will replace the current resource list, and any changes not yet synced will be lost. Proceed with loading?");
+                //the load happens on page load or instantiation, we don't need to do this for everything
                 const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
 
                 $.ajax({

@@ -1,5 +1,7 @@
 <?php
 use rag\MistralRAG;
+use function rag\makeRag;
+
 
 abstract class BaseAiApi
 {
@@ -18,8 +20,8 @@ abstract class BaseAiApi
         $this->api = $api;
         require_once (str_replace('\\', '/', __DIR__) . "/../../config.php");
         $this->xerte_toolkits_site = $xerte_toolkits_site;
-        require_once (str_replace('\\', '/', __DIR__) . "/rag/BaseRAG.php");
-        require_once (str_replace('\\', '/', __DIR__) . "/rag/MistralRAG.php");
+        require_once (str_replace('\\', '/', __DIR__) . "/rag/RagFactory.php");
+        require_once (str_replace('\\', '/', __DIR__) . "/management/dataRetrievalHelper.php");
         require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/load_model.php");
     }
 
@@ -170,6 +172,22 @@ abstract class BaseAiApi
         return $finalPath;
     }
 
+    //A get message array for sorting through different types of $payload structures
+    protected function &getMessagesArray(&$payload) {
+        //anthropic, mistral and a legacy openAI chat completion
+        if (isset($payload['messages'])) {
+            return $payload['messages'];
+        }
+        //for openAI assistant requests
+        if (isset($payload['thread']['messages'])) {
+            return $payload['thread']['messages'];
+        }
+
+        // Fallback: return a dummy reference (prevents fatal error)
+        $null = [];
+        return $null;
+    }
+
     public function ai_request($p, $type, $subtype, $context, $baseUrl, $selectedCode, $useCorpus = false, $fileList = null, $restrictCorpusToLo = false){
         /*
         if (is_null($this->preset_models->type_list[$type]) or $type == "") {
@@ -182,6 +200,7 @@ abstract class BaseAiApi
 
 
         $this->setupLanguageInstructions($selectedCode);
+        $managementSettings = get_block_indicators();
 
         //We add this as a prompt param for prompts which might make use of the language information.
         //When making any prompt, the stand-in for the language must therefore be 'responseLanguage'
@@ -193,11 +212,16 @@ abstract class BaseAiApi
         $payload = $model->get_payload();
 
         if ($useCorpus || $fileList != null || $restrictCorpusToLo){
-            $encodingApiKey = $this->xerte_toolkits_site->mistralenc_key;
+            $encodingApiKey = $this->xerte_toolkits_site->{$managementSettings['encoding']['key_name']};
             $encodingDirectory = $this->prepareURL($baseUrl);
-            $rag = new MistralRAG($encodingApiKey, $encodingDirectory);
+            $provider = $managementSettings['encoding']['active_vendor'];
+            $cfg = [
+                'api_key' => $encodingApiKey,
+                'encoding_directory' => $encodingDirectory,
+                'provider' => $provider
+            ];
+            $rag = makeRag($cfg);
             if ($rag->isCorpusValid()){
-                //$promptReference = x_clean_input($p['subject']);
                 $promptReferences = $this->buildQueries($p);
                 $promptReference = $promptReferences['vector_query'];
                 //$testReference = $promptReferences['frequency_query'];
@@ -234,7 +258,8 @@ abstract class BaseAiApi
                     ),
                 );
 
-                array_splice($payload['messages'], 2, 0, $new_messages);
+                $messages =& $this->getMessagesArray($payload);
+                array_splice($messages, 2, 0, $new_messages);
             }
         }
 

@@ -12,6 +12,8 @@ class MistralRAG extends BaseRAG
         $this->apiKey = $apiKey;
     }
 
+    protected function supportsProviderEmbeddings(): bool { return true; }
+
     /*Retrieve an embedding for a single piece of text*/
     protected function getEmbedding($text)
     {
@@ -43,7 +45,7 @@ class MistralRAG extends BaseRAG
 
     /*Retrieve embeddings in batches, in line with the maximum allowed token size of the mistral embed model
     In principle, the max token size is 16384. Since token size is only approximated, though, go with a lower number.*/
-    protected function getEmbeddings(array $texts)
+    protected function getEmbeddings(array $texts): array
     {
         $maxTokensPerBatch = 15000;
         $url = "https://api.mistral.ai/v1/embeddings";

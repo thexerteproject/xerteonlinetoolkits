@@ -44,6 +44,10 @@ abstract class BaseRAG
         $this->corpusFile = $this->encodingDirectory . 'corpus.json';
     }
 
+    abstract protected function supportsProviderEmbeddings(): bool;
+    //public function providerActive(): bool { return false; }
+    abstract protected function getEmbeddings(array $texts): array;
+
     /**
      * processDirectory
      * ----------------
@@ -183,13 +187,18 @@ abstract class BaseRAG
             }
         }
 
-        // Recompute any new embeddings, clean up artifacts, refresh TF-IDF
-        $this->processNewEmbeddings();
+        // Recompute any new embeddings only if it's supported by the provider
+        if ($this->supportsProviderEmbeddings()){
+            $this->processNewEmbeddings();
+        }
         if ($corpusGrid === true){
-            //first clean up anything not in list, then recompute idf + tf_idf on what's left
+            //$corpusGrid being true implies the file list is absolute, meaning all no-longer represented artifacts must be deleted
             $this->cleanupStaleArtifacts();
+            $this->generateTfidfPersistent();
         } else {
+            //if the file list is not absolute--corpusGrid is false--we must still clean up to purge previous versions and encodings of the same file
             // Re‑build IDF + TF‑IDF
+            $this->cleanupStaleArtifacts();
             $this->generateTfidfPersistent();
         }
         return $results;
@@ -407,7 +416,6 @@ abstract class BaseRAG
             $handle = fopen($this->embeddingsFile, 'r');
             while (($line = fgets($handle)) !== false) {
                 $data = json_decode($line, true);
-                // <-- changed: look at fileHash instead of file
                 if ($data && !in_array($data['fileHash'], $existingHashes, true)) {
                     $existingHashes[] = $data['fileHash'];
                 }
@@ -1207,6 +1215,10 @@ abstract class BaseRAG
      *   - tfidf_cosine:        0.3
      *   - tfidf_euclidean:     0.2
      *
+     * Default weights with no embedding service active (modifiable):
+     *  - tfidf_cosine:         0.6
+     *  - tfidf_euclidean:      0.4
+     *
      * @param string $question The input query.
      * @param null $allowedFiles An array of hashes to define a limited scope from the whole corpus.
      * @param array|null $weights Associative array with keys: 'embedding_cosine', 'embedding_euclidean', 'tfidf_cosine', 'tfidf_euclidean'.
@@ -1216,21 +1228,32 @@ abstract class BaseRAG
      */
     public function getWeightedContext($question, $allowedFiles = null, $weights = null, $topK = 3, $overlap = 0.5)
     {
+        $useProvider = $this->supportsProviderEmbeddings();
         // Set default weights if not provided.
         if (!$weights) {
-            $weights = [
-                'embedding_cosine' => 0.3,
-                'embedding_euclidean' => 0.2,
-                'tfidf_cosine' => 0.3,
-                'tfidf_euclidean' => 0.2
-            ];
+            if ($useProvider) {
+                $weights = [
+                    'embedding_cosine' => 0.3,
+                    'embedding_euclidean' => 0.2,
+                    'tfidf_cosine' => 0.3,
+                    'tfidf_euclidean' => 0.2
+                ];
+            } else {
+                $weights = [
+                    'tfidf_cosine' => 0.6,
+                    'tfidf_euclidean' => 0.4
+                ];
+            }
         }
         //Retrieve the hashes for all the indicated allowed files
         $allowedFileHashes = $allowedFiles !== null ? $this->matchSourceToHashes($allowedFiles) : null;
 
-        // Get candidate results from each modular function (requesting more than needed).
-        $candidatesEmbeddingCosine = $this->getContextCosine($question, 10, $allowedFileHashes);
-        $candidatesEmbeddingEuclidean = $this->getContextEuclidean($question, 10, $allowedFileHashes);
+        // Get candidate results from each modular function (requesting more than strictly needed for more comprehensive results at expense of some computation; the topK can be lowered down to 3 typically at risk of returning less relevant results).
+        if ($useProvider){
+            $candidatesEmbeddingCosine = $this->getContextCosine($question, 10, $allowedFileHashes);
+            $candidatesEmbeddingEuclidean = $this->getContextEuclidean($question, 10, $allowedFileHashes);
+        }
+
         //If allowedFileHashes is not null, it means the user has requested a restricted context
         //We take the provided list, which is of the partial file sources, and retrieve the associated hashes from the
         //corpus file for filtering.
@@ -1261,21 +1284,31 @@ abstract class BaseRAG
                 $merged[$id][$scoreKey] = $item['score'];
             }
         };
-
-        $mergeCandidates($candidatesEmbeddingCosine, 'embedding_cosine');
-        $mergeCandidates($candidatesEmbeddingEuclidean, 'embedding_euclidean');
+        if ($useProvider){
+            $mergeCandidates($candidatesEmbeddingCosine, 'embedding_cosine');
+            $mergeCandidates($candidatesEmbeddingEuclidean, 'embedding_euclidean');
+        }
         $mergeCandidates($candidatesTfidfCosine, 'tfidf_cosine');
         $mergeCandidates($candidatesTfidfEuclidean, 'tfidf_euclidean');
 
         // Compute a combined weighted score for each candidate.
-        foreach ($merged as $id => &$item) {
-            $item['combined_score'] =
-                $weights['embedding_cosine'] * $item['embedding_cosine'] +
-                $weights['embedding_euclidean'] * $item['embedding_euclidean'] +
-                $weights['tfidf_cosine'] * $item['tfidf_cosine'] +
-                $weights['tfidf_euclidean'] * $item['tfidf_euclidean'];
+        if ($useProvider) {
+            foreach ($merged as $id => &$item) {
+                $item['combined_score'] =
+                    $weights['embedding_cosine'] * $item['embedding_cosine'] +
+                    $weights['embedding_euclidean'] * $item['embedding_euclidean'] +
+                    $weights['tfidf_cosine'] * $item['tfidf_cosine'] +
+                    $weights['tfidf_euclidean'] * $item['tfidf_euclidean'];
+            }
+            unset($item);
+        } else {
+            foreach ($merged as $id => &$item) {
+                $item['combined_score'] =
+                    $weights['tfidf_cosine'] * $item['tfidf_cosine'] +
+                    $weights['tfidf_euclidean'] * $item['tfidf_euclidean'];
+            }
+            unset($item);
         }
-        unset($item);
 
         // Sort merged results by combined_score descending.
         $mergedCandidates = array_values($merged);
@@ -1310,6 +1343,7 @@ abstract class BaseRAG
         $finalResults = [];
         $topCandidates = array_slice($mergedCandidates, 0, $topK);
         foreach ($topCandidates as $candidate) {
+            //$candidate['file'] refers to the hash of the file, not the file path
             $file = $candidate['file'];
             if (!isset($chunksGrouped[$file])) {
                 $finalResults[] = $candidate;
@@ -1482,10 +1516,6 @@ abstract class BaseRAG
         // 3) Apply to chunks and embeddings
         $filterJsonl($this->chunksFile);
         $filterJsonl($this->embeddingsFile);
-
-        // 4) Re‑build IDF + TF‑IDF on what's left
-        $this->generateTfidfPersistent();
-        echo "Re‑generated idf.json and tfidf_embeddings.json on filtered corpus.\n";
     }
     /**
      * Return the path of the list of processed corpus files.
