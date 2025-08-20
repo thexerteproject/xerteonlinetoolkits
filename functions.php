@@ -303,15 +303,15 @@ function x_clean_input_array($input, $expected_type = null, $specialcharsflags =
     foreach ($input as $key => $value) {
         $sanitized[$key] = trim($input[$key]);
         $sanitized[$key] = stripslashes($sanitized[$key]);
-        $sanitized[$key] = htmlspecialchars($sanitized[$key], $specialcharsflags);
+        $sanitized[$key] = htmlentities($sanitized[$key], $specialcharsflags);
         if ($array_type != null) {
             if ($array_type == 'string') {
                 if (!is_string($sanitized[$key])) {
-                    die("Expected string, got " . htmlspecialchars($sanitized[$key], $specialcharsflags));
+                    die("Expected string, got " . htmlentities($sanitized[$key], $specialcharsflags));
                 }
             } else if ($array_type == 'numeric') {
                 if (!is_numeric($sanitized[$key])) {
-                    die("Expected numeric value, got ". htmlspecialchars($sanitized[$key],$specialcharsflags));
+                    die("Expected numeric value, got ". htmlentities($sanitized[$key],$specialcharsflags));
                 }
             }
         }
@@ -319,11 +319,11 @@ function x_clean_input_array($input, $expected_type = null, $specialcharsflags =
     if ($expected_type != null) {
         if ($expected_type == 'array_numeric') {
             if (!is_array($sanitized)) {
-                die("Expected numeric array, got " . htmlspecialchars($sanitized,$specialcharsflags));
+                die("Expected numeric array, got " . htmlentities($sanitized,$specialcharsflags));
             }
         } else if ($expected_type == 'array_string') {
             if (!is_array($sanitized)) {
-                die("Expected string array, got " . htmlspecialchars($sanitized,$specialcharsflags));
+                die("Expected string array, got " . htmlentities($sanitized,$specialcharsflags));
             }
         }
     }
@@ -340,16 +340,16 @@ function x_clean_input($input, $expected_type = null, $specialcharsflags = ENT_Q
     }
     $sanitized = trim($input);
     $sanitized = stripslashes($sanitized);
-    $sanitized = htmlspecialchars($sanitized, $specialcharsflags);
+    $sanitized = htmlentities($sanitized, $specialcharsflags);
     if ($expected_type != null) {
         if ($expected_type == 'string') {
             if (!is_string($sanitized)) {
-                die("Expected string, got " . htmlspecialchars($sanitized, $specialcharsflags));
+                die("Expected string, got " . htmlentities($sanitized, $specialcharsflags));
             }
         }
         else if ($expected_type == 'numeric') {
             if (!is_numeric($sanitized)) {
-                die("Expected numeric value, got " . htmlspecialchars($sanitized, $specialcharsflags));
+                die("Expected numeric value, got " . htmlentities($sanitized, $specialcharsflags));
             }
         }
     }
@@ -360,9 +360,9 @@ function x_clean_input_json($input)
 {
     $sanitized = trim($input);
     $sanitized = stripslashes($sanitized);
-    $sanitized = htmlspecialchars($sanitized,  ENT_NOQUOTES);
+    $sanitized = htmlentities($sanitized,  ENT_NOQUOTES);
     if (!is_string($sanitized)) {
-        die("Expected string, got " . htmlspecialchars($sanitized,  ENT_NOQUOTES));
+        die("Expected string, got " . htmlentities($sanitized,  ENT_NOQUOTES));
     }
     return $sanitized;
 }
