@@ -973,6 +973,7 @@ var EDITOR = (function ($, parent) {
                 if (!sorted_options['optional'][i].value.deprecated) {
                     // Create button for right panel
                     var label = attribute_label + (sorted_options['optional'][i].value.type == 'group' ? '...' : '');
+										let icon = $('<i>').addClass('fa').addClass('fa-lg').addClass("xerte-icon").height(14);
                     var button = $('<button>')
                         .attr('id', 'insert_opt_' + attribute_name)
                         .addClass('btnInsertOptParam')
@@ -1010,7 +1011,7 @@ var EDITOR = (function ($, parent) {
 								
 								checkForOptGroup(event.data);
                             })
-                        .append($('<i>').addClass('fa').addClass('fa-plus-circle').addClass('fa-lg').addClass("xerte-icon").height(14));
+                        .append(icon);
                     if (sorted_options['optional'][i].value.flashonly) {
                         label += flashonlytxt;
                     }
@@ -1058,8 +1059,10 @@ var EDITOR = (function ($, parent) {
                                 .append(button));
 
                         if (sorted_options['optional'][i].value.lightbox === 'form') {
+														icon.addClass('fa-wand-magic');
                             tableLightbox.append(tablerow);
                         } else {
+														icon.addClass('fa-plus-circle');
                             if (sorted_options['optional'][i].value.common) {
                                 // chapter folders don't share general optional properties with pages
                                 if (node_name != "chapter") {

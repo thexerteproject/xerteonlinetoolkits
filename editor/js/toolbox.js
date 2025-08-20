@@ -668,7 +668,7 @@ var EDITOR = (function ($, parent) {
             var flashonly = $('<img>')
                 .attr('src', 'editor/img/flashonly.png')
                 .attr('title', 'Flash only attribute');
-
+	
             if (options.condition)
             {
 
@@ -679,7 +679,31 @@ var EDITOR = (function ($, parent) {
                     return;
                 }
             }
+
             var tr = $('<tr>');
+
+						if(options.advanced == "true" && lightboxMode == "form"){
+								if(window.showAdvanced == undefined) {
+										window.showAdvanced = {};
+										console.log(arguments);
+										all_options.push({
+												name: "toggleAdvanced",
+												value: {
+														type: "toggleAdvanced",
+														label: "Show advanced options",
+														optional: "true",
+														group: options.group,
+												}
+										});
+								}
+								if(window.showAdvanced[key] == undefined) {
+										showAdvanced[key] = false;
+								}
+								if(!window.showAdvanced[key]) {
+										tr.css("display", "none");
+								}
+						}
+
             if (options.deprecated) {
                 var td = $('<td>')
                     .addClass("deprecated")
@@ -4508,6 +4532,8 @@ var EDITOR = (function ($, parent) {
         var lightboxHtml = $("<form id='lightbox_" + group.name + "' style='width: 50vw' ></form>");
         let lightboxTable = $("<table id='lightboxPanel' class='content'></table>");
         let lightboxId = "#lightbox_" + group.name;
+				let name = wizard_data[lo_data[key]['attributes'].nodeName].menu_options.menuItem + " ai settings";
+				lightboxHtml.append($("<div>").text(name));
 
         //build lightbox form content input by input
         for (var j = 0; j < groupChildren.length; j++) {
@@ -6698,6 +6724,26 @@ var EDITOR = (function ($, parent) {
                         }
 
                     });
+                break;
+        case 'toggleadvanced':
+				var id = 'toggleAdvanced_' + form_id_offset;
+				form_id_offset++;
+				let action = "show";
+				if(window.showAdvanced[key]) {
+					action = "hide";
+				}
+				html = $('<input type="checkbox">')
+					.attr('id', id)
+					.text(action + ' advanced options')
+					.attr('title', 'click to show advanced options')
+					.addClass('toggleAdvanced')
+					.click(() => {
+						window.showAdvanced[key] = !window.showAdvanced[key];
+						triggerRedrawForm(options.group, key, "", "redraw");
+					});
+				if(window.showAdvanced[key]){
+						html.attr("checked", "true");
+				}
                 break;
             case 'corpusgrid':
                 //Based on datagrid with some specific changes for the purposes of AI usage itself
