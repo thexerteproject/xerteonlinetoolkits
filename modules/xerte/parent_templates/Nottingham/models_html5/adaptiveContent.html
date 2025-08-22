@@ -932,6 +932,21 @@
     }
 
 
+  function appendExplanation(interaction, showExplanation, Explanation, ExplanationPanelWidth) {
+      if (showExplanation == "true" && Explanation != "") {
+          var textSize = Math.round(interaction.getAttribute("labelFontSize"));
+          if (textSize == null || textSize == 0) {
+              textSize = 12;
+          }
+
+          return '<div class="panel legend" ' +
+              'style="width: ' + ExplanationPanelWidth + '; font-size: ' + textSize + 'px;">' +
+              Explanation +
+              "</div>"
+      }
+  }
+
+
   function open_period_range_selector(interactions, currentPage) {
 
       var $range_selector = $('<form id="rangeSelector" class="needs-validation" action="" ">' +
@@ -1623,17 +1638,20 @@
       } else {
         summaryText = `<h1><p>${summaryText}</p></h1>`;
       }
-      let summaryDiv = ''
-      if (
-        summaryText !== '' ||
-          interaction.getAttribute("showSpecification") === "true" ||
-          adviceHeader !== '' ||
-          interaction.getAttribute("showNrOfParticipants") === "true" ||
-          interaction.getAttribute("showScore") === "true" ||
-          interactionType === "open"
-        ) {
-          summaryDiv = '<div class="summary">' + summaryText
-          for (let i = 0; i < nrPeriods; i++) {
+      let contentArea = "";
+      for (let i = 0; i < nrPeriods; i++) {
+          contentArea += "<div class='summary-container-block'>";
+          let summaryDiv = ''
+          if (
+              summaryText !== '' ||
+              interaction.getAttribute("showSpecification") === "true" ||
+              adviceHeader !== '' ||
+              interaction.getAttribute("showNrOfParticipants") === "true" ||
+              interaction.getAttribute("showScore") === "true" ||
+              interactionType === "open"
+          ) {
+              summaryDiv = '<div class="summary">' + summaryText
+
               let specificationDiv = '';
               if (interaction.getAttribute("showSpecification") === "true") {
                   specificationDiv =
@@ -1650,15 +1668,20 @@
                   `-stats${i}" class="stats"></ul></div>` +
                   specificationDiv +
                   "</div>";
-          }
-          summaryDiv += "</div>";
-      }
-      //if (summaryText != "" || adviceHeader != "" || interactionType == 'grouping') {
-      let graphContainer = '<div class="graph-container"></div>';
-      if (summaryDiv == '') {
-          graphContainer = '<div class="graph-container graph-container-wide"></div>';
-        }
 
+              summaryDiv += "</div>";
+              contentArea += summaryDiv;
+          }
+          //if (summaryText != "" || adviceHeader != "" || interactionType == 'grouping') {
+          let graphContainer = `<div class="graph-container" id="` + escapeUrl(url, interactionType, interactionIndex) + `-graph-container${i}"></div>`;
+          //todo check for legend
+          //seems to work witouth block
+          if (summaryDiv == '') {
+              graphContainer = `<div class="graph-container graph-container-wide" id="` + escapeUrl(url, interactionType, interactionIndex) + `-graph-container${i}"></div>`;
+          }
+          contentArea += graphContainer + '</div>';
+
+      }
       let adviceDiv = '<div class="advice">' +
           adviceHeader +
           '<div class="message"></div>' +
@@ -1668,8 +1691,7 @@
           `<div class='introduction'>${introductionText}</div>` +
           '<div class="interaction_load" id="interaction_load_' + interactionIndex + '"><img class="loading-gif" src="' + loadinggif + '"/></div>' +
           '<div class="summary-container">' +
-          summaryDiv +
-          graphContainer +
+          contentArea +
           "</div>" +
           adviceDiv
       );
@@ -2291,75 +2313,78 @@
           if (ExplanationPanelWidth == undefined) {
               ExplanationPanelWidth = "40%";
           }
-          div = $(
-              "#" + escapeUrl(url, type, interactionIndex) + " .graph-container"
-          );
-          if (
-              interaction.getAttribute("actualGraphType") == "pie_marks" ||
-              interaction.getAttribute("actualGraphType") == "bar_comb_marks" ||
-              interaction.getAttribute("actualGraphType") == "polar_area_per_category" ||
-              interaction.getAttribute("actualGraphType") == "bar_marks" ||
-              interaction.getAttribute("actualGraphType") == "bar_marks_score" ||
-              interaction.getAttribute("actualGraphType") == "bar_answers" ||
-              interaction.getAttribute("actualGraphType") == "line_average_marks" ||
-              interaction.getAttribute("actualGraphType") == "line_own_marks"
-          ) {
-              let graphSpace = ""
-              for (let i = 0; i < periods.length; i++) {
+
+          for (let i = 0; i < periods.length; i++) {
+              div = $(
+                  "#" + escapeUrl(url, type, interactionIndex) + "-graph-container" + i
+              );
+
+              let graphSpace = "";
+
+              if (
+                  interaction.getAttribute("actualGraphType") == "pie_marks" ||
+                  interaction.getAttribute("actualGraphType") == "bar_comb_marks" ||
+                  interaction.getAttribute("actualGraphType") == "polar_area_per_category" ||
+                  interaction.getAttribute("actualGraphType") == "bar_marks" ||
+                  interaction.getAttribute("actualGraphType") == "bar_marks_score" ||
+                  interaction.getAttribute("actualGraphType") == "bar_answers" ||
+                  interaction.getAttribute("actualGraphType") == "line_average_marks" ||
+                  interaction.getAttribute("actualGraphType") == "line_own_marks"
+              ) {
+
                   //add period labels above graph if needed
                   if (periods[i][0] !== "01-01-0000") {
-                      graphSpace += "<p class='periodDisplay'>" + periods[i][0] + " : " + periods[i][1]  + "</p>"
+                      graphSpace += "<p class='periodDisplay'>" + periods[i][0] + " : " + periods[i][1] + "</p>";
                   }
+                  graphSpace += "<div class='graph-container-period'>";
                   graphSpace += "<div class='graph'><canvas id='" +
                       escapeUrl(url, type, interactionIndex) +
-                      `-graph${i}'></canvas></div>`
-              }
+                      `-graph${i}'></canvas></div>`;
+                  graphSpace += appendExplanation(interaction, showExplanation, Explanation, ExplanationPanelWidth);
+                  graphSpace += '</div>';
 
-              div.append(graphSpace);
-          } else if (
-              interaction.getAttribute("actualGraphType") == "hor_bar_comb_marks" ||
-              interaction.getAttribute("actualGraphType") == "hor_bar_comb_marks_avg"
-          ) {
-              let graphSpace = "";
-              for (let i = 0; i < periods.length; i++) {
+
+                  div.append(graphSpace);
+              } else if (
+                  interaction.getAttribute("actualGraphType") == "hor_bar_comb_marks" ||
+                  interaction.getAttribute("actualGraphType") == "hor_bar_comb_marks_avg"
+              ) {
+
                   //add period labels above graph if needed
                   if (periods[i][0] !== "01-01-0000") {
-                      graphSpace += "<p class='periodDisplay'>" + periods[i][0] + " : " + periods[i][1]  + "</p>";
+                      graphSpace += "<p class='periodDisplay'>" + periods[i][0] + " : " + periods[i][1] + "</p>";
                   }
+                  graphSpace += "<div class='graph-container-period'>";
                   graphSpace += "<div class='graph'><div id='" +
                       escapeUrl(url, type, interactionIndex) +
                       `-graph${i}'></div></div>`;
-              }
+                  graphSpace += appendExplanation(interaction, showExplanation, Explanation, ExplanationPanelWidth);
+                  graphSpace += '</div>';
 
-              div.append(graphSpace);
-          } else {
-              let graphSpace = "";
-              for (let i = 0; i < periods.length; i++) {
+
+                  div.append(graphSpace);
+              } else {
+
                   //add period labels above graph if needed
                   if (periods[i][0] !== "01-01-0000") {
-                      graphSpace += "<p class='periodDisplay'>" + periods[i][0] + " : " + periods[i][1]  + "</p>";
+                      graphSpace += "<p class='periodDisplay'>" + periods[i][0] + " : " + periods[i][1] + "</p>";
                   }
+                  graphSpace += "<div class='graph-container-period'>";
                   graphSpace += "<div class='graph'><svg id='" +
                       escapeUrl(url, type, interactionIndex) +
                       `-graph${i}' width='700' height='300' viewBox='0 0 700 300'></svg></div>`;
+                  graphSpace += appendExplanation(interaction, showExplanation, Explanation, ExplanationPanelWidth);
+                  graphSpace += '</div>';
+
+                  div.append(graphSpace);
+                  //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("width", '700');
+                  //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("height", '300');
+                  //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("preserveAspectRatio", "xMinYMin meet");
+                  //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("viewBox", "0 0 700 300");
+                  //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute('viewBox','0 0 '+Math.min(width,height) +' '+Math.min(width,height) )
+                  //.attr('preserveAspectRatio','xMinYMin')
               }
 
-              div.append(graphSpace);
-              //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("width", '700');
-              //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("height", '300');
-              //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("preserveAspectRatio", "xMinYMin meet");
-              //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("viewBox", "0 0 700 300");
-              //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute('viewBox','0 0 '+Math.min(width,height) +' '+Math.min(width,height) )
-              //.attr('preserveAspectRatio','xMinYMin')
-          }
-          if (showExplanation == "true" && Explanation != "") {
-              var textSize = Math.round(interaction.getAttribute("labelFontSize"));
-              if (textSize == null || textSize == 0) textSize = 12;
-              div.append(
-                  '<div class="panel legend" style="width: ' + ExplanationPanelWidth + '; font-size: ' + textSize + 'px;">' +
-                  Explanation +
-                  "</div>"
-              );
           }
 
           for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
@@ -3908,32 +3933,30 @@
             if (ExplanationPanelWidth == undefined) {
                 ExplanationPanelWidth = "40%";
             }
-            div = $(
-                "#" + escapeUrl(url, type, interactionIndex) + " .graph-container"
-            );
 
-            let graphSpace = "";
             for (let i = 0; i < periods.length; i++) {
+                div = $(
+                    "#" + escapeUrl(url, type, interactionIndex) + "-graph-container" + i
+                );
+
+                let graphSpace = "";
+
+
                 //add period labels above graph if needed
                 if (periods[i][0] !== "01-01-0000") {
-                    graphSpace += "<p class='periodDisplay'>" + periods[i][0] + " : " + periods[i][1]  + "</p>";
+                    graphSpace += "<p class='periodDisplay'>" + periods[i][0] + " : " + periods[i][1] + "</p>";
                 }
+                graphSpace += "<div class='graph-container-period'>";
                 graphSpace += "<div class='graph'><canvas id='" +
                     escapeUrl(url, type, interactionIndex) +
                     `-graph${i}'></canvas></div>`;
+                graphSpace += appendExplanation(interaction, showExplanation, Explanation, ExplanationPanelWidth);
+                graphSpace += '</div>';
+
+
+                div.append(graphSpace);
             }
 
-            div.append(graphSpace);
-            if (showExplanation == "true" && Explanation != "") {
-                var textSize = Math.round(interaction.getAttribute("labelFontSize"));
-                if (textSize == null || textSize == 0) textSize = 12;
-
-                div.append(
-                    '<div class="panel legend" style="width: ' + ExplanationPanelWidth + '; font-size: ' + textSize + 'px;" >' +
-                    Explanation +
-                    "</div>"
-                );
-            }
         if (interaction.getAttribute("actualGraphType") == "bar_answers") {
 
             var xertelo = interaction.getAttribute("xertelo");
@@ -4108,7 +4131,7 @@
                         events: ['click']
                     },
                 });
-                let graphHeight = $(`#${escapeUrl(url, type, interactionIndex)}-graph${currentPeriod}`).height();
+                let graphHeight = $(`#${escapeUrl(url, type, interactionIndex)}-graph-container${currentPeriod}`).height();
                 $(`#${escapeUrl(url, type, interactionIndex)}-score${currentPeriod}`).css({"min-height": `${graphHeight}px`});
             }
 
@@ -4554,45 +4577,46 @@
                 ownstatementsPeriods.push(filterOwnStatements(periodStatements[currentPeriod], xertelo));
             }
         }
-        div = $(
-            "#" + escapeUrl(url, type, interactionIndex) + " .graph-container"
-        );
+        for (let i = 0; i < periods.length; i++) {
+            div = $(
+                "#" + escapeUrl(url, type, interactionIndex) + "-graph-container" + i
+            );
 
-        if (interaction.getAttribute('opinionGraphType') == 'radar' || interaction.getAttribute('opinionGraphType') == null) {
             let graphSpace = "";
-            for (let i = 0; i < periods.length; i++) {
+
+            if (interaction.getAttribute('opinionGraphType') == 'radar' || interaction.getAttribute('opinionGraphType') == null) {
+
+
                 //add period labels above graph if needed
-                if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
+                if (MultiPeriod === 'static' || MultiPeriod === 'dynamic_always') {
                     graphSpace += "<p class='periodDisplay'>" + periods[i][0] + " : " + periods[i][1] + "</p>";
                 }
+                graphSpace += "<div class='graph-container-period'>"
                 graphSpace += "<fieldset class='noStyle'><canvas aria-live='polite' id='" +
                     escapeUrl(url, type, interactionIndex) +
                     `-graph${i}'></canvas></fieldset>`;
+                graphSpace += appendExplanation(interaction, showExplanation, Explanation, ExplanationPanelWidth);
+                graphSpace += '</div>';
 
-            }
-            div.append(graphSpace);
-        } else if (interaction.getAttribute('opinionGraphType') == 'hor_bar_comb_marks_avg') {
-            let graphSpace = ""
-            for (let i = 0; i < periods.length; i++) {
+
+                div.append(graphSpace);
+            } else if (interaction.getAttribute('opinionGraphType') == 'hor_bar_comb_marks_avg') {
+
+
                 //add period labels above graph if needed
-                if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
+                if (MultiPeriod === 'static' || MultiPeriod === 'dynamic_always') {
                     graphSpace += "<p class='periodDisplay'>" + periods[i][0] + " : " + periods[i][1] + "</p>";
                 }
+                graphSpace += "<div class='graph-container-period'>"
                 graphSpace += "<div class='graph'><div id='" +
                     escapeUrl(url, type, interactionIndex) +
                     `-graph${i}'></div></div>`;
-            }
-            div.append(graphSpace);
-        }
+                graphSpace += appendExplanation(interaction, showExplanation, Explanation, ExplanationPanelWidth);
+                graphSpace += '</div>';
 
-        if (showExplanation == "true" && Explanation != "") {
-            var textSize = Math.round(interaction.getAttribute("labelFontSize"));
-            if (textSize == null || textSize == 0) textSize = 12;
-            div.append(
-                '<div class="panel legend" style="width: ' + ExplanationPanelWidth + '; font-size: ' + textSize + 'px;" >' +
-                Explanation +
-                "</div>"
-            );
+
+                div.append(graphSpace);
+            }
         }
 
         for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
