@@ -4562,7 +4562,7 @@ var EDITOR = (function ($, parent) {
         var lightboxHtml = $("<form id='lightbox_" + group.name + "' style='width: 50vw' ></form>");
         let lightboxTable = $("<table id='lightboxPanel' class='content'></table>");
         let lightboxId = "#lightbox_" + group.name;
-				let name = wizard_data[lo_data[key]['attributes'].nodeName].menu_options.menuItem + " ai settings";
+				let name = wizard_data[lo_data[key]['attributes'].nodeName].menu_options.menuItem;
 				lightboxHtml.append($("<div>").text(name));
 
         //build lightbox form content input by input
