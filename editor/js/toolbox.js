@@ -4858,7 +4858,6 @@ var EDITOR = (function ($, parent) {
 						html.find(option).eq(0).remove();
 					}
 				}
-
 				break;
 			case 'text':
 			case 'script':
