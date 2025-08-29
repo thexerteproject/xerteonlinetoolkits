@@ -15,7 +15,7 @@ class openai_ai_decision extends openai_ai {
 			$this->model = $model;
 		}
 
-		_load_language_file("/editor/ai_models/anthropic_model_" . $type . "_ai.inc");
+		_load_language_file("/editor/ai_models/openai_model_" . strtolower($type) . "_ai.inc");
 		$upper_type = strtoupper($type);
 		if ($context === 'standard') {
 			$modelTemplate = "standard";

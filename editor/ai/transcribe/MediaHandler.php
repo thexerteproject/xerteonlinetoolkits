@@ -1,5 +1,6 @@
 <?php
-
+namespace transcribe;
+use \Exception;
 class MediaHandler {
     // Supported video hosts.
     protected $supportedHosts = ['youtube.com', 'youtu.be', 'vimeo.com', 'video.dlearning.nl'];
@@ -348,7 +349,8 @@ class MediaHandler {
             } elseif (in_array($mimeType, $audioMimeTypes)) {
                 return $this->transcriber->transcribeAudioTimestamped($filePath);
             } else {
-                throw new Exception("Unsupported media type for transcription: " . $mimeType);
+                //throw new Exception("Unsupported media type for transcription: " . $mimeType);
+                throw new Exception("Unsupported media type for transcription.");
             }
         }
     }

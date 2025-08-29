@@ -13,7 +13,7 @@ class openai_ai_ivoverlaypanel extends openai_ai {
 			$this->model = $model;
 		}
 
-		_load_language_file("/editor/ai_models/anthropic_model_" . $type . "_ai.inc");
+		_load_language_file("/editor/ai_models/openai_model_" . strtolower($type) . "_ai.inc");
 		if ($context === 'standard') {
 			$subtype = "text_object";
 			if ($sub_type != null) {
@@ -34,6 +34,7 @@ class openai_ai_ivoverlaypanel extends openai_ai {
 					die("unsupported subtype: " . $subtype);
 			}
 		} elseif ($context === 'bootstrap') {
+            $upper_type='IVOVERLAYPANEL';
 			$this->learning_prompt = constant("LEARNING_PROMPT_" . $upper_type . "_BOOTSTRAP");
 			$this->object = constant("LEARNING_RESULT_" . $upper_type . "_BOOTSTRAP");
 			$this->defaultPrompt = constant("DEFAULT_PROMPT_" . $upper_type . "_BOOTSTRAP");

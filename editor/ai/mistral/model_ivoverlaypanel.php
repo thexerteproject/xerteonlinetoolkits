@@ -6,7 +6,7 @@ class mistal_ai_ivoverlaypanel extends mistral_ai {
 		}else { 
 			$this->model = $model;
 		}
-		_load_language_file("/editor/ai_models/anthropic_model_" . $type . "_ai.inc");
+		_load_language_file("/editor/ai_models/mistral_model_" . strtolower($type) . "_ai.inc");
 		if ($context === 'standard') {
 				$subtype = "text_object";
 				if($sub_type != null) {

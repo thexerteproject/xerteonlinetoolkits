@@ -21,7 +21,7 @@ $interpretPrompt = $_POST["interpretPrompt"];
 $overrideSettings = $_POST["overrideSettings"];
 $settings = $_POST["settings"];
 
-$allowed_apis = ['pexels','pixabay', 'dalle2', 'dalle3', 'unsplash', 'wikimedia'];
+$allowed_apis = ['pexels','pixabay', 'dalle2', 'dalle3', 'unsplash', 'wikimedia', 'gptImage1'];
 if (!in_array($api, $allowed_apis)){
     die(json_encode(["status" => "error", "message" => "api is not allowed"]));
 }

@@ -973,6 +973,7 @@ var EDITOR = (function ($, parent) {
                 if (!sorted_options['optional'][i].value.deprecated) {
                     // Create button for right panel
                     var label = attribute_label + (sorted_options['optional'][i].value.type == 'group' ? '...' : '');
+										let icon = $('<i>').addClass('fa').addClass('fa-lg').addClass("xerte-icon").height(14);
                     var button = $('<button>')
                         .attr('id', 'insert_opt_' + attribute_name)
                         .addClass('btnInsertOptParam')
@@ -1010,7 +1011,7 @@ var EDITOR = (function ($, parent) {
 								
 								checkForOptGroup(event.data);
                             })
-                        .append($('<i>').addClass('fa').addClass('fa-plus-circle').addClass('fa-lg').addClass("xerte-icon").height(14));
+                        .append(icon);
                     if (sorted_options['optional'][i].value.flashonly) {
                         label += flashonlytxt;
                     }
@@ -1058,8 +1059,10 @@ var EDITOR = (function ($, parent) {
                                 .append(button));
 
                         if (sorted_options['optional'][i].value.lightbox === 'form') {
+														icon.addClass('fa-wand-magic');
                             tableLightbox.append(tablerow);
                         } else {
+														icon.addClass('fa-plus-circle');
                             if (sorted_options['optional'][i].value.common) {
                                 // chapter folders don't share general optional properties with pages
                                 if (node_name != "chapter") {
@@ -1481,7 +1484,7 @@ var EDITOR = (function ($, parent) {
             if (wizard_data[nodeName] && wizard_data[nodeName]['menu_options']) {
                 // add nodes, skip validation for CDATA nodes
                 if (validateInsert(key, nodeName, tree)) {
-                    var newkey = tree.create_node(key, this_json, pos, function () {
+                    var newKey = tree.create_node(key, this_json, pos, function () {
                         if (select) {
                             tree.deselect_all();
                             tree.select_node(lkey);
@@ -1668,6 +1671,7 @@ var EDITOR = (function ($, parent) {
                     type: "POST",
                     data: {
                         type: aiSettings['type'],
+                        language: aiSettings['language'],
                         prompt: constructorObject,
                         api: aiSettings['modelSelection'],
                         url: aiSettings['fullUrl'],

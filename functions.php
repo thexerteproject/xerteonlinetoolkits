@@ -482,6 +482,16 @@ function set_token()
     }
 }
 
+function x_set_session_name()
+{
+    global $xerte_toolkits_site;
+    $hash = hash('sha256', $xerte_toolkits_site->site_url);
+    $hash = substr($hash, -6);
+    $hash = str_replace('=', '', $hash);
+    $current_session_name = session_name();
+    session_name($current_session_name . "_" . $hash);
+}
+//
 //Function that ensures a folder exists in the learning object
 function verify_LO_folder($LO, $folder): void
 {

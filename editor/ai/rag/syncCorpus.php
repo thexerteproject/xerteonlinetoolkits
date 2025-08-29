@@ -6,15 +6,14 @@ error_reporting(E_ALL);
 
 require_once (str_replace('\\', '/', __DIR__) . "/BaseRAG.php");
 require_once (str_replace('\\', '/', __DIR__) . "/MistralRAG.php");
-require_once (str_replace('\\', '/', __DIR__) . "/../transcribe/AITranscribe.php");
-require_once (str_replace('\\', '/', __DIR__) . "/../transcribe/MediaHandler.php");
-require_once (str_replace('\\', '/', __DIR__) . "/../transcribe/CorpusSynchronizer.php");
-require_once (str_replace('\\', '/', __DIR__) . "/../transcribe/RegistryHandler.php");
-require_once (str_replace('\\', '/', __DIR__) . "/../transcribe/TranscriptManager.php");
+require_once (str_replace('\\', '/', __DIR__) . "/../transcribe/TranscriberFactory.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../../../config.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../../../vendor_config.php");
+require_once (str_replace('\\', '/', __DIR__) . "/RagFactory.php");
+require_once (str_replace('\\', '/', __DIR__) . "/../management/dataRetrievalHelper.php");
 
-use rag\MistralRAG;
+use function rag\makeRag;
+use function transcribe\makeTranscriber;
 
 /**
  * Given a user-supplied relative path, resolve it against your project root
@@ -51,6 +50,10 @@ ob_start();
 
 try {
     global $xerte_toolkits_site;
+
+    //get settings from the management table, which help us decide which options to use
+    $managementSettings = get_block_indicators();
+
     // 1. Decode JSON payload
     $raw = file_get_contents('php://input');
     $input = json_decode($raw, true);
@@ -70,30 +73,29 @@ try {
         mkdir($mediaPath, 0777, true);
     }
     $mediaDir = realpath($mediaPath);
-    //$corpusDir = realpath($mediaDir . DIRECTORY_SEPARATOR . 'corpus');
 
     x_check_path_traversal($baseDir);
     x_check_path_traversal($mediaDir);
-    //x_check_path_traversal($corpusDir);
 
-    $gladiaKey = $xerte_toolkits_site->gladia_key;
-    $transcriber = new GladiaTranscribe($gladiaKey);
-    $mediaHandler = new MediaHandler($baseDir, $transcriber);
+    $transcriptionKey = $xerte_toolkits_site->{$managementSettings['transcription']['key_name']};
 
-    $transcriptPath = $mediaHandler->returnMediaPath();
+    $provider = $managementSettings['transcription']['active_vendor'];
+    $cfgTranscribe = [
+        'api_key' => $transcriptionKey,
+        'basedir' => $baseDir,
+        'provider' => $provider
+    ];
 
-    if (!is_dir($transcriptPath)) {
-        mkdir($transcriptPath, 0777, true);
-    }
-    $transcriptDir = realpath($transcriptPath);
-    x_check_path_traversal($transcriptDir);
+    $transcriptMgr = makeTranscriber($cfgTranscribe);
 
-    $registryHandler = new RegistryHandler($transcriptDir);
-    //$corpusSync = new CorpusSynchronizer($transcriptDir, $corpusDir);
-    $transcriptMgr = new TranscriptManager($registryHandler, $mediaHandler, /*$corpusSync*/);
-
-    $mistralKey = $xerte_toolkits_site->mistralenc_key;
-    $rag = new MistralRAG($mistralKey, $baseDir);
+    $encodingKey = $xerte_toolkits_site->{$managementSettings['encoding']['key_name']};
+    $provider = $managementSettings['encoding']['active_vendor'];
+    $cfg = [
+            'api_key' => $encodingKey,
+            'encoding_directory' => $baseDir,
+            'provider' => $provider
+        ];
+    $rag = makeRag($cfg);
 
     $results = [];
 
@@ -105,8 +107,9 @@ try {
             if (!$uploadUrl) {
                 $results[] = [
                     'file'  => null,
-                    'error' => 'Missing col_2 value',
+                    'status' => 'Missing col_2 (source) value',
                 ];
+                $row['col_2'] = 'ERROR/SKIP';
                 continue;
             }
 
@@ -117,22 +120,30 @@ try {
                 // 3) Record success
                 $results[] = [
                     'file'       => $uploadUrl,
-                    'transcript' => $transcript,
+                    'status' => 'Transcribed Successfully',
                 ];
 
                 // 4a) Mutate the grid row in place: replace col_2 with the transcript path; add original source (video file, audio file, or link) to col_4
                 $row['col_2'] = $transcript['transcript_path'];
                 $row['col_4'] = $transcript['source'];
             } catch (Exception $e) {
-                // 4b) Record the error, leave col_2 untouched
-                $results[] = [
-                    'file'  => $uploadUrl,
-                    'error' => $e->getMessage(),
-                ];
+                if ($e->getMessage()!="Unsupported media type for transcription."){
+                    // 4b) Record the error
+                    $results[] = [
+                        'file'  => $uploadUrl,
+                        'status' =>'Error: ' . $e->getMessage(),
+                    ];
+                    $row['col_2'] = 'ERROR/SKIP';
+                }
             }
         }
         // break the reference
         unset($row);
+
+        //Filter any errors, as failing the transcript step likely means there's an error with the file path, file type or otherwise
+        $gridData = array_filter($gridData, function($row) {
+            return isset($row['col_2']) && trim($row['col_2']) !== 'ERROR/SKIP';
+        });
 
         // 5. Once all transcripts are accounted for, run the RAG on all listed files, including the transcripts
         // 5.1 Create a list of all file objects with the relevant data to be processed
@@ -169,22 +180,71 @@ try {
     }
 
     //5.2 encode all files in the file list and register them as processed
-    $rag->processFileList($fileObjects, $corpusScope);
+    try {
+        $ragResults = $rag->processFileList($fileObjects, $corpusScope);
+    } catch (Exception $e){
+        throw new Exception('An error occured while processing your file: ' . $e );
+    }
 
     $debugOutput = ob_get_contents();
     ob_end_clean();
 
+    // 1) Normalization helper
+    function normalize_id(string $str): string {
+        // URLs stay as‑is
+        if (filter_var($str, FILTER_VALIDATE_URL)) {
+            return $str;
+        }
+        // unify slashes and look for "RAG/corpus/"
+        $p = str_replace('\\', '/', $str);
+        $needle = 'RAG/corpus/';
+        if (false !== $pos = strpos($p, $needle)) {
+            // strip off everything before "RAG/corpus/"
+            return substr($p, $pos);
+        }
+        // fallback
+        return $str;
+    }
+
+// 2) Seed from transcription‐step results
+    $map = [];
+    foreach ($results as $row) {
+        $id = normalize_id($row['file']);
+        $map[$id] = [
+            'id'                      => $id,
+            'file'                    => $row['file'],
+            'transcription_status'    => $row['status'],
+            // you could copy other fields here if needed; it shouldn't break the frontend usage
+        ];
+    }
+
+// 3) Merge in RAG results
+    foreach ($ragResults as $row) {
+        $id = normalize_id($row['source']);
+        if (!isset($map[$id])) {
+            // no transcription entry for this id, so start a fresh one
+            $map[$id] = [
+                'id'   => $id,
+                'file' => null,
+            ];
+        }
+        // attach the RAG status
+        $map[$id]['rag_status'] = trim($row['status']);
+    }
+
+// 4) Re‐index as a zero‑based array
+    $fullResults = array_values($map);
+
     // 6. Return JSON
     echo json_encode([
         'success' => true,
-        'results' => $results
+        'results' => $fullResults
     ], JSON_THROW_ON_ERROR);
 
 } catch (Exception $ex) {
-    http_response_code(500);
     echo json_encode([
         'success' => false,
-        'message' => $ex->getMessage()
+        'rag_results' => $ex->getMessage()
     ], JSON_THROW_ON_ERROR);
 }
 

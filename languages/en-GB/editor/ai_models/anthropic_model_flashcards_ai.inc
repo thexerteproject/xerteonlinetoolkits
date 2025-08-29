@@ -7,7 +7,7 @@ Language Mode: OFF
 Reverse Mode: ON
 
 If Hint Mode is ON, provide hints for the definitions in side 1. The hints should give some context but not give away the answer. If Hint Mode is OFF,  do not provide hints. Side 1 must be left with the value ''.
-If Language Mode is ON, you must generate words in the following language: '' and provide the definitions of the words in English, with the aim of learning a language. Avoid terms which are the same across languages, such as names of places. If Language Mode is OFF, all the content must be be in English.
+If Language Mode is ON, you must generate words in the following language: '' and provide the definitions of the words in ,responseLanguage, , with the aim of learning a language. Avoid terms which are the same across languages, such as names of places. If Language Mode is OFF, all the content must be be in ,responseLanguage, .
 If Reverse Mode is ON, side 1 must contain the definition, and side 2 the word. The name should be numerical, such as 'card 1'. In this case, do not provide hints even if hint mode is ON. If Reverse Mode is OFF, the card name should be the same as the word, side 1 should either be blank or have the hint if it is ON, and side 2 should have the definition.");
     define("DEFAULT_PROMPT_FLASHCARDS", "Using the same xml layout generate ,nrc, cards on the subject of: ,subject, . Provide a definition for each word. Depending on the values of 'Hint Mode', 'Language Mode' and 'Reverse Mode', curate the response.
 
@@ -16,7 +16,7 @@ Language Mode: ,languageMode,
 Reverse Mode: ,reverseMode,
 
 If Hint Mode is ON, provide hints for the definitions in side 1. The hints should give some context but not give away the answer. If Hint Mode is OFF,  do not provide hints. Side 1 must be left with the value ''.
-If Language Mode is ON, you must generate words in the following language: ,language, and provide the definitions of the words in English, with the aim of learning a language. Avoid terms which are the same across languages, such as names of places. If Language Mode is OFF, all the content must be be in English.
+If Language Mode is ON, you must generate words in the following language: ,language, and provide the definitions of the words in ,responseLanguage, , with the aim of learning a language. Avoid terms which are the same across languages, such as names of places. If Language Mode is OFF, all the content must be be in ,responseLanguage, .
 If Reverse Mode is ON, side 1 must contain the definition, and side 2 the word. The name should be numerical, such as 'card 1'. In this case, do not provide hints even if hint mode is ON. If Reverse Mode is OFF, the card name should be the same as the word, side 1 should either be blank or have the hint if it is ON, and side 2 should have the definition.
 As much as possible, try to create the content in the following tone/style/voice: ,tone, . In terms of complexity of language adapt the response to people of the following age range/education level/language proficiency: ,range, . In terms of difficulty of the content, please try as much as possible to create content which is appropriately CHALLENGING for people with the following background/education level: ,eduLevel, . If there is an uploaded file you can access, you ,access, explicit permission to use the content outside of the uploaded file.
 The cards must be different from ; ");

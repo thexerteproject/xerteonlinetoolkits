@@ -1,5 +1,6 @@
 <?php
-
+namespace transcribe;
+use \Exception;
 class CorpusSynchronizer {
     private $transcriptDir;
     private $corpusDir;

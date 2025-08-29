@@ -4,8 +4,8 @@ foreach(glob(str_replace('\\', '/', __DIR__) . "/model_*.php") as $file){
 	require_once($file);
 }
 
-function load_model_mi($type, $model = null, $context = "standard", $sub_type = null){
-	$name = "mistral_ai_" . $type;
+function load_model($type, $api, $model = null, $context = "standard", $sub_type = null){
+	$name = $api . "_ai_" . $type;
 	if($context == null){
 		$context = "standard";
 	}

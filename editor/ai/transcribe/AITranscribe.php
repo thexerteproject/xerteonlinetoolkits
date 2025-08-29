@@ -1,21 +1,37 @@
 <?php
+namespace transcribe;
+use \Exception;
+use \CURLFile;
+
+//require_once __DIR__.'/../logging/log_ai_request.php';
 /**
  * Abstract base class for AI-based transcription services.
  */
 abstract class AITranscribe {
     protected $apiKey;
 
+    protected array $actor;
+
+    protected string $sessionId;
+
     /**
      * Constructor accepts the API key.
      */
     public function __construct($apiKey) {
         $this->apiKey = $apiKey;
+        $this->actor = array('user_id'=>'u_42','workspace_id'=>'ws_77','installation_id'=>'inst_acme');
+        $this->sessionId = 's_9f1c';
     }
 
     /**
      * Each subclass must implement its own transcription method.
      */
     abstract public function transcribeAudioTimestamped($filePath);
+
+    /**
+     * @var string|null  Path to the last temp directory used for chunking.
+     */
+    protected ?string $chunkTmpDir = null;
 
     /**
      * Format transcription segments with start/end timestamps.
@@ -64,6 +80,20 @@ abstract class AITranscribe {
     }
 
     /**
+     * Provide safe escapeshell argument handling.
+     *
+     * @param string $arg
+     * @return string Escaped argument.
+     */
+    protected function customEscapeshellarg($arg) {
+        if (DIRECTORY_SEPARATOR == '\\') {
+            return '"' . str_replace('"', '""', $arg) . '"';
+        } else {
+            return "'" . str_replace("'", "'\\''", $arg) . "'";
+        }
+    }
+
+    /**
      * Remove specific special characters from a string.
      */
     protected function removeSpecialCharacters($string) {
@@ -96,50 +126,286 @@ abstract class AITranscribe {
         }
         return "Error: File does not exist.";
     }
+
+    /**
+     * Format the JSON 'segments' array into timestamped text.
+     *
+     * @param array $segments  Each element has 'start', 'end', and 'text' keys.
+     * @return string
+     */
+    protected function formatJsonSegments(array $segments): string
+    {
+        $out = '';
+        foreach ($segments as $seg) {
+            // Format seconds.fraction to H:i:s.ms
+            $fmt = function(float $sec) {
+                $h = floor($sec / 3600);
+                $m = floor(($sec % 3600) / 60);
+                $s = $sec % 60;
+                return sprintf('%02d:%02d:%06.3f', $h, $m, $s);
+            };
+            $start = $fmt($seg['start']);
+            $end   = $fmt($seg['end']);
+            $text  = trim($seg['text']);
+            $out  .= "S: {$start} E: {$end} Text: {$text}\n";
+        }
+        return $this->removeSpecialCharacters($out);
+    }
+
+    protected function shiftVttTimestamps(string $vtt, float $offsetSeconds): string
+    {
+        // Callback to shift each HH:MM:SS.mmm timestamp by $offsetSeconds
+        return preg_replace_callback(
+            '/(\d{2}):(\d{2}):(\d{2}\.\d{3})/',
+            function($m) use ($offsetSeconds) {
+                list(, $h, $mi, $s_ms) = $m;
+                $total = ((int)$h)*3600 + ((int)$mi)*60 + (float)$s_ms + $offsetSeconds;
+                $H = floor($total/3600);
+                $M = floor(($total%3600)/60);
+                $S = $total - ($H*3600) - ($M*60);
+                return sprintf('%02d:%02d:%06.3f', $H, $M, $S);
+            },
+            $vtt
+        );
+    }
+
+    /**
+     * If the given file exceeds $maxBytes, uses FFmpeg to split it into
+     * $segmentSeconds‐long chunks (copied, not re‑encoded), stored in a
+     * temporary directory. Otherwise, returns the single original file.
+     *
+     * @param string $filePath        Absolute path to the source file.
+     * @param int    $maxBytes        Max allowed size in bytes before splitting. Default 25 MB.
+     * @param int    $segmentSeconds  Length in seconds of each chunk. Default 900s.
+     * @return string[]               List of file paths to process.
+     * @throws \RuntimeException      On failure to create temp dir or if FFmpeg returns non‐zero.
+     */
+    protected function prepareChunkedFiles(
+        string $filePath,
+        int    $maxBytes       = 25 * 1024 * 1024,
+        int    $segmentSeconds = 900
+    ): array {
+        //reset previous tempdir
+        $this->chunkTmpDir = null;
+
+        // If file is too big, split into segments
+        if (\filesize($filePath) > $maxBytes) {
+            // create a temp directory for this run
+            $tmpDir = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'whisper_chunks_' . \uniqid();
+            if (!\mkdir($tmpDir, 0777, true) && !\is_dir($tmpDir)) {
+                throw new \RuntimeException("Unable to create temp directory: {$tmpDir}");
+            }
+
+            // remember it for cleanup()
+            $this->chunkTmpDir = $tmpDir;
+
+            $ext     = \pathinfo($filePath, PATHINFO_EXTENSION);
+            $pattern = $tmpDir . DIRECTORY_SEPARATOR . "chunk_%03d.{$ext}";
+
+            // build and run the ffmpeg command
+            $cmd = \sprintf(
+                'ffmpeg -i %s -f segment -segment_time %d -c copy %s 2>&1',
+                $this->customEscapeshellarg($filePath),
+                $segmentSeconds,
+                $this->customEscapeshellarg($pattern)
+            );
+
+            \exec($cmd, $outputLines, $returnCode);
+            if ($returnCode !== 0) {
+                $output = \implode("\n", $outputLines);
+                throw new \RuntimeException("FFmpeg split failed (exit code {$returnCode}):\n{$output}");
+            }
+
+            // collect and sort the generated chunks
+            $chunks = \glob($tmpDir . DIRECTORY_SEPARATOR . "chunk_*.{$ext}") ?: [];
+            \sort($chunks);
+            return $chunks;
+        }
+
+        // file under threshold: just return it without altering the temp dir
+        return [ $filePath ];
+    }
+
+    /**
+     * Remove any leftover chunk files from the last call to prepareChunkedFiles().
+     * Safe to call even if nothing was split.
+     */
+    protected function cleanupChunkedFiles(): void
+    {
+        if ($this->chunkTmpDir && \is_dir($this->chunkTmpDir)) {
+            foreach (\glob($this->chunkTmpDir . DIRECTORY_SEPARATOR . '*') as $file) {
+                @\unlink($file);
+            }
+            @\rmdir($this->chunkTmpDir);
+            $this->chunkTmpDir = null;
+        }
+    }
+
 }
+
 
 /**
  * OpenAI transcription implementation.
  */
-class OpenAITranscribe extends AITranscribe {
-    public function transcribeAudioTimestamped($filePath) {
-        $authorization = "Authorization: Bearer " . $this->apiKey;
-        $url = "https://api.openai.com/v1/audio/transcriptions";
+class OpenAITranscribe extends AITranscribe
+{
+    /**
+     * Transcribe an audio file with optional timestamps or subtitle output.
+     *
+     * @param string $filePath               Path to the audio file (mp3, wav, m4a, etc.).
+     * @param string $model                  Model to use: "whisper-1", "gpt-4o-transcribe", etc.
+     * @param string $responseFormat         One of: "json", "verbose_json", "srt", "vtt", or "text".
+     * @param string|null $timestampGranularities
+     *                                      Comma‑separated "segment" and/or "word".
+     *                                      Only used when $responseFormat === "verbose_json".
+     *
+     * @return string                        Transcription text, subtitle content, or formatted segments.
+     */
+    public function transcribeAudioTimestamped(
+        $filePath,
+        string $model = 'whisper-1',
+        string $responseFormat = 'vtt',
+        ?string $timestampGranularities = 'segment'
+    ): string {
+        // === CONFIG ===
+        $maxBytes       = 25 * 1024 * 1024;   // 25MB limit
+        $segmentSeconds = 900;                // 15‑minute chunks
+        $apiUrl         = "https://api.openai.com/v1/audio/transcriptions";
+        $authHeader     = "Authorization: Bearer " . $this->apiKey;
 
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, [
-            $authorization,
-            "Content-Type: multipart/form-data"
-        ]);
-        curl_setopt($curl, CURLOPT_POST, true);
+        /* === STEP 1: Split if too large ===
+        $filesToProcess = [];
+        if (filesize($filePath) > $maxBytes) {
+            // Temp dir for chunks
+            $tmpDir = sys_get_temp_dir() . '/whisper_chunks_' . uniqid();
+            if (!mkdir($tmpDir, 0777, true) && !is_dir($tmpDir)) {
+                throw new \RuntimeException("Unable to create temp directory $tmpDir");
+            }
 
-        $fileName = basename($filePath);
-        $cFile = new CURLFile($filePath, 'audio/mpeg', $fileName);
+            // Build a pattern: whisper_chunks_xxx/chunk_%03d.ext
+            $ext      = pathinfo($filePath, PATHINFO_EXTENSION);
+            $pattern  = $tmpDir . DIRECTORY_SEPARATOR . "chunk_%03d.$ext";
 
-        // Set up request data for a verbose response with segment timestamps.
-        $postData = [
-            'file' => $cFile,
-            'model' => 'whisper-1',
-            'response_format' => 'vtt',
-            //'timestamp_granularities' => ['segment']
-        ];
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
+            // FFmpeg command, using customEscapeshellarg() for cross‑platform safety
+            $cmd = "ffmpeg -i "
+                . $this->customEscapeshellarg($filePath)
+                . " -f segment -segment_time {$segmentSeconds}"
+                . " -c copy "
+                . $this->customEscapeshellarg($pattern)
+                . " 2>&1";
 
-        $result = curl_exec($curl);
-        if (curl_errno($curl)) {
-            $error = 'Error: ' . curl_error($curl);
-            curl_close($curl);
-            return $error;
+            // Run via exec(), capturing both stdout and stderr
+            exec($cmd . ' 2>&1', $ffmpegOutputLines, $returnCode);
+            $ffmpegOutput = implode("\n", $ffmpegOutputLines);
+            if ($returnCode !== 0) {
+                throw new \RuntimeException("FFmpeg split failed (exit code $returnCode):\n" . $ffmpegOutput);
+            }
+
+            // Gather the chunk file paths
+            $filesToProcess = glob($tmpDir . DIRECTORY_SEPARATOR . "chunk_*.{$ext}");
+            sort($filesToProcess);
+
+        } else {
+            $filesToProcess = [ $filePath ];
+        }*/
+
+        $filesToProcess = $this->prepareChunkedFiles($filePath);
+
+        // === STEP 2: Transcribe each chunk ===
+        $allSegments = [];
+        $allVtt      = '';
+        $allText     = '';
+        //offset is needed for multi-chunk transcription, to account for the fact that for each new transcription the time will
+        //be reset to 0
+        $offset   = 0;
+
+        foreach ($filesToProcess as $i=>$chunk) {
+            $ch = curl_init($apiUrl);
+            curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POST           => true,
+
+                // === force brand‑new TCP/TLS each time ===
+                CURLOPT_FORBID_REUSE   => true,
+                CURLOPT_FRESH_CONNECT  => true,
+
+                // === verbose for debugging ===
+                CURLOPT_VERBOSE        => true,
+                CURLOPT_STDERR         => fopen(__DIR__ . '/curl_debug.log', 'a+'),
+
+                // <<< SWITCH TO HTTP/1.0 HERE (no chunked encoding) >>>
+                CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_0,
+
+                CURLOPT_HTTPHEADER     => [
+                    $authHeader,
+                    'Connection: close',
+                    'Expect:',   // disable Expect: 100-continue
+                ],
+            ]);
+
+            $cFile = new CURLFile($chunk, mime_content_type($chunk), basename($chunk));
+            $payload = [
+                'file'            => $cFile,
+                'model'           => $model,
+                'response_format' => $responseFormat,
+            ];
+            if ($responseFormat === 'verbose_json' && $timestampGranularities) {
+                $payload['timestamp_granularities'] = $timestampGranularities;
+            }
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+
+            $res = curl_exec($ch);
+            //log_ai_request($res, 'transcription', 'openai', $this->actor, $this->sessionId);
+            if (curl_errno($ch)) {
+                $err = curl_error($ch);
+                curl_close($ch);
+                throw new \RuntimeException("cURL error: $err");
+            }
+            curl_close($ch);
+
+            if (in_array($responseFormat, ['json','verbose_json'], true)) {
+                $j = json_decode($res, true);
+                if (isset($j['segments'])) {
+                    $allSegments = array_merge($allSegments, $j['segments']);
+                } elseif (isset($j['text'])) {
+                    $allText .= $j['text'];
+                }
+            } elseif ($responseFormat === 'vtt') {
+                // 1) Strip extra headers from 2nd+ chunks:
+                $chunkVtt = trim($res);
+                if ($i > 0) {
+                    // remove the leading "WEBVTT" and any blank line after it
+                    $chunkVtt = preg_replace("/^WEBVTT.*?\\r?\\n\\r?\\n/s", '', $chunkVtt);
+                }
+
+                // 2) Shift every timestamp by the current offset
+                $shifted = $this->shiftVttTimestamps($chunkVtt, $offset);
+
+                // 3) Append (and ensure a blank line between chunks)
+                $allVtt .= $shifted . "\n\n";
+
+                // 4) Increase offset for the next chunk
+                $offset += $segmentSeconds;
+            } else {
+                // srt or plain text
+                $allText .= $res . "\n";
+            }
         }
-        curl_close($curl);
-        $response = json_decode($result, true);
-        if (isset($response['segments'])) {
-            return $this->formatSegmentsWithTimestamps($response['segments']);
+
+        // === STEP 3: Clean up temp chunks ===
+        $this->cleanupChunkedFiles();
+
+        // === STEP 4: Final formatting & return ===
+        if (in_array($responseFormat, ['json','verbose_json'], true)) {
+            return $this->formatJsonSegments($allSegments);
         }
-        return 'Transcription failed or no segments found.';
+        if ($responseFormat === 'vtt') {
+            return $this->formatSegmentsWithTimestamps($allVtt);
+        }
+        // srt or plain text
+        return trim($allText);
     }
+
 }
 
 /**
@@ -150,97 +416,132 @@ class OpenAITranscribe extends AITranscribe {
  */
 class GladiaTranscribe extends AITranscribe {
     public function transcribeAudioTimestamped($filePath) {
-        // Step 1: Upload the file to get the audio_url
-        $uploadUrl = "https://api.gladia.io/v2/upload";
-        $uploadHeaders = [
-            "x-gladia-key: " . $this->apiKey,
-            "Content-Type: multipart/form-data"
-        ];
 
-        $fileName = basename($filePath);
-        $mimeType = mime_content_type($filePath);
-        $cFile = new CURLFile($filePath, $mimeType, $fileName);
+        $filesToProcess = $this->prepareChunkedFiles($filePath);
+        $allVtt      = '';
+        //offset is needed for multi-chunk transcription, to account for the fact that for each new transcription the time will
+        //be reset to 0
+        $offset   = 0;
+        $maxBytes       = 25 * 1024 * 1024;   // 25MB limit
+        $segmentSeconds = 900;                // 15‑minute chunks
 
-        $uploadData = [
-            'audio' => $cFile
-        ];
+        foreach ($filesToProcess as $i=>$chunk) {
+            // Step 1: Upload the file to get the audio_url
+            $uploadUrl = "https://api.gladia.io/v2/upload";
+            $uploadHeaders = [
+                "x-gladia-key: " . $this->apiKey,
+                "Content-Type: multipart/form-data"
+            ];
 
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_URL, $uploadUrl);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $uploadHeaders);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $uploadData);
+            $fileName = basename($chunk);
+            $mimeType = mime_content_type($chunk);
+            $cFile = new CURLFile($chunk, $mimeType, $fileName);
 
-        $uploadResult = curl_exec($curl);
-        if (curl_errno($curl)) {
-            $error = 'Upload Error: ' . curl_error($curl);
+            $uploadData = [
+                'audio' => $cFile
+            ];
+
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_URL, $uploadUrl);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $uploadHeaders);
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $uploadData);
+
+            $uploadResult = curl_exec($curl);
+            if (curl_errno($curl)) {
+                $error = 'Upload Error: ' . curl_error($curl);
+                curl_close($curl);
+                throw new Exception($error);
+            }
             curl_close($curl);
-            return $error;
-        }
-        curl_close($curl);
 
-        $uploadResponse = json_decode($uploadResult, true);
-        if (!isset($uploadResponse['audio_url'])) {
-            return 'File upload failed.';
-        }
-        $audioUrl = $uploadResponse['audio_url'];
+            $uploadResponse = json_decode($uploadResult, true);
+            if (!isset($uploadResponse['audio_url'])) {
+                throw new Exception('Gladia: File upload failed.');
+            }
+            $audioUrl = $uploadResponse['audio_url'];
 
-        // Step 2: Initiate the transcription using minimal parameters.
-        $transcriptionUrl = "https://api.gladia.io/v2/pre-recorded";
-        $transcriptionHeaders = [
-            "x-gladia-key: " . $this->apiKey,
-            "Content-Type: application/json"
-        ];
+            // Step 2: Initiate the transcription using minimal parameters.
+            $transcriptionUrl = "https://api.gladia.io/v2/pre-recorded";
+            $transcriptionHeaders = [
+                "x-gladia-key: " . $this->apiKey,
+                "Content-Type: application/json"
+            ];
 
-        // Minimal payload: only the required audio_url and detect_language flag.
-        $payload = json_encode([
-            "audio_url"       => $audioUrl,
-            "detect_language" => true,
-            "subtitles" => true,
-            "subtitles_config" => [
-                "formats" => [
-                    "vtt"
+            // Minimal payload: only the required audio_url and detect_language flag.
+            $payload = json_encode([
+                "audio_url" => $audioUrl,
+                "detect_language" => true,
+                "subtitles" => true,
+                "subtitles_config" => [
+                    "formats" => [
+                        "vtt"
                     ],
-                "minimum_duration" => 1.0,
-                "maximum_duration" => 7.0,
-                "maximum_characters_per_row" => 32,
-                "maximum_rows_per_caption" => 2,
-                "style" => "default",
-            ]
-        ]);
+                    "minimum_duration" => 1.0,
+                    "maximum_duration" => 7.0,
+                    "maximum_characters_per_row" => 32,
+                    "maximum_rows_per_caption" => 2,
+                    "style" => "default",
+                ]
+            ]);
 
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_URL, $transcriptionUrl);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $transcriptionHeaders);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_URL, $transcriptionUrl);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $transcriptionHeaders);
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
 
-        $transcriptionResult = curl_exec($curl);
-        if (curl_errno($curl)) {
-            $error = 'Transcription initiation Error: ' . curl_error($curl);
+            $transcriptionResult = curl_exec($curl);
+            //log_ai_request($transcriptionResult, 'transcription', 'gladia', $this->actor, $this->sessionId);
+            if (curl_errno($curl)) {
+                $error = 'Transcription initiation Error: ' . curl_error($curl);
+                curl_close($curl);
+                throw new Exception($error);
+            }
             curl_close($curl);
-            return $error;
-        }
-        curl_close($curl);
 
-        $transcriptionResponse = json_decode($transcriptionResult, true);
-        if (!isset($transcriptionResponse['result_url'])) {
-            return 'Transcription initiation failed.';
-        }
-        $resultUrl = $transcriptionResponse['result_url'];
+            $transcriptionResponse = json_decode($transcriptionResult, true);
+            if (!isset($transcriptionResponse['result_url'])) {
+                throw new Exception('Transcription initiation failed.');
+            }
+            $resultUrl = $transcriptionResponse['result_url'];
+            $transcriptionId =  $transcriptionResponse['id'];
 
-        // Poll for the final json result.
-        $finalResult = $this->pollForResult($resultUrl, $transcriptionHeaders);
-        if (isset($finalResult['result']['transcription']['subtitles'])) {
-            //return the vtt subtitles
-            return $this->formatSegmentsWithTimestamps($finalResult['result']['transcription']['subtitles'][0]['subtitles']);
+            // Poll for the final json result.
+            $finalResult = $this->pollForResult($resultUrl, $transcriptionHeaders);
+
+            if (isset($finalResult['result']['transcription']['subtitles'])) {
+                $res = $finalResult['result']['transcription']['subtitles'][0]['subtitles'];
+                // 1) Strip extra headers from 2nd+ chunks:
+                $chunkVtt = trim($res);
+                if ($i > 0) {
+                    // remove the leading "WEBVTT" and any blank line after it
+                    $chunkVtt = preg_replace("/^WEBVTT.*?\\r?\\n\\r?\\n/s", '', $chunkVtt);
+                }
+
+                // 2) Shift every timestamp by the current offset
+                $shifted = $this->shiftVttTimestamps($chunkVtt, $offset);
+
+                // 3) Append (and ensure a blank line between chunks)
+                $allVtt .= $shifted . "\n\n";
+
+                // 4) Increase offset for the next chunk
+                $offset += $segmentSeconds;
+                //return the vtt subtitles
+                //return $this->formatSegmentsWithTimestamps($finalResult['result']['transcription']['subtitles'][0]['subtitles']);
+            }
+            /*if (isset($finalResult['result']['transcription'])) {
+                return $finalResult['result']['transcription'];
+            }*/
+            //throw new Exception('Transcription result not found.');
+
+            $this->deleteGladiaTranscription($transcriptionId);
         }
-        if (isset($finalResult['result']['transcription'])) {
-            return $finalResult['result']['transcription'];
-        }
-        return 'Transcription result not found.';
+        $this->cleanupChunkedFiles();
+
+        return $this->formatSegmentsWithTimestamps($allVtt);
     }
 
     /**
@@ -263,4 +564,51 @@ class GladiaTranscribe extends AITranscribe {
             sleep(1);
         }
     }
+
+    /**
+     * Delete a pre‑recorded transcription from Gladia.
+     *
+     * @param string $transcriptionId  The {id} returned when you created the transcription.
+     * @return bool                    True if deletion succeeded.
+     * @throws \RuntimeException       On HTTP errors or cURL failures.
+     */
+    protected function deleteGladiaTranscription(string $transcriptionId): bool
+    {
+        $url = "https://api.gladia.io/v2/pre-recorded/{$transcriptionId}";
+
+        $ch = \curl_init($url);
+        \curl_setopt_array($ch, [
+            CURLOPT_CUSTOMREQUEST  => 'DELETE',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => [
+                'x-gladia-key: ' . $this->apiKey,
+            ],
+        ]);
+
+        $response   = \curl_exec($ch);
+        $curlErrno  = \curl_errno($ch);
+        $curlError  = \curl_error($ch);
+        $httpStatus = \curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        \curl_close($ch);
+
+        if ($curlErrno) {
+            throw new \RuntimeException("cURL error deleting transcription: {$curlError}");
+        }
+
+        if ($httpStatus < 200 || $httpStatus >= 300) {
+            throw new \RuntimeException(
+                "Gladia delete failed (HTTP {$httpStatus}): " . ($response ?: 'no response body')
+            );
+        }
+
+        return true;
+    }
 }
+
+//Serves as a fallback for when no transcription service is enabled
+class UninitializedTranscribe extends AITranscribe {
+    public function transcribeAudioTimestamped($filePath){
+    throw new Exception("Transcription service not enabled. Audio files, video files and video links, cannot be used for retrieval at this time. Please contact your administrator to enable a transcription service.");
+    }
+}
+

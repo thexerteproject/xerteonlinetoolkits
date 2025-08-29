@@ -1,4 +1,6 @@
 <?php
+namespace transcribe;
+use \Exception;
 
 class RegistryHandler {
     private $path;
