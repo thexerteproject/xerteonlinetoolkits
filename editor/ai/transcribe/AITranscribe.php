@@ -1,17 +1,26 @@
 <?php
 namespace transcribe;
 use \Exception;
+use \CURLFile;
+
+//require_once __DIR__.'/../logging/log_ai_request.php';
 /**
  * Abstract base class for AI-based transcription services.
  */
 abstract class AITranscribe {
     protected $apiKey;
 
+    protected array $actor;
+
+    protected string $sessionId;
+
     /**
      * Constructor accepts the API key.
      */
     public function __construct($apiKey) {
         $this->apiKey = $apiKey;
+        $this->actor = array('user_id'=>'u_42','workspace_id'=>'ws_77','installation_id'=>'inst_acme');
+        $this->sessionId = 's_9f1c';
     }
 
     /**
@@ -346,6 +355,7 @@ class OpenAITranscribe extends AITranscribe
             curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
 
             $res = curl_exec($ch);
+            //log_ai_request($res, 'transcription', 'openai', $this->actor, $this->sessionId);
             if (curl_errno($ch)) {
                 $err = curl_error($ch);
                 curl_close($ch);
@@ -484,6 +494,7 @@ class GladiaTranscribe extends AITranscribe {
             curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
 
             $transcriptionResult = curl_exec($curl);
+            //log_ai_request($transcriptionResult, 'transcription', 'gladia', $this->actor, $this->sessionId);
             if (curl_errno($curl)) {
                 $error = 'Transcription initiation Error: ' . curl_error($curl);
                 curl_close($curl);
