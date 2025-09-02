@@ -2490,7 +2490,7 @@
 	<showTitle label="Show Title" type="CheckBox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotMovie!=null||hotspotPopUp!=null||(htm!=null&amp;&amp;htm!='')||iframe!=null" defaultValue="false" mandatory="true" tooltip="Include title when content is displayed in a dialog box"/>
 	<windowType label="Display In" options="Dialog,Lightbox,Bubble" type="ComboBox" data="dialog,lightbox,bubble" conditionTrigger="true" condition="imageFile!=null||hotspotPopUp!=null" defaultValue="dialog" mandatory="true" width="200"/>
 	<windowSoundType label="Display In" options="Dialog,Lightbox" type="ComboBox" data="dialog,lightbox" conditionTrigger="true" condition="hotspotSound!=null&amp;&amp;playerType!='auto'" defaultValue="dialog" mandatory="true" width="200"/>
-	<hotspotHover label="Display method" options="On click,On hover" type="ComboBox" data="false,true" condition="((imageFile!=null||hotspotPopUp!=null)&amp;&amp;hotspotSound==null&amp;&amp;hotspotMovie==null)&amp;&amp;windowType=='bubble'" defaultValue="false" width="200"/>
+	<hotspotHover label="Display method" options="On click,On hover" type="ComboBox" data="false,true" condition="((imageFile!=null||hotspotPopUp!=null)&amp;&amp;hotspotSound==null&amp;&amp;hotspotMovie==null)&amp;&amp;windowType=='bubble'" defaultValue="false" mandatory="true" width="200"/>
     <iconCode label="Icon" type="FontAwesome" iconList="hotspot" mandatory="true" defaultValue="fas fa-info" condition="mode=='icon'"/>
 
 	<hsIconAppearance type="group" label="Hotspot Icon Appearance" optional="true" tooltip="Customise the appearance of this hotspot. Any customisation set here will override customisation at page level.">
