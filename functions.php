@@ -291,7 +291,7 @@ function true_or_false($var)
 
 // Function to prevent XSS vulnarabilities in arrays
 // Do NOT use x_clean_input in the implementation, as Snyk does not understand that
-function x_clean_input_array($input, $expected_type = null)
+function x_clean_input_array($input, $expected_type = null, $specialcharsflags = ENT_QUOTES|ENT_SUBSTITUTE)
 {
     $array_type = null;
     if ($expected_type == 'array_numeric') {
@@ -303,15 +303,15 @@ function x_clean_input_array($input, $expected_type = null)
     foreach ($input as $key => $value) {
         $sanitized[$key] = trim($input[$key]);
         $sanitized[$key] = stripslashes($sanitized[$key]);
-        $sanitized[$key] = htmlspecialchars($sanitized[$key]);
+        $sanitized[$key] = htmlspecialchars($sanitized[$key], $specialcharsflags);
         if ($array_type != null) {
             if ($array_type == 'string') {
                 if (!is_string($sanitized[$key])) {
-                    die("Expected string, got " . htmlspecialchars($sanitized[$key]));
+                    die("Expected string, got " . htmlspecialchars($sanitized[$key], $specialcharsflags));
                 }
             } else if ($array_type == 'numeric') {
                 if (!is_numeric($sanitized[$key])) {
-                    die("Expected numeric value, got ". htmlspecialchars($sanitized[$key]));
+                    die("Expected numeric value, got ". htmlspecialchars($sanitized[$key],$specialcharsflags));
                 }
             }
         }
@@ -319,11 +319,11 @@ function x_clean_input_array($input, $expected_type = null)
     if ($expected_type != null) {
         if ($expected_type == 'array_numeric') {
             if (!is_array($sanitized)) {
-                die("Expected numeric array, got " . htmlspecialchars($sanitized));
+                die("Expected numeric array, got " . htmlspecialchars($sanitized,$specialcharsflags));
             }
         } else if ($expected_type == 'array_string') {
             if (!is_array($sanitized)) {
-                die("Expected string array, got " . htmlspecialchars($sanitized));
+                die("Expected string array, got " . htmlspecialchars($sanitized,$specialcharsflags));
             }
         }
     }
@@ -332,24 +332,24 @@ function x_clean_input_array($input, $expected_type = null)
 
 
 // Function to prevent XSS vulnarabilities
-function x_clean_input($input, $expected_type = null)
+function x_clean_input($input, $expected_type = null, $specialcharsflags = ENT_QUOTES|ENT_SUBSTITUTE)
 {
     if (is_array($input)) {
-        $sanitized =  x_clean_input_array($input, $expected_type);
+        $sanitized =  x_clean_input_array($input, $expected_type, $specialcharsflags);
         return $sanitized;
     }
     $sanitized = trim($input);
     $sanitized = stripslashes($sanitized);
-    $sanitized = htmlspecialchars($sanitized);
+    $sanitized = htmlspecialchars($sanitized, $specialcharsflags);
     if ($expected_type != null) {
         if ($expected_type == 'string') {
             if (!is_string($sanitized)) {
-                die("Expected string, got " . htmlspecialchars($sanitized));
+                die("Expected string, got " . htmlspecialchars($sanitized, $specialcharsflags));
             }
         }
         else if ($expected_type == 'numeric') {
             if (!is_numeric($sanitized)) {
-                die("Expected numeric value, got " . htmlspecialchars($sanitized));
+                die("Expected numeric value, got " . htmlspecialchars($sanitized, $specialcharsflags));
             }
         }
     }

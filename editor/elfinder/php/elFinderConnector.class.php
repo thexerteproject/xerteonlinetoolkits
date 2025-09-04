@@ -101,7 +101,7 @@ class elFinderConnector {
 	 * @author Dmitry (dio) Levashov
 	 **/
 	protected function output(array $data) {
-		$header = isset($data['header']) ? x_clean_input($data['header']) : $this->header;
+		$header = isset($data['header']) ? x_clean_input($data['header'], "array_string", ENT_NOQUOTES|ENT_SUBSTITUTE) : $this->header;
 		unset($data['header']);
 		if ($header) {
 			if (is_array($header)) {

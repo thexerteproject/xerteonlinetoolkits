@@ -233,6 +233,10 @@
 		<ic optional="true" type="media" label="Image" condition="icHide=='false'" defaultValue="" tooltip="Upload an image to use as the header bar logo" placeholder="Select an image"/>
 		<icTip optional="true" type="TextInput" label="Description" condition="icHide=='false'" defaultValue="" placeholder="Enter a description for accessibility" tooltip="Enter a description of the logo for accessibility"/>
 		<icPosition optional="true" type="ComboBox" options="Left,Right" data="left,right" condition="icHide=='false'" label="Position" defaultValue="left" width="100" tooltip="The position of the logo on the header bar"/>
+		<icMaxHeight label="Reduce logo size" type="Checkbox" defaultValue="false" optional="true" condition="icHide=='false'" conditionTrigger="true" tooltip="If your logo is too large you can trigger a max-height value"/>
+        <icMaxHeightVal optional="true" type="TextInput" label="Max-height value" condition="icMaxHeight=='true'&amp;&amp;icHide=='false'" defaultValue="80px" tooltip="Use the default of 80px or change to a suitable max-height value for your particular logo. Be sure to include the unit e.g. 80px or perhaps 10vh if you want a responsive max-height"/>
+        <icPadding label="Add logo padding" type="Checkbox" defaultValue="false" optional="true" condition="icHide=='false'" conditionTrigger="true" tooltip="Add padding around your logo"/>
+        <icPaddingVal optional="true" type="TextInput" label="Padding values" condition="icPadding=='true'&amp;&amp;icHide=='false'" defaultValue="10px 15px 0px 10px" tooltip="Use the default values of Top Right Bottom Left e.g. 10px 15px 0px 10px or change to suit your particular logo. Be sure to include the unit e.g. px and you can add a single value for equal padding e.g. 10px or just two values for equal top and bottom and equal left and right e.g. 10px 15px"/>
 	</icon>
 	
 	<bg type="group" label="Background" optional="true" tooltip="Add a background image to the project. This can be overridden by background images added to individual pages.">
@@ -2605,8 +2609,8 @@
 	<showTitle label="Show Title" type="CheckBox" condition="imageFile!=null||(hotspotSound!=null&amp;&amp;playerType!='auto')||hotspotMovie!=null||hotspotPopUp!=null||(htm!=null&amp;&amp;htm!='')||iframe!=null" defaultValue="false" mandatory="true" tooltip="Include title when content is displayed in a dialog box"/>
 	<windowType label="Display In" options="Dialog,Lightbox,Bubble" type="ComboBox" data="dialog,lightbox,bubble" conditionTrigger="true" condition="imageFile!=null||hotspotPopUp!=null" defaultValue="dialog" mandatory="true" width="200"/>
 	<windowSoundType label="Display In" options="Dialog,Lightbox" type="ComboBox" data="dialog,lightbox" conditionTrigger="true" condition="hotspotSound!=null&amp;&amp;playerType!='auto'" defaultValue="dialog" mandatory="true" width="200"/>
-	<hotspotHover label="Display method" options="On click,On hover" type="ComboBox" data="false,true" condition="((imageFile!=null||hotspotPopUp!=null)&amp;&amp;hotspotSound==null&amp;&amp;hotspotMovie==null)&amp;&amp;windowType=='bubble'" defaultValue="false" width="200"/>
-    <iconCode label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="mode=='icon'"/>
+	<hotspotHover label="Display method" options="On click,On hover" type="ComboBox" data="false,true" condition="((imageFile!=null||hotspotPopUp!=null)&amp;&amp;hotspotSound==null&amp;&amp;hotspotMovie==null)&amp;&amp;windowType=='bubble'" defaultValue="false" mandatory="true" width="200"/>
+    <iconCode label="Icon" type="FontAwesome" iconList="hotspot" mandatory="true" defaultValue="fas fa-info" condition="mode=='icon'"/>
 
 	<hsIconAppearance type="group" label="Hotspot Icon Appearance" optional="true" tooltip="Customise the appearance of this hotspot. Any customisation set here will override customisation at page level.">
 		<colour1 label="Main Colour" type="ColourPicker" defaultValue="" optional="true"/>
@@ -6975,7 +6979,7 @@
 		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
 		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 		<audioPosition label="Audio Player Position" type="ComboBox" data="panel,bottom" options="In Panel,At Bottom" defaultValue="panel" optional="true"/>
-		<aspectRatio label="Media aspect ratio" type="ComboBox" data="1.333333,1.777777,2.333333" options="4:3,16:9,21:9" defaultValue="1.777777" optional="true" tooltip="The aspect ratio used for embedded videos from external sites, e.g. YouTube. The aspect ratio of MP4s uploaded to projects will be automatically detected."/>
+		<aspectRatio label="Media aspect ratio" type="ComboBox" data="1.333333,1.777777,2.333333,0.5625,0,428571" options="4:3,16:9,21:9,9:16,9:21" defaultValue="1.777777" optional="true" tooltip="The aspect ratio used for embedded videos from external sites, e.g. YouTube. The aspect ratio of MP4s uploaded to projects will be automatically detected."/>
 
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="" page="" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>

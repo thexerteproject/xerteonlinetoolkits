@@ -94,16 +94,16 @@
 					$this.data("origSize", [$this.width(), $this.height()]);
 
 					var offset = morphImages.calculateOffset();
-					
+
 					$this.css({
 						"max-width": "100%",
 						"max-height": x_browserInfo.mobile == true ? $x_mobileScroll.height() - $x_footerBlock.height() - offset[1] : $x_pageHolder.height() - offset[1]
 					});
-					
+
 					$imgInnerDiv.css({
 						"max-width": x_browserInfo.mobile == true ? $x_pageHolder.width() - offset[0] : "60%"
 					});
-					
+					morphImages.sizeChanged();
 					morphImages.setUpImg2();
 				})
 				.attr({
@@ -163,18 +163,18 @@
 			$img2
 				.one("load", function() {
 					var $this = $(this),
-						xPos = $img1.position().left,
-						yPos = $img1.position().top,
-						scale2 = $img1.width() / $this.width();
-					
+							xPos = $img1.position().left,
+							yPos = $img1.position().top,
+							scale2 = $img1.width() / $this.width();
+
 					$this.data("state1", [$this.width() * scale2, xPos, yPos, 1]); // zoomed in info
-					
-					var marginLeft = Math.round($img1.width()  * scale2 * ((x - $img1.position().left) / $img1.width())),
-						marginTop  = Math.round($img1.height() * scale2 * ((y - $img1.position().top) / $img1.height()));
-					
+
+					var marginLeft = Math.round($img1.width() * scale2 * ((x - $img1.position().left) / $img1.width())),
+							marginTop = Math.round($img1.height() * scale2 * ((y - $img1.position().top) / $img1.height()));
+
 					$img1.data({ // set up animation for $img1 to match $img2
-						"state0"	:[$img1.width(), 0, 0, 1], // zoomed out info
-						"state1"	:[Math.round($img1.width() * scale2), 0 - marginLeft, 0 - marginTop, 0], // zoomed in info
+						"state0": [$img1.width(), 0, 0, 1], // zoomed out info
+						"state1": [Math.round($img1.width() * scale2), 0 - marginLeft, 0 - marginTop, 0], // zoomed in info
 					});
 
 					x_pageLoaded();

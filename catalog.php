@@ -52,7 +52,7 @@ function require_auth() {
         header('WWW-Authenticate: Basic realm="Access denied"');
         header('WWW-Authenticate: Basic realm="Catalog of ' . $xerte_toolkits_site->site_name . '"');
         header('HTTP/1.0 401 Unauthorized');
-        echo '{"error" : "You do not have permission to retrieve this information", "debug": "' . print_r($_SERVER, true) . '"}';
+        echo '{"error" : "You do not have permission to retrieve this information"}'; //, "debug": "' . print_r($_SERVER, true) . '"}';
         exit;
     }
     return true;
