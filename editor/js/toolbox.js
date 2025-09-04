@@ -713,7 +713,8 @@ var EDITOR = (function ($, parent) {
             var tr = $('<tr>');
 
 						if(options.advanced == "true" && lightboxMode == "form"){
-								if(window.showAdvanced == undefined) {
+								if(window?.showAdvanced?.[key] == undefined) {
+                                    if (!all_options.some(opt => opt.name === "toggleAdvanced")){
 										window.showAdvanced = {};
 										console.log(arguments);
 										all_options.push({
@@ -725,7 +726,8 @@ var EDITOR = (function ($, parent) {
 														group: options.group,
 												}
 										});
-								}
+								    }
+                                }
 								if(window.showAdvanced[key] == undefined) {
 										showAdvanced[key] = false;
 								}
@@ -4418,8 +4420,6 @@ var EDITOR = (function ($, parent) {
         groupChildren.forEach(child => {
             // --- WYSIWYG / CKEditor Fields ---
             if (child.value.wysiwyg === 'true') {
-                //TODO: this should be a variable that checks of textarea OR textinput variant? Are we maybe keeping it limited to just textereas with this?
-
                 const $el = $(domContextSelector).find('textarea[name="' + child.name + '"]');
                 if ($el.length) {
                     $el.ckeditor(function () {
@@ -4735,9 +4735,47 @@ var EDITOR = (function ($, parent) {
                     formFieldValue = String(this.checked);
                 }
 
-                if ((formFieldValue === undefined || formFieldValue === "" ) && this.getAttribute('defaultvalueph') !== null) {
-                    //if the form field has no value and has a placeholder
-                    formFieldValue = this.getAttribute('defaultvalueph');
+                const isBlank = v =>
+                    v == null || (typeof v === "string" && v.trim() === "");
+
+                // Only resolve when the field is blank
+                if (isBlank(formFieldValue)) {
+                    const loAttrs = lo_data?.treeroot?.attributes ?? {};
+
+                    // read attributes from the element
+                    const overrideKey = this.getAttribute("overruleof") || this.getAttribute("overridefield");
+                    const defaultPH  = this.getAttribute("defaultvalueph");
+
+                    if (!isBlank(overrideKey)) {
+                        const overrideVal = loAttrs[overrideKey];
+
+                        // if overrideVal is set to 'custom' (string compare, case-insensitive)
+                        if (typeof overrideVal === "string" && overrideVal.trim().toLowerCase() === "custom") {
+                            const customKey = `${overrideKey}Custom`;
+                            const customVal = loAttrs[customKey];
+
+                            if (!isBlank(customVal)) {
+                                formFieldValue = customVal;                 // use the custom value
+                            } else if (!isBlank(defaultPH)) {
+                                formFieldValue = defaultPH;                 // fallback to default placeholder
+                            }
+                            // else: leave blank
+                        }
+                        // otherwise, if overrideVal itself is non-blank, use it
+                        else if (!isBlank(overrideVal)) {
+                            formFieldValue = overrideVal;
+                        }
+                        // overrideVal missing/blank => fallback to default placeholder
+                        else if (!isBlank(defaultPH)) {
+                            formFieldValue = defaultPH;
+                        }
+                        // else: leave blank
+                    }
+                    // no overrideKey => fallback to default placeholder (if present)
+                    else if (!isBlank(defaultPH)) {
+                        formFieldValue = defaultPH;
+                    }
+                    // else: leave blank
                 }
                 let pattern = this.getAttribute('pattern');
                 if (pattern !== null && !validateFormInput(pattern, formFieldValue, this.getAttribute('name') )) {
@@ -6841,7 +6879,7 @@ var EDITOR = (function ($, parent) {
                     }),
                     success: function(resp) {
                         if (!resp?.corpus) {
-                            alert('No corpus data found!');
+                            //alert('No corpus data found!');
                             return;
                         }
                         var gridId = '#' + resp.gridId + '_jqgrid';
@@ -6856,7 +6894,7 @@ var EDITOR = (function ($, parent) {
                         if (resp.corpus && typeof resp.corpus === "string") {
                             // Remove leading/trailing whitespace, split on newlines, filter out empty lines
                             totalFiles = resp.corpus.trim().split('\n').filter(line => line.trim() !== '').length;
-                            alert(`✅ AI context resources are up to date!`);
+                            //alert(`✅ AI context resources are up to date!`);
                         }
                     },
                     error: function(xhr, status, err) {
@@ -6959,6 +6997,10 @@ var EDITOR = (function ($, parent) {
 
                     if (options.defaultValuePH !== undefined && options.defaultValuePH !== "") {
                         html.attr('defaultvalueph', options.defaultValuePH)
+                    }
+
+                    if (options.overrideField !== undefined && options.overrideField !== "") {
+                        html.attr('overridefield', options.overrideField)
                     }
 				}
 		}
