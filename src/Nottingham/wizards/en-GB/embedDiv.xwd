@@ -1,23 +1,36 @@
 <wizard menus="Links / Feeds">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <embedDiv><![CDATA[<embedDiv name="Enter Page Title" src=""/>]]></embedDiv>
+      <embedDiv><![CDATA[<embedDiv name="Enter Page Title" text="" src=""
+      windowWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"/>]]></embedDiv>
     </newNodes>
   </pageWizard>
 
   <!-- EMBED A DIV=============================================== -->
   <embedDiv menu="Links / Feeds" menuItem="Embed Content" hint="A page for including any web page or embed code in your project." icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#embedcontent" wiki="https://xerte.org.uk/wiki/doku.php?id=linksfeeds_embedcontent_page" remove="true">
-    
+
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
-    <src label="Embed Code or URL" type="script" height="300"/>
-	
-	<textInfo type="group" label="Text" optional="true" tooltip="Add text to the page">
-		<text label="Text" type="TextArea" height="150" optional="true" placeholder="Enter text for the page here"/>
-		<align label="Position" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100" optional="true"/>
-		<windowWidth label="Width" options="Small,Medium,Large" type="ComboBox" data="Large,Medium,Small" defaultValue="Medium" width="100" optional="true"/>
-	</textInfo>
+    <text label="Page Text" type="TextArea" height="150" placeholder="Enter text for the page here" condition="(windowWidth!='Full'&amp;&amp;windowWidth!=undefined)||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)" mandatory="true"/>
+    <src label="Embed Code or URL" type="script" height="150"/>
+
+    <layoutGroup label="Page Layout" type="group">
+        <windowWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Full" conditionTrigger="true" mandatory="true"/>
+        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="windowWidth=='Custom'"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="windowWidth!='Full'&amp;&amp;windowWidth!=undefined"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="true"/>
+        <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="windowWidth=='Full'||windowWidth==undefined"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="windowWidth!='Full'&amp;&amp;windowWidth!=undefined"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="windowWidth!='Full'&amp;&amp;windowWidth!=undefined"/>
+    </textBelowGroup>
 
   </embedDiv>
-
 
 </wizard>

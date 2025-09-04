@@ -399,7 +399,8 @@
       randomise="true" showText="Show Answer" trackedShowText="Submit" correctText="Correct!" incorrectText="Incorrect." nextText="Next" restartText="Restart" answerFieldLabel="Answer" countText="Clip {i} of {n}"/>]]></dictation><documentation><![CDATA[<documentation name="Enter Page Title" text="" intro="" display="all" download="last"
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
       instructions="Click the download button to save a copy of your answers" submittedTxt="Your answers have been submitted" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
-	  />]]></documentation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="" imgWidth="Medium" url="" interactivity="Describe" submitText="Submit"  incomplete="Please complete the exercise" tip="" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src=""/>]]></embedDiv><flashCards><![CDATA[<flashCards name="Enter Page Title" text="" cardNoTxt="Card {i} of {n}" flipTxt="Flip Card" nextTxt="Next" prevTxt="Previous" backScrollTip="Scroll Back" nextScrollTip="Scroll Forward" cardTxt="Card" sideTxt="Side"
+	  />]]></documentation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="" imgWidth="Medium" url="" interactivity="Describe" submitText="Submit"  incomplete="Please complete the exercise" tip="" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" text="" src=""
+      windowWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"/>]]></embedDiv><flashCards><![CDATA[<flashCards name="Enter Page Title" text="" cardNoTxt="Card {i} of {n}" flipTxt="Flip Card" nextTxt="Next" prevTxt="Previous" backScrollTip="Scroll Back" nextScrollTip="Scroll Forward" cardTxt="Card" sideTxt="Side"
       />]]></flashCards><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="" content="all use" deriv="unrestricted"
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
       nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" ></flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="" passage="" interactivity="Drag Drop" feedback=""
@@ -3840,15 +3841,28 @@
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></dragDropLabel><embedDiv menu="Links / Feeds" menuItem="Embed Content" hint="A page for including any web page or embed code in your project." icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#embedcontent" wiki="https://xerte.org.uk/wiki/doku.php?id=linksfeeds_embedcontent_page" remove="true">
-    
+
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
-    <src label="Embed Code or URL" type="script" height="300"/>
-	
-	<textInfo type="group" label="Text" optional="true" tooltip="Add text to the page">
-		<text label="Text" type="TextArea" height="150" optional="true" placeholder="Enter text for the page here"/>
-		<align label="Position" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100" optional="true"/>
-		<windowWidth label="Width" options="Small,Medium,Large" type="ComboBox" data="Large,Medium,Small" defaultValue="Medium" width="100" optional="true"/>
-	</textInfo>
+    <text label="Page Text" type="TextArea" height="150" placeholder="Enter text for the page here" condition="(windowWidth!='Full'&amp;&amp;windowWidth!=undefined)||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)" mandatory="true"/>
+    <src label="Embed Code or URL" type="script" height="150"/>
+
+    <layoutGroup label="Page Layout" type="group">
+        <windowWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Full" conditionTrigger="true" mandatory="true"/>
+        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="windowWidth=='Custom'"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="windowWidth!='Full'&amp;&amp;windowWidth!=undefined"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="true"/>
+        <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="windowWidth=='Full'||windowWidth==undefined"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="windowWidth!='Full'&amp;&amp;windowWidth!=undefined"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="windowWidth!='Full'&amp;&amp;windowWidth!=undefined"/>
+    </textBelowGroup>
 
   <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
