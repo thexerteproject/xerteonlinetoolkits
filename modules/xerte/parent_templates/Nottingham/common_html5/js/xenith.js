@@ -7782,6 +7782,11 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 			const panelH = x_getAvailableHeight([data.elements.panel], [], data.attributes.fullH);
 			data.elements.panel.height(panelH);
 			return panelH;
+		} else if (data.attributes.maxFullH) {
+			// panel isn't fixed height but may still have a max height, e.g. if it contains an image that takes its size from the panel size
+			const panelH = x_getAvailableHeight([data.elements.panel], [], true);
+			data.elements.panel.css("max-height", panelH);
+			return false;
 		} else {
 			return false;
 		}

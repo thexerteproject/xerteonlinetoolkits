@@ -40,10 +40,10 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(firstLoad) {
 			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
-			XENITH.SPLITSCREEN.resizePanel();
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
 
 			const $panel = $("#pageContents .panelContent");
-			$infoHolder.css("max-height", x_getAvailableHeight([$panel], [x_audioBarH]));
+			$infoHolder.css("max-height", x_getAvailableHeight([$panel], [x_audioBarH], true));
 
 			if ($("#pageAudio").children().length > 0) {
 				let audioBarW = 0;
@@ -76,6 +76,13 @@
 					$infoHolder.scrollTop($infoHolder.find(".highlight").data("scrollPos") - parseInt($("#pageContents .panelContent").css("padding-top")) - 1);
 				}
 			}
+
+			// when panel has fixed height set, keep audio player at bottom of panel by setting height of #infoHolder above it
+			if (panelH !== false && panelH !== undefined) {
+				$infoHolder.height(x_getAvailableHeight([$panel], [$("#pageAudio").outerHeight(true)]));
+			} else {
+				$infoHolder.height("unset");
+			}
 		}
 		
 		this.init = function() {
@@ -84,8 +91,13 @@
 
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
+			// send amended data to split screen function
+			const attributes = {
+				maxFullH: true // on smaller screens, the panel should never be taller than screen to avoid having to scroll a lot to reach the audio player
+			}
+
 			// set up split screen layout
-			XENITH.SPLITSCREEN.init();
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
 			var captionInfo = new Array();
 
@@ -181,7 +193,7 @@
 				pageName: "transcriptReader",
 				width: "100%"
 			});
-			
+
 			// move audio player to top of panel if on small screens so you don't have to scroll lots to see it
 			if (x_browserInfo.mobile != false) {
 				$('#pageAudio').insertBefore('#infoHolder');

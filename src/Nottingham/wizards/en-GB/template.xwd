@@ -400,7 +400,9 @@
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
       instructions="Click the download button to save a copy of your answers" submittedTxt="Your answers have been submitted" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
 	  />]]></documentation><dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="" imgWidth="Medium" url="" interactivity="Describe" submitText="Submit"  incomplete="Please complete the exercise" tip="" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel><embedDiv><![CDATA[<embedDiv name="Enter Page Title" src=""/>]]></embedDiv><flashCards><![CDATA[<flashCards name="Enter Page Title" text="" cardNoTxt="Card {i} of {n}" flipTxt="Flip Card" nextTxt="Next" prevTxt="Previous" backScrollTip="Scroll Back" nextScrollTip="Scroll Forward" cardTxt="Card" sideTxt="Side"
-      />]]></flashCards><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="" content="all use" deriv="unrestricted" panelWidth="Medium" nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" ></flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="" passage="" interactivity="Drag Drop" feedback=""
+      />]]></flashCards><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="" content="all use" deriv="unrestricted"
+      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" ></flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="" passage="" interactivity="Drag Drop" feedback=""
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
       gapLook="bg" gapLookFilled="true" gapSize="max" gapBespokeSize="20" gapSizeFilled="true" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer" tryAgain="Try again"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="" feedback="" data="1|2|3" constrain="none" style="row" align="left" gridSize="medium" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="" words="" restrict="letter"
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
@@ -4123,15 +4125,32 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></flashPaper><flickr menu="Media" menuItem="Flickr Slideshow" hint="Include freely available graphical content from the Flickr photo sharing service." label="Page Text" placeholder="Enter text for the page here" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#flickrslideshow" wiki="https://xerte.org.uk/wiki/doku.php?id=media_flickr_slideshow_page" remove="true">
+    </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></flashPaper><flickr menu="Media" menuItem="Flickr Slideshow" hint="Include freely available graphical content from the Flickr photo sharing service." label="Page Text" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)" type="text" height="150" icon="icPicture" thumb="thumbs/flickr.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#flickrslideshow" wiki="https://xerte.org.uk/wiki/doku.php?id=media_flickr_slideshow_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <keywords label="Keyword(s)" type="TextInput" placeholder="Enter keywords to search for here"/>
     <content label="Content for" options="All use,Non-commercial use" type="comboBox" data="all use,non-commercial use" defaultValue="all use" width="150"/>
     <deriv label="Reuse" options="Unrestricted,Non-derivative,Share alike" type="comboBox" data="unrestricted,non-derivative,share alike" defaultValue="unrestricted" width="150"/>
-	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true"/>
 
-	<nextTipTxt label="Next Button Tooltip" type="TextInput" divider="true" language="true"/>	
+    <layoutGroup label="Page Layout" type="group">
+        <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true" mandatory="true"/>
+        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
+
+    <nextTipTxt label="Next Button Tooltip" type="TextInput" divider="true" language="true"/>
 	<priorTipTxt label="Prior Button Tooltip" type="TextInput" language="true"/>	
 	<loadingTxt label="Loading Message" type="TextInput" wysiwyg="true" language="true" deprecated="This property is no longer required"/>
     <imageTxt label="Image {i} of {n} images" type="TextInput" wysiwyg="true" language="true"/>
