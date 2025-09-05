@@ -1707,6 +1707,66 @@ var EDITOR = (function ($, parent) {
         });
     };
 
+    savepreviewPromise = function (timeoutMs = 120000) {
+        // If the legacy flag makes the save a no-op, resolve immediately
+        if (typeof merged !== 'undefined' && merged == true) {
+            return Promise.resolve('skipped');
+        }
+
+        return new Promise((resolve, reject) => {
+            // Only match the specific AJAX fired by savepreviewasync
+            const matches = (s) => {
+                if (!s) return false;
+                const url = (s.url || '').toString();
+                const method = (s.type || s.method || 'GET').toUpperCase();
+                if (!/editor\/upload\.php(?:\?|$)/.test(url)) return false;
+                if (method !== 'POST') return false;
+
+                const dataStr = typeof s.data === 'string' ? s.data : $.param(s.data || {});
+                if (!/(^|&)fileupdate=0(&|$)/.test(dataStr)) return false;
+
+                // Extra safety: ensure it's for the current preview file if available
+                if (typeof previewxmlurl !== 'undefined') {
+                    const encoded = encodeURIComponent(previewxmlurl);
+                    if (dataStr.indexOf('filename=' + encoded) === -1) return false;
+                }
+                return true;
+            };
+
+            let timer;
+            const cleanup = () => {
+                $(document).off('ajaxSuccess', onSuccess);
+                $(document).off('ajaxError', onError);
+                clearTimeout(timer);
+            };
+
+            const onSuccess = (e, jqXHR, settings) => {
+                if (!matches(settings)) return;
+                cleanup();
+                resolve(); // no payload needed
+            };
+
+            const onError = (e, jqXHR, settings, thrown) => {
+                if (!matches(settings)) return;
+                cleanup();
+                reject(thrown || new Error('Preview save failed'));
+            };
+
+            // Listen first so we can't miss the event
+            $(document).on('ajaxSuccess', onSuccess);
+            $(document).on('ajaxError', onError);
+
+            // Timeout guard
+            timer = setTimeout(() => {
+                cleanup();
+                reject(new Error('Timed out waiting for preview save'));
+            }, timeoutMs);
+
+            // Kick off the legacy async save
+            savepreviewasync(true);
+        });
+    };
+
     auto_translate = function(event, api, baseUrl, targetLanguage) {
         return new Promise((resolve, reject) => {
             try {

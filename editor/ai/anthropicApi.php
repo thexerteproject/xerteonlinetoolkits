@@ -6,7 +6,7 @@ class anthropicApi extends BaseAiApi
         $authorization = "x-api-key: " . $this->xerte_toolkits_site->anthropic_key;
 
         $payload["messages"][max(sizeof($payload["messages"])-1, 0)]["content"] = $prompt;
-        $new_payload = json_encode($payload);
+        $new_payload = json_encode($payload, JSON_UNESCAPED_UNICODE|JSON_INVALID_UTF8_SUBSTITUTE);
 		
 		$payload_str = print_r($payload, true);
 		file_put_contents("./ai_payloads.txt", $payload_str, FILE_APPEND);

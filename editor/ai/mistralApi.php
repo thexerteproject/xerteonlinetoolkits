@@ -6,7 +6,7 @@ class mistralApi extends BaseAiApi
         $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->mistral_key;
 
         $payload["messages"][max(sizeof($payload["messages"])-1, 0)]["content"] = $prompt;
-        $new_payload = json_encode($payload);
+        $new_payload = json_encode($payload, JSON_UNESCAPED_UNICODE|JSON_INVALID_UTF8_SUBSTITUTE);
 		
 		$payload_str = print_r($payload, true);
 		file_put_contents("./ai_payloads.txt", $payload_str, FILE_APPEND);
@@ -19,8 +19,8 @@ class mistralApi extends BaseAiApi
         curl_setopt($curl, CURLOPT_POSTFIELDS, $new_payload);
 
         $result = curl_exec($curl);
-
         curl_close($curl);
+        //log_ai_request($result, 'genai', 'mistral', $this->actor, $this->sessionId);
 
         $resultConform = $this->clean_result($result);
         $resultConform = json_decode($resultConform);
@@ -82,10 +82,13 @@ SYS
         ]);
 
         $resp = curl_exec($ch);
+//        log_ai_request($resp, 'genai', 'mistral', $this->actor, $this->sessionId);
+
         if ($resp === false) {
             throw new Exception('cURL error: ' . curl_error($ch));
         }
         curl_close($ch);
+
 
         // 3. Decode & return
         $decoded = json_decode($resp, true, 512, JSON_THROW_ON_ERROR);

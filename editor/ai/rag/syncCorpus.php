@@ -132,6 +132,7 @@ try {
                     $results[] = [
                         'file'  => $uploadUrl,
                         'status' =>'Error: ' . $e->getMessage(),
+                        'continue_request'=>'false',
                     ];
                     $row['col_2'] = 'ERROR/SKIP';
                 }
@@ -214,6 +215,7 @@ try {
             'id'                      => $id,
             'file'                    => $row['file'],
             'transcription_status'    => $row['status'],
+            'continue_request'    => $row['continue_request'],
             // you could copy other fields here if needed; it shouldn't break the frontend usage
         ];
     }
@@ -244,7 +246,7 @@ try {
 } catch (Exception $ex) {
     echo json_encode([
         'success' => false,
-        'rag_results' => $ex->getMessage()
+        'error' => $ex->getMessage()
     ], JSON_THROW_ON_ERROR);
 }
 

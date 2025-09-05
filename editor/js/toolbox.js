@@ -1338,6 +1338,7 @@ var EDITOR = (function ($, parent) {
                                 const displaymsg =
                                     first.rag_status ||
                                     first.transcription_status ||
+                                    resp?.error ||
                                     'No status available';
                                 alert(displaymsg);
                                 resolve(resp);
@@ -6632,6 +6633,7 @@ var EDITOR = (function ($, parent) {
                                         const displaymsg =
                                             first.rag_status ||
                                             first.transcription_status ||
+                                            resp?.error ||
                                             'No status available';
                                         alert(displaymsg);
                                         resolve(resp);
@@ -6708,8 +6710,13 @@ var EDITOR = (function ($, parent) {
                         async function doCorpusCheck(fileUrl, loSettings) {
                             if (loSettings['useLoInCorpus'] === true){
                                 alert('Updating to latest learning object preview. Depending on learning object size, this may take a few minutes.');
-                                await updateCorpus(fileUrl, false, true);
-                                return true; //updated lo
+                                await savepreviewPromise();
+                                const data = await updateCorpus(fileUrl, false, true);
+                                if ((data?.results?.[0]?.continue_request === 'false')|| (data.success === false)){
+                                    return false;
+                                }else{
+                                    return true; //updated lo
+                                }
                             } else if (!loSettings['restrictCorpusToLo']){
                                 try {
                                     const corpusResp = await fetchCorpus(); // returns { hashes: [...] }
@@ -6724,7 +6731,11 @@ var EDITOR = (function ($, parent) {
                                     } else {
                                         if (confirm("The file you've selected has not yet been processed, and cannot be used as context for generation. Would you like to add it to the context for this learning object? For videos or larger files, this might take several minutes.")){
                                             let fileStatus = await updateCorpus(fileUrl, false);
-                                            return fileStatus.results[0].id; // not found, but added -- return the id
+                                            if ((fileStatus?.results?.[0]?.continue_request === 'false') || (fileStatus.success === false)) {
+                                                return false;
+                                            } else {
+                                                return fileStatus?.results?.[0]?.id;
+                                            }
                                         } else {
                                             // User cancelled
                                             return null; // or just let it be undefined
@@ -6746,13 +6757,6 @@ var EDITOR = (function ($, parent) {
                          * If the file is not present, we alert the user; they can then choose to add the file to the corpus, after which they can make a request again.
                          */
                         let loSettings = {};
-                        if (aiSettings['updateLoOnRequest'] === "true"){
-                            loSettings['useLoInCorpus'] = true;
-                        }
-
-                        if (uploadPrompt == 'lo'){
-                            loSettings['restrictCorpusToLo'] = true;
-                        }
                         if (uploadPrompt == 'context'){
                             aiSettings['useCorpus'] = true;
                         }
@@ -6760,7 +6764,7 @@ var EDITOR = (function ($, parent) {
                         const requiredLoTypes = ['summary', 'orient'];
                         //useLoInCorpus->add the current learning object preview to corpus
                         //restrictCorpusToLo->make sure the only thing being used for knowledge retreival is the LO
-                        if (requiredLoTypes.includes(aiSettings['type'])){
+                        if (requiredLoTypes.includes(aiSettings['type'])||uploadPrompt == 'lo'){
                             loSettings['useLoInCorpus'] = true;
                             loSettings['restrictCorpusToLo'] = true;
                         }

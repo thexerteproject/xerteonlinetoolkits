@@ -66,6 +66,7 @@ class openaiApi extends BaseAiApi
         ]);
 
         $resp = curl_exec($ch);
+        //log_ai_request($resp, 'genai', 'openai', $this->actor, $this->sessionId);
         if ($resp === false) {
             throw new \Exception('cURL error on create: ' . curl_error($ch));
         }
@@ -129,6 +130,7 @@ class openaiApi extends BaseAiApi
         curl_setopt($curl, CURLOPT_POSTFIELDS, $new_payload);
 
         $result = curl_exec($curl);
+        //log_ai_request($result, 'genai', 'openai', $this->actor, $this->sessionId);
 
         curl_close($curl);
 
@@ -151,7 +153,7 @@ class openaiApi extends BaseAiApi
 
         //add user supplied prompt to payload
         $payload['thread']["messages"][max(sizeof($payload["thread"]["messages"])-1, 0)]["content"] = $prompt;
-        $new_payload = json_encode($payload);
+        $new_payload = json_encode($payload, JSON_UNESCAPED_UNICODE|JSON_INVALID_UTF8_SUBSTITUTE);
 		
 		$payload_str = print_r($payload, true);
 		file_put_contents("./ai_payloads.txt", $payload_str, FILE_APPEND);
@@ -174,7 +176,8 @@ class openaiApi extends BaseAiApi
             $startTime = time();
             do {
                 sleep(5); // Wait for 5 seconds before checking status
-                $status = $this->GET_OpenAi_Run_Status($runId, $threadId);
+                $result = $this->GET_OpenAi_Run_Status($runId, $threadId);
+                $status = $result->status;
                 if (in_array($status, ['completed', 'failed', 'cancelled'])) {
                     break; // Exit loop if terminal status is reached
                 }
@@ -185,6 +188,7 @@ class openaiApi extends BaseAiApi
         if (in_array($status, ['completed'])) {
             // If run is completed, retrieve the last message
             $lastMessageContent = $this->GET_last_message_from_thread($threadId);
+            //log_ai_request($result, 'genai', 'openaiassistant', $this->actor, $this->sessionId);
         }
 
         $resultConform = $this->clean_result($lastMessageContent);
@@ -214,9 +218,9 @@ class openaiApi extends BaseAiApi
         $resultConform = $this->clean_result($result);
         $resultConform = json_decode($resultConform);
 
-        $status = $resultConform->status;
+        //$status = $resultConform->status;
 
-        return $status;
+        return $resultConform;
     }
 
     private function GET_last_message_from_thread($threadId) {

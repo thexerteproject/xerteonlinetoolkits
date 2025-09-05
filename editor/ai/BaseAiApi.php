@@ -2,11 +2,18 @@
 use rag\MistralRAG;
 use function rag\makeRag;
 
+//require_once __DIR__.'/logging/log_ai_request.php';
+
+global $xerte_toolkits_site;
 
 abstract class BaseAiApi
 {
 //constructor must be like this when adding new api
     private string $api;
+
+    //protected array $actor;
+
+    //protected string $sessionId;
 
     private string $languageName;
 
@@ -23,6 +30,8 @@ abstract class BaseAiApi
         require_once (str_replace('\\', '/', __DIR__) . "/rag/RagFactory.php");
         require_once (str_replace('\\', '/', __DIR__) . "/management/dataRetrievalHelper.php");
         require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/load_model.php");
+        //$this->actor = array('user_id'=>'u_42','workspace_id'=>'ws_77','installation_id'=>'inst_acme');
+        //$this->sessionId = 's_9f1c';
     }
 
     protected function clean_result($answer) {
