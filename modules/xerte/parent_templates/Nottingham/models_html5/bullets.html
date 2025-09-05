@@ -38,28 +38,29 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			$(".bullet").show();
-			var $pageContents = $("#pageContents");
-			$pageContents.height("");
-			$pageContents.height($pageContents.height());
+			const $holder = $("#holder");
+			$holder.height("");
+			$holder.height($holder.height());
 		}
 		
 		this.init = function() {
-			var $pageContents = $("#pageContents");
-			
-			if (x_currentPageXML.getAttribute("showPanel") != 0) {
-				$pageContents.addClass("panel");
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// send amended data to split screen function
+			const attributes = {};
+
+			// 'remove panel style' used to be controlled with 'display panel' property - use this old property if it exists
+			if (x_currentPageXML.getAttribute("showPanel") === "0" || x_currentPageXML.getAttribute("showPanel") === "1") {
+				attributes.panelStyle = x_currentPageXML.getAttribute("showPanel") === "0" ? "true" : "false";
 			}
-			
-			if (x_browserInfo.mobile == false) {
-				var panelW = x_currentPageXML.getAttribute("panelWidth");
-				if (panelW == "Small") {
-					$pageContents.addClass("width40");
-				} else if (panelW == "Medium") {
-					$pageContents.addClass("width60");
-				} else if (panelW == "Large") {
-					$pageContents.addClass("width80");
-				} // else full width
+			if (x_currentPageXML.getAttribute("panelWidth") == undefined) {
+				attributes.panelWidth = "Full"; // fall back to full width if not set
+			} else if (x_currentPageXML.getAttribute("panelWidth") !== "Full" && x_currentPageXML.getAttribute("align") == undefined) {
+				attributes.panelPosition = "Left"; // fall back to left if not set
 			}
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
             /**
              * Bullet pages in the Flash editor were separated with <br /> tags
@@ -111,8 +112,9 @@
 				$("#holder").append(contentsStr);
 			}
 			
-			if (x_currentPageXML.getAttribute("showPanel") != 0) {
-				$pageContents.height($pageContents.height()); // force height otherwise panel shrinks when bullets are hidden
+			if (x_currentPageXML.getAttribute("showPanel") === "1" || (x_currentPageXML.getAttribute("showPanel") == undefined || x__currentPageXML.getAttribute("panelStyle") !== "false")) {
+				// timed content is in a panel - force height otherwise panel shrinks when bullets are hidden
+				$("#holder").height($("#holder").height());
 			}
 
 			$(".bullet").hide();
@@ -146,9 +148,12 @@
 	
 </script>
 
-
 <div id="pageContents">
-	
-	<div id="holder"></div>
-	
+
+	<div id="textHolder" class="splitScreen_A"></div>
+
+	<div class="splitScreen_B">
+		<div id="holder" class="panelContent panel"></div>
+	</div>
+
 </div>
