@@ -875,6 +875,10 @@ var EDITOR = (function ($, parent) {
 
             // The rest of the normal params
             for (var i = 0; i < node_options['normal'].length; i++) {
+                //skip step for assistant lightbox features
+                if (node_options['normal'][i].value.lightbox === "form") {
+                    continue;
+                }
                 attribute_name = node_options['normal'][i].name;
                 if (node_options['normal'][i].value.children == undefined) {
                     attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
@@ -942,7 +946,7 @@ var EDITOR = (function ($, parent) {
                 }
                 attribute_name = node_options['optional'][i].name;
                 attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
-                if (attribute_value.found || $.inArray(true, found) > -1) {
+                if ( (attribute_value.found || $.inArray(true, found) > -1 ) && node_options['optional'][i].value.lightbox !== 'form') {
                     node_options['optional'][i].found = true;
                 }
                 else
