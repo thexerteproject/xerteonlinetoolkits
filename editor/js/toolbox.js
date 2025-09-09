@@ -4589,16 +4589,17 @@ var EDITOR = (function ($, parent) {
         }
         lightboxHtml.append(lightboxTable);
 
-        if (mode == "initialize") {
-            //create editor button to open lightbox manually
-            displayParameter(
-                '#mainPanel .wizard #groupTable_' + group.name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
-                [{name: group.name, value: {type: "lightboxbutton", label: group.value.label ? group.value.label : ""}}],
-                group.name,
-                "",
-                key
-            );
-        }
+        //todo not needed for new workflow
+        // if (mode == "initialize") {
+        //     //create editor button to open lightbox manually
+        //     displayParameter(
+        //         '#mainPanel .wizard #groupTable_' + group.name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
+        //         [{name: group.name, value: {type: "lightboxbutton", label: group.value.label ? group.value.label : ""}}],
+        //         group.name,
+        //         "",
+        //         key
+        //     );
+        // }
 
         // ensure global is always present
         window.lightboxCKEditorIds = window.lightboxCKEditorIds || [];
@@ -4614,12 +4615,13 @@ var EDITOR = (function ($, parent) {
             }
         }
 
-				let groupname = alternative_button != "" ? alternative_button : group.name;
+        //todo reworked for new workflow
+        //let groupname = alternative_button != "" ? alternative_button : group.name;
 
-        $('#lightboxbutton_' + groupname).on("click", function() {
+        //$('#lightboxbutton_' + groupname).on("click", function() {
 
-            // Clean up old ck editors before initializing any new ones
-            destroyAllLightboxCKEditors();
+        // Clean up old ck editors before initializing any new ones
+        destroyAllLightboxCKEditors();
 
             $.featherlight(lightboxHtml, {
                 persist: true,
@@ -4629,13 +4631,11 @@ var EDITOR = (function ($, parent) {
                     attachEditorsToLightbox(groupChildren, key, '.featherlight-content', formState);
                 }
             });
-        });
+        //});
 
-
-
-        if (mode === "redraw") {
-            $('#lightboxbutton_' + groupname).trigger('click');
-        }
+        // if (mode === "redraw") {
+        //     $('#lightboxbutton_' + groupname).trigger('click');
+        // }
     }
 
     triggerRedrawForm = function (group, key, groupChildren="", mode, alternative_button = "") {

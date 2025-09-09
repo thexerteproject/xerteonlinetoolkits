@@ -973,7 +973,8 @@ var EDITOR = (function ($, parent) {
                 if (!sorted_options['optional'][i].value.deprecated) {
                     // Create button for right panel
                     var label = attribute_label + (sorted_options['optional'][i].value.type == 'group' ? '...' : '');
-										let icon = $('<i>').addClass('fa').addClass('fa-lg').addClass("xerte-icon").height(14);
+					let icon = $('<i>').addClass('fa').addClass('fa-lg').addClass("xerte-icon").height(14);
+
                     var button = $('<button>')
                         .attr('id', 'insert_opt_' + attribute_name)
                         .addClass('btnInsertOptParam')
@@ -982,7 +983,8 @@ var EDITOR = (function ($, parent) {
                                 key: key,
                                 attribute: attribute_name,
                                 default: (sorted_options['optional'][i].value.defaultValue ? sorted_options['optional'][i].value.defaultValue : ""),
-                                children: sorted_options['optional'][i].value.children
+                                children: sorted_options['optional'][i].value.children,
+                                lightbox: sorted_options['optional'][i].value.lightbox ?? ""
                             },
                             function (event) {
 								
@@ -1008,8 +1010,12 @@ var EDITOR = (function ($, parent) {
 										parent.toolbox.insertOptionalProperty(data.key, data.attribute, data.default, true, "opt_" + data.attribute);
 									}
 								}
-								
-								checkForOptGroup(event.data);
+
+                                if (event.data.lightbox !== "form") {
+                                    checkForOptGroup(event.data);
+                                } else {
+                                    toolbox.triggerRedrawForm(event.data.attribute, event.data.key, event.data.children, 'initialize');
+                                }
                             })
                         .append(icon);
                     if (sorted_options['optional'][i].value.flashonly) {
