@@ -1699,6 +1699,7 @@ var EDITOR = (function ($, parent) {
                     success: function(data) {
                         try {
                             xml_to_xerte_content(data, aiSettings['key'], 'last', tree, parent);
+                            $.featherlight.close();
                         } catch (error) {
                             console.log('Error occurred in success callback:', error);
                             reject(error);
@@ -1853,7 +1854,7 @@ var EDITOR = (function ($, parent) {
         });
     };
 
-    img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings, single_image_selection = false){
+img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings, single_image_selection = false, key, name){
 				if(window.imageSearchSingle){
 						window.imageSearchSingle = false;
 				}
@@ -1936,14 +1937,19 @@ var EDITOR = (function ($, parent) {
 														alert("Kept images successfully saved to media folder.");
 														selection_window.close();
 														if(single_image_selection) {
-																$("html").data("image", image_data.paths[indices_selected[0]]);
-																console.log(image_data.paths[indices_selected[0]]);
+                                                            toolbox.setAttributeValue(key ,[name], [image_data.paths[indices_selected[0]]]);
+                                                            savepreviewPromise();
+
+                                                            $("html").data("image", image_data.paths[indices_selected[0]]);
 														}
 												},
 												error: function(xhr, status, error){
 														console.log("Error deleting images: ", error);
 														alert("an error occurred");
-												}
+												},
+                                                complete: function() {
+                                                    $.featherlight.close();
+                                                }
 										});
 								});
 								image_preview.append("<br>").append(submit_button);

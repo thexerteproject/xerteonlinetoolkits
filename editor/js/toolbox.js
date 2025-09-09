@@ -825,7 +825,7 @@ var EDITOR = (function ($, parent) {
                         .addClass("wizardvalue")
                         .append($('<div>')
                             .addClass("wizardvalue_inner")
-                            .append(displayDataType(fieldValue, options, name, key, label,  lightboxMode))));
+                            .append(displayDataType(fieldValue, options, name, key, label, lightboxMode))));
             }
 
 
@@ -4563,7 +4563,7 @@ var EDITOR = (function ($, parent) {
     }
 
 
-    lightboxSetUp = function(group, attributes, node_options, key, formState="", mode, alternative_button = "") {
+    lightboxSetUp = function(group, attributes, node_options, key, formState="") {
 
         let groupChildren = group.value.children;
         var lightboxHtml = $("<form id='lightbox_" + group.name + "' style='width: 50vw' ></form>");
@@ -4615,22 +4615,17 @@ var EDITOR = (function ($, parent) {
             }
         }
 
-        //todo reworked for new workflow
-        //let groupname = alternative_button != "" ? alternative_button : group.name;
-
-        //$('#lightboxbutton_' + groupname).on("click", function() {
-
         // Clean up old ck editors before initializing any new ones
         destroyAllLightboxCKEditors();
 
-            $.featherlight(lightboxHtml, {
-                persist: true,
-                afterOpen: function(event) {
-                    var attributes = lo_data[key]['attributes'];
-                    formState = { ...attributes };
-                    attachEditorsToLightbox(groupChildren, key, '.featherlight-content', formState);
-                }
-            });
+        $.featherlight(lightboxHtml, {
+            persist: true,
+            afterOpen: function(event) {
+                var attributes = lo_data[key]['attributes'];
+                formState = { ...attributes };
+                attachEditorsToLightbox(groupChildren, key, '.featherlight-content', formState);
+            }
+        });
         //});
 
         // if (mode === "redraw") {
@@ -4685,13 +4680,17 @@ var EDITOR = (function ($, parent) {
             }
         }
 
+        if (alternative_button !== "") {
+            formState["ishButton"] = alternative_button;
+        }
+
         //remove current form and button handler
         $('#lightbox_' + group).remove();
         $('#lightboxbutton_' + group).off("click");
         let currentNodeType = lo_data[key]['attributes'].nodeName;
         let groupId = wizard_data[currentNodeType].node_options.all.find((option) => option.name == group);
         $.featherlight.close();
-        lightboxSetUp(groupId, "", "", key, formState, mode, alternative_button);
+        lightboxSetUp(groupId, "", "", key, formState);
     };
 
     validateFormInput = function (regexCondition, inputValue, name) {
@@ -5736,7 +5735,7 @@ var EDITOR = (function ($, parent) {
 						.attr('value', value));
 
 				var td2 = $('<td>');
-				var btnHolder = $('<div style="width:4.5em"></div>').appendTo(td2);
+				var btnHolder = $('<div style="width:6.5em"></div>').appendTo(td2);
 				btnHolder.append($('<button>')
 					.attr('id', 'browse_' + id)
 					.attr('title', language.compMedia.$tooltip)
@@ -5770,12 +5769,11 @@ var EDITOR = (function ($, parent) {
 						let input = $(this).closest('tr').find('input')[0];
 						console.log(event, options);
 						window.imageSearchSingle = true;
-						triggerRedrawForm("imgSearchAndHelpGroup", key, "", "redraw", options.group);
-						//$("#lightboxbutton_imgSearchAndHelpGroup").click();
+						triggerRedrawForm("imgSearchAndHelpGroup", key, "", "redraw", event.data.name);
+                        // ... strange way to update a field.
 						let callback = () => {
 								if($("html").data("image")){
 										let src = $("html").data("image");
-										debugger;
 										input.value = $("html").data("image").replace("//media", "/media");
 								} else {
 										setTimeout(callback, 500);
@@ -5783,7 +5781,7 @@ var EDITOR = (function ($, parent) {
 						};
 						setTimeout(callback, 0);
 					})
-					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon')));
+					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-wand-magic').addClass('xerte-icon')));
 
 				html = $('<div>')
 					.attr('id', 'container_' + id)
@@ -6324,7 +6322,7 @@ var EDITOR = (function ($, parent) {
                     .attr('id', ish_id)
                     .attr('class', 'imgsh_button')
                     .text('Query')
-                    .click({key: key, group: options.group}, function(event) {
+                    .click({key: key, group: options.group, value: value}, function(event) {
                         html.prop('disabled', true);
                         event.preventDefault();
 
@@ -6382,7 +6380,7 @@ var EDITOR = (function ($, parent) {
                             return;
                         }
 
-                        img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject, window.imageSearchSingle ?? false);
+                        img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject, window.imageSearchSingle ?? false, event.data.key, event.data.value);
                         html.prop('disabled', false);
                     });
                 break;

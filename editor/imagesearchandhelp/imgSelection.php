@@ -1,11 +1,17 @@
 <?php 
 require_once (str_replace('\\', '/', __DIR__) . "/../../config.php");
-if(isset($_SESSION["paths_img_search"])){
-	$images = $_SESSION["paths_img_search"];
-    if ($_POST["indices_to_delete"]!== null){
-        for($i = 0; $i < count($_POST["indices_to_delete"]); $i++){
+
+//todo add security checks
+if(!isset($_SESSION['toolkits_logon_id'])) {
+    die;
+}
+
+if (isset($_SESSION["paths_img_search"])) {
+    $images = $_SESSION["paths_img_search"];
+    if ($_POST["indices_to_delete"] !== null) {
+        for ($i = 0; $i < count($_POST["indices_to_delete"]); $i++) {
             $index = $_POST["indices_to_delete"][$i];
-            if($index > count($images) && $index < 0) {
+            if ($index > count($images) && $index < 0) {
                 continue;
             }
             $image = $images[$index];
@@ -17,6 +23,7 @@ if(isset($_SESSION["paths_img_search"])){
             unlink($credits);
         }
     }
-	unset($_SESSION["paths_img_search"]);
-	echo "OK";
+    unset($_SESSION["paths_img_search"]);
+    echo "OK";
 }
+
