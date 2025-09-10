@@ -331,6 +331,7 @@ class wikimediaApi
 
         // Specify the directory to save images, including date and time
         $path = $target . "/media/wikimedia";
+        $path = $target . "/media";
 
         // Ensure the directory exists and is writable
         if (!is_dir($path)) {

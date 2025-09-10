@@ -276,8 +276,8 @@ class pexelsApi
         $dateTime = date('d-m-Y_Hi');
 
         // Specify the directory to save images, including date and time
-        $path = $target . "/media/pexels";
-
+        //$path = $target . "/media/pexels";
+        $path = $target . "/media";
         // Ensure the directory exists and is writable
         if (!is_dir($path)) {
             mkdir($path, 0777, true); // Create the directory if it doesn't exist

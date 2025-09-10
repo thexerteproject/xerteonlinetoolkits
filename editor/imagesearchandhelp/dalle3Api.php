@@ -210,7 +210,8 @@ class dalle3Api
         $dateTime = date('d-m-Y_Hi');
 
         // Specify the directory to save images, including date and time
-        $path = $target . "/media/dalle3";
+        //$path = $target . "/media/dalle3";
+        $path = $target . "/media";
 
         // Ensure the directory exists and is writable
         if (!is_dir($path)) {

@@ -291,7 +291,8 @@ class pixabayApi
         $dateTime = date('d-m-Y_Hi');
 
         // Specify the directory to save images, including date and time
-        $path = $target . "/media/pixabay";
+        //$path = $target . "/media/pixabay";
+        $path = $target . "/media";
 
         // Ensure the directory exists and is writable
         if (!is_dir($path)) {
