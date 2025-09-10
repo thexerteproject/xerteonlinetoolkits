@@ -2739,181 +2739,166 @@ var EDITOR = (function ($, parent) {
         setAttributeValue(key, [name], [value]);
     },
 
-	catListChanged = function (id, key, name, $parentDiv, obj)
-	{
-		var checked = $parentDiv.data('checked');
-		if ($(obj).prop('checked') == true && $.inArray(obj.id.substring(4), checked) == -1) {
-			checked.push(obj.id.substring(4));
-		} else if ($.inArray(obj.id.substring(4), checked) > -1) {
-			checked.splice($.inArray(obj.id.substring(4), checked), 1);
-		}
-		$parentDiv.data('checked', checked);
-
-		setAttributeValue(key, [name], [checked.toString()]);
-	},
-
-    inputChanged = function (id, key, name, value, obj)
-    {
-        //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
-        var actvalue = value;
-
-        if (id.indexOf('textinput') >= 0 || id.indexOf('media') >=0)
+        catListChanged = function (id, key, name, $parentDiv, obj)
         {
-            actvalue = value;
-            actvalue = stripP(actvalue);
-        }
-        if (id.indexOf('color')>=0)
-        {
-            if (actvalue.indexOf('#') == 0)
-                actvalue = actvalue.substr(1);
-            actvalue = '0x' + actvalue;
-        }
-        if (actvalue.indexOf('FileLocation +') >=0)
-        {
-            // Make sure the &#39; is translated to a '
-            //console.log("Convert " + actvalue);
-            actvalue = $('<textarea/>').html(actvalue).val();
-            //console.log("    ..to " + actvalue);
-        }
-        setAttributeValue(key, [name], [actvalue]);
-    },
-
-    courseChanged = function (id, key, name, form_id, value, obj)
-    {
-        //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
-        var actvalue = value;
-
-        if (actvalue == language.course.FreeText.$label)
-        {
-            // Enable free text input box
-            $("#" + id).css("width", "50%");
-            $("#course_freetext_" + form_id).show();
-            actvalue = $("#course_freetext_" + form_id).val();
-            actvalue = stripP(actvalue);
-        }
-        else
-        {
-            $("#course_freetext_" + form_id).hide();
-            $("#" + id).css("width", "");
-        }
-
-        var sel = $("#" + id + ".deprecated");
-        if (sel.length > 0) {
-            if (sel[0].selectedIndex == sel[0].length - 1) {
-                sel.addClass("deprecated_option_selected");
+            var checked = $parentDiv.data('checked');
+            if ($(obj).prop('checked') == true && $.inArray(obj.id.substring(4), checked) == -1) {
+                checked.push(obj.id.substring(4));
+            } else if ($.inArray(obj.id.substring(4), checked) > -1) {
+                checked.splice($.inArray(obj.id.substring(4), checked), 1);
             }
-            else {
-                sel.removeClass("deprecated_option_selected");
+            $parentDiv.data('checked', checked);
+
+            setAttributeValue(key, [name], [checked.toString()]);
+        },
+
+        inputChanged = function (id, key, name, value, obj) {
+            //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+            var actvalue = value;
+
+            if (id.indexOf('textinput') >= 0 || id.indexOf('media') >= 0) {
+                actvalue = value;
+                actvalue = stripP(actvalue);
             }
-        }
-        setAttributeValue(key, [name], [actvalue]);
-    },
-
-    courseFreeTextChanged = function (id, key, name, form_id, value, obj)
-    {
-        //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
-        var actvalue = value;
-
-        if (id.indexOf('textinput') >= 0 || id.indexOf('media') >=0)
-        {
-            actvalue = value;
-            actvalue = stripP(actvalue);
-        }
-        if (id.indexOf('color')>=0)
-        {
-            if (actvalue.indexOf('#') == 0)
-                actvalue = actvalue.substr(1);
-            actvalue = '0x' + actvalue;
-        }
-        if (actvalue.indexOf('FileLocation +') >=0)
-        {
-            // Make sure the &#39; is translated to a '
-            //console.log("Convert " + actvalue);
-            actvalue = $('<textarea/>').html(actvalue).val();
-            //console.log("    ..to " + actvalue);
-        }
-        setAttributeValue(key, [name], [actvalue]);
-    },
-
-    browseFile = function (id, type, key, name, value, obj)
-    {
-        let tmp_loc = 'media';
-        if (type === 'CorpusGrid' || type === 'mediaCorpus') {
-            tmp_loc = 'RAG/corpus';
-        }
-        window.elFinder = {};
-        window.elFinder.callBack = function(file) {
-            // Actions with url parameter here
-            var url = decodeURIComponent(file.url);
-            pos = url.indexOf(rlourlvariable);
-            if (pos >= 0) {
-                url = "FileLocation + '" + url.substr(rlourlvariable.length + 1) + "'";
+            if (id.indexOf('color') >= 0) {
+                if (actvalue.indexOf('#') == 0)
+                    actvalue = actvalue.substr(1);
+                actvalue = '0x' + actvalue;
             }
-            $('#' + id).attr("value", url);
-
-            // if this field is in a datagrid then we don't set attribute value immediately
-            if (key !== undefined && name !== undefined) {
-                setAttributeValue(key, [name], [url]);
+            if (actvalue.indexOf('FileLocation +') >= 0) {
+                // Make sure the &#39; is translated to a '
+                //console.log("Convert " + actvalue);
+                actvalue = $('<textarea/>').html(actvalue).val();
+                //console.log("    ..to " + actvalue);
             }
-            window.elFinder = null;
-        };
-        window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0,2) + '&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable+'&loc='+tmp_loc, 'Browse file', "height=600, width=800");
-    },
+            setAttributeValue(key, [name], [actvalue]);
+        },
 
-	previewFile = function(alt, src, title)
-	{
-		var origSrc = src;
-		src = src.indexOf("FileLocation + '") == 0 ? rlourlvariable + src.substring(("FileLocation + '").length, src.length - 1) : src;
-		
-		var previewType,
-			$preview,
-			fileFormats = [
-				{ type: 'image', fileExt: ['jpg', 'jpeg', 'gif', 'png'] },
-				{ type: 'video', fileExt: ['mp4'] },
-				{ type: 'audio', fileExt: ['mp3'] },
-				{ type: 'pdf', fileExt: ['pdf'] }
-			];
-		
-		$(fileFormats).each(function() {
-			for (var i=0; i<this.fileExt.length; i++) {
-				var ext = this.fileExt[i],
-					srcLowerC = src.toLowerCase();
-				if (srcLowerC.lastIndexOf('.' + ext) == srcLowerC.length - (ext.length + 1)) {
-					previewType = this.type;
-					return false;
-				}
-			}
-		});
-		
-		if (previewType == 'image') {
-			$preview = $('<div/>');
-			$('<img class="previewFile"/>')
-				.on("error", function() {
-						$('.featherlight .previewFile')
-							.after('<p>' + language.compPreview.$error + '</p>')
-							.remove();
-					})
-				.attr({
-					"src": src,
-					"alt": alt
-				})
-				.appendTo($preview);
-			
-		} else if (previewType == 'video') {
-			$preview = $('<div/>');
-			$('<video class="previewVideo" controls><source src="' + src + '"></video>').appendTo($preview);
-			
-		} else if (previewType == 'audio') {
-			$preview = $('<div/>');
-			$('<audio controls><source src="' + src + '"></video>').appendTo($preview);
-			
-		} else if (previewType == 'pdf') {
-			$preview = {iframe: src };
-			
-		} else {
-			var srcLowerC = origSrc.toLowerCase();
-			if (srcLowerC.indexOf('<iframe') === 0) {
-				$preview = $('<div>' + src + '</div>');
+        courseChanged = function (id, key, name, form_id, value, obj) {
+            //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+            var actvalue = value;
+
+            if (actvalue == language.course.FreeText.$label) {
+                // Enable free text input box
+                $("#" + id).css("width", "50%");
+                $("#course_freetext_" + form_id).show();
+                actvalue = $("#course_freetext_" + form_id).val();
+                actvalue = stripP(actvalue);
+            } else {
+                $("#course_freetext_" + form_id).hide();
+                $("#" + id).css("width", "");
+            }
+
+            var sel = $("#" + id + ".deprecated");
+            if (sel.length > 0) {
+                if (sel[0].selectedIndex == sel[0].length - 1) {
+                    sel.addClass("deprecated_option_selected");
+                } else {
+                    sel.removeClass("deprecated_option_selected");
+                }
+            }
+            setAttributeValue(key, [name], [actvalue]);
+        },
+
+        courseFreeTextChanged = function (id, key, name, form_id, value, obj) {
+            //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
+            var actvalue = value;
+
+            if (id.indexOf('textinput') >= 0 || id.indexOf('media') >= 0) {
+                actvalue = value;
+                actvalue = stripP(actvalue);
+            }
+            if (id.indexOf('color') >= 0) {
+                if (actvalue.indexOf('#') == 0)
+                    actvalue = actvalue.substr(1);
+                actvalue = '0x' + actvalue;
+            }
+            if (actvalue.indexOf('FileLocation +') >= 0) {
+                // Make sure the &#39; is translated to a '
+                //console.log("Convert " + actvalue);
+                actvalue = $('<textarea/>').html(actvalue).val();
+                //console.log("    ..to " + actvalue);
+            }
+            setAttributeValue(key, [name], [actvalue]);
+        },
+
+        browseFile = function (id, type, key, name, value, obj) {
+            let tmp_loc = 'media';
+            if (type === 'CorpusGrid' || type === 'mediaCorpus') {
+                tmp_loc = 'RAG/corpus';
+            }
+            window.elFinder = {};
+            window.elFinder.callBack = function (file) {
+                // Actions with url parameter here
+                var url = decodeURIComponent(file.url);
+                pos = url.indexOf(rlourlvariable);
+                if (pos >= 0) {
+                    url = "FileLocation + '" + url.substr(rlourlvariable.length + 1) + "'";
+                }
+                $('#' + id).attr("value", url);
+
+                // if this field is in a datagrid then we don't set attribute value immediately
+                if (key !== undefined && name !== undefined) {
+                    setAttributeValue(key, [name], [url]);
+                }
+                window.elFinder = null;
+            };
+            window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0, 2) + '&uploadDir=' + rlopathvariable + '&uploadURL=' + rlourlvariable + '&loc=' + tmp_loc, 'Browse file', "height=600, width=800");
+        },
+
+        previewFile = function (alt, src, title) {
+            var origSrc = src;
+            src = src.indexOf("FileLocation + '") == 0 ? rlourlvariable + src.substring(("FileLocation + '").length, src.length - 1) : src;
+
+            var previewType,
+                $preview,
+                fileFormats = [
+                    {type: 'image', fileExt: ['jpg', 'jpeg', 'gif', 'png']},
+                    {type: 'video', fileExt: ['mp4']},
+                    {type: 'audio', fileExt: ['mp3']},
+                    {type: 'pdf', fileExt: ['pdf']}
+                ];
+
+            $(fileFormats).each(function () {
+                for (var i = 0; i < this.fileExt.length; i++) {
+                    var ext = this.fileExt[i],
+                        srcLowerC = src.toLowerCase();
+                    if (srcLowerC.lastIndexOf('.' + ext) == srcLowerC.length - (ext.length + 1)) {
+                        previewType = this.type;
+                        return false;
+                    }
+                }
+            });
+
+            if (previewType == 'image') {
+                $preview = $('<div/>');
+                $('<img class="previewFile"/>')
+                    .on("error", function () {
+                        $('.featherlight .previewFile')
+                            .after('<p>' + language.compPreview.$error + '</p>')
+                            .remove();
+                    })
+                    .attr({
+                        "src": src,
+                        "alt": alt
+                    })
+                    .appendTo($preview);
+
+            } else if (previewType == 'video') {
+                $preview = $('<div/>');
+                $('<video class="previewVideo" controls><source src="' + src + '"></video>').appendTo($preview);
+
+            } else if (previewType == 'audio') {
+                $preview = $('<div/>');
+                $('<audio controls><source src="' + src + '"></video>').appendTo($preview);
+
+            } else if (previewType == 'pdf') {
+                $preview = {iframe: src};
+
+            } else {
+                var srcLowerC = origSrc.toLowerCase();
+                if (srcLowerC.indexOf('<iframe') === 0) {
+                    $preview = $('<div>' + src + '</div>');
 			} else {
 				$preview = $('<div><p>' + language.compPreview.$error + '</p></div>');
 			}
@@ -5791,6 +5776,14 @@ var EDITOR = (function ($, parent) {
 						.append(td1)
 						.append(td2)));
 				break;
+            case 'lightboxclosebutton':
+                html = $('<button>', { id, class: 'lightboxclose_button', type: 'button' })
+                    .text('Save and Close')
+                    .on('click', { key, group: options.group }, function (event) {
+                        event.preventDefault();
+                        $.featherlight.close();
+                    });
+                break;
             case 'datagrid':
 				var id = 'grid_' + form_id_offset;
 				form_id_offset++;
