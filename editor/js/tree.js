@@ -1699,6 +1699,7 @@ var EDITOR = (function ($, parent) {
                     success: function(data) {
                         try {
                             xml_to_xerte_content(data, aiSettings['key'], 'last', tree, parent);
+                            $.featherlight.close();
                         } catch (error) {
                             console.log('Error occurred in success callback:', error);
                             reject(error);
@@ -1853,7 +1854,7 @@ var EDITOR = (function ($, parent) {
         });
     };
 
-    img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings, single_image_selection = false){
+img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings, single_image_selection = false, key, name){
 				if(window.imageSearchSingle){
 						window.imageSearchSingle = false;
 				}
@@ -1936,14 +1937,19 @@ var EDITOR = (function ($, parent) {
 														alert("Kept images successfully saved to media folder.");
 														selection_window.close();
 														if(single_image_selection) {
-																$("html").data("image", image_data.paths[indices_selected[0]]);
-																console.log(image_data.paths[indices_selected[0]]);
+                                                            toolbox.setAttributeValue(key ,[name], [image_data.paths[indices_selected[0]]]);
+                                                            savepreviewPromise();
+
+                                                            $("html").data("image", image_data.paths[indices_selected[0]]);
 														}
 												},
 												error: function(xhr, status, error){
 														console.log("Error deleting images: ", error);
 														alert("an error occurred");
-												}
+												},
+                                                complete: function() {
+                                                    $.featherlight.close();
+                                                }
 										});
 								});
 								image_preview.append("<br>").append(submit_button);
@@ -1967,50 +1973,50 @@ var EDITOR = (function ($, parent) {
                                     </p>
                                   </div>
                                 `);
-                                                image_preview.append(tip);
+                                                //image_preview.append(tip);
 
                                 // 3) wire up close button
-                                                tip.find(".close-tip").on("click", () => tip.remove());
+                                                //tip.find(".close-tip").on("click", () => tip.remove());
 
                                 // 4) inject scoped styles
-                                                $("<style>").prop("type", "text/css").html(`
-                                  .tip-floating {
-                                    position: absolute;
-                                    bottom: 20px;
-                                    right: 20px;
-                                    max-width: 250px;
-                                    background: rgba(255,255,255,0.95);
-                                    padding: 1em;
-                                    border-radius: 6px;
-                                    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-                                    z-index: 1000;
-                                    font-size: 0.9em;
-                                    line-height: 1.3;
-                                  }
-                                  .tip-floating h4 {
-                                    margin: 0 0 0.5em;
-                                    font-size: 1em;
-                                  }
-                                  .tip-floating p {
-                                    margin: 0;
-                                  }
-                                  .tip-floating .close-tip {
-                                    position: absolute;
-                                    top: 4px;
-                                    right: 6px;
-                                    border: none;
-                                    background: none;
-                                    font-size: 1.1em;
-                                    cursor: pointer;
-                                  }
-                                  .tip-floating kbd {
-                                    background: #eee;
-                                    border: 1px solid #ccc;
-                                    border-radius: 3px;
-                                    padding: 0 4px;
-                                    font-size: 0.85em;
-                                  }
-                                `).appendTo("head");
+                                //                 $("<style>").prop("type", "text/css").html(`
+                                //   .tip-floating {
+                                //     position: absolute;
+                                //     bottom: 20px;
+                                //     right: 20px;
+                                //     max-width: 250px;
+                                //     background: rgba(255,255,255,0.95);
+                                //     padding: 1em;
+                                //     border-radius: 6px;
+                                //     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                                //     z-index: 1000;
+                                //     font-size: 0.9em;
+                                //     line-height: 1.3;
+                                //   }
+                                //   .tip-floating h4 {
+                                //     margin: 0 0 0.5em;
+                                //     font-size: 1em;
+                                //   }
+                                //   .tip-floating p {
+                                //     margin: 0;
+                                //   }
+                                //   .tip-floating .close-tip {
+                                //     position: absolute;
+                                //     top: 4px;
+                                //     right: 6px;
+                                //     border: none;
+                                //     background: none;
+                                //     font-size: 1.1em;
+                                //     cursor: pointer;
+                                //   }
+                                //   .tip-floating kbd {
+                                //     background: #eee;
+                                //     border: 1px solid #ccc;
+                                //     border-radius: 3px;
+                                //     padding: 0 4px;
+                                //     font-size: 0.85em;
+                                //   }
+                                // `).appendTo("head");
 
 
                 // ───────────── END POP-UP TIP ─────────────
@@ -2027,6 +2033,10 @@ var EDITOR = (function ($, parent) {
 								
 								let credits_button_width = 0;
                 //console.log("The image results have successfully been retrieved:", data);
+                                if (image_data.paths.length === 0) {
+                                    let no_image_text = "<div>There where no results for your search words. Please verify that the given search terms are spelled correctly<div>";
+                                    image_preview_images.append(no_image_text);
+                                }
 								for(let i = 0; i < image_data.paths.length; i++){
 										let image_url = image_data.paths[i];
 										let select_input = $("<input type=\"" + input_type + "\" id=\"check" + i + "\" name=\"image\" value=\"" + i + "\"></input>");
