@@ -1,5 +1,5 @@
 <?php
-class mistal_ai_ivoverlaypanel extends mistral_ai {
+class mistral_ai_ivoverlaypanel extends mistral_ai {
 	public function __construct($type, $model = null, $context = "standard", $sub_type = null){
 		if($model == null) {
 			$this->model = "mistral-large-latest";
@@ -14,12 +14,12 @@ class mistal_ai_ivoverlaypanel extends mistral_ai {
 				}
 				switch ($subtype) {
 					case 'text_object':
-						$this->leaning_prompt = LEARNING_PROMPT_IVOVERLAYPANEL_TEXT;
+						$this->learning_prompt = LEARNING_PROMPT_IVOVERLAYPANEL_TEXT;
 						$this->object = LEARNING_RESULT_IVOVERLAYPANEL_TEXT;
 						$this->defaultPrompt = DEFAULT_PROMPT_IVOVERLAYPANEL_TEXT;
 						break;
 					case 'mcq':
-						$this->leaning_prompt = LEARNING_PROMPT_IVOVERLAYPANEL_MCQ;
+						$this->learning_prompt = LEARNING_PROMPT_IVOVERLAYPANEL_MCQ;
 						$this->object = LEARNING_RESULT_IVOVERLAYPANEL_MCQ;
 						$this->defaultPrompt = DEFAULT_PROMPT_IVOVERLAYPANEL_MCQ;
 						break;

@@ -1,10 +1,12 @@
 <?php
 class mistral_ai {
+    public $context;
+    public $prompt_list;
 	private $model = "mistral-large-latest";
 	private $chat_url = "https://api.mistral.ai/v1/chat/completions";
-	private $leaning_prompt;
-	private $object;
-	private $defaultPrompt;
+	protected $learning_prompt;
+    protected $object;
+    protected $defaultPrompt;
 	private $max_tokens = 4096;
 	private $temperature = 0.2;
 
@@ -22,11 +24,11 @@ class mistral_ai {
 		_load_language_file("/editor/ai_models/mistral_model_" . strtolower($type) . "_ai.inc");
 		$upper_type = strtoupper($type);
 		if ($context === 'standard') {
-			$this->leaning_prompt = constant("LEARNING_PROMPT_" . $upper_type);
+			$this->learning_prompt = constant("LEARNING_PROMPT_" . $upper_type);
 			$this->object = constant("LEARNING_RESULT_" . $upper_type);
 			$this->defaultPrompt = constant("DEFAULT_PROMPT_" . $upper_type);
 		} elseif ($context === 'bootstrap') {
-			$this->leaning_prompt = constant("LEARNING_PROMPT_" . $upper_type . "_BOOTSTRAP");
+			$this->learning_prompt = constant("LEARNING_PROMPT_" . $upper_type . "_BOOTSTRAP");
 			$this->object = constant("LEARNING_RESULT_" . $upper_type . "_BOOTSTRAP");
 			$this->defaultPrompt = constant("DEFAULT_PROMPT_" . $upper_type . "_BOOTSTRAP");
 		} else {
@@ -40,7 +42,7 @@ class mistral_ai {
 			"max_tokens" => $this->max_tokens,
 			"temperature" => $this->temperature,
 			"messages" => [
-				["role" => "user", "content" => $this->leaning_prompt],
+				["role" => "user", "content" => $this->learning_prompt],
 				["role" => "assistant", "content" => $this->object],
 				["role" => "user", "content" => ""]
 			]
