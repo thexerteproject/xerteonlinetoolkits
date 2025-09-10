@@ -156,7 +156,7 @@
 //     $enable_jsonp or $enable_native are enabled. Defaults to '/.*/' which
 //     validates all URLs.
 //
-if (isset($_GET['tsugisession']))
+if (isset($_GET['tsugisession']) && $_GET['tsugisession'] === 1)
 {
     $tsugi_disable_xerte_session = true;
     require_once("config.php");
