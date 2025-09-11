@@ -6314,6 +6314,8 @@ var EDITOR = (function ($, parent) {
                 html = $('<button>')
                     .attr('id', ish_id)
                     .attr('class', 'imgsh_button')
+                    .attr('value', value)
+                    .attr('name', name)
                     .text('Query')
                     .click({key: key, group: options.group, value: value}, function(event) {
                         html.prop('disabled', true);
