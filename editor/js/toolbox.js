@@ -7040,6 +7040,8 @@ var EDITOR = (function ($, parent) {
     my.getPageList = getPageList;
     my.hideInlineEditor = hideInlineEditor;
     my.triggerRedrawForm = triggerRedrawForm;
+    my.triggerRedrawPage = triggerRedrawPage;
+
 
     return parent;
 

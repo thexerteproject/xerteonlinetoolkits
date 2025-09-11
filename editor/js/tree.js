@@ -1941,7 +1941,7 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
                                                             toolbox.setAttributeValue(key ,[name], [image_data.paths[indices_selected[0]]]);
                                                             savepreviewPromise();
 
-                                                            //$("html").data("image", image_data.paths[indices_selected[0]]);
+                                                            toolbox.triggerRedrawPage(key);
 														}
 												},
 												error: function(xhr, status, error){
