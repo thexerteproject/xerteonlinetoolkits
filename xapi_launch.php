@@ -18,27 +18,6 @@
  * limitations under the License.
  */
 
-/*
- * Make sure that play does not use cookie based sessions
- * Thise requires to switch off cookiebased sessions and some helper functions.
- *
- * If this is an LTI session, do not use this functionality, because tsugi will handle the session
- *
- * This must be done before loading config.php
-*/
-global $lti_enabled;
-if (!isset($lti_enabled))
-{
-    $lti_enabled = false;
-}
-if (!$lti_enabled)
-{
-    require_once(dirname(__FILE__) . "/session_helpers.php");
-    ini_set('session.use_cookies', 0);
-    ini_set('session.use_only_cookies', 0);
-    ini_set('session.use_trans_sid', 1);
-}
-
 require_once(dirname(__FILE__) . "/config.php");
 require_once(dirname(__FILE__) . "/website_code/php/xAPI/xAPI_library.php");
 
