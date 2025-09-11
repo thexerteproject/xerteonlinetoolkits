@@ -7201,7 +7201,7 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 					for (let j=0; j<pageResourceInfo.length; j++) {
 						const resource = pageResourceInfo[j].split("|");
 						// the resource is either a link, file path (resources[1]) or a Xerte page link (resources[2])
-						if (resource.length === 4 && resource[1].trim() !== "" || resource[2] !== "") {
+						if (resource.length === 4 && ((resource[1] != undefined && resource[1].trim() !== "") || (resource[2] != undefined && resource[2].trim() !== ""))) {
 							pageResources.push({
 								"title": resource[0],
 								"link": resource[1].trim() !== "" ? resource[1].trim() : resource[2],
