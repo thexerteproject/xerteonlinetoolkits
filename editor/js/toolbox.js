@@ -5756,15 +5756,15 @@ var EDITOR = (function ($, parent) {
 						window.imageSearchSingle = true;
 						triggerRedrawForm("imgSearchAndHelpGroup", key, "", "redraw", event.data.name);
                         // ... strange way to update a field.
-						let callback = () => {
-								if($("html").data("image")){
-										let src = $("html").data("image");
-										input.value = $("html").data("image").replace("//media", "/media");
-								} else {
-										setTimeout(callback, 500);
-								}
-						};
-						setTimeout(callback, 0);
+						// let callback = () => {
+						// 		if($("html").data("image")){
+						// 				let src = $("html").data("image");
+						// 				input.value = $("html").data("image").replace("//media", "/media");
+						// 		} else {
+						// 				setTimeout(callback, 500);
+						// 		}
+						// };
+						// setTimeout(callback, 0);
 					})
 					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-wand-magic').addClass('xerte-icon')));
 
