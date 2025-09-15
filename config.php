@@ -40,7 +40,7 @@ global $xerte_toolkits_site;
 // and logging (to /tmp/debug.log) are turned on; either of these may help you
 // diagnose installation and integration issues. 
 global $development;
-$development = false;
+$development = true;
 
 ini_set('error_reporting', 0);
 ini_set('display_errors', 0);
@@ -211,7 +211,12 @@ if (file_exists(__DIR__ . "/reverse_proxy_conf.php"))
 {
     require_once(__DIR__ . "/reverse_proxy_conf.php");
 }
+_debug("_SERVER: " . print_r($_SERVER, true));
 $host = (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '');
+if (isset($_SERVER['HTTP_X_FORWARDED_HOST']))
+{
+    $host = $_SERVER['HTTP_X_FORWARDED_HOST'];
+}
 $port = (isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : 80);
 $scheme = (isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : false) || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https://' : 'http://';
 
@@ -307,15 +312,37 @@ if (file_exists(dirname(__FILE__) . '/lrsdb_config.php'))
     require_once(dirname(__FILE__) . '/lrsdb_config.php');
 }
 
-if(!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true)
-{
-    if($xerte_toolkits_site->authentication_method == "Moodle") {
-        // skip session_start() as we'll probably stomp on Moodle's session if we do.
-    }
-    else {
+$xerte_toolkits_site->tsugi_session = false;
 
-        ini_set('session.cookie_httponly', '1');
-        session_start();
+if ((!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true)) {
+    if (isset($_GET['tsugisession'])) {
+        $tsugi_disable_xerte_session = true;
+        require_once("config.php");
+        // _debug("xapi_proxy: setting tsugi session");
+        if (x_clean_input($_GET['tsugisession']) == "1") {
+            $contents = "";
+
+            // _debug("xapi_proxy: TSUGI session");
+            if (file_exists($xerte_toolkits_site->tsugi_dir)) {
+                require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
+            }
+            $xerte_toolkits_site->tsugi_session = true;
+            session_start();
+        } else {
+            // _debug("xapi_proxy: setting normal session");
+            ini_set('session.use_cookies', 0);
+            ini_set('session.use_only_cookies', 0);
+            ini_set('session.use_trans_sid', 1);
+            session_start();
+        }
+    } else {
+        if ($xerte_toolkits_site->authentication_method == "Moodle") {
+            // skip session_start() as we'll probably stomp on Moodle's session if we do.
+        } else {
+
+            ini_set('session.cookie_httponly', '1');
+            session_start();
+        }
     }
 }
 
@@ -323,5 +350,7 @@ if(!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true
 if (isset($_SESSION['elevated']) && $_SESSION['elevated'])
 {
     $xerte_toolkits_site->rights = 'elevated';
+} else {
+    $xerte_toolkits_site->rights = 'normal';
 }
 

@@ -410,7 +410,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         echo "course_freetext_enabled=" . ($xerte_toolkits_site->course_freetext_enabled == 'true' ? 'true' : 'false') . ";\n";
     }
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
-    echo "theme_list=" . json_encode($ThemeList) . ";\n";
+    echo "var theme_list_encoded='" . base64_encode(json_encode($ThemeList)) . "';\n";
+    echo "var theme_list=btoa(theme_list_encoded);\n";
     ?>
 
     function bunload(){

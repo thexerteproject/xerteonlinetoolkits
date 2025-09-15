@@ -339,8 +339,9 @@ var EDITOR = (function ($, parent) {
             }
         }
         var new_tab = clickevent.ctrlKey;
+        upload_url ??= "editor/upload.php";
         var ajax_call = $.ajax({
-                url: "editor/upload.php",
+                url: upload_url,
                 data: {
                     fileupdate: 0, //0= preview->preview.xml
                     filename: previewxmlurl,
@@ -361,13 +362,14 @@ var EDITOR = (function ($, parent) {
         .done(function() {
             //alert( "success" );
             // We would also launch the preview window from here
+            preview_url ??= "preview.php?template_id="
             $('#loader').hide();
             if (new_tab)
             {
-                window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "_blank");
+                window.open(preview_url + template_id + urlparam, "_blank");
             }
             else {
-                window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width + ", resizable=yes, scrollbars=1");
+                window.open(preview_url + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width + ", resizable=yes, scrollbars=1");
             }
         })
         .fail(function(data, status, error) {
@@ -385,8 +387,10 @@ var EDITOR = (function ($, parent) {
     		return;
     	}
         var json = build_json("treeroot");
+        upload_url ??= "editor/upload.php";
+        //todo change to use var
         var ajax_call = $.ajax({
-                url: "editor/upload.php",
+                url: upload_url,
                 data: {
                     fileupdate: 1, // 1=publish -> data.xml
                     filename: dataxmlurl,
@@ -422,8 +426,9 @@ var EDITOR = (function ($, parent) {
     		return;
     	}
         var json = build_json("treeroot");
+        upload_url ??= "editor/upload.php";
         var ajax_call = $.ajax({
-                url: "editor/upload.php",
+                url: upload_url,
                 data: {
                     fileupdate: 0, // 1=publish -> data.xml
                     filename: previewxmlurl,
