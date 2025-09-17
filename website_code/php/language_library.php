@@ -70,7 +70,9 @@ function getLanguages()
 function getWizardfile($langcode)
 {
     libxml_use_internal_errors(true);
-    $xml = simplexml_load_file(dirname(__FILE__) . "/../../languages/language-config.xml");
+    $xml = file_get_contents(dirname(__FILE__) . '/../../languages/language-config.xml');
+    $xml = simplexml_load_string($xml);
+
     $xml_langs = $xml->xpath('/*/language');
     $wizardFile="";
     foreach ($xml_langs as $xml_lang)

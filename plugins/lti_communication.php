@@ -42,20 +42,20 @@ function lti_info_callback($name, $xerte_id, $url) {
     }
 
     $contentItem = [
-        '@context' => 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
+        '@context' => ['http://purl.imsglobal.org/ctx/lti/v1/ContentItem'],
         '@graph' => [
             [
                 '@type' => 'LtiLinkItem',
-                "mediaType" => "application/vnd.ims.lti.v1.ltiResourceLink",
+                "mediaType" => "application/vnd.ims.lti.v1.ltilink",
                 'title' => $name,
-                'url' => $url . "tools/lti_edlib/index.php?template_id=" . $xerte_id,
+                'url' => $url . "lti_index.php?template_id=" . $xerte_id,
                 'icon' => null,
                 'lineItem' => null,
-                'language' => "en",
+                'language' => "eng",
                 'license' => "CC-BY",
                 'published' => true,
                 'shared' => false,
-                'tags' => ["test tag1", "test tag2"]
+                'tag' => "Xerte"
             ]
         ]
     ];
@@ -105,7 +105,7 @@ function lti_info_callback($name, $xerte_id, $url) {
     <title>Returning to LMS</title>
   </head>
   <body>
-    <form action="' . htmlspecialchars($returnUrl) . '" method="POST" id="ltiReturnForm">';
+    <form action="' . htmlspecialchars($returnUrl) . '" method="POST" id="lti_return" target="_top">';
 
     foreach ($params as $key => $value) {
         echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($value) . '" />' . PHP_EOL;
@@ -113,10 +113,10 @@ function lti_info_callback($name, $xerte_id, $url) {
 
     echo '  </form>
     <script>
-      document.getElementById("ltiReturnForm").submit();
+      document.getElementById("lti_return").submit();
     </script>
     <noscript>
-      <button type="submit" form="ltiReturnForm">Return to LMS</button>
+      <button type="submit" form="lti_return">Return to LMS</button>
     </noscript>
   </body>
 </html>';

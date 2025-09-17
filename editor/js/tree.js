@@ -253,10 +253,13 @@ var EDITOR = (function ($, parent) {
         $('.ui-layout-center .header').append($('<div>').attr('id', 'pagetype'));
         // Save buttons
         var buttons = $('<div />').attr('id', 'save_buttons');
+        //todo hide button in non lti
         $([
             {name:language.btnPreview.$label, tooltip: language.btnPreview.$tooltip, icon:'fa-play', id:'preview_button', click:preview},
             //{name:language.btnSaveXerte.$label, tooltip: language.btnSaveXerte.$tooltip, icon:'editor/img/publish.png', id:'save_button', click:savepreview},
-            {name:language.btnPublishXot.$label, tooltip: language.btnPublishXot.$tooltip, icon:'fa-globe', id:'publish_button', click:publish}
+            {name:language.btnPublishXot.$label, tooltip: language.btnPublishXot.$tooltip, icon:'fa-globe', id:'publish_button', click:publish},
+
+            {name:'Save', tooltip: "Save project to Edlib", icon:'fas fa-save', id:'lti_save_button', click:lti_save}
         ])
         .each(function(index, value) {
             var button = $('<button>')
@@ -388,7 +391,6 @@ var EDITOR = (function ($, parent) {
     	}
         var json = build_json("treeroot");
         upload_url ??= "editor/upload.php";
-        //todo change to use var
         var ajax_call = $.ajax({
                 url: upload_url,
                 data: {
@@ -397,7 +399,7 @@ var EDITOR = (function ($, parent) {
                     preview: previewxmlurl,
                     lo_data: encodeURIComponent(JSON.stringify(json)),
                     absmedia: rlourlvariable,
-                    template_id: template_id
+                    template_id: template_id,
                 },
 
                 dataType: "json",
@@ -406,6 +408,41 @@ var EDITOR = (function ($, parent) {
         ).done(function() {
             $('#loader').hide();
             //alert( "success" );
+        })
+        .fail(function() {
+            $('#loader').hide();
+			// alert from publish button click
+			var sessionError = language.Alert.sessionError;
+			var msg = sessionError != undefined ? sessionError.replace(/\\n/g, "\n") : "error";
+			alert(msg);
+        });
+    },
+
+    lti_save = function () {
+        if(typeof merged !== 'undefined' && merged == true){
+            return;
+        }
+        var json = build_json("treeroot");
+        upload_url ??= "editor/upload.php";
+        var ajax_call = $.ajax({
+                url: upload_url,
+                data: {
+                    fileupdate: 1, // 1=publish -> data.xml
+                    filename: dataxmlurl,
+                    preview: previewxmlurl,
+                    lo_data: encodeURIComponent(JSON.stringify(json)),
+                    absmedia: rlourlvariable,
+                    template_id: template_id,
+                    lti_save: "true"
+                },
+
+                dataType: "html",
+                type: "POST"
+            }
+        ).done(function(result) {
+            $('#loader').hide();
+            //alert( "success" );
+            $("body").html(result);
         })
         .fail(function() {
             $('#loader').hide();

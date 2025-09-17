@@ -1,14 +1,14 @@
 <?php
-require_once ('../../config.php');
+require_once (dirname(__FILE__) . "/../../config.php");
 require_once ('subtemplate.php');
 
 //todo security
 
 $tsugi_enabled = false;
 $xapi_enabled = false;
-$lti_enabled = true;
+$lti_enabled = false;
 $pedit_enabled = false;
-$x_embed = true;
+$x_embed = false;
 
 if (isset($_GET["template_id"])) {
     $id = x_clean_input($_GET["template_id"]);
@@ -24,5 +24,5 @@ else if(isset($_POST["template_id"]))
     $_GET['template_id'] = $id;
 }
 
-require('../../play.php');
+require(dirname(__FILE__) .  '/../../play.php');
 

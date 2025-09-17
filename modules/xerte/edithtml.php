@@ -27,7 +27,29 @@
 
 require_once (__DIR__ . "/../../website_code/php/xmlInspector.php");
 require_once (__DIR__ . "/../../website_code/php/themes_library.php");
-require_once (__DIR__ . "/../../session_helpers.php");
+
+
+function addSessionData($url) {
+    if ( ini_get('session.use_cookies') != '0' ) return $url;
+    if ( stripos($url, '&'.session_name().'=') > 0 ||
+            stripos($url, '?'.session_name().'=') > 0 ) return $url;
+    $session_id = session_id();
+
+    // Don't add more than once...
+    $parameter = session_name().'=';
+    if ( strpos($url, $parameter) !== false ) return $url;
+
+    $url = add_url_parms($url, session_name(), $session_id);
+    return $url;
+}
+
+function add_url_parms($url, $key, $val) {
+    $url .= strpos($url,'?') === false ? '?' : '&';
+    $url .= urlencode($key) . '=' . urlencode($val);
+    return $url;
+}
+
+
 function get_children ($parent_id, $lookup, $column, $type) {
     // children
     $children = array();
@@ -243,12 +265,12 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     }
 
     $upload_url = $xerte_toolkits_site->site_url .
-            (isset($_SESSION['lti_enabled']) && $_SESSION['lti_enabled'] && function_exists('addSession')
-                    ? addSession("editor/upload.php") . "&tsugisession=0" : "editor/upload.php");
+            (isset($_SESSION['lti_enabled']) && $_SESSION['lti_enabled'] && function_exists('addSessionData')
+                    ? addSessionData("editor/upload.php") . "&tsugisession=0" : "editor/upload.php");
     $preview_url = $xerte_toolkits_site->site_url .
             (
-            isset($_SESSION['lti_enabled']) && $_SESSION['lti_enabled'] && function_exists('addSession')
-                    ? addSession("preview.php") . "&tsugisession=0&"
+            isset($_SESSION['lti_enabled']) && $_SESSION['lti_enabled'] && function_exists('addSessionData')
+                    ? addSessionData("preview.php") . "&tsugisession=0&"
                     : "preview.php?"
             ) .
             "template_id=";

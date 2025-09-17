@@ -20,10 +20,10 @@
 
 
 $tsugi_disable_xerte_session = true;
-require_once(dirname(__FILE__) . "/../../config.php");
+require_once(dirname(__FILE__) . "/config.php");
 require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
-require_once(dirname(__FILE__) . "/../../website_code/php/xAPI/xAPI_library.php");
-require_once(dirname(__FILE__) . "/../../website_code/php/login_library.php");
+require_once(dirname(__FILE__) . "/website_code/php/xAPI/xAPI_library.php");
+require_once(dirname(__FILE__) . "/website_code/php/login_library.php");
 
 ini_set('display_errors', 3);
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
@@ -83,17 +83,28 @@ $_SESSION['content_item_return_url'] = $content_item_return_url;
 _debug("LTI launch: " . print_r($LAUNCH, true));
 _debug("LTI user: " . print_r($USER, true));
 
+$id = "";
 
-if ($cleaned_message_type == "ContentItemSelectionRequest"){
-    require("item_selection_request.php");
-} else if ($cleaned_message_type == "basic-lti-launch-request") {
-    //todo show preview play?
-    require ("play_request.php");
-
-} else if ($cleaned_message_type == "infoRequest") {
-    //todo retrieve info
+if (isset($_GET["template_id"])) {
+    $id = x_clean_input($_GET["template_id"]);
+}
+else if(isset($_POST["template_id"]))
+{
+    $id = x_clean_input($_POST["template_id"]);
+    // Hack for the rest of Xerte
+    $_GET['template_id'] = $id;
+} else if (isset($raw_post_array['template_id'])){
+    $id = x_clean_input($raw_post_array["template_id"]);
+    // Hack for the rest of Xerte
+    $_GET['template_id'] = $id;
 }
 
-//todo call required funcion and do preprocessing
 
-//require("play.php");
+if ($cleaned_message_type == "ContentItemSelectionRequest" && $id === ""){
+    require("tools/lti_edlib/item_selection_request.php");
+} else if ($cleaned_message_type == "basic-lti-launch-request") {
+    require ("tools/lti_edlib/play_request.php");
+} else if ($cleaned_message_type == "ContentItemSelectionRequest" && $id !== "") {
+    require ("edithtml.php");
+}
+

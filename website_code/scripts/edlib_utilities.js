@@ -51,7 +51,6 @@ function tutorial_created_from_edlib(response) {
  * @author Timo Boer
  */
 function create_template_from_edlib(tutorial_id, template_name) {
-    debugger;
     if (setup_ajax() != false) {
         //todo how to handle folders?
         var new_template_folder = "";
@@ -63,7 +62,8 @@ function create_template_from_edlib(tutorial_id, template_name) {
                     tutorialid: tutorial_id,
                     templatename: template_name,
                     tutorialname: $('#template_name_input_field').val(),
-                    folder_id: new_template_folder
+                    folder_id: new_template_folder,
+                    lti: true
                 }
             })
                 .done(function(response){
