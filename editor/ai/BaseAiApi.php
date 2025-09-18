@@ -51,6 +51,91 @@ abstract class BaseAiApi
 
     abstract protected function parseResponse($results);
 
+    /**
+     * Remove characters that are illegal in XML 1.0.
+     */
+    protected function stripInvalidXmlChars(string $s): string {
+        // Allowed: #x9 | #xA | #xD | #x20-#xD7FF | #xE000-#xFFFD
+        return preg_replace('/[^\x09\x0A\x0D\x20-\x{D7FF}\x{E000}-\x{FFFD}]/u', '', $s);
+    }
+
+    /**
+     * Fix attribute values without double-encoding existing entities.
+     * - Works for both single- and double-quoted attributes.
+     * - Handles namespaced/dashed attr names.
+     * - Escapes bare &, <, >, and the delimiting quote.
+     */
+    protected function fixXmlAttributeValues(string $xml): string {
+        $pattern = '/([A-Za-z_:][A-Za-z0-9_.:-]*)\s*=\s*(["\'])(.*?)\2/s';
+
+        return preg_replace_callback($pattern, function ($m) {
+            [$all, $name, $q, $val] = $m;
+
+            // Remove illegal XML chars inside attribute values
+            $val = $this->stripInvalidXmlChars($val);
+
+            // 1) bare ampersands that are not (dec/hex) numeric or the 5 XML entities
+            $val = preg_replace(
+                '/&(?!#\d+;|#x[0-9A-Fa-f]+;|amp;|lt;|gt;|quot;|apos;)/',
+                '&amp;',
+                $val
+            );
+
+            // 2) angle brackets (must be escaped inside attributes)
+            $val = str_replace(['<', '>'], ['&lt;', '&gt;'], $val);
+
+            // 3) the delimiting quote
+            if ($q === '"') {
+                $val = str_replace('"', '&quot;', $val);
+            } else {
+                $val = str_replace("'", '&apos;', $val);
+            }
+
+            return $name . '=' . $q . $val . $q;
+        }, $xml);
+    }
+
+    /**
+     * Validate XML and return libxml errors (empty array == OK).
+     */
+    protected function lintXml(string $xml): array {
+        libxml_use_internal_errors(true);
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $ok  = $dom->loadXML($xml, LIBXML_NONET | LIBXML_COMPACT | LIBXML_BIGLINES);
+        $errs = [];
+        if (!$ok) {
+            foreach (libxml_get_errors() as $e) {
+                $errs[] = [
+                    'level'   => $e->level,
+                    'code'    => $e->code,
+                    'message' => trim($e->message),
+                    'line'    => $e->line,
+                    'column'  => $e->column,
+                ];
+            }
+        }
+        libxml_clear_errors();
+        return $errs;
+    }
+
+    /**
+     * One-shot interceptor you can run on every model response.
+     * Returns ['xml' => sanitizedXml, 'errors' => []] — errors non-empty if still broken.
+     */
+    protected function sanitizeModelXml(string $rawXml) {
+        // Step 0: normalize encoding and control chars
+        $xml = $this->stripInvalidXmlChars($rawXml);
+
+        // Step 1: sanitize attribute values safely
+        $xml = $this->fixXmlAttributeValues($xml);
+
+        // Step 2: lint to make sure it’s actually parseable
+        $errors = $this->lintXml($xml);
+
+        //return ['xml' => $xml, 'errors' => $errors]; //only use this for debugging
+        return $xml;
+    }
+
     protected function setupLanguageInstructions ($selectedCode){
         $languages = [
             'en-GB' => ['English', 'IMPORTANT: All non-structural output within the XML should be in English!'],
@@ -283,6 +368,7 @@ abstract class BaseAiApi
         $answer = $this->cleanJsonCode($answer);
         $answer = preg_replace('/&(?!#\d+;|amp;|lt;|gt;|quot;|apos;)/', '&amp;', $answer);
         $answer = $this->sanitizeXmlAttributes($answer);
+        $answer = $this->sanitizeModelXml($answer);
         return $answer;
     }
 }

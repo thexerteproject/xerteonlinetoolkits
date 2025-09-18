@@ -132,17 +132,32 @@ function splitHtmlXml(string $html, int $maxSize): array {
             // If current node is itself too large, split further (recursively or as plain text)
             if (strlen($htmlChunk) > $maxSize) {
                 if ($node->nodeType === XML_ELEMENT_NODE && trim($node->textContent) !== '') {
-                    // Recursively split this element's content (get its inner HTML)
-                    $innerHTML = '';
-                    foreach ($node->childNodes as $child) {
-                        $innerHTML .= $dom->saveHTML($child);
+
+                    // Does this element have any *element* children?
+                    $hasElementChildren = false;
+                    foreach ($node->childNodes as $c) {
+                        if ($c->nodeType === XML_ELEMENT_NODE) { $hasElementChildren = true; break; }
                     }
-                    $innerChunks = splitHtmlXml($innerHTML, $maxSize);
-                    foreach ($innerChunks as $c) {
-                        $chunks[] = $c;
+
+                    if ($hasElementChildren) {
+                        // Recursively split inner HTML
+                        $innerHTML = '';
+                        foreach ($node->childNodes as $child) {
+                            $innerHTML .= $dom->saveHTML($child);
+                        }
+
+                        // Safety guard: if recursion wouldn’t shrink, fall back to plain text
+                        if ($innerHTML === $htmlChunk) {
+                            $chunks = array_merge($chunks, splitPlainText($node->textContent, $maxSize));
+                        } else {
+                            $chunks = array_merge($chunks, splitHtmlXml($innerHTML, $maxSize));
+                        }
+                    } else {
+                        // Only text inside, split the text directly
+                        $chunks = array_merge($chunks, splitPlainText($node->textContent, $maxSize));
                     }
                 } else {
-                    // Split as plain text
+                    // Not an element (or empty), split as text
                     $chunks = array_merge($chunks, splitPlainText($node->textContent, $maxSize));
                 }
             } else {
