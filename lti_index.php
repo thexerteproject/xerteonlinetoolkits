@@ -43,7 +43,6 @@ global $x_embed_activated;
 _debug("SERVER: " . print_r($_SERVER, true));
 _debug("LTI launch request: " . print_r($_POST, true));
 
-//todo only routes here?
 $tsugi_enabled = true;
 $lti_enabled = true;
 
@@ -59,7 +58,11 @@ $_SESSION['lti_enabled'] = $lti_enabled;
 //email not given if email not verified?
 $firstname = $USER->firstname ?? 'No name';
 $lastname  = $USER->lastname ?? 'No last name';
-$email     = $USER->email ?? ($firstname . "@noemail.nl");
+
+$email = $USER->email ?? null;
+if (!$email) {
+    echo "Please verify your email";
+}
 
 login_processing2($firstname, $lastname, $email);
 _debug("NEW-TEMPLATE SESSIE entry point: " . print_r($_SESSION , true));
@@ -69,21 +72,10 @@ $raw_post_array = $LAUNCH->ltiRawPostArray();
 if (isset($raw_post_array["lti_message_type"])) {
     $cleaned_message_type = x_clean_input($raw_post_array["lti_message_type"]);
 } else {
-    //todo add default behaviour?
-    $cleaned_message_type = "default";
+    die("lti request missing message type");
 }
 
-if (isset($raw_post_array['content_item_return_url'])) {
-    $content_item_return_url = x_clean_input($raw_post_array['content_item_return_url'], 'string');
-} else {
-    $content_item_return_url = "";
-}
-$_SESSION['content_item_return_url'] = $content_item_return_url;
-
-_debug("LTI launch: " . print_r($LAUNCH, true));
-_debug("LTI user: " . print_r($USER, true));
-
-$id = "";
+$id = '';
 
 if (isset($_GET["template_id"])) {
     $id = x_clean_input($_GET["template_id"]);
@@ -99,12 +91,14 @@ else if(isset($_POST["template_id"]))
     $_GET['template_id'] = $id;
 }
 
+_debug("LTI launch: " . print_r($LAUNCH, true));
+_debug("LTI user: " . print_r($USER, true));
 
-if ($cleaned_message_type == "ContentItemSelectionRequest" && $id === ""){
-    require("tools/lti_edlib/item_selection_request.php");
+if ($cleaned_message_type == "ContentItemSelectionRequest"){
+    //item selection or edit
+    require("tools/lti_edlib/content_item_selection_request.php");
 } else if ($cleaned_message_type == "basic-lti-launch-request") {
-    require ("tools/lti_edlib/play_request.php");
-} else if ($cleaned_message_type == "ContentItemSelectionRequest" && $id !== "") {
-    require ("edithtml.php");
+    //play or copy
+    require ("tools/lti_edlib/basic-lti-launch-request.php");
 }
 

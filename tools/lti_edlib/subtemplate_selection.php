@@ -2,18 +2,28 @@
 require_once (dirname(__FILE__) . "/../../config.php");
 require_once ('subtemplate.php');
 
-//todo security
+if(!isset($_SESSION['toolkits_logon_id'])){
+    die("Session ID not set");
+}
 
 _debug("item_selection SESSIE : " . print_r($_SESSION , true));
 
 
+if (isset($raw_post_array['content_item_return_url'])) {
+    $content_item_return_url = x_clean_input($raw_post_array['content_item_return_url'], 'string');
+} else {
+    $content_item_return_url = "";
+}
+$_SESSION['content_item_return_url'] = $content_item_return_url;
+
 $prefix = $xerte_toolkits_site->database_table_prefix;
+//todo enable for subtemplates
 //$q = "select * from {$prefix}originaltemplatesdetails where active=1 and template_name != parent_template";
 $q = "select * from {$prefix}originaltemplatesdetails where active=1";
 $result = db_query($q);
 
 if ($result === false || count($result) == 0) {
-    die("no active templates");
+    die("no active sub templates");
 }
 
 $subtemplate_list = [];

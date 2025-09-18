@@ -94,9 +94,15 @@ if ($row_template_type['template_framework'] == 'xerte')
     }
 }
 
+if(isset($_POST['lti']) and $_POST['lti']){
+    $privacy = "Public";
+} else {
+    $privacy = "Private";
+}
+
 $query_for_new_template = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}templatedetails (creator_id, template_type_id, date_created, date_modified, number_of_uses, access_to_whom, template_name, extra_flags)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-$lastid = db_query($query_for_new_template, array($_SESSION['toolkits_logon_id'] , $row_template_type['template_type_id'] , date('Y-m-d H:i:s'), date('Y-m-d H:m:i'), 0, "Private", htmlspecialchars(str_replace(" ","_", $tutorialname)), $extraflags));
+$lastid = db_query($query_for_new_template, array($_SESSION['toolkits_logon_id'] , $row_template_type['template_type_id'] , date('Y-m-d H:i:s'), date('Y-m-d H:m:i'), 0, $privacy, htmlspecialchars(str_replace(" ","_", $tutorialname)), $extraflags));
 
 if($lastid !== false) {
     _debug("Created new template entry in db");

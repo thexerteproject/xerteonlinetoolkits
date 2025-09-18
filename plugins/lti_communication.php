@@ -34,12 +34,19 @@
 require_once(dirname(__FILE__) . '/../config.php');
 
 function lti_info_callback($name, $xerte_id, $url) {
-    // 1. Build the Content-Item JSON
+    global $xerte_toolkits_site;
+
     if (isset($_SESSION['content_item_return_url']) && $_SESSION['content_item_return_url'] !== ""){
         $content_item_return_url = $_SESSION['content_item_return_url'];
     } else {
         return False;
     }
+
+
+    $name = str_replace('_', ' ', $name);
+    //todo get langiage nld/nld-fl/eng?
+    //add icon?
+    //licence stuff?
 
     $contentItem = [
         '@context' => ['http://purl.imsglobal.org/ctx/lti/v1/ContentItem'],
@@ -50,8 +57,7 @@ function lti_info_callback($name, $xerte_id, $url) {
                 'title' => $name,
                 'url' => $url . "lti_index.php?template_id=" . $xerte_id,
                 'icon' => null,
-                'lineItem' => null,
-                'language' => "eng",
+                'languageIso639_3' => "nld",
                 'license' => "CC-BY",
                 'published' => true,
                 'shared' => false,
@@ -62,10 +68,14 @@ function lti_info_callback($name, $xerte_id, $url) {
 
     $contentItemsJson = json_encode($contentItem, JSON_UNESCAPED_SLASHES);
 
-    // 2. Set up OAuth parameters
-    $returnUrl = $content_item_return_url;
-    $consumerKey = 'edliblti';
-    $consumerSecret = 'edliblti';
+    $qry = "SELECT key_key,secret FROM {$xerte_toolkits_site->database_table_prefix}tsugi_lti_key WHERE key_title = 'edlib'";
+    $result = db_query_one($qry);
+
+    if ($result === false) {
+        exit();
+    }
+    $consumerKey = $result['key_key'];
+    $consumerSecret = $result['secret'];
 
     $params = [
         'lti_message_type' => 'ContentItemSelection',
@@ -90,7 +100,7 @@ function lti_info_callback($name, $xerte_id, $url) {
     }
     $paramString = implode('&', $paramString);
 
-    $baseString = 'POST&' . rawurlencode($returnUrl) . '&' . rawurlencode($paramString);
+    $baseString = 'POST&' . rawurlencode($content_item_return_url) . '&' . rawurlencode($paramString);
 
     // 4. Sign
     $signingKey = rawurlencode($consumerSecret) . '&';
@@ -105,7 +115,7 @@ function lti_info_callback($name, $xerte_id, $url) {
     <title>Returning to LMS</title>
   </head>
   <body>
-    <form action="' . htmlspecialchars($returnUrl) . '" method="POST" id="lti_return" target="_top">';
+    <form action="' . htmlspecialchars($content_item_return_url) . '" method="POST" id="lti_return" target="_top">';
 
     foreach ($params as $key => $value) {
         echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($value) . '" />' . PHP_EOL;
