@@ -7762,7 +7762,7 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 			// pre 3.15, page text was never shown with full panel
 			// there's now a checkbox to determine whether hidden or not
 			// needs to be hidden if checkbox checked but also if undefined for backwards compatibility
-			if (attributes.removeTxt !== "false" || x_addLineBreaks(attributes.pageTxt).trim() === "") {
+			if (attributes.removeTxt !== "false" || attributes.pageTxt == undefined || x_addLineBreaks(attributes.pageTxt).trim() === "") {
 				elements.textColumn.remove();
 				delete elements.textColumn;
 			}

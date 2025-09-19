@@ -23,51 +23,59 @@
 	var modify = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$("#button").show();
-			$("#modelTxt, #feedbackTxt").hide();
 		}
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
 		}
 
 		this.init = function() {
 			var answerHeaderTxt = x_currentPageXML.getAttribute("answerHeaderTxt");
 			if (answerHeaderTxt == undefined) {
 				answerHeaderTxt = "Write your answer here:"
-			};
+			}
 			var feedbackBtnTxt = x_currentPageXML.getAttribute("feedbackBtnTxt");
 			if (feedbackBtnTxt == undefined) {
 				feedbackBtnTxt = "Feedback"
-			};
-			var feedbackBtnTip = x_currentPageXML.getAttribute("feedbackBtnTip");
-			if (feedbackBtnTip == undefined) {
-				feedbackBtnTip = "Feedback"
-			};
+			}
+
             this.weighting = 1.0;
             if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
             {
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
 			XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
-			
-            var label = "";
-            if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
-            {
-                label = x_currentPageXML.getAttribute("trackinglabel");
-            }
-			
+
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("pageTxt")));
+
+			// send amended data to split screen function as we need to have backwards compatibility for older projects where defaults were different
+			const attributes = {
+				panelWidth: x_currentPageXML.getAttribute("panelWidth") == undefined ? "Full" : x_currentPageXML.getAttribute("panelWidth"),
+				panelStyle: x_currentPageXML.getAttribute("panelStyle") == undefined ? "true" : x_currentPageXML.getAttribute("panelStyle"),
+				removeTxt: x_currentPageXML.getAttribute("removeTxt") == undefined ? "true" : x_currentPageXML.getAttribute("removeTxt"),
+				pageTxt: x_currentPageXML.getAttribute("pageTxt")
+			}
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
+
 			if (x_currentPageXML.getAttribute("answerType") == "false") {
-				var $modelTxt = $('<div id="modelTxt" aria-label="Feedback" aria-live="polite"></div>').appendTo($('#pageContents'));
+				var $modelTxt = $('<div id="modelTxt" aria-label="Feedback" aria-live="polite"></div>').appendTo($('#panel'));
 				$modelTxt.html(x_currentPageXML.getAttribute("answer"));
 			} else {
-				var $modelTxt = $('<textarea id="modelTxt" rows="5" readonly aria-label="Feedback" aria-live="polite"></textarea>').appendTo($('#pageContents'));
+				var $modelTxt = $('<textarea id="modelTxt" rows="5" readonly aria-label="Feedback" aria-live="polite"></textarea>').appendTo($('#panel'));
 				$modelTxt.html($("<div>").html(x_currentPageXML.getAttribute("answer")).text());
 			}
 			var modelAnswerTxt = "";
 			if (x_currentPageXML.getAttribute("answer") != null && x_currentPageXML.getAttribute("answer") != "") {
 				modelAnswerTxt = x_currentPageXML.getAttribute("answer");
+			}
+
+			var label = "";
+			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+			{
+				label = x_currentPageXML.getAttribute("trackinglabel");
 			}
             XTEnterInteraction(x_currentPage, 0, 'text', label, [], modelAnswerTxt, [], x_currentPageXML.getAttribute("grouping"));
 			
@@ -80,7 +88,7 @@
 			}
 			
 			if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
-				$('#pageContents').append('<div id="feedbackTxt">' + x_currentPageXML.getAttribute("feedback") + '</div>');
+				$('#panel').append('<div id="feedbackTxt">' + x_currentPageXML.getAttribute("feedback") + '</div>');
 				$('#feedbackTxt').hide();
 			}
 			
@@ -106,6 +114,7 @@
 					XTSetPageScore(x_currentPage, (answerTxt.trim() == "" ? 0.0 : 100.0));
 				});
 
+			this.sizeChanged();
 			x_pageLoaded();
 		}
 	}
@@ -117,10 +126,16 @@
 
 <div id="pageContents">
 
-	<div id="instruction"></div>
-	<textarea id="initText" rows="5" aria-label="Start text" readonly></textarea>
-	<div id="answer"></div>
-	<textarea id="answerTxt" aria-label="Answer" rows="5"></textarea>
-	<button id="button"></button>
+	<div id="textHolder" class="splitScreen_A"></div>
+
+	<div id="infoHolder" class="splitScreen_B">
+		<div id="panel" class="panelContent panel">
+			<div id="instruction"></div>
+			<textarea id="initText" rows="5" aria-label="Start text" readonly></textarea>
+			<div id="answer"></div>
+			<textarea id="answerTxt" aria-label="Answer" rows="5"></textarea>
+			<button id="button"></button>
+		</div>
+	</div>
 
 </div>
