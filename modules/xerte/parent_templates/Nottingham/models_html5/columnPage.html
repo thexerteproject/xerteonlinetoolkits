@@ -95,12 +95,11 @@
 			// set a minimum width for the columns - columns will wrap onto a new row rather than be shown smaller than this
 			$("#columnHolder").css("grid-template-columns", "repeat(auto-fit, minmax(" + (x_currentPageXML.getAttribute("minWidth") != undefined ? x_currentPageXML.getAttribute("minWidth") : "75") + "px, 1fr))");
 
-			if (x_currentPageXML.getAttribute("panelStyle") != undefined) {
-				if (x_currentPageXML.getAttribute("panelStyle") === "single") {
-					$("#columnHolder").addClass("panel");
-				} else {
-					$("#columnHolder .column").addClass("panel");
-				}
+			// add a panel style if needed
+			if (x_currentPageXML.getAttribute("panelStyle") === "single") {
+				$("#columnHolder").addClass("panel");
+			} else if (x_currentPageXML.getAttribute("panelStyle") === "each") {
+				$("#columnHolder .column").addClass("panel");
 			}
 			
 			x_pageLoaded();

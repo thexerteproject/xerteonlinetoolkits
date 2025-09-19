@@ -261,33 +261,34 @@
 				
 			// column page
 			} else {
+				// add full width text above &/or below the columns
 				if (x_currentPageXML.getAttribute("text") == "") {
 					$textHolder.remove();
 				} else {
 					$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 				}
+
+				if (x_currentPageXML.getAttribute("textTop") != undefined && x_currentPageXML.getAttribute("textTop").trim() != "") {
+					$('<div class="textTopHolder">' + x_addLineBreaks(x_currentPageXML.getAttribute("textTop")) + '</div>').insertBefore($navHolder);
+				}
+
+				if (x_currentPageXML.getAttribute("textBottom") != undefined && x_currentPageXML.getAttribute("textBottom").trim() != "") {
+					$('<div class="textBottomHolder">' + x_addLineBreaks(x_currentPageXML.getAttribute("textBottom")) + '</div>').insertAfter($navHolder);
+				}
 				
 				// set up column contents
 				$(x_currentPageXML).children().each(function(i) {
-					$navHolder.append('<div id="navChild' + i + '" class="navChild">' + (this.getAttribute("name") != "" ? '<h3 id="navChildTitle' + i + '" class="navChildTitle"></h3>' : '') + '</div>');
+					$navHolder.append('<div id="navChild' + i + '" class="navChild column">' + (this.getAttribute("name").trim() != "" && x_currentPageXML.getAttribute("showTitles") !== "false" ? '<h3 id="navChildTitle' + i + '" class="navChildTitle"></h3>' : '') + '</div>');
 				});
-				
-				if (x_browserInfo.mobile == false) {
-					var numColumns = $(x_currentPageXML).children().length,
-						spacerWidth = (numColumns - 1) * 2, // 2% gap between columns
-						columnWidth = Math.floor((100 - spacerWidth) / numColumns),
-						edgeWidth = Math.floor((100 - spacerWidth - (columnWidth * numColumns)) / 2);
-					
-					$navHolder.find(".navChild")
-						.addClass("x_floatLeft")
-						.css({
-							width : columnWidth + "%",
-							"padding-left" : "2%"
-						});
-					
-					$navHolder.find(".navChild:first").css("padding-left", edgeWidth + "%");
-					$navHolder.find(".navChild:last").css("padding-right", edgeWidth + "%");
-					
+
+				// set a minimum width for the columns - columns will wrap onto a new row rather than be shown smaller than this
+				$navHolder.css("grid-template-columns", "repeat(auto-fit, minmax(" + (x_currentPageXML.getAttribute("minWidth") != undefined ? x_currentPageXML.getAttribute("minWidth") : "75") + "px, 1fr))");
+
+				// add a panel style if needed
+				if (x_currentPageXML.getAttribute("columnPanelStyle") === "single") {
+					$navHolder.addClass("panel");
+				} else if (x_currentPageXML.getAttribute("columnPanelStyle") === "each") {
+					$navHolder.find(".column").addClass("panel");
 				}
 			}
 			

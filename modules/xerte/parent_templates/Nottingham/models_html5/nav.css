@@ -69,39 +69,31 @@
 	
 	
 	/* __columns__ */
-	
-	#pageContents.col #textHolder {
-		border-bottom: 1px solid #ccc;
-		margin-bottom:	1em;
-		padding-bottom:	0.7em;
+
+	#pageContents.col #textHolder + #navHolder,
+	#pageContents.col #textHolder + .textTopHolder,
+	#pageContents.col .textTopHolder + #navHolder,
+	#pageContents.col #navHolder + .textBottomHolder {
+		margin-top: 1em;
 	}
-	
-	#pageContents.col .navChild {
-		padding: 0px;
-		height: 100%;
-		overflow-x: hidden;
-		overflow-y: hidden;
+
+	#x_mainHolder:not(.x_mobile) #pageContents.col #navHolder {
+		display: grid;
+		gap: 1em;
+		max-width: 100%;
 	}
-	
-	#pageContents.col .navChildTitle {
-		padding: 0 4px;
+
+	#x_mainHolder:not(.x_mobile) #pageContents.col #navHolder .column {
+		box-sizing: border-box;
 	}
-	
-	.x_mobile #pageContents.col .navChild:not(:first-of-type) {
-		padding-top: 10px;
-		border-top:	1px solid gray;
+
+	#x_mainHolder.x_mobile #pageContents.col #navHolder {
+		/* on mobiles always show columns as rows instead */
+		display: flex;
+		flex-direction: column;
+		gap: 1em;
 	}
-	
-	.x_mobile #pageContents.col .navChild {
-		margin-top:	10px;
-	}
-	
-	.x_mobile #pageContents.col .navChild:first-of-type {
-		margin-top: 0;
-		padding-top: 0;
-		border-top:	0;
-	}
-	
+
 	
 	/* __slides__ */
 	
