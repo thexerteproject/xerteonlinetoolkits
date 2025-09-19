@@ -1,15 +1,25 @@
 /* columnPage.html */
-	
-	#textHolder {
-		padding-bottom:	0.7em;
-		border-bottom: 1px solid #ccc;
-		margin-bottom: 1em;
+
+	.textTopHolder + #columnHolder,
+	#columnHolder + .textBottomHolder {
+		margin-top: 1em;
 	}
-	
-	#pageContents .column {
-		padding:	0px;
-		height:		100%;
-		overflow-x: hidden;
+
+	#x_mainHolder:not(.x_mobile) #columnHolder {
+		display: grid;
+		gap: 1em;
+		max-width: 100%;
+	}
+
+	#x_mainHolder:not(.x_mobile) #columnHolder .column {
+		box-sizing: border-box;
+	}
+
+	#x_mainHolder.x_mobile #columnHolder {
+		/* on mobiles always show columns as rows instead */
+		display: flex;
+		flex-direction: column;
+		gap: 1em;
 	}
 	
 	#pageContents .pageImg {

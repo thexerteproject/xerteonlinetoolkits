@@ -373,7 +373,9 @@
       panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
 	  confirmBtnTxt="Confirm" 
 	  notFoundMessage="could not be found in this project." 
-	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="" feedback="" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly" incomplete="Complete the exercise."/>]]></categories><chapter><![CDATA[<chapter name="Enter Chapter Title" includeInHeader="Chart Title"/>]]></chapter><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Enter Page Title"/>]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="" textWidth="narrow" url="" tip="" highlight="false" hs_showTooltip="true" align="Left"
+	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="" feedback="" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly" incomplete="Complete the exercise."/>]]></categories><chapter><![CDATA[<chapter name="Enter Chapter Title" includeInHeader="Chart Title"/>]]></chapter><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Enter Page Title"
+      showTitles="true" minWidth="75" panelStyle="none"
+      />]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="" textWidth="narrow" url="" tip="" highlight="false" hs_showTooltip="true" align="Left"
 	  notFoundMessage="could not be found in this project." />]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1" capitalise="true" align="Left"
 	  acrossLabel="Across"
 	  downLabel="Down"
@@ -2507,9 +2509,15 @@
   </series><columnPage menu="Text" menuItem="Columns" hint="A page with columns of text and optional images." icon="icColumns" remove="true" thumb="thumbs/columnPage.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#columnpage" wiki="https://xerte.org.uk/wiki/doku.php?id=text_columns_page">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
-	
-	<header label="Header Text" type="TextArea" height="100" optional="true"/>
-	<showTitles label="Show Column Titles" type="CheckBox" defaultValue="false" optional="true"/>
+
+    <layoutGroup label="Page Layout" type="group">
+        <showTitles label="Column Titles" type="CheckBox" defaultValue="false" mandatory="true"/>
+        <minWidth label="Minimum Column Width (px)" type="NumericStepper" min="20" max="1000" defaultValue="75" mandatory="true" tooltip="Columns will never be narrower than this width and will be wrapped onto a new line when required"/>
+        <panelStyle label="Panel" type="ComboBox" options="None,Single panel,Each column" data="none,single,each" defaultValue="none" mandatory="true"/>
+    </layoutGroup>
+
+    <header label="Text Above Columns" type="TextArea" height="100" optional="true"/>
+    <textBottom label="Text Below Columns" type="TextArea" height="100" optional="true"/>
 
     <newNodes>
       <nestedPage><![CDATA[<nestedPage name="Enter Column Title" text="" align="Top"/>]]></nestedPage>
