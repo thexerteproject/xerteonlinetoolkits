@@ -84,7 +84,15 @@
 		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness" tooltip="Add a filter to darken the image, where 0 is not darkened at all and 100 is completely darkened (black)"/>
 		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" tooltip="Add a filter to change the image from colour to greyscale" />
 	</background>
-	
+
+	<maxWidthGroup type="group" label="Maximum Width" optional="true" tooltip="Use these options to set the maximum width (in pixels) for this page's content on larger displays. These will override the settings at project level.">
+		<maxWidthToggle label="Set Max Width" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true"/>
+		<maxWidth label="Max Width (in pixels)" optional="true" type="NumericStepper" min="800" max="2000" step="10" defaultValue="1400" condition="maxWidthToggle=='true'"/>
+		<horizontalAlign label="Horizontal Alignment" optional="true" defaultValue="centre" options="Right,Centre,Left" data="right,centre,left" type="ComboBox" condition="maxWidthToggle=='true'"/>
+	</maxWidthGroup>
+
+	<verticalAlign label="Centre Content Vertically" optional="true" type="CheckBox" defaultValue="true" tooltip="Centre the content vertically on the page. This will override the setting at project level."/>
+
 	<pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero">
 		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true"/>
 		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" condition="showTimer=='true'" optional="true" />

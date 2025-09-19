@@ -76,6 +76,13 @@ a {
 	box-sizing: border-box;
 }
 
+#x_mainHolder.x_verticalCentre:not(.x_noVerticalCentre) #x_pageHolder,
+#x_pageHolder.x_verticalCentre {
+	display: flex;
+	justify-content: safe center;
+	flex-direction: column;
+}
+
 #x_headerBlock {
 	color:			#FFFFFF;
 	background:		#010101;

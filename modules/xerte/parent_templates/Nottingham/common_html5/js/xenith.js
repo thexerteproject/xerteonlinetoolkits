@@ -1391,6 +1391,10 @@ function x_continueSetUp1() {
 	if (setUpComplete == false) {
 		XENITH.ACCESSIBILITY.init();
 
+		// if max width or centre vertically settings are set at project-level, set this up now
+		// these might be later overridden on individual pages
+		x_setUpPagePosition(true);
+
 		if (XENITH.PAGEMENU.menuPage) {
 			$x_pageNo.hide();
 			if (x_params.navigation == "Menu") {
@@ -2252,6 +2256,7 @@ function x_continueSetUp2() {
 	if (x_params.module != undefined && x_params.module != "") {
 		XTSetOption('module', x_params.module);
 	}
+
 	// Restart if we're NOT navigating to a standalone page
 	var standAlonePage = x_startPage.type == 'index' && x_pageInfo[x_startPage.ID] != undefined
 		&& x_pageInfo[x_startPage.ID].standalone != undefined && x_pageInfo[x_startPage.ID].standalone;
@@ -2545,16 +2550,82 @@ function x_checkPages(type, id, pageArray) {
 	return false;
 }
 
-function x_setMaxWidth() {
-	if (x_params.maxWidth != undefined && x_params.maxWidth != "") {
-		var workingPages = ['QRcode','accNav','adaptiveContent','annotatedDiagram','audioRecord','audioSlideshow','bleedingImage','bullets','buttonNav','buttonQuestion','buttonSequence','cMcq','categories','chart','columnPage','connectorHotspotImage','connectorMenu','crossword','customHotspots','decision','delicious','dialog','dictation','documentation','dragDropLabel','embedDiv','flashCards','flickr','gapFill','glossary','grid','hangman','hotSpotQuestion','hotspotImage','imageSequence','imageViewer','interactiveTable','interactiveText','inventory','language','links','list','map','mcq','media360','mediaLesson','memory','menu','modelAnswer','modelAnswerResults','modify','morphImages','nav','newWindow','opinion','orient','pdf','perspectives','quiz','results','resumeSession','rss','rssdownload','saveSession','scenario','showGraph','SictTimeline','slideshow','stopTracking','summary','tabNav','tabNavExtra','table','text','textCorrection','textDrawing','textGraphics','textHighlight','textMatch','textSWF','textVideo','thumbnailViewer','timeline','topXQ','transcriptReader','videoSynch','wiki','wordsearch','youtube','youtuberss','interactiveVideo'];
-		var styleString = '<style>';
-		for (var i=0; i<workingPages.length; i++) {
-			if (i>0) { styleString += ', '; }
-			styleString += '.x_' + workingPages[i] + '_page #x_pageDiv';
+// function gives page content a max width & positions horizontally/vertically if required
+function x_setUpPagePosition(project) {
+	// remove classes that might have been used to turn on/off page position settings at page level
+	if (project !== true) {
+		$x_mainHolder.removeClass("x_noVerticalCentre");
+		$x_pageDiv.removeClass("x_noMaxW");
+		$x_pageHolder.removeClass("x_verticalCentre");
+	}
+
+	// set a maximum width and align content horizontally on the screen (centre by default)
+	if ((project && x_params.maxWidth != undefined && x_params.maxWidth != "") || (project !== true && x_currentPageXML.getAttribute("maxWidthToggle") === "true" && x_currentPageXML.getAttribute("maxWidth") != undefined && x_currentPageXML.getAttribute("maxWidth") !== "")) {
+		// these pages don't work with max width yet
+		const nonWorkingPages = ['imageCompare', 'title'];
+
+		if (project) {
+			// set max width & horizontal alignment for all working pages in the project
+			let styleString = '<style>';
+			if (nonWorkingPages == undefined || nonWorkingPages.length === 0) {
+				styleString += '#x_mainHolder #x_pageDiv:not(.x_noMaxW)';
+
+			} else {
+				styleString += '#x_mainHolder:not(';
+				for (let i=0; i<nonWorkingPages.length; i++) {
+					if (i>0) {
+						styleString += ', ';
+					}
+					styleString += '.x_' + nonWorkingPages[i] + '_page';
+				}
+				styleString += ') #x_pageDiv:not(.x_noMaxW)';
+			}
+
+			const margin = x_params.horizontalAlign === "left" ? "0 auto 0 0" : x_params.horizontalAlign === "right" ? "0 0 0 auto" : "0 auto";
+			styleString += '{ max-width: '+x_params.maxWidth+'px; margin: ' + margin + '; }</style>';
+			$('head').append(styleString);
+
+		} else {
+			// set max width & horizontal alignment just for this page
+			if (nonWorkingPages == undefined || nonWorkingPages.indexOf(x_pageInfo[x_currentPage].type) < 0) {
+				$("#x_page" + x_currentPage).css("max-width", x_currentPageXML.getAttribute("maxWidth") + "px");
+
+				// turn off max width set at project-level so it uses the page-level values
+				$("#x_pageDiv").addClass("x_noMaxW");
+
+				if (x_currentPageXML.getAttribute("horizontalAlign") != undefined) {
+					$("#x_page" + x_currentPage).css("margin", x_currentPageXML.getAttribute("horizontalAlign") === "left" ? "0 auto 0 0" : x_currentPageXML.getAttribute("horizontalAlign") === "right" ? "0 0 0 auto" : "0 auto");
+				}
+			}
 		}
-		styleString += '{max-width: '+x_params.maxWidth+'px;margin: 0 auto;}</style>';
-		$('head').append(styleString);
+
+	} else if (project !== true && x_currentPageXML.getAttribute("maxWidthToggle") === "false") {
+		// this page has max width turned off
+		$("#x_pageDiv").addClass("x_noMaxW");
+	}
+
+	// centre page content vertically on the screen
+	if ((project && x_params.verticalAlign === "true") || project !== true) {
+		if (project && x_params.verticalAlign === "true") {
+			// turn on for the whole project
+			$x_mainHolder.addClass("x_verticalCentre");
+
+		} else if (project !== true) {
+			// these pages don't work with vertical centre yet - some of them will break & others are never able to be centred as the content is always at least full height
+			const nonWorkingPages = ['adaptiveContent','audioSlideshow','chart','embedDiv','hotspotImage','imageCompare','imageSequence','interactiveVideo','media360','mediaLesson','memory','perspectives','rss','rssdownload','SictTimeline','tabNavExtra','textHighlight','thumbnailViewer','title','videoSynch'];
+			if (x_currentPageXML.getAttribute("verticalAlign") != undefined && (nonWorkingPages == undefined || nonWorkingPages.indexOf(x_pageInfo[x_currentPage].type) < 0)) {
+				if (x_currentPageXML.getAttribute("verticalAlign") === "true") {
+					// turn on for this page
+					$x_pageHolder.addClass("x_verticalCentre");
+				} else if (x_currentPageXML.getAttribute("verticalAlign") === "false") {
+					// turn off for this page
+					$x_mainHolder.addClass("x_noVerticalCentre");
+				}
+			} else if (nonWorkingPages != undefined && nonWorkingPages.indexOf(x_pageInfo[x_currentPage].type) >= 0) {
+				// always turn off for this type of page as it won't work properly
+				$x_mainHolder.addClass("x_noVerticalCentre");
+			}
+		}
 	}
 }
 
@@ -2741,7 +2812,6 @@ function x_changePageStep2(x_gotoPage) {
 		}
 	}
 
-	x_setMaxWidth();
     var prevPage = x_currentPage;
 
     // disable onload of #special_theme_css & special_theme_responsive_css
@@ -2755,7 +2825,6 @@ function x_changePageStep2(x_gotoPage) {
 
     x_currentPage = x_gotoPage;
     x_currentPageXML = x_pages[x_currentPage];
-
 
     if ($x_pageDiv.children().length > 0) {
         // remove everything specific to previous page that's outside $x_pageDiv
@@ -3168,6 +3237,10 @@ function x_changePageStep3() {
 			loadModel();
 		}
     }
+
+	// if max width or centre vertically settings are set at page-level, set this up now
+	// these will override settings at project-level
+	x_setUpPagePosition();
 
     // Queue reparsing of MathJax - fails if no network connection
     try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
