@@ -102,12 +102,14 @@ abstract class BaseRAG
 
         // Build the set of all file‐basenames we consider "in the corpus"
         $currentBasenames = [];
+        $currentSourcenames = [];
 
         foreach ($filePaths as $entry) {
             $path = $entry['path'];
             $meta = $entry['metadata'];
             $source = $entry['metadata']['source'];
             $currentBasenames[] = basename($path);
+            $currentSourcenames[] = basename($source);
 
             // Only attempt to process ones that still exist on disk
             if (!is_file($path)) {
@@ -152,7 +154,7 @@ abstract class BaseRAG
 
             foreach ($corp['hashes'] as $hash => $data) {
                 // Keep only files still in the provided list
-                $remaining = array_values(array_intersect($data['files'], $currentBasenames));
+                $remaining = array_values(array_intersect($data['files'], $currentSourcenames));
 
                 if (empty($remaining)) {
                     $hashesToPurge[] = $hash;
