@@ -254,13 +254,16 @@ var EDITOR = (function ($, parent) {
         // Save buttons
         var buttons = $('<div />').attr('id', 'save_buttons');
         //todo hide button in non lti
-        $([
-            {name:language.btnPreview.$label, tooltip: language.btnPreview.$tooltip, icon:'fa-play', id:'preview_button', click:preview},
-            //{name:language.btnSaveXerte.$label, tooltip: language.btnSaveXerte.$tooltip, icon:'editor/img/publish.png', id:'save_button', click:savepreview},
-            {name:language.btnPublishXot.$label, tooltip: language.btnPublishXot.$tooltip, icon:'fa-globe', id:'publish_button', click:publish},
 
-            {name:'Save', tooltip: "Save project to Edlib", icon:'fas fa-save', id:'lti_save_button', click:lti_save}
-        ])
+        let buttons_content = [{name:language.btnPreview.$label, tooltip: language.btnPreview.$tooltip, icon:'fa-play', id:'preview_button', click:preview},
+            //{name:language.btnSaveXerte.$label, tooltip: language.btnSaveXerte.$tooltip, icon:'editor/img/publish.png', id:'save_button', click:savepreview},
+            {name:language.btnPublishXot.$label, tooltip: language.btnPublishXot.$tooltip, icon:'fa-globe', id:'publish_button', click:publish}];
+
+        if (lti_session) {
+            buttons_content.push({name:'Save', tooltip: "Save project to Edlib", icon:'fas fa-save', id:'lti_save_button', click:lti_save});
+        }
+
+        $(buttons_content)
         .each(function(index, value) {
             var button = $('<button>')
                 .attr('id', value.id)

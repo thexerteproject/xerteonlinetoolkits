@@ -9,12 +9,7 @@ if(!isset($_SESSION['toolkits_logon_id'])){
 _debug("item_selection SESSIE : " . print_r($_SESSION , true));
 
 
-if (isset($raw_post_array['content_item_return_url'])) {
-    $content_item_return_url = x_clean_input($raw_post_array['content_item_return_url'], 'string');
-} else {
-    $content_item_return_url = "";
-}
-$_SESSION['content_item_return_url'] = $content_item_return_url;
+
 
 $prefix = $xerte_toolkits_site->database_table_prefix;
 //todo enable for subtemplates
