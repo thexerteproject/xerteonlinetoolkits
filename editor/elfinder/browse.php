@@ -78,6 +78,11 @@ if (isset($_REQUEST['langCode']))
     $lang = x_clean_input($_REQUEST['langCode']);
 }
 
+$connector_url = 'php/connector.php?uploadDir=' . $_SESSION['uploadDir'] . '&uploadURL=' . $_SESSION['uploadURL'];
+
+if (isset($_SESSION["lti_enabled"]) && $_SESSION["lti_enabled"]) {
+    $connector_url .= '&' . session_name().'=' . session_id() . "&tsugisession=0";
+}
 
 ?>
 <!DOCTYPE html>
@@ -127,7 +132,7 @@ if (isset($_REQUEST['langCode']))
             ?>
 
             $('#elfinder').elfinder({
-                url : 'php/connector.php?uploadDir=<?php echo $_SESSION['uploadDir'];?>&uploadURL=<?php echo $_SESSION['uploadURL'];?>',       // connector URL (REQUIRED)
+                url : '<?php echo $connector_url; ?>',       // connector URL (REQUIRED)
                 lang: '<?php echo $lang;?>',     // language (OPTIONAL)
                 uiOptions : {
                     // toolbar configuration

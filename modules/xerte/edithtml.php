@@ -43,6 +43,12 @@ function addSessionData($url) {
     return $url;
 }
 
+function getSessionData() {
+    if ( ini_get('session.use_cookies') != '0' ) return "";
+    $session_id = session_id();
+    return session_name().'=' . $session_id;
+}
+
 function add_url_parms($url, $key, $val) {
     $url .= strpos($url,'?') === false ? '?' : '&';
     $url .= urlencode($key) . '=' . urlencode($val);
@@ -274,6 +280,13 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
                     : "preview.php?"
             ) .
             "template_id=";
+    if (isset($_SESSION['lti_enabled']) && $_SESSION['lti_enabled']) {
+        $lti_session = getSessionData() . "&tsugisession=0";
+    } else {
+        $lti_session = "";
+    }
+
+
 
     _debug("Starting editor page");
 ?>
@@ -478,6 +491,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "var theme_list=btoa(theme_list_encoded);\n";
     echo "var upload_url=\"" . $upload_url . "\";\n";
     echo "var preview_url=\"" . $preview_url . "\";\n";
+    echo "var lti_session=\"" . $lti_session . "\";\n";
     ?>
 
     function bunload(){
