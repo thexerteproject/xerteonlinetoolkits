@@ -1313,6 +1313,8 @@ function x_cssSetUp(param) {
 						}).fail(function() {
 							x_cssSetUp("themeCss");
 						});
+				} else {
+					x_cssSetUp("themeCss");
 				}
 			} else {
 				x_cssSetUp("projectStylesheet");
