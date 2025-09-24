@@ -6421,8 +6421,16 @@
     
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
-    <cols label="Number of Columns" type="NumericStepper" min="1" max="5" step="1" defaultValue="3"/>
-    <height label="Link Height" options="Small,Medium,Large" type="ComboBox" data="55,80,105" defaultValue="80" width="100" deprecated="This property is deprecated. Height is now set automatically."/>
+
+    <layoutGroup label="Page Layout" type="group">
+      <showTitles label="Link Titles" type="CheckBox" defaultValue="true" mandatory="true"/>
+      <cols label="Number of Columns" type="NumericStepper" min="1" max="5" step="1" defaultValue="3"/>
+      <minWidth label="Minimum Column Width (px)" type="NumericStepper" min="20" max="1000" defaultValue="75" mandatory="true" tooltip="Columns will never be narrower than this width and will be wrapped onto a new line when required"/>
+      <panelStyle label="Panel" type="ComboBox" options="None,Single panel,Each link" data="none,single,each" defaultValue="each" mandatory="true"/>
+    </layoutGroup>
+
+    <textTop label="Text Above Links" type="TextArea" height="100" optional="true"/>
+    <textBottom label="Text Below Links" type="TextArea" height="100" optional="true"/>
 
     <newNodes>
       <link><![CDATA[<link name="Link Title" text="" url="" urlTxt="" target="new"/>]]></link>

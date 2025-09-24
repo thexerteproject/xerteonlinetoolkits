@@ -1,13 +1,32 @@
 /* links.html */
 
-	#linkHolder {
-		width:		100%;
-		margin-top:	20px;
+	#textHolder + #linkHolder,
+	.textTopHolder + #linkHolder,
+	#linkHolder + .textBottomHolder {
+		margin-top: 1em;
 	}
 
-	#linkHolder .panel.linkBlock {
-		margin:		0 0 20px 0;
-		float:		left;
+	#x_mainHolder:not(.x_mobile) #pageContents {
+		container-type: inline-size;
+		container-name: page-contents;
+	}
+
+	#x_mainHolder:not(.x_mobile) #linkHolder {
+		display: grid;
+		gap: 1em;
+		max-width: 100%;
+	}
+
+	#x_mainHolder:not(.x_mobile) #linkHolder .linkBlock {
+		box-sizing: border-box;
+		word-break: break-word;
+	}
+
+	#x_mainHolder.x_mobile #linkHolder {
+		/* on mobiles always show columns as rows instead */
+		display: flex;
+		flex-direction: column;
+		gap: 1em;
 	}
 
 	#linkHolder a {
@@ -18,13 +37,3 @@
 		-moz-hyphens: auto;
 		hyphens: auto;
 	}
-
-	.clear {
-		clear:	both;
-	}
-	
-	#x_mainHolder.x_mobile  .linkBlock {
-		margin-right: 0;
-		width: 90%;
-	}
-
