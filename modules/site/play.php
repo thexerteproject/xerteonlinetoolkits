@@ -26,7 +26,7 @@ require_once(dirname(__FILE__) .  '/../../website_code/php/config/popcorn.php');
 
 //popcorn bestanden toevoegen
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
-require(dirname(__FILE__) .  '/../../website_code/php/user_library.php');
+require_once(dirname(__FILE__) .  '/../../website_code/php/user_library.php');
 
 function process_logos($LO_logo, $theme_path, $template_path, $page_content) {
     $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';
@@ -112,8 +112,8 @@ function show_template($row, $xapi_enabled=false){
 
     $string_for_flash_xml = $xmlfile;
 
-	$template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . "/";
-    $js_dir = "modules/" . $row['template_framework'] . "/";
+	$template_path = "/modules/" . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . "/";
+    $js_dir = "/modules/" . $row['template_framework'] . "/";
 
     list($x, $y) = explode("~",get_template_screen_size($row['template_name'],$row['template_framework']));
 

@@ -97,7 +97,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         chmod($preview, 0777);
     }
 
-    $preview_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/" . $preview_filename;
+    $previewxmlurl = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/" . $preview_filename;
     $data_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml";
     $rlo_url = $xerte_toolkits_site->site_url .  $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
     $xwd_url = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['parent_template'] . "/";
@@ -326,7 +326,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 <script>
     <?php
-    echo "previewxmlurl=\"" . $preview_url . "\";\n";
+    echo "previewxmlurl=\"" . $previewxmlurl . "\";\n";
     echo "dataxmlurl=\"" . $data_url . "\";\n";
     echo "mediavariable=\"" . $media_path . "\";\n";
     echo "rlourlvariable=\"" . $rlo_url . "/\";\n";
