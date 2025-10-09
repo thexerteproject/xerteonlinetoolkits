@@ -495,10 +495,11 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     ?>
 
     function bunload(){
-
         path = "<?PHP echo $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/";?>";
 
-        if(typeof window_reference==="undefined"){
+        if (lti_session !== ""){
+            edit_window_close_lti(path);
+        }else if(typeof window_reference==="undefined"){
 
             window.opener.edit_window_close(path);
 

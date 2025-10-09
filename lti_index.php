@@ -33,6 +33,99 @@ use \Tsugi\Core\Settings;
 use \Tsugi\Util\Net;
 use \Tsugi\Grades\GradeUtil;
 
+function xerte_mail_mapping($USER)
+{
+    global $xerte_toolkits_site;
+
+    //how to handle missing lastname as this is allowed by edlib
+    $lti_email = $USER->email ?? null;
+    $lti_name = $USER->firstname ?? "";
+    $lti_last_name = $USER->lastname ?? "lti";
+
+    if (!$lti_email) {
+        echo "Please verify your email";
+    }
+
+
+    $qry = "SELECT username,firstname,surname FROM " . $xerte_toolkits_site->database_table_prefix . "user WHERE email = ?";
+    $result = db_query_one($qry, [$lti_email]);
+
+    if ($result === False) {
+        die("connection to Xerte database failed");
+    }
+
+    $user_details = [];
+    if ($result !== null) {
+        return [
+            "username" => $result['username'],
+            "firstname" => $result['firstname'],
+            "surname" => $result['surname']
+        ];
+    }
+
+    create_new_user($lti_email, $lti_name, $lti_last_name);
+
+    return [
+        "username" => $lti_email,
+        "firstname" => $lti_name,
+        "surname" => $lti_last_name
+    ];
+
+    // make new users user with empty pw field
+
+}
+
+function create_new_user($username, $firstname, $lastname)
+{
+    global $authmech, $xerte_toolkits_site;
+
+    $authmech_can_manage_users = false;
+    $altauthmech_can_manage_users = false;
+
+    if (!isset($authmech))
+    {
+        $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+    }
+    if ($authmech->check())
+    {
+        $authmech_can_manage_users = true;
+    }
+
+    if ($xerte_toolkits_site->altauthentication != "")
+    {
+        $altauthmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->altauthentication);
+        if ($altauthmech->check())
+        {
+            $altauthmech_can_manage_users = true;
+        }
+    }
+
+    $mesg = "";
+
+    if (strlen($username) == 0 || strlen($firstname) == 0 ) {
+        $mesg .= "missing email or name";
+    }
+
+    if ($authmech_can_manage_users) {
+        $mesg .= $authmech->addUser($username, $firstname, $lastname, 'asdacascascascdfhdfh!$@@#@$', $username);
+    } else if ($altauthmech_can_manage_users){
+        $mesg .= $altauthmech->addUser($username, $firstname, $lastname, 'ascascascdfgdh2$%@^#^#', $username);
+    }
+
+    if (strlen($mesg) > 0) {
+        die("creating user failed");
+    }
+
+    //make pw for these users empty to prevent manual login
+    $qry = "UPDATE " . $xerte_toolkits_site->database_table_prefix . "user SET password = '' WHERE email = ?";
+    $result = db_query_one($qry, [$username]);
+
+    if ($result === False) {
+        die("");
+    }
+
+}
+
 global $tsugi_enabled;
 global $xapi_enabled;
 global $lti_enabled;
@@ -52,19 +145,11 @@ $LAUNCH = LTIX::requireData(LTIX::USER);
 $_SESSION['lti_enabled'] = $lti_enabled;
 
 
-//todo overule confic authetication setting moodle => lti
-//todo if no email bounce request?
-//todo need username (not in edlib atm) to link in xerte
-//email not given if email not verified?
-$firstname = $USER->firstname ?? 'No name';
-$lastname  = $USER->lastname ?? 'No last name';
 
-$email = $USER->email ?? null;
-if (!$email) {
-    echo "Please verify your email";
-}
+$user_details = xerte_mail_mapping($USER);
 
-login_processing2($firstname, $lastname, $email);
+login_processing2($user_details['firstname'], $user_details['surname'], $user_details['username']);
+
 _debug("NEW-TEMPLATE SESSIE entry point: " . print_r($_SESSION , true));
 
 

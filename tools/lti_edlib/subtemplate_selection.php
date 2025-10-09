@@ -29,7 +29,6 @@ foreach ($result as $subtemplate_data){
 $template_url = $xerte_toolkits_site->site_url . (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("website_code/php/templates/new_template.php") . "&tsugisession=0" : "website_code/php/templates/new_template.php");
 $edit_url = $xerte_toolkits_site->site_url . (isset($lti_enabled) && $lti_enabled && function_exists('addSession') ? addSession("edithtml.php") . "&tsugisession=0" : "edithtml.php");
 
-//todo turn into propper ui element
 ?>
 <!DOCTYPE html>
 <html>

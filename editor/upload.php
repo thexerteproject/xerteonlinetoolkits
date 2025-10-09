@@ -199,7 +199,20 @@ if ($mode == "publish")
     update_oai($data, $template_id);
     //_debug("upload: updated table");
 
-    store_lti($store_lti, $template_id);
+    if ($store_lti !== ""){
+
+        $lockfile_path = x_clean_input($_POST["filename"]);
+        $lockfile_path = explode('/', $lockfile_path);
+        if (sizeof($lockfile_path) === 3){
+            $_POST['file_path'] = $lockfile_path[1] . "/";
+        }
+
+        include (dirname(__FILE__) . "/../website_code/php/versioncontrol/template_close.php");
+
+
+        store_lti($template_id);
+    }
+
 }
 
 echo true;
@@ -345,15 +358,10 @@ function update_oai($data, $template_id){
     }
 }
 
-function store_lti($store_lti, $template_id) {
-    if ($store_lti === ""){
-        return true;
-    }
+function store_lti($template_id) {
     global $xerte_toolkits_site;
-
     $qry = "SELECT template_name from " . $xerte_toolkits_site->database_table_prefix . "templatedetails WHERE template_id=" . $template_id;
     $result = db_query_one($qry);
     apply_filters('lti_callback', $result['template_name'], $template_id, $xerte_toolkits_site->site_url);
-
     exit();
 }

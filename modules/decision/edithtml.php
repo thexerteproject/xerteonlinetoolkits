@@ -28,6 +28,33 @@ require_once (__DIR__ . "/../../website_code/php/themes_library.php");
  */
 
 
+function addSessionData($url) {
+    if ( ini_get('session.use_cookies') != '0' ) return $url;
+    if ( stripos($url, '&'.session_name().'=') > 0 ||
+            stripos($url, '?'.session_name().'=') > 0 ) return $url;
+    $session_id = session_id();
+
+    // Don't add more than once...
+    $parameter = session_name().'=';
+    if ( strpos($url, $parameter) !== false ) return $url;
+
+    $url = add_url_parms($url, session_name(), $session_id);
+    return $url;
+}
+
+function add_url_parms($url, $key, $val) {
+    $url .= strpos($url,'?') === false ? '?' : '&';
+    $url .= urlencode($key) . '=' . urlencode($val);
+    return $url;
+}
+
+function getSessionData() {
+    if ( ini_get('session.use_cookies') != '0' ) return "";
+    $session_id = session_id();
+    return session_name().'=' . $session_id;
+}
+
+
 /**
  *
  * Function output_editor_code
@@ -130,6 +157,22 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     if ($xerte_toolkits_site->rights == 'elevated')
     {
         $body_class = ' class="elevated"';
+    }
+
+    $upload_url = $xerte_toolkits_site->site_url .
+            (isset($_SESSION['lti_enabled']) && $_SESSION['lti_enabled'] && function_exists('addSessionData')
+                    ? addSessionData("editor/upload.php") . "&tsugisession=0" : "editor/upload.php");
+    $preview_url = $xerte_toolkits_site->site_url .
+            (
+            isset($_SESSION['lti_enabled']) && $_SESSION['lti_enabled'] && function_exists('addSessionData')
+                    ? addSessionData("preview.php") . "&tsugisession=0&"
+                    : "preview.php?"
+            ) .
+            "template_id=";
+    if (isset($_SESSION['lti_enabled']) && $_SESSION['lti_enabled']) {
+        $lti_session = getSessionData() . "&tsugisession=0";
+    } else {
+        $lti_session = "";
     }
 
 ?>
@@ -305,6 +348,10 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "roles=" . json_encode($user_roles) . ";\n";
     echo "var theme_list_encoded='" . base64_encode(json_encode($ThemeList)) . "';\n";
     echo "var theme_list=btoa(theme_list_encoded);\n";
+    echo "var upload_url=\"" . $upload_url . "\";\n";
+    echo "var preview_url=\"" . $preview_url . "\";\n";
+    echo "var lti_session=\"" . $lti_session . "\";\n";
+
     ?>
 
     function bunload(){
@@ -313,7 +360,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
         template = "<?PHP  echo $row_edit['template_id']; ?>";
 
-        if(typeof window_reference==="undefined"){
+        if (lti_session !== ""){
+            edit_window_close_lti(path);
+        }else if(typeof window_reference==="undefined"){
 
             window.opener.edit_window_close(path,template);
 
