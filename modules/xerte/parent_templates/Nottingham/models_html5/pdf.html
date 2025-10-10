@@ -20,96 +20,56 @@
 	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
-	var pdf = new function() {		
-		var $pageContents;
-
+	var pdf = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			
 		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+			// panel will be fixed height (100% of available screen height) at all times
+			XENITH.SPLITSCREEN.resizePanel();
+
+			// panel is the correct height - now make sure the PDF embed is the correct height within the panel
+			let excludeH = $("#link").length > 0 ? [$("#link"), $("#link hr").height(), parseInt($("#link hr").css("margin-top"))] : [];
+			$("#pdfDoc").height(x_getAvailableHeight([$("div.panelContent"), $("#pdfDoc")], excludeH, true));
+
 			if (x_browserInfo.iOS == true) {
 				$("#pdfDoc").width(pdf.calcWidth());
-			} else {	
-				$("#pdfDoc").height(pdf.calcHeight());
 			}
 		}
 		
 		this.init = function() {
-			
-			$pageContents = $("#pageContents");
-			
-			var textContents = x_addLineBreaks(x_currentPageXML.getAttribute("text")),
-				pdfWidth = x_currentPageXML.getAttribute("pdfWidth");
-			
-			// text is top or no text & full width pdf
-			if ((x_currentPageXML.getAttribute("position") == "T" && textContents != undefined && textContents != "") || pdfWidth == "full" || textContents == undefined || textContents == "") {
-				
-				$("#textHolder")
-					.appendTo($pageContents)
-					.removeClass('left');
-				
-				$("#pageContents .panel").appendTo($pageContents);
-				$("#pageContents .splitScreen").remove();
-				
-				pdfWidth == "full";
-				
-			// text is removed because pdf is full & it's not positioned above it
-			} else if (pdfWidth == "full" && (x_currentPageXML.getAttribute("position") != "T" || (textContents == undefined && textContents == ""))) {
-				
-				$("#textHolder").remove();
-				
-			} else if (pdfWidth == undefined || pdfWidth == "") {
-				
-				pdfWidth = "medium";
-				
+
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// tweak a lot of the page layout attributes before sending to split screen function to ensure backwards compatibility
+			// old attributes (position & pdfWidth) will always override the newer attributes (they can be deleted in editor to make newer ones take over)
+			let position = x_currentPageXML.getAttribute("position") != undefined ? (x_currentPageXML.getAttribute("position") == "L" ? "right" : x_currentPageXML.getAttribute("position") == "R" ? "left" : "top") : x_currentPageXML.getAttribute("align");
+			let width = x_currentPageXML.getAttribute("pdfWidth") != undefined ? x_currentPageXML.getAttribute("pdfWidth") : x_currentPageXML.getAttribute("panelWidth");
+			// if position is top, width will always be full
+			if (position === "top") {
+				width = "Full";
+				position = "left"; // as it's full width this is ignored but top is no longer an expected value to change to a valid (but ignored) value to avoid problems
 			}
-			
-			// remove text holder if there is no text
-			if (textContents != undefined && textContents != "") {
-				
-				$("#textHolder").html(textContents);
-				
-			} else {
-				
-				$("#textHolder").remove();
-				
+			if ((width == undefined || x_currentPageXML.getAttribute("pdfWidth") != undefined) && (x_currentPageXML.getAttribute("text") == undefined || x_currentPageXML.getAttribute("text").trim() == "")) {
+				// if no width was set (or has old width property) & no text, the pdf width is full
+				width = "Full";
+			} else if (width == undefined) {
+				// if no width & some text, the pdf width is medium
+				width = "Medium";
 			}
-			
-			// swap positions of text & pdf
-			if (x_currentPageXML.getAttribute("position") == "R" && x_browserInfo.mobile == false) {
-				
-				$(".splitScreen .right")
-					.removeClass("right")
-					.addClass("left");
-				
-				$("#textHolder")
-					.removeClass("left")
-					.addClass("right")
-					.insertAfter(".splitScreen.left");
-				
-				// Set the width of the pdf
-				if (pdfWidth == "small") {
-					$("#pageContents .splitScreen").addClass("medium");
-				} else if (pdfWidth == "large") {
-					$("#pageContents .splitScreen").addClass("xlarge");
-				} else {
-					$("#pageContents .splitScreen").addClass("large");
-				}
-				
-			} else {
-				
-				// Set the width of the pdf
-				if (pdfWidth == "small") {
-					$("#pageContents .splitScreen").addClass("large"); // make text area on left large so panel on right is small
-				} else if (pdfWidth == "large") {
-					$("#pageContents .splitScreen").addClass("small");
-				} else {
-					$("#pageContents .splitScreen").addClass("medium");
-				}
+
+			// send amended data to split screen function
+			const attributes = {
+				panelWidth: width,
+				panelPosition: position,
+				removeTxt: x_currentPageXML.getAttribute("removeTxt") == null ? "false" : x_currentPageXML.getAttribute("removeTxt"),
+				fullH: true // force panel to be 100% height of screen at all times
 			}
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
 			if (x_browserInfo.iOS == true) {
 				$("#pdfPage").html('<div id="pdfCover" /><object onload="pdf.createCover()" id="pdfDoc" data="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" type="application/pdf" width="' + pdf.calcWidth() + '"><param name="src" value="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '"></object>');
@@ -118,6 +78,7 @@
 			}
 			this.createLink();
 
+			this.sizeChanged();
 			x_pageLoaded();
 		}
 		
@@ -135,9 +96,6 @@
 		this.createLink = function() {
 			const faIcon = '<i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>';
 			$("#pdfPage").append('<div id="link"><hr/><a id="pdfLink" href="' + x_evalURL(x_currentPageXML.getAttribute("url")) + '" target="_blank">' + (x_currentPageXML.getAttribute("open") == "" || x_currentPageXML.getAttribute("open") == undefined ? "Open PDF in new tab" : x_currentPageXML.getAttribute("open")) + ' ' + faIcon + '</a></div>');
-
-			//this.calcHeight();
-			$("#pdfDoc").height(this.calcHeight());
 		}
 		
 		this.calcWidth = function() {
@@ -147,10 +105,6 @@
 				return $x_pageHolder.width() - (parseInt($x_pageDiv.css("padding-left")) * 2) - (parseInt($("div.panel").css("padding-left")) * 2);
 			}
 		}
-		
-		this.calcHeight = function() {
-			return x_getAvailableHeight([$("div.panel"), $("#pdfDoc")], [$("#link"), $("#link hr").height(), parseInt($("#link hr").css("margin-top"))], true);
-		}
 	}
 	
 	pdf.init();
@@ -159,20 +113,15 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
-		
-		<div id="textHolder" class="left">
-			
+
+	<div id="textHolder" class="splitScreen_A"></div>
+
+	<div id="infoHolder" class="splitScreen_B">
+		<div id="panel" class="panelContent panel">
+			<div id="pdfPage"></div>
 		</div>
-		
-		<div class="right">
-			<div class="panel">
-				<div id="pdfPage"></div>
-			</div>
-		</div>
-		
 	</div>
-	
+
 </div>
+
 
