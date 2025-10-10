@@ -4711,10 +4711,23 @@ var EDITOR = (function ($, parent) {
         lightboxSetUp(groupId, "", "", key, formState);
     };
 
-    validateFormInput = function (regexCondition, inputValue, name) {
+    validateFormInput = function (regexCondition, inputValue, name, fieldlabel) {
         let regex = new RegExp(regexCondition);
+        const fieldReference = fieldlabel || name;
         if (!regex.test(inputValue.trim())) {
-            alert(`Please fill in the ${name} field correctly.`);
+                const regexString = regexCondition.toString();
+                let errorMsg=`Please fill in the ${fieldReference} field correctly.`;
+
+                if (regexString === '^\\d+$') {
+                     errorMsg = `Please enter a valid numeral in the ${fieldReference} field. For example: '60', not 'sixty'.`;
+
+                } else if (regexString === '^.+$') {
+                    errorMsg = `${fieldReference} is a mandatory field! Please fill it in.`;
+
+                } else if (regexString === '^(\\s*[^,]+\\s*,\\s*)+[^,]+\\s*$') {
+                    errorMsg = `Please make sure to enter at least two valid items separated by a comma in ${fieldReference} field. For example: 'Apples, Oranges, Berries'.`;
+                }
+            alert(errorMsg);
             return false;
         }
         return true;
@@ -4823,9 +4836,9 @@ var EDITOR = (function ($, parent) {
                     return lookup(textareas_options) ?? lookup(textinputs_options);
                 }
 
-                //let pattern = this.getAttribute('pattern');
                 let pattern = getVerificationPattern(this);
-                if (pattern !== null && !validateFormInput(pattern, formFieldValue, this.getAttribute('name') )) {
+                debugger
+                if (pattern !== null && !validateFormInput(pattern, formFieldValue, this.getAttribute('name'), this?.getAttribute('label'))) {
                     //one of the validation fields has not been filled in correctly.
                     formValidation = false;
                     return false;
@@ -7062,6 +7075,10 @@ var EDITOR = (function ($, parent) {
 
                     if (options.overrideField !== undefined && options.overrideField !== "") {
                         html.attr('overridefield', options.overrideField)
+                    }
+
+                    if (options.label !== undefined && options.label !== ""){
+                        html.attr('label', options.label)
                     }
 				}
 		}
