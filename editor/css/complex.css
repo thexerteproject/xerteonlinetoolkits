@@ -685,7 +685,7 @@ select, input, textarea
     padding: 4px;
 }
 
-#mainPanel select,  #mainPanel textarea, #lightboxPanel select,  #lightboxPanel textarea {
+#mainPanel select,  #mainPanel textarea, #lightboxPanel select,  #lightboxPanel textarea, #lightboxPanel input {
     background: #fff;
     border: 1px solid #cdcdcd;
     width: 100%;
@@ -1606,6 +1606,13 @@ div.hotspot360Icon span.icon360Holder .icon360 {
 body.fl-jqgrid-top > .featherlight { z-index: 940 !important; }
 .ui-jqdialog { z-index: 950 !important; }
 .ui-widget-overlay.ui-front { z-index: 945 !important; }  /* jQuery UI dialog overlay */
+
+.featherlight-content #lightboxPanel {
+	width: inherit !important;
+	table-layout: fixed;
+	box-sizing: border-box;
+}
+
 
 /* start of xertecss.css
 
