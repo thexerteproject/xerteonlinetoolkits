@@ -22,14 +22,14 @@ class pexelsApi
         $url = "https://api.pexels.com/v1/search?query={$query}&per_page={$perPage}&page={$page}";
 
         // Append optional parameters if they are not "unmentioned"
-        if (isset($aiParams->orientation) && $aiParams->orientation !== 'unmentioned') {
-            $url .= "&orientation=" . urlencode($aiParams->orientation);
+        if (isset($aiParams->pexelsOrientation) && $aiParams->pexelsOrientation !== 'unmentioned') {
+            $url .= "&orientation=" . urlencode($aiParams->pexelsOrientation);
         }
-        if (isset($aiParams->color) && $aiParams->color !== 'unmentioned') {
-            $url .= "&colors=" . urlencode($aiParams->color);
+        if (isset($aiParams->pexelsColor) && $aiParams->pexelsColor !== 'unmentioned') {
+            $url .= "&colors=" . urlencode($aiParams->pexelsColor);
         }
-        if (isset($aiParams->size) && $aiParams->size !== 'unmentioned') {
-            $url .= "&size=" . urlencode($aiParams->size);
+        if (isset($aiParams->pexelsSize) && $aiParams->pexelsSize !== 'unmentioned') {
+            $url .= "&size=" . urlencode($aiParams->pexelsSize);
         }
 
         // Initialize cURL

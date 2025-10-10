@@ -11,11 +11,11 @@ function makeRag(array $cfg)
     $provider = $cfg['provider'] ?? 'none';
     $adminEnabled = (bool)($cfg['enabled'] ?? true);
 
-    if ($adminEnabled && $provider === 'openai' && !empty($cfg['api_key'])) {
+    if ($adminEnabled && $provider === 'openaienc' && !empty($cfg['api_key'])) {
         return new OpenAIRAG($cfg['api_key'], $cfg['encoding_directory']);
     }
 
-    if ($adminEnabled && $provider === 'mistral' && !empty($cfg['api_key'])) {
+    if ($adminEnabled && $provider === 'mistralenc' && !empty($cfg['api_key'])) {
         return new MistralRAG($cfg['api_key'], $cfg['encoding_directory']);
     }
 

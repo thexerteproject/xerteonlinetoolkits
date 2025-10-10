@@ -23,14 +23,14 @@ class pixabayApi
         $url = "https://pixabay.com/api/?key={$apiKey}&q={$query}&per_page={$perPage}&page={$page}";
 
         // Append optional parameters if they are not "unmentioned"
-        if (isset($aiParams->orientation) && $aiParams->orientation !== 'unmentioned') {
-            $url .= "&orientation=" . urlencode($aiParams->orientation);
+        if (isset($aiParams->pixabayOrientation) && $aiParams->pixabayOrientation !== 'unmentioned') {
+            $url .= "&orientation=" . urlencode($aiParams->pixabayOrientation);
         }
-        if (isset($aiParams->color) && $aiParams->color !== 'unmentioned') {
-            $url .= "&colors=" . urlencode($aiParams->color);
+        if (isset($aiParams->pixabayColors) && $aiParams->pixabayColors !== 'unmentioned') {
+            $url .= "&colors=" . urlencode($aiParams->pixabayColors);
         }
-        if (isset($aiParams->type) && $aiParams->type !== 'unmentioned') {
-            $url .= "&image_type=" . urlencode($aiParams->type);
+        if (isset($aiParams->pixabayType) && $aiParams->pixabayType !== 'unmentioned') {
+            $url .= "&image_type=" . urlencode($aiParams->pixabayType);
         }
 
         // Initialize cURL

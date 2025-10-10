@@ -1067,8 +1067,7 @@ var EDITOR = (function ($, parent) {
                         var tablerow = $('<tr>')
                             .append($('<td>')
                                 .append(button));
-
-                        if (sorted_options['optional'][i].value.lightbox === 'form') {
+                        if (sorted_options['optional'][i].value.subgroup === 'assistant') {
 														icon.addClass('fa-wand-magic');
                             tableLightbox.append(tablerow);
                         } else {
@@ -1097,11 +1096,9 @@ var EDITOR = (function ($, parent) {
             }
 
             if (tableLightbox.find("tr").length > 0) {
-                if (menu_options.menu != undefined) {
                     var tablerow = $('<tr>')
-                        .append('<td class="optPropTitle">' + (language.optionalAssistantPropHTML && language.optionalAssistantPropHTML.$general ? language.optionalAssistantPropHTML.$general : "Assistend") + '</td>');
+                        .append('<td class="optPropTitle">' + (language.optionalAssistantPropHTML && language.optionalAssistantPropHTML.$general ? language.optionalAssistantPropHTML.$general : "Assistant") + '</td>');
                     tableLightbox.prepend(tablerow);
-                }
                 html.append(tableLightbox);
             }
 
@@ -2039,19 +2036,29 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
                                     image_preview_images.append(no_image_text);
                                 }
 								for(let i = 0; i < image_data.paths.length; i++){
-										let image_url = image_data.paths[i];
-										let select_input = $("<input type=\"" + input_type + "\" id=\"check" + i + "\" name=\"image\" value=\"" + i + "\"></input>");
-										let image = $("<img class=\"img_search_preview_image\"></img>");
-										let label = $("<label for=\"check" + i + "\"></label>").append(image);
-										let container = $("<div class=\"img_search_container\"></div>");
-										image.attr("src", image_url);
-										image.attr("title", image_data.credits[i]);
-										image_preview_images.append(container);
-										container.append(select_input).append(label);//.append("<div>" + credits_texts[0] + "</div><div>" + credits_texts[1] + "</div>");
-										let enlarge_button = $("<button title=\"Enlarge\" type=\"button\" class=\"enlarge_button\"><i class=\"fa fa-lg fa-search xerte-icon\"></i></button>").click(function() {
-												$.featherlight(image_url);
-										});
-										container.append(enlarge_button);
+                                    let image_url = image_data.paths[i];
+                                    let select_input = $("<input type=\"" + input_type + "\" id=\"check" + i + "\" name=\"image\" value=\"" + i + "\">");
+                                    let image = $('<img class="img_search_preview_image">');
+                                    image.attr("src", image_url);
+                                    image.attr("title", image_data.credits[i]);
+                                    // Small wrapper that becomes the positioning context for the button
+                                    let frame = $('<span class="img_frame"></span>').append(image);
+                                    let label = $('<label for="check' + i + '"></label>').append(frame);
+                                    let container = $('<div class="img_search_container"></div>');
+                                    image_preview_images.append(container);
+                                    container.append(select_input).append(label);
+                                    // Enlarge button. Prevent the label/checkbox from toggling on click
+                                    let enlarge_button = $(
+                                        '<button title="Enlarge" type="button" class="enlarge_button">' +
+                                        '<i class="fa fa-lg fa-search xerte-icon"></i>' +
+                                        '</button>'
+                                    ).on("click", function (e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        $.featherlight(image_url);
+                                    });
+
+                                    frame.append(enlarge_button);
 										/*let credits_button;
 										if(typeof data.credits[i] == "string") {
 												let credits_texts = data.credits[i].split("\n");

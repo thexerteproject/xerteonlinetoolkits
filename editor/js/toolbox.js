@@ -677,6 +677,17 @@ var EDITOR = (function ($, parent) {
         return (result == null ? false : result);
     },
 
+    findDefaultAttributeValue = function (name, all_options) {
+        for (let i = 0; i < (all_options?.length || 0); i++) {
+            const opt = all_options[i];
+            if (opt?.name === name) {
+                const dv = opt?.value?.defaultValue;
+                return dv;
+            }
+        }
+        return undefined; // no matching option or no default provided
+    },
+
     displayParameter = function (id, all_options, name, value, key, lightbox = "", lightboxMode= "none", nodelabel)
     {
         var options = (nodelabel ? wizard_data[name].menu_options : getOptionValue(all_options, name));
@@ -688,7 +699,12 @@ var EDITOR = (function ($, parent) {
         let formState = {};
         if (typeof value === 'object' && value !== null) {
             formState = value;
-            fieldValue = formState.hasOwnProperty(name) === true ? formState[name] : "";
+            if (formState.hasOwnProperty(name)) {
+                fieldValue = formState[name];
+            } else {
+                const dv = findDefaultAttributeValue(name, all_options);
+                fieldValue = dv !== undefined ? dv : ""; // fall back to "" only if truly no default
+            }
         } else {
             fieldValue = value;
         }
@@ -4605,10 +4621,20 @@ var EDITOR = (function ($, parent) {
 
         $.featherlight(lightboxHtml, {
             persist: true,
+            closeOnClick: false,
+            closeOnEsc: false,
             afterOpen: function(event) {
                 var attributes = lo_data[key]['attributes'];
                 formState = { ...attributes };
-                attachEditorsToLightbox(groupChildren, key, '.featherlight-content', formState);
+                convertTextInputs();
+                //attachEditorsToLightbox(groupChildren, key, '.featherlight-content', formState);
+                convertDataGrids();
+
+                convertTextAreas();
+                $('body').addClass('fl-jqgrid-top');
+            },
+            afterClose: function (event){
+                $('body').removeClass('fl-jqgrid-top');
             }
         });
         //});
@@ -4639,17 +4665,24 @@ var EDITOR = (function ($, parent) {
                     formState[groupChildren[input].name] = "";
                 }
 
-                //inherit any fields.
+                // inherit any fields.
                 const inheritField = groupChildren[input]?.value?.inheritField;
                 if (inheritField !== undefined && inheritField !== "") {
                     const groupName = groupChildren[input]?.name;
-                    // try attributes, otherwise lo_attributes
-                    const value =
-                        attributes[inheritField] !== undefined && attributes[inheritField] !== null
-                            ? attributes[inheritField]
-                            : lo_attributes[inheritField];
-                    formState[groupName] = value;
-                    lo_data[key].attributes[groupName] = value;
+
+                    // determine candidate value
+                    let value;
+                    if (attributes[inheritField] !== undefined && attributes[inheritField] !== null) {
+                        value = attributes[inheritField];
+                    } else if (lo_attributes[inheritField] !== undefined && lo_attributes[inheritField] !== null) {
+                        value = lo_attributes[inheritField];
+                    }
+
+                    // assign only if the value is not empty ("", null, or undefined)
+                    if (value !== undefined && value !== null && value !== "") {
+                        formState[groupName] = value;
+                        lo_data[key].attributes[groupName] = value;
+                    }
                 }
             }
         } else {
@@ -4762,7 +4795,36 @@ var EDITOR = (function ($, parent) {
                     }
                     // else: leave blank
                 }
-                let pattern = this.getAttribute('pattern');
+
+                function getVerificationPattern(ctx) {
+                    // Get pattern for any non-CKEditor fields
+                    let pattern = (ctx && typeof ctx.getAttribute === 'function')
+                        ? ctx.getAttribute('pattern')
+                        : undefined;
+                    if (pattern !== undefined && pattern !== null) return pattern;
+
+                    // Fallback: look up by id in the globals
+                    const id = ctx && ctx.id;
+                    if (!id) return undefined;
+
+                    function lookup(arr) {
+                        if (!Array.isArray(arr)) return undefined;
+                        for (let i = 0; i < arr.length; i++) {
+                            const item = arr[i];
+                            if (item && item.id === id) {
+                                // options.verification is the attribute that houses the regex pattern originally
+                                return item.options.verification;
+                            }
+                        }
+                        return undefined;
+                    }
+
+                    // we don’t know the type, so check both
+                    return lookup(textareas_options) ?? lookup(textinputs_options);
+                }
+
+                //let pattern = this.getAttribute('pattern');
+                let pattern = getVerificationPattern(this);
                 if (pattern !== null && !validateFormInput(pattern, formFieldValue, this.getAttribute('name') )) {
                     //one of the validation fields has not been filled in correctly.
                     formValidation = false;
@@ -4825,6 +4887,7 @@ var EDITOR = (function ($, parent) {
                 }
 				break;
             case 'combobox_image':
+            case 'combobox_imagegen':
             case 'combobox_ai':
             case 'combobox':
 				var id = 'select_' + form_id_offset;
@@ -5754,7 +5817,7 @@ var EDITOR = (function ($, parent) {
 						let input = $(this).closest('tr').find('input')[0];
 						console.log(event, options);
 						window.imageSearchSingle = true;
-						triggerRedrawForm("imgSearchAndHelpGroup", key, "", "redraw", event.data.name);
+						triggerRedrawForm("imgSearchAndHelpGroup", key, "", "initialize", event.data.name);
                         // ... strange way to update a field.
 						// let callback = () => {
 						// 		if($("html").data("image")){
@@ -6323,7 +6386,11 @@ var EDITOR = (function ($, parent) {
 
                         let constructorObject = getConstructorFromLightbox(html, event.data.group);
                         if (constructorObject === false) {return}
-                        let api = constructorObject['imgApi'] !== undefined ? constructorObject['imgApi'] : 'pexels';
+                        let api = constructorObject['imgApi'] !== undefined
+                            ? constructorObject['imgApi']
+                            : (constructorObject['imgGenApi'] !== undefined
+                                ? constructorObject['imgGenApi']
+                                : 'dalle3');
                         delete constructorObject.imgApi;
 
                         if (api==='dalle3'){
@@ -6363,15 +6430,11 @@ var EDITOR = (function ($, parent) {
                         let interpretPrompt = constructorObject['useAiInterpret'] !== undefined ? constructorObject['useAiInterpret'] : "false";
                         delete constructorObject.useAiInterpret;
 
-                        let aiSettingsOverride = constructorObject['overrideAiSettings'] !== undefined ? constructorObject['overrideAiSettings'] : "false";
+                        let aiSettingsOverride = constructorObject['overrideAiSettings'] !== undefined ? constructorObject['overrideAiSettings'] : "true";
                         delete constructorObject.overrideAiSettings;
 
-                        if (query === null) {
-                            alert("Your query could not be found! Please double-check all relevant fields and try again.");
-                            html.prop('disabled', false);
-                            return;
-                        }
                         if (!hasApiKeyInstalled('image', api)) {
+                            html.prop('disabled', false);
                             return;
                         }
 
@@ -6877,6 +6940,7 @@ var EDITOR = (function ($, parent) {
                     success: function(resp) {
                         if (!resp?.corpus) {
                             //alert('No corpus data found!');
+                            setAttributeValue(key, [name], ['|']);
                             return;
                         }
                         var gridId = '#' + resp.gridId + '_jqgrid';

@@ -30,11 +30,11 @@ class wikimediaApi
                 . "&gsrnamespace=6"
                 . "&gsroffset={$offset}";
 
-            if (isset($aiParams->width) && $aiParams->width !== 'unmentioned') {
-                $url .= "&iiurlwidth=" . urlencode($aiParams->width);
+            if (isset($aiParams->wikimediaWidth) && $aiParams->wikimediaWidth !== 'unmentioned') {
+                $url .= "&iiurlwidth=" . urlencode($aiParams->wikimediaWidth);
             }
-            if (isset($aiParams->height) && $aiParams->height !== 'unmentioned') {
-                $url .= "&iiurlheight=" . urlencode($aiParams->height);
+            if (isset($aiParams->wikimediaHeight) && $aiParams->wikimediaHeight !== 'unmentioned') {
+                $url .= "&iiurlheight=" . urlencode($aiParams->wikimediaHeight);
             }
 
             // Initialize cURL

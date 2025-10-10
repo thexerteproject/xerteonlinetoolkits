@@ -23,7 +23,7 @@
     <answerDelimeter label="Answer Delimiter" type="textInput" defaultValue="," optional="true" tooltip="The character separating the possible correct answers for each question"/>
     <casesensitive label="Case Sensitive" defaultValue="false" type="CheckBox" optional="true" tooltip="Treat answers as case sensitive"/>
 
-	<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true" lightbox="form" condition="hasrole('aiuser')">
+	<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="hasrole('aiuser')">
 
         <subject label="Subject" type="TextInput" verification="^.+$" defaultValue="" placeholder="Enter a subject here..." tooltip = "This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." conditionTrigger="true" optional="true"/>
         <additionalInstructions label="Additional Instructions" type="text" tooltip="Provide any additional instructions or requests on how the generated result should look like here. Please note that certain instructions may break the structure of the generated response. If this occurs, alter the way the instructions are worded and attempt to generate this page again; or leave this field blank." wysiwyg="true" height="50" placeholder="Write your instructions here..." optional="true"/>

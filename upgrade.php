@@ -1660,10 +1660,13 @@ function upgrade_52()
                                     (5, 'pixabay', 'Pixabay', 'image', 1, 0, '{}'),
                                     (6, 'unsplash', 'Unsplash', 'image', 1, 0, '{}'),
                                     (7, 'wikimedia', 'Wikimedia Foundation', 'image', 0, 0, '{}'),
-                                    (8, 'dalle2', 'DallE2 (Generative)', 'image', 1, 0, '{}'),
-                                    (9, 'dalle3', 'DallE3 (Generative)', 'image', 1, 0, '{}'),
-                                    (10, 'gladia', 'Gladia (Transcription)', 'transcription', 1, 0, '{}'),
-                                    (11, 'mistralenc', 'Mistral (Encoding)', 'encoding', 1, 0, '{}')
+                                    (8, 'dalle2', 'DallE2 (Generative)', 'imagegen', 1, 0, '{}'),
+                                    (9, 'dalle3', 'DallE3 (Generative)', 'imagegen', 1, 0, '{}'),
+                                    (10, 'gpt1', 'GPT Image 1', 'imagegen', 1, 0, '{}'),
+                                    (11, 'gladia', 'Gladia (Transcription)', 'transcription', 1, 0, '{}'),
+                                    (12, 'openai', 'Open AI (Transcription)', 'transcription', 1, 0, '{}'),
+                                    (13, 'mistralenc', 'Mistral (Encoding)', 'encoding', 1, 0, '{}'),
+                                    (14, 'openaienc', 'OpenAI (Encoding)', 'encoding', 1, 0, '{}')
                                     ");
             $message .= "Populating management helper table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
         }
