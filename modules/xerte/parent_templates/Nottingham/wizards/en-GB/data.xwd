@@ -2502,7 +2502,7 @@
 		<colour2 label="Secondary Colour" type="ColourPicker" defaultValue="" optional="true"/>
 	</hsIconAppearance>
 
-	<video type="group" label="Video" optional="true" tooltip="Show a video player when hotspot clicked" condition="windowType=='dialog'">
+	<video type="group" label="Video" optional="true" tooltip="Show a video player when hotspot clicked" condition="windowType=='dialog' || windowType==null">
 		<hotspotMovie label="File" type="media" conditionTrigger="true" optional="true" defaultValue="" placeholder="Select a video file or enter a URL/embed code"/>
 		<tip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 
