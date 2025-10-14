@@ -104,7 +104,7 @@
 
 	<microphoneError label="&lt;p&gt;Uw microfoon werkt niet. Mogelijke oorzaken voor dit probleem kunnen zijn:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Geen microfoon gevonden&lt;/li&gt;&lt;li&gt;Toegang tot de microfoon is geblokkeerd voor deze web pagina&lt;/li&gt;&lt;li&gt;De microfoon is al in gebruik door een ander programma of browser tab&lt;/li&gt;&lt;/ul&gt;"/>
 
-	<interactions>
+	<interactions required="verplicht">
 		<button name="Knop"/>
 		<radioButton selected="geselecteerd. Gebruik de pijltjes toetsen om een optie te kiezen"/>
 		<checkBox selected="geselecteerd" deselected="gedeselecteerd"/>

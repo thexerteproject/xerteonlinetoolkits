@@ -881,6 +881,11 @@ var EDITOR = (function ($, parent) {
 						.addClass('fa-caret-up');
 
 					$fieldset.removeClass('collapsed');
+
+                    // refresh codemirror fields as otherwise they may show empty until in focus
+                    $fieldset.find(".CodeMirror").each(function() {
+                        $(this)[0].CodeMirror.refresh();
+                    });
 				}
 			});
 		}
@@ -1586,7 +1591,9 @@ var EDITOR = (function ($, parent) {
                 showUncommentButton: true,
 
                 // Whether or not to show the showAutoCompleteButton button on the toolbar
-                showAutoCompleteButton: true
+                showAutoCompleteButton: true,
+
+                autoRefresh: true
 
             };
             var ckoptions = {

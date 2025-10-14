@@ -230,12 +230,13 @@
 					$html.append($link);
 				} else {
 					$html.append($img);
-				}
 
+				}
 				if (thisData.getAttribute("text") != undefined && thisData.getAttribute("text") !== '') {
 					$txt.html(x_addLineBreaks(thisData.getAttribute("text")));
 					$html.append($txt);
 				}
+
 
 				$.featherlight($html, {});
 
@@ -245,20 +246,23 @@
 					"visibility": "hidden",
 					"display": "inherit"
 				});
-
+				debugger;
 				// add image
 				const $panelImg = $('<div id="panelImg"><img class="centre" alt="' + (thisData.getAttribute("tip") != undefined && thisData.getAttribute("tip") != "") + '" /></div>').appendTo($mainInfoHolder.find("#mainPanel"));
+				const $panelTxt = $('<div id="panelTxt" class="overlay"></div>');
 				const $img = $panelImg.find("img");
 
 				// wrap image in a link
 				if (link != "") {
 					$panelImg.wrap('<a id="panelLink" href="' + link + '" target="_blank"></a>');
+					$panelTxt.appendTo('#panelLink');
 				} else {
 					$("#mainPanel").attr("tabindex", 0);
+					$panelTxt.appendTo($mainInfoHolder.find("#mainPanel"));
 				}
 
 				// add text
-				const $panelTxt = $('<div id="panelTxt" class="overlay"></div>').appendTo($mainInfoHolder.find("#mainPanel"));
+
 				if (thisData.getAttribute("align") == "Bottom") {
 					$panelTxt.addClass("bottom");
 				} else {

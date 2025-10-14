@@ -133,16 +133,16 @@
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				imgMaxW = Math.round($x_pageDiv.width() - 30);
 				$('#panel').css('margin', '0px');
-				imgMaxH = x_getAvailableHeight([$('#panel')], []);
+				imgMaxH = x_getAvailableHeight([$('#panel')], []. true);
 			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
 				imgMaxW = Math.round($x_pageDiv.width() * 0.8 - 20);
-				imgMaxH = x_getAvailableHeight([$('#panel')], []);
+				imgMaxH = x_getAvailableHeight([$('#panel')], [], true);
 			} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
 				imgMaxW = Math.round($x_pageDiv.width() * 0.3 - 20);
-				imgMaxH = x_getAvailableHeight([$('#panel')], []);
+				imgMaxH = x_getAvailableHeight([$('#panel')], [], true);
 			} else {
 				imgMaxW = Math.round($x_pageDiv.width() * 0.55 - 20);
-				imgMaxH = x_getAvailableHeight([$('#panel')], []);
+				imgMaxH = x_getAvailableHeight([$('#panel')], [], true);
 			}
 			
 			$img.mapster('unbind');

@@ -155,29 +155,18 @@
 //     ensure that it is valid. This setting only needs to be used if either
 //     $enable_jsonp or $enable_native are enabled. Defaults to '/.*/' which
 //     validates all URLs.
-//
-if (isset($_GET['tsugisession']))
-{
+// Check whether $_GET['tsuggisession'] starts with "1"
+if (isset($_GET['tsugisession']) && substr($_GET['tsugisession'], 0, 1)  == 1) {
     $tsugi_disable_xerte_session = true;
     require_once("config.php");
-    // _debug("xapi_proxy: setting tsugi session");
-    if (x_clean_input($_GET['tsugisession']) == "1") {
-        $contents = "";
 
-        // _debug("xapi_proxy: TSUGI session");
-        if (file_exists($xerte_toolkits_site->tsugi_dir)) {
-            require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
-        }
-        session_start();
+    $contents = "";
+
+    // _debug("xapi_proxy: TSUGI session");
+    if (file_exists($xerte_toolkits_site->tsugi_dir)) {
+        require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
     }
-    else
-    {
-        // _debug("xapi_proxy: setting normal session");
-        ini_set('session.use_cookies', 0);
-        ini_set('session.use_only_cookies', 0);
-        ini_set('session.use_trans_sid', 1);
-        session_start();
-    }
+    session_start();
 }
 else
 {
