@@ -8,6 +8,8 @@ require_once (str_replace('\\', '/', __DIR__) . "/BaseRAG.php");
 require_once (str_replace('\\', '/', __DIR__) . "/MistralRAG.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../../../config.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../../../vendor_config.php");
+require_once (str_replace('\\', '/', __DIR__) . "/RagFactory.php");
+require_once (str_replace('\\', '/', __DIR__) . "/../management/dataRetrievalHelper.php");
 
 use rag\MistralRAG;
 
@@ -54,8 +56,18 @@ try {
     // Prep directories & API keys
     $baseDir = prepareURL($baseUrl);
     x_check_path_traversal($baseDir);
-    $mistralKey = $xerte_toolkits_site->mistralenc_key;
-    $rag = new MistralRAG($mistralKey, $baseDir);
+
+    //get settings from the management table, which help us decide which options to use
+    $managementSettings = get_block_indicators();
+
+    $encodingKey = $xerte_toolkits_site->{$managementSettings['encoding']['key_name']};
+    $provider = $managementSettings['encoding']['active_vendor'];
+    $cfg = [
+        'api_key' => $encodingKey,
+        'encoding_directory' => $baseDir,
+        'provider' => $provider
+    ];
+    $rag = makeRag($cfg);
 
     $corpusFile = $rag->getCorpusDirectory();
     $corpus = ['hashes' => []];
