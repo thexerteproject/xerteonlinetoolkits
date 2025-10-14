@@ -354,3 +354,10 @@ if (isset($_SESSION['elevated']) && $_SESSION['elevated'])
     $xerte_toolkits_site->rights = 'normal';
 }
 
+if (file_exists(dirname(__FILE__) . '/config_edlib.php'))
+{
+    require_once(dirname(__FILE__) . '/config_edlib.php');
+}
+else{
+    $xerte_toolkits_site->edlib_key_name = "";
+}

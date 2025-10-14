@@ -70,7 +70,7 @@ function create_template_from_edlib(tutorial_id, template_name) {
                     tutorial_created_from_edlib(response);
                 });
         } else {
-            alert("nope");
+            alert("Please fill in a tamplate name");
         }
     }
 }

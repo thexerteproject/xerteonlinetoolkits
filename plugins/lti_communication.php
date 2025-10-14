@@ -42,6 +42,10 @@ function lti_info_callback($name, $xerte_id, $url) {
         return False;
     }
 
+    if ($xerte_toolkits_site->edlib_key_name === "") {
+        return False;
+    }
+
 
     $name = str_replace('_', ' ', $name);
     //todo get langiage nld/nld-fl/eng?
@@ -68,7 +72,7 @@ function lti_info_callback($name, $xerte_id, $url) {
 
     $contentItemsJson = json_encode($contentItem, JSON_UNESCAPED_SLASHES);
 
-    $qry = "SELECT key_key,secret FROM {$xerte_toolkits_site->database_table_prefix}tsugi_lti_key WHERE key_title = 'edlib'";
+    $qry = "SELECT key_key,secret FROM {$xerte_toolkits_site->database_table_prefix}tsugi_lti_key WHERE key_title = '" . $xerte_toolkits_site->edlib_key_name . "'";
     $result = db_query_one($qry);
 
     if ($result === false) {
