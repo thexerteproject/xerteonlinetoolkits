@@ -3,6 +3,7 @@
 class anthropicApi extends BaseAiApi
 {
     protected function POST_request($prompt, $payload, $url, $type) {
+        return $this->safeExecute(function () use ($prompt, $payload, $url, $type){
         $authorization = "x-api-key: " . $this->xerte_toolkits_site->anthropic_key;
 
         $payload["messages"][max(sizeof($payload["messages"])-1, 0)]["content"] = $prompt;
@@ -25,13 +26,14 @@ class anthropicApi extends BaseAiApi
         $resultConform = $this->clean_result($result);
         $resultConform = json_decode($resultConform);
 
-        if ($resultConform->error) {
-            return (object) ["status" => "error", "message" => "error on api call with type:" . $result->error->type];
+        if ($resultConform['type']=="error") {
+            throw new \Exception('API error: ' . ($resultConform['error']['message'] ?? 'Unknown error'));
         }
         //if (!$this->conform_to_model($resultConform)){
         //    return (object) ["status" => "error", "message" => "answer does not match model"];
         //}
         return $resultConform;
+        });
     }
 
     protected function parseResponse($results)
@@ -41,7 +43,6 @@ class anthropicApi extends BaseAiApi
             if ($result->status) {
                 return $result;
             }
-            //todo change to work for anthropic method
             $answer = $answer . $result->content[0]->text;
         }
         return $answer;
@@ -49,51 +50,58 @@ class anthropicApi extends BaseAiApi
 
     protected function buildQueries(array $inputs): array
     {
-        $apiKey = $this->xerte_toolkits_site->anthropic_key;
-        // 1. Minimal payload
-        $payload = [
-            'model'  => 'claude-3-5-sonnet-20241022',
-            'max_tokens' => 4096,
-            'messages'=> [
-                [ 'role'=>'user', 'content'=><<<SYS
+        return $this->safeExecute(function () use ($inputs) {
+            $apiKey = $this->xerte_toolkits_site->anthropic_key;
+
+            $payload = [
+                'model' => 'claude-3-5-sonnet-20241022',
+                'max_tokens' => 4096,
+                'messages' => [
+                    ['role' => 'user', 'content' => <<<SYS
 You are a query‐builder assistant.
 Given my inputs (as JSON), output *strictly* a JSON object with two fields:
-  • "frequency_query": a single query string for TF–IDF matching  
-  • "vector_query":   a single query string for vector embedding similarity  
+  • "frequency_query": a single query string for TF–IDF matching
+  • "vector_query":   a single query string for vector embedding similarity
 Do not wrap your response in any extra text.
 SYS
+                    ],
+                    ['role' => 'assistant', 'content' => 'Understood. Which inputs would you like me to process first?'],
+                    ['role' => 'user', 'content' => json_encode($inputs, JSON_THROW_ON_ERROR)],
                 ],
-                [ 'role'=>'assistant', 'content'=> 'Understood. Which inputs would you like me to process first?' ],
-                [ 'role'=>'user', 'content'=> json_encode($inputs, JSON_THROW_ON_ERROR) ]
-            ]
-        ];
+            ];
 
-        // 2. Fire off with cURL
-        $ch = curl_init('https://api.anthropic.com/v1/messages');
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST           => true,
-            CURLOPT_HTTPHEADER     => [
-                'Content-Type: application/json',
-                'x-api-key: ' . $apiKey,
-                'anthropic-version: 2023-06-01'
-            ],
-            CURLOPT_POSTFIELDS     => json_encode($payload, JSON_THROW_ON_ERROR),
-        ]);
+            $ch = curl_init('https://api.anthropic.com/v1/messages');
+            try {
+                curl_setopt_array($ch, [
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_POST => true,
+                    CURLOPT_HTTPHEADER => [
+                        'Content-Type: application/json',
+                        'x-api-key: ' . $apiKey,            // (you had a quoting bug earlier)
+                        'anthropic-version: 2023-06-01',
+                    ],
+                    CURLOPT_POSTFIELDS => json_encode($payload, JSON_THROW_ON_ERROR),
+                ]);
 
-        $resp = curl_exec($ch);
+                $resp = curl_exec($ch);
+                if ($resp === false) {
+                    throw new \Exception('cURL error: ' . curl_error($ch));
+                }
 
-        if ($resp === false) {
-            throw new Exception('cURL error: ' . curl_error($ch));
-        }
-        curl_close($ch);
+                $decoded = json_decode($resp, true, 512, JSON_THROW_ON_ERROR);
 
-        // 3. Decode & return
-        $decoded = json_decode($resp, true, 512, JSON_THROW_ON_ERROR);
-        // If the model wrapped in a "choices" array, adjust accordingly:
-        if (isset($decoded['content'][0]['text'])) {
-            $decoded = json_decode($decoded['content'][0]['text'], true, 512, JSON_THROW_ON_ERROR);
-        }
-        return $decoded;
+                if (($decoded['type'] ?? '') === 'error') {
+                    throw new \Exception('API error: ' . ($decoded['error']['message'] ?? 'Unknown error'));
+                }
+
+                if (isset($decoded['content'][0]['text'])) {
+                    $decoded = json_decode($decoded['content'][0]['text'], true, 512, JSON_THROW_ON_ERROR);
+                }
+
+                return $decoded;
+            } finally {
+                curl_close($ch);
+            }
+        });
     }
 }

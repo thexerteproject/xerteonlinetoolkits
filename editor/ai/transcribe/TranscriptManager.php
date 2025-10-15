@@ -14,7 +14,7 @@ class TranscriptManager {
         $fullPath = $this->mediaHandler->returnBasePath() . '/' . ltrim($uploadPath, '/');
         $finalPath = realpath($fullPath);
         if ($finalPath === false) {
-            throw new Exception("File or directory does not exist: " . $fullPath);
+            throw new Exception("File or directory does not exist: " . $uploadPath);
         }
         return $finalPath;
     }

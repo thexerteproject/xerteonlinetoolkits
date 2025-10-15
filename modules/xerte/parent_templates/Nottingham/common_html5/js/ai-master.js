@@ -145,6 +145,8 @@ function xml_to_xerte_content(data, key, pos, tree, realParent) {
 
             console.log("done!")
             alert("Make sure to check the generated results for mistakes!");
+        } else if(result.status='error'){
+            alert(result.message);
         } else {
             console.log(result.message);
         }

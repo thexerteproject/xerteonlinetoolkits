@@ -22,6 +22,20 @@ abstract class BaseAiApi
     //protected $global_instructions = ["When handling text enclosed in attribute tags, all text enclosed within the following attributes: 'text', 'goals', 'audience', 'prereq', 'howto', 'summary', 'nextsteps', 'pageintro', 'tip', 'side1', 'side2', 'txt', 'instruction', 'prompt', 'answer', 'intro', 'feedback', 'unit', 'question', 'hint', 'label', 'passage', 'initialtext', 'initialtitle', 'suggestedtext', 'suggestedtitle', 'generalfeedback', 'instructions', 'p1', 'p2', 'title', 'introduction', 'wrongtext', 'wordanswer', 'words' must be formatted with relevant HTML encoding tags (headers, paragraphs, etc. if needed), you have to use EXCLUSIVELY HTML entities. On the other hand, when handling text in CDATA nodes, only IF there is text inside CDATA nodes in the first response you gave, format it using at minimum paragraph tags, or other relevant tags if needed. Otherwise, do NOT wrap text which belongs in attributes into CDATA nodes."];
      protected $globalInstructions = [];
 
+    private const DEFAULT_MSG = 'An unexpected error occurred. If this persists, please inform your administrator.';
+
+    //List of error messages which can explicitly be sent to the frontend.
+    private const ALLOWED_USER_MESSAGES = [
+        // API
+        'There was an error with the API response. If this persists, please inform your administrator.',
+        // Network
+        'There was an unexpected network error. Please wait a few minutes, then try again. If this persists, please inform your administrator.',
+        //JSON/Parse
+        'There was an unexpected error while processing your request. If this persists, please inform your administrator.',
+        // Generic
+        self::DEFAULT_MSG,
+    ];
+
     function __construct(string $api) {
         global $xerte_toolkits_site;
         $this->api = $api;
@@ -50,6 +64,56 @@ abstract class BaseAiApi
     abstract protected function buildQueries(array $inputs): array;
 
     abstract protected function parseResponse($results);
+
+    /**
+     * Logs the real error details and return a standardised message for the user.
+     *
+     * @param string    $type     One of: 'api', 'json', 'curl', or 'default'
+     * @param Throwable $e        The caught exception (for internal logging)
+     * @param string    $context  Optional short context label, e.g. 'buildQueries'
+     */
+    protected function handleError(string $type, Throwable $e, string $context = 'General'): string
+    {
+        // Log full internal detail
+        error_log(sprintf('[%s] %s', $context, $e->getMessage()));
+
+        $messages = [
+            'api'    => 'There was an error with the API response. If this persists, please inform your administrator.',
+            'json'   => 'There was an unexpected error while processing your request. If this persists, please inform your administrator.',
+            'curl'   => 'There was an unexpected network error. Please wait a few minutes, then try again. If this persists, please inform your administrator.',
+            'default'=> 'An unexpected error occurred. If this persists, please inform your administrator.'
+        ];
+
+        return $messages[$type] ?? $messages['default'];
+    }
+
+    protected function safeExecute(callable $fn, string $context = 'General'): mixed
+    {
+        try {
+            return $fn();
+        } catch (Throwable $e) {
+            $msgType = match (true) {
+                $e instanceof JsonException => 'json',
+                str_starts_with($e->getMessage(), 'cURL') => 'curl',
+                str_starts_with($e->getMessage(), 'API') => 'api',
+                default => 'default',
+            };
+
+            throw new \Exception($this->handleError($msgType, $e, $context));
+        }
+    }
+
+    // Check if error message should make it to the front end
+    protected function toUserMessage(\Throwable $e, string $context = 'General'): string
+    {
+        // Log raw message
+        error_log(sprintf('[%s boundary] %s', $context, $e->getMessage()));
+
+        $msg = $e->getMessage();
+        return in_array($msg, self::ALLOWED_USER_MESSAGES, true)
+            ? $msg
+            : self::DEFAULT_MSG;
+    }
 
     /**
      * Remove characters that are illegal in XML 1.0.
@@ -292,83 +356,87 @@ abstract class BaseAiApi
             return (object) ["status" => "error", "message" => "there is no corresponding API key"];
         }*/
 
+        try {
+            $this->setupLanguageInstructions($selectedCode);
+            $managementSettings = get_block_indicators();
 
-        $this->setupLanguageInstructions($selectedCode);
-        $managementSettings = get_block_indicators();
+            //We add this as a prompt param for prompts which might make use of the language information.
+            //When making any prompt, the stand-in for the language must therefore be 'responseLanguage'
+            $p['responseLanguage'] = $this->languageName;
 
-        //We add this as a prompt param for prompts which might make use of the language information.
-        //When making any prompt, the stand-in for the language must therefore be 'responseLanguage'
-        $p['responseLanguage'] = $this->languageName;
+            $model = load_model($type, $this->api, null, $context, $subtype);
 
-        $model = load_model($type, $this->api, null, $context, $subtype);
+            $prompt = $this->generatePrompt($p, $model);
+            $payload = $model->get_payload();
 
-        $prompt = $this->generatePrompt($p, $model);
-        $payload = $model->get_payload();
+            if ($useCorpus || $fileList != null || $restrictCorpusToLo) {
+                $encodingApiKey = $this->xerte_toolkits_site->{$managementSettings['encoding']['key_name']};
+                $encodingDirectory = $this->prepareURL($baseUrl);
+                $provider = $managementSettings['encoding']['active_vendor'];
+                $cfg = [
+                    'api_key' => $encodingApiKey,
+                    'encoding_directory' => $encodingDirectory,
+                    'provider' => $provider
+                ];
+                $rag = makeRag($cfg);
+                if ($rag->isCorpusValid()) {
+                    $promptReferences = $this->buildQueries($p);
+                    $promptReference = $promptReferences['vector_query'];
+                    //$testReference = $promptReferences['frequency_query'];
+                    if ($restrictCorpusToLo) {
+                        $fileList = [$encodingDirectory . '/preview.xml'];
+                        $weights = [
+                            'embedding_cosine' => 0.3,
+                            'embedding_euclidean' => 0.2,
+                            'tfidf_cosine' => 0.3,
+                            'tfidf_euclidean' => 0.2
+                        ];
+                        $context = $rag->getWeightedContext($promptReference, $fileList, $weights, 25);
+                    } else {
+                        $context = $rag->getWeightedContext($promptReference, $fileList, '', 5);
+                        //$testContext = $rag->getWeightedContext($testReference, $fileList, '', 5);
+                    }
 
-        if ($useCorpus || $fileList != null || $restrictCorpusToLo){
-            $encodingApiKey = $this->xerte_toolkits_site->{$managementSettings['encoding']['key_name']};
-            $encodingDirectory = $this->prepareURL($baseUrl);
-            $provider = $managementSettings['encoding']['active_vendor'];
-            $cfg = [
-                'api_key' => $encodingApiKey,
-                'encoding_directory' => $encodingDirectory,
-                'provider' => $provider
-            ];
-            $rag = makeRag($cfg);
-            if ($rag->isCorpusValid()){
-                $promptReferences = $this->buildQueries($p);
-                $promptReference = $promptReferences['vector_query'];
-                //$testReference = $promptReferences['frequency_query'];
-                if ($restrictCorpusToLo){
-                    $fileList = [$encodingDirectory . '/preview.xml'];
-                    $weights = [
-                        'embedding_cosine' => 0.3,
-                        'embedding_euclidean' => 0.2,
-                        'tfidf_cosine' => 0.3,
-                        'tfidf_euclidean' => 0.2
-                    ];
-                    $context = $rag->getWeightedContext($promptReference, $fileList, $weights, 25);
-                }else{
-                    $context = $rag->getWeightedContext($promptReference, $fileList, '', 5);
-                    //$testContext = $rag->getWeightedContext($testReference, $fileList, '', 5);
+                    $new_messages = array(
+                        array(
+                            'role' => 'user',
+                            'content' => 'Great job! That\'s a great example of what I need. Now, I want to send you the context of the learning object you are generating these XMLs for. Bear in mind, the context can take different forms: transcripts or text. In the future, please generate the xml based on the context I will provide.',
+                        ),
+                        array(
+                            'role' => 'assistant',
+                            'content' => 'Understood. I\'m happy to help you with your task. Please provide the current context of the learning object. I will keep in mind that for transcripts, I dont have to include the timestamps in my response unless otherwise specified. Once you do, we can proceed to generating new XML objects using the exact same structure I used in my previous message, this time taking the new context into account.',
+                        ),
+                        array(
+                            'role' => 'user',
+                            'content' => 'Ok. Remember, when you generate the new XML, it should do so with the context here in mind! I\'ve compiled the data for you here: [START OF CONTEXT]' . $context[0]['chunk'] . $context[1]['chunk'] . $context[2]['chunk'] . $context[3]['chunk'] . $context[4]['chunk'] . " [END OF CONTEXT]",
+                        ),
+                        array(
+                            'role' => 'assistant',
+                            'content' => 'Great! Now that we know the context of the sort of information I am working with, I can proceed with generating a new XML with the exact same XML structure as the first one I made, but with content adapted to the context. Please specify any of the other requirements for the XML, and I will return the XML directly with no additional commentary, so that you can immediately use my message as the XML.',
+                        ),
+                    );
+
+                    $messages =& $this->getMessagesArray($payload);
+                    array_splice($messages, 2, 0, $new_messages);
                 }
-
-                $new_messages = array(
-                    array(
-                        'role' => 'user',
-                        'content' => 'Great job! That\'s a great example of what I need. Now, I want to send you the context of the learning object you are generating these XMLs for. Bear in mind, the context can take different forms: transcripts or text. In the future, please generate the xml based on the context I will provide.',
-                    ),
-                    array(
-                        'role' => 'assistant',
-                        'content' => 'Understood. I\'m happy to help you with your task. Please provide the current context of the learning object. I will keep in mind that for transcripts, I dont have to include the timestamps in my response unless otherwise specified. Once you do, we can proceed to generating new XML objects using the exact same structure I used in my previous message, this time taking the new context into account.',
-                    ),
-                    array(
-                        'role' => 'user',
-                        'content' => 'Ok. Remember, when you generate the new XML, it should do so with the context here in mind! I\'ve compiled the data for you here: [START OF CONTEXT]' . $context[0]['chunk'] . $context[1]['chunk'] . $context[2]['chunk'] . $context[3]['chunk'] . $context[4]['chunk'] . " [END OF CONTEXT]",
-                    ),
-                    array(
-                        'role' => 'assistant',
-                        'content' => 'Great! Now that we know the context of the sort of information I am working with, I can proceed with generating a new XML with the exact same XML structure as the first one I made, but with content adapted to the context. Please specify any of the other requirements for the XML, and I will return the XML directly with no additional commentary, so that you can immediately use my message as the XML.',
-                    ),
-                );
-
-                $messages =& $this->getMessagesArray($payload);
-                array_splice($messages, 2, 0, $new_messages);
             }
+
+            $results = array();
+
+            $results[] = $this->POST_request($prompt, $payload, $model->get_chat_url(), $type);
+
+            $answer = $this->parseResponse($results);
+
+            $answer = $this->removeBracketsAndContent($answer);
+            $answer = $this->cleanXmlCode($answer);
+            $answer = $this->cleanJsonCode($answer);
+            $answer = preg_replace('/&(?!#\d+;|amp;|lt;|gt;|quot;|apos;)/', '&amp;', $answer);
+            $answer = $this->sanitizeXmlAttributes($answer);
+            $answer = $this->sanitizeModelXml($answer);
+            return $answer;
         }
-
-        $results = array();
-
-        $results[] = $this->POST_request($prompt, $payload, $model->get_chat_url(), $type);
-
-        $answer = $this->parseResponse($results);
-
-        $answer = $this->removeBracketsAndContent($answer);
-        $answer = $this->cleanXmlCode($answer);
-        $answer = $this->cleanJsonCode($answer);
-        $answer = preg_replace('/&(?!#\d+;|amp;|lt;|gt;|quot;|apos;)/', '&amp;', $answer);
-        $answer = $this->sanitizeXmlAttributes($answer);
-        $answer = $this->sanitizeModelXml($answer);
-        return $answer;
+        catch (Throwable $e){
+            return (object) ["status" => "error", "message" => $this->toUserMessage($e)];
+        }
     }
 }

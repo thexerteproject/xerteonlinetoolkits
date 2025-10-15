@@ -1256,9 +1256,12 @@ abstract class BaseRAG
             $candidatesEmbeddingEuclidean = $this->getContextEuclidean($question, 10, $allowedFileHashes);
         }
 
-        //If allowedFileHashes is not null, it means the user has requested a restricted context
-        //We take the provided list, which is of the partial file sources, and retrieve the associated hashes from the
-        //corpus file for filtering.
+        /*
+         * If allowedFileHashes is not null, it means the user has requested a restricted context
+         * We take the provided list, which is of the partial file sources, and retrieve the associated hashes from the
+         * corpus file for filtering.
+         */
+
         if ($allowedFileHashes != null){
             $corpus = $this->corpusFile;
             $this->generateTfidfPersistent($allowedFileHashes);

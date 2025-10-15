@@ -6742,7 +6742,7 @@ var EDITOR = (function ($, parent) {
                                     }),
                                     success: function(resp) {
                                         if (!resp?.corpus) {
-                                            alert('No corpus data returned. Please check the server response.');
+                                            alert('No corpus data returned.');
                                             reject(new Error('No corpus data'));
                                             return;
                                         }

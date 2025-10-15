@@ -11,7 +11,7 @@ require_once (str_replace('\\', '/', __DIR__) . "/../../../vendor_config.php");
 require_once (str_replace('\\', '/', __DIR__) . "/RagFactory.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../management/dataRetrievalHelper.php");
 
-use rag\MistralRAG;
+use function rag\makeRag;
 
 ob_start();
 
