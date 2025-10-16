@@ -1284,14 +1284,14 @@ var EDITOR = (function ($, parent) {
                         }
                         return raw;
                     } catch {
-                        alert(`Malformed URL: ${raw}\nPlease check and try again.`);
+                        alert(`${raw} ${language.vendorApi.contextAlerts.malformedContextUrlMsg}`);
                         throw new Error(`Malformed URL: ${raw}`);
                     }
                 }
 
                 // 2) Bare hostnames without scheme => user error
                 if (/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/|$)/.test(raw)) {
-                    alert(`Invalid URL: ${raw}\nPlease include http:// or https:// if you mean a web link.`);
+                    alert(`${raw} ${language.vendorApi.contextAlerts.missingHttpMsg}`);
                     throw new Error(`Invalid URL: ${raw}`);
                 }
 
@@ -1309,8 +1309,8 @@ var EDITOR = (function ($, parent) {
                     return raw.slice(idxPreviewAny).replace(/^['"]+|['"]+$/g, '');
                 }
 
-                // 4) Nothing matched → error
-                alert(`Unrecognized path: ${raw}\nMust be a full URL or contain “corpus/” in it.`);
+                // 4) Nothing matched, error
+                alert(`${raw} ${language.vendorApi.contextAlerts.unrecognisedContextPathMsg}`);
                 throw new Error(`Unrecognized path: ${raw}`);
             }
             //Upload a single file to the corpus
@@ -1361,7 +1361,7 @@ var EDITOR = (function ($, parent) {
                             },
                             error: function(xhr, status, err) {
                                 console.error('Corpus sync failed:', err);
-                                alert('⚠️ Corpus sync error: ' + err);
+                                alert(`${language.vendorApi.contextAlerts.syncErrorGenericMsg}`);
                                 reject(err);
                             }
                         });
@@ -1389,7 +1389,7 @@ var EDITOR = (function ($, parent) {
                     }),
                     success: function(resp) {
                         if (!resp?.corpus) {
-                            alert('No corpus data returned. Please check the server response.');
+                            alert(`${language.vendorApi.contextAlerts.noContextReturnedSubmitMsg}`);
                             return;
                         }
                         var gridId = '#' + resp.gridId + '_jqgrid';
@@ -1409,7 +1409,7 @@ var EDITOR = (function ($, parent) {
                     },
                     error: function(xhr, status, err) {
                         console.error('Failed to fetch corpus:', err);
-                        alert('⚠️ Error loading corpus data: ' + err);
+                        alert(`${language.vendorApi.contextAlerts.noContextReturnedSubmitMsg}`);
                     }
                 });
             }
@@ -1467,14 +1467,14 @@ var EDITOR = (function ($, parent) {
                         }
                         return raw;
                     } catch {
-                        alert(`Malformed URL: ${raw}\nPlease check and try again.`);
+                        alert(`${raw} ${language.vendorApi.contextAlerts.malformedContextUrlMsg}`);
                         throw new Error(`Malformed URL: ${raw}`);
                     }
                 }
 
                 // 2) Bare hostnames without scheme => user error
                 if (/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/|$)/.test(raw)) {
-                    alert(`Invalid URL: ${raw}\nPlease include http:// or https:// if you mean a web link.`);
+                    alert(`${raw} ${language.vendorApi.contextAlerts.missingHttpMsg}`);
                     throw new Error(`Invalid URL: ${raw}`);
                 }
 
@@ -1486,8 +1486,8 @@ var EDITOR = (function ($, parent) {
                     return raw.slice(idxAny).replace(/^['"]+|['"]+$/g, '');
                 }
 
-                // 4) Nothing matched → error
-                alert(`Unrecognized path: ${raw}\nMust be a full URL or contain “corpus/” in it.`);
+                // 4) Nothing matched, error
+                alert(`${raw} ${language.vendorApi.contextAlerts.unrecognisedContextPathMsg}`);
                 throw new Error(`Unrecognized path: ${raw}`);
             }
 
@@ -1517,7 +1517,7 @@ var EDITOR = (function ($, parent) {
                             resolve(resp);
                         },
                         error: function(xhr, status, err) {
-                            alert('⚠️ Corpus sync error: ' + err);
+                            alert(`${language.vendorApi.contextAlerts.syncErrorGenericMsg}`);
                             reject(err);
                         },
                         complete: function() {
@@ -1545,7 +1545,7 @@ var EDITOR = (function ($, parent) {
                     }),
                     success: function(resp) {
                         if (!resp?.corpus) {
-                            alert('No corpus data returned. Please check the server response.');
+                            alert(`${language.vendorApi.contextAlerts.noContextReturnedSubmitMsg}`);
                             return;
                         }
                         var gridId = '#' + resp.gridId + '_jqgrid';
@@ -1564,7 +1564,7 @@ var EDITOR = (function ($, parent) {
                     },
                     error: function(xhr, status, err) {
                         console.error('Failed to fetch corpus:', err);
-                        alert('⚠️ Error loading corpus data: ' + err);
+                        alert(`${language.vendorApi.contextAlerts.noContextReturnedSubmitMsg}`);
                     }
                 });
             }
@@ -6630,14 +6630,14 @@ var EDITOR = (function ($, parent) {
                                         ? u.pathname.slice(idx + 1).replace(/^['"]+|['"]+$/g, '')
                                         : raw;
                                 } catch {
-                                    alert(`Malformed URL: ${raw}\nPlease check and try again.`);
+                                    alert(`${raw} ${language.vendorApi.contextAlerts.malformedContextUrlMsg}`);
                                     throw new Error(`Malformed URL: ${raw}`);
                                 }
                             }
 
                             // 2) Bare hostnames without scheme => user error
                             if (/^[^\/]+\.[^\/]+(\/|$)/.test(raw)) {
-                                alert(`Invalid URL: ${raw}\nPlease include http:// or https:// if you mean a web link.`);
+                                alert(`${raw} ${language.vendorApi.contextAlerts.missingHttpMsg}`);
                                 throw new Error(`Invalid URL: ${raw}`);
                             }
 
@@ -6651,7 +6651,7 @@ var EDITOR = (function ($, parent) {
                             }
 
                             // 4) Nothing matched → error
-                            alert(`Unrecognized path: ${raw}\nMust be a full URL or contain “corpus/” in it.`);
+                            alert(`${raw} ${language.vendorApi.contextAlerts.unrecognisedContextPathMsg}`);
                             throw new Error(`Unrecognized path: ${raw}`);
                         }
 
@@ -6709,7 +6709,7 @@ var EDITOR = (function ($, parent) {
                                     },
                                     error: function(xhr, status, err) {
                                         console.error('Corpus sync failed:', err);
-                                        alert('⚠️ Corpus sync error: ' + err);
+                                        alert(`${language.vendorApi.contextAlerts.syncErrorGenericMsg}`);
                                         reject(err);
                                     }, complete: function() {
                                         // Always reset cursor
@@ -6742,7 +6742,7 @@ var EDITOR = (function ($, parent) {
                                     }),
                                     success: function(resp) {
                                         if (!resp?.corpus) {
-                                            alert('No corpus data returned.');
+                                            alert(`${language.vendorApi.contextAlerts.noContextReturnedSubmitMsg}`);
                                             reject(new Error('No corpus data'));
                                             return;
                                         }
@@ -6750,7 +6750,7 @@ var EDITOR = (function ($, parent) {
                                     },
                                     error: function(xhr, status, err) {
                                         console.error('Failed to fetch corpus:', err);
-                                        alert('⚠️ Error loading corpus data: ' + err);
+                                        alert(`${language.vendorApi.contextAlerts.noContextReturnedSubmitMsg}`);
                                         reject(err);
                                     },
                                     complete: function() {
@@ -6778,7 +6778,7 @@ var EDITOR = (function ($, parent) {
                          */
                         async function doCorpusCheck(fileUrl, loSettings) {
                             if (loSettings['useLoInCorpus'] === true){
-                                alert('Updating to latest learning object preview. Depending on learning object size, this may take a few minutes.');
+                                alert(`${language.vendorApi.contextAlerts.contextUpdatePreviewMsg}`);
                                 await savepreviewPromise();
                                 const data = await updateCorpus(fileUrl, false, true);
                                 if ((data?.results?.[0]?.continue_request === 'false')|| (data.success === false)){
@@ -6795,10 +6795,10 @@ var EDITOR = (function ($, parent) {
                                     );
 
                                     if (match) {
-                                        alert('File found in corpus. Proceeding with AI request, using only this file as the context.');
+                                        alert(`${language.vendorApi.contextAlerts.contextFileFoundProceedMsg}`);
                                         return match.metaData.source;  // file found
                                     } else {
-                                        if (confirm("The file you've selected has not yet been processed, and cannot be used as context for generation. Would you like to add it to the context for this learning object? For videos or larger files, this might take several minutes.")){
+                                        if (confirm(`${language.vendorApi.contextAlerts.contextInPageProcessPromptMsg}`)){
                                             let fileStatus = await updateCorpus(fileUrl, false);
                                             if ((fileStatus?.results?.[0]?.continue_request === 'false') || (fileStatus.success === false)) {
                                                 return false;
@@ -6852,13 +6852,13 @@ var EDITOR = (function ($, parent) {
                                 let fullUrl = null;
                                 if ((uploadPrompt === 'true')&&(!(loSettings['useLoInCorpus'] && loSettings['restrictCorpusToLo']))) {
                                     if (aiSettings['fileUrl'] === null) {
-                                        alert("You've selected the 'file upload' option but haven't selected a file or provided a valid link. Please select an uploaded file, upload a new file, or use a youtube, vimeo or video.dlearning link.");
+                                        alert(`${language.vendorApi.contextAlerts.contextFileUploadMissingInput}`);
                                         return;
                                     }
                                     let cleanFileUrl = aiSettings['fileUrl'].replace("FileLocation + '", "").replace("'", "");
                                     fullUrl = baseUrl + cleanFileUrl;
                                 } else if (aiSettings['textSnippet'] === null && aiSettings['uploadPrompt'] === 'trueText') {
-                                    alert("You've selected the 'Submit Snippet' option but haven't included any text.");
+                                    alert(`${language.vendorApi.contextAlerts.contextSnippetMissingInput}`);
                                     return;
                                 }
 
@@ -6973,7 +6973,7 @@ var EDITOR = (function ($, parent) {
                     },
                     error: function(xhr, status, err) {
                         console.error('Failed to fetch corpus:', err);
-                        alert('⚠️ Error loading corpus data: ');
+                        alert(`${language.vendorApi.contextAlerts.noContextReturnedSubmitMsg}`);
                     }
                 });
             }

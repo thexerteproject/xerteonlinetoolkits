@@ -1878,11 +1878,7 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
                     // if they’d checked something, ask whether to keep them
                     let toDelete;
                         if (keptIndices.length) {
-                            let keep = confirm(
-                                "You’ve selected " + keptIndices.length + " image(s).\n\n" +
-                                "OK = keep those and delete the rest\n" +
-                                "Cancel = delete all images"
-                            );
+                            let keep = confirm(`${language.imageSelection.closeWindowWithSelectionsMsg1} ${keptIndices.length} \n\n ${language.imageSelection.closeWindowWithSelectionsMsg2}\n${language.imageSelection.closeWindowWithSelectionsMsg3}`);
                             toDelete = keep
                                 ? allIndices.filter(i => keptIndices.indexOf(i) === -1)
                                 : allIndices;
@@ -1931,7 +1927,7 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
 												type: "POST",
 												data: {indices_to_delete: indices_to_delete},
 												success: function(data){
-														alert("Kept images successfully saved to media folder.");
+                                                        alert(`${language.imageSelection.imageSavedSuccessMsg}`);
 														selection_window.close();
 														if(single_image_selection) {
 
@@ -1943,7 +1939,7 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
 												},
 												error: function(xhr, status, error){
 														console.log("Error deleting images: ", error);
-														alert("an error occurred");
+                                                    alert(`${language.imageSelection.deletionError}`);
 												},
                                                 complete: function() {
                                                     $.featherlight.close();
@@ -2032,7 +2028,7 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
 								let credits_button_width = 0;
                 //console.log("The image results have successfully been retrieved:", data);
                                 if (image_data.paths.length === 0) {
-                                    let no_image_text = "<div>There where no results for your search words. Please verify that the given search terms are spelled correctly<div>";
+                                    let no_image_text = "<div>" + language.imageSelection.noImagesReturnedMsg + "<div>";
                                     image_preview_images.append(no_image_text);
                                 }
 								for(let i = 0; i < image_data.paths.length; i++){
