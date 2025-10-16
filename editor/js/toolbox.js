@@ -1159,6 +1159,182 @@ var EDITOR = (function ($, parent) {
 			}
 		});
 
+        //if grid is a corpusGrid, perform the AI Context-specific verifications and proceed only if the posted data passes all the reqs
+        if (name == 'corpus'){
+            function normalizePath(raw) {
+                // strip any surrounding single or double quotes, and trim whitespaces
+                raw = raw.replace(/^['"]+|['"]+$/g, '').trim();
+
+                // 1) Full URLs with scheme (http:// or https://)
+                if (/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(raw)) {
+                    try {
+                        const u = new URL(raw);
+                        if (u.origin !== window.location.origin) {
+                            // External URL => leave intact
+                            return raw;
+                        }
+                        // Same-origin URL => strip after /RAG/corpus/ or preview.xml if present
+                        const idxCorpus = u.pathname.indexOf('/RAG/corpus/');
+                        const idxPreview = u.pathname.indexOf('preview.xml');
+                        if (idxCorpus !== -1) {
+                            return u.pathname.slice(idxCorpus + 1).replace(/^['"]+|['"]+$/g, '');
+                        }
+                        if (idxPreview !== -1) {
+                            return u.pathname.slice(idxPreview).replace(/^['"]+|['"]+$/g, '');
+                        }
+                        return raw;
+                    } catch {
+                        alert(`${raw} ${language.vendorApi.contextAlerts.malformedContextUrlMsg}`);
+                        throw new Error(`Malformed URL: ${raw}`);
+                    }
+                }
+
+                // 2) Bare hostnames without scheme => user error
+                if (/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/|$)/.test(raw)) {
+                    alert(`${raw} ${language.vendorApi.contextAlerts.missingHttpMsg}`);
+                    throw new Error(`Invalid URL: ${raw}`);
+                }
+
+                // 3) Anywhere the text "RAG/corpus/" or "preview.xml" appears, pull out from there
+                const idxAny = raw.indexOf('RAG/corpus/');
+                const idxPreviewAny = raw.indexOf('preview.xml');
+                if (idxAny !== -1) {
+                    // slice and strip quotes again just in case
+                    return raw.slice(idxAny).replace(/^['"]+|['"]+$/g, '');
+                }
+                if (idxPreviewAny !== -1) {
+                    // slice and strip quotes again just in case
+                    //When normalizing in the corpus, if we see preview.xml, we update the LO in corpus.
+                    updateCorpusSingle(false, true);
+                    return raw.slice(idxPreviewAny).replace(/^['"]+|['"]+$/g, '');
+                }
+
+                // 4) Nothing matched, error
+                alert(`${raw} ${language.vendorApi.contextAlerts.unrecognisedContextPathMsg}`);
+                throw new Error(`Unrecognized path: ${raw}`);
+            }
+            //Upload a single file to the corpus
+            async function updateCorpusSingle(postData, corpusGrid = false, useLoInCorpus) {
+                //  Show wait cursor
+                $('body, .featherlight, .featherlight-content').css("cursor", "wait");
+
+                const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+                try {
+                // Build grid row
+                let singleRow = {};
+                if (!useLoInCorpus) {
+                    singleRow = {
+                        col_1: postData['col_1'],
+                        col_2: normalizePath(postData['col_2']),
+                        col_3: postData['col_3'],
+                        col_4: ""
+                    };
+                } else {
+                    singleRow = {
+                        col_1: "",
+                        col_2: [],
+                        col_3: "",
+                        col_4: ""
+                    };
+                }
+
+                const payload = { name, baseURL, gridData: [singleRow], corpusGrid, useLoInCorpus };
+
+                // Return Promise and reset cursor in finally
+
+                    return await new Promise((resolve, reject) => {
+                        $.ajax({
+                            url: 'editor/ai/rag/syncCorpus.php',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(payload),
+                            success: function(resp) {
+                                console.log('Corpus sync succeeded:', resp);
+                                const first = resp.results?.[0] || {};
+                                const displaymsg =
+                                    first.rag_status ||
+                                    first.transcription_status ||
+                                    resp?.error ||
+                                    'No status available';
+                                alert(displaymsg);
+                                resolve(resp);
+                            },
+                            error: function(xhr, status, err) {
+                                console.error('Corpus sync failed:', err);
+                                alert(`${language.vendorApi.contextAlerts.syncErrorGenericMsg}`);
+                                reject(err);
+                            }
+                        });
+                    });
+                } finally {
+                    // Reset cursor no matter what
+                    $('body, .featherlight, .featherlight-content').css("cursor", "default");
+                }
+            }
+
+            function updateGrid(name, id) {
+                const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+
+                $.ajax({
+                    url: 'editor/ai/rag/getCorpus.php',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify({
+                        name: name,
+                        baseURL: baseURL,
+                        type: name,
+                        gridId: id,
+                        format: "csv"
+                    }),
+                    success: function(resp) {
+                        if (!resp?.corpus) {
+                            alert(`${language.vendorApi.contextAlerts.noContextReturnedSubmitMsg}`);
+                            return;
+                        }
+                        var gridId = '#' + resp.gridId + '_jqgrid';
+                        $(gridId).jqGrid('clearGridData');
+                        setAttributeValue(key, [resp.type], [resp.corpus]);
+                        var rows = readyLocalJgGridData(key, resp.type);
+                        $(gridId).jqGrid('setGridParam', {data: rows});
+                        $(gridId).trigger('reloadGrid');
+
+                        // show a count
+                        let totalFiles = 0;
+                        if (resp.corpus && typeof resp.corpus === "string") {
+                            // Remove leading/trailing whitespace, split on newlines, filter out empty lines
+                            totalFiles = resp.corpus.trim().split('\n').filter(line => line.trim() !== '').length;
+                            //alert(`✅ Grid updated.`);
+                        }
+                    },
+                    error: function(xhr, status, err) {
+                        console.error('Failed to fetch corpus:', err);
+                        alert(`${language.vendorApi.contextAlerts.noContextReturnedSubmitMsg}`);
+                    }
+                });
+            }
+            (async () => {
+                try {
+                    await updateCorpusSingle(postdata, false, false);
+                } catch (e) {
+                    console.error(e);
+                }
+            })();
+
+            //There is no need to continue with the rest, because updateGrid and updateCorpusSingle already handle the data to and from the backend
+            if ((addMode && options.closeAfterAdd) || (!addMode && options.closeAfterEdit)) {
+                // close the edit/add dialog
+                $.jgrid.hideModal("#editmod"+grid_id,
+                    {gb:"#gbox_"+grid_id,jqm:options.jqModal,onClose:options.onClose});
+            }
+
+            //Always update the grid so that it matches the actual corpus
+            updateGrid(name, id);
+
+            this.processing = true;
+            return {};
+        }
+
         if (postdata[id_in_postdata])
         {
             rowid = postdata[id_in_postdata];
@@ -1260,170 +1436,6 @@ var EDITOR = (function ($, parent) {
 
 		checkRowIds(grid);
 
-        if (name == 'corpus'){
-            function normalizePath(raw) {
-                // strip any surrounding single or double quotes, and trim whitespaces
-                raw = raw.replace(/^['"]+|['"]+$/g, '').trim();
-
-                // 1) Full URLs with scheme (http:// or https://)
-                if (/^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(raw)) {
-                    try {
-                        const u = new URL(raw);
-                        if (u.origin !== window.location.origin) {
-                            // External URL => leave intact
-                            return raw;
-                        }
-                        // Same-origin URL => strip after /RAG/corpus/ or preview.xml if present
-                        const idxCorpus = u.pathname.indexOf('/RAG/corpus/');
-                        const idxPreview = u.pathname.indexOf('preview.xml');
-                        if (idxCorpus !== -1) {
-                            return u.pathname.slice(idxCorpus + 1).replace(/^['"]+|['"]+$/g, '');
-                        }
-                        if (idxPreview !== -1) {
-                            return u.pathname.slice(idxPreview).replace(/^['"]+|['"]+$/g, '');
-                        }
-                        return raw;
-                    } catch {
-                        alert(`${raw} ${language.vendorApi.contextAlerts.malformedContextUrlMsg}`);
-                        throw new Error(`Malformed URL: ${raw}`);
-                    }
-                }
-
-                // 2) Bare hostnames without scheme => user error
-                if (/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/|$)/.test(raw)) {
-                    alert(`${raw} ${language.vendorApi.contextAlerts.missingHttpMsg}`);
-                    throw new Error(`Invalid URL: ${raw}`);
-                }
-
-                // 3) Anywhere the text "RAG/corpus/" or "preview.xml" appears, pull out from there
-                const idxAny = raw.indexOf('RAG/corpus/');
-                const idxPreviewAny = raw.indexOf('preview.xml');
-                if (idxAny !== -1) {
-                    // slice and strip quotes again just in case
-                    return raw.slice(idxAny).replace(/^['"]+|['"]+$/g, '');
-                }
-                if (idxPreviewAny !== -1) {
-                    // slice and strip quotes again just in case
-                    //When normalizing in the corpus, if we see preview.xml, we update the LO in corpus.
-                    updateCorpusSingle(false, true);
-                    return raw.slice(idxPreviewAny).replace(/^['"]+|['"]+$/g, '');
-                }
-
-                // 4) Nothing matched, error
-                alert(`${raw} ${language.vendorApi.contextAlerts.unrecognisedContextPathMsg}`);
-                throw new Error(`Unrecognized path: ${raw}`);
-            }
-            //Upload a single file to the corpus
-            async function updateCorpusSingle(postData, corpusGrid = false, useLoInCorpus) {
-                //  Show wait cursor
-                $('body, .featherlight, .featherlight-content').css("cursor", "wait");
-
-                const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
-
-                // Build grid row
-                let singleRow = {};
-                if (!useLoInCorpus) {
-                    singleRow = {
-                        col_1: postData['col_1'],
-                        col_2: normalizePath(postData['col_2']),
-                        col_3: postData['col_3'],
-                        col_4: ""
-                    };
-                } else {
-                    singleRow = {
-                        col_1: "",
-                        col_2: [],
-                        col_3: "",
-                        col_4: ""
-                    };
-                }
-
-                const payload = { name, baseURL, gridData: [singleRow], corpusGrid, useLoInCorpus };
-
-                // Return Promise and reset cursor in finally
-                try {
-                    return await new Promise((resolve, reject) => {
-                        $.ajax({
-                            url: 'editor/ai/rag/syncCorpus.php',
-                            method: 'POST',
-                            contentType: 'application/json',
-                            data: JSON.stringify(payload),
-                            success: function(resp) {
-                                console.log('Corpus sync succeeded:', resp);
-                                const first = resp.results?.[0] || {};
-                                const displaymsg =
-                                    first.rag_status ||
-                                    first.transcription_status ||
-                                    resp?.error ||
-                                    'No status available';
-                                alert(displaymsg);
-                                resolve(resp);
-                            },
-                            error: function(xhr, status, err) {
-                                console.error('Corpus sync failed:', err);
-                                alert(`${language.vendorApi.contextAlerts.syncErrorGenericMsg}`);
-                                reject(err);
-                            }
-                        });
-                    });
-                } finally {
-                    // Reset cursor no matter what
-                    $('body, .featherlight, .featherlight-content').css("cursor", "default");
-                }
-            }
-
-            function updateGrid(name, id) {
-                const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
-
-                $.ajax({
-                    url: 'editor/ai/rag/getCorpus.php',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    dataType: 'json',
-                    data: JSON.stringify({
-                        name: name,
-                        baseURL: baseURL,
-                        type: name,
-                        gridId: id,
-                        format: "csv"
-                    }),
-                    success: function(resp) {
-                        if (!resp?.corpus) {
-                            alert(`${language.vendorApi.contextAlerts.noContextReturnedSubmitMsg}`);
-                            return;
-                        }
-                        var gridId = '#' + resp.gridId + '_jqgrid';
-                        $(gridId).jqGrid('clearGridData');
-                        setAttributeValue(key, [resp.type], [resp.corpus]);
-                        var rows = readyLocalJgGridData(key, resp.type);
-                        $(gridId).jqGrid('setGridParam', {data: rows});
-                        $(gridId).trigger('reloadGrid');
-
-                        // show a count
-                        let totalFiles = 0;
-                        if (resp.corpus && typeof resp.corpus === "string") {
-                            // Remove leading/trailing whitespace, split on newlines, filter out empty lines
-                            totalFiles = resp.corpus.trim().split('\n').filter(line => line.trim() !== '').length;
-                            //alert(`✅ Grid updated.`);
-                        }
-                    },
-                    error: function(xhr, status, err) {
-                        console.error('Failed to fetch corpus:', err);
-                        alert(`${language.vendorApi.contextAlerts.noContextReturnedSubmitMsg}`);
-                    }
-                });
-            }
-            (async () => {
-                try {
-                    await updateCorpusSingle(postdata, false, false);
-                    updateGrid(name, id);
-                } catch (e) {
-                    console.error(e);
-                }
-            })();
-
-        }
-
         // !!! the most important step: skip ajax request to the server
         this.processing = true;
         return {};
@@ -1513,7 +1525,6 @@ var EDITOR = (function ($, parent) {
                         contentType: 'application/json',
                         data: JSON.stringify(payload),
                         success: function(resp) {
-                            alert('✅ Synced ' + payload.gridData.length + ' files to corpus.');
                             resolve(resp);
                         },
                         error: function(xhr, status, err) {
