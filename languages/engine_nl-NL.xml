@@ -152,8 +152,8 @@
   </colourChanger>
 
   <resources label="Bronnen" text="{x} Bronnen Beschikbaar" completeText="{y} van {x} Bronnen bekekekn">
- 	<table title="Titel" description="Omschrijving" actions="Acties" complete="Markeer als compleet" downloadBtn="Download bron" viewBtn="Open bron"/>
- 	<warning suppress="Toon bericht niet nogmaals zien" continue="Toch verder gaan" review="Bekijk de bronnen"/>
+ 	<table title="Titel" description="Omschrijving" actions="Acties" complete="Gezien" downloadBtn="Download bron" viewBtn="Open bron"/>
+ 	<warning suppress="Dit bericht niet meer tonen" continue="Toch verder gaan" review="Bekijk de bronnen"/>
   </resources>
 
 	<screenReaderInfo label="Screenreader informatie" newWindow="Deze link opent een nieuw venster" thisWindow="Deze link opent in het huidige venster" dialog="Deze knop opent een dialoog venster" >
