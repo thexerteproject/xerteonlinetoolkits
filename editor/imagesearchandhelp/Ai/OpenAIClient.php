@@ -3,15 +3,21 @@
 namespace Ai;
 use \Exception;
 use \CURLFile;
+require_once __DIR__.'/../../ai/logging/log_ai_request.php';
 
 class OpenAIClient implements AiClientInterface
 {
     private $apiKey;
+    private array $actor;
+    private string $sessionId;
+
 
 
     public function __construct(string $apiKey)
     {
         $this->apiKey = $apiKey;
+        $this->actor = array('user_id'=>$_SESSION['toolkits_logon_username'],'workspace_id'=>$_SESSION['XAPI_PROXY']);
+        $this->sessionId = $_SESSION['token'];
     }
 
 
@@ -37,6 +43,7 @@ class OpenAIClient implements AiClientInterface
             CURLOPT_TIMEOUT => 60,
         ]);
         $raw = curl_exec($ch);
+        log_ai_request($raw, 'genai', 'openai', $this->actor, $this->sessionId);
         if ($raw === false) {
             $err = curl_error($ch);
             curl_close($ch);

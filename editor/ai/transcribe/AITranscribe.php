@@ -496,7 +496,6 @@ class GladiaTranscribe extends AITranscribe {
             curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
 
             $transcriptionResult = curl_exec($curl);
-            log_ai_request($transcriptionResult, 'transcription', 'gladia', $this->actor, $this->sessionId);
             if (curl_errno($curl)) {
                 $error = 'Transcription initiation Error: ' . curl_error($curl);
                 curl_close($curl);
@@ -517,6 +516,7 @@ class GladiaTranscribe extends AITranscribe {
             if (isset($finalResult['result']['transcription']['subtitles'])) {
                 $res = $finalResult['result']['transcription']['subtitles'][0]['subtitles'];
                 // 1) Strip extra headers from 2nd+ chunks:
+                log_ai_request($res, 'transcription', 'gladia', $this->actor, $this->sessionId);
                 $chunkVtt = trim($res);
                 if ($i > 0) {
                     // remove the leading "WEBVTT" and any blank line after it

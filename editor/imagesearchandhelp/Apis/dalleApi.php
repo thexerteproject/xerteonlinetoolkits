@@ -55,7 +55,15 @@ abstract class dalleApi extends BaseApi
             'model' => $this->imageModel,
             'size' => $size,
         ];
+
+        $details = [
+            'imagemodel'      => $this->imageModel, // model name for logs
+            'imagesrequested' => 1,                // always defaults to 1 for dalle3
+            'imagesize'       => $size,             // e.g. "1024x1024" (mapper will parse width/height)
+        ];
         $res = $this->postImagesGenerations($payload);
+        //Dalle3 is the only service which currently makes use of this; if more models are added, it may be necessary to pass which one for the log
+        log_ai_request($res, 'imagegen', 'dalle3', $this->actor, $this->sessionId, $details);
         if (!$res->ok) {
             $msg = $res->json->error->message ?? ($res->error ?? ('HTTP ' . $res->status));
             return (object)['status' => 'error', 'message' => $msg];

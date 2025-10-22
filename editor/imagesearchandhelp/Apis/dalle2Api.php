@@ -15,14 +15,22 @@ class dalle2Api extends dalleApi
     // DALL·E 2 supports generating multiple images via `n`, driven by settings['nri']
     protected function generateAndSave(string $prompt, array $settings, string $baseDir, string $size, array &$downloadedPaths)
     {
-        $n = isset($settings['nri']) ? (int)$settings['nri'] : 5;
+        $n = isset($settings['nri']) ? (int)$settings['nri'] : 1;
         $payload = [
             'prompt' => strip_tags($prompt),
             'model' => $this->imageModel,
             'size' => $size,
             'n' => $n,
         ];
+
+        $details = [
+            'imagemodel'      => $this->imageModel, // model name for logs
+            'imagesrequested' => $n,                // how many we asked for
+            'imagesize'       => $size,             // e.g. "1024x1024" (mapper will parse width/height)
+        ];
+
         $res = $this->postImagesGenerations($payload);
+        log_ai_request($res, 'imagegen', 'dalle2', $this->actor, $this->sessionId, $details);
         if (!$res->ok) {
             $msg = $res->json->error->message ?? ($res->error ?? ('HTTP ' . $res->status));
             return (object)['status' => 'error', 'message' => $msg];

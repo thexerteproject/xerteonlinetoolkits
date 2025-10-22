@@ -2,7 +2,7 @@
 
 require_once (str_replace('\\', '/', __DIR__) . "/../../../website_code/php/database_library.php");
 
-function log_ai_request($response, $category, $vendor, $actor = array(), $sessionId = null)
+function log_ai_request($response, $category, $vendor, $actor = array(), $sessionId = null, $details=null)
 {
     global $xerte_toolkits_site;
     $table = $xerte_toolkits_site->database_table_prefix . 'ai_request_logs';
@@ -59,7 +59,12 @@ function log_ai_request($response, $category, $vendor, $actor = array(), $sessio
         if ($vendor === 'openai') map_transcription_openai($response, $event);  // Whisper
         elseif ($vendor === 'gladia') map_transcription_gladia($response, $event);
         else                           map_transcription_default($response, $event);
-    } else {
+    } elseif ($category === 'imagegen') {
+        if ($vendor === 'dalle2') map_imagegen_dalle2($response, $event, $details);
+        elseif ($vendor === 'dalle3') map_imagegen_dalle2($response, $event, $details);
+        elseif ($vendor === 'gpt1') map_imagegen_dalle2($response, $event, $details);
+        else                           map_imagegen_dalle2($response, $event, $details);
+    }else {
         map_generic_default($response, $event);
     }
 
@@ -307,6 +312,17 @@ function map_transcription_openai($res, &$ev)
         if ($sec !== null) $sec = (float)$sec;
     }
 
+    if ($ms === null && $sec === null) {
+        $vttCandidate = vtt_find_candidate($res);
+
+        if ($vttCandidate !== null) {
+            $sec = vtt_duration_seconds($vttCandidate);
+            if ($sec !== null) {
+                $ms = (int)round($sec * 1000);
+            }
+        }
+    }
+
     $ev['metrics'] = array(
         'audio_ms'      => $ms !== null ? (int)$ms : null,
         'audio_seconds' => $sec
@@ -324,6 +340,17 @@ function map_transcription_gladia($res, &$ev)
     if ($sec !== null) {
         $sec = (float)$sec;
         $ms  = (int)round($sec * 1000);
+    }
+
+    if ($ms === null && $sec === null) {
+        $vttCandidate = vtt_find_candidate($res);
+
+        if ($vttCandidate !== null) {
+            $sec = vtt_duration_seconds($vttCandidate);
+            if ($sec !== null) {
+                $ms = (int)round($sec * 1000);
+            }
+        }
     }
 
     $ev['metrics'] = array(
@@ -351,6 +378,103 @@ function map_transcription_default($res, &$ev)
         'audio_ms'      => $ms !== null ? (int)$ms : null,
         'audio_seconds' => $sec
     );
+}
+
+function map_imagegen_dalle2($res, &$ev, $details)
+{
+    // Transport facts
+    $ok   = isset($res['ok']) ? (bool)$res['ok'] : false;
+    $code = isset($res['status']) ? (int)$res['status'] : null;
+
+    // Prefer pre-decoded JSON payload inside $res['json'], else decode $res['raw']
+    $json = [];
+    if (isset($res['json']) && is_array($res['json'])) {
+        $json = $res['json'];
+    } elseif (!empty($res['raw']) && is_string($res['raw'])) {
+        $tmp = json_decode($res['raw'], true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($tmp)) $json = $tmp;
+    }
+
+    // Count images actually returned (only those with url or b64_json)
+    $data = isset($json['data']) && is_array($json['data']) ? $json['data'] : [];
+    $imagesReceived = 0;
+    foreach ($data as $item) {
+        if (!is_array($item)) continue;
+        if (isset($item['url']) || isset($item['b64_json'])) $imagesReceived++;
+    }
+
+    // Request-time facts from $details
+    $model           = isset($details['imagemodel'])      ? (string)$details['imagemodel']   : null;
+    $imagesRequested = isset($details['imagesrequested']) ? (int)$details['imagesrequested'] : null;
+
+    // Parse dimensions from $details['imagesize']
+    [$w, $h, $dimStr] = _parse_image_dimensions_any($details['imagesize'] ?? null);
+
+    // Event fields
+    $ev['model']       = $model;
+    $ev['ok']          = $ok;
+    $ev['status_code'] = $code;
+
+    if (!$ok || ($code !== null && $code >= 400)) {
+        $msg = null;
+        if (isset($json['error']['message']) && is_string($json['error']['message'])) {
+            $msg = $json['error']['message'];
+        }
+        $ev['error'] = ['message' => $msg];
+    }
+
+    // Metrics JSON (exact keys your generated columns expect)
+    $ev['metrics'] = [
+        'images_requested' => $imagesRequested,
+        'images_received'  => $imagesReceived,
+        'image_dimensions' => $dimStr, // raw "WxH"
+        'image_width'      => $w,
+        'image_height'     => $h,
+    ];
+    }
+
+/**
+ * Accepts '1024x1024', '1024×1024', '1024 X 1024', '1024 by 1024',
+ * ['1024','1024'], ['width'=>1024,'height'=>1024], or null.
+ * Returns [width:int|null, height:int|null, dimStr:string|null]
+ */
+function _parse_image_dimensions_any($size)
+{
+    // Array forms
+    if (is_array($size)) {
+        // Named keys
+        if (isset($size['width']) && isset($size['height'])) {
+            $w = (int)$size['width']; $h = (int)$size['height'];
+            return [$w, $h, "{$w}x{$h}"];
+        }
+        // Positional first two numeric values
+        $nums = [];
+        foreach ($size as $v) {
+            if (is_numeric($v)) $nums[] = (int)$v;
+            if (count($nums) === 2) break;
+        }
+        if (count($nums) === 2) return [$nums[0], $nums[1], "{$nums[0]}x{$nums[1]}"];
+        return [null, null, null];
+    }
+
+    // String forms
+    if (is_string($size) && $size !== '') {
+        $norm = mb_strtolower(trim($size));
+        $norm = preg_replace('/\s*by\s*/i', 'x', $norm);
+        $norm = str_replace(['×','X','*',' '], ['x','x','x',''], $norm);
+        if (preg_match('/^(\d+)\s*x\s*(\d+)$/', $norm, $m)) {
+            $w = (int)$m[1]; $h = (int)$m[2];
+            return [$w, $h, "{$w}x{$h}"];
+        }
+        if (preg_match_all('/\d+/', $norm, $nums) && count($nums[0]) >= 2) {
+            $w = (int)$nums[0][0]; $h = (int)$nums[0][1];
+            return [$w, $h, "{$w}x{$h}"];
+        }
+        // Couldn’t parse cleanly; pass through original
+        return [null, null, $size];
+    }
+
+    return [null, null, null];
 }
 
 /* Fallback, just in case */
@@ -440,4 +564,131 @@ function _epoch_to_iso($sec)
 function _a($arr, $key, $default = null)
 {
     return (is_array($arr) && array_key_exists($key, $arr)) ? $arr[$key] : $default;
+}
+
+/**
+ * Return total duration in SECONDS from a WebVTT/SRT string, or null if not parseable.
+ * Works for:
+ *   - "00:00:00.000 --> 00:00:07.080"
+ *   - "00:00:00,000 --> 00:00:07,080"
+ *   - "00:00.000 --> 07:08.900"
+ *   - With extra cue settings after the end time (align:, position:, etc.)
+ */
+function vtt_duration_seconds(?string $vtt): ?float
+{
+    if (!is_string($vtt) || strpos($vtt, '-->') === false) {
+        return null;
+    }
+
+    // Find every cue line's END timestamp (right side of -->)
+    if (!preg_match_all('/-->\s*([0-9:.]+(?:[.,][0-9]+)?)/', $vtt, $matches)) {
+        return null;
+    }
+
+    $max = null;
+    foreach ($matches[1] as $ts) {
+        $sec = vtt_parse_timestamp_to_seconds($ts);
+        if ($sec !== null) {
+            $max = $max === null ? $sec : max($max, $sec);
+        }
+    }
+
+    return $max;
+}
+
+/**
+ * Parse a VTT/SRT timestamp into seconds.
+ * Accepts hh:mm:ss.mmm, mm:ss.mmm, or ss.mmm; comma or dot decimals.
+ */
+function vtt_parse_timestamp_to_seconds(string $ts): ?float
+{
+    $ts = trim($ts);
+    $ts = str_replace(',', '.', $ts);               // allow SRT-style commas
+    $ts = preg_replace('/[^0-9:.]/', '', $ts);      // strip any stray chars
+
+    if ($ts === '') return null;
+
+    $parts = explode(':', $ts);
+    // Allow ss(.mmm), mm:ss(.mmm), or hh:mm:ss(.mmm)
+    if (count($parts) === 3) {
+        [$h, $m, $s] = $parts;
+        return (int)$h * 3600 + (int)$m * 60 + (float)$s;
+    } elseif (count($parts) === 2) {
+        [$m, $s] = $parts;
+        return (int)$m * 60 + (float)$s;
+    } elseif (count($parts) === 1) {
+        return (float)$parts[0];
+    }
+
+    return null;
+}
+
+/**
+ * Duration in MILLISECONDS, or null.
+ */
+function vtt_duration_ms(?string $vtt): ?int
+{
+    $sec = vtt_duration_seconds($vtt);
+    return $sec !== null ? (int)round($sec * 1000) : null;
+}
+
+/**
+ * Return a VTT/SRT candidate string found in $res, or null if none.
+ * - Checks if $res itself is a VTT/SRT string
+ * - Otherwise scans common fields (or all top-level string fields) for a match
+ * - No heavy recursion to keep it lightweight
+ */
+function vtt_find_candidate($res, array $preferredFields = null): ?string
+{
+    // quick helper to judge if a string looks like VTT/SRT
+    $looksLike = function ($s): bool {
+        if (!is_string($s)) return false;
+        if (stripos($s, 'WEBVTT') === 0 && strpos($s, '-->') !== false) return true;
+        if (strpos($s, '-->') === false) return false;
+        // Timestamp pattern: ss, mm:ss(.mmm), or hh:mm:ss(.mmm), commas or dots for ms
+        return (bool)preg_match(
+            '/\b\d{1,2}:\d{2}(?::\d{2})?(?:[.,]\d{1,3})?\s*-->\s*\d{1,2}:\d{2}(?::\d{2})?(?:[.,]\d{1,3})?/m',
+            $s
+        );
+    };
+
+    // 1) If the whole response is a VTT/SRT-like string
+    if (is_string($res) && $looksLike($res)) {
+        return $res;
+    }
+
+    // Normalize to array to lightly inspect top-level fields
+    $arr = null;
+    if (is_array($res)) {
+        $arr = $res;
+    } elseif (is_object($res)) {
+        // casting is shallow but cheap and usually enough
+        $arr = (array)$res;
+    }
+
+    if (!is_array($arr)) {
+        return null;
+    }
+
+    // Default list of likely fields to check first
+    $preferredFields = $preferredFields ?? [
+        'vtt','webvtt','srt','captions','subtitles','subtitle','subtitle_vtt',
+        'text','body','data','content','transcript'
+    ];
+
+    // 2) Try preferred fields (if present and stringy)
+    foreach ($preferredFields as $k) {
+        if (array_key_exists($k, $arr) && is_string($arr[$k]) && $looksLike($arr[$k])) {
+            return $arr[$k];
+        }
+    }
+
+    // 3) Scan all top-level string fields as a fallback
+    foreach ($arr as $v) {
+        if (is_string($v) && $looksLike($v)) {
+            return $v;
+        }
+    }
+
+    return null;
 }

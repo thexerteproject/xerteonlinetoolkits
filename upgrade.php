@@ -1741,6 +1741,21 @@ function upgrade_53()
               END
             ) VIRTUAL,
 
+          `metrics_images_requested` BIGINT UNSIGNED                              -- images requested
+            GENERATED ALWAYS AS (CAST(JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.images_requested')) AS UNSIGNED)) VIRTUAL,
+
+          `metrics_images_received` BIGINT UNSIGNED                               -- images received
+            GENERATED ALWAYS AS (CAST(JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.images_received')) AS UNSIGNED)) VIRTUAL,
+
+          `metrics_image_dimensions` VARCHAR(64)                                  -- image dimensions (raw string)
+            GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.image_dimensions'))) VIRTUAL,
+
+          `metrics_image_width` INT UNSIGNED                                      -- image width
+            GENERATED ALWAYS AS (CAST(JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.image_width')) AS UNSIGNED)) VIRTUAL,
+
+          `metrics_image_height` INT UNSIGNED                                     -- image height
+            GENERATED ALWAYS AS (CAST(JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.image_height')) AS UNSIGNED)) VIRTUAL,
+
           `cost_total`            DECIMAL(18,6)
             GENERATED ALWAYS AS (CAST(JSON_UNQUOTE(JSON_EXTRACT(`cost`, '$.total')) AS DECIMAL(18,6))) VIRTUAL,
           `cost_currency`         VARCHAR(12)
@@ -1765,7 +1780,10 @@ function upgrade_53()
           -- Usage / cost lookups
           KEY `idx_tokens_when` (`metrics_total_tokens`, `occurred_at`),
           KEY `idx_audio_when`  (`metrics_audio_ms`, `occurred_at`),
-          KEY `idx_cost_when`   (`cost_total`, `occurred_at`)
+          KEY `idx_cost_when`   (`cost_total`, `occurred_at`),
+          KEY `idx_images_when`     (`metrics_images_requested`, `occurred_at`),
+          KEY `idx_images_rcv_when` (`metrics_images_received`,  `occurred_at`),
+          KEY `idx_image_wh_when`   (`metrics_image_width`, `metrics_image_height`, `occurred_at`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ");
 

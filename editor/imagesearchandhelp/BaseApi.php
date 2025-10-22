@@ -1,10 +1,14 @@
 <?php
+require_once __DIR__.'/../ai/logging/log_ai_request.php';
 abstract class BaseApi
 {
     protected $xerte_toolkits_site;
     protected $aiProvider;
     protected $providerModel;
 
+    protected array $actor;
+
+    protected string $sessionId;
 
     public function __construct($aiProvider, $providerModel='')
     {
@@ -13,6 +17,8 @@ abstract class BaseApi
         $this->xerte_toolkits_site = $xerte_toolkits_site;
         $this->aiProvider = $aiProvider;
         $this->providerModel = $providerModel;
+        $this->actor = array('user_id'=>$_SESSION['toolkits_logon_username'],'workspace_id'=>$_SESSION['XAPI_PROXY']);
+        $this->sessionId = $_SESSION['token'];
     }
 
     protected function clean(string $text): string
@@ -21,7 +27,6 @@ abstract class BaseApi
     }
 
 
-    /** Basic JSON POST */
     protected function httpPostJson(string $url, array $payload, array $headers = [], int $timeout = 60)
     {
         $ch = curl_init($url);
@@ -56,7 +61,6 @@ abstract class BaseApi
     }
 
 
-    /** Basic GET (optionally with headers) */
     protected function httpGet(string $url, array $headers = [], int $timeout = 60)
     {
         $ch = curl_init($url);
@@ -85,7 +89,6 @@ abstract class BaseApi
     }
 
 
-    /** Ensure directory exists */
     protected function ensureDir(string $dir)
     {
         if (!is_dir($dir)) {
@@ -94,8 +97,6 @@ abstract class BaseApi
     }
 
 
-    /** Download any binary (images, etc.) */
-    /** Download any binary (images, etc.) */
     protected function downloadBinary(string $url, string $saveDir, string $prefix = '', ?string $filename = null)
     {
         $this->ensureDir($saveDir);
