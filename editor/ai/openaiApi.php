@@ -67,7 +67,7 @@ class openaiApi extends BaseAiApi
                 ]);
 
                 $resp = curl_exec($ch);
-                //log_ai_request($resp, 'genai', 'openai', $this->actor, $this->sessionId);
+                log_ai_request($resp, 'genai', 'openai', $this->actor, $this->sessionId);
                 if ($resp === false) {
                     throw new \Exception('cURL error on create: ' . curl_error($ch));
                 }
@@ -140,7 +140,7 @@ class openaiApi extends BaseAiApi
         curl_setopt($curl, CURLOPT_POSTFIELDS, $new_payload);
 
         $result = curl_exec($curl);
-        //log_ai_request($result, 'genai', 'openai', $this->actor, $this->sessionId);
+        log_ai_request($result, 'genai', 'openai', $this->actor, $this->sessionId);
 
         curl_close($curl);
 
@@ -205,7 +205,7 @@ class openaiApi extends BaseAiApi
             if (in_array($status, ['completed'])) {
                 // If run is completed, retrieve the last message
                 $lastMessageContent = $this->GET_last_message_from_thread($threadId);
-                //log_ai_request($result, 'genai', 'openaiassistant', $this->actor, $this->sessionId);
+                log_ai_request($result, 'genai', 'openaiassistant', $this->actor, $this->sessionId);
             }
 
             $resultConform = $this->clean_result($lastMessageContent);

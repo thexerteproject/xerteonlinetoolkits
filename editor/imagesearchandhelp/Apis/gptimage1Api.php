@@ -1,0 +1,42 @@
+<?php
+require_once __DIR__ . '/dalleApi.php';
+
+//TODO: service still not accessible to our org, so not yet tested but follows the api docs
+class gptimage1Api extends dalleApi
+{
+    protected $imageModel = 'gpt-image-1';
+    protected $saveSubdir = '/media';
+
+
+    protected $rewriteSystemMessage = null;
+
+    // Override to handle base64 results
+    protected function generateAndSave(string $prompt, array $settings, string $baseDir, string $size, array &$downloadedPaths)
+    {
+            $payload = [
+                'model' => $this->imageModel,
+                'prompt' => $prompt,
+                'n' => 1,
+                'size' => $size,
+            ];
+            $res = $this->postImagesGenerations($payload);
+            if (!$res->ok) {
+                $msg = $res->json->error->message ?? ($res->error ?? ('HTTP ' . $res->status));
+                return (object)['status' => 'error', 'message' => $msg];
+            }
+
+
+                $i = 1;
+                foreach (($res->json->data ?? []) as $img) {
+                    if (!empty($img->b64_json)) {
+                        $bin = base64_decode($img->b64_json);
+                        $file = rtrim($baseDir, '/') . '/img_' . ($i++) . '.png';
+                    if (file_put_contents($file, $bin) === false) {
+                        return (object)[ 'status' => 'error', 'message' => 'Failed to save image #' . ($i - 1) ];
+                    }
+                    $downloadedPaths[] = $file;
+                }
+            }
+        return (object)['status' => 'success'];
+    }
+}

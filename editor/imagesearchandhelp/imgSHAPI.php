@@ -1,5 +1,8 @@
 <?php
 
+require_once(dirname(__FILE__) . "/../../config.php");
+require_once (str_replace('\\', '/', __DIR__) . "/../ai/management/dataRetrievalHelper.php");
+
 //todo add authentication!
 //if (!isset($_SESSION['toolkits_logon_username']) && !is_user_admin()) {
 //    _debug("Session is invalid or expired");
@@ -16,22 +19,29 @@
 ob_start();
 $query = $_POST["query"];
 $api = $_POST["api"] ?? 'pexels';
+$textApi = $_POST["textApi"] ?? 'mistral';
 $url = $_POST["target"];
 $interpretPrompt = $_POST["interpretPrompt"];
 $overrideSettings = $_POST["overrideSettings"];
 $settings = $_POST["settings"];
 
-$allowed_apis = ['pexels','pixabay', 'dalle2', 'dalle3', 'unsplash', 'wikimedia', 'gptImage1'];
-if (!in_array($api, $allowed_apis)){
-    die(json_encode(["status" => "error", "message" => "api is not allowed"]));
+$managementSettings = get_block_indicators();
+
+if((!$managementSettings['imagegen']['active_vendor'])&&(!$managementSettings['image']['active_vendor'])){
+    die(json_encode(["status" => "error", "message" => "No active API found. Ensure at least one ai vendor is enabled with a valid api key."]));
+}
+
+if((!vendor_is_active($api, 'image'))&&(!vendor_is_active($api, 'imagegen'))){
+    die(json_encode(["status" => "error", "message" => "The selected vendor is not enabled, or is missing an API key. Contact your administrator and ensure at least one ai vendor is enabled with a valid api key."]));
 }
 
 //dynamically load needed api methods
-require_once(dirname(__FILE__) . "/" . $api ."Api.php");
+require_once(dirname(__FILE__) . "/" . "BaseApi.php");
+require_once(dirname(__FILE__) . "/Apis/" . $api ."Api.php");
 
 //dynamically initiate correct api class
 $api_type = $api . 'Api';
-$imgshApi = new $api_type();
+$imgshApi = new $api_type($textApi);
 
 $result = $imgshApi->sh_request($query, $url, $interpretPrompt, $overrideSettings, $settings); // original
 

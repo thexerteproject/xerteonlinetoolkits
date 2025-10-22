@@ -3,6 +3,8 @@
 namespace rag;
 use DocumentLoaderFactory;
 
+require_once __DIR__.'/../logging/log_ai_request.php';
+
 abstract class BaseRAG
 {
     protected $chunkSize;
@@ -14,6 +16,10 @@ abstract class BaseRAG
     protected $corpusFile;
     protected $tfidfFile;
     protected $tempTfidfFile;
+
+    protected array $actor;
+
+    protected string $sessionId;
 
     public function __construct($encodingDirectory, $chunkSize = 2048)
     {
@@ -42,6 +48,9 @@ abstract class BaseRAG
         $this->tfidfFile = $this->encodingDirectory . 'tfidf.json';
         $this->tempTfidfFile = $this->encodingDirectory . 'temp' . DIRECTORY_SEPARATOR . 'tfidf.json';
         $this->corpusFile = $this->encodingDirectory . 'corpus.json';
+
+        $this->actor = array('user_id'=>$_SESSION['toolkits_logon_username'],'workspace_id'=>$_SESSION['XAPI_PROXY']);
+        $this->sessionId = $_SESSION['token'];
     }
 
     abstract protected function supportsProviderEmbeddings(): bool;

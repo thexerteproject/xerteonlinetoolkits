@@ -6421,6 +6421,9 @@ var EDITOR = (function ($, parent) {
                             constructorObject['nri'] = '1';
                         }
 
+                        let serviceType = constructorObject['serviceType'] ?? 'NaN';
+                        delete constructorObject.serviceType;
+
                         var query;
                         //query select option for specific pages
                         let querySelect = constructorObject['imgQuerySelect'] !== undefined ? constructorObject['imgQuerySelect'] : 'custom';
@@ -6457,9 +6460,22 @@ var EDITOR = (function ($, parent) {
                         let aiSettingsOverride = constructorObject['overrideAiSettings'] !== undefined ? constructorObject['overrideAiSettings'] : "true";
                         delete constructorObject.overrideAiSettings;
 
-                        if (!hasApiKeyInstalled('image', api)) {
-                            html.prop('disabled', false);
-                            return;
+                        if (serviceType==='generate'){
+                            if(!hasApiKeyInstalled('imagegen', api)){
+                                html.prop('disabled', false);
+                                return;
+                            }
+                        } else if (serviceType==='retrieve'){
+                            if(!hasApiKeyInstalled('image', api)){
+                                html.prop('disabled', false);
+                                return;
+                            }
+
+                        } else {
+                            if ((!hasApiKeyInstalled('image', api))&&(!hasApiKeyInstalled('imagegen', api))) {
+                                html.prop('disabled', false);
+                                return;
+                            }
                         }
 
                         img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject, window.imageSearchSingle ?? false, event.data.key, event.data.value);

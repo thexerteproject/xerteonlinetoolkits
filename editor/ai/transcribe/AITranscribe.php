@@ -3,7 +3,7 @@ namespace transcribe;
 use \Exception;
 use \CURLFile;
 
-//require_once __DIR__.'/../logging/log_ai_request.php';
+require_once __DIR__.'/../logging/log_ai_request.php';
 /**
  * Abstract base class for AI-based transcription services.
  */
@@ -19,8 +19,8 @@ abstract class AITranscribe {
      */
     public function __construct($apiKey) {
         $this->apiKey = $apiKey;
-        $this->actor = array('user_id'=>'u_42','workspace_id'=>'ws_77','installation_id'=>'inst_acme');
-        $this->sessionId = 's_9f1c';
+        $this->actor = array('user_id'=>$_SESSION['toolkits_logon_username'],'workspace_id'=>$_SESSION['XAPI_PROXY']);
+        $this->sessionId = $_SESSION['token'];
     }
 
     /**
@@ -333,7 +333,7 @@ class OpenAITranscribe extends AITranscribe
                 CURLOPT_VERBOSE        => true,
                 CURLOPT_STDERR         => fopen(__DIR__ . '/curl_debug.log', 'a+'),
 
-                // <<< SWITCH TO HTTP/1.0 HERE (no chunked encoding) >>>
+                // SWITCH TO HTTP/1.0 HERE (no chunked encoding)
                 CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_0,
 
                 CURLOPT_HTTPHEADER     => [
@@ -355,7 +355,9 @@ class OpenAITranscribe extends AITranscribe
             curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
 
             $res = curl_exec($ch);
-            //log_ai_request($res, 'transcription', 'openai', $this->actor, $this->sessionId);
+
+
+            log_ai_request($res, 'transcription', 'openai', $this->actor, $this->sessionId);
             if (curl_errno($ch)) {
                 $err = curl_error($ch);
                 curl_close($ch);
@@ -494,7 +496,7 @@ class GladiaTranscribe extends AITranscribe {
             curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
 
             $transcriptionResult = curl_exec($curl);
-            //log_ai_request($transcriptionResult, 'transcription', 'gladia', $this->actor, $this->sessionId);
+            log_ai_request($transcriptionResult, 'transcription', 'gladia', $this->actor, $this->sessionId);
             if (curl_errno($curl)) {
                 $error = 'Transcription initiation Error: ' . curl_error($curl);
                 curl_close($curl);

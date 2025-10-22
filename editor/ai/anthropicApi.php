@@ -23,11 +23,13 @@ class anthropicApi extends BaseAiApi
 
         curl_close($curl);
 
+        log_ai_request($result, 'genai', 'anthropic', $this->actor, $this->sessionId);
+
         $resultConform = $this->clean_result($result);
         $resultConform = json_decode($resultConform);
 
-        if ($resultConform['type']=="error") {
-            throw new \Exception('API error: ' . ($resultConform['error']['message'] ?? 'Unknown error'));
+        if ($resultConform->type=="error") {
+            throw new \Exception('API error: ' . ($resultConform->error->message ?? 'Unknown error'));
         }
         //if (!$this->conform_to_model($resultConform)){
         //    return (object) ["status" => "error", "message" => "answer does not match model"];
@@ -84,6 +86,8 @@ SYS
                 ]);
 
                 $resp = curl_exec($ch);
+                log_ai_request($resp, 'genai', 'anthropic', $this->actor, $this->sessionId);
+
                 if ($resp === false) {
                     throw new \Exception('cURL error: ' . curl_error($ch));
                 }

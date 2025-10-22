@@ -181,6 +181,8 @@ function get_block_indicators(array $preferences = []): array
         'model'         => ['mistral'],     // alias for environments that use "model"
         'encoding'      => ['mistralenc'],
         'transcription' => ['gladia'],
+        'imagegen'      =>['dalle3'],
+        'image'         =>['pexels'],
         // Extend with other blocks as needed, e.g. 'image' => ['unsplash', 'pexels', 'pixabay'].
     ];
     $prefs = normalize_preferences($preferences, $defaultPriorities);
@@ -225,4 +227,39 @@ function get_block_indicators(array $preferences = []): array
     }
 
     return $out;
+}
+
+/**
+ * Checks if a given vendor (by name) is active.
+ * A vendor is considered active when:
+ *   - It exists in the database (enabled = 1)
+ *   - It either does not need a key, or has one present
+ *
+ * @param string $vendorName Vendor name to check (case-insensitive)
+ * @param string|null $type Optional type filter (e.g. 'ai', 'image')
+ * @return bool True if active, false otherwise
+ */
+function vendor_is_active(string $vendorName, ?string $type = null): bool
+{
+    $vendorName = strtolower(trim($vendorName));
+    $rows = fetch_vendor_settings();
+
+    if (!$rows) {
+        return false;
+    }
+
+    foreach ($rows as $row) {
+        $clean = sanitize_vendor_row($row);
+        if (strtolower((string)$clean['vendor']) !== $vendorName) {
+            continue;
+        }
+        if ($type !== null && strtolower((string)$clean['type']) !== strtolower($type)) {
+            continue;
+        }
+
+        $v = new vendor_option_component($clean);
+        return is_vendor_active($v);
+    }
+
+    return false;
 }

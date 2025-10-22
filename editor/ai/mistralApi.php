@@ -22,15 +22,15 @@ class mistralApi extends BaseAiApi
 
             $result = curl_exec($curl);
             curl_close($curl);
-            //log_ai_request($result, 'genai', 'mistral', $this->actor, $this->sessionId);
+            log_ai_request($result, 'genai', 'mistral', $this->actor, $this->sessionId);
 
             $resultConform = $this->clean_result($result);
             $resultConform = json_decode($resultConform);
 
-            if (isset($resultConform['detail'])) {
-                $message = is_string($resultConform['detail'])
-                    ? $resultConform['detail']
-                    : json_encode($resultConform['detail']); // just in case it's structured
+            if (isset($resultConform->detail)) {
+                $message = is_string($resultConform->detail)
+                    ? $resultConform->detail
+                    : json_encode($resultConform->detail); // just in case it's structured
                 throw new Exception('API error: ' . $message);
             }
             //if (!$this->conform_to_model($resultConform)){
@@ -89,7 +89,7 @@ SYS
                 ]);
 
                 $resp = curl_exec($ch);
-//        log_ai_request($resp, 'genai', 'mistral', $this->actor, $this->sessionId);
+                log_ai_request($resp, 'genai', 'mistral', $this->actor, $this->sessionId);
 
                 if ($resp === false) {
                     throw new Exception('cURL error: ' . curl_error($ch));

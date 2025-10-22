@@ -37,6 +37,7 @@ class OpenAIRAG extends BaseRAG
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         $response = curl_exec($ch);
+        log_ai_request($response, 'encoding', 'openaienc', $this->actor, $this->sessionId);
         if ($response === false) {
             $err = curl_error($ch);
             curl_close($ch);
@@ -109,6 +110,7 @@ class OpenAIRAG extends BaseRAG
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
             $response = curl_exec($ch);
+            log_ai_request($response, 'encoding', 'openaienc', $this->actor, $this->sessionId);
             if ($response === false) {
                 $err = curl_error($ch);
                 curl_close($ch);
