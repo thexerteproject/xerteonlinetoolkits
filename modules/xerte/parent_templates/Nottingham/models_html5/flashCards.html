@@ -54,18 +54,39 @@
 			var btnsShown = false;
 			
 			if ($pageContents.hasClass('horiz')) {
-				
+				const cardMargin = parseInt($cards.find('.card').css('margin-left')) + parseInt($cards.find('.card').css('margin-right'));
+
 				$('.btnHolder').hide();
 				
 				// size these cards manually as the % won't work in the scrolling div
-				if ($cards.hasClass('small')) {
-					$cards.find('.card').width(Math.floor($pageContents.width() * 0.2));
-				} else if ($cards.hasClass('medium')) {
-					$cards.find('.card').width(Math.floor($pageContents.width() * 0.3));
-				} else if ($cards.hasClass('large')) {
-					$cards.find('.card').width(Math.floor($pageContents.width() * 0.4));
+				if ($pageContents.hasClass('displayMultiple')) {
+					// get margins of cards
+					const letfBtnWidth = $('#leftBtn').width();
+					const rightBtnWidth = $('#rightBtn').width();
+					const availableWidth = $cards.width() - letfBtnWidth - rightBtnWidth;
+					if ($cards.hasClass('small')) {
+						// Fit 4 cards in view
+						$cards.find('.card').width((Math.floor(availableWidth - 4*cardMargin) * 0.25));
+					} else if ($cards.hasClass('medium')) {
+						// Fit 3 cards in view
+						$cards.find('.card').width((Math.floor(availableWidth - 3*cardMargin) * 0.333333));
+					} else if ($cards.hasClass('large')) {
+						// Fit 2 cards in view
+						$cards.find('.card').width((Math.floor(availableWidth - 2*cardMargin) * 0.5));
+					}
 				}
-				
+				else {
+					if ($cards.hasClass('small')) {
+						$cards.find('.card').width(Math.floor($pageContents.width() * 0.2));
+					} else if ($cards.hasClass('medium')) {
+						$cards.find('.card').width(Math.floor($pageContents.width() * 0.3));
+					} else if ($cards.hasClass('large')) {
+						$cards.find('.card').width(Math.floor($pageContents.width() * 0.4));
+					}
+				}
+				const scrollingWidth = $cards.find('.card').length * ($cards.find('.card').width() + cardMargin);
+				$cards.data('scrollingWidth', scrollingWidth);
+
 				// are scroll buttons required?
 				if ($cards[0].scrollWidth > $cards[0].clientWidth) {
 					
@@ -674,26 +695,29 @@
 			
 			if (fwd == false) {
 				scrollL = 0;
-				
-				$(".card").each(function(i) {
-					if ($(this).position().left + parseInt($(this).css('marginLeft')) - $cards.position().left >= 0) {
-						scrollL = $cards.scrollLeft() - ($cards.width() - ($(this).position().left - $cards.position().left));
-						return false;
-					}
-				});
+				if (!$pageContents.hasClass('displayMultiple')) {
+					$(".card").each(function (i) {
+						if ($(this).position().left + parseInt($(this).css('marginLeft')) - $cards.position().left >= 0) {
+							scrollL = $cards.scrollLeft() - ($cards.width() - ($(this).position().left - $cards.position().left));
+							return false;
+						}
+					});
+				}
 				
 			} else {
 				scrollL = $cards.scrollLeft() + $cards.width()
-				
-				$(".card").each(function(i) {
-					if ($(this).offset().left - $cards.offset().left + $(this).width() > $cards.width()) {
-						scrollL = $(this).position().left + $cards.scrollLeft() - $cards.position().left;
-						return false;
-					}
-				});
+
+				if (!$pageContents.hasClass('displayMultiple')) {
+					$(".card").each(function (i) {
+						if ($(this).offset().left - $cards.offset().left + $(this).width() > $cards.width()) {
+							scrollL = $(this).position().left + $cards.scrollLeft() - $cards.position().left;
+							return false;
+						}
+					});
+				}
 			}
 			
-			if ($cards[0].scrollWidth - $cards.width() <= Math.floor(scrollL)) {
+			if ($cards.data('scrollingWidth') - $cards.scrollLeft() <= Math.floor(scrollL)) {
 				this.toggleBtn($('#nextBtn'), 'disable');
 			} else {
 				this.toggleBtn($('#nextBtn'), 'enable');
