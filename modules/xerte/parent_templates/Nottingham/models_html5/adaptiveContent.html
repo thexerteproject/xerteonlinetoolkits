@@ -2430,9 +2430,10 @@
               Object.keys(labels).forEach(function (key) {
                   labels[key] = labels[key] / statements.length * 100
               });
+              let labelsNoUnderscores = Object.keys(labels).map(label => label.replace(/_/g, ' '));
 
               let bardata = {
-                  labels: Object.keys(labels),
+                  labels: labelsNoUnderscores,
                   datasets: [
                       {
                           type: "bar",
@@ -3243,8 +3244,10 @@
               Object.keys(labels).forEach(function (key) {
                   labels[key] = labels[key] / statements.length * 100
               });
+              let labelsNoUnderscore = Object.keys(labels).map(label => label.replace(/_/g, ' '));
+
               let bardata = {
-                  labels: Object.keys(labels),
+                  labels: labelsNoUnderscore,
                   datasets: [
                       {
                           type: "line",
@@ -3881,7 +3884,8 @@
                 if (interaction.getAttribute("showScore") == "true") {
                     //Shows the last answer given by user
                     var txt = answerLabelText;
-                    const givenAnswerCleanedUp = givenAnswer.replace(/\[\,\]/g, ",<br>").replace(/\[\.\]/g, " ==> ");
+                    const givenAnswerCleanedUp = givenAnswer.replace(/\[\,\]/g, ",<br>").replace(/\[\.\]/g, " ==> ")
+                        .replace(/_/g, " ");
                     txt = txt.replace(/\{0\}/, givenAnswerCleanedUp);
                     $(
                             `#${escapeUrl(url, type, interactionIndex)}-stats${currentPeriod}`
@@ -4078,8 +4082,10 @@
 
                 let ctx = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod;
 
+                let labelsNoUnderscore = xDomain.map(label => label.replace(/_/g, ' '));
+
                 let bardata = {
-                    labels: xDomain,
+                    labels: labelsNoUnderscore,
                     datasets: [
                         {
                             type: "bar",
@@ -4190,8 +4196,10 @@
             }
             Object.keys(labels).forEach(function(key){ labels[key] = labels[key]/statements.length*100 });
 
+            let labelsNoUnderscore = Object.keys(labels).map(label => label.replace(/_/g, ' '));
+
             let bardata = {
-                labels: Object.keys(labels),
+                labels: labelsNoUnderscore,
                 datasets: [
                     {
                         type: "bar",
@@ -4304,8 +4312,9 @@
             }
             Object.keys(labels).forEach(function(key){ labels[key] = labels[key]/statements.length*100 });
 
+            let labelsNoUnderscore = Object.keys(labels).map(label => label.replace(/_/g, ' '));
             let bardata = {
-                labels: Object.keys(labels),
+                labels: labelsNoUnderscore,
                 datasets: [
                     {
                         type: "line",

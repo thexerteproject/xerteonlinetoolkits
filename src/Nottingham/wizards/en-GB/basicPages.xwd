@@ -31,7 +31,7 @@
 		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" condition="linkPage=='true'" optional="true" tooltip="Determines how links to this page are opened"/>
 		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" condition="linkPage=='true'" optional="true" tooltip="When checked, the header bar will be hidden when viewing this page. This may be desirable when viewing the page in a lightbox."/>
 		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" condition="linkPage=='true'" optional="true" tooltip="When checked, the footer bar containing the navigation buttons will be hidden when viewing this page. This is likely to be desirable when viewing the page in a lightbox."/>
-		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" condition="linkPage=='true'&amp;&amp;(parent.progressBar!=undefined||parent.progressBarType=='true'||((parent.progressBarType=='header1'||parent.progressBarType=='header2'||parent.progressBarType=='header3')&amp;&amp;parent.progressSub=='false'))" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
+		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" condition="linkPage=='true'&amp;&amp;(treeroot.progressBar!=undefined||treeroot.progressBarType=='true'||((treeroot.progressBarType=='header1'||treeroot.progressBarType=='header2'||treeroot.progressBarType=='header3')&amp;&amp;treeroot.progressSub=='false'))" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup>
 	
 	<passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property">
@@ -64,7 +64,7 @@
 	</customLinkGroup>
 		
 	<unmarkForCompletion label="Completion Not Required" type ="CheckBox" defaultValue="true" tooltip="When the project is being tracked (e.g. using SCORM or xAPI), remove the requirement for this page to be completed in order for the project to be marked as complete" optional="true"/>
-	<disableGlossary label="Disable Glossary" defaultValue="true" type="CheckBox" condition="parent.glossary!=undefined" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page"/>
+	<disableGlossary label="Disable Glossary" defaultValue="true" type="CheckBox" condition="treeroot.glossary!=undefined" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page"/>
 	<styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page"/>
 
 	<tracking type="group" label="Tracking" optional="true" tooltip="Properties relating to tracked projects (e.g. using SCORM or xAPI)">
@@ -102,9 +102,9 @@
 	
 	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project."/>
 	
-	<variables type="group" label="Variables" condition="parent.variables!=undefined" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property">
-		<varConfirm label="Submit Message" type="TextInput" condition="parent.variables!=undefined" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
-		<varUpdate label="Update Variables" type="CheckBox" condition="parent.variables!=undefined" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
+	<variables type="group" label="Variables" condition="treeroot.variables!=undefined" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property">
+		<varConfirm label="Submit Message" type="TextInput" condition="treeroot.variables!=undefined" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
+		<varUpdate label="Update Variables" type="CheckBox" condition="treeroot.variables!=undefined" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
 	</variables>
 	
 	<lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only">

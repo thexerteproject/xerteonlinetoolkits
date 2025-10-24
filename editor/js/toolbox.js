@@ -551,7 +551,11 @@ var EDITOR = (function ($, parent) {
                     var tree = $.jstree.reference("#treeview");
                     var parent = tree.get_parent(key);
                     return evaluateConditionExpression(ctree.property, parent)
-                } else if (ctree.object.object.name == 'theme_list') {
+                } else if (ctree.object.name == 'treeroot') {
+                    var key = 'treeroot';
+                    return evaluateConditionExpression(ctree.property, key)
+                }
+                else if (ctree.object.object.name == 'theme_list') {
 					return theme_list[currtheme][ctree.property.name];
 				} else {
                     return null;

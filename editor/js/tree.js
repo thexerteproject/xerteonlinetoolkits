@@ -464,7 +464,10 @@ var EDITOR = (function ($, parent) {
         if(!ids.length) { return false; } // Something needs to be selected
 
         var id = ids[0];
-        while (id != 'treeroot' && tree.get_parent(id) != 'treeroot')
+        // Take chapters into account
+        while (id != 'treeroot' && tree.get_parent(id) != 'treeroot'
+            && lo_data[id] != undefined && lo_data[id]['attributes'] != undefined && lo_data[id]['attributes'].nodeName != 'chapter'
+            && lo_data[tree.get_parent(id)] != undefined && lo_data[tree.get_parent(id)]['attributes'] != undefined && lo_data[tree.get_parent(id)]['attributes'].nodeName != 'chapter')
         {
             id = tree.get_parent(id);
         }
