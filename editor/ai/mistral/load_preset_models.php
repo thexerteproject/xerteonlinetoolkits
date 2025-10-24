@@ -3,7 +3,9 @@
 global $mistral_preset_models;
 $mistral_preset_models = new stdClass();
 
-
+if(!isset($_SESSION['toolkits_logon_id'])){
+    die("Session ID not set");
+}
 //dynamically grows when more models are placed in /openai/ai_models/
 //workaround to prevent __FILE__ and __dir__ being xdebug in ide
 foreach (glob(str_replace('\\', '/', __DIR__) . "/ai_models/*.php") as $model) {

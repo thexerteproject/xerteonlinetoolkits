@@ -17,6 +17,7 @@ abstract class AITranscribe {
     /**
      * Constructor accepts the API key.
      */
+    //todo should this sessionId be hardcoded?
     public function __construct($apiKey) {
         $this->apiKey = $apiKey;
         $this->actor = array('user_id'=>$_SESSION['toolkits_logon_username'],'workspace_id'=>$_SESSION['XAPI_PROXY']);
@@ -104,6 +105,7 @@ abstract class AITranscribe {
     /**
      * Save the transcript to a text file in the same directory as the audio file.
      */
+    //todo unused function, duplicate from TranscriptManager
     public function saveAsTextFile($transcript, $audioFilePath) {
         $directoryPath = dirname($audioFilePath);
         $transcriptFilePath = $directoryPath . '/transcription_result.txt';
@@ -116,7 +118,9 @@ abstract class AITranscribe {
     /**
      * Delete a local file.
      */
+    //todo unused function, also high risk
     public function deleteLocalFile($filePath) {
+
         if (file_exists($filePath)) {
             if (unlink($filePath)) {
                 return "File deleted successfully.";
@@ -185,6 +189,11 @@ abstract class AITranscribe {
         int    $maxBytes       = 25 * 1024 * 1024,
         int    $segmentSeconds = 900
     ): array {
+        global $xerte_toolkits_site;
+
+        // Check whether the file does not have path traversal
+        x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
         //reset previous tempdir
         $this->chunkTmpDir = null;
 
@@ -267,6 +276,11 @@ class OpenAITranscribe extends AITranscribe
         string $responseFormat = 'vtt',
         ?string $timestampGranularities = 'segment'
     ): string {
+        global $xerte_toolkits_site;
+
+        // Check whether the file does not have path traversal
+        x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
         // === CONFIG ===
         $maxBytes       = 25 * 1024 * 1024;   // 25MB limit
         $segmentSeconds = 900;                // 15‑minute chunks
@@ -418,6 +432,11 @@ class OpenAITranscribe extends AITranscribe
  */
 class GladiaTranscribe extends AITranscribe {
     public function transcribeAudioTimestamped($filePath) {
+        global $xerte_toolkits_site;
+
+        // Check whether the file does not have path traversal
+        x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
 
         $filesToProcess = $this->prepareChunkedFiles($filePath);
         $allVtt      = '';

@@ -13,6 +13,10 @@ class openai_ai_ivoverlaypanel extends openai_ai {
 			$this->model = $model;
 		}
 
+        if (!preg_match('/^[a-zA-Z]+$/', $type)) {
+            die("path traversal detected");
+        }
+
 		_load_language_file("/editor/ai_models/openai_model_" . strtolower($type) . "_ai.inc");
 		if ($context === 'standard') {
 			$subtype = "text_object";

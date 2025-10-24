@@ -42,8 +42,13 @@ function normalize_path(string $path): string
     return $p;
 }
 
+global $xerte_toolkits_site;
+if(!isset($_SESSION['toolkits_logon_id'])){
+    die("Session ID not set");
+}
+
 try {
-    global $xerte_toolkits_site;
+
 
     $raw = file_get_contents('php://input');
     $input = json_decode($raw, true);

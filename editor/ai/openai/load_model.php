@@ -1,5 +1,10 @@
 <?php 
 require_once(str_replace('\\', '/', __DIR__) . "/model.php");
+
+if(!isset($_SESSION['toolkits_logon_id'])){
+    die("Session ID not set");
+}
+
 foreach(glob(str_replace('\\', '/', __DIR__) . "/model_*.php") as $file){
 	require_once($file);
 }

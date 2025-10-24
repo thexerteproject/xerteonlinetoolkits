@@ -7,6 +7,11 @@ class RegistryHandler {
     private $data;
 
     public function __construct($path) {
+        global $xerte_toolkits_site;
+
+        // Check whether the file does not have path traversal
+        x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
         $registryPath = $path . DIRECTORY_SEPARATOR . "registry";
         $this->path = $path . DIRECTORY_SEPARATOR . "registry" . DIRECTORY_SEPARATOR . "transcript_registry.json";
         if (!is_dir($registryPath)) {

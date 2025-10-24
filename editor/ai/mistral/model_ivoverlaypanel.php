@@ -6,6 +6,11 @@ class mistral_ai_ivoverlaypanel extends mistral_ai {
 		}else { 
 			$this->model = $model;
 		}
+
+        if (!preg_match('/^[a-zA-Z]+$/', $type)) {
+            die("path traversal detected");
+        }
+
 		_load_language_file("/editor/ai_models/mistral_model_" . strtolower($type) . "_ai.inc");
 		if ($context === 'standard') {
 				$subtype = "text_object";

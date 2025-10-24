@@ -1,6 +1,8 @@
 <?php
 namespace transcribe;
 use \Exception;
+
+//todo not used?
 class CorpusSynchronizer {
     private $transcriptDir;
     private $corpusDir;

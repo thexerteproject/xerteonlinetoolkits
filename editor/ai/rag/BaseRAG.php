@@ -23,9 +23,13 @@ abstract class BaseRAG
 
     public function __construct($encodingDirectory, $chunkSize = 2048)
     {
+        global $xerte_toolkits_site;
         $this->chunkSize = $chunkSize;
         require_once(str_replace('\\', '/', __DIR__) . "/TextSplitter.php");
         require_once(str_replace('\\', '/', __DIR__) . "/DocumentLoaders.php");
+
+        // Check whether the file does not have path traversal
+        x_check_path_traversal($encodingDirectory, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
 
         // Ensure the base directory exists
         if (!is_dir($encodingDirectory)) {
@@ -69,6 +73,10 @@ abstract class BaseRAG
      */
     public function processDirectory($directory)
     {
+        global $xerte_toolkits_site;
+        // Check whether the file does not have path traversal
+        x_check_path_traversal($directory, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
         // Get all files in the directory (ignoring . and ..)
         $files = array_filter(scandir($directory), function ($item) use ($directory) {
             return is_file($directory . '/' . $item);
@@ -107,6 +115,11 @@ abstract class BaseRAG
      */
     public function processFileList(array $filePaths, $corpusGrid = true)
     {
+        global $xerte_toolkits_site;
+        // Check whether the file does not have path traversal
+        foreach ($filePaths as $file) {
+            x_check_path_traversal($file['path'], $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+        }
         $results = [];
 
         // Build the set of all file‐basenames we consider "in the corpus"

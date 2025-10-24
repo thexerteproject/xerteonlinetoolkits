@@ -15,6 +15,10 @@ class openai_ai_modelanswer extends openai_ai {
 			$this->model = $model;
 		}
 
+        if (!preg_match('/^[a-zA-Z]+$/', $type)) {
+            die("path traversal detected");
+        }
+
 		_load_language_file("/editor/ai_models/anthropic_model_" . strtolower($type) . "_ai.inc");
 	}
 

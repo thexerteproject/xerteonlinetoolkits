@@ -6,6 +6,11 @@ class anthropic_ai_ivoverlaypanel extends anthropic_ai {
 			$this->model = $model;
 		}
 		$this->context = $context;
+
+        if (!preg_match('/^[a-zA-Z]+$/', $type)) {
+            die("path traversal detected");
+        }
+
 		_load_language_file("/editor/ai_models/anthropic_model_" . strtolower($type) . "_ai.inc");
 		if ($context === 'standard') {
 			$subtype = "text_object";

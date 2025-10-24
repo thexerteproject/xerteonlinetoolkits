@@ -5,6 +5,11 @@ require_once (str_replace('\\', '/', __DIR__) . "/../../../website_code/php/data
 function log_ai_request($response, $category, $vendor, $actor = array(), $sessionId = null, $details=null)
 {
     global $xerte_toolkits_site;
+
+    if(!isset($_SESSION['toolkits_logon_id'])){
+        die("Session ID not set");
+    }
+
     $table = $xerte_toolkits_site->database_table_prefix . 'ai_request_logs';
 
     $category = strtolower($category);

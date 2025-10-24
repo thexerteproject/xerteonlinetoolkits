@@ -1,5 +1,5 @@
 <?php
-class openai_ai {
+class  openai_ai {
 	private $model = "gpt-4o";
 	private $assistantId = "asst_IyiBKzr8nvwddAzVKuh6OnlC";
 	protected $chat_url = "https://api.openai.com/v1/chat/completions";
@@ -46,6 +46,10 @@ class openai_ai {
 			// diffrence with default is "or file as your source"
 			$this->instructions = "Follow the instructions in the last message from the user. Use the appropriate uploaded transcript or file as your source. If no source has been uploaded or the source does not contain information relevant to the subject, and you have been given explicit permission to use knowledge outside of the uploaded file, try to fulfil the request using general knowledge about the specified subject. Regardless of what you end up doing, never return anything except the XML in plaintext. Do not use markdown to denote the xml. Do not add any explanations before or after the xml.";
 		}
+
+        if (!preg_match('/^[a-zA-Z]+$/', $type)) {
+            die("path traversal detected");
+        }
 
 		_load_language_file("/editor/ai_models/openai_model_" . strtolower($type) . "_ai.inc");
 		$upper_type = strtoupper($type);

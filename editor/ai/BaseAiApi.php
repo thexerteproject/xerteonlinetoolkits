@@ -88,17 +88,21 @@ abstract class BaseAiApi
         return $messages[$type] ?? $messages['default'];
     }
 
-    protected function safeExecute(callable $fn, string $context = 'General'): mixed
+    protected function safeExecute(callable $fn, string $context = 'General')
     {
         try {
             return $fn();
         } catch (Throwable $e) {
-            $msgType = match (true) {
-                $e instanceof JsonException => 'json',
-                str_starts_with($e->getMessage(), 'cURL') => 'curl',
-                str_starts_with($e->getMessage(), 'API') => 'api',
-                default => 'default',
-            };
+            $message = $e->getMessage();
+            $msgType = 'default';
+
+            if ($e instanceof JsonException) {
+                $msgType = 'json';
+            } elseif (strpos($message, 'cURL') === 0) {
+                $msgType = 'curl';
+            } elseif (strpos($message, 'API') === 0) {
+                $msgType = 'api';
+            }
 
             throw new \Exception($this->handleError($msgType, $e, $context));
         }
@@ -321,6 +325,7 @@ abstract class BaseAiApi
     }
 
     protected function prepareURL($uploadPath){
+        //todo path traversal check? unsure what this is supposed to do.
         $basePath = __DIR__ . '/../../'; // Moves up from ai -> editor -> xot
         $finalPath = realpath($basePath . $uploadPath);
 
@@ -356,7 +361,9 @@ abstract class BaseAiApi
         if ($this->xerte_toolkits_site->openai_key == "") {
             return (object) ["status" => "error", "message" => "there is no corresponding API key"];
         }*/
-
+        //todo check for path traversal on partial path?
+        //or check at usage when converted to proper path.
+        //x_check_path_traversal($baseUrl);
         try {
             $this->setupLanguageInstructions($selectedCode);
             $managementSettings = get_block_indicators();

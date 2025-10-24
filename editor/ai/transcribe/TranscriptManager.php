@@ -12,6 +12,12 @@ class TranscriptManager {
 
     public function appendBase($uploadPath) {
         $fullPath = $this->mediaHandler->returnBasePath() . '/' . ltrim($uploadPath, '/');
+
+        global $xerte_toolkits_site;
+
+        // Check whether the file does not have path traversal
+        x_check_path_traversal($fullPath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
         $finalPath = realpath($fullPath);
         if ($finalPath === false) {
             throw new Exception("File or directory does not exist: " . $uploadPath);

@@ -2,7 +2,7 @@
 namespace transcribe;
 use \Exception;
 class MediaHandler {
-    // Supported video hosts.
+    // Supported video hosts. //todo get from management
     protected $supportedHosts = ['youtube.com', 'youtu.be', 'vimeo.com', 'video.dlearning.nl'];
     protected $basePath;
 
@@ -12,6 +12,11 @@ class MediaHandler {
      * @param string $basePath The base file directory for user media.
      */
     public function __construct($basePath, $transcriber) {
+        global $xerte_toolkits_site;
+
+        // Check whether the file does not have path traversal
+        x_check_path_traversal($basePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
         $this->basePath = rtrim($basePath, '/');
         $this->transcriber = $transcriber;
         //We set this to the designated folder for transcript-related content
@@ -75,6 +80,11 @@ class MediaHandler {
      * @throws Exception if the path does not exist.
      */
     public function prepareURL($uploadPath) {
+
+        if (strpos($uploadPath, '..') !== false) {
+            die("Invalid path — traversal attempt detected!");
+        }
+
         $fullPath = $this->basePath . '/' . ltrim($uploadPath, '/');
         $finalPath = realpath($fullPath);
         if ($finalPath === false) {
@@ -200,6 +210,7 @@ class MediaHandler {
      * @param string $filePath
      * @return string MIME type.
      */
+    //todo ensure only files in proper directory are readable.
     public function getMimeType($filePath) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mimeType = mime_content_type($filePath);
@@ -219,6 +230,12 @@ class MediaHandler {
      * @throws Exception if extraction fails.
      */
     public function extractAudio($videoFilePath) {
+        global $xerte_toolkits_site;
+
+        // Check whether the file does not have path traversal
+        x_check_path_traversal($videoFilePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
+
         $outputFileName = 'output_audio_' . uniqid() . '.mp3';
         $outputAudioPath = dirname($videoFilePath) . '/' . $outputFileName;
         $command = "ffmpeg -i " . $this->customEscapeshellarg($videoFilePath)
@@ -261,6 +278,11 @@ class MediaHandler {
      * @return string Path to the saved transcript.
      */
     public function saveAsTextFile($transcript, $mediaFilePath) {
+        global $xerte_toolkits_site;
+
+        // Check whether the file does not have path traversal
+        x_check_path_traversal($mediaFilePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
         $directoryPath = $mediaFilePath;
         $timestamp = date('Ymd_His');
         $transcriptFileName = "transcription_result_{$timestamp}.txt";
@@ -279,6 +301,11 @@ class MediaHandler {
      * @return boolean true if success, false if failed.
      */
     private function deleteFile($filePath) {
+        global $xerte_toolkits_site;
+
+        // Check whether the file does not have path traversal
+        x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
         if (is_file($filePath)) {
             return unlink($filePath);
         } else {
@@ -338,6 +365,12 @@ class MediaHandler {
         // Case 2: Input is a file path.
         else {
             $filePath = $this->prepareURL($input);
+
+            global $xerte_toolkits_site;
+
+            // Check whether the file does not have path traversal
+            x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
             $mimeType = $this->getMimeType($filePath);
             $videoMimeTypes = ['video/mp4', 'video/avi', 'video/mpeg', 'video/quicktime', 'application/octet-stream'];
             $audioMimeTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg'];

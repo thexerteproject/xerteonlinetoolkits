@@ -47,9 +47,13 @@ function normalize_path(string $path): string
 }
 
 ob_start();
+global $xerte_toolkits_site;
+if(!isset($_SESSION['toolkits_logon_id'])){
+    die("Session ID not set");
+}
 
 try {
-    global $xerte_toolkits_site;
+
 
     //get settings from the management table, which help us decide which options to use
     $managementSettings = get_block_indicators();
