@@ -1,16 +1,16 @@
 <?php 
 require_once (str_replace('\\', '/', __DIR__) . "/../../config.php");
 
-//todo add security checks
 if(!isset($_SESSION['toolkits_logon_id'])) {
-    die;
+    die("Session ID not set");
 }
 
 if (isset($_SESSION["paths_img_search"])) {
-    $images = $_SESSION["paths_img_search"];
+    $images =$_SESSION["paths_img_search"];
     if ($_POST["indices_to_delete"] !== null) {
-        for ($i = 0; $i < count($_POST["indices_to_delete"]); $i++) {
-            $index = $_POST["indices_to_delete"][$i];
+        $indices_to_delete = x_clean_input($_POST["indices_to_delete"]);
+        for ($i = 0; $i < count($indices_to_delete); $i++) {
+            $index = $indices_to_delete[$i];
             if ($index > count($images) && $index < 0) {
                 continue;
             }

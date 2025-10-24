@@ -3,27 +3,18 @@
 require_once(dirname(__FILE__) . "/../../config.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../ai/management/dataRetrievalHelper.php");
 
-//todo add authentication!
-//if (!isset($_SESSION['toolkits_logon_username']) && !is_user_admin()) {
-//    _debug("Session is invalid or expired");
-//    die('{"status": "error", "message": "Session is invalid or expired"}');
-//}
-//check if request has required attributes
-//if (!isset($_POST['type'])) {
-//    _debug("type is not set");
-//    die('{"status": "error", "message": "type is not set, contact your system administrator"}');
-//}elseif (!isset($_POST["prompt"]) && $_POST["prompt"] !== ""){
-//    _debug("prompt is empty");
-//    die('{"status": "error", "message": "prompt must not be empty"}');
-//}
+if(!isset($_SESSION['toolkits_logon_id'])) {
+    die("Session ID not set");
+}
+
 ob_start();
-$query = $_POST["query"];
-$api = $_POST["api"] ?? 'pexels';
-$textApi = $_POST["textApi"] ?? 'mistral';
-$url = $_POST["target"];
-$interpretPrompt = $_POST["interpretPrompt"];
-$overrideSettings = $_POST["overrideSettings"];
-$settings = $_POST["settings"];
+$query = x_clean_input($_POST["query"]);
+$api = x_clean_input($_POST["api"]) ?? 'pexels';
+$textApi = x_clean_input($_POST["textApi"]) ?? 'mistral';
+$url = x_clean_input($_POST["target"]);
+$interpretPrompt = x_clean_input($_POST["interpretPrompt"]);
+$overrideSettings = x_clean_input($_POST["overrideSettings"]);
+$settings = x_clean_input($_POST["settings"]);
 
 $managementSettings = get_block_indicators();
 

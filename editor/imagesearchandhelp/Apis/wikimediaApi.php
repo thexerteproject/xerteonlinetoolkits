@@ -219,6 +219,10 @@ class wikimediaApi extends BaseApi
 
     public function sh_request($query, $target, $interpretPrompt, $overrideSettings, $settings)
     {
+        if(!isset($_SESSION['toolkits_logon_id'])) {
+            die("Session ID not set");
+        }
+
         $downloadedPaths = [];
 
         $aiQuery = ($interpretPrompt === "true" || $interpretPrompt === true)
@@ -248,6 +252,8 @@ class wikimediaApi extends BaseApi
 
         $path = rtrim($target, '/') . "/media";
         $this->ensureDir($path);
+
+        x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
 
         if (isset($apiResponse['query']['pages'])) {
             foreach ($apiResponse['query']['pages'] as $page) {

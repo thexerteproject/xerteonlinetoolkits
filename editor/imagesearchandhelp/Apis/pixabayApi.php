@@ -156,6 +156,9 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
 
     public function sh_request($query, $target, $interpretPrompt, $overrideSettings, $settings)
     {
+        if(!isset($_SESSION['toolkits_logon_id'])) {
+            die("Session ID not set");
+        }
         $downloadedPaths = [];
 
 
@@ -165,6 +168,7 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
 
 
         if ($overrideSettings === 'false' || $overrideSettings === false) {
+            //todo alek again?
             $aiParams = json_decode(json_encode($settings));
         } else {
             $tmp = $this->extractParameters($query);
@@ -187,7 +191,7 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
 
         $path = rtrim($target, '/') . "/media";
         $this->ensureDir($path);
-
+        x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
 
         foreach ($apiResponse->hits ?? [] as $photo) {
             $url = $photo->largeImageURL; // best quality

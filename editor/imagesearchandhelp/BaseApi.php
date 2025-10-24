@@ -99,6 +99,8 @@ abstract class BaseApi
 
     protected function downloadBinary(string $url, string $saveDir, string $prefix = '', ?string $filename = null)
     {
+        global $xerte_toolkits_site;
+        x_check_path_traversal($saveDir, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
         $this->ensureDir($saveDir);
 
 

@@ -21,6 +21,10 @@ class MistralClient implements AiClientInterface
 
     public function chat(array $messages, array $options = []): array
     {
+        if(!isset($_SESSION['toolkits_logon_id'])) {
+            die("Session ID not set");
+        }
+
         $payload = [
             'model' => !empty($options['model']) ? $options['model'] : 'mistral-large-latest',
             'messages' => $messages,

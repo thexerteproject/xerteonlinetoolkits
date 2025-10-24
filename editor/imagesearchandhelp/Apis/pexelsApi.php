@@ -99,9 +99,15 @@ class pexelsApi extends BaseApi
 
     public function sh_request($query, $target, $interpretPrompt, $overrideSettings, $settings)
     {
+        if(!isset($_SESSION['toolkits_logon_id'])) {
+            die("Session ID not set");
+        }
+
         $downloadedPaths = [];
         $baseDir = rtrim($target, '/\\') . '/media';
         $this->ensureDir($baseDir);
+
+        x_check_path_traversal($baseDir, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
 
 
         $aiOptions = ['model' => $this->providerModel];
@@ -113,7 +119,8 @@ class pexelsApi extends BaseApi
 
 
         if ($overrideSettings === false || $overrideSettings === 'false') {
-            $aiParams = json_decode(json_encode($settings));
+            //todo used to be jsondecode(jsonencode(settings))
+            $aiParams = $settings;
         } else {
             $ex = $this->extractParameters($query, $aiOptions);
             if ($ex->status !== 'success') {

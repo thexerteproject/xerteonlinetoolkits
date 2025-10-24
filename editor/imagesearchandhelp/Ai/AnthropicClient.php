@@ -22,6 +22,10 @@ class AnthropicClient implements AiClientInterface
 
     public function chat(array $messages, array $options = []): array
     {
+        if(!isset($_SESSION['toolkits_logon_id'])) {
+            die("Session ID not set");
+        }
+
         $converted = [];
         foreach ($messages as $m) {
             if ($m['role'] === 'system') {
