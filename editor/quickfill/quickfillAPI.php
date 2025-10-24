@@ -1,8 +1,11 @@
 <?php
 error_reporting(0);
 
-$type = $_POST["type"];
-$parameters = $_POST["parameters"];
+require_once(dirname(__FILE__) . "/../../config.php");
+
+$type = x_clean_input($_POST["type"]);
+$parameters = x_clean_input($_POST["parameters"]);
+//todo hardcoded language
 $language = 'en-GB';
 
 $allowed_types = ['quiz',

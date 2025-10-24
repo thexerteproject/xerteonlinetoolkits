@@ -17,6 +17,8 @@ class basicquickfill
         // Construct the final XWD path
         //$xwdPath = $xotBaseDir . DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR . "Nottingham" . DIRECTORY_SEPARATOR . "wizards" . DIRECTORY_SEPARATOR . $language;
         $xwdPath = $xotBaseDir . DIRECTORY_SEPARATOR . "modules" . DIRECTORY_SEPARATOR . "xerte" . DIRECTORY_SEPARATOR . "parent_templates" . DIRECTORY_SEPARATOR . "Nottingham" . DIRECTORY_SEPARATOR . "wizards" . DIRECTORY_SEPARATOR . $language;
+        $expectedPath = $xotBaseDir . DIRECTORY_SEPARATOR . "modules" . DIRECTORY_SEPARATOR . "xerte" . DIRECTORY_SEPARATOR . "parent_templates" . DIRECTORY_SEPARATOR . "Nottingham" . DIRECTORY_SEPARATOR . "wizards" . DIRECTORY_SEPARATOR;
+        x_check_path_traversal($xwdPath, $expectedPath, 'Invalid file path specified');
 
         // Ensure the directory exists
         if (!is_dir($xwdPath)) {
@@ -28,9 +30,15 @@ class basicquickfill
 
     private function getXWDFilePath($type, $basedir)
     {
+        global $xerte_toolkits_site;
         $type='data';
         $filePath = $basedir . DIRECTORY_SEPARATOR . $type . '.xwd';
+        $expectedPath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR,$xerte_toolkits_site->root_file_path);
+        $expectedPath = $expectedPath . "modules" . DIRECTORY_SEPARATOR . "xerte" . DIRECTORY_SEPARATOR . "parent_templates" . DIRECTORY_SEPARATOR . "Nottingham" . DIRECTORY_SEPARATOR . "wizards" . DIRECTORY_SEPARATOR;
 
+
+
+        x_check_path_traversal($filePath, $expectedPath, 'Invalid file path specified');
         if (!file_exists($filePath)) {
             throw new Exception("XWD file not found for type: $type at path: $filePath");
         }
