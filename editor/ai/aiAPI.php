@@ -21,19 +21,22 @@ if(!isset($_SESSION['toolkits_logon_id'])) {
     die("Session ID not set");
 }
 
-$prompt_params = x_clean_input($_POST["prompt"]) ?? null;
+$prompt_params = $_POST["prompt"] ?? null;
+if($prompt_params!=null){$prompt_params = x_clean_input($_POST["prompt"]);}
 $type = x_clean_input($_POST["type"]); // page
 $ai_api = x_clean_input($_POST["api"]) ?? 'openai'; // model selection
 $file_url = x_clean_input($_POST["url"]) ?? 'None';
 $textSnippet = x_clean_input($_POST["textSnippet"]);
 $context = x_clean_input($_POST["context"]) ?? 'None';
-$subtype = x_clean_input($_POST["prompt"]["subtype"]) ?? null;
+$subtype = $_POST["prompt"]["subtype"] ?? null;
+if ($subtype!=null){$subtype = x_clean_input($_POST["prompt"]["subtype"]);}
 $useContext = x_clean_input($_POST["useContext"]) ?? 'false';
 $baseUrl = x_clean_input($_POST["baseUrl"]);
 $contextScope = x_clean_input($_POST["contextScope"]);
 $modelTemplate = x_clean_input($_POST["modelTemplate"]);
 $useCorpus = x_clean_input($_POST["useCorpus"]) ?? false;
-$fileList = x_clean_input($_POST["fileList"]) ?? null;
+$fileList = $_POST["fileList"] ?? null;
+if ($fileList!=null) {$fileList = x_clean_input($_POST["fileList"]);}
 $useLoInCorpus = x_clean_input($_POST['useLoInCorpus']);
 $restrictCorpusToLo = x_clean_input($_POST['restrictCorpusToLo']);
 $selectedCode = x_clean_input($_POST['language']);
@@ -64,23 +67,8 @@ verify_LO_folder(prev($url_parts), '/RAG/corpus');
 $api_type = $ai_api . 'Api';
 $aiApi = new $api_type($ai_api);
 
-//todo remove or disable these debug features?
-$prompt_params_str = print_r($prompt_params, true);
-$useCorpus_str = print_r($useCorpus, true);
-$fileList_str = print_r($fileList, true);
-$restrictCorpusToLo_str = print_r($restrictCorpusToLo, true);
+$result = $aiApi->ai_request($prompt_params, $type, $subtype, $context, $baseUrl, $selectedCode, $useCorpus, $fileList, $restrictCorpusToLo);
 
-file_put_contents("ai.txt", "prompt_params: $prompt_params_str\ntype: $type\nbaseUrl:$baseUrl\n useCorpus: $useCorpus_str\n fileList: $fileList_str\n restrictCorpusToLo: $restrictCorpusToLo_str\n\n\n", FILE_APPEND);
-
-
-//todo why
-switch ($ai_api) {
-    case 'openai':
-    case 'mistral':
-    case 'anthropic':
-        $result = $aiApi->ai_request($prompt_params, $type, $subtype, $context, $baseUrl, $selectedCode, $useCorpus, $fileList, $restrictCorpusToLo);
-        break;
-}
 
 $debugOutput = ob_get_contents();
 ob_end_clean();
