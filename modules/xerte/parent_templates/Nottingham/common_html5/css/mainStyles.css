@@ -1911,6 +1911,11 @@ button.resourceLink {
 	.splitScreen.xlarge .left,
 	.splitScreen.xlarge .right { flex: 0 0 100%; }
 
+	.splitScreen.custom .left,
+	.splitScreen.custom .right {
+		flex: 0 0 100% !important;
+	}
+
 	.splitScreen_B:not(.fullPanelH) .panelContent {
 		height: auto !important;
 	}
