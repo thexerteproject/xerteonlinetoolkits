@@ -1341,12 +1341,6 @@ var EDITOR = (function ($, parent) {
             }
         }
 
-        //open lightbox when added to the page for the first time.
-        if (lightboxGroup !== undefined && lightboxGroup !== "") {
-            $('#lightboxbutton_' + lightboxGroup).trigger("click");
-            $('.featherlight').css('background', 'rgba(0,0,0,.8)')
-        }
-
         // And finally, scroll to the scrollPos, or place scrollToId (if defined) into view
         if (scrollToId === undefined) {
             setTimeout(function () {
