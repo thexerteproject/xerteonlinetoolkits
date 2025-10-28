@@ -54,7 +54,8 @@ abstract class BaseRAG
         $this->corpusFile = $this->encodingDirectory . 'corpus.json';
 
         $this->actor = array('user_id'=>$_SESSION['toolkits_logon_username'],'workspace_id'=>$_SESSION['XAPI_PROXY']);
-        $this->sessionId = $_SESSION['token'];
+        //$this->sessionId = $_SESSION['token'];
+        $this->sessionId = "token is busted";
     }
 
     abstract protected function supportsProviderEmbeddings(): bool;

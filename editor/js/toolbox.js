@@ -4601,18 +4601,6 @@ var EDITOR = (function ($, parent) {
         }
         lightboxHtml.append(lightboxTable);
 
-        //todo not needed for new workflow
-        // if (mode == "initialize") {
-        //     //create editor button to open lightbox manually
-        //     displayParameter(
-        //         '#mainPanel .wizard #groupTable_' + group.name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
-        //         [{name: group.name, value: {type: "lightboxbutton", label: group.value.label ? group.value.label : ""}}],
-        //         group.name,
-        //         "",
-        //         key
-        //     );
-        // }
-
         // ensure global is always present
         window.lightboxCKEditorIds = window.lightboxCKEditorIds || [];
 
@@ -4640,7 +4628,7 @@ var EDITOR = (function ($, parent) {
                 convertTextInputs();
                 //attachEditorsToLightbox(groupChildren, key, '.featherlight-content', formState);
                 convertDataGrids();
-
+                convertTreeSelect();
                 convertTextAreas();
                 $('body').addClass('fl-jqgrid-top');
             },
@@ -4648,11 +4636,7 @@ var EDITOR = (function ($, parent) {
                 $('body').removeClass('fl-jqgrid-top');
             }
         });
-        //});
 
-        // if (mode === "redraw") {
-        //     $('#lightboxbutton_' + groupname).trigger('click');
-        // }
     }
 
     triggerRedrawForm = function (group, key, groupChildren="", mode, alternative_button = "") {
@@ -5440,46 +5424,6 @@ var EDITOR = (function ($, parent) {
 
                 treeSelecters.push({id: id, options: options, value: setValue, parentID: 'educationlevel_div_' + form_id_offset, treeSelectOptions: educationlevel_list, key: key, name: name})
                 form_id_offset++;
-                //deprecated code
-                // var select = $('<select>' )
-                //     .attr('id', id)
-                //     .change({id:id, key:key, name:name, trigger:conditionTrigger}, function(event)
-                //     {
-                //         inputChanged(event.data.id, event.data.key, event.data.name, this.value, this);
-                //         if (event.data.trigger)
-                //         {
-                //             triggerRedrawPage(event.data.key);
-                //         }
-                //     });
-                // // Add empty option
-                // var option = $('<option>')
-                //     .attr('value', "");
-                // if (value=="") {
-                //     option.prop('selected', true);
-                //     currselected = true;
-                // }
-                // option.append("");
-                // select.append(option);
-                // for (var i=0; i<educationlevel_list.length; i++) {
-                //     var option = $('<option>')
-                //         .attr('value', educationlevel_list[i].educationlevel_name);
-                //     if (educationlevel_list[i].educationlevel_name==value) {
-                //         option.prop('selected', true);
-                //         currselected = true;
-                //     }
-                //     option.append(educationlevel_list[i].educationlevel_name);
-                //     select.append(option);
-                // }
-                // if (value != "" && !currselected)
-                // {
-                //     //  Add current value as option, even though it is not in the list
-                //     var option = $('<option>')
-                //         .attr('value', value);
-                //     option.prop('selected', true);
-                //     option.append('<i class="fa fa-exclamation-triangle " title ="' + language.category.$deprecated + '"></i>&nbsp;' + value);
-                //     select.append(option);
-                // }
-                // html.append(select);
                 break;
 			case 'course':
 				if (course_list.length == 0)
@@ -5818,7 +5762,7 @@ var EDITOR = (function ($, parent) {
 					{
 						browseFile(event.data.id, event.data.type ,event.data.key, event.data.name, this.value, this);
 					})
-					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')))
+					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-upload').addClass('xerte-icon')));
 
 				btnHolder.append($('<button>')
 					.attr('id', 'preview_' + id)
@@ -5838,20 +5782,8 @@ var EDITOR = (function ($, parent) {
 					.addClass("xerte_button")
 					.click({id:id, key:key, name:name, group: options.group}, function(event)
 					{
-						let input = $(this).closest('tr').find('input')[0];
-						console.log(event, options);
 						window.imageSearchSingle = true;
 						triggerRedrawForm("imgSearchAndHelpGroup", key, "", "initialize", event.data.name);
-                        // ... strange way to update a field.
-						// let callback = () => {
-						// 		if($("html").data("image")){
-						// 				let src = $("html").data("image");
-						// 				input.value = $("html").data("image").replace("//media", "/media");
-						// 		} else {
-						// 				setTimeout(callback, 500);
-						// 		}
-						// };
-						// setTimeout(callback, 0);
 					})
 					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-wand-magic').addClass('xerte-icon')));
 

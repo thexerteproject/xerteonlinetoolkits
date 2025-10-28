@@ -46,7 +46,8 @@ abstract class BaseAiApi
         require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/load_model.php");
 
         $this->actor = array('user_id'=>$_SESSION['toolkits_logon_username'],'workspace_id'=>$_SESSION['XAPI_PROXY']);
-        $this->sessionId = $_SESSION['token'];
+        //$this->sessionId = $_SESSION['token'];
+        $this->sessionId = "token is busted";
     }
 
     protected function clean_result($answer) {

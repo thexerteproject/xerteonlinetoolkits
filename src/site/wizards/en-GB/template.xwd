@@ -14,15 +14,15 @@
 			<categoryTxt label="Text" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Search introduction text"/>
 		</searchGroup>
 
-		<AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true" lightbox="form" condition="hasrole('aiuser')">
-			<aiSelector label="AI model" type="comboBox_ai" defaultValue="openai" width="120" conditionTrigger="true" optional="true"/>
-            <subject verification="^.+$" label="Subject" type="TextInput" tooltip="The subject on which a bootstrap learning object should be generated." wysiwyg="false" optional="true"/>
-            <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file or when using a video or audio link as a source. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." optional="true"/>
-            <file label="File" type="media" defaultValue="Upload a file" tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation." optional="true"/>
-            <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip="Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" optional="true"/>
+		<!-- <AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true" lightbox="form" condition="hasrole('aiuser')">
+			<aiSelector advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" conditionTrigger="true" optional="true"/>
+            <subject verification="^.+$"  label="Subject" type="TextInput" tooltip = "The subject on which a bootstrap learning object should be generated." wysiwyg="false" optional="true"/>
+            <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file or when using a video or audio link as a source. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." optional ="true"/>
+            <file label="File" type="media" defaultValue="Upload a file" tooltip = "Select a video, audio, powerpoint, PDF or other text file to be used for content generation." optional="true"/>
+            <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip = "Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" optional ="true"/>
             <aiButton type="aibutton" optional="true"/>
             <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
-        </AIGroup>
+        </AIGroup> -->
 		
 		<glossaryGroup type="group" label="Glossary" optional="true">
 			<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" defaultValue="term|definition" optional="true" wysiwyg="false,true"/>
@@ -244,29 +244,7 @@
         <expandMain label="Expand Main Contents" type="CheckBox" defaultValue="false" optional="true" condition="sectionMenu=='true'" tooltip="If the table of contents is set to hidden then also expand the main contents to the width of the page"/>
     </sectionGroup><customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding a unique ID and then appending #yourPageID to the end of the project URL.&lt;br/&gt;Avoid using spaces, special characters and the words 'page' and 'section' in IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt;Please also note that IDs are case sensitive." common="true">
 		<customLinkID label="Page ID" type="TextInput" optional="true"/>
-	</customLinkGroup><imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Assistance with image searching for Xerte content" optional="true" common="true">
-         <imgApi label="Service" type="comboBox_image" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: Send an image request to Pexels and receive images that match the given description; Pixabay: Send an image request to Pixabay and receive images that match the given description; Dalle2: Attempt to generate the specified number of images based on the given descriptions using an AI model; Dalle3: Attempt to generate a single image based on the given description using an AI model."/>
-         <nri label="Quantity" options="1, 2, 3, 4, 5, 6, 7, 8, 9, 10" type="comboBox" data="1,2,3,4,5,6,7,8,9,10" defaultValue="1" tooltip="The number of images to retrieve or generate." optional="true"/>
-         <imgQuery label="Query" type="text" tooltip="Provide a brief description for the desired image here." wysiwyg="false" optional="true"/>
-
-         <useAiInterpret label="Enable AI query interpretation." tooltip="This option filters the Query using an AI model, rewriting the query to better mach the selected service." type="Checkbox" conditionTrigger="true" defaultValue="false" optional="true"/>
-
-         <overrideAiSettings label="Enable AI settings override." tooltip="Allows the user to manually set parameters specific to the service, regardless of the input in the query." type="Checkbox" conditionTrigger="true" condition="imgApi=='pexels' || imgApi=='pixabay'" defaultValue="false" optional="true"/>
-
-         <pexelsColor label="Color" tooltip="Input a single color or a hexadecimal value, representative of the average color desired in the image." type="TextInput" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings=='true'"/>
-         <pexelsSize label="Size" tooltip="Select the size of the retrieved images." options="small, medium, large, any" type="comboBox" data="small,medium,large,any" defaultValue="any" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings=='true'"/>
-         <pexelsOrientation label="Orientation" options="landscape, portrait, any" type="comboBox" data="landscape,portrait,any" defaultValue="any" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings=='true'"/>
-
-         <pixabayColors label="Color" tooltip="Input one or more colors, separated by a comma, from the following list: grayscale, transparent, red, orange, yellow, green, turquoise, blue, lilac, pink, white, gray, black, brown" type="TextInput" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings=='true'"/>
-         <pixabayType label="Type" tooltip="Select which type of image to retrieve." options="all,photo,illustration,vector" type="comboBox" data="all,photo,illustration,vector" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings=='true'"/>
-         <pixabayOrientation label="Orientation" options="horizontal, vertical, any" type="comboBox" data="horizontal,vertical,any" defaultValue="any" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings=='true'"/>
-
-
-         <aiContentWarningPrompt label="You have enabled AI query interpretation. The image search and help tool will interpret the entered query using an Artifical Intelligence model before using the selected service." type="info" condition="useAiInterpret=='true'" optional="true"/>
-         <aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="imgApi=='dalle2' || imgApi=='dalle3'" optional="true"/>
-
-         <ishButton type="imgsearchandhelpbutton" optional="true"/>
-     </imgSearchAndHelpGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
+	</customLinkGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="Enter an access code below to view the page:" tooltip="The instructions which appear in the access code block"/>

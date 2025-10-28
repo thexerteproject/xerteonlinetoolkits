@@ -53,13 +53,14 @@ try {
     $raw = file_get_contents('php://input');
     $input = json_decode($raw, true);
 
-    $baseUrl = $input['baseURL'] ?? '';
+    //$baseUrl = $input['baseURL'] ?? '';
     $type   = x_clean_input($input['type']   ?? '',    'string');
     $gridId = x_clean_input($input['gridId'] ?? '',    'string');
     $format = x_clean_input($input['format'] ?? '',    'string');
 
     // Prep directories & API keys
-    $baseDir = prepareURL($baseUrl);
+    //$baseDir = prepareURL($baseUrl);
+    $baseDir = $_SESSION['uploadDir'];
     x_check_path_traversal($baseDir);
 
     //get settings from the management table, which help us decide which options to use
