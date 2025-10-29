@@ -463,7 +463,10 @@ var EDITOR = (function ($, parent) {
         if(!ids.length) { return false; } // Something needs to be selected
 
         var id = ids[0];
-        while (id != 'treeroot' && tree.get_parent(id) != 'treeroot')
+        // Take chapters into account
+        while (id != 'treeroot' && tree.get_parent(id) != 'treeroot'
+            && lo_data[id] != undefined && lo_data[id]['attributes'] != undefined && lo_data[id]['attributes'].nodeName != 'chapter'
+            && lo_data[tree.get_parent(id)] != undefined && lo_data[tree.get_parent(id)]['attributes'] != undefined && lo_data[tree.get_parent(id)]['attributes'].nodeName != 'chapter')
         {
             id = tree.get_parent(id);
         }
@@ -563,7 +566,7 @@ var EDITOR = (function ($, parent) {
         var standaloneIcon = toolbox.getExtraTreeIcon(key, "standalone", lo_data[key].attributes.linkPage == "true" || lo_data[key].attributes.linkPageChapter == "true");
         var unmarkIcon = toolbox.getExtraTreeIcon(key, "unmark", lo_data[key].attributes.unmarkForCompletion == "true" && parent_id == 'treeroot');
 		var advancedIcon = toolbox.getExtraTreeIcon(key, "advanced", simple_mode && !disable_advanced && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
-        var milestoneIcon = toolbox.getExtraTreeIcon(key, "milestone", lo_data[key].attributes.milestone != undefined && lo_data[key].attributes.milestone != '');
+        var milestoneIcon = toolbox.getExtraTreeIcon(key, "milestone", lo_data[key].attributes.milestone == "true");
         // Be careful. You cannot just find $("#" + current_node.id + "_text").html(), because if the node is collapsed this will return undefined!
         // var nodeText = $("#" + current_node.id + "_text").html();
         var nodeText = $("<div>").html(current_node.text).find("#" + current_node.id + "_text").html();

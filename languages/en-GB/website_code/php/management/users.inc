@@ -13,6 +13,20 @@
 
 	define("USERS_TOGGLE", "Show");
 
+
+
+    define("USERS_SHOW_ACTIVE", "Show active users");
+    define("USERS_SHOW_INACTIVE", "Show inactive users");
+    define("USERS_SHOW_ALL", "Show all users");
+    define("USERS_DISABLE_SELECTED", "Disable selected users");
+    define("USERS_ENABLE_SELECTED", "Enable selected users");
+
+    define("USERS_UPDATE_ACTIVE", "Update user active status");
+    define("USERS_UPDATE_ACTIVE_SUCCESS", "Update succeeded");
+    define("USERS_UPDATE_ACTIVE_FAILED", "Update failed");
+    define("USERS_RETRIEVE_USERS_LASTLOGIN_SUCCESS", "Do you want to disable the {0} users who have not logged in since the specified date?");
+    define("USERS_DISABLE_USERS_LASTLOGIN_SUCCESS", "{0} users who have not logged in since the specified date have been disabled");
+
 	define("USERS_ID", "The user's ID is ");
 
 	define("USERS_FIRST", "The user's first name is ");
@@ -21,9 +35,14 @@
 	
 	define("USERS_USERNAME", "The user's username is");
 
-    define("USERS_MANAGE_AUTH", "Authorized users");
+    define("USER_DISABLED", "Disabled");
 
-    define("USERS_MANAGE_ACTIVE", "Active users with Learning Objects");
+    define("USERS_MANAGE_AUTH", "Manage Db auth users");
+
+    define("USERS_MANAGE_USERS", "Manage users");
+    define("USERS_MANAGE_ACTIVE", "Active users");
+    define("USERS_MANAGE_INACTIVE", "Inactive users");
+    define("USERS_MANAGE_ALL", "All users");
 
 	define("USERS_ROLES_SUCCESS", "Success");
 	
@@ -33,12 +52,22 @@
 	
 	define("USERS_MODIFY_ROLES", "Modify user roles");
 
+    define("USERS_MANAGE_ROLES_SELECT_USER", "Select a user to modify their roles");
+
+    define("USERS_MANAGE_SELECT_USER", "Select a user to view their details");
+
     define("USERS_MANAGE_ROLES", "Manage user roles");
+    define("USERS_SHOW_ROLES", "Show user roles");
     define("USERS_MANAGE_ROLES_ASSIGN_ROLES", "Assign and edit user roles");
     define("USERS_MANAGE_ROLES_OVERVIEW", "Currently assigned roles");
     define("USERS_MANAGE_ROLES_OVERVIEW_USERNAME", "User");
     define("USERS_MANAGE_ROLES_OVERVIEW_ASSIGNED_ROLES", "Assigned roles");
     define("USERS_MANAGE_ROLES_OVERVIEW_SELECT_USER", "Select this user to modify their roles");
+    define("USERS_MANAGE_DISABLE_USERS_BASED_ON_LASTLOGIN", "Disable users based on last login date");
+    define("USERS_MANAGE_DISABLE_USERS_BASED_ON_LASTLOGIN_TEXT", "This will disable users who have not logged in since the specified date.");
+    define("USERS_MANAGE_DISABLE_USERS_BASED_ON_LASTLOGIN_DATE", "Last login date:");
+    define("USERS_MANAGE_DISABLE_USERS_BASED_ON_LASTLOGIN_BUTTON", "Disable users based on last login date");
+
 
 //  admin roles human names -------------------------------------------
     define("USERS_ROLE_SUPER", "Super Admin");

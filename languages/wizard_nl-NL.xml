@@ -9,6 +9,7 @@
     </insertDialog>
 	<btnSaveXerte label="Opslaan" tooltip="Project opslaan" description="Opslaan knop"/>
 	<btnPublishXot label="Publiceer/opslaan" tooltip="Publiceer/opslaan project" description="Publiceer/opslaan knop"/>
+	<wikiLink tooltip="Open wiki pagina {x} (nieuw venster)"/>
 	<popupFileUpload title="Bestand kiezen" cancelLabel="Annuleren"/>
 	<browseImportFile title="Selecteer bestand om te importeren...">
 		<dialogFilter>Alle Bestanden|*.*|JPG|*.jpg|PNG|*.png|SWF Bestanden|*.swf|Geluidsbestanden|*.mp3|Video|*.flv</dialogFilter>
@@ -31,8 +32,10 @@
 	<btnAddChild tooltip="voeg kinderen toe"/>
 	<btnDuplicate label="Kopieer" tooltip="Kloon"/>
 	<btnDelete label="Wis" tooltip="Verwijder het geselecteerde item"/>
+	<btnAdvanced label_on="Geavanceerde modus aan" tooltip_on="Zet geavanceerde modus aan" label_off="Geavanceerde modus uit" tooltip_off="Zet geavanceerde modus uit"/>
 	<btnMoveUp tooltip="Verplaats naar boven"/>
 	<btnMoveDown tooltip="Verplaats naar beneden"/>
+	<chkExpandTree label="Pagina's uitvouwen" tooltip="Alle pagina's uitvouwen"/>
 	<btnNext tooltip="Volgende item"/>
 	<btnPreview label="Toon" tooltip="Voorvertoning"/>
 	<btnPrev tooltip="Vorige item"/>
@@ -44,10 +47,18 @@
 	<chkShowLanguage label="Toon taal opties" tooltip="Laat de taal opties zien als die er zijn."/>
 	<chkShowAdvanced label="Toon geavanceerde opties" tooltip="Laat de geavanceerde opties zien, als die er zijn."/>
     <chkShowToolbar label="Toon knoppenbalk" tooltip="Zet standaard de knoppen balk aan."/>
+	<chkShowGroups label="Groepen uitvouwen" tooltip="Alle groepen uitvouwen."/>
 	<compMedia tooltip="Importeer media"/>
 	<compPreview error="Voorvertoning niet beschikbaar" tooltip="Voorvertoning"/>
+	<calendar tooltip="Selecteer Datum"/>
+	<chapter title="HOOFDSTUK"/>
 	<hidePage tooltip="Deze pagina is verborgen"/>
+	<hideContent tooltip="Deze content is verborgen"/>
+	<standalonePage tooltip="Dit is een stand-alone pagina"/>
+	<milestonePage tooltip="Dit is een mijlpaal pagina"/>
+	<passwordPage tooltip="Een toegangscode moet worden ingevoerd om deze pagina/sectie te kunnen bekijken"/>
 	<unmarkForCompletion tooltip="Deze pagina telt niet mee bij bepaling van voltooiing"/>
+	<advancedPage title="Geavanceerd" tooltip="Dzez pagina is geen onderdeel van dit (sub-)template en kan alleen worden toegevoegd in geavanceerde modus."/>
 	<filemenu title="Bestand">
 		<menuNew>Nieuw project...</menuNew>
 		<menuOpen>Open...</menuOpen>
@@ -95,6 +106,7 @@
 		</fileexists>
 	</importMedia>
 	<Alert>
+		<sessionError>Fout: De sessie is verlopen - Log opnieuw in!\nGa terug naar de Xerte werkruimte en ververs de pagina om opnieuw in te loggen.\nAls de editor geslotene wordt zonder opneiuw in te loggen gaan er mogelijk gegevens verloren.</sessionError>
 		<oklabel>Ok</oklabel>
 		<cancellabel>Annuleer</cancellabel>
 		<nolabel>Nee</nolabel>
@@ -132,6 +144,7 @@
 		<deletenode>
 			<confirm>
 				<prompt>Weet u zeker dat u dit item wilt verwijderen?</prompt>
+				<chapterPrompt>QWeet u zeker dat u dit hoofdstuk wilt verwijderen? Alle pagina's in het hoofdstuk worden ook verwijderd!.</chapterPrompt>
 				<title>Bevestiging</title>
 			</confirm>
 			<error>
@@ -169,12 +182,14 @@
 		<Buttons>
 			<Rectangle>Rechthoek modus</Rectangle>
 			<Polygon>Polygon modus</Polygon>
+			<Icon>Icon modus</Icon>
 			<Reset>Herstart</Reset>
 		</Buttons>
 		<Instructions>
 			<header>Hotspot instructies:</header>
 			<rectangle>Teken een rechthoek door op de linker muisknop te drukken en de muis te slepen</rectangle>
 			<polygon>Klik om punten aan het polygon toe te voegen. Klik op het eerste (rode) punt om te stoppen</polygon>
+			<icon>Klik om een icoon te plaatsen.</icon>>
 			<reset>Klik op de &#8634; herstart knop om opnieuw te beginnen</reset>
 			<edit>De hotspot kan verplaatst en veranderd worden door erop te klikken</edit>
 			<save>Klik op &#9745; Ok om je selectie op te slaan. Op &#9746; annuleren om de selectie en wijzigen te negeren.</save>
@@ -184,6 +199,44 @@
 			<selectFile>Selecteer eerst een afbeelding!</selectFile>
 		</Error>
 	</editHotspot>
+	<edit360Hotspot>
+		<Buttons>
+			<Reset>Herstart</Reset>
+		</Buttons>
+		<Instructions>
+			<header>Instructies:</header>
+			<line1>Plaats een hotspot door op de afbeelding te klikken.</line1>
+			<line2>Klik en sleep om de afbeelding te draaien.</line2>
+			<reset>Druk op de &#8634; herstart knop om opneiuw te beginnen.</reset>
+			<save>Klik op de &#9745; Ok knop om de view op te slaan. Om de nieuwe view te verlaten zonder op te slaan, klik de &#9746; Annuleren knop.</save>
+		</Instructions>
+		<Error>
+			<selectFile>Selecteer eerst een afbeelding!</selectFile>
+		</Error>
+	</edit360Hotspot>
+	<edit360View>
+		<Buttons>
+			<Edit>Klik om een view te selecteren</Edit>
+			<Reset>Herstart</Reset>
+		</Buttons>
+		<Instructions>
+			<header>Instructies:</header>
+			<line1>Klik de afbeelding om op een bepaald punt te focessuen of klik en sleep om de afbeelding te draaien.</line1>
+			<reset>Klik de &#8634; herstart knop om opnieuw te beginnen.</reset>
+			<save>Om de view op te slaan, klik op de &#9745; Ok knop. Om terug te gaan zonder op te slaan, klik op de &#9746; Annuleren knop.</save>
+		</Instructions>
+		<Error>
+			<selectFile>Selecteer eerst een scene!</selectFile>
+		</Error>
+	</edit360View>
+	<fontawesome>
+		<preview>Icon voorvertoning</preview>
+		<select>Selecteer Icon</select>
+		<search>Zoek Icon</search>
+		<showAll>Laat alles zien</showAll>
+		<cancel>Annuleren</cancel>
+		<noResult>geen resultaten gevonden</noResult>
+	</fontawesome>
 	<grouping deprecated="Verouderd - de rode waarde staat niet meer in de lijst in management.php"></grouping>
 	<category deprecated="Verouderd - de rode waarde staat niet meer in de lijst in management.php"></category>
 	<course deprecated="Verouderd - de rode waarde staat niet meer in de lijst in management.php">

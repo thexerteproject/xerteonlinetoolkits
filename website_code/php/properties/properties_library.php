@@ -926,26 +926,32 @@ function sharing_info($template_id)
 {
     global $xerte_toolkits_site;
 
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
     if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
         return "";
     }
 
     $sql = "SELECT template_id, user_id, firstname, surname, username, role, folder FROM " .
-        " {$xerte_toolkits_site->database_table_prefix}templaterights tr, {$xerte_toolkits_site->database_table_prefix}logindetails ld WHERE " .
+        " {$prefix}templaterights tr, {$prefix}logindetails ld WHERE " .
         " ld.login_id = tr.user_id and template_id= ?";
 
     $query_sharing_rows = db_query($sql, array($template_id));
 
-    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}template_group_rights tgr, " .
-        "{$xerte_toolkits_site->database_table_prefix}user_groups ug WHERE template_id = ? AND tgr.group_id = ug.group_id";
+    $sql = "SELECT group_name, role FROM {$prefix}template_group_rights tgr, " .
+        "{$prefix}user_groups ug WHERE template_id = ? AND tgr.group_id = ug.group_id";
 
     $query_group_sharing_rows = db_query($sql, array($template_id));
 
-    $sql = "SELECT folder FROM {$xerte_toolkits_site->database_table_prefix}templaterights where template_id = ? and role =?";
-    $query_folder_id = db_query($sql, array($template_id, "creator"));
+    $sql = "SELECT folder FROM {$prefix}templaterights where template_id = ?";
+    $query_folder_ids = db_query($sql, array($template_id));
 
-    $sql = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id = ?";
-    $query_folders = db_query($sql, array($query_folder_id[0]["folder"]));
+    $folder_ids_string = implode(",", array_map(function($item) {
+        return $item['folder'];
+    }, $query_folder_ids));
+
+    $sql = "SELECT * FROM {$prefix}folderrights where folder_id in ({$folder_ids_string})";
+    $query_folders = db_query($sql);
 
     $related_folders = array();
     $params = array();
@@ -954,7 +960,7 @@ function sharing_info($template_id)
     if(!empty($related_folders)){
         for($i =0;  $i < count($related_folders) ; $i++){
             if($related_folders[$i]["folder_id"] != 0){
-                $sql = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id = ? and folder_parent != 0";
+                $sql = "SELECT * FROM {$prefix}folderrights where folder_id = ? and folder_parent != 0";
                 $query_folders = db_query($sql, array($related_folders[$i]["folder_parent"]));
                 foreach ($query_folders as $folder){
                     if($folder["role"] == "creator"){
@@ -968,8 +974,8 @@ function sharing_info($template_id)
         }
     }
 
-    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role, folder_id, folder_parent FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
-    $sql_grouped = "SELECT ld.login_id as user_id, firstname, surname, username FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
+    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role, folder_id, folder_parent FROM {$prefix}folderrights fr join {$prefix}logindetails ld on fr.login_id = ld.login_id";
+    $sql_grouped = "SELECT ld.login_id as user_id, firstname, surname, username FROM {$prefix}folderrights fr join {$prefix}logindetails ld on fr.login_id = ld.login_id";
     foreach ($params as $index=>$param){
         if($index != 0){
             $sql .= " or ld.login_id = ?";
@@ -1028,8 +1034,8 @@ function sharing_info($template_id)
     }
 
     $params = array();
-    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}folder_group_rights fgr, " .
-        "{$xerte_toolkits_site->database_table_prefix}user_groups ug WHERE fgr.group_id = ug.group_id and ";
+    $sql = "SELECT group_name, role FROM {$prefix}folder_group_rights fgr, " .
+        "{$prefix}user_groups ug WHERE fgr.group_id = ug.group_id and ";
 
     foreach ($related_folders as $index =>$rf){
         if($index != 0){
@@ -1272,14 +1278,14 @@ function folder_sharing_info($folder_id)
         return "";
     }
 
-    $sql = "SELECT folder_id, logindetails.login_id, firstname, surname, username, role FROM " .
-        " {$xerte_toolkits_site->database_table_prefix}folderrights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .
-        " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}folderrights.login_id and folder_id= ?";
+    $sql = "SELECT folder_id, ld.login_id, firstname, surname, username, role FROM " .
+        " {$xerte_toolkits_site->database_table_prefix}folderrights fr, {$xerte_toolkits_site->database_table_prefix}logindetails ld WHERE " .
+        " ld.login_id = fr.login_id and folder_id= ?";
 
     $query_sharing_rows = db_query($sql, array($folder_id));
 
-    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}folder_group_rights, " .
-        "{$xerte_toolkits_site->database_table_prefix}user_groups WHERE folder_id = ? AND folder_group_rights.group_id = user_groups.group_id";
+    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}folder_group_rights fgr, " .
+        "{$xerte_toolkits_site->database_table_prefix}user_groups ug WHERE folder_id = ? AND fgr.group_id = ug.group_id";
 
     $query_group_sharing_rows = db_query($sql, array($folder_id));
 
@@ -1310,8 +1316,8 @@ function folder_sharing_info($folder_id)
         }
     }
 
-    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role, folder_id, folder_parent FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
-    $sql_grouped = "SELECT ld.login_id as user_id, firstname, surname, username FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
+    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role, folder_id, folder_parent FROM {$xerte_toolkits_site->database_table_prefix}folderrights fr join {$xerte_toolkits_site->database_table_prefix}logindetails ld on fr.login_id = ld.login_id";
+    $sql_grouped = "SELECT ld.login_id as user_id, firstname, surname, username FROM {$xerte_toolkits_site->database_table_prefix}folderrights fr join {$xerte_toolkits_site->database_table_prefix}logindetails ld on fr.login_id = ld.login_id";
     foreach ($params as $index=>$param){
         if($index != 0){
             $sql .= " or ld.login_id = ?";
@@ -1402,11 +1408,11 @@ function folder_sharing_info($folder_id)
                         $query_shared_folder_users[$indexUser]["role"] = $role['role'];
                         //$query_shared_folder_users[$indexUser]["role_source"] = 'folder';
 
-                        if ($row["user_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] == "creator") {
+                        if ($row["login_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] == "creator") {
                             $query_shared_folder_users[$indexUser]["role"] = "creator";
                             // Change the role of the user to co-author
                             foreach ($query_shared_folder_users as $indexUser2 => $user2) {
-                                if ($user2['user_id'] != $row['user_id'] && $user2['role'] == "creator") {
+                                if ($user2['user_id'] != $row['login_id'] && $user2['role'] == "creator") {
                                     $query_shared_folder_users[$indexUser2]["role"] = "co-author";
                                     break;
                                 }
@@ -1414,7 +1420,7 @@ function folder_sharing_info($folder_id)
                         }
                     }
                 }
-                if ($row["user_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] != "creator" && $roles[$role["role"]] < $roles[$row["role"]]) {
+                if ($row["login_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] != "creator" && $roles[$role["role"]] < $roles[$row["role"]]) {
                     $query_shared_folder_users[$indexUser]["role"] = $row["role"];
                     $query_shared_folder_users[$indexUser]["role_source"] = 'template';
                     if ($row['role'] == "creator") {
@@ -2129,10 +2135,10 @@ function tsugi_display($id, $lti_def, $mesg = "")
     if($lti_def->published)
     {
         echo "<p class='lti_launch_url'>" . PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br>";
-		echo "<a class='lti_launch_url' href='" . $lti_def->url . "' target='_blank'>" . $lti_def->url . " " . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
+		echo "<a class='lti_launch_url' href='" . $lti_def->url . "' target='_blank'>" . $lti_def->url . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
         echo "</p>";
 		echo "<p>" . PROPERTIES_LIBRARY_TSUGI_LTI13_LAUNCH_URL . "<br>";
-		echo "<a class='lti_launch_url' href='" . $lti_def->url13 . " target='_blank'>" . $lti_def->url13 . " " . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
+		echo "<a class='lti_launch_url' href='" . $lti_def->url13 . "' target='_blank'>" . $lti_def->url13 . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
 		echo "</p>";
     }
     else if ($lti_def->xapi_enabled)
@@ -2140,7 +2146,7 @@ function tsugi_display($id, $lti_def, $mesg = "")
 		// Show xapionly url
 		echo "<p class='lti_launch_url'>";
 		echo PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br>";
-		echo "<a class='lti_launch_url' href='" . $lti_def->xapionly_url . "' target='_blank'>" . $lti_def->xapionly_url . " " . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
+		echo "<a class='lti_launch_url' href='" . $lti_def->xapionly_url . "' target='_blank'>" . $lti_def->xapionly_url . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
 		echo "</p>";
     }
     ?>

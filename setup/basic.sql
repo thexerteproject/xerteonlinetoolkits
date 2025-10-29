@@ -72,6 +72,7 @@ CREATE TABLE `$logindetails` (
   `lastlogin` datetime DEFAULT NULL,
   `firstname` char(255) DEFAULT NULL,
   `surname` char(255) DEFAULT NULL,
+  `disabled` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`login_id`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

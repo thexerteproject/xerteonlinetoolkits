@@ -1,57 +1,89 @@
 <wizard menus="Interactivity">Mark Answer
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="" prompt="" feedback="" panelWidth="Medium" align="left"
-	  feedbackBtnTxt="Feedback" 
-	  instructHeaderATxt="The instruction and question on page" instructHeaderBTxt="was:" responseHeaderTxt="Your response was:"
-	  noAnswerHeaderTxt="You didn't answer this question." exampleHeaderTxt="The example answer was:"
-	  copyBtnLabel="Select Text" copyShortcutTxt="Press Ctrl + C to copy" answerFieldLabel="Answer"
+      <modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="" pageFeedback="" panelWidth="Medium" align="left"
+	  feedbackBtnTxt="Submit" pageTxt="Page" questionTxt="Question" responseHeaderTxt="Your response:"
+	  noAnswerHeaderTxt="No response submitted" exampleHeaderTxt="Feedback:" feedbackTxt="Page feedback"
+	  copyBtn2Label="Copy" copyShortcutTxt="Press Ctrl+C to copy" downloadTxt="Download" answerFieldLabel="Answer"
 	  />]]></modelAnswer>
     </newNodes>
   </pageWizard>
 
   <!-- MODEL ANSWER INTERACTION========================= -->
-  <modelAnswer menu="Interactivity" menuItem="Model Answer" hint="A text entry interaction, with feedback and the option to paste the response to clipboard." icon="icPageWhiteEdit" thumb="thumbs/modelAnswer.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#modelanswer" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_model_answer_page" remove="true">
+  <modelAnswer menu="Interactivity" menuItem="Model Answer" hint="A text entry interaction, with feedback and the option to copy or download responses." icon="icPageWhiteEdit" thumb="thumbs/modelAnswer.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#modelanswer" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_model_answer_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
-    <prompt label="Prompt" type="TextArea" height="100" placeholder="Enter prompt text here"/>
-    
-    <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here"/>
+    <pageFeedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here" mandatory="true"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
     <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+
+    <textArea label="Text Area" type="group" deprecated="These options are deprecated as multiple text areas can now be added to the page. This text area will continue to work on this page but these options will not be available on new model answer pages.">
+        <prompt label="Prompt" type="TextArea" height="100" placeholder="Enter prompt text here" tooltip="The question or prompt shown before the associated text field"/>
+        <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here" tooltip="The feedback shown below the associated text field after answers have been submitted"/>
+    </textArea>
 
 	<judge label="Mark Answer" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
 
-    <feedbackBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-    <feedbackBtnTip label="Check Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
-    <feedbackBtnWidth label="Check Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
-    <instructHeaderATxt label="Instruction Header (a)" type="TextInput" wysiwyg="true" language="true"/>
-    <instructHeaderBTxt label="Instruction Header (b)" type="TextInput" wysiwyg="true" language="true"/>
-    <responseHeaderTxt label="Response Header" type="TextInput" wysiwyg="true" language="true"/>
-    <noAnswerHeaderTxt label="No Answer Header" type="TextInput" wysiwyg="true" language="true"/>
-    <exampleHeaderTxt label="Example Header" type="TextInput" wysiwyg="true" language="true"/>
-	<copyBtnLabel label="Select Button Label" type="TextInput" wysiwyg="true" language="true"/>
-    <copyShortcutTxt label="Copy Shortcut Text" type="TextInput" wysiwyg="true" language="true"/>
-	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that the text field where they should respond is labelled and the label is spoken to the screenreader user. e.g. Answer."/>
+    <copyPaste label="Copy Button" type="CheckBox" defaultValue="true" optional="true" tooltip="Include a button that allows users to easily select &amp; copy their responses"/>
 
-    <copypasteinfo label="Copy and Paste Info (Flash)" defaultValue="Note: the instruction  and question, your response and the example answer, have been copied to the clipboard which you can paste (ctrl + v) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true" deprecated="This property is no longer required" />
-	<copypasteinfo2 label="Copy and Paste Info" defaultValue="Note: Click the 'Select Text' button to highlight the instruction, question, your response and the example answer and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true"/>
+    <downloadGroup label="Download Button" type="group" optional="true" tooltip="Include a button that allows users to download a copy their responses">
+        <showDownload label="Include button" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true"/>
+        <filename condition="showDownload!='false'" label="Filename (without extension)" type="TextInput" defaultValue="model_answer" optional="true"/>
+        <fileOrientation condition="showDownload!='false'" label="File orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
+    </downloadGroup>
+
+    <copypasteinfo2 label="Copy &amp; Paste Info" defaultValue="Note: Click the 'Select Text' button to highlight the instruction, question, your response and the feedback and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true" deprecated="This property is deprecated - use the 'Copy Button' optional property to add a button that copies responses to the clipboard"/>
+    <copypasteinfo label="Copy &amp; Paste Info (Flash)" defaultValue="Note: the instruction and question, your response and the feedback, have been copied to the clipboard which you can paste (ctrl + v) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true" deprecated="This property is no longer required" />
     <label label="Button Label" defaultValue="deprecated - for backward compatibility only" type="TextInput" wysiwyg="true" optional="true" deprecated="This property is no longer required"/>
-	
-	<required label="Answer Required Before Feedback" type="CheckBox" optional="true" defaultValue="true" />
-	
-	<imgInfo type="group" label="Image" optional="true">
+
+	<required label="Require Answer" type="CheckBox" optional="true" defaultValue="true" tooltip="Require text to be entered in all text areas before answers can be submitted" />
+
+	<imgInfo type="group" label="Image" optional="true" deprecated="This optional property is deprecated as multiple text areas, with associated images, can now be added to the page. This image will continue to work on this page but this optional property will not be available on new model answer pages.">
 		<image label="File" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
 		<tooltip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgInfo>
 
-	<!-- <AIGroup type="group" label="AI" optional="true">
-      <aiEvaluation label="AI evaluation" type="checkbox" optional="true" tooltip="Enable this if you want the AI to generate feedback based on the model and user answers. Please note that as this feedback is generated after a user answers the question no validation is possible."/>
-    </AIGroup> -->
+    <pageTxt label="Page Text" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Page"/>
+    <questionTxt label="Question Text" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Question"/>
+    <responseHeaderTxt label="Response Text" type="TextInput" wysiwyg="true" language="true"/>
+    <noAnswerHeaderTxt label="No Answer Text" type="TextInput" wysiwyg="true" language="true"/>
+    <exampleHeaderTxt label="Feedback Text" type="TextInput" wysiwyg="true" language="true"/>
+    <feedbackTxt label="Main Feedback Text" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Page feedback"/>
+    <feedbackBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
+    <copyBtn2Label label="Copy Button Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Copy"/>
+    <copyShortcutTxt label="Copy Shortcut Text" type="TextInput" wysiwyg="true" language="true"/>
+    <downloadTxt label="Download Button Label" type="TextInput" condition="showDownload!='false'" mandatory="true" language="true" defaultValue="Download" />
+    <answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that the text field where they should respond is labelled and the label is spoken to the screenreader user. e.g. Answer."/>
+
+    <copyBtnLabel label="Select Button Label" type="TextInput" wysiwyg="true" language="true" deprecated="This property is no longer required"/>
+    <instructHeaderATxt label="Instruction Header (a)" type="TextInput" wysiwyg="true" language="true" deprecated="This property is no longer required"/>
+    <instructHeaderBTxt label="Instruction Header (b)" type="TextInput" wysiwyg="true" language="true" deprecated="This property is no longer required"/>
+    <feedbackBtnTip label="Check Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
+    <feedbackBtnWidth label="Check Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
+
+    <newNodes>
+        <modelAnswerField><![CDATA[<modelAnswerField name="Text Area" prompt="" rows="5"/>]]></modelAnswerField>
+    </newNodes>
 
   </modelAnswer>
+
+  <modelAnswerField menuItem="Text Area" icon="icTextArea" remove="true">
+
+    <name label="Label" type="TextInput" wysiwyg="false" tooltip="The label is used to identify this text area on the results page and when tracking results, e.g. via SCORM/LTI/xAPI"/>
+    <prompt label="Prompt" type="TextArea" height="100" placeholder="Enter prompt text here" tooltip="The question or prompt shown before the associated text field"/>
+    <rows label="No. of lines" type="NumericStepper" min="1" max="15" defaultValue="5" tooltip="The number of lines in the text field"/>
+
+    <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here" optional="true" tooltip="The feedback shown below the associated text field after answers have been submitted"/>
+
+    <imgInfo type="group" label="Image" optional="true">
+        <image label="File" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
+        <tooltip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
+        <caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+    </imgInfo>
+
+  </modelAnswerField>
 
 </wizard>

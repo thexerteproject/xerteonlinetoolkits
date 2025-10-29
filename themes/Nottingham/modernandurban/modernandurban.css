@@ -347,11 +347,6 @@ a.hotspot, a.hotspot.selected {
   border-color: #F8F1E5;
 }
 
-.x_modelAnswer_page #answerTxt {
-  border-radius: 2vmin;
-  width: 98%;
-}
-
 .x_opinion_page #pageContents input {
   padding-left: 0;
 }

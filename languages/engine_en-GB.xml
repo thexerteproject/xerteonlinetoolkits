@@ -70,7 +70,7 @@
   <cross label="Cross" title="Incorrect" corrected="Corrected answer"/>
 
   <viewed label="Viewed"/>
- 
+
   <sizes>
 	<item>Default</item>
 	<item>large</item>
@@ -123,10 +123,11 @@
   <fetchResults label="Fetching results..."/>
   <loadError label="Error loading"/>
   <noResults label="No results returned"/>
+  <noData label="No page data"/>
 
-	<rssDLAuthor label="Created by:"/>
-	<rssDLLicense label="License:"/>
-	<rssDLModDate label="Last modified:"/>
+  <rssDLAuthor label="Created by:"/>
+  <rssDLLicense label="License:"/>
+  <rssDLModDate label="Last modified:"/>
   
   <timer>
 	  <remaining name="Time remaining"/>
@@ -165,7 +166,6 @@
 	  <mediaLesson description="This page displays content in sync with a video or a piece of audio. New content is added to the page as the media plays." prompt="Content added"/>
 	  <interactiveVideo description="This page displays content in sync with a video. New content is added to the page as the video plays." prompt="Content added"/>
 	  <list description="This page contains a list of links where each one reveals some related information." click="Click to reveal information"/>
-	  <modelAnswerResults selected="Text selected"/>
 	  <mcq description="This page contains a multiple choice question. Use the tab and up/down arrow keys to explore possible answers and click the space bar to select your answer."/>
 	  <quiz description="This page contains a series of multiple choice questions. Use the tab and up/down arrow keys to explore possible answers and click the space bar to select your answer."/>
 	  <crossword description="This page contains a crossword. Tab to the across and down clues and use the space bar or enter key to select a clue to complete. You will be moved to the puzzle grid where you can type in your answer."/>
@@ -234,5 +234,7 @@
   <scormTrackingAlert warning="Please note: SCORM mode is '{0}'. This means that your progress, interactions and results from this viewing will not be tracked or saved. For tracking you should start a new attempt."/>
 
   <carousel label="Carousel" slide="slide" next="Next slide" prev="Previous slide" current="{x} of {y}" play="Play slideshow" pause="Pause slideshow"/>
+
+  <copy selected="Text selected" fail="Copying text to clipboard failed. Use Ctrl+C to manually copy the text to the clipboard." success="Text copied to clipboard"/>
 
 </language>

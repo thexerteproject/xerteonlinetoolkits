@@ -243,7 +243,7 @@ function update_user_logon_time(){
 
     }
 
-    $query = "UPDATE {$prefix}logindetails SET firstname = ?, surname = ? WHERE username = ?";
+    $query = "UPDATE {$prefix}logindetails SET firstname = ?, surname = ?, disabled=0 WHERE username = ?";
     $params = array($_SESSION['toolkits_firstname'], $_SESSION['toolkits_surname'], $_SESSION['toolkits_logon_username'] ); 
 
     if(db_query($query, $params) !== false){
@@ -370,7 +370,7 @@ function getRolesFromUser($userID){
 	global $xerte_toolkits_site;
 	
 	$prefix = $xerte_toolkits_site->database_table_prefix;
-	$query = "select name from role join {$prefix}logindetailsrole on {$prefix}role.roleid={$prefix}logindetailsrole.roleid where {$prefix}logindetailsrole.userid=?;";
+	$query = "select name from {$prefix}role join {$prefix}logindetailsrole on {$prefix}role.roleid={$prefix}logindetailsrole.roleid where {$prefix}logindetailsrole.userid=?;";
 	$params = array($userID);
 	$result = db_query($query, $params);
 

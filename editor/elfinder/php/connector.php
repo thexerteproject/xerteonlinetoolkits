@@ -127,7 +127,7 @@ $opts = array(
             'disabled'      => array('archive', 'extract', 'forward', 'netmount', 'netunmount', 'zipdl'),
             'attributes' => array(
                 array( // hide readmes
-                    'pattern' => '/(readme\.txt)|\.(html|php|php5|php*|phtml|phar|py|pl|sh)$/i',
+                    'pattern' => '/(readme\.txt)|\.(html|php|php5|php*|phtml|phar|inc|py|pl|sh)$/i',
                     'read'   => false,
                     'write'  => false,
                     'locked' => true,

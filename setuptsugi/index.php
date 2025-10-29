@@ -287,29 +287,31 @@ $_SESSION['admin'] = true;
             
             <?php
 
-            function preflightchecks($mode)
-            {
-		global $branch;
+    function preflightchecks($mode)
+    {
+        global $branch, $tag;
 
-                echo "<br>Running pre-flight checks<br>\n";
-                flush();
-                // Check OS
-                $os = php_uname('s');
-                if ($mode === "update" && $os === "Windows")
-                {
-                    echo "<span style='color:#F41F15;'>Updating on Windows is not supported (as there is no reliable way to create a backup)</span> <br>\n";
-                    echo "Aborting!";
-                    exit(-1);
-                }
+        $tag = "";
 
-                // Check PHP version
-                $phpversion = phpversion();
-                if ($phpversion < "7.2.0")
-                {
-                    echo "<span style='color:#F41F15;'>Your PHP version (". $phpversion . ") is not supported by TSUGI. Please update to a PHP version 7.2 or higher. </span> <br>\n";
-                    echo "Aborting!";
-                    exit(-1);
-                }
+        echo "<br>Running pre-flight checks<br>\n";
+        flush();
+        // Check OS
+        $os = php_uname('s');
+        if ($mode === "update" && $os === "Windows")
+        {
+            echo "<span style='color:#F41F15;'>Updating on Windows is not supported (as there is no reliable way to create a backup)</span> <br>\n";
+            echo "Aborting!";
+            exit(-1);
+        }
+
+        // Check PHP version
+        $phpversion = phpversion();
+        if ($phpversion < "7.2.0")
+        {
+            echo "<span style='color:#F41F15;'>Your PHP version (". $phpversion . ") is not supported by TSUGI. Please update to a PHP version 7.2 or higher. </span> <br>\n";
+            echo "Aborting!";
+            exit(-1);
+        }
 		else if ($phpversion < "8.0")
 		{
 			echo "Your PHP version is ". $phpversion . ". Using branch php-72-x.<br>";
@@ -320,232 +322,246 @@ $_SESSION['admin'] = true;
 			echo "Your PHP version is ". $phpversion . ". Using branch php-80-x.<br>";
 			$branch = "php-80-x";
 		}
+        else if ($phpversion < "8.4")
+        {
+            echo "Your PHP version is ". $phpversion . ". Using tag 25.5.1 (php 8.2 and 8.3).<br>";
+            $branch = "master";
+            $tag = "25.5.1";
+        }
 		else
 		{
 			$branch = "master";
 		}
 		flush();
-                // Check zip extension
-                $zipextension = phpversion("zip");
-                if ($zipextension === false)
-                {
-                    echo "<span style='color:#F41F15;'>Your PHP does not have support for ZipArchive. Please enable the php-zip extension.</span> <br>\n";
-                    echo "Aborting!";
-                    exit(-1);
-                }
+        // Check zip extension
+        $zipextension = phpversion("zip");
+        if ($zipextension === false)
+        {
+            echo "<span style='color:#F41F15;'>Your PHP does not have support for ZipArchive. Please enable the php-zip extension.</span> <br>\n";
+            echo "Aborting!";
+            exit(-1);
+        }
 
-                // Check curl extension
-                $zipextension = phpversion("curl");
-                if ($zipextension === false)
-                {
-                    echo "<span style='color:#F41F15;'>Your PHP does not have support for Curl. Please enable the php-curl extension.</span> <br>\n";
-                    echo "Aborting!";
-                    exit(-1);
-                }
-                echo "<span style='color:#099E12;'>All pre-flight checks are Ok!</span> <br>\n";
+        // Check curl extension
+        $zipextension = phpversion("curl");
+        if ($zipextension === false)
+        {
+            echo "<span style='color:#F41F15;'>Your PHP does not have support for Curl. Please enable the php-curl extension.</span> <br>\n";
+            echo "Aborting!";
+            exit(-1);
+        }
+        echo "<span style='color:#099E12;'>All pre-flight checks are Ok!</span> <br>\n";
 		flush();
-            }
+    }
 
-            function backup()
-            {
-                global $CFG;;
-                echo "<br>Creating a backup of the current TSUGI folder (this may take several minutes)<br>\n";
-                flush();
-                $date = date("YmdHi");
-                $tarfile = "setuptsugi/tsugi_" . $date . ".tar.bz2";
-                exec("cd ..; tar cjvf " . $tarfile . " tsugi", $out, $result);
-                if ($result !== 0)
-                {
-                    echo "<span style='color:#F41F15;'>Creating backup failed!</span> <br>\n";
-                    echo "Aborting!";
-                    exit(-1);
-                }
-                else
-                {
-                    echo "<span style='color:#099E12;'>Backup ". $tarfile . " created!</span> <br>\n";
-                }
-                echo "Create backup of TSUGI tables (this may take several minutes)<br>\n";
-                flush();
-                $sqlbackup = backup_tables($CFG->dbprefix . "*");
-                if ($sqlbackup === false)
-                {
-                    echo "<span style='color:#F41F15;'>Failed to create backup of SQL tables. No table were found in the Xerte database. This is not a TSUGI install previously done by setuptsugi. You have to upgrade your installation by hand.</span> <br>\n";
-                    echo "Aborting!";
-                    exit(-1);
-                }
-                $ok = file_put_contents("tsugidb_" . $date . ".sql", $sqlbackup);
-                if ($ok === false)
-                {
-                    echo "<span style='color:#F41F15;'>Failed to create backup of SQL tables.</span> <br>\n";
-                    echo "Aborting!";
-                    exit(-1);
-                }
-                else
-                {
-                    echo "<span style='color:#099E12;'>SQL backup created in setuptsugi/tsugidb_" . $date . ".sql</span><br> \n";
-                }
-                echo "Removing TSUGI folder (this may take several minutes)<br>\n";
-                flush();
-                unset($out);
-                exec("cd ..; rm -rf tsugi", $out,$result);
-                if ($result !== 0)
-                {
-                    echo "<span style='color:#F41F15;'>Could not remove tsugi folder. Please remove the folder yourself and try again. You need to make a copy of the config.php file, and put it back after the install!</span> <br>\n";
-                    echo "Aborting!";
-                    exit(-1);
-                }
-                else
-                {
-                    echo "<span style='color:#099E12;'>Existing TSUGI folder has been removed</span><br> \n";
-                }
+    function backup()
+    {
+        global $CFG;;
+        echo "<br>Creating a backup of the current TSUGI folder (this may take several minutes)<br>\n";
+        flush();
+        $date = date("YmdHi");
+        $tarfile = "setuptsugi/tsugi_" . $date . ".tar.bz2";
+        exec("cd ..; tar cjvf " . $tarfile . " tsugi", $out, $result);
+        if ($result !== 0)
+        {
+            echo "<span style='color:#F41F15;'>Creating backup failed!</span> <br>\n";
+            echo "Aborting!";
+            exit(-1);
+        }
+        else
+        {
+            echo "<span style='color:#099E12;'>Backup ". $tarfile . " created!</span> <br>\n";
+        }
+        echo "Create backup of TSUGI tables (this may take several minutes)<br>\n";
+        flush();
+        $sqlbackup = backup_tables($CFG->dbprefix . "*");
+        if ($sqlbackup === false)
+        {
+            echo "<span style='color:#F41F15;'>Failed to create backup of SQL tables. No table were found in the Xerte database. This is not a TSUGI install previously done by setuptsugi. You have to upgrade your installation by hand.</span> <br>\n";
+            echo "Aborting!";
+            exit(-1);
+        }
+        $ok = file_put_contents("tsugidb_" . $date . ".sql", $sqlbackup);
+        if ($ok === false)
+        {
+            echo "<span style='color:#F41F15;'>Failed to create backup of SQL tables.</span> <br>\n";
+            echo "Aborting!";
+            exit(-1);
+        }
+        else
+        {
+            echo "<span style='color:#099E12;'>SQL backup created in setuptsugi/tsugidb_" . $date . ".sql</span><br> \n";
+        }
+        echo "Removing TSUGI folder (this may take several minutes)<br>\n";
+        flush();
+        unset($out);
+        exec("cd ..; rm -rf tsugi", $out,$result);
+        if ($result !== 0)
+        {
+            echo "<span style='color:#F41F15;'>Could not remove tsugi folder. Please remove the folder yourself and try again. You need to make a copy of the config.php file, and put it back after the install!</span> <br>\n";
+            echo "Aborting!";
+            exit(-1);
+        }
+        else
+        {
+            echo "<span style='color:#099E12;'>Existing TSUGI folder has been removed</span><br> \n";
+        }
 		flush();
-            }
+    }
             
-            function install()
+    function install()
+    {
+        global $xerte_toolkits_site, $branch, $tag;
+
+        // Download Tsugi bestanden
+        echo "<br>Download the TSUGI installer package<br>\n";
+        flush();
+        global $xerte_toolkits_site;
+        //$url = "https://github.com/$u/$repo/archive/master.zip";
+        if (!isset($tag) || $tag==="") {
+            $url = "https://github.com/tsugiproject/tsugi/archive/refs/heads/{$branch}.zip";
+            $version = $branch;
+        }
+        else
+        {
+            $url = "https://github.com/tsugiproject/tsugi/archive/refs/tags/{$tag}.zip";
+            $version = $tag;
+        }
+        $tsugizip = __DIR__."/../import/tsugi-{$version}.zip";
+        $ch = curl_init();
+        $f = fopen($tsugizip, 'w+');
+        $opt = [
+            CURLOPT_URL => $url,
+            CURLOPT_FILE => $f,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HEADER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_SSL_VERIFYPEER => false,
+        ];
+        curl_setopt_array($ch, $opt);
+        $res = curl_exec($ch);
+
+        curl_close($ch);
+        fclose($f);
+        if (!file_exists($tsugizip))
+        {
+            echo "<span style='color:#F41F15;'>Could not download the tsugi package</span> <br>\n";
+            echo "Aborting!<br>";
+            exit(-1);
+        }
+
+        echo "Installing TSUGI package<br>\n";
+        flush();
+        $zip = new ZipArchive;
+        $res = $zip->open($tsugizip);
+        if ($res === TRUE) {
+            // extract it to the path we determined above
+            $res = $zip->extractTo($xerte_toolkits_site->root_file_path . "/.");
+            if ($res === false)
             {
-                global $xerte_toolkits_site, $branch;
-
-                // Download Tsugi bestanden
-                echo "<br>Download the TSUGI installer package<br>\n";
-		flush();
-                global $xerte_toolkits_site;
-                //$url = "https://github.com/$u/$repo/archive/master.zip";
-                $url = "https://github.com/tsugiproject/tsugi/archive/refs/heads/{$branch}.zip";
-                $tsugizip = __DIR__."/../import/tsugi-{$branch}.zip";
-                $ch = curl_init();
-                $f = fopen($tsugizip, 'w+');
-                $opt = [
-                    CURLOPT_URL => $url,
-                    CURLOPT_FILE => $f,
-                    CURLOPT_FOLLOWLOCATION => true,
-                    CURLOPT_HEADER => false,
-                    CURLOPT_SSL_VERIFYHOST => false,
-                    CURLOPT_SSL_VERIFYPEER => false,
-                ];
-                curl_setopt_array($ch, $opt);
-                $res = curl_exec($ch);
-
-                curl_close($ch);
-                fclose($f);
-                if (!file_exists($tsugizip))
-                {
-                    echo "<span style='color:#F41F15;'>Could not download the tsugi package</span> <br>\n";
-                    echo "Aborting!<br>";
-                    exit(-1);
-                }
-
-                echo "Installing TSUGI package<br>\n";
-                flush();
-                $zip = new ZipArchive;
-                $res = $zip->open($tsugizip);
-                if ($res === TRUE) {
-                    // extract it to the path we determined above
-                    $res = $zip->extractTo($xerte_toolkits_site->root_file_path . "/.");
-                    if ($res === false)
-                    {
-                        echo "<span style='color:#F41F15;'>Failed to extract " . $tsugizip . ": " . x_clean_input($zip->getStatusString()) . "</span><br>\n";
-                        echo "Aborting!<br>";
-                        exit(-1);
-                    }
-                    $res = $zip->close();
-                    echo "<span style='color:#099E12;'>TSUGI package successfully extracted</span><br>\n";
-		    flush();
-                } else {
-                    echo "<span style='color:#F41F15;'>Couldn't open $tsugizip!</span><br>\n";
-                    echo "Aborting!";
-                    exit(-1);
-                }
-
-                rename($xerte_toolkits_site->root_file_path . "tsugi-{$branch}", $xerte_toolkits_site->root_file_path . "tsugi");
-
-                echo "<span style='color:#099E12;'>TSUGI package successfully installed</span><br>\n";
-		flush();
-
+                echo "<span style='color:#F41F15;'>Failed to extract " . $tsugizip . ": " . x_clean_input($zip->getStatusString()) . "</span><br>\n";
+                echo "Aborting!<br>";
+                exit(-1);
             }
+            $res = $zip->close();
+            echo "<span style='color:#099E12;'>TSUGI package successfully extracted</span><br>\n";
+            flush();
+        } else {
+            echo "<span style='color:#F41F15;'>Couldn't open $tsugizip!</span><br>\n";
+            echo "Aborting!";
+            exit(-1);
+        }
+
+        rename($xerte_toolkits_site->root_file_path . "tsugi-{$version}", $xerte_toolkits_site->root_file_path . "tsugi");
+
+        echo "<span style='color:#099E12;'>TSUGI package successfully installed</span><br>\n";
+        flush();
+
+    }
             
-            function prepare_config($config_file)
-            {
-                // Replace placeholders with unique keys
-                // Cookies
-                $lconfig_file = str_replace("warning:please-change-cookie-secret-a289b543", GUIDv4(), $config_file);
-                $lconfig_file = str_replace("TSUGIAUTO", "TSUGI" . gethostname(), $lconfig_file);
-                $lconfig_file = str_replace("390b246ea9", generateRandomString(), $lconfig_file);
-                // Session salt
-                $lconfig_file = str_replace("warning:please-change-sessionsalt-89b543", GUIDv4(), $lconfig_file);
+    function prepare_config($config_file)
+    {
+        // Replace placeholders with unique keys
+        // Cookies
+        $lconfig_file = str_replace("warning:please-change-cookie-secret-a289b543", GUIDv4(), $config_file);
+        $lconfig_file = str_replace("TSUGIAUTO", "TSUGI" . gethostname(), $lconfig_file);
+        $lconfig_file = str_replace("390b246ea9", generateRandomString(), $lconfig_file);
+        // Session salt
+        $lconfig_file = str_replace("warning:please-change-sessionsalt-89b543", GUIDv4(), $lconfig_file);
 
-                return $lconfig_file;
-            }
+        return $lconfig_file;
+    }
 
-            function install_config_file($config_file)
-            {
-                global $xerte_toolkits_site;
-                $ok = file_put_contents($xerte_toolkits_site->root_file_path .  "tsugi/config.php", $config_file);
-                if ($ok === false)
-                {
-                    echo "<span style='color:#F41F15;'>config.php can't be copied!</span> <br>\n";
-                }
-                else
-                {
-                    echo "<span style='color:#099E12;'>config.php has been copied!</span> <br>\n";
-                }
+    function install_config_file($config_file)
+    {
+        global $xerte_toolkits_site;
+        $ok = file_put_contents($xerte_toolkits_site->root_file_path .  "tsugi/config.php", $config_file);
+        if ($ok === false)
+        {
+            echo "<span style='color:#F41F15;'>config.php can't be copied!</span> <br>\n";
+        }
+        else
+        {
+            echo "<span style='color:#099E12;'>config.php has been copied!</span> <br>\n";
+        }
 		flush();
-            }
+    }
 
-            function copy_config_template()
-            {
-                $config_file = file_get_contents("config.php");
-                $config_file = prepare_config($config_file);
-                install_config_file($config_file);
-            }
+    function copy_config_template()
+    {
+        $config_file = file_get_contents("config.php");
+        $config_file = prepare_config($config_file);
+        install_config_file($config_file);
+    }
 
-            function upgrade_database()
+    function upgrade_database()
+    {
+        echo "<br>Upgrade tsugi database<br>\n";
+        flush();
+        $_SESSION['admin'] = true;
+        // Try to call commandline php
+        $ok = exec("cd ../tsugi/admin; php upgrade.php", $out, $result);
+        if ($ok === false || $result !== 0) {
+            echo "<span style='color:#F41F15;'>upgrading database failed, please navigate to the TSUGI admin panel, and try from there!</span><br>\n";
+        }
+        else{
+            $upgrade_log = "<div><div class=\"log\">\n";
+            foreach ($out as $line)
             {
-                echo "<br>Upgrade tsugi database<br>\n";
-                flush();
-                $_SESSION['admin'] = true;
-                // Try to call commandline php
-                $ok = exec("cd ../tsugi/admin; php upgrade.php", $out, $result);
-                if ($ok === false || $result !== 0) {
-                    echo "<span style='color:#F41F15;'>upgrading database failed, please navigate to the TSUGI admin panel, and try from there!</span><br>\n";
-                }
-                else{
-                    $upgrade_log = "<div><div class=\"log\">\n";
-                    foreach ($out as $line)
-                    {
-                        $upgrade_log .= $line . "\n";
-                    }
-                    $upgrade_log .= "</div></div>";
-                    echo $upgrade_log;
-		    flush();
-                }
+                $upgrade_log .= $line . "\n";
             }
+            $upgrade_log .= "</div></div>";
+            echo $upgrade_log;
+            flush();
+        }
+    }
             
-            if(isset($_POST['install']))
-            {
-                preflightchecks('install');
-                install();
-                copy_config_template();
-                upgrade_database();
-                echo "<br><br><span style='color:#099E12;'>Installation is ready!</span> <br>\n";
-                flush();
-            }
+    if(isset($_POST['install']))
+    {
+        preflightchecks('install');
+        install();
+        copy_config_template();
+        upgrade_database();
+        echo "<br><br><span style='color:#099E12;'>Installation is ready!</span> <br>\n";
+        flush();
+    }
 
-            if(isset($_POST['update']))
-            {
-                require_once("../tsugi/config.php");
-                preflightchecks('update');
-                $filepath = $xerte_toolkits_site->root_file_path .  "tsugi/config.php";
-                $config_file = file_get_contents($filepath);
-                backup();
-                install();
-                install_config_file($config_file);
-                upgrade_database();
-                echo "<br><br><span style='color:#099E12;'>Installation is ready!</span> <br>\n";
-                flush();
-            }
+    if(isset($_POST['update']))
+    {
+        require_once("../tsugi/config.php");
+        preflightchecks('update');
+        $filepath = $xerte_toolkits_site->root_file_path .  "tsugi/config.php";
+        $config_file = file_get_contents($filepath);
+        backup();
+        install();
+        install_config_file($config_file);
+        upgrade_database();
+        echo "<br><br><span style='color:#099E12;'>Installation is ready!</span> <br>\n";
+        flush();
+    }
 
 
-            ?>
+?>
             
         </div>
     </body>

@@ -132,17 +132,17 @@
 			var imgMaxW, imgMaxH;
 			if (x_currentPageXML.getAttribute("textWidth") == "none") {
 				imgMaxW = Math.round($x_pageDiv.width() - 30);
-				imgMaxH = Math.round($x_pageHolder.height() - 30);
 				$('#panel').css('margin', '0px');
+				imgMaxH = x_getAvailableHeight([$('#panel')], []. true);
 			} else if (x_currentPageXML.getAttribute("textWidth") == "narrow") {
 				imgMaxW = Math.round($x_pageDiv.width() * 0.8 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxH = x_getAvailableHeight([$('#panel')], [], true);
 			} else if (x_currentPageXML.getAttribute("textWidth") == "max") {
 				imgMaxW = Math.round($x_pageDiv.width() * 0.3 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxH = x_getAvailableHeight([$('#panel')], [], true);
 			} else {
 				imgMaxW = Math.round($x_pageDiv.width() * 0.55 - 20);
-				imgMaxH = Math.round($x_pageHolder.height() - 50);
+				imgMaxH = x_getAvailableHeight([$('#panel')], [], true);
 			}
 			
 			$img.mapster('unbind');
@@ -779,11 +779,11 @@
 									}
 								});
 
-					$hotspot.on( "mouseleave", function() {
+					$hotspot.on( "mouseleave", function(event) {
 						if (hs_hover === 'true'){
 							// add a delay to check whether the mouse has been moved over the bubble  if it has then don't auto close the bubble
 							setTimeout(function() {
-								if (!connectorHotspotImage.delayBubbleClose) {
+								if (!connectorHotspotImage.delayBubbleClose && $("#pageContents .selected")[0] == event.target ) {
 									$("#pageContents .selected").removeClass("selected");
 									$("#pageContents .highlighted").removeClass("highlighted");
 									$('#hotspot_bubble_holder').empty();

@@ -137,6 +137,7 @@ switch($_FILES['upload']['type'])
 }
 
 $filename = sanitizeName(x_clean_input($_FILES['upload']['name']), $response);
+
 // Add path to the $filename
 $paste = "image";
 // Check if pasted filename already exists, if so add a count until we find a name that is available
@@ -149,6 +150,8 @@ if ($filename == $paste . $paste_ext) {
     }
     $filename = $final;
 }
+
+x_check_blacklisted_extensions($filename);
 
 $response->uploaded = 1;
 $response->url = $uploadurl . "/media/" . $filename;
