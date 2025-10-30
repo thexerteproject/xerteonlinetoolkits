@@ -24,7 +24,7 @@
 	</nestedPageNav>
 
 
-    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
       <qfTopic label="Number of Topics" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
       <qfNestedTab label="Number of Tabs per Topic" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
       <qfNestedPage label="Number of Pages per Tab" type="TextInput" wysiwyg="true" defaultValue = "5" optional="true"/>

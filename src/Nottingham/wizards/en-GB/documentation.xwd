@@ -38,7 +38,7 @@
 	<nextTxt label="Next Button Label" type="TextInput" language="true" />
 	<prevTxt label="Previous Button Label" type="TextInput" language="true" />
 
-    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
       <qfPage label="Number of Pages" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
       <qfButton type="quickfillbutton" optional="true"/>
     </QFGroup>
@@ -53,7 +53,7 @@
     <name label="Title" type="TextInput" wysiwyg="true"/>
 	<text label="Text" type="TextArea" height="120" placeholder="Enter text for the nested page here"/>
 
-    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
       <qfMedia label="Number of Images" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
       <qfSelectlist label="Number of Lists" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
       <qfSelectitem label="Number of Options per List" type="TextInput" wysiwyg="true" defaultValue = "5" optional="true"/>
@@ -84,7 +84,7 @@
 	
 	<exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
 
-    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
       <qfMedia label="Number of Images" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
       <qfSelectlist label="Number of Lists" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
       <qfSelectitem label="Number of Options per List" type="TextInput" wysiwyg="true" defaultValue = "5" optional="true"/>
