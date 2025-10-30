@@ -5542,6 +5542,8 @@
 		<continueBtnTxt label="Continue Button Label" type="TextInput" wysiwyg="true" language="true"/>
 		<topOption label="Drop Down Menu Option 1" type="TextInput" wysiwyg="true" language="true"/>
 
+    	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
+
 		<newNodes>
 			<ivSynchMCQOption><![CDATA[<synchMCQOption name="Answer" text="" correct="false"/>]]></ivSynchMCQOption>
 		</newNodes>
@@ -6845,6 +6847,8 @@
 		<checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
 		<continueBtnTxt label="Continue Button Label" type="TextInput" wysiwyg="true" language="true"/>
 		<topOption label="Drop Down Menu Option 1" type="TextInput" wysiwyg="true" language="true"/>
+
+    	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
 
 		<newNodes>
 			<synchMCQOption><![CDATA[<synchMCQOption name="Answer" text="Option text" correct="false"/>]]></synchMCQOption>
