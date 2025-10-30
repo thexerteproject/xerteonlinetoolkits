@@ -273,7 +273,7 @@ function returnParentObject($targetFolder)
         return 0;
     }
 
-    $query = "SELECT * FROM `originaltemplatesdetails` WHERE template_name=?";
+    $query = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails WHERE template_name=?";
     $params = array($targetFolder);
 
     $row = db_query_one($query, $params);
