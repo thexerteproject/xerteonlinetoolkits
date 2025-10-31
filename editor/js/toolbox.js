@@ -740,7 +740,7 @@ var EDITOR = (function ($, parent) {
             }
 
             var tr = $('<tr>');
-
+                        //todo move to footer of lightbos (footer does not yet exists)
 						if(options.advanced == "true" && lightboxMode == "form"){
 								if(window?.showAdvanced?.[key] == undefined) {
                                     if (!all_options.some(opt => opt.name === "toggleAdvanced")){
@@ -2775,7 +2775,7 @@ var EDITOR = (function ($, parent) {
             }
         } else {
             //type is not in management helper table
-            labels.push("NaN");
+            labels.push("No options available");
             option.push("NaN")
         }
         return [labels,option];
@@ -4462,152 +4462,6 @@ var EDITOR = (function ($, parent) {
         parent.tree.showNodeData(key, true);
     };
 
-    function attachEditorsToLightbox(groupChildren, key, domContextSelector = '.featherlight-content', formState = {}) {
-        groupChildren.forEach(child => {
-            // --- WYSIWYG / CKEditor Fields ---
-            if (child.value.wysiwyg === 'true') {
-                const $el = $(domContextSelector).find('textarea[name="' + child.name + '"]');
-                if ($el.length) {
-                    $el.ckeditor(function () {
-
-                        let self = this;
-                        // Restore value from formState
-                        if (formState && formState[child.name] !== undefined) {
-                            self.setData(formState[child.name]);
-                        }
-
-                        // Attach event for persisting changes
-                        this.on('change', function () {
-                            var thisValue = self.getData();
-                            thisValue = thisValue.substr(0, thisValue.length - 1); // Strip extra linebreak (like original)
-                            //update field form value for consistency, avoid recursion by checking if it's already the correct value
-                            const $originalField = self.element.$;
-                            if ($originalField.value !== thisValue) {
-                                $originalField.value=thisValue;
-                            }
-
-                            //update field value in xml
-                            inputChanged($el.attr('id'), key, child.name, thisValue, self);
-                        });
-
-                        // Special logic for "name" field, as in original
-                        let lastValue = "";
-                        this.on('change', function () {
-                            if (child.name == 'name') {
-                                var thisValue = self.getData();
-                                var thisText = getTextFromHTML(thisValue);
-                                thisValue = stripP(thisValue.substr(0, thisValue.length - 1));
-                                if (lastValue != thisValue) {
-                                    lastValue = thisValue;
-                                    changeNodeStatus(key, "text", true, thisText);
-                                    if ($('#mainleveltitle').length) {
-                                        $('#mainleveltitle').html(thisText);
-                                    }
-                                }
-                            }
-                        });
-
-                        // Fix for webkit browsers
-                        this.on('focus', function () {
-                            this.setReadOnly(false);
-                        });
-                        // Add to global destroy list if not already present
-                        const id = $el.attr('id');
-                        if (id && window.lightboxCKEditorIds.indexOf(id) === -1) {
-                            window.lightboxCKEditorIds.push(id);
-                        }
-                        }, {
-                        toolbar: [
-                            ['Font', 'FontSize', 'TextColor', 'BGColor'],
-                            ['Bold', 'Italic', 'Underline', 'Superscript', 'Subscript', 'rubytext'],
-                            ['FontAwesome'],
-                            ['RemoveFormat'],
-                            ['Sourcedialog']
-                        ],
-                        filebrowserBrowseUrl: 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir=' + rlopathvariable + '&uploadURL=' + rlourlvariable.substr(0, rlourlvariable.length - 1),
-                        filebrowserImageBrowseUrl: 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir=' + rlopathvariable + '&uploadURL=' + rlourlvariable.substr(0, rlourlvariable.length - 1),
-                        filebrowserFlashBrowseUrl: 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir=' + rlopathvariable + '&uploadURL=' + rlourlvariable.substr(0, rlourlvariable.length - 1),
-                        uploadUrl: 'editor/uploadImage.php?mode=dragdrop&uploadPath=' + rlopathvariable + '&uploadURL=' + rlourlvariable.substr(0, rlourlvariable.length - 1),
-                        uploadAudioUrl: 'editor/uploadAudio.php?mode=record&uploadPath=' + rlopathvariable + '&uploadURL=' + rlourlvariable.substr(0, rlourlvariable.length - 1),
-                        mathJaxClass: 'mathjax',
-                        mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
-                        extraPlugins: 'sourcedialog,image3,fontawesome,rubytext,editorplaceholder',
-                        language: language.$code.substr(0, 2),
-                    });
-                }
-            }
-            // --- "Code"/TextArea (CodeMirror) Fields ---
-            else if (child.value.codemirror === 'true') { // Assuming you set this flag for code fields!
-                const $el = $(domContextSelector).find('textarea[name="' + child.name + '"]');
-                if ($el.length) {
-                    var codemirroroptions = {
-                        theme: 'default',
-                        lineNumbers: true,
-                        lineWrapping: true,
-                        matchBrackets: true,
-                        autoCloseTags: true,
-                        autoCloseBrackets: true,
-                        enableSearchTools: true,
-                        enableCodeFolding: true,
-                        enableCodeFormatting: true,
-                        autoFormatOnStart: true,
-                        autoFormatOnModeChange: true,
-                        autoFormatOnUncomment: true,
-                        highlightActiveLine: true,
-                        mode: 'htmlmixed',
-                        showSearchButton: true,
-                        showTrailingSpace: true,
-                        highlightMatches: true,
-                        showFormatButton: true,
-                        showCommentButton: true,
-                        showUncommentButton: true,
-                        showAutoCompleteButton: true
-                    };
-
-                    if (child.value.options && child.value.options.height) {
-                        var height = parseInt(child.value.options.height) + 20;
-                        codemirroroptions['height'] = height;
-                    }
-                    if (child.value.options && child.value.options.type == 'html') {
-                        codemirroroptions['mode'] = 'htmlmixed';
-                    }
-                    if (child.value.options && child.value.options.type == 'script') {
-                        codemirroroptions['mode'] = 'javascript';
-                    }
-
-                    var textArea = $el[0];
-                    // Restore value from formState **before** CodeMirror replaces it!
-                    if (formState && formState[child.name] !== undefined) {
-                        $(textArea).val(formState[child.name]);
-                    }
-                    var codemirror = CodeMirror.fromTextArea(textArea, codemirroroptions);
-                    codemirror.on("change", function(){
-                        inputChanged($el.attr('id'), key, child.name, codemirror.getValue(), codemirror);
-                    });
-                    if (child.value.options && child.value.options.height) {
-                        var height = parseInt(child.value.options.height) + 20;
-                        codemirror.setSize(null, height);
-                    }
-                    $('.CodeMirror').resizable({
-                        resize: function() {
-                            codemirror.setSize($(this).width(), $(this).height());
-                            codemirror.refresh();
-                        }
-                    });
-                }
-            }
-            // --- Regular textarea/input fallback (not wysiwyg, not codemirror) ---
-            else {
-                // Value restoration for standard inputs (not needed?)
-                const $el = $(domContextSelector).find('[name="' + child.name + '"]');
-                if ($el.length && formState && formState[child.name] !== undefined) {
-                    $el.val(formState[child.name]);
-                }
-            }
-        });
-    }
-
-
     lightboxSetUp = function(group, attributes, node_options, key, formState="") {
 
         let groupChildren = group.value.children;
@@ -4619,7 +4473,6 @@ var EDITOR = (function ($, parent) {
 
         //build lightbox form content input by input
         for (var j = 0; j < groupChildren.length; j++) {
-            var tableOffset = (group.value.cols ? j % parseInt(group.value.cols, 10) : '');
 
             //rebuild form
             displayParameter(
@@ -4659,7 +4512,6 @@ var EDITOR = (function ($, parent) {
                 var attributes = lo_data[key]['attributes'];
                 formState = { ...attributes };
                 convertTextInputs();
-                //attachEditorsToLightbox(groupChildren, key, '.featherlight-content', formState);
                 convertDataGrids();
                 convertTreeSelect();
                 convertTextAreas();
@@ -4721,8 +4573,6 @@ var EDITOR = (function ($, parent) {
                 } else {
                     formState[formInputValues[input].name] = formInputValues[input].type !== 'checkbox' ? formInputValues[input].value : String(formInputValues[input].checked);
                 }
-
-
             }
         }
 
@@ -4744,6 +4594,7 @@ var EDITOR = (function ($, parent) {
         const fieldReference = fieldlabel || name;
         if (!regex.test(inputValue.trim())) {
                 const regexString = regexCondition.toString();
+                //todo alek make languiage dynamic
                 let errorMsg=`Please fill in the ${fieldReference} field correctly.`;
 
                 if (regexString === '^\\d+$') {
@@ -4818,7 +4669,6 @@ var EDITOR = (function ($, parent) {
                             } else if (!isBlank(defaultPH)) {
                                 formFieldValue = defaultPH;                 // fallback to default placeholder
                             }
-                            // else: leave blank
                         }
                         // otherwise, if overrideVal itself is non-blank, use it
                         else if (!isBlank(overrideVal)) {
@@ -6041,7 +5891,7 @@ var EDITOR = (function ($, parent) {
                         // Build the parameters object based on type. The nodes must match the actual node names of the xml in question.
                         var parameters;
                         var type = lo_data[key].attributes.nodeName;
-                        console.log(type);
+                        //todo rework same as ai button to prevent huge switch statement
                         switch (type) {
                             case 'quiz':
                                 parameters = {
@@ -6462,7 +6312,6 @@ var EDITOR = (function ($, parent) {
                         var constructorObject = {
                             "additionalInstructions": "Regarding what kind of suggestions I'm looking for, see: " + lo_data[key].attributes["additionalInstructions"],
                         };
-                        console.log(type);
                         if (confirm(language.vendorApi.overideSuggestionMsg)){
                             try {
                                     await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], null, null, sourceContext, false, baseUrl, true, lo_data[key].attributes.linkID, modelTemplate);
@@ -6508,7 +6357,6 @@ var EDITOR = (function ($, parent) {
                                 contextScope = lo_data[key].attributes.linkID;
                                 break;
                         }
-                        console.log(type);
                         if (confirm(language.vendorApi.useSuggestionMsg)){
                             try {
                                 await ai_content_generator(event, constructorObject, type, lo_data[key].attributes["aiSelector"], null, null, sourceContext, false, baseUrl, true, contextScope, modelTemplate);
@@ -6684,7 +6532,6 @@ var EDITOR = (function ($, parent) {
                                     contentType: 'application/json',
                                     data: JSON.stringify(payload),
                                     success: function(resp) {
-                                        console.log('Corpus sync succeeded:', resp);
                                         const first = resp.results?.[0] || {};
                                         const displaymsg =
                                             first.rag_status ||
