@@ -14,14 +14,16 @@ abstract class AITranscribe {
 
     protected string $sessionId;
 
+    protected string $mediaPath;
+
     /**
      * Constructor accepts the API key.
      */
-    //todo should this sessionId be hardcoded?
-    public function __construct($apiKey) {
+    public function __construct($apiKey, $basePath) {
         $this->apiKey = $apiKey;
         $this->actor = array('user_id'=>$_SESSION['toolkits_logon_username'],'workspace_id'=>$_SESSION['XAPI_PROXY']);
         //$this->sessionId = $_SESSION['token'];
+        $this->mediaPath = $basePath . DIRECTORY_SEPARATOR . 'RAG' . DIRECTORY_SEPARATOR . 'transcripts';
         $this->sessionId = "token is busted";
     }
 
@@ -103,34 +105,6 @@ abstract class AITranscribe {
         return str_replace($charactersToRemove, '', $string);
     }
 
-    /**
-     * Save the transcript to a text file in the same directory as the audio file.
-     */
-    //todo unused function, duplicate from TranscriptManager
-    public function saveAsTextFile($transcript, $audioFilePath) {
-        $directoryPath = dirname($audioFilePath);
-        $transcriptFilePath = $directoryPath . '/transcription_result.txt';
-        if (file_put_contents($transcriptFilePath, $transcript)) {
-            return $transcriptFilePath;
-        }
-        return "Failed to save the transcript.";
-    }
-
-    /**
-     * Delete a local file.
-     */
-    //todo unused function, also high risk
-    public function deleteLocalFile($filePath) {
-
-        if (file_exists($filePath)) {
-            if (unlink($filePath)) {
-                return "File deleted successfully.";
-            } else {
-                return "Error: Could not delete the file.";
-            }
-        }
-        return "Error: File does not exist.";
-    }
 
     /**
      * Format the JSON 'segments' array into timestamped text.
@@ -201,7 +175,8 @@ abstract class AITranscribe {
         // If file is too big, split into segments
         if (\filesize($filePath) > $maxBytes) {
             // create a temp directory for this run
-            $tmpDir = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'whisper_chunks_' . \uniqid();
+            //todo alek double check if chunck are stored and handled in the userfiles instead of temp
+            $tmpDir = $this->mediaPath . DIRECTORY_SEPARATOR . 'whisper_chunks_' . \uniqid();
             if (!\mkdir($tmpDir, 0777, true) && !\is_dir($tmpDir)) {
                 throw new \RuntimeException("Unable to create temp directory: {$tmpDir}");
             }
@@ -210,21 +185,9 @@ abstract class AITranscribe {
             $this->chunkTmpDir = $tmpDir;
 
             $ext     = \pathinfo($filePath, PATHINFO_EXTENSION);
-            $pattern = $tmpDir . DIRECTORY_SEPARATOR . "chunk_%03d.{$ext}";
-
-            // build and run the ffmpeg command
-            $cmd = \sprintf(
-                'ffmpeg -i %s -f segment -segment_time %d -c copy %s 2>&1',
-                $this->customEscapeshellarg($filePath),
-                $segmentSeconds,
-                $this->customEscapeshellarg($pattern)
-            );
-
-            \exec($cmd, $outputLines, $returnCode);
-            if ($returnCode !== 0) {
-                $output = \implode("\n", $outputLines);
-                throw new \RuntimeException("FFmpeg split failed (exit code {$returnCode}):\n{$output}");
-            }
+            $pattern = $tmpDir . DIRECTORY_SEPARATOR . "chunk_03d.{$ext}";
+            //todo alek this part is broken.
+            $this->exec_chunk($filePath, $segmentSeconds, $pattern);
 
             // collect and sort the generated chunks
             $chunks = \glob($tmpDir . DIRECTORY_SEPARATOR . "chunk_*.{$ext}") ?: [];
@@ -243,12 +206,31 @@ abstract class AITranscribe {
     protected function cleanupChunkedFiles(): void
     {
         if ($this->chunkTmpDir && \is_dir($this->chunkTmpDir)) {
+            //todo handle errs/warnings
             foreach (\glob($this->chunkTmpDir . DIRECTORY_SEPARATOR . '*') as $file) {
-                @\unlink($file);
+                unlink($file);
             }
-            @\rmdir($this->chunkTmpDir);
+            rmdir($this->chunkTmpDir);
             $this->chunkTmpDir = null;
         }
+    }
+
+    //use with care uses exec
+    protected function exec_chunk($filePath, $segmentSeconds, $pattern) {
+        // build and run the ffmpeg command
+        $cmd = \sprintf(
+            'ffmpeg -i %s -f segment -segment_time %d -c copy %s 2>&1',
+            $this->customEscapeshellarg($filePath),
+            $segmentSeconds,
+            $this->customEscapeshellarg($pattern)
+        );
+
+        \exec($cmd, $outputLines, $returnCode);
+        if ($returnCode !== 0) {
+            $output = \implode("\n", $outputLines);
+            throw new \RuntimeException("FFmpeg split failed (exit code {$returnCode}):\n{$output}");
+        }
+
     }
 
 }
@@ -288,41 +270,6 @@ class OpenAITranscribe extends AITranscribe
         $apiUrl         = "https://api.openai.com/v1/audio/transcriptions";
         $authHeader     = "Authorization: Bearer " . $this->apiKey;
 
-        /* === STEP 1: Split if too large ===
-        $filesToProcess = [];
-        if (filesize($filePath) > $maxBytes) {
-            // Temp dir for chunks
-            $tmpDir = sys_get_temp_dir() . '/whisper_chunks_' . uniqid();
-            if (!mkdir($tmpDir, 0777, true) && !is_dir($tmpDir)) {
-                throw new \RuntimeException("Unable to create temp directory $tmpDir");
-            }
-
-            // Build a pattern: whisper_chunks_xxx/chunk_%03d.ext
-            $ext      = pathinfo($filePath, PATHINFO_EXTENSION);
-            $pattern  = $tmpDir . DIRECTORY_SEPARATOR . "chunk_%03d.$ext";
-
-            // FFmpeg command, using customEscapeshellarg() for cross‑platform safety
-            $cmd = "ffmpeg -i "
-                . $this->customEscapeshellarg($filePath)
-                . " -f segment -segment_time {$segmentSeconds}"
-                . " -c copy "
-                . $this->customEscapeshellarg($pattern)
-                . " 2>&1";
-
-            // Run via exec(), capturing both stdout and stderr
-            exec($cmd . ' 2>&1', $ffmpegOutputLines, $returnCode);
-            $ffmpegOutput = implode("\n", $ffmpegOutputLines);
-            if ($returnCode !== 0) {
-                throw new \RuntimeException("FFmpeg split failed (exit code $returnCode):\n" . $ffmpegOutput);
-            }
-
-            // Gather the chunk file paths
-            $filesToProcess = glob($tmpDir . DIRECTORY_SEPARATOR . "chunk_*.{$ext}");
-            sort($filesToProcess);
-
-        } else {
-            $filesToProcess = [ $filePath ];
-        }*/
 
         $filesToProcess = $this->prepareChunkedFiles($filePath);
 
@@ -551,13 +498,8 @@ class GladiaTranscribe extends AITranscribe {
 
                 // 4) Increase offset for the next chunk
                 $offset += $segmentSeconds;
-                //return the vtt subtitles
-                //return $this->formatSegmentsWithTimestamps($finalResult['result']['transcription']['subtitles'][0]['subtitles']);
+
             }
-            /*if (isset($finalResult['result']['transcription'])) {
-                return $finalResult['result']['transcription'];
-            }*/
-            //throw new Exception('Transcription result not found.');
 
             $this->deleteGladiaTranscription($transcriptionId);
         }
@@ -571,6 +513,7 @@ class GladiaTranscribe extends AITranscribe {
      */
     protected function pollForResult($resultUrl, $headers) {
         while (true) {
+            //todo alek rework to async to free up server resources
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($curl, CURLOPT_URL, $resultUrl);

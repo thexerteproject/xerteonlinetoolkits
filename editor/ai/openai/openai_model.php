@@ -1,5 +1,5 @@
 <?php
-class  openai_ai {
+class  openai_model {
 	private $model = "gpt-4o";
 	private $assistantId = "asst_IyiBKzr8nvwddAzVKuh6OnlC";
 	protected $chat_url = "https://api.openai.com/v1/chat/completions";

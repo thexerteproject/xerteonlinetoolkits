@@ -1,7 +1,6 @@
 <?php
-class anthropic_ai {
+class anthropic_model {
 	public $context;
-	public $prompt_list;
 	public $chat_url = "https://api.anthropic.com/v1/messages";
 	public $model = "claude-3-5-sonnet-20241022";
 	public $temperature = 0.2;

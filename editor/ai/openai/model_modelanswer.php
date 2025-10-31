@@ -1,5 +1,5 @@
 <?php
-class openai_ai_modelanswer extends openai_ai {
+class openai_ai_modelanswer extends openai_model {
 	public function __construct($type, $model = null, $context = "standard", $sub_type = null, $model_template = null, $assistantOn = false, $assistantId = null){
 		if($assistantId != null){
 			$this->assistantId = $assistantId;

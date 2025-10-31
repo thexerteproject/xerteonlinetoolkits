@@ -10,8 +10,6 @@ function log_ai_request($response, $category, $vendor, $actor = array(), $sessio
         die("Session ID not set");
     }
 
-    $table = $xerte_toolkits_site->database_table_prefix . 'ai_request_logs';
-
     $category = strtolower($category);
     $vendor = strtolower($vendor);
     $nowIso = (new DateTimeImmutable('now', new DateTimeZone('UTC')))->format('c');
@@ -19,6 +17,7 @@ function log_ai_request($response, $category, $vendor, $actor = array(), $sessio
     $response = _to_assoc($response);
 
     // Base event
+    //todo trim to match new log table
     $event = array(
         'schema_version' => '1.0',
         'occurred_at' => $nowIso,
@@ -50,33 +49,12 @@ function log_ai_request($response, $category, $vendor, $actor = array(), $sessio
     }
 
     // Vendor+type extraction
-    if ($category === 'genai') {
-        if ($vendor === 'openai') map_genai_openai($response, $event);
-        elseif ($vendor === 'openaiassistant') map_genai_openaiassistant($response, $event);
-        elseif ($vendor === 'mistral') map_genai_mistral($response, $event);
-        elseif ($vendor === 'anthropic') map_genai_anthropic($response, $event);
-        else                           map_genai_default($response, $event);
-    } elseif ($category === 'encoding' || $category === 'embedding') {
-        if ($vendor === 'openaienc') map_encoding_openai($response, $event);
-        elseif ($vendor === 'mistralenc') map_encoding_mistral($response, $event);
-        else                           map_encoding_default($response, $event);
-    } elseif ($category === 'transcription') {
-        if ($vendor === 'openai') map_transcription_openai($response, $event);  // Whisper
-        elseif ($vendor === 'gladia') map_transcription_gladia($response, $event);
-        else                           map_transcription_default($response, $event);
-    } elseif ($category === 'imagegen') {
-        if ($vendor === 'dalle2') map_imagegen_dalle2($response, $event, $details);
-        elseif ($vendor === 'dalle3') map_imagegen_dalle2($response, $event, $details);
-        elseif ($vendor === 'gpt1') map_imagegen_dalle2($response, $event, $details);
-        else                           map_imagegen_dalle2($response, $event, $details);
-    }else {
-        map_generic_default($response, $event);
-    }
+    $event = response_mapping($category, $response, $event, $vendor, $details);
 
     // Prepare values for DB
     $occurred = (new DateTimeImmutable($event['occurred_at']))->setTimezone(new DateTimeZone('UTC'));
     $occurredAt = $occurred->format('Y-m-d H:i:s.u');
-
+    //todo change
     $sql = "INSERT INTO `{$xerte_toolkits_site->database_table_prefix}ai_request_logs`
       (event_id, schema_version, occurred_at, category, service, model, request_id,
        status, error_message, actor, metrics, session_id, cost)
@@ -107,6 +85,29 @@ function log_ai_request($response, $category, $vendor, $actor = array(), $sessio
     ));
 }
 
+
+function response_mapping($category, $response, $event, $vendor, $details) {
+    if ($category === 'genai') {
+        if ($vendor === 'openai') return map_genai_openai($response, $event);
+        elseif ($vendor === 'openaiassistant') return  map_genai_openaiassistant($response, $event);
+        elseif ($vendor === 'mistral') return map_genai_mistral($response, $event);
+        elseif ($vendor === 'anthropic') return map_genai_anthropic($response, $event);
+        else                           return map_genai_default($response, $event);
+    } elseif ($category === 'encoding' || $category === 'embedding') {
+        if ($vendor === 'openaienc') return map_encoding_openai($response, $event);
+        elseif ($vendor === 'mistralenc') return map_encoding_mistral($response, $event);
+        else                           return map_encoding_default($response, $event);
+    } elseif ($category === 'transcription') {
+        if ($vendor === 'openai') return map_transcription_openai($response, $event);  // Whisper
+        elseif ($vendor === 'gladia') return map_transcription_gladia($response, $event);
+        else                           return map_transcription_default($response, $event);
+    } elseif ($category === 'imagegen') {
+        return map_imagegen_openai($response, $event, $details);
+    }else {
+        map_generic_default($response, $event);
+    }
+}
+
 // uuid helper
 function uuid_v4()
 {
@@ -118,7 +119,7 @@ function uuid_v4()
 
 /* MAPPERS (vendor+type) */
 
-function map_genai_openai($res, &$ev)
+function map_genai_openai($res, $ev)
 {
     $ev['model']      = isset($res['model']) ? $res['model'] : null;
     $ev['request_id'] = isset($res['id']) ? $res['id'] : null;
@@ -130,16 +131,17 @@ function map_genai_openai($res, &$ev)
     if ($tot === null && ($in !== null || $out !== null)) $tot = (int)$in + (int)$out;
 
     $ev['metrics'] = array('input_tokens'=>$in, 'output_tokens'=>$out, 'total_tokens'=>$tot);
+    return $ev;
 }
 
-function map_genai_openaiassistant($res, &$ev)
+function map_genai_openaiassistant($res, $ev)
 {
     // Model & request id
-    $ev['model']      = _a($res, 'model');
-    $ev['request_id'] = _a($res, 'id');
+    $ev['model']      = array_check($res, 'model');
+    $ev['request_id'] = array_check($res, 'id');
 
     // Status mapping (completed = ok; failed/cancelled = error; others keep whatever caller set)
-    $runStatus = _a($res, 'status');
+    $runStatus = array_check($res, 'status');
     if ($runStatus === 'failed' || $runStatus === 'cancelled') {
         $ev['status'] = 'error';
     } elseif ($runStatus === 'completed') {
@@ -147,22 +149,22 @@ function map_genai_openaiassistant($res, &$ev)
     }
 
     // Error message if any (Assistants uses last_error)
-    $lastErr = _a($res, 'last_error');
+    $lastErr = array_check($res, 'last_error');
     if (is_array($lastErr)) {
-        $ev['error_message'] = _a($lastErr, 'message', _a($lastErr, 'code'));
+        $ev['error_message'] = array_check($lastErr, 'message', array_check($lastErr, 'code'));
     }
 
     // Tokens
-    $u   = _a($res, 'usage', array());
-    $in  = _a($u, 'prompt_tokens');
-    $out = _a($u, 'completion_tokens');
-    $tot = _a($u, 'total_tokens');
+    $u   = array_check($res, 'usage', array());
+    $in  = array_check($u, 'prompt_tokens');
+    $out = array_check($u, 'completion_tokens');
+    $tot = array_check($u, 'total_tokens');
     if ($tot === null && ($in !== null || $out !== null)) {
         $tot = (int)$in + (int)$out;
     }
     // Optional: cached prompt tokens (relevant if we do more complex cost estimates)
-    $ptd = _a($u, 'prompt_token_details', array());
-    $cached = _a($ptd, 'cached_tokens');
+    $ptd = array_check($u, 'prompt_token_details', array());
+    $cached = array_check($ptd, 'cached_tokens');
 
     $ev['metrics'] = array(
         'input_tokens'        => $in,
@@ -173,11 +175,11 @@ function map_genai_openaiassistant($res, &$ev)
 
     // Prefer provider timestamps for occurred_at if available
     $when =
-        _a($res, 'completed_at') !== null ? _a($res, 'completed_at') :
-            (_a($res, 'failed_at') !== null ? _a($res, 'failed_at') :
-                (_a($res, 'cancelled_at') !== null ? _a($res, 'cancelled_at') :
-                    (_a($res, 'started_at') !== null ? _a($res, 'started_at') :
-                        _a($res, 'created_at'))));
+        array_check($res, 'completed_at') !== null ? array_check($res, 'completed_at') :
+            (array_check($res, 'failed_at') !== null ? array_check($res, 'failed_at') :
+                (array_check($res, 'cancelled_at') !== null ? array_check($res, 'cancelled_at') :
+                    (array_check($res, 'started_at') !== null ? array_check($res, 'started_at') :
+                        array_check($res, 'created_at'))));
 
     if ($when !== null) {
         $iso = _epoch_to_iso($when);
@@ -185,18 +187,19 @@ function map_genai_openaiassistant($res, &$ev)
             $ev['occurred_at'] = $iso; // override the default "now" set earlier
         }
     }
+    return $ev;
 }
 
-function map_genai_mistral($res, &$ev)
+function map_genai_mistral($res, $ev)
 {
     // $res is an assoc array
-    $ev['model']      = _a($res, 'model');
-    $ev['request_id'] = _a($res, 'id');
+    $ev['model']      = array_check($res, 'model');
+    $ev['request_id'] = array_check($res, 'id');
 
-    $u   = _a($res, 'usage', array());
-    $in  = _a($u, 'prompt_tokens');
-    $out = _a($u, 'completion_tokens');
-    $tot = _a($u, 'total_tokens');
+    $u   = array_check($res, 'usage', array());
+    $in  = array_check($u, 'prompt_tokens');
+    $out = array_check($u, 'completion_tokens');
+    $tot = array_check($u, 'total_tokens');
 
     if ($tot === null && ($in !== null || $out !== null)) {
         $tot = (int)$in + (int)$out;
@@ -207,18 +210,19 @@ function map_genai_mistral($res, &$ev)
         'output_tokens' => $out,
         'total_tokens'  => $tot
     );
+    return $ev;
 }
 
 
-function map_genai_anthropic($res, &$ev)
+function map_genai_anthropic($res, $ev)
 {
-    $ev['model']      = _a($res, 'model');
-    $ev['request_id'] = _a($res, 'id');
+    $ev['model']      = array_check($res, 'model');
+    $ev['request_id'] = array_check($res, 'id');
 
-    $u   = _a($res, 'usage', array());
-    $in  = _a($u, 'input_tokens');
-    $out = _a($u, 'output_tokens');
-    $tot = _a($u, 'total_tokens');
+    $u   = array_check($res, 'usage', array());
+    $in  = array_check($u, 'input_tokens');
+    $out = array_check($u, 'output_tokens');
+    $tot = array_check($u, 'total_tokens');
 
     if ($tot === null && ($in !== null || $out !== null)) {
         $tot = (int)$in + (int)$out;
@@ -229,17 +233,18 @@ function map_genai_anthropic($res, &$ev)
         'output_tokens' => $out,
         'total_tokens'  => $tot
     );
+    return $ev;
 }
 
-function map_genai_default($res, &$ev)
+function map_genai_default($res, $ev)
 {
-    $ev['model']      = _a($res, 'model');
-    $ev['request_id'] = _a($res, 'id');
+    $ev['model']      = array_check($res, 'model');
+    $ev['request_id'] = array_check($res, 'id');
 
-    $u   = _a($res, 'usage', array());
-    $in  = _a($u, 'input_tokens',  _a($u, 'prompt_tokens'));
-    $out = _a($u, 'output_tokens', _a($u, 'completion_tokens'));
-    $tot = _a($u, 'total_tokens');
+    $u   = array_check($res, 'usage', array());
+    $in  = array_check($u, 'input_tokens',  array_check($u, 'prompt_tokens'));
+    $out = array_check($u, 'output_tokens', array_check($u, 'completion_tokens'));
+    $tot = array_check($u, 'total_tokens');
 
     if ($tot === null && ($in !== null || $out !== null)) {
         $tot = (int)$in + (int)$out;
@@ -250,70 +255,74 @@ function map_genai_default($res, &$ev)
         'output_tokens' => $out,
         'total_tokens'  => $tot
     );
+    return $ev;
 }
 
 /* ENCODING AND EMBEDDING */
-function map_encoding_openai($res, &$ev)
+function map_encoding_openai($res, $ev)
 {
-    $ev['model']      = _a($res, 'model');
-    $ev['request_id'] = _a($res, 'id');
+    $ev['model']      = array_check($res, 'model');
+    $ev['request_id'] = array_check($res, 'id');
 
-    $u   = _a($res, 'usage', array());
-    $in  = _a($u, 'prompt_tokens', _a($u, 'input_tokens'));
-    $tot = _a($u, 'total_tokens', $in);
+    $u   = array_check($res, 'usage', array());
+    $in  = array_check($u, 'prompt_tokens', array_check($u, 'input_tokens'));
+    $tot = array_check($u, 'total_tokens', $in);
 
     $ev['metrics'] = array(
         'input_tokens'  => $in,
         'output_tokens' => null,
         'total_tokens'  => $tot
     );
+    return $ev;
 }
 
-function map_encoding_mistral($res, &$ev)
+function map_encoding_mistral($res, $ev)
 {
-    $ev['model']      = _a($res, 'model');
-    $ev['request_id'] = _a($res, 'id');
+    $ev['model']      = array_check($res, 'model');
+    $ev['request_id'] = array_check($res, 'id');
 
-    $u   = _a($res, 'usage', array());
-    $in  = _a($u, 'prompt_tokens', _a($u, 'input_tokens'));
-    $tot = _a($u, 'total_tokens', $in);
+    $u   = array_check($res, 'usage', array());
+    $in  = array_check($u, 'prompt_tokens', array_check($u, 'input_tokens'));
+    $tot = array_check($u, 'total_tokens', $in);
 
     $ev['metrics'] = array(
         'input_tokens'  => $in,
         'output_tokens' => null,
         'total_tokens'  => $tot
     );
+    return $ev;
 }
 
-function map_encoding_default($res, &$ev)
+function map_encoding_default($res, $ev)
 {
-    $ev['model']      = _a($res, 'model');
-    $ev['request_id'] = _a($res, 'id');
+    $ev['model']      = array_check($res, 'model');
+    $ev['request_id'] = array_check($res, 'id');
 
-    $u   = _a($res, 'usage', array());
-    $in  = _a($u, 'input_tokens', _a($u, 'prompt_tokens'));
-    $tot = _a($u, 'total_tokens', $in);
+    $u   = array_check($res, 'usage', array());
+    $in  = array_check($u, 'input_tokens', array_check($u, 'prompt_tokens'));
+    $tot = array_check($u, 'total_tokens', $in);
 
     $ev['metrics'] = array(
         'input_tokens'  => $in,
         'output_tokens' => null,
         'total_tokens'  => $tot
     );
+    return $ev;
 }
 
 /* TRANSCRIPTION */
-function map_transcription_openai($res, &$ev)
+function map_transcription_openai($res, $ev)
 {
-    $ev['model']      = _a($res, 'model', _a($res, 'transcription_model'));
-    $ev['request_id'] = _a($res, 'id');
+    $ev['model']      = array_check($res, 'model', array_check($res, 'transcription_model'));
+    $ev['request_id'] = array_check($res, 'id');
 
-    $ms  = _a($res, 'duration_ms', _a($res, 'audio_ms'));
+    $ms  = array_check($res, 'duration_ms', array_check($res, 'audio_ms'));
     $sec = null;
 
     if ($ms !== null) {
         $sec = round(((int)$ms) / 1000.0, 3);
     } else {
-        $sec = _a($res, 'duration', _a($res, 'audio_seconds'));
+        $sec = array_check($res, 'duration', array_check($res, 'audio_seconds'));
         if ($sec !== null) $sec = (float)$sec;
     }
 
@@ -332,14 +341,15 @@ function map_transcription_openai($res, &$ev)
         'audio_ms'      => $ms !== null ? (int)$ms : null,
         'audio_seconds' => $sec
     );
+    return $ev;
 }
 
-function map_transcription_gladia($res, &$ev)
+function map_transcription_gladia($res, $ev)
 {
-    $ev['model']      = _a($res, 'model');
-    $ev['request_id'] = _a($res, 'request_id', _a($res, 'id'));
+    $ev['model']      = array_check($res, 'model');
+    $ev['request_id'] = array_check($res, 'request_id', array_check($res, 'id'));
 
-    $sec = _a($res, 'audio_duration', _a($res, 'duration'));
+    $sec = array_check($res, 'audio_duration', array_check($res, 'duration'));
     $ms  = null;
 
     if ($sec !== null) {
@@ -362,20 +372,21 @@ function map_transcription_gladia($res, &$ev)
         'audio_ms'      => $ms,
         'audio_seconds' => $sec
     );
+    return $ev;
 }
 
-function map_transcription_default($res, &$ev)
+function map_transcription_default($res, $ev)
 {
-    $ev['model']      = _a($res, 'model');
-    $ev['request_id'] = _a($res, 'id');
+    $ev['model']      = array_check($res, 'model');
+    $ev['request_id'] = array_check($res, 'id');
 
-    $ms  = _a($res, 'audio_ms', _a($res, 'duration_ms'));
+    $ms  = array_check($res, 'audio_ms', array_check($res, 'duration_ms'));
     $sec = null;
 
     if ($ms !== null) {
         $sec = round(((int)$ms) / 1000.0, 3);
     } else {
-        $sec = _a($res, 'audio_seconds', _a($res, 'duration'));
+        $sec = array_check($res, 'audio_seconds', array_check($res, 'duration'));
         if ($sec !== null) $sec = (float)$sec;
     }
 
@@ -383,9 +394,10 @@ function map_transcription_default($res, &$ev)
         'audio_ms'      => $ms !== null ? (int)$ms : null,
         'audio_seconds' => $sec
     );
+    return $ev;
 }
 
-function map_imagegen_dalle2($res, &$ev, $details)
+function map_imagegen_openai($res, $ev, $details)
 {
     // Transport facts
     $ok   = isset($res['ok']) ? (bool)$res['ok'] : false;
@@ -436,7 +448,8 @@ function map_imagegen_dalle2($res, &$ev, $details)
         'image_width'      => $w,
         'image_height'     => $h,
     ];
-    }
+    return $ev;
+}
 
 /**
  * Accepts '1024x1024', '1024×1024', '1024 X 1024', '1024 by 1024',
@@ -483,34 +496,13 @@ function _parse_image_dimensions_any($size)
 }
 
 /* Fallback, just in case */
-function map_generic_default($res, &$ev)
+function map_generic_default($res, $ev)
 {
-    $ev['model']      = _a($res, 'model');
-    $ev['request_id'] = _a($res, 'id');
+    $ev['model']      = array_check($res, 'model');
+    $ev['request_id'] = array_check($res, 'id');
     $ev['metrics']    = array();
-}
 
-/* SQL helpers */
-
-function sql_quote($str)
-{
-    if ($str === null) return "NULL";
-    // escape single quotes by doubling
-    $s = str_replace("'", "''", (string)$str);
-    return "'" . $s . "'";
-}
-
-function sql_nullable($str)
-{
-    return $str !== null && $str !== '' ? sql_quote($str) : "NULL";
-}
-
-function sql_json($value)
-{
-    if ($value === null) return "NULL";
-    // encode JSON and quote for SQL
-    $json = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-    return sql_quote($json);
+    return $ev;
 }
 
 /**
@@ -566,7 +558,7 @@ function _epoch_to_iso($sec)
 }
 
 /** Safe get: returns $default if key missing or not array */
-function _a($arr, $key, $default = null)
+function array_check($arr, $key, $default = null)
 {
     return (is_array($arr) && array_key_exists($key, $arr)) ? $arr[$key] : $default;
 }
@@ -626,15 +618,6 @@ function vtt_parse_timestamp_to_seconds(string $ts): ?float
     }
 
     return null;
-}
-
-/**
- * Duration in MILLISECONDS, or null.
- */
-function vtt_duration_ms(?string $vtt): ?int
-{
-    $sec = vtt_duration_seconds($vtt);
-    return $sec !== null ? (int)round($sec * 1000) : null;
 }
 
 /**

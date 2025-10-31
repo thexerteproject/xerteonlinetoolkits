@@ -3,25 +3,23 @@
 //file name must be $api . Api.php for example openaiApi.php when adding new api
 //class name AiApi mandatory when adding new api
 
+require_once(dirname(__FILE__) . "/" . "BaseAiApi.php");
+
 class openaiApi extends BaseAiApi
 {
     protected function POST_request($prompt, $payload, $url, $type){
         $results = $this->POST_OpenAi_Assistant($prompt, $payload, $url);
-        /*if (isset($payload['assistant_id'])) {
-            $results = $this->POST_OpenAi_Assistant($prompt, $payload, $url);
-        }*/
-        /*else {
-            //Post using non-assistant chat completion endpoint
-            $results = $this->POST_OpenAi($prompt, $payload, $url);
-        }*/
+
         return $results;
     }
 
     protected function buildQueries(array $inputs): array
     {
+        //todo remove
         return $this->safeExecute(function () use ($inputs){
             try {
-                $apiKey = $this->xerte_toolkits_site->openai_key;
+                global $xerte_toolkits_site;
+                $apiKey = $xerte_toolkits_site->openai_key;
 
                 $payload = [
                     'model' => 'gpt-4o-mini',   // pick any model that supports Structured Outputs
@@ -118,49 +116,51 @@ class openaiApi extends BaseAiApi
         return $answer;
     }
 
-    //general class for interactions with the openai API
-    //this should only be called if the user passed all checks
-   private function POST_OpenAi($prompt, $payload, $url)
-    {
-
-        $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openai_key;
-
-        //add user supplied prompt to payload
-        $payload["messages"][max(sizeof($payload["messages"])-1, 0)]["content"] = $prompt;
-        $new_payload = json_encode($payload);
-		
-		$payload_str = print_r($payload, true);
-		file_put_contents("./ai_payloads.txt", $payload_str, FILE_APPEND);
-        //start api interaction
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, [$authorization, "Content-Type: application/json"]);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $new_payload);
-
-        $result = curl_exec($curl);
-        log_ai_request($result, 'genai', 'openai', $this->actor, $this->sessionId);
-
-        curl_close($curl);
-
-
-        $resultConform = $this->clean_result($result);
-        $resultConform = json_decode($resultConform);
-
-        if ($resultConform->error) {
-            return (object)["status" => "error", "message" => "error on api call with type:" . $result->error->type];
-        }
-        //if (!$this->conform_to_model($resultConform)){
-        //    return (object) ["status" => "error", "message" => "answer does not match model"];
-        //}
-        return $resultConform;
-    }
+//    //general class for interactions with the openai API
+//    //this should only be called if the user passed all checks
+//   private function POST_OpenAi($prompt, $payload, $url)
+//    {
+//        global $xerte_toolkits_site;
+//
+//        $authorization = "Authorization: Bearer " . $xerte_toolkits_site->openai_key;
+//
+//        //add user supplied prompt to payload
+//        $payload["messages"][max(sizeof($payload["messages"])-1, 0)]["content"] = $prompt;
+//        $new_payload = json_encode($payload);
+//
+//		$payload_str = print_r($payload, true);
+//		file_put_contents("./ai_payloads.txt", $payload_str, FILE_APPEND);
+//        //start api interaction
+//        $curl = curl_init();
+//        curl_setopt($curl, CURLOPT_POST, 1);
+//        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+//        curl_setopt($curl, CURLOPT_URL, $url);
+//        curl_setopt($curl, CURLOPT_HTTPHEADER, [$authorization, "Content-Type: application/json"]);
+//        curl_setopt($curl, CURLOPT_POSTFIELDS, $new_payload);
+//
+//        $result = curl_exec($curl);
+//        log_ai_request($result, 'genai', 'openai', $this->actor, $this->sessionId);
+//
+//        curl_close($curl);
+//
+//
+//        $resultConform = $this->clean_result($result);
+//        $resultConform = json_decode($resultConform);
+//
+//        if ($resultConform->error) {
+//            return (object)["status" => "error", "message" => "error on api call with type:" . $result->error->type];
+//        }
+//        //if (!$this->conform_to_model($resultConform)){
+//        //    return (object) ["status" => "error", "message" => "answer does not match model"];
+//        //}
+//        return $resultConform;
+//    }
 
     private function POST_OpenAi_Assistant($prompt, $payload, $url)
     {
         return $this->safeExecute(function () use ($prompt, $payload, $url) {
-            $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openai_key;
+            global $xerte_toolkits_site;
+            $authorization = "Authorization: Bearer " . $xerte_toolkits_site->openai_key;
 
             //add user supplied prompt to payload
             $payload['thread']["messages"][max(sizeof($payload["thread"]["messages"]) - 1, 0)]["content"] = $prompt;
@@ -189,6 +189,7 @@ class openaiApi extends BaseAiApi
                 $runId = $resultArray['id'];
                 $threadId = $resultArray['thread_id'];
                 $startTime = time();
+                //todo move to async function to free up server resources
                 do {
                     sleep(5); // Wait for 5 seconds before checking status
                     $result = $this->GET_OpenAi_Run_Status($runId, $threadId);
@@ -218,7 +219,8 @@ class openaiApi extends BaseAiApi
     }
 
     private function GET_OpenAi_Run_Status($runId, $threadId){
-        $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openai_key;
+        global $xerte_toolkits_site;
+        $authorization = "Authorization: Bearer " . $xerte_toolkits_site->openai_key;
         $url = "https://api.openai.com/v1/threads/$threadId/runs/$runId";
         //start api interaction
 
@@ -233,13 +235,12 @@ class openaiApi extends BaseAiApi
         $resultConform = $this->clean_result($result);
         $resultConform = json_decode($resultConform);
 
-        //$status = $resultConform->status;
-
         return $resultConform;
     }
 
     private function GET_last_message_from_thread($threadId) {
-        $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openai_key;
+        global $xerte_toolkits_site;
+        $authorization = "Authorization: Bearer " . $xerte_toolkits_site->openai_key;
         $url = "https://api.openai.com/v1/threads/$threadId/messages";
 
         $curl = curl_init();
@@ -288,7 +289,8 @@ class openaiApi extends BaseAiApi
     }
 
     private function deleteThread($threadId){
-        $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->openai_key;
+        global $xerte_toolkits_site;
+        $authorization = "Authorization: Bearer " . $xerte_toolkits_site->openai_key;
         $url = "https://api.openai.com/v1/threads/$threadId";
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);

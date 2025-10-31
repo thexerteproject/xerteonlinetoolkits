@@ -1,5 +1,6 @@
 <?php
-class mistral_ai_ivoverlaypanel extends mistral_ai {
+class mistral_ai_ivoverlaypanel extends mistral_model {
+
 	public function __construct($type, $model = null, $context = "standard", $sub_type = null){
 		if($model == null) {
 			$this->model = "mistral-large-latest";

@@ -1,8 +1,6 @@
 <?php
 
 namespace Ai;
-use \Exception;
-use \CURLFile;
 
 require_once (str_replace('\\', '/', __DIR__) . "/AiClientInterface.php");
 require_once (str_replace('\\', '/', __DIR__) . "/AnthropicClient.php");
@@ -11,8 +9,7 @@ require_once (str_replace('\\', '/', __DIR__) . "/OpenAIClient.php");
 
 class AiChat
 {
-    private $clients = [];
-
+    private array $clients = [];
 
     public function __construct($site)
     {
@@ -27,8 +24,7 @@ class AiChat
         }
     }
 
-
-    public function complete(array $messages, string $provider = 'openai', array $options = [])
+    public function complete(array $messages, string $provider = 'mistral', array $options = [])
     {
         if (!isset($this->clients[$provider])) {
             return ['ok' => false, 'error' => "AI provider '$provider' is not configured."];

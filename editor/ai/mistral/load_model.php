@@ -1,5 +1,5 @@
 <?php 
-require_once(str_replace('\\', '/', __DIR__) . "/model.php");
+require_once(str_replace('\\', '/', __DIR__) . "/mistral_model.php");
 
 if(!isset($_SESSION['toolkits_logon_id'])){
     die("Session ID not set");
@@ -17,6 +17,6 @@ function load_model($type, $api, $model = null, $context = "standard", $sub_type
 	if(class_exists($name)) {
 		return new $name($type, $model, $context, $sub_type);
 	}else {
-		return new mistral_ai($type, $model, $context, $sub_type);
+		return new mistral_model($type, $model, $context, $sub_type);
 	}
 }

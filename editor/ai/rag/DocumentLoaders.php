@@ -24,6 +24,8 @@ class HtmlLoader implements DocumentLoader {
     private string $filePath;
 
     public function __construct(string $filePath) {
+        global $xerte_toolkits_site;
+        x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
         $this->filePath = $filePath;
     }
 
@@ -83,6 +85,7 @@ class XmlLoader implements DocumentLoader {
     }
 
     private function extractTextAndAttributes($node): string {
+        //todo alek make sure this is complete, maybe load from other file
         $allowedAttributes = [
             'name', 'text', 'goals', 'audience', 'prereq', 'howto', 'summary', 'nextsteps', 'pageintro', 'tip', 'side1', 'side2', 'txt', 'instruction', 'prompt', 'answer', 'intro', 'feedback', 'unit', 'question', 'hint', 'label', 'passage', 'initialtext', 'initialtitle', 'suggestedtext', 'suggestedtitle', 'generalfeedback', 'instructions', 'p1', 'p2', 'title', 'introduction', 'wrongtext', 'wordanswer', 'words', 'url', 'targetnew', 'linkid',
         ];

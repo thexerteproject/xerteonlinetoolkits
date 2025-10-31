@@ -420,3 +420,5 @@ INSERT INTO `management_helper` VALUES
                                     (7, 'wikimedia', 'Wikimedia Foundation', 'image', 0, 0, '{}'),
                                     (8, 'dalle2', 'DallE2 (Generative)', 'image', 1, 0, '{}'),
                                     (9, 'dalle3', 'DallE3 (Generative)', 'image', 1, 0, '{}');
+
+-- todo alek add changes here from the upgrade file.

@@ -28,7 +28,7 @@ class unsplashApi extends BaseApi
     private function GET_Unsplash($query, $aiParams, $perPage = 3, $page = 1)
     {
         $headers = [
-            'Authorization: Client-ID ' . $this->xerte_toolkits_site->unsplash_key,
+            'Authorization: Client-ID ' . $xerte_toolkits_site->unsplash_key,
             'Content-Type: application/json',
         ];
         $url = $this->buildUnsplashUrl($query, $aiParams, $perPage, $page);
@@ -45,7 +45,7 @@ class unsplashApi extends BaseApi
 
     private function extractParameters($input)
     {
-        $chat = new AiChat($this->xerte_toolkits_site);
+        $chat = new AiChat($xerte_toolkits_site);
 
 
         $conversation = [];
@@ -96,7 +96,7 @@ class unsplashApi extends BaseApi
 
     private function rewritePrompt($query)
     {
-        $chat = new AiChat($this->xerte_toolkits_site);
+        $chat = new AiChat($xerte_toolkits_site);
         $systemMessage = "You are an AI assistant. Rewrite the following user query to be more effective for image search when using an API like Unsplash.";
         $resp = $chat->complete([
             ["role" => "system", "content" => $systemMessage],
@@ -129,7 +129,7 @@ class unsplashApi extends BaseApi
     private function trackUnsplashDownload($downloadLocationUrl)
     {
         $headers = [
-            'Authorization: Client-ID ' . $this->xerte_toolkits_site->unsplash_key,
+            'Authorization: Client-ID ' . $xerte_toolkits_site->unsplash_key,
             'Content-Type: application/json',
         ];
         $res = $this->httpGet($downloadLocationUrl, $headers);
@@ -158,6 +158,7 @@ class unsplashApi extends BaseApi
 
 
         if ($overrideSettings === 'true' || $overrideSettings === true) {
+            //todo again
             $aiParams = json_decode(json_encode($settings));
         } else {
             $tmp = $this->extractParameters($query);

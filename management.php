@@ -436,7 +436,7 @@ if(isset($_SESSION['toolkits_logon_id'])) {
                                 <?php
                             }
                             if (is_user_permitted("system")) { $firsttab = $firsttab != null ? $firsttab :  'course_list()' ?>
-                                <button type="button" class="xerte_button" onclick="javascript:ai_list();"><i class="fa fa-cc"></i> <?PHP echo MANAGEMENT_MENUBAR_AI; ?>    </button>
+                                <button type="button" class="xerte_button" onclick="javascript:ai_list();"><i class="fa fa-desktop"></i> <?PHP echo MANAGEMENT_MENUBAR_AI; ?>    </button>
                             <?php
                             }
                             if (is_user_permitted("system")) { $firsttab = $firsttab != null ? $firsttab :  'licenses_list()' ?>

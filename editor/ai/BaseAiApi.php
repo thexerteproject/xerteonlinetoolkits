@@ -1,8 +1,9 @@
 <?php
-use rag\MistralRAG;
 use function rag\makeRag;
 
 require_once __DIR__.'/logging/log_ai_request.php';
+require_once(dirname(__FILE__) . "/../../config.php");
+
 
 global $xerte_toolkits_site;
 
@@ -19,7 +20,6 @@ abstract class BaseAiApi
 
     protected string $languageMessage;
 
-    //protected $global_instructions = ["When handling text enclosed in attribute tags, all text enclosed within the following attributes: 'text', 'goals', 'audience', 'prereq', 'howto', 'summary', 'nextsteps', 'pageintro', 'tip', 'side1', 'side2', 'txt', 'instruction', 'prompt', 'answer', 'intro', 'feedback', 'unit', 'question', 'hint', 'label', 'passage', 'initialtext', 'initialtitle', 'suggestedtext', 'suggestedtitle', 'generalfeedback', 'instructions', 'p1', 'p2', 'title', 'introduction', 'wrongtext', 'wordanswer', 'words' must be formatted with relevant HTML encoding tags (headers, paragraphs, etc. if needed), you have to use EXCLUSIVELY HTML entities. On the other hand, when handling text in CDATA nodes, only IF there is text inside CDATA nodes in the first response you gave, format it using at minimum paragraph tags, or other relevant tags if needed. Otherwise, do NOT wrap text which belongs in attributes into CDATA nodes."];
      protected $globalInstructions = [];
 
     private const DEFAULT_MSG = 'An unexpected error occurred. If this persists, please inform your administrator.';
@@ -37,10 +37,9 @@ abstract class BaseAiApi
     ];
 
     function __construct(string $api) {
-        global $xerte_toolkits_site;
+
         $this->api = $api;
         require_once (str_replace('\\', '/', __DIR__) . "/../../config.php");
-        $this->xerte_toolkits_site = $xerte_toolkits_site;
         require_once (str_replace('\\', '/', __DIR__) . "/rag/RagFactory.php");
         require_once (str_replace('\\', '/', __DIR__) . "/management/dataRetrievalHelper.php");
         require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/load_model.php");
@@ -51,9 +50,6 @@ abstract class BaseAiApi
     }
 
     protected function clean_result($answer) {
-        //TODO idea: if not correct drop until last closed xml and close rest manually?
-
-        //TODO ensure answer contains no html and xml has no data fields aka remove spaces
         //IMPORTANT GPT really wants to add \n into answers
         $tmp = str_replace('\n', "", $answer);
         $tmp = preg_replace('/\s+/', ' ', $tmp);
@@ -88,6 +84,8 @@ abstract class BaseAiApi
 
         return $messages[$type] ?? $messages['default'];
     }
+
+//todo remove this from all files, security risk
 
     protected function safeExecute(callable $fn, string $context = 'General')
     {
@@ -138,7 +136,7 @@ abstract class BaseAiApi
     protected function fixXmlAttributeValues(string $xml): string {
         $pattern = '/([A-Za-z_:][A-Za-z0-9_.:-]*)\s*=\s*(["\'])(.*?)\2/s';
 
-        return preg_replace_callback($pattern, function ($m) {
+        $cleaned_xml = preg_replace_callback($pattern, function ($m) {
             [$all, $name, $q, $val] = $m;
 
             // Remove illegal XML chars inside attribute values
@@ -163,6 +161,8 @@ abstract class BaseAiApi
 
             return $name . '=' . $q . $val . $q;
         }, $xml);
+
+        return $cleaned_xml;
     }
 
     /**
@@ -193,13 +193,10 @@ abstract class BaseAiApi
      * Returns ['xml' => sanitizedXml, 'errors' => []] — errors non-empty if still broken.
      */
     protected function sanitizeModelXml(string $rawXml) {
-        // Step 0: normalize encoding and control chars
+
         $xml = $this->stripInvalidXmlChars($rawXml);
-
-        // Step 1: sanitize attribute values safely
         $xml = $this->fixXmlAttributeValues($xml);
-
-        // Step 2: lint to make sure it’s actually parseable
+        //todo use these errors
         $errors = $this->lintXml($xml);
 
         //return ['xml' => $xml, 'errors' => $errors]; //only use this for debugging
@@ -316,17 +313,28 @@ abstract class BaseAiApi
         return $xmlString;
     }
 
-    protected function processFileForRAG(string $filePath): string {
-        try {
-            $loader = DocumentLoaderFactory::getLoader($filePath);
-            return $loader->load();
-        } catch (Exception $e) {
-            return "Error: " . $e->getMessage();
-        }
+    //todo probably remove this
+//    protected function processFileForRAG(string $filePath): string {
+//        try {
+//            $loader = DocumentLoaderFactory::getLoader($filePath);
+//            return $loader->load();
+//        } catch (Exception $e) {
+//            return "Error: " . $e->getMessage();
+//        }
+//    }
+
+    public function total_clean_machine($answer){
+        $answer = $this->removeBracketsAndContent($answer);
+        $answer = $this->cleanXmlCode($answer);
+        $answer = $this->cleanJsonCode($answer);
+        $answer = preg_replace('/&(?!#\d+;|amp;|lt;|gt;|quot;|apos;)/', '&amp;', $answer);
+        $answer = $this->sanitizeXmlAttributes($answer);
+        $answer = $this->sanitizeModelXml($answer);
+        return $answer;
     }
 
     protected function prepareURL($uploadPath){
-        //todo path traversal check? unsure what this is supposed to do.
+        global $xerte_toolkits_site;
         $basePath = __DIR__ . '/../../'; // Moves up from ai -> editor -> xot
         $finalPath = realpath($basePath . $uploadPath);
 
@@ -334,37 +342,26 @@ abstract class BaseAiApi
             throw new Exception("File does not exist: $finalPath");
         }
 
+        x_check_path_traversal($finalPath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
         return $finalPath;
     }
 
     //A get message array for sorting through different types of $payload structures
-    protected function &getMessagesArray(&$payload) {
+    protected function changeMessage($payload, $new_messages) {
         //anthropic, mistral and a legacy openAI chat completion
         if (isset($payload['messages'])) {
-            return $payload['messages'];
+            array_splice($payload['messages'], 2, 0, $new_messages);
         }
         //for openAI assistant requests
         if (isset($payload['thread']['messages'])) {
-            return $payload['thread']['messages'];
+            array_splice($payload['thread']['messages'], 2, 0, $new_messages);
         }
-
-        // Fallback: return a dummy reference (prevents fatal error)
-        $null = [];
-        return $null;
+        return $payload;
     }
 
     public function ai_request($p, $type, $subtype, $context, $baseUrl, $selectedCode, $useCorpus = false, $fileList = null, $restrictCorpusToLo = false){
-        /*
-        if (is_null($this->preset_models->type_list[$type]) or $type == "") {
-            return (object) ["status" => "error", "message" => "there is no match in type_list for " . $type];
-        }
 
-        if ($this->xerte_toolkits_site->openai_key == "") {
-            return (object) ["status" => "error", "message" => "there is no corresponding API key"];
-        }*/
-        //todo check for path traversal on partial path?
-        //or check at usage when converted to proper path.
-        //x_check_path_traversal($baseUrl);
         try {
             $this->setupLanguageInstructions($selectedCode);
             $managementSettings = get_block_indicators();
@@ -379,7 +376,8 @@ abstract class BaseAiApi
             $payload = $model->get_payload();
 
             if ($useCorpus || $fileList != null || $restrictCorpusToLo) {
-                $encodingApiKey = $this->xerte_toolkits_site->{$managementSettings['encoding']['key_name']};
+                global $xerte_toolkits_site;
+                $encodingApiKey = $xerte_toolkits_site->{$managementSettings['encoding']['key_name']};
                 $encodingDirectory = $this->prepareURL($baseUrl);
                 $provider = $managementSettings['encoding']['active_vendor'];
                 $cfg = [
@@ -425,8 +423,7 @@ abstract class BaseAiApi
                         ),
                     );
 
-                    $messages =& $this->getMessagesArray($payload);
-                    array_splice($messages, 2, 0, $new_messages);
+                    $payload = $this->changeMessage($payload, $new_messages);
                 }
             }
 
@@ -436,13 +433,9 @@ abstract class BaseAiApi
 
             $answer = $this->parseResponse($results);
 
-            $answer = $this->removeBracketsAndContent($answer);
-            $answer = $this->cleanXmlCode($answer);
-            $answer = $this->cleanJsonCode($answer);
-            $answer = preg_replace('/&(?!#\d+;|amp;|lt;|gt;|quot;|apos;)/', '&amp;', $answer);
-            $answer = $this->sanitizeXmlAttributes($answer);
-            $answer = $this->sanitizeModelXml($answer);
-            return $answer;
+            $clean_answer = $this->total_clean_machine($answer);
+
+            return $clean_answer;
         }
         catch (Throwable $e){
             return (object) ["status" => "error", "message" => $this->toUserMessage($e)];

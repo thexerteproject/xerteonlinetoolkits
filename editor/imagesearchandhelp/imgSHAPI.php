@@ -18,10 +18,6 @@ $settings = x_clean_input($_POST["settings"]);
 
 $managementSettings = get_block_indicators();
 
-if((!$managementSettings['imagegen']['active_vendor'])&&(!$managementSettings['image']['active_vendor'])){
-    die(json_encode(["status" => "error", "message" => "No active API found. Ensure at least one ai vendor is enabled with a valid api key."]));
-}
-
 if((!vendor_is_active($api, 'image'))&&(!vendor_is_active($api, 'imagegen'))){
     die(json_encode(["status" => "error", "message" => "The selected vendor is not enabled, or is missing an API key. Contact your administrator and ensure at least one ai vendor is enabled with a valid api key."]));
 }
@@ -36,23 +32,22 @@ $imgshApi = new $api_type($textApi);
 
 $result = $imgshApi->sh_request($query, $url, $interpretPrompt, $overrideSettings, $settings); // original
 
-if ($result->status) {
-	$_SESSION["paths_img_search"] = array();
-	$result->credits = array();
-	for($i = 0; $i < count($result->paths); $i++){
-		$full_path = $result->paths[$i];
 
-		$web_path = str_replace($xerte_toolkits_site->root_file_path, $xerte_toolkits_site->site_url, $full_path);
-		$ext = pathinfo($full_path, PATHINFO_EXTENSION);
-		$credits = str_replace($ext, "txt", $full_path);
+$_SESSION["paths_img_search"] = array();
+$result->credits = array();
 
-		$_SESSION["paths_img_search"][] = $full_path;
-		$result->paths[$i] = $web_path;
-        //TODO: Fix for non-credit vendors (Dalle2, Dalle3)
-		$result->credits[] = file_get_contents($credits);
-	}
-    ob_end_clean();
-	echo json_encode($result);
-} else {
-	echo json_encode(["status" => "success", "result" => $result]);
+for($i = 0; $i < count($result->paths); $i++){
+    $full_path = $result->paths[$i];
+
+    $web_path = str_replace($xerte_toolkits_site->root_file_path, $xerte_toolkits_site->site_url, $full_path);
+    $ext = pathinfo($full_path, PATHINFO_EXTENSION);
+    $credits = str_replace($ext, "txt", $full_path);
+
+    $_SESSION["paths_img_search"][] = $full_path;
+    $result->paths[$i] = $web_path;
+    //TODO: Fix for non-credit vendors (Dalle2, Dalle3)
+    $result->credits[] = file_get_contents($credits);
 }
+ob_end_clean();
+echo json_encode($result);
+

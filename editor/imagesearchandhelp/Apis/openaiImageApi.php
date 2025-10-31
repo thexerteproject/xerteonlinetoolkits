@@ -4,14 +4,13 @@ require_once __DIR__ . '/../BaseApi.php';
 require_once __DIR__ . '/../Ai/AiChat.php';
 use Ai\AiChat;
 
-abstract class dalleApi extends BaseApi
+abstract class openaiImageApi extends BaseApi
 {
     /** Child classes set these */
     protected $imageModel = '';
     protected $saveSubdir = '/media';
 
     protected $prefix = '';
-
 
     protected $rewriteSystemMessage = null;
     protected $rewriteMaxTokens = 500;
@@ -20,10 +19,11 @@ abstract class dalleApi extends BaseApi
 
     protected function rewritePrompt(string $query): string
     {
+        global $xerte_toolkits_site;
         if (empty($this->rewriteSystemMessage)) {
             return $query; // no rewrite requested by subclass
         }
-        $chat = new AiChat($this->xerte_toolkits_site);
+        $chat = new AiChat($xerte_toolkits_site);
         $messages = [
             ['role' => 'system', 'content' => $this->rewriteSystemMessage],
             ['role' => 'user', 'content' => $query],
@@ -39,8 +39,10 @@ abstract class dalleApi extends BaseApi
     /** POST helper for OpenAI Images API */
     protected function postImagesGenerations(array $payload)
     {
+        global $xerte_toolkits_site;
+        //todo move over to dalle key
         $headers = [
-            'Authorization: Bearer ' . $this->xerte_toolkits_site->openai_key,
+            'Authorization: Bearer ' . $xerte_toolkits_site->openai_key,
             'Content-Type: application/json',
         ];
         return $this->httpPostJson('https://api.openai.com/v1/images/generations', $payload, $headers, 120);

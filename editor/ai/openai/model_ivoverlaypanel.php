@@ -1,5 +1,5 @@
 <?php
-class openai_ai_ivoverlaypanel extends openai_ai {
+class openai_ai_ivoverlaypanel extends openai_model {
 	public function __construct($type, $model = null, $context = "standard", $sub_type = null, $model_template = null, $assistantOn = false, $assistantId = null){
 		if($assistantId != null){
 			$this->assistantId = $assistantId;
@@ -9,9 +9,11 @@ class openai_ai_ivoverlaypanel extends openai_ai {
 		}
 		$this->assistantOn = $assistantOn;
 
-		if($model != null) {
-			$this->model = $model;
-		}
+        if($model == null) {
+            $this->model = "gtp-4";
+        }else {
+            $this->model = $model;
+        }
 
         if (!preg_match('/^[a-zA-Z]+$/', $type)) {
             die("path traversal detected");

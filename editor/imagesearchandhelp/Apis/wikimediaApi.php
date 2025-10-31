@@ -75,7 +75,7 @@ class wikimediaApi extends BaseApi
 
     private function rewritePrompt($query, $conversation = [])
     {
-        $chat = new AiChat($this->xerte_toolkits_site);
+        $chat = new AiChat($xerte_toolkits_site);
 
 
         if (empty($conversation)) {
@@ -129,7 +129,7 @@ class wikimediaApi extends BaseApi
 
     private function extractParameters($input)
     {
-        $chat = new AiChat($this->xerte_toolkits_site);
+        $chat = new AiChat($xerte_toolkits_site);
 
 
         if (empty($conversation)) {
@@ -210,12 +210,12 @@ class wikimediaApi extends BaseApi
 
 
         if (file_put_contents($savePath, $imageData) === false) {
-        return (object)["status" => "error", "message" => "Failed to save image."];
+            return (object)["status" => "error", "message" => "Failed to save image."];
         }
 
 
         return (object)["status" => "success", "message" => "Image downloaded successfully.", "path" => $savePath];
-        }
+    }
 
     public function sh_request($query, $target, $interpretPrompt, $overrideSettings, $settings)
     {
@@ -230,6 +230,7 @@ class wikimediaApi extends BaseApi
             : $query;
 
         if ($overrideSettings === "true" || $overrideSettings === true) {
+            //todo again
             $aiParams = json_decode(json_encode($settings));
         } else {
             $tmp = $this->extractParameters($query);

@@ -20,6 +20,7 @@
 // Tree : Add the tree object to the editor
 
 var EDITOR = (function ($, parent) {
+
     // Create the tree object and refer locally to it as 'my'
     var my = parent.tree = {},
         toolbox = parent.toolbox,
@@ -694,7 +695,7 @@ var EDITOR = (function ($, parent) {
      *
      */
 
-    showNodeData = function(key, keepScrollPos, scrollToId, lightboxGroup) {
+    showNodeData = function(key, keepScrollPos, scrollToId) {
         // any expanded optional property groups will be kept expanded on wizard reload
         const expandedGroups = [];
         $('#mainPanel .wizard fieldset.wizardgroup').each(function() {
@@ -702,7 +703,6 @@ var EDITOR = (function ($, parent) {
                 expandedGroups.push($(this).parents('.wizardattribute').attr('id'));
             }
         });
-
         if (scrollToId !== undefined) {
             expandedGroups.push(scrollToId);
         }
@@ -712,17 +712,18 @@ var EDITOR = (function ($, parent) {
             if (keepScrollPos != null && keepScrollPos == true) {
                 scrollPos = $("#content").scrollTop();
             }
-            buildPage(key, scrollPos, scrollToId, expandedGroups, lightboxGroup);
+            buildPage(key, scrollPos, scrollToId, expandedGroups);
         }, 350);
     },
 
     // Refresh the page when a new node is selected
-    buildPage = function (key, scrollPos, scrollToId, expandedGroups, lightboxGroup) {
+    buildPage = function (key, scrollPos, scrollToId, expandedGroups) {
         // Cleanup all current CKEDITOR instances!
         for(name in CKEDITOR.instances)
         {
             CKEDITOR.instances[name].destroy(true);
         }
+
         var attributes = lo_data[key]['attributes'];
 
         // Get the node name
@@ -1009,7 +1010,7 @@ var EDITOR = (function ($, parent) {
 													
 													checkForOptGroup(temp);
 												} else {
-													parent.toolbox.insertOptionalProperty(data.key, data.children[j].name, (data.children[j].value.defaultValue ? data.children[j].value.defaultValue : ""), load, (load ? "group_" + data.attribute : ""), (load ? data.attribute : ""));
+													parent.toolbox.insertOptionalProperty(data.key, data.children[j].name, (data.children[j].value.defaultValue ? data.children[j].value.defaultValue : ""), load, (load ? "group_" + data.attribute : ""));
 												}
 											}
 										}
@@ -1114,6 +1115,7 @@ var EDITOR = (function ($, parent) {
                 html.append(table2);
             }
 
+
             if (node_options['optional'].length > 0) {
                 $('#optionalParams').append(html);
             }
@@ -1121,7 +1123,6 @@ var EDITOR = (function ($, parent) {
             // Add optional property values to main panel in the order they have in the xwd
             for (var i = 0; i < node_options['optional'].length; i++)
             {
-
                 attribute_name = node_options['optional'][i].name;
                 attribute_label = node_options['optional'][i].value.label;
                 attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
@@ -1140,6 +1141,7 @@ var EDITOR = (function ($, parent) {
                     }
                 }
             }
+
 
             $('#languagePanel').html("<hr><table class=\"wizard\" border=\"0\">");
             // languageOptons
@@ -1376,41 +1378,37 @@ var EDITOR = (function ($, parent) {
 		// group children aren't sorted into alphabetical order - they appear in order taken from xml
 		var groupChildren = group.value.children;
 
-        if (group.value.lightbox === 'form') {
-            toolbox.triggerRedrawForm(group.name, key, groupChildren, 'initialize');
-        } else {
+		for (var j = 0; j < groupChildren.length; j++) {
 
-            for (var j = 0; j < groupChildren.length; j++) {
-                // set up a nested group
-                if (groupChildren[j].value.type == 'group') {
-                    var foundGroup = checkGroupFound(groupChildren[j], attributes, groupChildren, key);
-                    if ($.inArray(true, foundGroup) > -1) {
-                        groupChildren[j].found = true;
-                    }
+			// set up a nested group
+			if (groupChildren[j].value.type == 'group') {
+				var foundGroup = checkGroupFound(groupChildren[j], attributes, groupChildren, key);
+				if ($.inArray(true, foundGroup) > -1) {
+					groupChildren[j].found = true;
+				}
 
-                    var visible = true;
-                    if (typeof groupChildren[j].value.condition != "undefined") {
-                        visible = parent.toolbox.evaluateCondition(groupChildren[j].value.condition, key);
-                    }
-                    groupChildren[j].visible = visible;
-                    groupSetUp(groupChildren[j], attributes, node_options, key);
+				var visible = true;
+				if (typeof groupChildren[j].value.condition != "undefined") {
+					visible = parent.toolbox.evaluateCondition(groupChildren[j].value.condition, key);
+				}
+				groupChildren[j].visible = visible;
+				groupSetUp(groupChildren[j], attributes, node_options, key);
 
-                    // display a parameter within this group
-                } else {
-                    var tableOffset = (group.value.cols ? j % parseInt(group.value.cols, 10) : '');
+			// display a parameter within this group
+			} else {
+				var tableOffset = (group.value.cols ? j % parseInt(group.value.cols, 10) : '');
 
-                    if (toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found == true || !groupChildren[j].value.deprecated) {
-                        toolbox.displayParameter(
-                            '#mainPanel .wizard #groupTable_' + group.name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
-                            groupChildren,
-                            groupChildren[j].name,
-                            (toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found ? toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value : groupChildren[j].value.defaultValue),
-                            key
-                        );
-                    }
-                }
-            }
-        }
+				if (toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found == true || !groupChildren[j].value.deprecated) {
+					toolbox.displayParameter(
+						'#mainPanel .wizard #groupTable_' + group.name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
+						groupChildren,
+						groupChildren[j].name,
+						(toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found ? toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).value : groupChildren[j].value.defaultValue),
+						key
+					);
+				}
+			}
+		}
 	},
 	
 	checkGroupFound = function(group, attributes, node_options, key)
@@ -1474,7 +1472,7 @@ var EDITOR = (function ($, parent) {
             var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
             var advancedIcon = toolbox.getExtraTreeIcon(lkey, "advanced", simple_mode && template_sub_pages.indexOf(nodeName) == -1);
 
-            var treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + advancedIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
+            treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + advancedIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
             var this_json = {
                 id: lkey,
                 text: treeLabel,
@@ -1662,14 +1660,13 @@ var EDITOR = (function ($, parent) {
     ai_content_generator = function(aiSettings, constructorObject) {
         return new Promise((resolve, reject) => {
             try {
-                // Call aiAPI.php via jQuery's AJAX method
                 var tree = $.jstree.reference("#treeview");
                 // Show wait icon
                 $('body').css("cursor", "wait")
                 $('.featherlight').css("cursor", "wait")
                 $('.featherlight-content').css("cursor", "wait")
-                //console.log("Start OpenAI API request, please wait...");
-                //console.log(node_type, "+", api_choice, "+", p, "+", fileUrl, "+", node_key);
+                //todo move over to aiSettings instead of current.
+                //todo also ensure aiAPI extracts settings from aiSettings
                 $.ajax({
                     url: "editor/ai/aiAPI.php",
                     type: "POST",
@@ -1720,6 +1717,7 @@ var EDITOR = (function ($, parent) {
 
         return new Promise((resolve, reject) => {
             // Only match the specific AJAX fired by savepreviewasync
+            //todo timo look at this later.
             const matches = (s) => {
                 if (!s) return false;
                 const url = (s.url || '').toString();
@@ -1772,45 +1770,6 @@ var EDITOR = (function ($, parent) {
         });
     };
 
-    auto_translate = function(event, api, baseUrl, targetLanguage) {
-        return new Promise((resolve, reject) => {
-            try {
-                // Call aiAPI.php via jQuery's AJAX method
-                var tree = $.jstree.reference("#treeview");
-                // Show wait icon
-                $('body').css("cursor", "wait");
-                console.log("Start OpenAI API request, please wait...");
-                console.log(targetLanguage, "+", api, "+", baseUrl);
-
-                $.ajax({
-                    url: "editor/ai/autotranslate/autotranslateAPI.php",
-                    type: "POST",
-                    data: {
-                        api: api,
-                        baseUrl: baseUrl,
-                        targetLanguage: targetLanguage,
-                    },
-                    success: function(data) {
-                        try {
-                            xml_to_xerte_content(data, event.data.key, 'last', tree, parent);
-                        } catch (error) {
-                            console.log('Error occurred in success callback:', error);
-                            reject(error);
-                        }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        // Handle any errors from the AJAX request and reject the promise
-                        console.error("AJAX request failed:", textStatus, errorThrown);
-                        reject(new Error(`AJAX error: ${textStatus}`)); // Reject with an error
-                    }
-                });
-            } catch (error) {
-                console.error("Error occurred in auto_translate:", error);
-                reject(error); // Reject the promise with the caught error
-            }
-        });
-    };
-
     quick_fill = function(event, node_type, parameters) {
         return new Promise((resolve, reject) => {
             try {
@@ -1819,7 +1778,6 @@ var EDITOR = (function ($, parent) {
                 // Show wait icon
                 $('body').css("cursor", "wait");
                 console.log("Start Quick Fill process, please wait...");
-
                 $.ajax({
                     url: "editor/quickfill/quickfillAPI.php",
                     type: "POST",
@@ -1848,18 +1806,15 @@ var EDITOR = (function ($, parent) {
         });
     };
 
-img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings, single_image_selection = false, key, name){
-				if(window.imageSearchSingle){
-						window.imageSearchSingle = false;
-				}
+img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings, key, name){
         $('body').css("cursor", "wait");
-				let input_type = "checkbox";
-				let image_data;
-				if(single_image_selection) {
-						input_type = "radio";
-				}
-        //console.log("start pexels api request please wait");
-				let image_preview = $("<div class=\"img_search_preview\"><div class=\"img_search_loading\">loading...</div></div>");
+		let input_type = "checkbox";
+		let image_data;
+		if(settings['ishButton']) {
+				input_type = "radio";
+		}
+
+        let image_preview = $("<div class=\"img_search_preview\"><div class=\"img_search_loading\">loading...</div></div>");
         let keepClicked = false;
         let selection_window = $.featherlight(image_preview, {
             closeOnClick: false,
@@ -1926,7 +1881,7 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
 												success: function(data){
                                                         alert(`${language.imageSelection.imageSavedSuccessMsg}`);
 														selection_window.close();
-														if(single_image_selection) {
+														if(settings['ishButton']) {
 
                                                             toolbox.setAttributeValue(key ,[name], [image_data.paths[indices_selected[0]]]);
                                                             savepreviewPromise();
@@ -1946,76 +1901,11 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
 								image_preview.append("<br>").append(submit_button);
 								image_preview_images.height($(".img_search_preview").innerHeight() - submit_button.outerHeight(true) - header.outerHeight(true));
 
-                                // ─────────────── POP-UP TIP INJECTION ───────────────
-
-                                // 1) make lightbox a positioning context
                                 image_preview.css("position", "relative");
-
-                                // 2) build the floating tip
-                                                const tip = $(`
-                                  <div class="tip-floating">
-                                    <button class="close-tip">&times;</button>
-                                    <h4>💡 Tip</h4>
-                                    <p>
-                                      <strong>1.</strong> Left-click the images you want to <strong>keep</strong>.<br>
-                                      <strong>2.</strong> Then, <strong>right-click</strong> the image you want to use immediately and select <kbd>Copy image</kbd>.<br>
-                                      <strong>3.</strong> Press the <strong>Keep</strong> button to save your selected images to the media folder.<br>
-                                      <strong>4.</strong> You can now <kbd>Ctrl</kbd> + <kbd>V</kbd> to paste the copied image into any text field on any page!
-                                    </p>
-                                  </div>
-                                `);
-                                                //image_preview.append(tip);
-
-                                // 3) wire up close button
-                                                //tip.find(".close-tip").on("click", () => tip.remove());
-
-                                // 4) inject scoped styles
-                                //                 $("<style>").prop("type", "text/css").html(`
-                                //   .tip-floating {
-                                //     position: absolute;
-                                //     bottom: 20px;
-                                //     right: 20px;
-                                //     max-width: 250px;
-                                //     background: rgba(255,255,255,0.95);
-                                //     padding: 1em;
-                                //     border-radius: 6px;
-                                //     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-                                //     z-index: 1000;
-                                //     font-size: 0.9em;
-                                //     line-height: 1.3;
-                                //   }
-                                //   .tip-floating h4 {
-                                //     margin: 0 0 0.5em;
-                                //     font-size: 1em;
-                                //   }
-                                //   .tip-floating p {
-                                //     margin: 0;
-                                //   }
-                                //   .tip-floating .close-tip {
-                                //     position: absolute;
-                                //     top: 4px;
-                                //     right: 6px;
-                                //     border: none;
-                                //     background: none;
-                                //     font-size: 1.1em;
-                                //     cursor: pointer;
-                                //   }
-                                //   .tip-floating kbd {
-                                //     background: #eee;
-                                //     border: 1px solid #ccc;
-                                //     border-radius: 3px;
-                                //     padding: 0 4px;
-                                //     font-size: 0.85em;
-                                //   }
-                                // `).appendTo("head");
-
-
-                // ───────────── END POP-UP TIP ─────────────
 
 								$(window).on("resize", function() {
 										let width = ($(".img_search_preview .image_preview_images").innerWidth()/5) - 20 /*padding*/ - credits_button_width;
 										image_preview_images.height($(".img_search_preview").innerHeight() - submit_button.outerHeight(true) - header.outerHeight(true));
-										//let width = ($(".img_search_preview").innerWidth()-20*5/*padding inline*/)/5;
 										$(".img_search_preview").find(".img_search_preview_image").each(function() {
 												this.width = width;
 												$(this).css("max-height", image_preview_images.height()/2);
@@ -2023,7 +1913,6 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
 								});
 								
 								let credits_button_width = 0;
-                //console.log("The image results have successfully been retrieved:", data);
                                 if (image_data.paths.length === 0) {
                                     let no_image_text = "<div>" + language.imageSelection.noImagesReturnedMsg + "<div>";
                                     image_preview_images.append(no_image_text);
@@ -2052,16 +1941,7 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
                                     });
 
                                     frame.append(enlarge_button);
-										/*let credits_button;
-										if(typeof data.credits[i] == "string") {
-												let credits_texts = data.credits[i].split("\n");
-												credits_button = $("<i class=\"fa fa-info-circle\"></i>").click(function (){
-														$.featherlight("<p>" + credits_texts[0] + "</p><p>" + credits_texts[1] + "</p>", {});
-												});
-												//container.append(credits_button);
-												credits_button_width = credits_button.width();
-												credits_button_width = 0;
-										}*/
+
 										image.on("load", function () {
 												let width = ($(".img_search_preview .image_preview_images").innerWidth()/5) - 20 /*padding*/ - credits_button_width;
 												this.width = width;

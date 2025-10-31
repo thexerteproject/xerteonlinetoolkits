@@ -6,10 +6,10 @@ class pixabayApi extends BaseApi
 {
     private function buildPixabayUrl($query, $aiParams, $perPage = 5, $page = 1)
     {
-        $apiKey = $this->xerte_toolkits_site->pixabay_key;
+        global $xerte_toolkits_site;
+        $apiKey = $xerte_toolkits_site->pixabay_key;
         $query = urlencode($this->clean($query));
         $url = "https://pixabay.com/api/?key={$apiKey}&q={$query}&per_page={$perPage}&page={$page}";
-
 
         if (isset($aiParams->pixabayOrientation) && $aiParams->pixabayOrientation !== 'unmentioned') {
             $url .= "&orientation=" . urlencode($aiParams->pixabayOrientation);
@@ -25,14 +25,17 @@ class pixabayApi extends BaseApi
 
     private function GET_Pixabay($query, $aiParams, $perPage = 5, $page = 1)
     {
-        if($perPage<3){
-            $perPage=3;
+        if($perPage < 3){
+            $perPage = 3;
         }
+
         $url = $this->buildPixabayUrl($query, $aiParams, $perPage, $page);
         $res = $this->httpGet($url);
+
         if (!$res->ok) {
             return (object)["status" => "error", "message" => $res->error ?? ("HTTP " . $res->status)];
         }
+
         if (isset($res->json->error)) {
             return (object)["status" => "error", "message" => "Error on API call: " . $res->json->error];
         }
@@ -41,7 +44,8 @@ class pixabayApi extends BaseApi
 
     private function rewritePrompt($query, $conversation = [])
     {
-        $chat = new AiChat($this->xerte_toolkits_site);
+        global $xerte_toolkits_site;
+        $chat = new AiChat($xerte_toolkits_site);
 
 
         if (empty($conversation)) {
@@ -65,9 +69,7 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
             ];
         }
 
-
         $conversation[] = ["role" => "user", "content" => "Great, now respond in the exact same manner, writing only the query, for the following sentence: {$query}"];
-
 
         $resp = $chat->complete($conversation, $this->aiProvider, [
             'model' => $this->providerModel,
@@ -75,15 +77,12 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
             'temperature' => 0.9,
         ]);
 
-
         if (!$resp['ok']) {
             return (object)["status" => "error", "message" => $resp['error']];
         }
 
-
         $rewrittenPrompt = trim($resp['content'] ?? '');
         $conversation[] = ["role" => "system", "content" => $rewrittenPrompt];
-
 
         return [
             "prompt" => $rewrittenPrompt,
@@ -93,8 +92,8 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
 
     private function extractParameters($input)
     {
-        $chat = new AiChat($this->xerte_toolkits_site);
-
+        global $xerte_toolkits_site;
+        $chat = new AiChat($xerte_toolkits_site);
 
         if (empty($conversation)) {
             $conversation[] = [
@@ -117,16 +116,13 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
             ];
         }
 
-
         $conversation[] = ["role" => "user", "content" => "Great, now repeat the process and use the exact same format, making sure to return nothing but the json, for the following user input: {$input}"];
-
 
         $resp = $chat->complete($conversation, $this->aiProvider, [
             'model' => $this->providerModel,
             'max_tokens' => 160,
             'temperature' => 0.9,
         ]);
-
 
         if (!$resp['ok']) {
             return (object)["status" => "error", "message" => $resp['error']];
@@ -140,12 +136,12 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
             return (object)['status' => 'error', 'message' => 'Failed to parse JSON from AI response.', 'raw' => $text];
         }
         return (object)['status' => 'success', 'params' => $decoded];
-
     }
 
     private function downloadImageFromPixabay($imageUrl, $saveTo)
     {
         $encodedName = basename(parse_url($imageUrl, PHP_URL_PATH));
+        //todo use this
         $decodedName = urldecode($encodedName);
         $dl = $this->downloadBinary($imageUrl, $saveTo, 'pixabay_');
         if ($dl->status !== 'success') {
@@ -161,11 +157,9 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
         }
         $downloadedPaths = [];
 
-
         $aiQuery = ($interpretPrompt === 'true' || $interpretPrompt === true)
             ? $this->rewritePrompt($query)['prompt']
             : $query;
-
 
         if ($overrideSettings === 'false' || $overrideSettings === false) {
             //todo alek again?
@@ -175,10 +169,8 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
             $aiParams = $tmp->params;
         }
 
-
         $perPage = isset($settings['nri']) ? (int)$settings['nri'] : 5;
         $apiResponse = $this->GET_Pixabay($aiQuery, $aiParams, $perPage);
-
 
         if (isset($apiResponse->status) && $apiResponse->status === 'error') {
             return (object)[
@@ -187,7 +179,6 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
                 'paths' => $downloadedPaths,
             ];
         }
-
 
         $path = rtrim($target, '/') . "/media";
         $this->ensureDir($path);

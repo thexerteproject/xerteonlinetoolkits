@@ -1,7 +1,5 @@
 <?php
 namespace Ai;
-use \Exception;
-use \CURLFile;
 
 interface AiClientInterface
 {

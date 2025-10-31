@@ -1,16 +1,19 @@
 <?php
 
+require_once(dirname(__FILE__) . "/" . "BaseAiApi.php");
+
 class anthropicApi extends BaseAiApi
 {
     protected function POST_request($prompt, $payload, $url, $type) {
+        //todo remove safeExecute
         return $this->safeExecute(function () use ($prompt, $payload, $url, $type){
-        $authorization = "x-api-key: " . $this->xerte_toolkits_site->anthropic_key;
+
+        global $xerte_toolkits_site;
+        $authorization = "x-api-key: " . $xerte_toolkits_site->anthropic_key;
 
         $payload["messages"][max(sizeof($payload["messages"])-1, 0)]["content"] = $prompt;
         $new_payload = json_encode($payload, JSON_UNESCAPED_UNICODE|JSON_INVALID_UTF8_SUBSTITUTE);
-		
-		$payload_str = print_r($payload, true);
-		file_put_contents("./ai_payloads.txt", $payload_str, FILE_APPEND);
+
 
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_POST, 1);
@@ -31,9 +34,7 @@ class anthropicApi extends BaseAiApi
         if ($resultConform->type=="error") {
             throw new \Exception('API error: ' . ($resultConform->error->message ?? 'Unknown error'));
         }
-        //if (!$this->conform_to_model($resultConform)){
-        //    return (object) ["status" => "error", "message" => "answer does not match model"];
-        //}
+
         return $resultConform;
         });
     }
@@ -52,8 +53,10 @@ class anthropicApi extends BaseAiApi
 
     protected function buildQueries(array $inputs): array
     {
+        //todo remove
         return $this->safeExecute(function () use ($inputs) {
-            $apiKey = $this->xerte_toolkits_site->anthropic_key;
+            global $xerte_toolkits_site;
+            $apiKey = $xerte_toolkits_site->anthropic_key;
 
             $payload = [
                 'model' => 'claude-3-5-sonnet-20241022',
@@ -79,7 +82,7 @@ SYS
                     CURLOPT_POST => true,
                     CURLOPT_HTTPHEADER => [
                         'Content-Type: application/json',
-                        'x-api-key: ' . $apiKey,            // (you had a quoting bug earlier)
+                        'x-api-key: ' . $apiKey,
                         'anthropic-version: 2023-06-01',
                     ],
                     CURLOPT_POSTFIELDS => json_encode($payload, JSON_THROW_ON_ERROR),

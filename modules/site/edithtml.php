@@ -201,6 +201,23 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     {
         $body_class = ' class="elevated"';
     }
+
+    $vendors = get_vendor_settings();
+    $corpus_upload_types = array();
+    if (array_key_exists('ai', $vendors )){
+        foreach ($vendors['ai'] as $vendor){
+            foreach ($vendor->sub_options as $option_name=>$value){
+                if ($value) {
+                    $option_exploded = explode(" ", $option_name);
+                    if ($option_exploded[1] == 'uploads' && !in_array($option_exploded[0], $corpus_upload_types)) {
+                        $corpus_upload_types[] = $option_exploded[0];
+                    }
+                }
+            }
+        }
+    }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $_SESSION['toolkits_language'];?>">
@@ -381,6 +398,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "template_sub_pages=" . json_encode($template_sub_pages) . ";\n";
     echo "simple_lo_page=" . ($simple_lo_page ? "true" : "false") . ";\n";
     echo "disable_advanced=" . ($disable_advanced ? "true" : "false") . ";\n";
+    echo "vendor_options=" . json_encode($vendors) . ";\n";
+    echo "corpus_upload_types=" . json_encode($corpus_upload_types) . ";\n";
+    echo "management_helper_table=" . json_encode($xerte_toolkits_site->management_helper_table) . ";\n";
 
     echo "oai_pmh_available=" . ($oai_pmh ? "true" : "false") . ";\n";
     echo "roles=" . json_encode($user_roles) . ";\n";

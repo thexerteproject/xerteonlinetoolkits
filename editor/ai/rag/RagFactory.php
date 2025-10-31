@@ -6,6 +6,10 @@ require_once (str_replace('\\', '/', __DIR__) . "/MistralRAG.php");
 require_once (str_replace('\\', '/', __DIR__) . "/OpenAIRAG.php");
 require_once (str_replace('\\', '/', __DIR__) . "/TfidfRAG.php");
 
+if (!isset($_SESSION['toolkits_logon_username'])) {
+    die('Sesison id is not set');
+}
+
 function makeRag(array $cfg)
 {
     $provider = $cfg['provider'] ?? 'none';

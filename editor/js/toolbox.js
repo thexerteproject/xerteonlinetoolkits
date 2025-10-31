@@ -1122,7 +1122,7 @@ var EDITOR = (function ($, parent) {
         parent.tree.showNodeData(key, true);
     },
 
-    insertOptionalProperty = function (key, name, defaultvalue, load, scrollToId, newGroup)
+    insertOptionalProperty = function (key, name, defaultvalue, load, scrollToId)
     {
 		// Place attribute
 		lo_data[key]['attributes'][name] = defaultvalue;
@@ -1135,7 +1135,7 @@ var EDITOR = (function ($, parent) {
 			.prop('visible', true);
 
 		if (load != false) {
-			parent.tree.showNodeData(key, false, scrollToId, newGroup);
+			parent.tree.showNodeData(key, false, scrollToId);
 		}
     },
 
@@ -4779,7 +4779,7 @@ var EDITOR = (function ($, parent) {
 
         formInputValues.each(function() {
             //ignore all buttons as they do not contain data
-            if (this.nodeName !== "BUTTON") {
+            //if (this.nodeName !== "BUTTON") {
 
                 let formFieldValue = "";
 
@@ -4865,7 +4865,6 @@ var EDITOR = (function ($, parent) {
                 }
 
                 let pattern = getVerificationPattern(this);
-                debugger
                 if (pattern !== null && !validateFormInput(pattern, formFieldValue, this.getAttribute('name'), this?.getAttribute('label'))) {
                     //one of the validation fields has not been filled in correctly.
                     formValidation = false;
@@ -4877,7 +4876,7 @@ var EDITOR = (function ($, parent) {
                     formFieldName = "noName";
                 }
                 constructorObject[formFieldName] = formFieldValue;
-            }
+            //}
         });
 
         //if form validation failed do not make request
@@ -5812,7 +5811,6 @@ var EDITOR = (function ($, parent) {
 					.addClass("xerte_button")
 					.click({id:id, key:key, name:name, group: options.group}, function(event)
 					{
-						window.imageSearchSingle = true;
 						triggerRedrawForm("imgSearchAndHelpGroup", key, "", "initialize", event.data.name);
 					})
 					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-wand-magic').addClass('xerte-icon')));
@@ -6440,7 +6438,7 @@ var EDITOR = (function ($, parent) {
                             }
                         }
 
-                        img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject, window.imageSearchSingle ?? false, event.data.key, event.data.value);
+                        img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject, event.data.key, event.data.value);
                         html.prop('disabled', false);
                     });
                 break;

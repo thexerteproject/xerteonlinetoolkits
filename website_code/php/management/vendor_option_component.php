@@ -62,7 +62,6 @@ class vendor_option_component
         if ($this->needs_key) {
             $key_name = $this->vendor . '_key';
             if ($xerte_toolkits_site->{$key_name} !== null && $xerte_toolkits_site->{$key_name} !== "") {
-                //todo check key validity or existance?
                 $this->has_key = true;
                 return;
             }

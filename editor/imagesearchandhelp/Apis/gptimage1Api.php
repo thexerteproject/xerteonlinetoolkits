@@ -1,12 +1,10 @@
 <?php
-require_once __DIR__ . '/dalleApi.php';
+require_once __DIR__ . '/openaiImageApi.php';
 
-//TODO: service still not accessible to our org, so not yet tested but follows the api docs
-class gptimage1Api extends dalleApi
+class gptimage1Api extends openaiImageApi
 {
     protected $imageModel = 'gpt-image-1';
     protected $saveSubdir = '/media';
-
 
     protected $rewriteSystemMessage = null;
 

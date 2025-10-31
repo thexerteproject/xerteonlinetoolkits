@@ -15,22 +15,6 @@ use function rag\makeRag;
 
 ob_start();
 
-/**
- * Given a user-supplied relative path, resolve it against the project root
- * and ensure it exists.
- */
-function prepareURL(string $uploadPath): string
-{
-    // Move up from rag/ai/editor to the XOT root
-    $basePath = __DIR__ . '/../../../';
-    $full = realpath(urldecode($basePath . $uploadPath));
-
-    if ($full === false) {
-        throw new Exception("Invalid path: {$uploadPath}");
-    }
-    return $full;
-}
-
 function normalize_path(string $path): string
 {
     // 1) turn backslashes into forward-slashes
@@ -59,7 +43,7 @@ try {
     $format = x_clean_input($input['format'] ?? '',    'string');
 
     // Prep directories & API keys
-    //$baseDir = prepareURL($baseUrl);
+
     $baseDir = $_SESSION['uploadDir'];
     x_check_path_traversal($baseDir);
 

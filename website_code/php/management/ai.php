@@ -26,18 +26,23 @@ require("management_library.php");
 require_once("vendor_option_component.php");
 
 if (is_user_admin()) {
-    //todo add proper msg
     $database_id = database_connect("success", "failed");
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    //add management helper types here that you want to display on this page.
-    $blocks_groups = ['ai','image', 'imagegen', 'encoding', 'transcription'];
+
+    $groups_query = "SELECT DISTINCT type from {$prefix}management_helper";
+    $res = db_query($groups_query);
+    if ($res === false) {
+        die('Failed to retrieve types from management_helper');
+    }
+    $blocks_groups = [];
+    foreach ($res as $row) {
+        $blocks_groups[] = $row['type'];
+    }
     //ensure that block groups and helper results are in the same order
     sort($blocks_groups);
 
-    $blocks_groups_string = implode("','", $blocks_groups);
-
-    $query = "SELECT * FROM {$prefix}management_helper WHERE type IN ('{$blocks_groups_string}') ORDER BY type ASC";
+    $query = "SELECT * FROM {$prefix}management_helper ORDER BY type ASC";
 
     $res = db_query($query);
 

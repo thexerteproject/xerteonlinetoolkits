@@ -72,34 +72,34 @@ abstract class BaseRAG
      *
      * @param string $directory The directory containing the corpus files.
      */
-    public function processDirectory($directory)
-    {
-        global $xerte_toolkits_site;
-        // Check whether the file does not have path traversal
-        x_check_path_traversal($directory, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
-
-        // Get all files in the directory (ignoring . and ..)
-        $files = array_filter(scandir($directory), function ($item) use ($directory) {
-            return is_file($directory . '/' . $item);
-        });
-
-        if (!empty($files)) {
-            // Process each file individually.
-            foreach ($files as $file) {
-                $filePath = rtrim($directory, '/') . '/' . $file;
-                $this->processFileChunks($filePath);
-            }
-
-            // Process new embeddings for any new chunks from unprocessed files.
-            $this->processNewEmbeddings();
-
-            // Recompute TF-IDF for the entire corpus.
-            //$this->generateTfidfPersistent();
-
-            //cleans up any unused artifacts and re-computes tf-idf for the cleaned up corpus
-            $this->cleanupStaleArtifacts();
-        }
-    }
+//    public function processDirectory($directory)
+//    {
+//        global $xerte_toolkits_site;
+//        // Check whether the file does not have path traversal
+//        x_check_path_traversal($directory, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+//
+//        // Get all files in the directory (ignoring . and ..)
+//        $files = array_filter(scandir($directory), function ($item) use ($directory) {
+//            return is_file($directory . '/' . $item);
+//        });
+//
+//        if (!empty($files)) {
+//            // Process each file individually.
+//            foreach ($files as $file) {
+//                $filePath = rtrim($directory, '/') . '/' . $file;
+//                $this->processFileChunks($filePath);
+//            }
+//
+//            // Process new embeddings for any new chunks from unprocessed files.
+//            $this->processNewEmbeddings();
+//
+//            // Recompute TF-IDF for the entire corpus.
+//            //$this->generateTfidfPersistent();
+//
+//            //cleans up any unused artifacts and re-computes tf-idf for the cleaned up corpus
+//            $this->cleanupStaleArtifacts();
+//        }
+//    }
 
     /**
      * processFileList
@@ -242,6 +242,10 @@ abstract class BaseRAG
      */
     protected function isHashProcessed(string $fileHash, string $fileName, bool $autoAdd = false, $metaData = null): bool
     {
+        if(!isset($_SESSION['toolkits_logon_id'])) {
+            die("Session ID not set");
+        }
+
         // 1) Load existing corpus
         $corpus = ['hashes' => []];
         if (file_exists($this->corpusFile)) {
@@ -309,12 +313,15 @@ abstract class BaseRAG
      *
      * @param string $filePath The path to the file.
      */
-    public function processFileChunks($filePath, $meta, $fileSource)
+    private function processFileChunks($filePath, $meta, $fileSource)
     {
         $fileName = basename($fileSource);
         $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
 
+        x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
         // Define supported file types.
+        //todo maybe move to other file
         $supported = ['txt', 'text', 'html', 'htm', 'csv', 'xml', 'docx', 'odt', 'pptx' ,'xlsx', 'md', 'markdown', 'pdf'];
         if (!in_array($extension, $supported)) {
             echo "Skipping unsupported file type: {$fileName}\n";
@@ -407,19 +414,6 @@ abstract class BaseRAG
         return "Processed content for {$fileName} successfully.\n";
     }
 
-    /**
-     * processMultipleFilesChunks
-     * ----------------------------
-     * Processes an array of file paths by calling processFileChunks for each file.
-     *
-     * @param array $filePaths Array of file paths to process.
-     */
-    public function processMultipleFilesChunks(array $filePaths)
-    {
-        foreach ($filePaths as $filePath) {
-            $this->processFileChunks($filePath);
-        }
-    }
 
     /**
      * processNewEmbeddings
@@ -431,7 +425,7 @@ abstract class BaseRAG
      *
      * @param int $batchSize Number of chunks to process in a single batch (default: 10).
      */
-    public function processNewEmbeddings($batchSize = 10)
+    private function processNewEmbeddings($batchSize = 10)
     {
         $newChunks      = [];
         $existingHashes = [];
@@ -532,7 +526,7 @@ abstract class BaseRAG
      *
      * @param array|null $allowedFileHashes Optional array of allowed file hashes to filter by.
      */
-    public function generateTfidfPersistent(array $allowedFileHashes = null): void
+    private function generateTfidfPersistent(array $allowedFileHashes = null): void
     {
         $df = [];
         $totalDocs = 0;
@@ -628,46 +622,46 @@ abstract class BaseRAG
      * @param int $topK Number of top results to return (default: 2).
      * @return array The top matching chunks.
      */
-    public function getContextPersistent($question, $topK = 2)
-    {
-        $questionEmbedding = $this->getEmbedding($question);
-        $similarities = [];
-
-        // Build a map from chunk id to chunk text.
-        $chunksMap = [];
-        $handle = fopen($this->chunksFile, 'r');
-        if (!$handle) {
-            echo("Error opening chunks file: {$this->chunksFile}");
-        }
-        while (($line = fgets($handle)) !== false) {
-            $data = json_decode($line, true);
-            if (!$data) continue;
-            $chunksMap[$data['id']] = $data['chunk'];
-        }
-        fclose($handle);
-
-        // Read stored embeddings and compute similarity with the question.
-        $handle = fopen($this->embeddingsFile, 'r');
-        if (!$handle) {
-            echo("Error opening embeddings file: {$this->embeddingsFile}");
-        }
-        while (($line = fgets($handle)) !== false) {
-            $data = json_decode($line, true);
-            if (!$data) continue;
-            $embedding = $data['embedding'];
-            $sim = $this->cosineSimilarity($questionEmbedding, $embedding);
-            $similarities[$data['id']] = $sim;
-        }
-        fclose($handle);
-
-        arsort($similarities);
-        $topIds = array_slice(array_keys($similarities), 0, $topK, true);
-        $results = [];
-        foreach ($topIds as $id) {
-            $results[] = $chunksMap[$id] ?? "";
-        }
-        return $results;
-    }
+//    public function getContextPersistent($question, $topK = 2)
+//    {
+//        $questionEmbedding = $this->getEmbedding($question);
+//        $similarities = [];
+//
+//        // Build a map from chunk id to chunk text.
+//        $chunksMap = [];
+//        $handle = fopen($this->chunksFile, 'r');
+//        if (!$handle) {
+//            echo("Error opening chunks file: {$this->chunksFile}");
+//        }
+//        while (($line = fgets($handle)) !== false) {
+//            $data = json_decode($line, true);
+//            if (!$data) continue;
+//            $chunksMap[$data['id']] = $data['chunk'];
+//        }
+//        fclose($handle);
+//
+//        // Read stored embeddings and compute similarity with the question.
+//        $handle = fopen($this->embeddingsFile, 'r');
+//        if (!$handle) {
+//            echo("Error opening embeddings file: {$this->embeddingsFile}");
+//        }
+//        while (($line = fgets($handle)) !== false) {
+//            $data = json_decode($line, true);
+//            if (!$data) continue;
+//            $embedding = $data['embedding'];
+//            $sim = $this->cosineSimilarity($questionEmbedding, $embedding);
+//            $similarities[$data['id']] = $sim;
+//        }
+//        fclose($handle);
+//
+//        arsort($similarities);
+//        $topIds = array_slice(array_keys($similarities), 0, $topK, true);
+//        $results = [];
+//        foreach ($topIds as $id) {
+//            $results[] = $chunksMap[$id] ?? "";
+//        }
+//        return $results;
+//    }
 
     /**
      * getContextTfIdfPersistent
@@ -679,63 +673,63 @@ abstract class BaseRAG
      * @param int $topK Number of top results to return (default: 2).
      * @return array The top matching chunks.
      */
-    public function getContextTfIdfPersistent($question, $topK = 2)
-    {
-        // Load the precomputed global IDF dictionary from file.
-        $idfHandle = fopen($this->idfFile, 'r');
-        if (!$idfHandle) {
-            echo("Error opening IDF file: {$this->idfFile}");
-        }
-        $idfContent = fread($idfHandle, filesize($this->idfFile));
-        fclose($idfHandle);
-        $idfData = json_decode($idfContent, true);
-        if (!$idfData || !isset($idfData['idf'])) {
-            echo("Error decoding IDF data from: {$this->idfFile}");
-        }
-        $idf = $idfData['idf'];
-
-        // Compute TF-IDF vector for the question using the loaded IDF dictionary.
-        $questionTf = $this->computeTf($question);
-        $questionVector = [];
-        foreach ($questionTf as $token => $freq) {
-            $questionVector[$token] = $freq * ($idf[$token] ?? 0);
-        }
-
-        // Build a map of chunk id to chunk text.
-        $chunksMap = [];
-        $handle = fopen($this->chunksFile, 'r');
-        if (!$handle) {
-            echo("Error opening chunks file: {$this->chunksFile}");
-        }
-        while (($line = fgets($handle)) !== false) {
-            $data = json_decode($line, true);
-            if (!$data) continue;
-            $chunksMap[$data['id']] = $data['chunk'];
-        }
-        fclose($handle);
-
-        // Compare the question vector to each stored TF-IDF vector.
-        $similarities = [];
-        $handle = fopen($this->tfidfFile, 'r');
-        if (!$handle) {
-            echo("Error opening TF-IDF file: {$this->tfidfFile}");
-        }
-        while (($line = fgets($handle)) !== false) {
-            $data = json_decode($line, true);
-            if (!$data) continue;
-            $tfidfVector = $data['tfidf'];
-            $similarities[$data['id']] = $this->cosineSimilarityAssoc($questionVector, $tfidfVector);
-        }
-        fclose($handle);
-
-        arsort($similarities);
-        $topIds = array_slice(array_keys($similarities), 0, $topK, true);
-        $results = [];
-        foreach ($topIds as $id) {
-            $results[] = $chunksMap[$id] ?? "";
-        }
-        return $results;
-    }
+//    public function getContextTfIdfPersistent($question, $topK = 2)
+//    {
+//        // Load the precomputed global IDF dictionary from file.
+//        $idfHandle = fopen($this->idfFile, 'r');
+//        if (!$idfHandle) {
+//            echo("Error opening IDF file: {$this->idfFile}");
+//        }
+//        $idfContent = fread($idfHandle, filesize($this->idfFile));
+//        fclose($idfHandle);
+//        $idfData = json_decode($idfContent, true);
+//        if (!$idfData || !isset($idfData['idf'])) {
+//            echo("Error decoding IDF data from: {$this->idfFile}");
+//        }
+//        $idf = $idfData['idf'];
+//
+//        // Compute TF-IDF vector for the question using the loaded IDF dictionary.
+//        $questionTf = $this->computeTf($question);
+//        $questionVector = [];
+//        foreach ($questionTf as $token => $freq) {
+//            $questionVector[$token] = $freq * ($idf[$token] ?? 0);
+//        }
+//
+//        // Build a map of chunk id to chunk text.
+//        $chunksMap = [];
+//        $handle = fopen($this->chunksFile, 'r');
+//        if (!$handle) {
+//            echo("Error opening chunks file: {$this->chunksFile}");
+//        }
+//        while (($line = fgets($handle)) !== false) {
+//            $data = json_decode($line, true);
+//            if (!$data) continue;
+//            $chunksMap[$data['id']] = $data['chunk'];
+//        }
+//        fclose($handle);
+//
+//        // Compare the question vector to each stored TF-IDF vector.
+//        $similarities = [];
+//        $handle = fopen($this->tfidfFile, 'r');
+//        if (!$handle) {
+//            echo("Error opening TF-IDF file: {$this->tfidfFile}");
+//        }
+//        while (($line = fgets($handle)) !== false) {
+//            $data = json_decode($line, true);
+//            if (!$data) continue;
+//            $tfidfVector = $data['tfidf'];
+//            $similarities[$data['id']] = $this->cosineSimilarityAssoc($questionVector, $tfidfVector);
+//        }
+//        fclose($handle);
+//
+//        arsort($similarities);
+//        $topIds = array_slice(array_keys($similarities), 0, $topK, true);
+//        $results = [];
+//        foreach ($topIds as $id) {
+//            $results[] = $chunksMap[$id] ?? "";
+//        }
+//        return $results;
+//    }
 
     /**
      * getContextCosine
@@ -750,7 +744,7 @@ abstract class BaseRAG
      * @param array|null $allowedFileHashes Optional array of allowed file hashes to filter by.
      * @return array The top matching chunks with their similarity scores.
      */
-    public function getContextCosine(string $question, int $topK = 2, array $allowedFileHashes = null)
+    private function getContextCosine(string $question, int $topK = 2, array $allowedFileHashes = null)
     {
         $questionEmbedding = $this->getEmbedding($question);
         $similarities = [];
@@ -820,7 +814,7 @@ abstract class BaseRAG
      * @param array|null $allowedFileHashes Optional array of allowed file hashes to filter by, when it is not null the temporary idf and tfidf encodings are used.
      * @return array The top matching chunks with their similarity scores.
      */
-    public function getContextCosineTfIdf($question, $topK = 2, $allowedFileHashes)
+    private function getContextCosineTfIdf($question, $topK = 2, $allowedFileHashes)
     {
         // Write to either the normal file or the temp file, depending on filtering
         $idfFileToUse = $allowedFileHashes === null ? $this->idfFile : ($this->tempIdfFile);
@@ -1014,7 +1008,7 @@ abstract class BaseRAG
      * @param array|null $allowedFileHashes Optional array of allowed file hashes to filter by.
      * @return array Array of candidates with keys: id, chunk, score.
      */
-    public function getContextEuclidean($question, $topK = 2, $allowedFileHashes = null)
+    private function getContextEuclidean($question, $topK = 2, $allowedFileHashes = null)
     {
         $questionEmbedding = $this->getEmbedding($question);
         $similarities = [];
@@ -1084,7 +1078,7 @@ abstract class BaseRAG
      * @param array|null $allowedFileHashes Optional array of allowed file hashes to filter by, when it is not null the temporary idf and tfidf encodings are used.
      * @return array Array of candidates with keys: id, chunk, score.
      */
-    public function getContextEuclideanTfIdf($question, $topK = 2, $allowedFileHashes)
+    private function getContextEuclideanTfIdf($question, $topK = 2, $allowedFileHashes)
     {
         // Write to either the normal file or the temp file, depending on filtering
         $idfFileToUse = $allowedFileHashes === null ? $this->idfFile : ($this->tempIdfFile);
@@ -1286,7 +1280,6 @@ abstract class BaseRAG
          */
 
         if ($allowedFileHashes != null){
-            $corpus = $this->corpusFile;
             $this->generateTfidfPersistent($allowedFileHashes);
         }
         $candidatesTfidfCosine = $this->getContextCosineTfIdf($question, 10, $allowedFileHashes);
@@ -1417,93 +1410,94 @@ abstract class BaseRAG
      *
      * @return void
      */
-    public function flushPersistentFiles(): void
-    {
-        $files = [
-            $this->chunksFile,
-            $this->embeddingsFile,
-            $this->tfidfFile,
-            $this->idfFile,
-            $this->corpusFile
-        ];
-
-        foreach ($files as $file) {
-            if (file_exists($file)) {
-                if (unlink($file)) {
-                    echo "Deleted: {$file}\n";
-                } else {
-                    echo "Failed to delete: {$file}\n";
-                }
-            } else {
-                echo "Not found (skipped): {$file}\n";
-            }
-        }
-    }
+//    public function flushPersistentFiles(): void
+//    {
+//        $files = [
+//            $this->chunksFile,
+//            $this->embeddingsFile,
+//            $this->tfidfFile,
+//            $this->idfFile,
+//            $this->corpusFile
+//        ];
+//
+//        foreach ($files as $file) {
+//            if (file_exists($file)) {
+//                if (unlink($file)) {
+//                    echo "Deleted: {$file}\n";
+//                } else {
+//                    echo "Failed to delete: {$file}\n";
+//                }
+//            } else {
+//                echo "Not found (skipped): {$file}\n";
+//            }
+//        }
+//    }
 
     /**
      * Remove all data for one file (by path) and re‑compute IDF/TF‑IDF.
      */
-    public function removeFileArtifacts(string $filePath): void
-    {
-        $fileName = basename($filePath);
-        $fileHash = hash_file('sha256', $filePath);
-
-        // 1) === Corpus cleanup ===
-        if (file_exists($this->corpusFile)) {
-            $corp = json_decode(file_get_contents($this->corpusFile), true) ?: ['hashes'=>[]];
-
-            // Drop this fileName from any hash entry; if empty, drop the hash
-            foreach ($corp['hashes'] as $h => &$entry) {
-                if (false !== ($i = array_search($fileName, $entry['files'], true))) {
-                    array_splice($entry['files'], $i, 1);
-                    if (empty($entry['files'])) {
-                        unset($corp['hashes'][$h]);
-                    }
-                }
-            }
-            unset($entry);
-
-            file_put_contents(
-                $this->corpusFile,
-                json_encode($corp, JSON_PRETTY_PRINT)
-            );
-            echo "Removed {$fileName} from corpus.json\n";
-        }
-
-        // 2) === Chunk & Embedding cleanup ===
-        // helper to rewrite a JSONL file sans any entries with this fileHash
-        $filter = function(string $path) use ($fileHash) {
-            $tmp = "{$path}.tmp";
-            if (!file_exists($path)) return;
-            $in  = fopen($path, 'r');
-            $out = fopen($tmp, 'w');
-            while (($line = fgets($in)) !== false) {
-                $data = json_decode($line, true);
-                if (!$data || ($data['fileHash'] ?? null) === $fileHash) {
-                    // skip any chunk/embedding for this file version
-                    continue;
-                }
-                fwrite($out, json_encode($data) . "\n");
-            }
-            fclose($in);
-            fclose($out);
-            rename($tmp, $path);
-            echo "Cleaned up {$path}\n";
-        };
-
-        $filter($this->chunksFile);
-        $filter($this->embeddingsFile);
-
-        // 3) === Re‑compute IDF + TF‑IDF on whatever’s left ===
-        $this->generateTfidfPersistent();
-        echo "Re‑generated IDF and TF‑IDF on remaining corpus.\n";
-    }
+    //todo alek remove this? look at next cleaning function
+//    public function removeFileArtifacts(string $filePath): void
+//    {
+//        $fileName = basename($filePath);
+//        $fileHash = hash_file('sha256', $filePath);
+//
+//        // 1) === Corpus cleanup ===
+//        if (file_exists($this->corpusFile)) {
+//            $corp = json_decode(file_get_contents($this->corpusFile), true) ?: ['hashes'=>[]];
+//
+//            // Drop this fileName from any hash entry; if empty, drop the hash
+//            foreach ($corp['hashes'] as $h => &$entry) {
+//                if (false !== ($i = array_search($fileName, $entry['files'], true))) {
+//                    array_splice($entry['files'], $i, 1);
+//                    if (empty($entry['files'])) {
+//                        unset($corp['hashes'][$h]);
+//                    }
+//                }
+//            }
+//            unset($entry);
+//
+//            file_put_contents(
+//                $this->corpusFile,
+//                json_encode($corp, JSON_PRETTY_PRINT)
+//            );
+//            echo "Removed {$fileName} from corpus.json\n";
+//        }
+//
+//        // 2) === Chunk & Embedding cleanup ===
+//        // helper to rewrite a JSONL file sans any entries with this fileHash
+//        $filter = function(string $path) use ($fileHash) {
+//            $tmp = "{$path}.tmp";
+//            if (!file_exists($path)) return;
+//            $in  = fopen($path, 'r');
+//            $out = fopen($tmp, 'w');
+//            while (($line = fgets($in)) !== false) {
+//                $data = json_decode($line, true);
+//                if (!$data || ($data['fileHash'] ?? null) === $fileHash) {
+//                    // skip any chunk/embedding for this file version
+//                    continue;
+//                }
+//                fwrite($out, json_encode($data) . "\n");
+//            }
+//            fclose($in);
+//            fclose($out);
+//            rename($tmp, $path);
+//            echo "Cleaned up {$path}\n";
+//        };
+//
+//        $filter($this->chunksFile);
+//        $filter($this->embeddingsFile);
+//
+//        // 3) === Re‑compute IDF + TF‑IDF on whatever’s left ===
+//        $this->generateTfidfPersistent();
+//        echo "Re‑generated IDF and TF‑IDF on remaining corpus.\n";
+//    }
 
     /**
      * Remove all chunk & embedding entries whose fileHash
      * is no longer in the global corpus, then rebuild IDF/TF‑IDF.
      */
-    public function cleanupStaleArtifacts(): void
+    private function cleanupStaleArtifacts(): void
     {
         // 1) Load valid hashes from the corpus
         if (!file_exists($this->corpusFile)) {

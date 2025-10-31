@@ -1746,7 +1746,9 @@ function upgrade_55()
 
           -- Optional session grouping
           `session_id`       VARCHAR(64)               DEFAULT NULL,
-
+            -- todo remove almost everything below this line. only create static columns with type.
+            -- overly complex
+            
           /* ===== Generated columns (from JSON) for fast filtering/indexing ===== */
           `actor_user_id`         VARCHAR(64)
             GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(`actor`, '$.user_id'))) VIRTUAL,

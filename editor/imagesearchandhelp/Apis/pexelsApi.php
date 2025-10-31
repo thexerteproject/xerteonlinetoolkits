@@ -32,8 +32,10 @@ class pexelsApi extends BaseApi
 
     private function getFromPexels($query, $aiParams, $perPage = 3, $page = 1)
     {
+        global $xerte_toolkits_site;
+
         $headers = [
-            'Authorization: ' . $this->xerte_toolkits_site->pexels_key,
+            'Authorization: ' . $xerte_toolkits_site->pexels_key,
             'Content-Type: application/json',
         ];
         $url = $this->buildPexelsUrl($query, $aiParams, $perPage, $page);
@@ -52,8 +54,7 @@ class pexelsApi extends BaseApi
      */
     private function extractParameters(string $input, array $options = [])
     {
-        $chat = new AiChat($this->xerte_toolkits_site);
-
+        $chat = new AiChat($xerte_toolkits_site);
 
         $conversation = [];
         $conversation[] = [
@@ -69,15 +70,12 @@ class pexelsApi extends BaseApi
             'content' => "Great, now repeat the process and use the exact same format, making sure to return nothing but the json, for the following user input: {$input}"
         ];
 
-
         $resp = $chat->complete($conversation, $this->aiProvider, $options + ['max_tokens' => 160, 'temperature' => 0.2]);
         if (!$resp['ok']) {
             return (object)['status' => 'error', 'message' => $resp['error']];
         }
 
-
         $text = trim($resp['content'] ?? '');
-        // Be forgiving: strip code fences if present
         $text = preg_replace('/^```json|```$/m', '', $text);
         $decoded = json_decode($text);
         if (!$decoded) {
@@ -88,7 +86,8 @@ class pexelsApi extends BaseApi
 
     private function rewritePrompt(string $query, array $options = [])
     {
-        $chat = new AiChat($this->xerte_toolkits_site);
+        global $xerte_toolkits_site;
+        $chat = new AiChat($xerte_toolkits_site);
         $messages = [
             ['role' => 'system', 'content' => 'Rewrite the following user query to be more effective for stock-photo search APIs (Pexels/Unsplash). Keep it concise; preserve key nouns and adjectives.'],
             ['role' => 'user', 'content' => $query],
@@ -112,7 +111,6 @@ class pexelsApi extends BaseApi
 
         $aiOptions = ['model' => $this->providerModel];
 
-
         $aiQuery = ($interpretPrompt === true || $interpretPrompt === 'true')
             ? $this->rewritePrompt($query, $aiOptions)
             : $query;
@@ -129,13 +127,12 @@ class pexelsApi extends BaseApi
             $aiParams = $ex->params;
         }
 
-
         $perPage = isset($settings['nri']) ? (int)$settings['nri'] : 3;
         $apiResponse = $this->getFromPexels($aiQuery, $aiParams, $perPage);
+
         if (isset($apiResponse->status) && $apiResponse->status === 'error') {
             return (object)[ 'status' => 'error', 'message' => $apiResponse->message, 'paths' => $downloadedPaths ];
         }
-
 
         foreach ($apiResponse->photos ?? [] as $photo) {
             $url = $photo->src->original;

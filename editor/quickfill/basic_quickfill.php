@@ -1,10 +1,6 @@
 <?php
 class basicquickfill
 {
-    public function __construct()
-    {
-
-    }
 
     private function getXWDBaseDirectory($language)
     {
@@ -15,32 +11,29 @@ class basicquickfill
         $xotBaseDir = dirname($currentDir, 2); // Moves back twice to get xot
 
         // Construct the final XWD path
-        //$xwdPath = $xotBaseDir . DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR . "Nottingham" . DIRECTORY_SEPARATOR . "wizards" . DIRECTORY_SEPARATOR . $language;
         $xwdPath = $xotBaseDir . DIRECTORY_SEPARATOR . "modules" . DIRECTORY_SEPARATOR . "xerte" . DIRECTORY_SEPARATOR . "parent_templates" . DIRECTORY_SEPARATOR . "Nottingham" . DIRECTORY_SEPARATOR . "wizards" . DIRECTORY_SEPARATOR . $language;
         $expectedPath = $xotBaseDir . DIRECTORY_SEPARATOR . "modules" . DIRECTORY_SEPARATOR . "xerte" . DIRECTORY_SEPARATOR . "parent_templates" . DIRECTORY_SEPARATOR . "Nottingham" . DIRECTORY_SEPARATOR . "wizards" . DIRECTORY_SEPARATOR;
         x_check_path_traversal($xwdPath, $expectedPath, 'Invalid file path specified');
 
         // Ensure the directory exists
         if (!is_dir($xwdPath)) {
-            throw new Exception("XWD directory not found: $xwdPath");
+            die ("Directory not found");
         }
 
         return $xwdPath;
     }
 
-    private function getXWDFilePath($type, $basedir)
+    private function getXWDFilePath($basedir)
     {
         global $xerte_toolkits_site;
-        $type='data';
-        $filePath = $basedir . DIRECTORY_SEPARATOR . $type . '.xwd';
+        $filePath = $basedir . DIRECTORY_SEPARATOR . 'data.xwd';
         $expectedPath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR,$xerte_toolkits_site->root_file_path);
         $expectedPath = $expectedPath . "modules" . DIRECTORY_SEPARATOR . "xerte" . DIRECTORY_SEPARATOR . "parent_templates" . DIRECTORY_SEPARATOR . "Nottingham" . DIRECTORY_SEPARATOR . "wizards" . DIRECTORY_SEPARATOR;
 
-
-
         x_check_path_traversal($filePath, $expectedPath, 'Invalid file path specified');
+
         if (!file_exists($filePath)) {
-            throw new Exception("XWD file not found for type: $type at path: $filePath");
+            die("data.xwd file not found");
         }
 
         return $filePath;
@@ -49,9 +42,6 @@ class basicquickfill
     // Recursive function to build the XML string
     private function buildXml($node, $hierarchy, $parameters, $attributes = [], $depth = 0)
     {
-        if ($depth > 50) { // arbitrary limit for debugging
-            throw new Exception("Maximum recursion depth reached at node {$node}");
-        }
 
         // Build the attributes string if any attributes are provided.
         $attrString = '';
@@ -96,7 +86,7 @@ class basicquickfill
         return $xml;
     }
 
-    function processElement($element, &$map) {
+    function processElement($element, $map) {
         $topLevelAttributes = [];
         foreach ($element->attributes() as $attr => $value) {
             $topLevelAttributes[$attr] = (string)$value;
@@ -142,22 +132,22 @@ class basicquickfill
                 }
             }
             // Recursively process all child elements
-            $this->processElement($child, $map);
+            $map = $this->processElement($child, $map);
         }
+        return $map;
     }
 
     public function qf_request($type, $parameters, $language = 'en-GB')
     {
-        $basedir=$this->getXWDBaseDirectory($language);
-        $filePath = $this->getXWDFilePath($type, $basedir);
+        $basedir= $this->getXWDBaseDirectory($language);
+        $filePath = $this->getXWDFilePath($basedir);
         $xmlString = file_get_contents($filePath);
         $xml = simplexml_load_string($xmlString);
 
-        $hierarchy = [];
 
-        $this->processElement($xml, $hierarchy);
+        $hierarchy = $this->processElement($xml, [] );
 
-        $finalxml = $this->buildXml($type, $hierarchy, $parameters, 0);
+        $finalxml = $this->buildXml($type, $hierarchy, $parameters);
         return $finalxml;
     }
 }

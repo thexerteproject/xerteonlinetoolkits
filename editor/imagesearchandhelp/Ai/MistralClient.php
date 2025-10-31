@@ -1,8 +1,6 @@
 <?php
 
 namespace Ai;
-use \Exception;
-use \CURLFile;
 require_once __DIR__.'/../../ai/logging/log_ai_request.php';
 
 class MistralClient implements AiClientInterface

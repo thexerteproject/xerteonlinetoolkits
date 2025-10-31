@@ -6,7 +6,7 @@ if(!isset($_SESSION['toolkits_logon_id'])) {
 }
 
 if (isset($_SESSION["paths_img_search"])) {
-    $images =$_SESSION["paths_img_search"];
+    $images = $_SESSION["paths_img_search"];
     if ($_POST["indices_to_delete"] !== null) {
         $indices_to_delete = x_clean_input($_POST["indices_to_delete"]);
         for ($i = 0; $i < count($indices_to_delete); $i++) {
@@ -17,8 +17,6 @@ if (isset($_SESSION["paths_img_search"])) {
             $image = $images[$index];
             $ext = pathinfo($image, PATHINFO_EXTENSION);
             $credits = str_replace($ext, "txt", $image);
-            //echo $image . "<br>";
-            //x_check_path_traversal($image);
             unlink($image);
             unlink($credits);
         }

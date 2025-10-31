@@ -1,17 +1,18 @@
 <?php
 
+require_once(dirname(__FILE__) . "/" . "BaseAiApi.php");
+
 class mistralApi extends BaseAiApi
 {
     protected function POST_request($prompt, $payload, $url, $type)
     {
+        //todo remove
         return $this->safeExecute(function () use ($prompt, $payload, $url, $type) {
-            $authorization = "Authorization: Bearer " . $this->xerte_toolkits_site->mistral_key;
+            global $xerte_toolkits_site;
+            $authorization = "Authorization: Bearer " . $xerte_toolkits_site->mistral_key;
 
             $payload["messages"][max(sizeof($payload["messages"]) - 1, 0)]["content"] = $prompt;
             $new_payload = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
-
-            $payload_str = print_r($payload, true);
-            file_put_contents("./ai_payloads.txt", $payload_str, FILE_APPEND);
 
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_POST, 1);
@@ -22,6 +23,7 @@ class mistralApi extends BaseAiApi
 
             $result = curl_exec($curl);
             curl_close($curl);
+
             log_ai_request($result, 'genai', 'mistral', $this->actor, $this->sessionId);
 
             $resultConform = $this->clean_result($result);
@@ -33,9 +35,6 @@ class mistralApi extends BaseAiApi
                     : json_encode($resultConform->detail); // just in case it's structured
                 throw new Exception('API error: ' . $message);
             }
-            //if (!$this->conform_to_model($resultConform)){
-            //    return (object) ["status" => "error", "message" => "answer does not match model"];
-            //}
             return $resultConform;
         });
     }
@@ -44,7 +43,8 @@ class mistralApi extends BaseAiApi
     {
         return $this->safeExecute(function () use ($inputs) {
             try {
-                $apiKey = $this->xerte_toolkits_site->mistral_key;
+                global $xerte_toolkits_site;
+                $apiKey = $xerte_toolkits_site->mistral_key;
 
                 $payload = [
                     'model' => 'mistral-small-latest',

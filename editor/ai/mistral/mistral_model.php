@@ -1,7 +1,6 @@
 <?php
-class mistral_ai {
+class mistral_model {
     public $context;
-    public $prompt_list;
 	private $model = "mistral-large-latest";
 	private $chat_url = "https://api.mistral.ai/v1/chat/completions";
 	protected $learning_prompt;
@@ -11,8 +10,7 @@ class mistral_ai {
 	private $temperature = 0.2;
 
 	public function __construct($type, $model = null, $context = "standard", $sub_type = null){
-        $default_model_override = [
-        ];
+        $default_model_override = [];
 
 		if($model == null) {
 			if(isset($default_model_override[$type])){

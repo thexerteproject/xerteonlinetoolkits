@@ -1,6 +1,7 @@
 <?php
 namespace transcribe;
 use \Exception;
+
 class TranscriptManager {
     private $registry;
     private $mediaHandler;

@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__.'/../ai/logging/log_ai_request.php';
+require_once(str_replace('\\', '/', __DIR__) . "/../../config.php");
+
 abstract class BaseApi
 {
     protected $xerte_toolkits_site;
@@ -12,9 +14,6 @@ abstract class BaseApi
 
     public function __construct($aiProvider, $providerModel='')
     {
-        global $xerte_toolkits_site;
-        require_once(str_replace('\\', '/', __DIR__) . "/../../config.php");
-        $this->xerte_toolkits_site = $xerte_toolkits_site;
         $this->aiProvider = $aiProvider;
         $this->providerModel = $providerModel;
         $this->actor = array('user_id'=>$_SESSION['toolkits_logon_username'],'workspace_id'=>$_SESSION['XAPI_PROXY']);
@@ -31,8 +30,6 @@ abstract class BaseApi
     protected function httpPostJson(string $url, array $payload, array $headers = [], int $timeout = 60)
     {
         $ch = curl_init($url);
-        //$headers = array_merge(["Content-Type: application/json"], $headers);
-
 
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
@@ -42,8 +39,8 @@ abstract class BaseApi
             CURLOPT_TIMEOUT => $timeout,
         ]);
 
-
         $raw = curl_exec($ch);
+
         if ($raw === false) {
             $err = curl_error($ch);
             curl_close($ch);
@@ -51,7 +48,6 @@ abstract class BaseApi
         }
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-
 
         return (object)[
             "ok" => $status >= 200 && $status < 300,
@@ -103,7 +99,6 @@ abstract class BaseApi
         global $xerte_toolkits_site;
         x_check_path_traversal($saveDir, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
         $this->ensureDir($saveDir);
-
 
         $ch = curl_init($url);
         curl_setopt_array($ch, [

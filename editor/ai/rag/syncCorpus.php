@@ -21,6 +21,7 @@ use function transcribe\makeTranscriber;
  */
 function prepareURL(string $uploadPath): string
 {
+    global $xerte_toolkits_site;
     // Move up from rag/ai/editor to your XOT root
     $basePath = __DIR__ . '/../../../';
     $full = realpath(urldecode($basePath . $uploadPath));
@@ -28,6 +29,9 @@ function prepareURL(string $uploadPath): string
     if ($full === false) {
         throw new Exception("Invalid path: {$uploadPath}");
     }
+
+    x_check_path_traversal($full, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
     return $full;
 }
 
@@ -48,12 +52,12 @@ function normalize_path(string $path): string
 
 ob_start();
 global $xerte_toolkits_site;
+
 if(!isset($_SESSION['toolkits_logon_id'])){
     die("Session ID not set");
 }
 
 try {
-
 
     //get settings from the management table, which help us decide which options to use
     $managementSettings = get_block_indicators();
@@ -65,6 +69,7 @@ try {
     if (json_last_error() !== JSON_ERROR_NONE) {
         throw new Exception('Malformed JSON input: ' . json_last_error_msg());
     }
+    //todo alek this needs cleaning
     $gridData = $input['gridData'] ?? [];
     $baseUrl = $input['baseURL'] ?? '';
     $corpusScope = $input['corpusGrid'] ?? true;
@@ -73,13 +78,13 @@ try {
     // 2. Prep directories & API keys
     $baseDir = prepareURL($baseUrl);
     $mediaPath = $baseDir . DIRECTORY_SEPARATOR .'RAG' . DIRECTORY_SEPARATOR . 'corpus';
+
+    x_check_path_traversal($mediaPath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
     if (!is_dir($mediaPath)) {
         mkdir($mediaPath, 0777, true);
     }
     $mediaDir = realpath($mediaPath);
-
-    x_check_path_traversal($baseDir);
-    x_check_path_traversal($mediaDir);
 
     $transcriptionKey = $xerte_toolkits_site->{$managementSettings['transcription']['key_name']};
 
@@ -158,7 +163,7 @@ try {
             if(!(realpath($path))){
                 $path = normalize_path(urldecode(rtrim($baseDir, '/\\') . '/' . ltrim($row['col_2'], '/\\')));
             }
-            x_check_path_traversal($path);
+            x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
             return [
                 'path'     => $path,
                 'metadata' => [
