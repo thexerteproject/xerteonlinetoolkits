@@ -17,7 +17,7 @@
 
         <error label="Loading Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
-        <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+        <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
            <qfTimeLineText label="Number of Text Pages" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
            <qfTimelineimage label="Number of Image Pages" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
            <qfTimelinevideo label="Number of Video Pages" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>

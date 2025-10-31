@@ -42,7 +42,7 @@
     <checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="false" language="true" />
 	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that each text field is labelled and spoken as Answer 1, Answer 2 etc."/>
 
-    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
       <qfOptionXQ label="Number of Answers" type="TextInput" wysiwyg="true" defaultValue = "5" optional="true"/>
       <qfButton type="quickfillbutton" optional="true"/>
     </QFGroup>

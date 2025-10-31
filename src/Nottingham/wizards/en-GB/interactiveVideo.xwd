@@ -53,7 +53,7 @@
             <aiButton type="aibutton" optional="true"/>
         </AIGroup>
 
-        <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+        <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
             <qfIvSynchTextPlus label="Number of Text Objects" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
             <qfIvSynchMCQ label="Number of Multiple Choice Questions" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
             <qfIvSynchMCQOption label="Number of Answers per MCQ" type="TextInput" wysiwyg="true" defaultValue = "4" optional="true"/>

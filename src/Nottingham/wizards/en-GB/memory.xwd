@@ -14,7 +14,7 @@
 	<text label="Page Text" type="TextArea" defaultValue="" placeholder="Enter text for the page here" height="200" optional="true"/>
 	<imgFit label="Image Scaling" optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="cover" tooltip="How the images fill the cards. 'Stretch to fit' will stretch the image vertically or horizontally to fill the whole card area, while 'Crop to fit' will crop the image to fit without distorting it"/>
 
-    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
       <qfMatchItem label="Number of Items" type="TextInput" wysiwyg="true" defaultValue = "6" optional="true"/>
       <qfButton type="quickfillbutton" optional="true"/>
     </QFGroup>

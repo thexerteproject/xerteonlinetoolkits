@@ -41,7 +41,7 @@
         <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
-    <QFGroup type="group" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
       <qfDialogStep label="Number of Dialog Steps" type="TextInput" wysiwyg="true" defaultValue = "5" optional="true"/>
       <qfButton type="quickfillbutton" optional="true"/>
     </QFGroup>
