@@ -134,7 +134,11 @@ while ($ipos !== false) {
                         $imgdata = "";
                     }
                 } else if (strpos($imgfile, "http") === 0) {
-                    $imgdata = file_get_contents($imgfile);
+                    if ($validator->isValid($imgfile)) {
+                        $imgdata = file_get_contents($imgfile);
+                    } else {
+                        $imgdata = "";
+                    }
                 } else {
                     $imgdata = "";
                 }
