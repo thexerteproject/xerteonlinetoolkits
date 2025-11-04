@@ -1,9 +1,5 @@
 /* list.html */
 	
-	#textHolder {
-		padding-bottom:	20px;
-	}
-	
 	.listItem {
 		font-weight:	bold;
 		display:		block;
@@ -13,7 +9,8 @@
 	}
 	
 	#infoHolder {
-		overflow:	auto;
+		overflow: auto;
+		position: relative;
 	}
 	
 	#infoHolder .paneImg {
@@ -24,6 +21,18 @@
 	#infoHolder .paneImg img {
 		opacity:	0;
 		filter:		alpha(opacity=0);
+	}
+
+	#infoHolderTop .closeBtn {
+		position: absolute;
+		top: 0;
+		right: 0;
+		background: none;
+		border: none;
+	}
+
+	#textBehindHolder + #infoHolder #infoHolderTitle {
+		padding-right: 1.5em;
 	}
 
 	

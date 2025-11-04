@@ -457,7 +457,9 @@
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
 	  restartBtnText="Restart" 
-	  />]]></inventory><jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing><jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" size="Medium" initLook="Ball and Stick" colour="Default" controls="true"/>]]></jmol><links><![CDATA[<links name="Enter Page Title" text="" cols="3" />]]></links><list><![CDATA[<list name="Enter Page Title" text="" panelWidth="Large" openFirst="true"/>]]></list><map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a Description for Accessibility" link="true"/>]]></map><mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction><mcq><![CDATA[<mcq name="Enter Page Title" instruction="" prompt="" type="Single Answer"
+	  />]]></inventory><jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing><jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" size="Medium" initLook="Ball and Stick" colour="Default" controls="true"/>]]></jmol><links><![CDATA[<links name="Enter Page Title" text="" cols="3" />]]></links><list><![CDATA[<list name="Enter Page Title"
+      panelWidth="Large" panelWidthCustom="50" align="right" panelStyle="false"
+      openFirst="true"/>]]></list><map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a Description for Accessibility" link="true"/>]]></map><mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction><mcq><![CDATA[<mcq name="Enter Page Title" instruction="" prompt="" type="Single Answer"
       panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
 	  feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
 	  multiWrong="You have not selected the correct combination of answers" 
@@ -6524,9 +6526,20 @@
   </link><list menu="Navigators" menuItem="Interactive List" hint="Present an interactive list where each list item presents further information." icon="icList" thumb="thumbs/interactiveList.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#interactivelist" wiki="https://xerte.org.uk/wiki/doku.php?id=navigator_interactivelist_page" remove="true" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here"/>
-	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" width="100"/>
-	<openFirst label="Show First Item" type="Checkbox" defaultValue="false" mandatory="true" tooltip="Show first item when page is first viewed"/>
+
+    <layoutGroup label="Page Layout" type="group">
+        <panelWidth label="Panel Width" options="Small,Medium,Large,Custom" type="ComboBox" data="XSmall,Small,Large,Medium" defaultValue="Large" conditionTrigger="true"/>
+        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="70" condition="panelWidth=='Medium'"/>
+        <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="right,left" defaultValue="Right"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+    </layoutGroup>
+
+    <openFirst label="Show First Item" type="Checkbox" defaultValue="false" mandatory="true" conditionTrigger="true" tooltip="Show first item when page is first viewed"/>
+
+    <text label="Text Above Panel" type="TextArea" height="100" optional="true"/>
+    <textBottom label="Text Below Panel" type="TextArea" height="100" optional="true"/>
+    <textBehind label="Text Behind Panel" type="TextArea" height="200" optional="true" condition="openFirst!='true'"/>
 	
 	<btnColours type="group" label="List Buttons" optional="true">
 		<hicol label="Text Colour" type="ColourPicker" optional="true" defaultValue="0x000000" tooltip="The colour of the text"/>
