@@ -4389,10 +4389,10 @@ function x_addLineBreaks(text, override) {
 
 // function returns the full height available for elements within the page e.g. panels
 function x_getAvailableHeight(excludePadding, excludeHeight, mobile) {
-	// get space available on page, excluding margins, borders & padding on parents
 	let availableH;
+	// starting height is the whole page height - excluding margins, borders & padding on parents
 	if (x_browserInfo.mobile === false) {
-		availableH = $x_pageHolder.height() - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height());
+		availableH = Math.floor($x_pageHolder.get(0).getBoundingClientRect().height - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height()));
 
 	} else if (mobile === true) {
 		// often height on mobiles will be auto so only return a height for mobile view when requested
