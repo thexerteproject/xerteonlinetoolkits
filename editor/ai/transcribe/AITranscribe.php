@@ -9,11 +9,6 @@ require_once __DIR__.'/../logging/log_ai_request.php';
  */
 abstract class AITranscribe {
     protected $apiKey;
-
-    protected array $actor;
-
-    protected string $sessionId;
-
     protected string $mediaPath;
 
     /**
@@ -319,7 +314,7 @@ class OpenAITranscribe extends AITranscribe
             $res = curl_exec($ch);
 
 
-            log_ai_request($res, 'transcription', 'openai', $this->actor, $this->sessionId);
+            log_ai_request($res, 'transcription', 'openai');
             if (curl_errno($ch)) {
                 $err = curl_error($ch);
                 curl_close($ch);
@@ -483,7 +478,7 @@ class GladiaTranscribe extends AITranscribe {
             if (isset($finalResult['result']['transcription']['subtitles'])) {
                 $res = $finalResult['result']['transcription']['subtitles'][0]['subtitles'];
                 // 1) Strip extra headers from 2nd+ chunks:
-                log_ai_request($res, 'transcription', 'gladia', $this->actor, $this->sessionId);
+                log_ai_request($res, 'transcription', 'gladia');
                 $chunkVtt = trim($res);
                 if ($i > 0) {
                     // remove the leading "WEBVTT" and any blank line after it

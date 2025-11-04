@@ -23,7 +23,7 @@ class gptimage1Api extends openaiImageApi
             'imagesrequested' => 1,                // always defaults to 1 for gpt1
             'imagesize'       => $size,             // e.g. "1024x1024" (mapper will parse width/height)
                 ];
-            log_ai_request($res, 'imagegen', 'gpt1', $this->actor, $this->sessionId, $details);
+            log_ai_request($res, 'imagegen', 'gpt1', $details);
             if (!$res->ok) {
                 $msg = $res->json->error->message ?? ($res->error ?? ('HTTP ' . $res->status));
                 return (object)['status' => 'error', 'message' => $msg];

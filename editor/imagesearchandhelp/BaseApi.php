@@ -8,17 +8,11 @@ abstract class BaseApi
     protected $aiProvider;
     protected $providerModel;
 
-    protected array $actor;
-
-    protected string $sessionId;
-
     public function __construct($aiProvider, $providerModel='')
     {
         $this->aiProvider = $aiProvider;
         $this->providerModel = $providerModel;
-        $this->actor = array('user_id'=>$_SESSION['toolkits_logon_username'],'workspace_id'=>$_SESSION['XAPI_PROXY']);
-        //$this->sessionId = $_SESSION['token'];
-        $this->sessionId = "token is busted";
+
     }
 
     protected function clean(string $text): string

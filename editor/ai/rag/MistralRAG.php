@@ -33,7 +33,7 @@ class MistralRAG extends BaseRAG
 
         $response = curl_exec($ch);
         curl_close($ch);
-        log_ai_request($response, 'encoding', 'mistralenc', $this->actor, $this->sessionId);
+        log_ai_request($response, 'encoding', 'mistralenc');
 
         $decoded = json_decode($response, true);
         $embeddings = $decoded["data"][0]["embedding"] ?? [];
@@ -86,7 +86,7 @@ class MistralRAG extends BaseRAG
             $response = curl_exec($ch);
             curl_close($ch);
 
-            log_ai_request($response, 'encoding', 'mistralenc', $this->actor, $this->sessionId);
+            log_ai_request($response, 'encoding', 'mistralenc');
 
             $decoded = json_decode($response, true);
             if (isset($decoded["data"])) {

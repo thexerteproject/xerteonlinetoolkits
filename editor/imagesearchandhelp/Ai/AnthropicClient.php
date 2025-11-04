@@ -6,9 +6,6 @@ require_once __DIR__.'/../../ai/logging/log_ai_request.php';
 class AnthropicClient implements AiClientInterface
 {
     private $apiKey;
-    private array $actor;
-    private string $sessionId;
-
 
     public function __construct(string $apiKey)
     {
@@ -63,7 +60,7 @@ class AnthropicClient implements AiClientInterface
             CURLOPT_TIMEOUT => 60,
         ]);
         $raw = curl_exec($ch);
-        log_ai_request($raw, 'genai', 'anthropic', $this->actor, $this->sessionId);
+        log_ai_request($raw, 'genai', 'anthropic');
         if ($raw === false) {
             $err = curl_error($ch);
             curl_close($ch);

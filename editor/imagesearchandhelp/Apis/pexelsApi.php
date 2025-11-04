@@ -54,6 +54,7 @@ class pexelsApi extends BaseApi
      */
     private function extractParameters(string $input, array $options = [])
     {
+        global $xerte_toolkits_site;
         $chat = new AiChat($xerte_toolkits_site);
 
         $conversation = [];

@@ -12,10 +12,6 @@ abstract class BaseAiApi
 //constructor must be like this when adding new api
     private string $api;
 
-    protected array $actor;
-
-    protected string $sessionId;
-
     private string $languageName;
 
     protected string $languageMessage;
@@ -43,10 +39,6 @@ abstract class BaseAiApi
         require_once (str_replace('\\', '/', __DIR__) . "/rag/RagFactory.php");
         require_once (str_replace('\\', '/', __DIR__) . "/management/dataRetrievalHelper.php");
         require_once (str_replace('\\', '/', __DIR__) . "/" . $api ."/load_model.php");
-
-        $this->actor = array('user_id'=>$_SESSION['toolkits_logon_username'],'workspace_id'=>$_SESSION['XAPI_PROXY']);
-        //$this->sessionId = $_SESSION['token'];
-        $this->sessionId = "token is busted";
     }
 
     protected function clean_result($answer) {

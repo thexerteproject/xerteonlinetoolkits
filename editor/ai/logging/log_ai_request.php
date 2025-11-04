@@ -2,22 +2,28 @@
 
 require_once (str_replace('\\', '/', __DIR__) . "/../../../website_code/php/database_library.php");
 
-function log_ai_request($response, $category, $vendor, $actor = array(), $sessionId = null, $details=null)
+function log_ai_request($response, $category, $vendor, $details=null)
 {
     global $xerte_toolkits_site;
 
-    if(!isset($_SESSION['toolkits_logon_id'])){
+    if (!isset($_SESSION['toolkits_logon_id'])) {
         die("Session ID not set");
     }
 
+    // Actor from session
+    $actor = array(
+        'user_id' => isset($_SESSION['toolkits_logon_username']) ? $_SESSION['toolkits_logon_username'] : null,
+        'workspace_id' => isset($_SESSION['XAPI_PROXY']) ? $_SESSION['XAPI_PROXY'] : null
+    );
+
     $category = strtolower($category);
     $vendor = strtolower($vendor);
-    $nowIso = (new DateTimeImmutable('now', new DateTimeZone('UTC')))->format('c');
 
+    // ISO now (UTC) -> DATETIME (no microseconds for older mysql ver)
+    $nowIso = (new DateTimeImmutable('now', new DateTimeZone('UTC')))->format('c');
     $response = _to_assoc($response);
 
     // Base event
-    //todo trim to match new log table
     $event = array(
         'schema_version' => '1.0',
         'occurred_at' => $nowIso,
@@ -27,17 +33,23 @@ function log_ai_request($response, $category, $vendor, $actor = array(), $sessio
         'request_id' => null,
         'status' => 'ok',
         'error_message' => null,
-        'metrics' => array(),
+
+        // actor (flattened later)
         'actor' => array(
-            'user_id' => isset($actor['user_id']) ? $actor['user_id'] : null,
-            'workspace_id' => isset($actor['workspace_id']) ? $actor['workspace_id'] : null,
+            'user_id' => $actor['user_id'],
+            'workspace_id' => $actor['workspace_id'],
         ),
-        'session_id' => $sessionId,
-        'cost' => null,
-        'event_id' => uuid_v4(),
+
+        // metrics & cost (will be flattened)
+        'metrics' => array(),
+        'cost' => array(
+            'currency' => null,
+            'pricing_version' => null,
+            'total' => null
+        ),
     );
 
-    // Generic error/status
+    // Error/status mapping
     if (isset($response['error'])) {
         $event['status'] = 'error';
         $event['error_message'] = isset($response['error']['message']) ? $response['error']['message'] : null;
@@ -48,65 +60,126 @@ function log_ai_request($response, $category, $vendor, $actor = array(), $sessio
         }
     }
 
-    // Vendor+type extraction
+    // Vendor/type-specific extraction
     $event = response_mapping($category, $response, $event, $vendor, $details);
 
-    // Prepare values for DB
+    // Prepare occurred_at for DATETIME (no fractional seconds, as those break older versions of mysql)
     $occurred = (new DateTimeImmutable($event['occurred_at']))->setTimezone(new DateTimeZone('UTC'));
-    $occurredAt = $occurred->format('Y-m-d H:i:s.u');
-    //todo change
-    $sql = "INSERT INTO `{$xerte_toolkits_site->database_table_prefix}ai_request_logs`
-      (event_id, schema_version, occurred_at, category, service, model, request_id,
-       status, error_message, actor, metrics, session_id, cost)
-    VALUES
-      (:event_id, :schema_version, :occurred_at, :category, :service, :model, :request_id,
-       :status, :error_message, :actor, :metrics, :session_id, :cost)
-    ON DUPLICATE KEY UPDATE
-      status        = :status,
-      error_message = :error_message,
-      model         = :model,
-      metrics       = :metrics,
-      cost          = :cost";
+    $occurredAt = $occurred->format('Y-m-d H:i:s');
 
+    // Flatten helpers
+    $first_nonnull = function (...$vals) {
+        foreach ($vals as $v) {
+            if (isset($v) && $v !== '') return $v;
+        }
+        return null;
+    };
+    $to_int_or_null = function ($v) {
+        return (isset($v) && $v !== '' && is_numeric($v)) ? (int)$v : null;
+    };
+    $to_decimal_or_null = function ($v) {
+        return (isset($v) && $v !== '' && is_numeric($v)) ? (string)$v : null; // keep scale as string
+    };
+
+    // Pull metrics from either top-level or metrics[]
+    $input_tokens = $first_nonnull(@$event['input_tokens'], @$event['metrics']['input_tokens']);
+    $output_tokens = $first_nonnull(@$event['output_tokens'], @$event['metrics']['output_tokens']);
+    $total_tokens = $first_nonnull(@$event['total_tokens'], @$event['metrics']['total_tokens']);
+
+    $audio_ms = $first_nonnull(@$event['audio_ms'], @$event['metrics']['audio_ms']);
+    $audio_seconds = $first_nonnull(@$event['audio_seconds'], @$event['metrics']['audio_seconds']);
+
+    $images_requested = $first_nonnull(@$event['images_requested'], @$event['metrics']['images_requested']);
+    $images_received = $first_nonnull(@$event['images_received'], @$event['metrics']['images_received']);
+    $image_dimensions = $first_nonnull(@$event['image_dimensions'], @$event['metrics']['image_dimensions']);
+    $image_width = $first_nonnull(@$event['image_width'], @$event['metrics']['image_width']);
+    $image_height = $first_nonnull(@$event['image_height'], @$event['metrics']['image_height']);
+
+    // Compute fallbacks
+    if ($total_tokens === null && is_numeric($input_tokens) && is_numeric($output_tokens)) {
+        $total_tokens = (int)$input_tokens + (int)$output_tokens;
+    }
+    if ($audio_seconds === null && is_numeric($audio_ms)) {
+        // keep 3 decimals like the schema
+        $audio_seconds = number_format(((int)$audio_ms) / 1000, 3, '.', '');
+    }
+    if ($image_dimensions === null && is_numeric($image_width) && is_numeric($image_height)) {
+        $image_dimensions = ((int)$image_width) . 'x' . ((int)$image_height);
+    }
+
+    // Cost fields
+    $cost_currency = $first_nonnull(@$event['cost']['currency'], @$event['cost_currency']);
+    $cost_pricing_version = $first_nonnull(@$event['cost']['pricing_version'], @$event['cost_pricing_version']);
+    $cost_total = $first_nonnull(@$event['cost']['total'], @$event['cost_total']);
+
+    // Build INSERT (no JSON, no event_id, no ON DUPLICATE KEY -- these break older mysql versions)
+    $sql = "INSERT INTO `{$xerte_toolkits_site->database_table_prefix}ai_request_logs`
+  (schema_version, occurred_at, category, service, model, request_id, status, error_message,
+   actor_user_id, actor_workspace_id, input_tokens, output_tokens, total_tokens, audio_ms, audio_seconds,
+   images_requested, images_received, image_dimensions, image_width, image_height,
+   cost_currency, cost_pricing_version, cost_total)
+VALUES
+  (:schema_version, :occurred_at, :category, :service, :model, :request_id, :status, :error_message,
+   :actor_user_id, :actor_workspace_id, :input_tokens, :output_tokens, :total_tokens, :audio_ms, :audio_seconds,
+   :images_requested, :images_received, :image_dimensions, :image_width, :image_height,
+   :cost_currency, :cost_pricing_version, :cost_total)";
+
+// Execute with named params
     db_query($sql, array(
-        ':event_id' => $event['event_id'],
         ':schema_version' => $event['schema_version'],
         ':occurred_at' => $occurredAt,
         ':category' => $event['category'],
         ':service' => $event['service'],
-        ':model' => $event['model'],
-        ':request_id' => $event['request_id'],
+        ':model' => isset($event['model']) ? $event['model'] : null,
+        ':request_id' => isset($event['request_id']) ? $event['request_id'] : null,
         ':status' => $event['status'],
         ':error_message' => $event['error_message'],
-        ':actor' => json_encode($event['actor'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
-        ':metrics' => json_encode($event['metrics'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
-        ':session_id' => $event['session_id'],
-        ':cost' => json_encode($event['cost'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+
+        ':actor_user_id' => $event['actor']['user_id'],
+        ':actor_workspace_id' => $event['actor']['workspace_id'],
+
+        ':input_tokens' => $to_int_or_null($input_tokens),
+        ':output_tokens' => $to_int_or_null($output_tokens),
+        ':total_tokens' => $to_int_or_null($total_tokens),
+
+        ':audio_ms' => $to_int_or_null($audio_ms),
+        ':audio_seconds' => $to_decimal_or_null($audio_seconds),
+
+        ':images_requested' => $to_int_or_null($images_requested),
+        ':images_received' => $to_int_or_null($images_received),
+        ':image_dimensions' => $image_dimensions,
+        ':image_width' => $to_int_or_null($image_width),
+        ':image_height' => $to_int_or_null($image_height),
+
+        ':cost_currency' => $cost_currency,
+        ':cost_pricing_version' => $cost_pricing_version,
+        ':cost_total' => $to_decimal_or_null($cost_total),
     ));
 }
 
 
-function response_mapping($category, $response, $event, $vendor, $details) {
-    if ($category === 'genai') {
-        if ($vendor === 'openai') return map_genai_openai($response, $event);
-        elseif ($vendor === 'openaiassistant') return  map_genai_openaiassistant($response, $event);
-        elseif ($vendor === 'mistral') return map_genai_mistral($response, $event);
-        elseif ($vendor === 'anthropic') return map_genai_anthropic($response, $event);
-        else                           return map_genai_default($response, $event);
-    } elseif ($category === 'encoding' || $category === 'embedding') {
-        if ($vendor === 'openaienc') return map_encoding_openai($response, $event);
-        elseif ($vendor === 'mistralenc') return map_encoding_mistral($response, $event);
-        else                           return map_encoding_default($response, $event);
-    } elseif ($category === 'transcription') {
-        if ($vendor === 'openai') return map_transcription_openai($response, $event);  // Whisper
-        elseif ($vendor === 'gladia') return map_transcription_gladia($response, $event);
-        else                           return map_transcription_default($response, $event);
-    } elseif ($category === 'imagegen') {
-        return map_imagegen_openai($response, $event, $details);
-    }else {
-        map_generic_default($response, $event);
+    function response_mapping($category, $response, $event, $vendor, $details)
+    {
+        if ($category === 'genai') {
+            if ($vendor === 'openai') return map_genai_openai($response, $event);
+            elseif ($vendor === 'openaiassistant') return map_genai_openaiassistant($response, $event);
+            elseif ($vendor === 'mistral') return map_genai_mistral($response, $event);
+            elseif ($vendor === 'anthropic') return map_genai_anthropic($response, $event);
+            else                           return map_genai_default($response, $event);
+        } elseif ($category === 'encoding' || $category === 'embedding') {
+            if ($vendor === 'openaienc') return map_encoding_openai($response, $event);
+            elseif ($vendor === 'mistralenc') return map_encoding_mistral($response, $event);
+            else                           return map_encoding_default($response, $event);
+        } elseif ($category === 'transcription') {
+            if ($vendor === 'openai') return map_transcription_openai($response, $event);  // Whisper
+            elseif ($vendor === 'gladia') return map_transcription_gladia($response, $event);
+            else                           return map_transcription_default($response, $event);
+        } elseif ($category === 'imagegen') {
+            return map_imagegen_openai($response, $event, $details);
+        } else {
+            map_generic_default($response, $event);
+        }
     }
-}
 
 // uuid helper
 function uuid_v4()

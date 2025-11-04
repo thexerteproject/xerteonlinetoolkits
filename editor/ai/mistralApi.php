@@ -24,7 +24,7 @@ class mistralApi extends BaseAiApi
             $result = curl_exec($curl);
             curl_close($curl);
 
-            log_ai_request($result, 'genai', 'mistral', $this->actor, $this->sessionId);
+            log_ai_request($result, 'genai', 'mistral');
 
             $resultConform = $this->clean_result($result);
             $resultConform = json_decode($resultConform);
@@ -89,7 +89,7 @@ SYS
                 ]);
 
                 $resp = curl_exec($ch);
-                log_ai_request($resp, 'genai', 'mistral', $this->actor, $this->sessionId);
+                log_ai_request($resp, 'genai', 'mistral');
 
                 if ($resp === false) {
                     throw new Exception('cURL error: ' . curl_error($ch));

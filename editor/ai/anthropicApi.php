@@ -26,7 +26,7 @@ class anthropicApi extends BaseAiApi
 
         curl_close($curl);
 
-        log_ai_request($result, 'genai', 'anthropic', $this->actor, $this->sessionId);
+        log_ai_request($result, 'genai', 'anthropic');
 
         $resultConform = $this->clean_result($result);
         $resultConform = json_decode($resultConform);
@@ -89,7 +89,7 @@ SYS
                 ]);
 
                 $resp = curl_exec($ch);
-                log_ai_request($resp, 'genai', 'anthropic', $this->actor, $this->sessionId);
+                log_ai_request($resp, 'genai', 'anthropic');
 
                 if ($resp === false) {
                     throw new \Exception('cURL error: ' . curl_error($ch));

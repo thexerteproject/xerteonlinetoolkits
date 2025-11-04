@@ -30,7 +30,7 @@ class dalle2Api extends openaiImageApi
 
         $res = $this->postImagesGenerations($payload);
 
-        log_ai_request($res, 'imagegen', 'dalle2', $this->actor, $this->sessionId, $details);
+        log_ai_request($res, 'imagegen', 'dalle2', $details);
 
         if (!$res->ok) {
             $msg = $res->json->error->message ?? ($res->error ?? ('HTTP ' . $res->status));

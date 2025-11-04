@@ -1720,110 +1720,57 @@ function upgrade_55()
 {
     $message = "";
     if (!_table_exists("ai_request_logs")) {
-        $ok = _upgrade_db_query("
-        CREATE TABLE IF NOT EXISTS `ai_request_logs` (
-          -- Identity
-          `id`               BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-          `event_id`         CHAR(36)        NOT NULL,                    -- event UUID (unique)
-          `schema_version`   VARCHAR(16)     NOT NULL DEFAULT '1.0',
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `ai_request_logs` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `schema_version` VARCHAR(16) NOT NULL DEFAULT '1.0',
 
-          -- Timing
-          `occurred_at`      DATETIME(6)     NOT NULL,                    -- UTC time the request finished
-          `ingested_at`      TIMESTAMP(6)    NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `occurred_at` DATETIME NOT NULL,
+  `ingested_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-          -- Classification
-          `category`         VARCHAR(32)     NOT NULL,                    -- genai | transcription | embedding | ...
-          `service`          VARCHAR(32)     NOT NULL,                    -- openai | mistral | ...
-          `model`            VARCHAR(128)             DEFAULT NULL,
-          `request_id`       VARCHAR(128)             DEFAULT NULL,       -- provider request/run id if available
-          `status`           ENUM('ok','error') NOT NULL DEFAULT 'ok',
-          `error_message`    TEXT                     DEFAULT NULL,
+  `category` VARCHAR(32) NOT NULL,
+  `service` VARCHAR(32) NOT NULL,
+  `model` VARCHAR(128) DEFAULT NULL,
+  `request_id` VARCHAR(128) DEFAULT NULL,
+  `status` ENUM('ok','error') NOT NULL DEFAULT 'ok',
+  `error_message` TEXT,
 
-          -- Flexible JSON payloads
-          `actor`            JSON                      DEFAULT NULL,      -- {user_id, workspace_id}
-          `metrics`          JSON             NOT NULL,                   -- tokens OR audio_ms/seconds etc.
-          `cost`             JSON                      DEFAULT NULL,      -- {currency, total, pricing_version, ...}
+  `actor_user_id` VARCHAR(64) DEFAULT NULL,
+  `actor_workspace_id` VARCHAR(64) DEFAULT NULL,
 
-          -- Optional session grouping
-          `session_id`       VARCHAR(64)               DEFAULT NULL,
-            -- todo remove almost everything below this line. only create static columns with type.
-            -- overly complex
-            
-          /* ===== Generated columns (from JSON) for fast filtering/indexing ===== */
-          `actor_user_id`         VARCHAR(64)
-            GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(`actor`, '$.user_id'))) VIRTUAL,
-          `actor_workspace_id`    VARCHAR(64)
-            GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(`actor`, '$.workspace_id'))) VIRTUAL,
+  `input_tokens` BIGINT UNSIGNED DEFAULT NULL,
+  `output_tokens` BIGINT UNSIGNED DEFAULT NULL,
+  `total_tokens` BIGINT UNSIGNED DEFAULT NULL,
+  `audio_ms` BIGINT UNSIGNED DEFAULT NULL,
+  `audio_seconds` DECIMAL(12,3) DEFAULT NULL,
+  `images_requested` BIGINT UNSIGNED DEFAULT NULL,
+  `images_received` BIGINT UNSIGNED DEFAULT NULL,
+  `image_dimensions` VARCHAR(64) DEFAULT NULL,
+  `image_width` INT UNSIGNED DEFAULT NULL,
+  `image_height` INT UNSIGNED DEFAULT NULL,
 
-          `metrics_input_tokens`  BIGINT UNSIGNED
-            GENERATED ALWAYS AS (CAST(JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.input_tokens')) AS UNSIGNED)) VIRTUAL,
-          `metrics_output_tokens` BIGINT UNSIGNED
-            GENERATED ALWAYS AS (CAST(JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.output_tokens')) AS UNSIGNED)) VIRTUAL,
-          `metrics_total_tokens`  BIGINT UNSIGNED
-            GENERATED ALWAYS AS (
-              COALESCE(
-                CAST(JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.total_tokens')) AS UNSIGNED),
-                COALESCE(CAST(JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.input_tokens')) AS UNSIGNED),0) +
-                COALESCE(CAST(JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.output_tokens')) AS UNSIGNED),0)
-              )
-            ) VIRTUAL,
+  `cost_currency` VARCHAR(12) DEFAULT NULL,
+  `cost_pricing_version` VARCHAR(32) DEFAULT NULL,
+  `cost_total` DECIMAL(18,6) DEFAULT NULL,
 
-          `metrics_audio_ms`      BIGINT UNSIGNED
-            GENERATED ALWAYS AS (CAST(JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.audio_ms')) AS UNSIGNED)) VIRTUAL,
-          `metrics_audio_seconds` DECIMAL(12,3)
-            GENERATED ALWAYS AS (
-              CASE
-                WHEN JSON_EXTRACT(`metrics`, '$.audio_ms') IS NOT NULL
-                  THEN CAST(JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.audio_ms')) AS UNSIGNED)/1000
-                ELSE CAST(JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.audio_seconds')) AS DECIMAL(12,3))
-              END
-            ) VIRTUAL,
+  PRIMARY KEY (`id`),
 
-          `metrics_images_requested` BIGINT UNSIGNED                              -- images requested
-            GENERATED ALWAYS AS (CAST(JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.images_requested')) AS UNSIGNED)) VIRTUAL,
+  KEY `idx_when` (`occurred_at`),
+  KEY `idx_category_when` (`category`, `occurred_at`),
+  KEY `idx_service_when` (`service`, `occurred_at`),
+  KEY `idx_model_when` (`model`, `occurred_at`),
+  KEY `idx_status_when` (`status`, `occurred_at`),
+  KEY `idx_request_when` (`request_id`, `occurred_at`),
 
-          `metrics_images_received` BIGINT UNSIGNED                               -- images received
-            GENERATED ALWAYS AS (CAST(JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.images_received')) AS UNSIGNED)) VIRTUAL,
+  KEY `idx_user_when` (`actor_user_id`, `occurred_at`),
+  KEY `idx_workspace_when` (`actor_workspace_id`, `occurred_at`),
 
-          `metrics_image_dimensions` VARCHAR(64)                                  -- image dimensions (raw string)
-            GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.image_dimensions'))) VIRTUAL,
-
-          `metrics_image_width` INT UNSIGNED                                      -- image width
-            GENERATED ALWAYS AS (CAST(JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.image_width')) AS UNSIGNED)) VIRTUAL,
-
-          `metrics_image_height` INT UNSIGNED                                     -- image height
-            GENERATED ALWAYS AS (CAST(JSON_UNQUOTE(JSON_EXTRACT(`metrics`, '$.image_height')) AS UNSIGNED)) VIRTUAL,
-
-          `cost_total`            DECIMAL(18,6)
-            GENERATED ALWAYS AS (CAST(JSON_UNQUOTE(JSON_EXTRACT(`cost`, '$.total')) AS DECIMAL(18,6))) VIRTUAL,
-          `cost_currency`         VARCHAR(12)
-            GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(`cost`, '$.currency'))) VIRTUAL,
-          `cost_pricing_version`  VARCHAR(32)
-            GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(`cost`, '$.pricing_version'))) VIRTUAL,
-
-          PRIMARY KEY (`id`),
-          UNIQUE KEY `uniq_event` (`event_id`),
-
-          -- Time & categorization
-          KEY `idx_when` (`occurred_at`),
-          KEY `idx_category_when` (`category`, `occurred_at`),
-          KEY `idx_service_when` (`service`, `occurred_at`),
-          KEY `idx_model_when` (`model`, `occurred_at`),
-          KEY `idx_status_when` (`status`, `occurred_at`),
-
-          -- Actor-centric lookups
-          KEY `idx_user_when`         (`actor_user_id`, `occurred_at`),
-          KEY `idx_workspace_when`    (`actor_workspace_id`, `occurred_at`),
-
-          -- Usage / cost lookups
-          KEY `idx_tokens_when` (`metrics_total_tokens`, `occurred_at`),
-          KEY `idx_audio_when`  (`metrics_audio_ms`, `occurred_at`),
-          KEY `idx_cost_when`   (`cost_total`, `occurred_at`),
-          KEY `idx_images_when`     (`metrics_images_requested`, `occurred_at`),
-          KEY `idx_images_rcv_when` (`metrics_images_received`,  `occurred_at`),
-          KEY `idx_image_wh_when`   (`metrics_image_width`, `metrics_image_height`, `occurred_at`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-        ");
+  KEY `idx_tokens_when` (`total_tokens`, `occurred_at`),
+  KEY `idx_audio_when` (`audio_ms`, `occurred_at`),
+  KEY `idx_cost_when` (`cost_total`, `occurred_at`),
+  KEY `idx_images_when` (`images_requested`, `occurred_at`),
+  KEY `idx_images_rcv_when` (`images_received`, `occurred_at`),
+  KEY `idx_image_wh_when` (`image_width`, `image_height`, `occurred_at`)
+);");
 
         $message .= "Creating ai_request_logs table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
     } else {

@@ -6,8 +6,6 @@ require_once __DIR__.'/../../ai/logging/log_ai_request.php';
 class OpenAIClient implements AiClientInterface
 {
     private $apiKey;
-    private array $actor;
-    private string $sessionId;
 
 
 
@@ -46,7 +44,7 @@ class OpenAIClient implements AiClientInterface
             CURLOPT_TIMEOUT => 60,
         ]);
         $raw = curl_exec($ch);
-        log_ai_request($raw, 'genai', 'openai', $this->actor, $this->sessionId);
+        log_ai_request($raw, 'genai', 'openai');
         if ($raw === false) {
             $err = curl_error($ch);
             curl_close($ch);

@@ -17,10 +17,6 @@ abstract class BaseRAG
     protected $tfidfFile;
     protected $tempTfidfFile;
 
-    protected array $actor;
-
-    protected string $sessionId;
-
     public function __construct($encodingDirectory, $chunkSize = 2048)
     {
         global $xerte_toolkits_site;
