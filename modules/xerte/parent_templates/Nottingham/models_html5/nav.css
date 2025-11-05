@@ -1,7 +1,8 @@
 /* navigator.html */
 	
 	#pageContents.tab #paneHolder, #pageContents.button #infoHolder, #pageContents.slide #infoHolder {
-		overflow: auto;
+		overflow-y: auto;
+		overflow-x: hidden;
 	}
 	
 	#pageContents .navMedia {
@@ -12,11 +13,11 @@
 		width: 100%;
 		margin-top: 0.5em;
 		margin-bottom: 0.5em;
+		box-sizing: border-box;
 	}
 	
 	#pageContents iframe.navMedia {
 		width: 98%;
-		height: 100%;
 		margin-top: 0.5em;
 		margin-bottom: 0.5em;
 	}
@@ -143,15 +144,19 @@
 	#tabHolder .navChildTitle.ui-tabs-active {
 		border-bottom: 1px solid white !important;
 	}
-	
-	#pageContents.tab #paneHolder {
-		overflow: hidden;
-	}
 
 
 	/* __accordion__ */
 	#pageContents.acc .navChildTitle:focus,
 	#pageContents.acc .navChild:focus {
 		outline: auto; /* ensures the browser focus is shown - the jquery ui css removes this */
+	}
+
+	@media (max-width: 480px) {
+		#pageContents.tab #infoHolder,
+		#pageContents.tab #paneHolder,
+		#pageContents.tab #paneHolder .navChild {
+			height: auto !important;
+		}
 	}
 	

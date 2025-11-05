@@ -8176,13 +8176,13 @@
 	<type label="Navigator Type" options="Accordion,Buttons,Columns,Slideshow,Tabs" type="ComboBox" conditionTrigger="true" data="Acc,Button,Col,Slide,Tab" width="100"/>
 
     <layoutGroup label="Page Layout" type="group">
-        <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true" mandatory="true" condition="type!='Col'"/>
+        <panelWidth label="Navigator Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true" mandatory="true" condition="type!='Col'"/>
         <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" mandatory="true" condition="type!='Col'&amp;&amp;panelWidth=='Custom'"/>
-        <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" width="100" mandatory="true" condition="type!='Col'"/>
-        <panelPos label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" mandatory="true" condition="type!='Col'&amp;&amp;panelWidth!='Full'"/>
-        <buttonPos label="Button Position" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100" mandatory="true" condition="type=='Button'||type=='Slide'"/>
+        <panelHeight label="Navigator Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" width="100" mandatory="true" condition="type!='Col'"/>
+        <panelPos label="Navigator Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" mandatory="true" condition="type!='Col'&amp;&amp;panelWidth!='Full'"/>
+        <buttonPos label="Button Position" options=",Top,Bottom" type="ComboBox" data=",Top,Bottom" defaultValue="" width="100" mandatory="true" condition="type=='Button'||type=='Slide'"/>
         <collapsible label="Collapse Accordion" type="CheckBox" defaultValue="false" mandatory="true" condition="type=='Acc'"/>
-        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" mandatory="true" condition="type!='Col'"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" mandatory="true" condition="type!='Col'&amp;&amp;type!='Acc'&amp;&amp;type!='Tab'"/>
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" mandatory="true" condition="type!='Col'&amp;&amp;panelWidth=='Full'"/>
 
         <showTitles label="Column Titles" type="CheckBox" defaultValue="true" mandatory="true" condition="type=='Col'"/>
