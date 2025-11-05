@@ -363,7 +363,9 @@
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
       randomise="false"
 	  prevText="Previous" nextText="Next" restartText="Restart" restartConfirmText="Restarting will remove all recordings. Do you want to restart?" countText="Clip {i} of {n}" recText="Record" stopText="Stop" downloadText="Download all" downloadText2="Download example" downloadText3="Download recordings" deleteText="Delete" clipNameLabel="Enter audio clip name" defaultClipName="Unnamed clip" clipNameRenameLabel="Edit audio clip name" micErrorLabel="Try Again"
-	  />]]></audioRecord><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="" text="" panelWidth="Medium" erase="True"/>]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left" url="" tip="" imagesize="medium"></bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" text=""
+	  />]]></audioRecord><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="" text=""
+      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+     />]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left" url="" tip="" imagesize="medium"></bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" text=""
       delaySecs="1" showBullets="0"
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
       ></bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="" prompt="" feedback=""
@@ -1422,11 +1424,28 @@
   </nestedAudio><audioSlideshow menu="Media" menuItem="Audio Slideshow" hint="Sequence a series of images against an audio soundtrack." icon="icSound" thumb="thumbs/audioSlideshow.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#audioslideshow" wiki="https://xerte.org.uk/wiki/doku.php?id=media_audio_slideshow_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
     <sound label="Sound" type="Media" placeholder="Select an audio file"/>
-    <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here"/>
-    <panelWidth label="Panel Width" options="Small,Medium,Large,Full" data="Small,Medium,Large,Full" defaultValue="Small" type="ComboBox" width="100"/>
 
-	<fadeSpeed label="Fade Speed" type="NumericStepper" min="0" max="2" step="0.1" defaultValue="0.8" optional="true" tooltip="The speed of the image change fade (in seconds). Set as 0 to change immediately to the next image with no fade animation."/>
+    <layoutGroup label="Page Layout" type="group">
+        <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
+        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
+
+    <fadeSpeed label="Fade Speed" type="NumericStepper" min="0" max="2" step="0.1" defaultValue="0.8" optional="true" tooltip="The speed of the image change fade (in seconds). Set as 0 to change immediately to the next image with no fade animation."/>
 	<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 
     <newNodes>
