@@ -1,23 +1,17 @@
 /* videoSynch.html */
-	
-#mainText {
-	padding: 0 10px 10px;
+
+#infoHolder div.shown {
+	cursor: pointer;
+	margin-bottom: 1em;
+}
+
+#infoHolder #panel {
 	overflow: auto;
 }
 
-#infoHolder {
-	padding: 	0 10px;
-	overflow:	auto;
-}
-
-#infoHolder div.shown {
-	cursor:			pointer;
-	margin-bottom:	10px;
-}
-
 #infoHolder .myImg {
-	text-align:		center;
-	padding-top:	10px;
+	text-align: center;
+	padding-top: 1em;
 }
 
 #infoHolder .myImg figcaption {
@@ -25,14 +19,23 @@
 }
 
 #infoHolder .myImg img {
-	max-width:	100%;
-	max-height:	100%;
+	max-width: 100%;
+	max-height: 100%;
 }
 
 div#muteButton, div#playButton {
 	cursor: pointer;
 }
 
-#videoHolder .panel {
-	margin-bottom: 1em;
+#mainText {
+	margin-top: 1em;
+}
+
+#pageVideo video {
+	aspect-ratio: auto;
+	height: auto;
+}
+
+.panelContent.noH {
+	height: unset !important;
 }

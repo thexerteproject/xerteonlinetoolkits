@@ -7755,6 +7755,10 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 		// ensure there's a custom panel width (50%) if none is set
 		if (attributes.panelWidth === "custom") {
 			attributes.panelWidthCustom = attributes.panelWidthCustom == undefined ? 50 : Number(attributes.panelWidthCustom);
+
+		// one column should have a fixed width but no width is provided - default to medium
+		} else if (attributes.panelWidth === "fixed" && attributes.widthA == undefined && attributes.widthB == undefined) {
+			attributes.panelWidth = "medium";
 		}
 
 		// set up layout with panel at correct size & on left or right of screen (unless full width)
@@ -7787,6 +7791,16 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 					const shrink = attributes.panelWidthCustom > 50 ? [1,0] : [0,1]; // allow larger column to shrink if needed
 					$splitScreen.find(".left").css("flex", "0 " + shrink[0] + " calc(" + attributes.panelWidthCustom + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
 					$splitScreen.find(".right").css("flex", "0 " + shrink[1] + " calc(" + (100 - attributes.panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+				} else if (attributes.panelWidth === "fixed") {
+					if (attributes.widthA != undefined) {
+						// text column is fixed width
+						$splitScreen.find(".right").css("flex", "0 0 " + attributes.widthA);
+						$splitScreen.find(".left").css("flex", "1 1");
+					} else {
+						// panel column is fixed width
+						$splitScreen.find(".left").css("flex", "0 0 " + attributes.widthB);
+						$splitScreen.find(".right").css("flex", "1 1");
+					}
 				} else {
 					$splitScreen.addClass("large"); // 60 | 40
 				}
@@ -7803,6 +7817,16 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 					const shrink = attributes.panelWidthCustom > 50 ? [1,0] : [0,1]; // allow larger column to shrink if needed
 					$splitScreen.find(".left").css("flex", "0 " + shrink[1] + " calc(" + (100 - attributes.panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
 					$splitScreen.find(".right").css("flex", "0 " + shrink[0] + " calc(" + attributes.panelWidthCustom + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+				} else if (attributes.panelWidth === "fixed") {
+					if (attributes.widthA != undefined) {
+						// text column is fixed width
+						$splitScreen.find(".left").css("flex", "0 0 " + attributes.widthA);
+						$splitScreen.find(".right").css("flex", "1 1");
+					} else {
+						// panel column is fixed width
+						$splitScreen.find(".right").css("flex", "0 0 " + attributes.widthB);
+						$splitScreen.find(".left").css("flex", "1 1");
+					}
 				} else {
 					$splitScreen.addClass("medium"); // 40 | 60
 				}
