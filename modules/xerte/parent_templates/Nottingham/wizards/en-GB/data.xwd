@@ -552,7 +552,9 @@
 		initTxtLabel2="Initial text - select text before clicking highlight button"
 		suggestedTxtLabel="A suggested answer"
 		notesTxtLabel="Notes"
-	  />]]></textHighlight><textMatch><![CDATA[<textMatch name="Enter Page Title" text="" maxAttempts="3" correctMessage="Correct answers are shown" submitBtnTxt="Submit" feedback="" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Description for Accessibility" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="" tip="" full="false" transcriptTabTxt="Transcript" ></textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="" nextBtnTip="Scroll Forward" priorBtnTip="Scroll Back"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="" interactivity="Timeline" feedback="" checkBtnTxt="Check Answers" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></timeline><title><![CDATA[<title name="Enter Page Title" text="" size="30" titleVAlign="200" titleHAlign="center" startBtnTxt="Start"></title>]]></title><topXQ><![CDATA[<topXQ name="Enter Page Title" instruction="" prompt=""
+	  />]]></textHighlight><textMatch><![CDATA[<textMatch name="Enter Page Title" pageText="" text="" maxAttempts="3"
+      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      correctMessage="Correct answers are shown" submitBtnTxt="Submit" feedback="" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Description for Accessibility" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="" tip="" full="false" transcriptTabTxt="Transcript" ></textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="" nextBtnTip="Scroll Forward" priorBtnTip="Scroll Back"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="" interactivity="Timeline" feedback="" checkBtnTxt="Check Answers" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></timeline><title><![CDATA[<title name="Enter Page Title" text="" size="30" titleVAlign="200" titleHAlign="center" startBtnTxt="Start"></title>]]></title><topXQ><![CDATA[<topXQ name="Enter Page Title" instruction="" prompt=""
              panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
              numberAnswers="*" caseSensitivity="true"
 			 feedbackLabel="Feedback"
@@ -11079,10 +11081,29 @@
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></textHighlight><textMatch menu="Interactivity" menuItem="Matching Texts" hint="An interaction for the user to match chunks of text." icon="icConnect" thumb="thumbs/textMatch.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#matchingtexts" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_matching_texts_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Instructions" type="TextArea" height="100" placeholder="Enter text for the page here"/>
+    <pageText label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="(panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)" mandatory="true"/>
+    <text label="Question" type="TextArea" height="100" placeholder="Enter text for the page here"/>
     <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here"/>
 
 	<maxAttempts label="Attempts Before Hint" type="NumericStepper" min="1" max="99" step="1" defaultValue="3" mandatory="true"/>
+
+    <layoutGroup label="Page Layout" type="group">
+        <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Full" conditionTrigger="true" mandatory="true"/>
+        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'&amp;&amp;panelWidth!=undefined"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="true"/>
+        <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'||panelWidth==undefined"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
 	
     <correctMessage label="Correct Message" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <submitBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
@@ -11177,7 +11198,7 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></textMatch><sentence menuItem="Sentence" icon="icPageWhiteText" remove="true" max="5">
+    </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></textMatch><sentence menuItem="Sentence" icon="icPageWhiteText" remove="true">
     <p1 label="Part 1" type="TextArea" height="50" placeholder="Enter part one of the sentence here"/>
     <p2 label="Part 2" type="TextArea" height="50" placeholder="Enter part two of the sentence here"/>
 	<hint label="Hint" type="TextArea" height="50" placeholder="Enter a hint here"/>
