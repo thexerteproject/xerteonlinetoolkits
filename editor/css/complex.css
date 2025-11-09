@@ -236,7 +236,7 @@ input.media, input.date
 	position: relative;
 }
 
-.ui-layout-center .content
+.ui-layout-center .content, .featherlight-content .content
 {
     background : #eee;
 }
@@ -685,7 +685,7 @@ select, input, textarea
     padding: 4px;
 }
 
-#mainPanel select,  #mainPanel textarea {
+#mainPanel select,  #mainPanel textarea, #lightboxPanel select,  #lightboxPanel textarea, #lightboxPanel input {
     background: #fff;
     border: 1px solid #cdcdcd;
     width: 100%;
@@ -737,16 +737,16 @@ form.csvUpload input[name=merge] {
 	font-size: 0.8em;
 }
 
-#mainPanel select.deprecated {
+#mainPanel select.deprecated, #lightboxPanel select.deprecated{
 	width: 95%;
 }
 
-#mainPanel select.deprecated_option_selected {
+#mainPanel select.deprecated_option_selected, #lightboxPanel select.deprecated_option_selected{
 	color:red;
 }
 
 
-#mainPanel input
+#mainPanel input, #lightboxPanel input
 {
     background: #fff;
     /*border-radius: 4px;*/
@@ -1052,7 +1052,7 @@ div.hotspotEditor {
 
 
 
-table.wizard td {
+table.wizard td, table.content td {
     vertical-align: middle;
     height: 40px;
 }
@@ -1143,8 +1143,8 @@ button.hseditModeButton:hover:enabled {background: #f86718; color: #000000; curs
 button.hseditModeButton:hover {cursor: default;}
 
 
-#mainPanel .xerte_button { color: #000; }
-#mainPanel .xerte_button.disabled { color: #ccc; font-size: 1em; }
+#mainPanel .xerte_button,  #lightboxPanel .xerte_button{ color: #000; }
+#mainPanel .xerte_button.disabled, #lightboxPanel .xerte_button.disabled { color: #ccc; font-size: 1em; }
 
 div#save_buttons button {font-size: 1.3em; padding-top: 0px!important; height: 40px!important;}
 div#save_buttons button img {height: 1em!important; margin-right: 10px!important;}
@@ -1441,6 +1441,178 @@ div.hotspot360Icon span.icon360Holder .icon360 {
 	overflow: hidden;
 	height: 1.2em;
 }
+
+/* Start of image search and help tool lightbox css */
+/* Image lightbox container */
+.img_search_preview {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: 80vw;
+	height: 80vh;
+	overflow: hidden;
+	padding-bottom: 64px;                 /* reserved some space for Keep button */
+}
+
+.img_search_preview > h1 {
+	margin: 8px 0;
+	text-align: center;
+}
+
+.img_search_loading { text-align: center; }
+
+/* Adaptive Gallery Grid when selecting images to be kept
+    1..5 items are placed in a single row with N columns
+    > 6 items end up in 2 rows, columns added evenly
+*/
+.image_preview_images {
+	flex: 1 1 auto;
+	min-height: 0;                        /* critical in flex columns */
+	display: grid;
+	gap: 12px;
+	padding: 10px;
+	box-sizing: border-box;
+
+	grid-template-rows: 1fr;              /* single row by default */
+	grid-auto-flow: column;               /* fill columns horizontally */
+	grid-auto-columns: 1fr;
+	overflow: auto;                        /* scroll if tall */
+}
+
+.image_preview_images:has(> .img_search_container:nth-child(6)) {
+	grid-template-rows: repeat(2, 1fr);   /* switch to two equal rows */
+}
+
+/* Tiles */
+.img_search_container {
+	display: grid;
+	place-items: center;
+	position: relative;
+	padding: 0;
+	/* no fixed aspect ratio. let content define size */
+}
+
+/* Label fills the tile and offers a positioning context */
+.img_search_container label {
+	display: grid;
+	place-items: center;
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+.img_search_container i { font-size: 1.5em; }
+
+/* Hide the native input and keep selection border behavior */
+.img_search_container input { display: none; }
+.img_search_container input:checked + label img { border-color: blue; }
+
+/* Image + frame (no crop/stretch) */
+.img_frame {
+	display: inline-block;
+	position: relative;                   /* for the enlarge button */
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.img_search_preview_image {
+	display: block;
+	width: auto !important;               /* never force scale in one axis */
+	height: auto !important;
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;                   /* show entire image, proportionally */
+	border-radius: 10px;
+	border: 4px transparent solid;         /* selection highlight uses this */
+}
+
+/* Single-image case is centered and contained by rules above */
+.image_preview_images > .img_search_container:only-child {}
+
+/* Enlarge/magnify button
+   Places this button inside the image frame
+*/
+.enlarge_button {
+	position: absolute;
+	right: 8px;
+	bottom: 8px;
+	z-index: 3;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 1.9em;
+	min-width: 1.9em;
+	padding: 0 0.4em;
+	background: #fff;
+	border: 0;
+	border-radius: 6px;
+	box-shadow: 0 1px 4px rgba(0,0,0,.2);
+	cursor: pointer;
+}
+
+/* Keep/Submit button */
+.img_search_preview input[type="submit"] {
+	position: absolute;
+	left: 50%;
+	bottom: 12px;
+	transform: translateX(-50%);
+	z-index: 4;
+
+	margin: 0;
+	padding: 0.6em 1.1em;
+	min-width: 8rem;
+	max-width: calc(100% - 24px);
+	white-space: nowrap;
+
+	font: inherit;
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	background: #fff;
+	box-shadow: 0 2px 8px rgba(0,0,0,.15);
+	cursor: pointer;
+}
+
+/* Subtle checkerboard behind images (helps see transparency) */
+.img_frame {
+	background:
+			repeating-conic-gradient(#f8f8f8 0 25%, #eee 0 50%) 0 0 / 16px 16px;
+}
+
+/* Clear keyboard focus on each tile */
+.img_search_container label:focus-visible {
+	outline: 3px solid #4c9ffe;
+	outline-offset: 4px;
+	border-radius: 12px;
+}
+
+/* clearer “selected” state in addition to the blue img border */
+.img_search_container label[aria-checked="true"]::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: 12px;
+	box-shadow: 0 0 0 2px rgba(0,120,255,.35) inset;
+	pointer-events: none;
+}
+
+/* Ensure the enlarge button stays clickable over the image */
+.enlarge_button {
+	z-index: 3;
+}
+/* End of img search and help tool CSS */
+
+
+/* Only when a grid-lightbox is open, put Featherlight overlay below jqGrid dialogs; this ensures access to dialog remains */
+body.fl-jqgrid-top > .featherlight { z-index: 940 !important; }
+.ui-jqdialog { z-index: 950 !important; }
+.ui-widget-overlay.ui-front { z-index: 945 !important; }  /* jQuery UI dialog overlay */
+
+.featherlight-content #lightboxPanel {
+	width: inherit !important;
+	table-layout: fixed;
+	box-sizing: border-box;
+}
+
 
 /* start of xertecss.css
 
