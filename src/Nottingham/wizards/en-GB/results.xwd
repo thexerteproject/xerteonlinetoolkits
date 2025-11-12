@@ -1,7 +1,9 @@
 <wizard menus="Tracking / xAPI">
     <pageWizard remove="true" duplicate="false">
         <newNodes>
-            <results><![CDATA[<results name="Enter Page Title" resultmode="full-results" generalResultsTxt="Results summary" givenameTxt="Your name" averageTxt="Score" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Detailed results" globalResultsTxt="Page overview" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Interactivity results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Complete" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter name for PDF" userNamePrompt="Name: " okButtonTxt="Ok" durationSecondsTxt="s"/>]]></results>
+            <results><![CDATA[<results name="Enter Page Title" text="" resultmode="full-results"
+             panelWidth="Full" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
+            generalResultsTxt="Results summary" givenameTxt="Your name" averageTxt="Score" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Detailed results" globalResultsTxt="Page overview" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Interactivity results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Complete" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter name for PDF" userNamePrompt="Name: " okButtonTxt="Ok" durationSecondsTxt="s"/>]]></results>
         </newNodes>
     </pageWizard>
 
@@ -11,7 +13,17 @@
              thumb="thumbs/results.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#resultspage" wiki="https://xerte.org.uk/wiki/doku.php?id=trackingxapi_results_page" remove="true">
 
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
+        <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="(panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)" mandatory="true"/>
+
         <resultmode label="Results Mode" type="ComboBox" options="Minimal,Normal,Full" data="minimal-results,normal-results,full-results" conditionTrigger="true"/>
+
+        <layoutGroup label="Page Layout" type="group">
+            <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Full" conditionTrigger="true" mandatory="true"/>
+            <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+            <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
+            <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="true"/>
+            <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="false" conditionTrigger="true" condition="panelWidth=='Full'||panelWidth==undefined"/>
+        </layoutGroup>
 
         <customiseResults type="group" label="Customise results" tooltip="Customise the information shown on the results page" optional="true" info="Customise the information shown in each block on the results page. The blocks shown are determined by the results mode property.">
             <generalGroup type="group" label="Results summary" tooltip="The information shown in the results summary section." optional="true">
@@ -38,9 +50,17 @@
             </specificResults>
         </customiseResults>
 
-        <fullcompletion label="Full Completion" type="Checkbox" defaultValue="false" optional="true" tooltip="Show completion based on full project" />
+        <textTopGroup label="Text Above Panel" type="group" optional="true">
+            <textTop label="Text" type="TextArea" height="100" optional="true"/>
+            <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+        </textTopGroup>
 
-        <text label="Page Text" type="TextArea" defaultValue="" placeholder="Enter text for the page here" height="200" optional="true"/>
+        <textBelowGroup label="Text Below Panel" type="group" optional="true">
+            <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+            <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+        </textBelowGroup>
+
+        <fullcompletion label="Full Completion" type="Checkbox" defaultValue="false" optional="true" tooltip="Show completion based on full project" />
 
         <pdfOptions type="group" label="PDF Options" optional="true">
             <disableexportpdf label="Disable PDF Export" type="Checkbox" optional="true" defaultValue="false" conditionTrigger="true"/>

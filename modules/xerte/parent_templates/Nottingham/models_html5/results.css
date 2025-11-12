@@ -85,7 +85,7 @@
 }
 
 #txtHolder {
-	border-bottom: 1px solid #ccc;
+	/*border-bottom: 1px solid #ccc;*/
 	padding-bottom: 1em;
 	margin-bottom: 1em;
 }
@@ -108,7 +108,7 @@
 }
 
 #pdfContent {
-	overflow: auto;
+	/*overflow: auto;*/
 }
 
 fieldset {
