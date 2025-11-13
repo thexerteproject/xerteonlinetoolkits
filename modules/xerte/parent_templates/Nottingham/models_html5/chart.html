@@ -26,7 +26,7 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var chart = new function() {
-		var allSeries;
+		let allSeries;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -35,124 +35,41 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			chart.init();
+			// panel will be fixed height (100% of available screen height) at all times
+			XENITH.SPLITSCREEN.resizePanel();
+
+			if ($("#chartHolder").length > 0) {
+				$("#chartHolder").empty();
+
+				chart.draw();
+			}
 		};
 
 		this.init = function() {
-            var	$pageContents	= $("#pageContents"),
-				$textHolder		= $("#textHolder"),
-				$panel			= $("#pageContents .panel"),
-				$chartTitle		= $("#chartTitle"),
-				chartHolder		= document.getElementById("chartHolder");
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			$("#chartTitle").html(x_currentPageXML.getAttribute("chartTitle"));
 
-			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-			$chartTitle.html(x_currentPageXML.getAttribute("chartTitle"));
-
-			if (x_currentPageXML.getAttribute("align") == "right") {
-				$textHolder
-					.removeClass("left")
-					.addClass("right")
-					.appendTo($("#pageContents .splitScreen"));
-				$("#infoHolder")
-					.removeClass("right")
-					.addClass("left");
-				$("#pageContents .splitScreen").addClass("large");
-			} else {
-				$("#pageContents .splitScreen").addClass("medium");
+			// panel position data is reversed as the property used to be called 'Align text' rather than 'Panel position'
+			// send amended data to split screen function as otherwise layout will be reversed
+			const attributes = {
+				panelPosition: x_currentPageXML.getAttribute("align") !== "right" ? "right" : "left",
+				fullH: true // force panel to be 100% height of screen at all times
 			}
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
 			var series = $(x_currentPageXML).children();
 			if (series.length == 0) {
 				// There are no series - don't draw chart
+				$("#chartHolder").remove();
 
 			} else {
-				if (chartHolder.getContext) { // canvas is supported
-					if (x_currentPageXML.getAttribute("alt") != undefined && x_currentPageXML.getAttribute("alt") != "") {
-						$("#chartHolder").html('<div>' + x_currentPageXML.getAttribute("alt") + '</div>'); // provide summary of canvas content for screenreaders
-					}
-					
-					allSeries = [];
-
-					var	$panel = $("#pageContents .panel"),
-					availW = Math.max(200, $panel.width()),
-					availH = Math.max(200, x_getAvailableHeight([$panel], [$("#chartTitle")], true));
-
-					chartHolder.width = availW;
-					chartHolder.height = availH;
-
-					allSeries = [];
-					$(x_currentPageXML).children().each(function () {
-						var name = this.getAttribute("name"),
-							dataString = this.getAttribute("data"),
-							colour = x_getColour(this.getAttribute("colour"));
-
-						var	dataPair,
-							dataPairs = dataString.split('||'),
-							data = [];
-						for (var i=0; i<dataPairs.length; i++) {
-							dataPair = dataPairs[i].split('|');
-							data.push({"x":dataPair[0], "y":parseInt(dataPair[1])});
-						}
-						allSeries.push({"name":name, "colour": colour, "data":data});
-					});
-
-					var	chartHolderContext = chartHolder.getContext("2d"),
-						maxH = 0, i, j;
-					if (x_currentPageXML.getAttribute("chartType") == "pie") {
-						chartHolderContext.translate(60, 0); // space on left for legend
-					} else {
-						chartHolderContext.translate(100, 0); // space on left for y axis text
-
-						if (x_currentPageXML.getAttribute("chartType") == "stacked bar") {
-							var tempH;
-							for (i=0; i<allSeries[0].data.length; i++) {
-								tempH = 0;
-								for (j=0; j<allSeries.length; j++) {
-									tempH += allSeries[j].data[i].y;
-								}
-								maxH = Math.max(maxH, tempH);
-							}
-						} else {
-							for (i=0; i<allSeries.length; i++) {
-								for (j=0; j<allSeries[i].data.length; j++) {
-									maxH = Math.max(maxH, allSeries[i].data[j].y);
-								}
-							}
-						}
-					}
-					
-					// set font used to match rest of LO
-					if ($(x_responsive[0]).prop("disabled") == false) {
-						chartHolderContext.font = $("#chartHolder").css("font-size") + " " + $x_body.css("font-family");
-					} else {
-						chartHolderContext.font = (parseInt($x_body.css("font-size")) * 0.83) + "px " + $x_body.css("font-family");
-					}
-					
-					var txtColour = $textHolder.css("color");
-					switch (x_currentPageXML.getAttribute("chartType")) {
-						case "stacked bar":
-							this.doStackedBar(chartHolderContext, maxH, availW, availH);
-							break;
-						case "pie":
-							this.doPie(chartHolderContext, availW, availH, txtColour);
-							break;
-						case "bar":
-							this.doBar(chartHolderContext, maxH, availW, availH);
-							break;
-						case "line":
-							this.doLine(chartHolderContext, maxH, availW, availH);
-					}
-
-					if (x_currentPageXML.getAttribute("chartType") != "pie") {
-						this.doAxesAndLabels(chartHolderContext, maxH, availW, availH, txtColour);
-					}
-
-				} else { // canvas tag not supported - display error message and data in a table
+				if (!document.getElementById("chartHolder").getContext) {
+					// canvas tag not supported - display error message and data in a table
 					var	errorTxt = x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type"),
-						tableHolder = $("#chartTitle").parent(),
 						table = '<table class="full">';
 
-					tableHolder.find("#chartHolder").hide();
+					$("#chartHolder").remove();
 
 					var rows, cols, i, j;
 					if (x_currentPageXML.getAttribute("chartType") != "pie") {
@@ -182,13 +99,100 @@
 					}
 
 					table += '</table>';
-					tableHolder.append('<p class="alert">' + errorTxt + '</p>' + table);
+					$("#chartTitle").parent().append('<p class="alert">' + errorTxt + '</p>' + table);
 				}
 			}
+
+			this.sizeChanged();
 
             // call this function in every model once everything's loaded
             x_pageLoaded();
         };
+
+		this.draw = function() {
+			if (x_currentPageXML.getAttribute("alt") != undefined && x_currentPageXML.getAttribute("alt") != "") {
+				$("#chartHolder").html('<div>' + x_currentPageXML.getAttribute("alt") + '</div>'); // provide summary of canvas content for screenreaders
+			}
+
+			$("#chartHolder").hide();
+
+			var	$panel = $("#pageContents .panelContent"),
+				availW = Math.max(200, $panel.width()),
+				availH = Math.max(200, x_getAvailableHeight([$panel], [$("#chartTitle")], true));
+
+			$("#chartHolder").show();
+
+			const chartHolder = document.getElementById("chartHolder");
+			chartHolder.width = availW;
+			chartHolder.height = availH;
+
+			allSeries = [];
+			$(x_currentPageXML).children().each(function () {
+				var name = this.getAttribute("name"),
+						dataString = this.getAttribute("data"),
+						colour = x_getColour(this.getAttribute("colour"));
+
+				var	dataPair,
+						dataPairs = dataString.split('||'),
+						data = [];
+				for (var i=0; i<dataPairs.length; i++) {
+					dataPair = dataPairs[i].split('|');
+					data.push({"x":dataPair[0], "y":parseInt(dataPair[1])});
+				}
+				allSeries.push({"name":name, "colour": colour, "data":data});
+			});
+
+			var	chartHolderContext = chartHolder.getContext("2d"),
+					maxH = 0, i, j;
+			if (x_currentPageXML.getAttribute("chartType") == "pie") {
+				chartHolderContext.translate(60, 0); // space on left for legend
+			} else {
+				chartHolderContext.translate(100, 0); // space on left for y axis text
+
+				if (x_currentPageXML.getAttribute("chartType") == "stacked bar") {
+					var tempH;
+					for (i=0; i<allSeries[0].data.length; i++) {
+						tempH = 0;
+						for (j=0; j<allSeries.length; j++) {
+							tempH += allSeries[j].data[i].y;
+						}
+						maxH = Math.max(maxH, tempH);
+					}
+				} else {
+					for (i=0; i<allSeries.length; i++) {
+						for (j=0; j<allSeries[i].data.length; j++) {
+							maxH = Math.max(maxH, allSeries[i].data[j].y);
+						}
+					}
+				}
+			}
+
+			// set font used to match rest of LO
+			if ($(x_responsive[0]).prop("disabled") == false) {
+				chartHolderContext.font = $("#chartHolder").css("font-size") + " " + $x_body.css("font-family");
+			} else {
+				chartHolderContext.font = (parseInt($x_body.css("font-size")) * 0.83) + "px " + $x_body.css("font-family");
+			}
+
+			var txtColour = $("#textHolder").css("color");
+			switch (x_currentPageXML.getAttribute("chartType")) {
+				case "stacked bar":
+					this.doStackedBar(chartHolderContext, maxH, availW, availH);
+					break;
+				case "pie":
+					this.doPie(chartHolderContext, availW, availH, txtColour);
+					break;
+				case "bar":
+					this.doBar(chartHolderContext, maxH, availW, availH);
+					break;
+				case "line":
+					this.doLine(chartHolderContext, maxH, availW, availH);
+			}
+
+			if (x_currentPageXML.getAttribute("chartType") != "pie") {
+				this.doAxesAndLabels(chartHolderContext, maxH, availW, availH, txtColour);
+			}
+		}
 
 		this.doBar = function(canvas, maxH, availW, availH) {
 			var i, j,
@@ -390,17 +394,13 @@
 
 <div id="pageContents">
 
-	<div class="splitScreen">
+	<div id="textHolder" class="splitScreen_A"/>
 
-		<div id="textHolder" class="left"/>
-
-		<div id="infoHolder" class="right">
-			<div class="panel">
-				<h3 id="chartTitle" class="centerAlign"></h3>
-				<canvas id="chartHolder"></canvas>
-			</div>
+	<div id="infoHolder" class="splitScreen_B">
+		<div class="panelContent panel">
+			<h3 id="chartTitle" class="centerAlign"></h3>
+			<canvas id="chartHolder"></canvas>
 		</div>
-
 	</div>
 
 </div>

@@ -9,16 +9,13 @@
 		margin-right:	auto;
 	}
 
-	#infoHolder table tr:first-child {
+	#infoHolder table tr:first-child,
+	#infoHolder table tr td:first-child {
 		text-align:	center;
 	}
 
 	#infoHolder table tr {
 		text-align:	right;
-	}
-
-	#infoHolder table tr td:first-child {
-		text-align:	center;
 	}
 
 	#chartHolder {
