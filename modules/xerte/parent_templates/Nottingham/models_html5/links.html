@@ -124,10 +124,10 @@
 				.html(`
 				@container page-contents (min-width: calc(${minW}*${numCols} + (${gap}*${numCols-1}))) {
 					#linkHolder {
-						grid-template-columns: repeat(3, 1fr) !important;
+						grid-template-columns: repeat(${numCols}, 1fr) !important;
 					}
 				}`)
-				.appendTo("head");
+				.appendTo($("#pageContents"));
 
 			x_pageLoaded();
 		}

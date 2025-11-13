@@ -378,7 +378,9 @@
 	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="" feedback="" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly" incomplete="Complete the exercise."/>]]></categories><chapter><![CDATA[<chapter name="Enter Chapter Title" includeInHeader="Chart Title"/>]]></chapter><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="" align="left"/>]]></chart><columnPage><![CDATA[<columnPage name="Enter Page Title"
       showTitles="true" minWidth="75" panelStyle="none"
       />]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="" textWidth="narrow" url="" tip="" highlight="false" hs_showTooltip="true" align="Left"
-	  notFoundMessage="could not be found in this project." />]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1" capitalise="true" align="Left"
+	  notFoundMessage="could not be found in this project." />]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" text=""
+      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1" capitalise="true" align="Left"
 	  acrossLabel="Across"
 	  downLabel="Down"
 	  checkLabel="Submit"
@@ -2821,13 +2823,38 @@
   </cHotspot><connectorMenu menu="Connectors" menuItem="Menu Connector" hint="Generate a menu of all or a selected range of the pages in a project." icon="icConMenu" thumb="thumbs/connectorMenu.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#menuconnector" wiki="https://xerte.org.uk/wiki/doku.php?id=connector_menuconnector_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <buttonWidth label="Button Width" condition="columns &lt; '2'" type="NumericStepper" optional="true" min="1" max="100" step="1" width="100" defaultValue="80" tooltip="The number indicates in percent how wide the buttons are."/>
-	<text label="Page Text" type="TextArea" height="200" defaultValue="" placeholder="Enter text for the page here" optional="true" tooltip="Add text to the page"/>
+    <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="(panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||removeTxt!='true'" mandatory="true"/>
+
+    <layoutGroup label="Page Layout" type="group">
+        <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Full" conditionTrigger="true" mandatory="true"/>
+        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="true"/>
+        <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="false" conditionTrigger="true" condition="panelWidth=='Full'||panelWidth==undefined"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'&amp;&amp;panelWidth!=undefined"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'&amp;&amp;panelWidth!=undefined"/>
+    </textBelowGroup>
+
 	<startPageID label="First Entry" type="pageList" defaultValue="" optional="true" tooltip="Include menu links from this page onwards"/>
 	<endPageID label="Last Entry" type="pageList" defaultValue="" optional="true" tooltip="Include menu links up to and including this page"/>
 	<pageTick label="Tick When Viewed" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" tooltip="Links to previously viewed pages will be ticked"/>
-	<itemSpacingY label="Vertical Spacing" type="NumericStepper" min="5" max="35" step="1" width="100" defaultValue="5" optional="true" tooltip="Adjust the space between page links"/>	
-	<columns label="Number of Columns" conditionTrigger="true" type="NumericStepper" min="1" max="6" step="1" width="100" defaultValue="2" optional="true" tooltip="Automatically wrap into a set number of columns. Note: with this option set the optional 'button width' property will be ignored and the buttons will fill the width of each column."/>
+
+    <columnGroup label="Display Items in Columns" type="group" optional="true">
+        <columns label="Number of Columns" conditionTrigger="true" type="NumericStepper" min="1" max="6" step="1" width="100" defaultValue="2" optional="true" tooltip="Automatically wrap menu items into a set number of columns"/>
+        <minWidth label="Minimum Column Width (px)" type="NumericStepper" min="20" max="1000" defaultValue="75" optional="true" tooltip="Columns will never be narrower than this width and will be wrapped onto a new line when required"/>
+    </columnGroup>
+
+    <itemSpacingY label="Vertical Spacing" type="NumericStepper" min="5" max="35" step="1" width="100" defaultValue="5" optional="true" tooltip="Adjust the space between page links"/>
+
+    <buttonWidth label="Button Width (%)" condition="columns &lt; '2'" type="NumericStepper" optional="true" min="1" max="100" step="1" width="100" defaultValue="80" tooltip="The number indicates in percent how wide the buttons are." deprecated="This property is deprecated"/>
 	<itemHeight label="Menu Item Height" type="NumericStepper" min="25" max="35" step="1" width="100" defaultValue="25" optional="true" deprecated="This property is deprecated"/>
 	<itemSpacingX label="Horizontal Spacing" type="NumericStepper" min="10" max="30" step="1" width="100" defaultValue="10" optional="true" deprecated="This property is deprecated"/>
     <menuLineCol label="Line Colour" type="ColourPicker" defaultValue="0x84A2C6" optional="true" deprecated="This property is deprecated"/>

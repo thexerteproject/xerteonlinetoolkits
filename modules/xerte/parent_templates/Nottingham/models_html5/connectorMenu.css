@@ -4,15 +4,39 @@
 	display:		block;
 	margin-bottom:	5px;
 	text-align:		left;
+	width: 100%;
 }
 
 #subMenuItems .subMenuItem .notvisited {
 	display: none;
 }
 
-#pageTxt {
-	margin-bottom: 1em;
+
+/* columns */
+#x_mainHolder:not(.x_mobile) #pageContents {
+	container-type: inline-size;
+	container-name: page-contents;
 }
+
+#x_mainHolder:not(.x_mobile) #subMenuItems.columns {
+	display: grid;
+	gap: 1em;
+	max-width: 100%;
+}
+
+#x_mainHolder:not(.x_mobile) #subMenuItems.columns .subMenuItem {
+	box-sizing: border-box;
+	word-break: break-word;
+}
+
+#x_mainHolder.x_mobile #subMenuItems.columns {
+	/* on mobiles always show columns as rows instead */
+	display: flex;
+	flex-direction: column;
+	gap: 1em;
+}
+
+
 @media (min-width: 768px) {
 	#subMenuItems{
 		width: 80%;
