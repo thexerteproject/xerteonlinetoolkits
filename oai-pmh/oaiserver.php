@@ -329,6 +329,21 @@ class OAIServer
         }
     }
 
+    private function xml_entities($string)
+    {
+        return strtr(
+            $string,
+            array(
+                "<" => "&lt;",
+                ">" => "&gt;",
+                '"' => "&quot;",
+                "'" => "&apos;",
+                "&" => "&amp;",
+            )
+        );
+    }
+
+
     private function add_metadata($metadataPrefix,$cur_record, $record)
     {
 
@@ -354,7 +369,7 @@ class OAIServer
             $description = $record['metadata']['general']['description'];
             $identifier = $record['identifier'];
             $title_node = $this->response->addChild($general_node, 'title');
-            $langstring_node = $this->response->addChild($title_node, 'langstring', $title);
+            $langstring_node = $this->response->addChild($title_node, 'langstring', $this->xml_entities($title));
             $langstring_node->setAttribute("xml:lang", $language);
             $catalogentry_node = $this->response->addChild($general_node, 'catalogentry');
             $this->response->addChild($catalogentry_node, 'catalog', "URI");
@@ -367,20 +382,20 @@ class OAIServer
             if (isset($description) && $description != "")
             {
                 $description_node = $this->response->addChild($general_node, 'description');
-                $langstring_node = $this->response->addChild($description_node, 'langstring', $description);
+                $langstring_node = $this->response->addChild($description_node, 'langstring', $this->xml_entities($description));
                 $langstring_node->setAttribute("xml:lang", $language);
             }
             // GENERAL - Keywords
             foreach ($record['metadata']['keywords'] as $value) {
                 $keyword_node = $this->response->addChild($general_node, 'keyword');
-                $langstring_node = $this->response->addChild($keyword_node, 'langstring', $value);
+                $langstring_node = $this->response->addChild($keyword_node, 'langstring', $this->xml_entities($value));
                 $langstring_node->setAttribute("xml:lang", $language);
             }
             // GENERAL - Keywords - Course
             if (isset($record['metadata']['misc']['course']) && $record['metadata']['misc']['course'] != "") {
                 $course_name = $record['metadata']['misc']['course'];
                 $keyword_node = $this->response->addChild($general_node, 'keyword');
-                $langstring_node = $this->response->addChild($keyword_node, 'langstring', ('Course: ' . $course_name));
+                $langstring_node = $this->response->addChild($keyword_node, 'langstring', ('Course: ' . $this->xml_entities($course_name)));
                 $langstring_node->setAttribute("xml:lang", $language);
             }
             // GENERAL - Keywords - Educational code
