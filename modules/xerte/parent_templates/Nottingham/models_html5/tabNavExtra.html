@@ -27,7 +27,9 @@
 		// Called from xenith if tab level deeplinking is available
 		this.deepLink = function(item) {
 			item = item.split(",");
-			var topic, tab, page;
+			let topic;
+			let tab;
+			let page;
 			if (item.length > 0) {
 				topic = item[0];
 				tab = item[1];
@@ -58,21 +60,19 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $infoHolder = $("#pageContents .infoHolder");
-			$infoHolder.height(x_getAvailableHeight([$infoHolder], [$('.splitScreen').prev().is('#txtHolder') ? $('#txtHolder').outerHeight(true) : 0]));
-
-			if (x_browserInfo.mobile == false) {
-				$infoHolder.tabs("refresh");
-				const $paneHolder = $("#pageContents .paneHolder");
-				$paneHolder.height(x_getAvailableHeight([$infoHolder, $paneHolder], [($('.splitScreen').prev().is('#txtHolder') ? $('#txtHolder').outerHeight(true) : 0), $("#pageContents .tabList:visible")]));
-			}
-
-			if ($pageContents.data("count") != 0) {
-				$pageContents.data("count", $pageContents.data("count") + 1);
-				this.scaleImages();
+			if ($(".splitScreen_B").css("flex-basis") !== "100%" && $('.textTopHolder').length === 0) {
+				// navigator isn't full width so ensure the panel is full height when needed
+				const $infoHolder = $(".infoHolder:visible");
+				const $paneHolder = $infoHolder.find(".paneHolder");
+				const $tabList = $infoHolder.find(".tabList");
+				$infoHolder.height(x_getAvailableHeight([$infoHolder]));
+				$paneHolder.height(x_getAvailableHeight([$infoHolder, $paneHolder], [$tabList]));
 			} else {
-				$pageContents.data("count", $pageContents.data("count") + 1);
+				// navigator is full width (or has text above it) so panel height is auto (fits content)
+				$(".infoHolder, .paneHolder").height("unset");
 			}
+
+			this.scaleImages();
 		}
 
 		this.pageChanged = function() {
@@ -80,39 +80,40 @@
 		}
 		
 		this.init = function() {
-			// tabWidth attribute is ignored as it is automatic
 			$pageContents = $('#pageContents');
-			
+
+			let topTxt;
+			let topTxtWidth;
 			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
-				$('#txtHolder').html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				
+
 				if (x_currentPageXML.getAttribute("textPos") == "Above") {
-					$('#txtHolder').prependTo('#topicHolder');
+					$("#topicHolder").prepend('<div id="txtHolder">' + x_addLineBreaks(x_currentPageXML.getAttribute("text")) + '</div>');
+				} else {
+					topTxt = x_currentPageXML.getAttribute("text");
+					topTxtWidth = "true";
 				}
-				
-			} else {
-				$('#txtHolder').remove();
 			}
-			
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			if (panelWidth == "Small") {
-				$("#pageContents .splitScreen").addClass("large");
-			} else if (panelWidth == "Medium") {
-				$("#pageContents .splitScreen").addClass("medium");
-			} else {
-				$("#pageContents .splitScreen").addClass("small");
+
+			// send amended data to split screen function as some properties aren't standard
+			const attributes = {
+				panelWidth: x_currentPageXML.getAttribute("panelWidth") != undefined ? x_currentPageXML.getAttribute("panelWidth") : "Large",
+				panelStyle: "true",
+				topTxt: topTxt,
+				topTxtWidth: topTxtWidth,
+				pageTxt: "true" // prevent text column being deleted as there will always be list items in it even if no text
 			}
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 			
 			// __CREATE TOPICS__
 			// have to clone topics / tabs / pages in seperate functions as otherwise it clones the data from previous topic
-			var $topic =		$("#pageContents .topic"),
-				$infoHolder =	$("#pageContents .infoHolder");
-
-			$pageContents.data("count", 0);
+			const $topic = $("#pageContents .topic");
+			const $infoHolder = $("#pageContents .infoHolder");
 			
 			$(x_currentPageXML).children()
 				.each(function(i) {
-					var $thisTopic,	$thisInfoHolder;
+					let $thisTopic;
+					let $thisInfoHolder;
 					if (i != 0) {
 						$thisTopic = $topic.clone().appendTo($topic.parent());
 						$thisInfoHolder = $infoHolder.clone().appendTo($infoHolder.parent());
@@ -144,16 +145,16 @@
 									.attr("aria-current", "true")
 									.addClass("highlight");
 								
-								var $thisHolder = $("#pageContents .infoHolder:eq(" + $this.data("index") + ")");
+								const $thisHolder = $("#pageContents .infoHolder:eq(" + $this.data("index") + ")");
 								$thisHolder.show();
 
 								if (x_currentPageXML.getAttribute("rememberTab") == "true") {
 									// auto select same tab / nested page as that viewed in previous topic
-									var $currentTab = $thisHolder.find(".tabHeader a:contains(" + $pageContents.data("currentTab") + ")");
+									const $currentTab = $thisHolder.find(".tabHeader a:contains(" + $pageContents.data("currentTab") + ")");
 									if ($currentTab.length != 0) {
 										$currentTab.trigger("click");
-										var $currentPaneHolder = $thisHolder.find(".paneHolder:eq(" + $currentTab.parent().index() + ")"),
-											$currentPane = $currentPaneHolder.find(".paneList a:contains(" + $pageContents.data("currentPane") + ")");
+										const $currentPaneHolder = $thisHolder.find(".paneHolder:eq(" + $currentTab.parent().index() + ")");
+										const $currentPane = $currentPaneHolder.find(".paneList a:contains(" + $pageContents.data("currentPane") + ")");
 
 										if ($currentPane.length != 0) {
 											tabNavExtra.nestedLinkClick($currentPane.index());
@@ -173,7 +174,6 @@
 									$thisHolder.find(".tabHeader:eq(0) a").trigger("click").parent().focus();
 								}
 								tabNavExtra.scaleImages();
-								tabNavExtra.loadCustomHTML();
 								tabNavExtra.sizeChanged();
 							}
 						});
@@ -186,13 +186,14 @@
 			// __CREATE TABS__
 			$(x_currentPageXML).children()
 				.each(function(i) {
-					var $infoHolder =	$("#pageContents .infoHolder:eq(" + i + ")"),
-						$tabHeader =	$infoHolder.find(".tabHeader"),
-						$paneHolder =	$infoHolder.find(".paneHolder");
+					const $infoHolder = $("#pageContents .infoHolder:eq(" + i + ")");
+					const $tabHeader = $infoHolder.find(".tabHeader");
+					const $paneHolder = $infoHolder.find(".paneHolder");
 					
 					$(this).children()
 						.each(function(j) {
-							var $thisTabHeader,	$thisPaneHolder;
+							let $thisTabHeader;
+							let $thisPaneHolder;
 							if (j != 0) {
 								$thisTabHeader = $tabHeader.clone().appendTo($tabHeader.parent());
 								$thisPaneHolder = $paneHolder.clone().appendTo($paneHolder.parent());
@@ -212,10 +213,10 @@
 				.each(function(i) {
 					$(this).children()
 						.each(function(j) {
-							var $paneHolder = $("#pageContents .infoHolder:eq(" + i + ") .paneHolder:eq(" + j + ")"),
-									$paneList = $paneHolder.find(".paneList"),
-									$paneInfo = $paneHolder.find(".paneInfo"),
-									$link = $paneList.find("a");
+							const $paneHolder = $("#pageContents .infoHolder:eq(" + i + ") .paneHolder:eq(" + j + ")");
+							const $paneList = $paneHolder.find(".paneList");
+							const $paneInfo = $paneHolder.find(".paneInfo");
+							const $link = $paneList.find("a");
 
 							// create navigation (next/prev) buttons - they will only be shown when more than one nested page
 							let $thisNavBtns;
@@ -238,7 +239,8 @@
 
 							$(this).children()
 								.each(function(k) {
-									var $thisLink,	$thisPaneInfo;
+									let $thisLink;
+									let $thisPaneInfo;
 									if (k != 0) {
 										$thisLink = $link.clone().appendTo($paneList);
 										$thisPaneInfo = $paneInfo.clone().appendTo($paneInfo.parent());
@@ -270,25 +272,13 @@
 										$paneList.addClass("delete");
 									}
 									
-									var	infoString = '<p>' + x_addLineBreaks(this.getAttribute("text"))+ '</p>',
-										url = this.getAttribute("url");
+									let	infoString = '<p>' + x_addLineBreaks(this.getAttribute("text"))+ '</p>';
+									const url = this.getAttribute("url");
 									
 									if (url != undefined && url != "") {
-										var newString = "";
+										let newString = "";
 										if (url.split('.').pop().slice(0, -1) == "swf") {
 											newString += '<div class="centerAlign"><div id="pageSWF' + i + '" class="paneSWF"><p class="alert">' + x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content.") + '</p><p><a href="http://www.adobe.com/go/getflashplayer"><img class="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="' + x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player") + '" /></a></p></div></div>';
-
-										} else if (url.split('.').pop().slice(0, -1) == "html") {
-											// sets up savedData for current page as an array so it can contain the initObject and any additionally saved data for this customHTML file
-											if (x_pageInfo[x_currentPage].savedData == undefined) {
-												x_pageInfo[x_currentPage].savedData = [];
-											}
-											x_pageInfo[x_currentPage].savedData.push(new Object());
-
-											if (this.getAttribute("initObject") != undefined && this.getAttribute("initObject") != "") {
-												x_pageInfo[x_currentPage].savedData[x_pageInfo[x_currentPage].savedData.length - 1].initObject = x_sortInitObject(this.getAttribute("initObject"));
-											}
-											newString += '<div class="jsHolder"></div>';
 
 										} else {
 											newString += '<div class="paneImg">';
@@ -315,7 +305,7 @@
 									$thisPaneInfo.html(infoString);
 									
 									if ($thisPaneInfo.find(".paneImg").length > 0) {
-										var $img = $thisPaneInfo.find(".paneImg img");
+										const $img = $thisPaneInfo.find(".paneImg img");
 										if (i + j + k == 0) {
 											// don't set src of image that's visible until later as panels needs to be fully set up for image scaling to work correctly
 											$img.data("src", x_evalURL(url));
@@ -324,9 +314,9 @@
 										}
 										
 									} else if ($thisPaneInfo.find(".paneSWF").length > 0) {
-										var size = [300,300];
+										let size = [300,300];
 										if (this.getAttribute("movieSize") != "" && this.getAttribute("movieSize") != undefined) {
-											var dimensions = this.getAttribute("movieSize").split(",");
+											const dimensions = this.getAttribute("movieSize").split(",");
 											if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
 												size = [Number(dimensions[0]), Number(dimensions[1])];
 											}
@@ -337,12 +327,6 @@
 											$("#pageSWF" + i).attr("title", this.getAttribute("tip"));
 										}
 										
-									} else if ($thisPaneInfo.find(".jsHolder").length > 0) {
-										$thisPaneInfo.find(".jsHolder").data({
-											"savedDataIndex"	:x_pageInfo[x_currentPage].savedData.length - 1,
-											"built"				:false,
-											"url"				:x_evalURL(url)
-										});
 									}
 								});
 
@@ -368,12 +352,12 @@
 				"currentPane":	$(x_currentPageXML).children().children().children()[0].getAttribute("name")
 				});
 			
-			var firstLoad = true;
+			let firstLoad = true;
 			if (x_currentPageXML.getAttribute("rememberTab") == "true") {
 				$("#pageContents .infoHolder").tabs({
 					activate: function(event, ui) {
 						if (firstLoad != true) {
-							var $panel = $(ui.panel);
+							const $panel = $(ui.panel);
 							
 							$(".customHTMLHolder").detach();
 							$pageContents.data("currentTab", ui.newTab.find("a").html());
@@ -387,7 +371,6 @@
 								}
 							}
 							tabNavExtra.scaleImages();
-							tabNavExtra.loadCustomHTML();
 						}
 					}
 				});
@@ -398,7 +381,6 @@
 						if (firstLoad != true) {
 							$(".customHTMLHolder").detach();
 							tabNavExtra.scaleImages();
-							tabNavExtra.loadCustomHTML();
 						}
 					}
 				});
@@ -419,8 +401,6 @@
 						}
 					});
 				
-			} else if ($infoHolder.find(".paneHolder .paneInfo:visible .jsHolder").length > 0) {
-				this.loadCustomHTML();
 			}
 			
 			x_pageLoaded();
@@ -459,51 +439,38 @@
 				}
 
 				this.scaleImages();
-				this.loadCustomHTML();
 			}
 		}
 		
 		// function scales image on visible panel - have to do them individually after panel change as I can't get dimensions of images on hidden panels
 		this.scaleImages = function() {
-			var $img = $pageContents.find(".paneImg:visible img");
-			
-			// is there an image currently visible?  Has it already been scaled to fit this?
-			if ($img.length > 0 && $pageContents.data("count") != $img.data("count")) {
-				var firstScale = false;
-				
-				if ($img.data("count") == undefined) {
-					firstScale = true;
-				}
-				$img.data("count", $pageContents.data("count"));
-
-				x_scaleImg($img, $img.parents('.paneImg').width(), $pageContents.find(".infoHolder:visible .paneHolder:visible").height() - 10, true, firstScale);
-				$img.css({
-					"opacity"	:1,
-					"filter"	:'alpha(opacity=100)'
-				});
-			}
-		}
-		
-		this.loadCustomHTML = function() {
-			if ($("#pageContents .paneInfo:visible .jsHolder").length > 0) {
-				// there's some custom html to be loaded
-				var	$thisJsHolder = $("#pageContents .paneInfo:visible .jsHolder"),
-					$thisCustomHTMLHolder;
-				
-				if ($thisJsHolder.data("built") != false) {
-					// this pane has already been viewed - reload the customHTML previously used
-					$thisCustomHTMLHolder = $thisJsHolder.data("built").appendTo($thisJsHolder);
-					
-					customHTML.pageChanged();
-					
+			// work out the maximum height for a piece of media
+			function getMaxH($media) {
+				let maxH;
+				if ($(".splitScreen_B").css("flex-basis") === "100%" || $('.textTopHolder').length > 0) {
+					// tabbed navigator isn't a fixed height so make sure media is shown as large as possible (but not too large)
+					maxH = x_getAvailableHeight([$(".infoHolder:visible"), $media.parents(".paneHolder")], [$(".infoHolder:visible .tabList")]);
 				} else {
-					// customHTML hasn't loaded here before - load it from file
-					$thisCustomHTMLHolder = $('<div class="customHTMLHolder"></div>').appendTo($thisJsHolder);
-					$thisJsHolder.data("built", $thisCustomHTMLHolder);
-					
-					$thisCustomHTMLHolder.load($thisJsHolder.data("url"));
+					maxH = $media.parents(".paneHolder").height();
 				}
+				return maxH;
 			}
+
+			// resize images
+			$pageContents.find(".paneImg:visible img").each(function() {
+				const $this = $(this);
+				$this.hide();
+				const maxW = "100%";
+				const maxH = getMaxH($this);
+
+				$this
+					.css({
+						"max-width": maxW,
+						"max-height": maxH - ($this.outerHeight(true) - $this.height()) - ($this.parents("figure").length > 0 ? $this.parents("figure").find("figcaption").outerHeight(true) : 0),
+						opacity: 100
+					})
+					.show();
+			});
 		}
 	}
 	
@@ -513,33 +480,29 @@
 
 
 <div id="pageContents">
-	
-	<div id="txtHolder"></div>
-	
-	<div class="splitScreen">
 		
-		<div id="topicHolder" class="left" role="list">
+	<div id="topicHolder" class="splitScreen_A">
+		<div id="listHolder" role="list">
 			<a class="topic" href="#" role="listitem"></a>
 		</div>
-		
-		<div class="right">
-			<div>
-				<div class="infoHolder" role="region">
-					<ul class="tabList">
-						<li class="tabHeader">
-							<a></a>
-						</li>
-					</ul>
-					<div class="paneHolder">
-						<div class="paneList" role="list">
-							<a href="#" role="listitem"></a>
-						</div>
-						<div class="paneInfo" tabindex="0"></div>
+	</div>
+
+	<div class="splitScreen_B">
+		<div class="panelContent panel">
+			<div class="infoHolder" role="region">
+				<ul class="tabList">
+					<li class="tabHeader">
+						<a></a>
+					</li>
+				</ul>
+				<div class="paneHolder">
+					<div class="paneList" role="list">
+						<a href="#" role="listitem"></a>
 					</div>
+					<div class="paneInfo" tabindex="0"></div>
 				</div>
 			</div>
 		</div>
-		
 	</div>
 	
 </div>

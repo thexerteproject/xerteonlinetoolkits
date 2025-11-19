@@ -539,7 +539,9 @@
       AvgLabel = "Avg. of all attempts"
       ></showGraph>]]></showGraph><slideshow><![CDATA[<slideshow name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" nextBtnTip="Next" priorBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></slideshow><stopTracking><![CDATA[<stopTracking name="Enter Page Title" textIntro="" buttonLbl="Stop and finish tracking of this session" textAfter="You can now close the window"
       textWidth="full" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
-      ></stopTracking>]]></stopTracking><summary><![CDATA[<summary name="Enter Page Title" summaryHeader="Summary" summary="" nextstepsHeader="Next Steps" nextsteps=""/>]]></summary><tabNav><![CDATA[<tabNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></tabNav><tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title" panelWidth="Large" nextBtn="Next" prevBtn="Previous"/>]]></tabNavExtra><table><![CDATA[<table name="Enter Page Title" text="" align="left"><tableData name="Table Name" data="data|data" size="medium" borders="simple" header="header" shadeHeader="true" shade="true"/></table>]]></table><text><![CDATA[<text name="Enter Page Title"></text>]]></text><textCorrection><![CDATA[<textCorrection name="Enter Page Title" copyText="false"
+      ></stopTracking>]]></stopTracking><summary><![CDATA[<summary name="Enter Page Title" summaryHeader="Summary" summary="" nextstepsHeader="Next Steps" nextsteps=""/>]]></summary><tabNav><![CDATA[<tabNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></tabNav><tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title"
+      panelWidth="Large" panelWidthCustom="50" align="Right"
+      nextBtn="Next" prevBtn="Previous"/>]]></tabNavExtra><table><![CDATA[<table name="Enter Page Title" text="" align="left"><tableData name="Table Name" data="data|data" size="medium" borders="simple" header="header" shadeHeader="true" shade="true"/></table>]]></table><text><![CDATA[<text name="Enter Page Title"></text>]]></text><textCorrection><![CDATA[<textCorrection name="Enter Page Title" copyText="false"
             panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
             introduction="" wrongText="" answer="" disableAnswers="true" checkBtn="Submit"  textRight="Your answer is correct" textWrong="Your answer is incorrect" FurtherClarificationLabel="Feedback" answerLabel="Answer" attemptLabel="Attempts remaining" correctLabel="Correct Answer" textIncomplete="You have not attempted the question"/>]]></textCorrection><textDrawing><![CDATA[<textDrawing name="Enter Page Title" desc="Enter a description" align="left" interactivity="off"> </textDrawing>]]></textDrawing><textGraphics><![CDATA[<textGraphics name="Enter Page Title" align="Left" imagesize="auto" url="" tip="" transcriptbuttonlabel="Transcript"></textGraphics>]]></textGraphics><textHighlight><![CDATA[<textHighlight name="Enter Page Title" 
 		text="" textPos="top" textTitle="Introduction"
@@ -10414,13 +10416,17 @@
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></tabNav><tabNavExtra menu="Navigators" menuItem="Tabbed Navigator +" hint="A list of topics where each topic displays a series of tabbed pages to present related text and graphical content." icon="icTabPlus" thumb="thumbs/tabNavExtra.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#tabbednavigatorplus" wiki="https://xerte.org.uk/wiki/doku.php?id=navigator_tabbednavigator_page" remove="true" deepLink="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="1" defaultValue="100" width="100" deprecated="Width is now set automatically"/>
-	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Large" width="100" mandatory="true"/>
 
-	<txtGroup type="group" label="Page Text" optional="true" tooltip="Add introductory text, either at the top of the page or above the topic list.">
-		<text label="Text" type="TextArea" defaultValue="" placeholder="Enter text for the page here" height="200" optional="true"/>
-		<textPos label="Position" options="Top,Above Topic List" type="ComboBox" data="Top,Above" defaultValue="Top" width="100" optional="true"/>
-	</txtGroup>
+    <layoutGroup label="Page Layout" type="group">
+        <panelWidth label="Panel Width" options="Small,Medium,Large,Custom" type="ComboBox" data="Small,Medium,Large,Custom" defaultValue="Large" mandatory="true" conditionTrigger="true"/>
+        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right"/>
+    </layoutGroup>
+
+    <txtGroup type="group" label="Page Text" optional="true" tooltip="Add introductory text, either at the top of the page or above the topic list.">
+        <text label="Text" type="TextArea" defaultValue="" placeholder="Enter text for the page here" height="200" optional="true" conditionTrigger="true"/>
+        <textPos label="Position" options="Top,Above Topic List" type="ComboBox" data="Top,Above" defaultValue="Top" width="100" optional="true"/>
+    </txtGroup>
 
 	<nestedPageNav type="group" label="Nested Page Navigation" optional="true" tooltip="By default, when a tab contains more than one nested page, a list of page title links is shown to allow navigation between them.">
 	    <autoNumber label="Auto-Number Links" type="CheckBox" optional="true" defaultValue="false" condition="nextBtns=='false'||(nextBtns=='true'&amp;&amp;hideBreadcrumbs=='false')" tooltip="Use automatically generated numbers for page links, instead of the page title text."/>
@@ -10429,6 +10435,8 @@
 	</nestedPageNav>
 
 	<rememberTab label="Stay on Current Tab" type="CheckBox" optional="true" tooltip="Display the currently viewed tab when changing between topics containing tabs of the same name"/>
+
+    <tabWidth label="Tab Width" type="NumericStepper" min="20" max="250" step="1" defaultValue="100" width="100" deprecated="Width is now set automatically"/>
 
 	<nextBtn label="Next Button Label" type="TextInput" wysiwyg="true" defaultValue="Next" mandatory="true" language="true"/>
 	<prevBtn label="Previous Button Label" type="TextInput" wysiwyg="true" defaultValue="Previous" mandatory="true" language="true"/>
