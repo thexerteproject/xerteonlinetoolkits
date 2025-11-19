@@ -588,28 +588,41 @@
 				}
 				
 			} else {
-				$panelHolder.append('<div class="splitScreen"><div class="left"></div><div class="right"></div></div>');
+				// 'Full Left - Tile Right' or 'Tile Left - Full Right'
+				$panelHolder.append('<div class="splitScreen_A"></div><div class="splitScreen_B"></div>');
 				
 				var panels = $panelHolder.find(".panel");
 				
 				if (panelLayout == "left") {
 					for (var i=0; i<panels.length; i++) {
 						if (i == 0) {
-							$(panels[i]).appendTo($panelHolder.find(".left")).addClass("fullH");
+							$(panels[i]).appendTo($panelHolder.find(".splitScreen_A")).addClass("fullH");
 						} else {
-							$(panels[i]).appendTo($panelHolder.find(".right")).addClass("tileV");
+							$(panels[i]).appendTo($panelHolder.find(".splitScreen_B")).addClass("tileV");
 						}
 					}
 					
 				} else if (panelLayout == "right") {
 					for (var i=0; i<panels.length; i++) {
 						if (i == panels.length - 1) {
-							$(panels[i]).appendTo($panelHolder.find(".right")).addClass("fullH");
+							$(panels[i]).appendTo($panelHolder.find(".splitScreen_B")).addClass("fullH");
 						} else {
-							$(panels[i]).appendTo($panelHolder.find(".left")).addClass("tileV");
+							$(panels[i]).appendTo($panelHolder.find(".splitScreen_A")).addClass("tileV");
 						}
 					}
 				}
+
+				// data sent to the split screen function doesn't take info from xwd as it just depends on whether one or two columns are required
+				const attributes = {
+					panelWidth: "custom",
+					panelWidthCustom: "50", // panels are always equal width
+					panelPosition: "right",
+					pageTxt: "true", // prevent the left column being deleted as there will always be something in it
+					holder: $panelHolder
+				}
+
+				// set up split screen layout
+				XENITH.SPLITSCREEN.init({"attributes": attributes});
 			}
 			
 			this.resizePanels();
