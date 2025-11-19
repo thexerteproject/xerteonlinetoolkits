@@ -44,11 +44,20 @@
 					$thisPanelPaneHolder = $thisPanel.find('.paneHolder'),
 					$thisPanelTabHolder = $thisPanel.find('.tabHolder');
 
-				$thisPanel.height(x_getAvailableHeight([$thisPanel], [(x_browserInfo.mobile == true ? 0 : textHolderH), mainBtnHolderH]));
-				
-				// this resizing is for if the panel is a tabbed navigator
-				$thisPanelPaneHolder.height($thisPanel.height() - $thisPanelTabHolder.outerHeight());
-				$thisPanelPaneHolder.find('.navChild').height($thisPanelPaneHolder.height() - ($thisPanelPaneHolder.find('.navChild').outerHeight(true) - $thisPanelPaneHolder.find('.navChild').height()));
+				if ($(".splitScreen_B").css("flex-basis") !== "100%") {
+					// navigator isn't full width so ensure the panel is full height when needed
+					$thisPanel.height(x_getAvailableHeight([$thisPanel], [(x_browserInfo.mobile == true ? 0 : textHolderH), mainBtnHolderH]));
+
+					// this resizing is for if the panel is a tabbed navigator
+					$thisPanelPaneHolder.height($thisPanel.height() - $thisPanelTabHolder.outerHeight());
+					$thisPanelPaneHolder.find('.navChild').height($thisPanelPaneHolder.height() - ($thisPanelPaneHolder.find('.navChild').outerHeight(true) - $thisPanelPaneHolder.find('.navChild').height()));
+				} else {
+					// navigator is full width (or has text above it) so panel height is auto (fits content)
+					$thisPanel.height("unset");
+					$thisPanelPaneHolder.height("unset");
+					$thisPanelPaneHolder.find('.navChild').height("unset");
+				}
+
 			}
 			
 			// resize the contenteditable divs within panels
@@ -220,30 +229,38 @@
 				'position': position,
 				'docData': docData
 			});
-			
-			// sort split screen & add required classes...
-			var $contentHolder = $('#contentHolder'),
-				left = position.left.length > 0 ? 'left' : 'panelA',
-				right = left == 'left' ? 'panelB' : position.panelB.length > 0 ? 'panelB' : undefined;
-			
-			if (right == undefined) {
-				// no split screen needed
-				$contentHolder.append('<div class="panel panelA"/>');
-				
+
+			// create split screen layout & add required classes
+			const $contentHolder = $('#contentHolder');
+			const left = position.left.length > 0 ? 'left' : 'panelA';
+			const right = left == 'left' ? 'panelB' : position.panelB.length > 0 ? 'panelB' : undefined;
+
+			if (left == 'panelA') {
+				$contentHolder.find('.left .panel').addClass('panelA');
+				$contentHolder.find('.right .panel').addClass('panelB');
 			} else {
-				// create split screen layout
-				$contentHolder
-					.addClass('splitScreen')
-					.append('<div class="left"></div><div class="right"><div class="panel"></div></div>');
-				
-				if (left == 'panelA') {
-					$contentHolder.find('.left').append('<div class="panel panelA"></div>');
-					$contentHolder.find('.right .panel').addClass('panelB');
-				} else {
-					$contentHolder.find('.right .panel').addClass('panelA');
-					$contentHolder.find('.left').addClass('introTxt');
-				}
+				$contentHolder.find('.right .panel').addClass('panelA');
+				$contentHolder.find('.left').addClass('introTxt').empty();
 			}
+
+			// data sent to the split screen function doesn't take info from xwd as it just depends on whether one or two columns are required
+			const attributes = {
+				panelWidth: "custom",
+				panelWidthCustom: "50", // panels are always equal width
+				panelPosition: "right",
+				pageTxt: "true", // prevent the left column being deleted as there will always be something in it
+				holder: $("#contentHolder")
+			}
+
+			if (right == undefined) {
+				// only one panel so full width with nothing to left of navigator panel
+				attributes.panelWidth = "full";
+				attributes.removeTxt = "true";
+				$contentHolder.find('.right .panel').removeClass('panelB').addClass('panelA');
+			}
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 			
 			// add info to the panels - if there's more than one thing to show on the panel then it will become tabbed navigator
 			// an optional property also forces panels with one thing on to be tabbed navigator anyway
@@ -701,9 +718,17 @@
 
 <div id="pageContents">
 	
-	<div id="textHolder"></div>
+	<div id="textHolder" ></div>
 	
-	<div id="contentHolder"></div>
+	<div id="contentHolder">
+		<div class="left splitScreen_A">
+			<div class="panel"></div>
+		</div>
+
+		<div class="right splitScreen_B">
+			<div class="panel panelContent"></div>
+		</div>
+	</div>
 	
 	<div id="mainBtnHolder" class="btnHolder"></div>
 	
