@@ -2,13 +2,33 @@
 <wizard menus="Tracking / xAPI">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction=""></adaptiveContent>]]></adaptiveContent>
+      <adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction=""
+      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false" ></adaptiveContent>]]></adaptiveContent>
       </newNodes>
     </pageWizard>
     <!-- Adaptive Content =============================================== -->
     <adaptiveContent menu="Tracking / xAPI" menuItem="Adaptive Content" hint="A page where you can import Xerte result data from an xAPI LRS to present adaptive content based on the scores of previously executed content" icon="icAdaptiveContent" thumb="thumbs/adaptiveContent.jpg" wiki="https://xerte.org.uk/wiki/doku.php?id=trackingxapi_adaptivecontent_page" remove="true">
       <name label="Page Title" type="TextInput" wysiwyg="true" />
-      <introduction label="Introduction" type="textArea" height="120" placeholder="Enter introduction text here"/>
+      <introduction label="Page Text" type="textArea" height="120" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
+
+      <layoutGroup label="Page Layout" type="group">
+          <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" mandatory="true" conditionTrigger="true"/>
+          <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+          <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
+          <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+          <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="false" conditionTrigger="true" condition="panelWidth=='Full'"/>
+      </layoutGroup>
+
+      <textTopGroup label="Text Above Panel" type="group" optional="true">
+          <textTop label="Text" type="TextArea" height="100" optional="true"/>
+          <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+      </textTopGroup>
+
+      <textBelowGroup label="Text Below Panel" type="group" optional="true">
+          <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+          <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+      </textBelowGroup>
+
       <displayMode label="Display Mode" conditionTrigger='true' optional="true" type="combobox" options="Unlisted,Listed" data="Unlisted,Listed" defaultValue="Unlisted" />
       <startDate label="Start Date" optional="true" type="dateField" defaultValue="" tooltip="Read records starting from this date" />
       <endDate label="Stop Date" optional="true" type="dateField" defaultValue="" tooltip="Read records ending from this date" />
