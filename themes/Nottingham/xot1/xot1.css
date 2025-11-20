@@ -606,7 +606,7 @@ a.hotspot, a.hotspot.selected {
 }
 
 .hsinfo {
-  padding: 1%;
+  /*padding:1%;*/
 }
 
 .x_hotspotImage_page #infoHolder {

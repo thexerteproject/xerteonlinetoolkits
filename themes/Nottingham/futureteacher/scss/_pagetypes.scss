@@ -191,7 +191,7 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   background:none;
 }
 .x_annotatedDiagram_page #infoHolder{
-  background:$defaultpagebackground;
+  /*background:$defaultpagebackground;*/
 }
 //*******Drag and Drop Labelling*********/
 .target.ui-droppable.border.highlight {
@@ -199,8 +199,8 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   background-color: transparentize($lightestcolor, .6) !important;
 }
 .x_dragDropLabel_page #infoHolder{
-  padding:20px;
-  margin-right:20px;
+  /*padding:20px;
+  margin-right:20px;*/
 }
 .x_dragDropLabel_page .label.panel{
   background:transparentize(darken($lightestcolor, 70%), .2 )!important;
@@ -276,7 +276,7 @@ a.hotspot, a.hotspot.selected {
   background: none;
 }
 .hsinfo{
-  padding:1%;
+  /*padding:1%;*/
 }
 
 .x_hotspotImage_page #infoHolder {
@@ -470,4 +470,9 @@ table.footer.shaded tbody tr:last-child,
 table.headerCol.shaded td.header {
 	background: darken($lightestcolor, 50%);
 	color:$whiteorlightest;
+}
+
+.x_nav_page #pageContents.tab #infoHolder {
+  border-radius:$mediumroundedcorners;
+  background: $lightestcolor;
 }

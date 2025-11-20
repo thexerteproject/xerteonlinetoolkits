@@ -314,9 +314,9 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
 }
 
 .x_dragDropLabel_page #infoHolder {
-  padding: 20px;
-  margin-right: 20px;
-  background: #9A9A9A;
+  /*padding:20px;
+  margin-right:20px;
+  background:$contrastcolor;*/
 }
 
 .x_dragDropLabel_page .label.panel {
@@ -400,7 +400,7 @@ a.hotspot, a.hotspot.selected {
 }
 
 .hsinfo {
-  padding: 1%;
+  /*padding:1%;*/
 }
 
 .x_hotspotImage_page #infoHolder {
@@ -601,6 +601,11 @@ table.headerCol.shaded td.header {
   color: #ffffff;
   background: #3F4957;
   border-color: #9A9A9A;
+}
+
+.x_nav_page #pageContents.tab #infoHolder {
+  border-radius: 0;
+  background: #9A9A9A;
 }
 
 #x_footerBlock {
@@ -1524,8 +1529,8 @@ a:hover {
 }
 
 #infoHolder {
-  border-radius: 0;
-  background: #9A9A9A;
+  /*border-radius:$mediumroundedcorners;
+  background: $contrastcolor;*/
 }
 
 .panel {

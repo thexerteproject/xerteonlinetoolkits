@@ -292,7 +292,7 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
 }
 
 .x_annotatedDiagram_page #infoHolder {
-  background: #ffffff;
+  /*background:$defaultpagebackground;*/
 }
 
 .target.ui-droppable.border.highlight {
@@ -300,8 +300,8 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
 }
 
 .x_dragDropLabel_page #infoHolder {
-  padding: 20px;
-  margin-right: 20px;
+  /*padding:20px;
+  margin-right:20px;*/
 }
 
 .x_dragDropLabel_page .label.panel {
@@ -379,7 +379,7 @@ a.hotspot, a.hotspot.selected {
 }
 
 .hsinfo {
-  padding: 1%;
+  /*padding:1%;*/
 }
 
 .x_hotspotImage_page #infoHolder {
@@ -659,6 +659,11 @@ table.footer.shaded tbody tr:last-child {
 
 table.headerCol.shaded td.header {
   background-color: inherit;
+}
+
+.x_nav_page #pageContents.tab #infoHolder {
+  border-radius: 2vmin;
+  background: orange;
 }
 
 #x_footerBlock {
@@ -1672,8 +1677,8 @@ body:not(.sb_right):not(.sb_left) #x_mainHolder {
 }
 
 #infoHolder {
-  border-radius: 2vmin;
-  background: orange;
+  /*border-radius:$mediumroundedcorners;
+  background: $lightestcolor;*/
 }
 
 .panel {
