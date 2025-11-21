@@ -2,7 +2,7 @@
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <gapFill><![CDATA[<gapFill name="Enter Page Title" text="" passage="" interactivity="Drag Drop" feedback=""
-      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
       gapLook="bg" gapLookFilled="true" gapSize="max" gapBespokeSize="20" gapSizeFilled="true" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer" tryAgain="Try again"/>]]></gapFill>
     </newNodes>
   </pageWizard>
@@ -31,18 +31,19 @@
     <layoutGroup label="Page Layout" type="group">
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
         <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox"  data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
         <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
-        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 

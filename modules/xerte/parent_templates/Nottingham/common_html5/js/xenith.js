@@ -7715,6 +7715,7 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 			// don't look for these if current page is menu page as x_currentPageXML will not be defined
 			attributes.panelWidth = x_currentPageXML.getAttribute("panelWidth");
 			attributes.panelWidthCustom = x_currentPageXML.getAttribute("panelWidthCustom");
+			attributes.panelHeight = x_currentPageXML.getAttribute("panelHeight");
 			attributes.panelPosition = x_currentPageXML.getAttribute("align");
 			attributes.panelStyle = x_currentPageXML.getAttribute("panelStyle");
 			attributes.removeTxt = x_currentPageXML.getAttribute("removeTxt");
@@ -7876,8 +7877,9 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 	function resizePanel() {
 		// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
 		// this will be overridden on smaller screens (where columns are rearranged into rows) and panel height will be 'auto'
+		// can also be overridden if panelHeight is set to 'fit'
 		const data = pageData.find(obj => obj.page === x_currentPage);
-		if ((data.attributes.fullH || $.isArray(data.attributes.fullH)) || (data.attributes.panelStyle !== "true" && (data.elements.topTxt == undefined || data.elements.topTxt === 0) && (data.elements.bottomTxt == undefined || data.elements.bottomTxt.length === 0) && (data.attributes.panelWidth !== "full" || data.elements.textColumn == undefined || data.elements.textColumn.length === 0))) {
+		if ((data.attributes.fullH || $.isArray(data.attributes.fullH)) || (data.attributes.panelStyle !== "true" && data.attributes.panelHeight !== "fit" && (data.elements.topTxt == undefined || data.elements.topTxt.length === 0) && (data.elements.bottomTxt == undefined || data.elements.bottomTxt.length === 0) && (data.attributes.panelWidth !== "full" || data.elements.textColumn == undefined || data.elements.textColumn.length === 0))) {
 			// force height to exclude height of certain elements
 			const excludeH = $.isArray(data.attributes.fullH) ? data.attributes.fullH.map(id => $("." + id)) : [];
 			const panelH = x_getAvailableHeight([data.elements.panel, $(".splitScreen")], excludeH, (data.attributes.fullH || $.isArray(data.attributes.fullH ? true : false)));
