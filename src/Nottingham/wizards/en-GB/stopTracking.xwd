@@ -2,7 +2,7 @@
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <stopTracking><![CDATA[<stopTracking name="Enter Page Title" textIntro="" buttonLbl="Stop and finish tracking of this session" textAfter="You can now close the window"
-      textWidth="full" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      textWidth="full" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
       ></stopTracking>]]></stopTracking>
 	</newNodes>
   </pageWizard>
@@ -17,18 +17,19 @@
     <layoutGroup label="Page Layout" type="group">
       <textWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="small,medium,large,full,custom" defaultValue="full" conditionTrigger="true" mandatory="true"/>
       <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="textWidth=='custom'"/>
+      <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox"  data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;((textWidth!='full'&amp;&amp;textWidth!=undefined)||removeTxt!='false')"/>
       <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="textWidth!='full'"/>
-      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
       <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="textWidth=='full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-      <textTop label="Text" type="TextArea" height="100" optional="true"/>
+      <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="textWidth!='full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-      <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+      <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="textWidth!='full'"/>
     </textBelowGroup>
 

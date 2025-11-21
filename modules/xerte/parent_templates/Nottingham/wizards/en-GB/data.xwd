@@ -361,7 +361,7 @@
     <newNodes>
     <QRcode><![CDATA[<QRcode name="Enter Page Title" url="" tip="" imagesize="large"></QRcode>]]></QRcode><SictTimeline><![CDATA[<SictTimeline name="Enter Page Title" media="SictTimeline" text="" error="Loading" />]]></SictTimeline><accNav><![CDATA[<accNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></accNav><adaptiveContent><![CDATA[<adaptiveContent name="Enter Page Title" introduction=""
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false" ></adaptiveContent>]]></adaptiveContent><annotatedDiagram><![CDATA[<annotatedDiagram name="Enter Page Title"  text="" url="" panelWidth="Medium" tip="" colour="0xFFFF00" shape="Rectangle" align="Left"/>]]></annotatedDiagram><audioRecord><![CDATA[<audioRecord name="Enter Page Title" text=""
-      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
       randomise="false"
 	  prevText="Previous" nextText="Next" restartText="Restart" restartConfirmText="Restarting will remove all recordings. Do you want to restart?" countText="Clip {i} of {n}" recText="Record" stopText="Stop" downloadText="Download all" downloadText2="Download example" downloadText3="Download recordings" deleteText="Delete" clipNameLabel="Enter audio clip name" defaultClipName="Unnamed clip" clipNameRenameLabel="Edit audio clip name" micErrorLabel="Try Again"
 	  />]]></audioRecord><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="" text=""
@@ -370,10 +370,10 @@
       delaySecs="1" showBullets="0"
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
       ></bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="" prompt="" feedback=""
-      panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"
       label="Check" />]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="" intro=""
-      panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="" prompt=""
-      panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="" prompt=""
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"
 	  confirmBtnTxt="Confirm" 
 	  notFoundMessage="could not be found in this project." 
 	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq><captivate><![CDATA[<captivate name="Enter Page Title" url="Select a Captivate SWF File"/>]]></captivate><categories><![CDATA[<categories name="Enter Page Title" text="" feedback="" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly" incomplete="Complete the exercise."/>]]></categories><chapter><![CDATA[<chapter name="Enter Chapter Title" includeInHeader="Chart Title"/>]]></chapter><chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text=""
@@ -381,7 +381,7 @@
       showTitles="true" minWidth="75" panelStyle="none"
       />]]></columnPage><connectorHotspotImage><![CDATA[<connectorHotspotImage name="Enter Page Title" text="" textWidth="narrow" url="" tip="" highlight="false" hs_showTooltip="true" align="Left"
 	  notFoundMessage="could not be found in this project." />]]></connectorHotspotImage><connectorMenu><![CDATA[<connectorMenu name="Enter Page Title" text=""
-      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
       reportTitle="List of page titles and matching pageIDs" pageLabel="Page No" titleLabel="Title:" idLabel="linkID:" />]]></connectorMenu><crossword><![CDATA[<crossword name="Enter Page Title"  attempts="1" capitalise="true" align="Left"
 	  acrossLabel="Across"
 	  downLabel="Down"
@@ -410,9 +410,9 @@
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
       firstStep="" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" yourAnswerString="Your answer" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision><delicious><![CDATA[<delicious name="Enter Page Title" text="Enter text for the page here" search="recent" term="Enter Tags" results="20" panelWidth="Medium" 
 	  headerTxt="Delicious bookmarks for" />]]></delicious><dialog><![CDATA[<dialog name="Enter Page Title" text="" attempts="2"
-      panelWidth="Large" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      panelWidth="Large" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
       tryTxt="Try again" correctTxt="The correct answer is shown." submitBtnTxt="Submit" nextBtnTxt="Next"/>]]></dialog><dictation><![CDATA[<dictation name="Enter Page Title" text=""
-      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
       randomise="true" showText="Show Answer" trackedShowText="Submit" correctText="Correct!" incorrectText="Incorrect." nextText="Next" restartText="Restart" answerFieldLabel="Answer" countText="Clip {i} of {n}"/>]]></dictation><documentation><![CDATA[<documentation name="Enter Page Title" text="" intro="" display="all" download="last"
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
       instructions="Click the download button to save a copy of your answers" submittedTxt="Your answers have been submitted" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
@@ -421,7 +421,7 @@
       />]]></flashCards><flashPaper><![CDATA[<flashPaper name="Enter Page Title" url="Select a Flash Paper SWF File"/>]]></flashPaper><flickr><![CDATA[<flickr name="Enter Page Title" keywords="" content="all use" deriv="unrestricted"
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
       nextTipTxt="Next Image" priorTipTxt="Previous Image" imageTxt="Image {i} of {n} images" ></flickr>]]></flickr><gapFill><![CDATA[<gapFill name="Enter Page Title" text="" passage="" interactivity="Drag Drop" feedback=""
-      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
       gapLook="bg" gapLookFilled="true" gapSize="max" gapBespokeSize="20" gapSizeFilled="true" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer" tryAgain="Try again"/>]]></gapFill><geocommons><![CDATA[<geocommons name="Enter Page Title" src="Enter embed code here"/>]]></geocommons><grid><![CDATA[<grid name="Enter Page Title" text="" feedback="" data="1|2|3" constrain="none" style="row" align="left" gridSize="medium" drag="insert" checkBtnTxt="Check Answers" resetBtnTxt="Reset" />]]></grid><hangman><![CDATA[<hangman name="Enter Page Title" text="" words="" restrict="letter"
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
 	  nextBtnTxt="Next"
@@ -466,7 +466,7 @@
 	  />]]></inventory><jing><![CDATA[<jing name="Enter Page Title" url="Select a Jing SWF File"/>]]></jing><jmol><![CDATA[<jmol name="Enter Page Title" text="Enter text for the page" xyz="Select an XYZ file" size="Medium" initLook="Ball and Stick" colour="Default" controls="true"/>]]></jmol><links><![CDATA[<links name="Enter Page Title" text="" cols="3" />]]></links><list><![CDATA[<list name="Enter Page Title"
       panelWidth="Large" panelWidthCustom="50" align="right" panelStyle="false"
       openFirst="true"/>]]></list><map><![CDATA[<map name="Enter Page Title" text="Enter text for the page here" align="left" mapurl="Paste the link here" maptype="roadmap" tooltip="Enter a Description for Accessibility" link="true"/>]]></map><mapstraction><![CDATA[<mapstraction name="Enter Page Title" provider="google" lat="0" lng="0" zoom="4"/>]]></mapstraction><mcq><![CDATA[<mcq name="Enter Page Title" instruction="" prompt="" type="Single Answer"
-      panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"
 	  feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
 	  multiWrong="You have not selected the correct combination of answers" 
 	  checkBtnTxt="Check" />]]></mcq><media360><![CDATA[<media360 name="Enter Page Title" text=""
@@ -477,16 +477,16 @@
 	  />]]></media360><mediaLesson><![CDATA[<mediaLesson name="Enter Page Title" layout="grid" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><mediaPanel name="Enter Panel Title" media="" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><panel name="Enter Panel Title"/></mediaLesson>]]></mediaLesson><memory><![CDATA[<memory name="Enter Page Title" text=""
       panelWidth="Full" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
       resetBtnTxt="Shuffle Cards"/>]]></memory><modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="" pageFeedback=""
-      panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"
 	  feedbackBtnTxt="Submit" pageTxt="Page" questionTxt="Question" responseHeaderTxt="Your response:"
 	  noAnswerHeaderTxt="No response submitted" exampleHeaderTxt="Feedback:" feedbackTxt="Page feedback"
 	  copyBtn2Label="Copy" copyShortcutTxt="Press Ctrl+C to copy" downloadTxt="Download" answerFieldLabel="Answer"
 	  />]]></modelAnswer><modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title" text=""
-      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
       dataPageLink="true"
 	  copyBtn2Label="Copy" downloadTxt="Download" pageTxt="Page" notViewed="Page not viewed"
 	  ></modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Page Title" pageTxt="" instruction="" text="" prompt="" answer="" answerType="true"
-      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
 	   answerHeaderTxt="Write your answer here:" feedbackBtnTxt="Feedback" answerFieldLabel="Answer"
 	  />]]></modify><morphImages><![CDATA[<morphImages name="Enter Page Title" text="" url="" tip1="" url2="" tip2="" zoomSpeed="3" buttonLabel="Zoom"><hotspot name="Zoom Region" x="0" y="0" w="100" h="100" /></morphImages>]]></morphImages><nav><![CDATA[<nav name="Enter Page Title" text="" type="Tab"
       panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" panelPos="Right" buttonPos="Top" collapsible="false" panelStyle="false" removeTxt="true"
@@ -506,7 +506,7 @@
 	  howtoHeader="How to use this resource" howto=""/>]]></orient><pdf><![CDATA[<pdf name="Enter Page Title" text="" url=""
       panelWidth="Medium" panelWidthCustom="50" align="right" panelStyle="false" removeTxt="false"
       open="Open PDF"/>]]></pdf><perspectives><![CDATA[<perspectives name="Enter Page Title" thumbH="small" backBtnTip="Scroll Back" nextBtnTip="Scroll Forward" videoTip="Video Clip" soundTip="Sound Clip" backGrid="Back" playTip="Play All"/>]]></perspectives><quiz><![CDATA[<quiz name="Enter Page Title" order="random" numQuestions="*"
-      panelWidth="Medium" panelWidthCustom="50" align="left" panelStyle="false" removeTxt="false"
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="left" panelStyle="false" removeTxt="false"
       instructions="" judge="true" showfeedback="true" feedback=""
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" generalFeedbackLabel="General Feedback"
 	  singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
@@ -518,9 +518,9 @@
 	  />]]></quiz><raptivity><![CDATA[<raptivity name="Enter Page Title" url="Select a Raptivity SWF File"/>]]></raptivity><results><![CDATA[<results name="Enter Page Title" text="" resultmode="full-results"
              panelWidth="Full" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
             generalResultsTxt="Results summary" givenameTxt="Your name" averageTxt="Score" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Detailed results" globalResultsTxt="Page overview" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Interactivity results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Complete" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter name for PDF" userNamePrompt="Name: " okButtonTxt="Ok" durationSecondsTxt="s"/>]]></results><rss><![CDATA[<rss name="Enter Page Title" text="" url=""
-      panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"
       />]]></rss><rssdownload><![CDATA[<rssdownload name="Enter Page Title" text="" url=""
-      panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"
       />]]></rssdownload><scenario><![CDATA[<scenario name="Scenario Name" title="Scenario Title" description="Description of scenario" navSetting="none"
        imageButtonShow="Show Media" imageButtonHide="Hide Media" imageButtonWidth="100" continueButtonLabel="Continue" continueButtonWidth="100"
 	   scenarioPropsTitle="You can see..." scenarioPropsName="item(s)" inventoryEmpty="Nothing" inventoryTitle="You have with you..." inventoryItemName="item(s)"
@@ -539,11 +539,11 @@
       PersonalLastLabel = "Your last attempt"
       AvgLabel = "Avg. of all attempts"
       ></showGraph>]]></showGraph><slideshow><![CDATA[<slideshow name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium" nextBtnTip="Next" priorBtnTip="Previous" slideCount="Slide {i} of {n}"/>]]></slideshow><stopTracking><![CDATA[<stopTracking name="Enter Page Title" textIntro="" buttonLbl="Stop and finish tracking of this session" textAfter="You can now close the window"
-      textWidth="full" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      textWidth="full" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
       ></stopTracking>]]></stopTracking><summary><![CDATA[<summary name="Enter Page Title" summaryHeader="Summary" summary="" nextstepsHeader="Next Steps" nextsteps=""/>]]></summary><tabNav><![CDATA[<tabNav name="Enter Page Title" text="Enter text for the page here" panelWidth="Medium"/>]]></tabNav><tabNavExtra><![CDATA[<tabNavExtra name="Enter Page Title"
       panelWidth="Large" panelWidthCustom="50" align="Right"
       nextBtn="Next" prevBtn="Previous"/>]]></tabNavExtra><table><![CDATA[<table name="Enter Page Title" text="" align="left"><tableData name="Table Name" data="data|data" size="medium" borders="simple" header="header" shadeHeader="true" shade="true"/></table>]]></table><text><![CDATA[<text name="Enter Page Title"></text>]]></text><textCorrection><![CDATA[<textCorrection name="Enter Page Title" copyText="false"
-            panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
+            panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"
             introduction="" wrongText="" answer="" disableAnswers="true" checkBtn="Submit"  textRight="Your answer is correct" textWrong="Your answer is incorrect" FurtherClarificationLabel="Feedback" answerLabel="Answer" attemptLabel="Attempts remaining" correctLabel="Correct Answer" textIncomplete="You have not attempted the question"/>]]></textCorrection><textDrawing><![CDATA[<textDrawing name="Enter Page Title" desc="Enter a description" align="left" interactivity="off"> </textDrawing>]]></textDrawing><textGraphics><![CDATA[<textGraphics name="Enter Page Title" align="Left" imagesize="auto" url="" tip="" transcriptbuttonlabel="Transcript"></textGraphics>]]></textGraphics><textHighlight><![CDATA[<textHighlight name="Enter Page Title" 
 		text="" textPos="top" textTitle="Introduction"
 		initialText="" initialPos="panelA" initialTitle="Initial Text"
@@ -563,9 +563,9 @@
 		suggestedTxtLabel="A suggested answer"
 		notesTxtLabel="Notes"
 	  />]]></textHighlight><textMatch><![CDATA[<textMatch name="Enter Page Title" pageText="" text="" maxAttempts="3"
-      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
       correctMessage="Correct answers are shown" submitBtnTxt="Submit" feedback="" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Description for Accessibility" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="" tip="" full="false" transcriptTabTxt="Transcript" ></textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="" nextBtnTip="Scroll Forward" priorBtnTip="Scroll Back"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="" interactivity="Timeline" feedback="" checkBtnTxt="Check Answers" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></timeline><title><![CDATA[<title name="Enter Page Title" text="" size="30" titleVAlign="200" titleHAlign="center" startBtnTxt="Start"></title>]]></title><topXQ><![CDATA[<topXQ name="Enter Page Title" instruction="" prompt=""
-             panelWidth="Medium" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
+             panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"
              numberAnswers="*" caseSensitivity="true"
 			 feedbackLabel="Feedback"
 			 attemptLabel="Attempts remaining"
@@ -581,7 +581,7 @@
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false"
       />]]></videoSynch><wiki><![CDATA[<wiki name="Enter Page Title" text="Enter Page text" url="Enter Article URL" align="Left"/>]]></wiki><wordsearch><![CDATA[<wordsearch name="Enter Page Title" text="" words="" solveBtnTxt="Solve Puzzle" fillChars="" retryBtnTxt="Restart Puzzle"
 	  />]]></wordsearch><xerteModel><![CDATA[<xerteModel name="Enter Page Title" modelFile="Select a Model" errorTxt="You can not view this type of content in the HTML viewer." />]]></xerteModel><youtube><![CDATA[<youtube name="Enter Page Title" text="">Enter Embed Code Here</youtube>]]></youtube><youtuberss><![CDATA[<youtuberss name="Enter Page Title" text="" url="" results="20"
-      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
       resultsTxt="YouTube results for term"
       apiErrorMesg="The YouTube API returned the following error: '{0}'&lt;br&gt;If no API key is set, ask your admin to set up a key in api_keys.php (see api_keys.dist.php for a template)." />]]></youtuberss></newNodes>
 
@@ -1323,18 +1323,19 @@
     <layoutGroup label="Page Layout" type="group">
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
         <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
         <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
-        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" conditionTrigger="true" defaultValue="false"/>
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTop label="Text" type="TextArea" height="100" conditionTrigger="true" optional="true"/>
         <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottom label="Text" type="TextArea" height="100" conditionTrigger="true" optional="true"/>
         <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
@@ -1885,18 +1886,19 @@
     <layoutGroup label="Page Layout" type="group">
       <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
       <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+      <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
       <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
-      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
       <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-      <textTop label="Text" type="TextArea" height="100" optional="true"/>
+      <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-      <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+      <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
@@ -1986,18 +1988,19 @@
     <layoutGroup label="Page Layout" type="group">
       <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
       <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+      <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
       <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
-      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
       <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-      <textTop label="Text" type="TextArea" height="100" optional="true"/>
+      <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-      <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+      <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
@@ -2093,18 +2096,19 @@
     <layoutGroup label="Page Layout" type="group">
       <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
       <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+      <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
       <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Right" condition="panelWidth!='Full'"/>
-      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" conditionTrigger="true" defaultValue="false"/>
       <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-      <textTop label="Text" type="TextArea" height="100" optional="true"/>
+      <textTop label="Text" type="TextArea" height="100" conditionTrigger="true" optional="true"/>
       <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-      <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+      <textBottom label="Text" type="TextArea" height="100" conditionTrigger="true" optional="true"/>
       <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
@@ -2868,18 +2872,19 @@
     <layoutGroup label="Page Layout" type="group">
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Full" conditionTrigger="true" mandatory="true"/>
         <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle=='false'&amp;&amp;((panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||(removeTxt=='true'||text==undefined))"/>
         <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
-        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="true"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" conditionTrigger="true" defaultValue="true"/>
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="false" conditionTrigger="true" condition="panelWidth=='Full'||panelWidth==undefined"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'&amp;&amp;panelWidth!=undefined"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'&amp;&amp;panelWidth!=undefined"/>
     </textBelowGroup>
 
@@ -3502,18 +3507,19 @@
     <layoutGroup label="Page Layout" type="group">
       <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Large" conditionTrigger="true" mandatory="true"/>
       <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+      <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
       <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
-      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
       <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-      <textTop label="Text" type="TextArea" height="100" optional="true"/>
+      <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-      <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+      <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
@@ -3624,18 +3630,19 @@
     <layoutGroup label="Page Layout" type="group">
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
         <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
         <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
-        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" conditionTrigger="true" defaultValue="false"/>
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
@@ -4529,18 +4536,19 @@
     <layoutGroup label="Page Layout" type="group">
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
         <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
         <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
-        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
@@ -6919,18 +6927,19 @@
     <layoutGroup label="Page Layout" type="group">
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
         <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
         <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
-        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" conditionTrigger="true" defaultValue="false"/>
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
@@ -7774,18 +7783,19 @@
     <layoutGroup label="Page Layout" type="group">
       <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
       <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+      <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
       <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
-      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
       <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-      <textTop label="Text" type="TextArea" height="100" optional="true"/>
+      <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-      <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+      <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
@@ -7935,8 +7945,9 @@
     <layoutGroup label="Page Layout" type="group">
       <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" mandatory="true" conditionTrigger="true"/>
       <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+      <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
       <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
-      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
       <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
@@ -7945,12 +7956,12 @@
     <info><![CDATA[<p>By default, the results from all viewed Model Answer pages will be displayed on this page. To collate results from a limited number of pages instead, add new 'Page Results' to specify the pages used.</p>]]></info>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-      <textTop label="Text" type="TextArea" height="100" optional="true"/>
+      <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-      <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+      <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
@@ -8088,18 +8099,19 @@
     <layoutGroup label="Page Layout" type="group">
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Full" conditionTrigger="true" mandatory="true"/>
         <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle=='false'&amp;&amp;((panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||removeTxt!='false')"/>
         <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'&amp;&amp;panelWidth!=undefined"/>
-        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="true"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="true" conditionTrigger="true"/>
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'||panelWidth==undefined"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 	
@@ -9091,18 +9103,19 @@
     <layoutGroup label="Page Layout" type="group">
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
         <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
         <align label="Panel Position" options="Right,Left" type="ComboBox" data="left,right" defaultValue="left" condition="panelWidth!='Full'"/>
-        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
@@ -9519,18 +9532,19 @@
     <layoutGroup label="Page Layout" type="group">
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true" mandatory="true"/>
         <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
         <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
-        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
@@ -9621,18 +9635,19 @@
     <layoutGroup label="Page Layout" type="group">
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true" mandatory="true"/>
         <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
         <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
-        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
@@ -10154,18 +10169,19 @@
     <layoutGroup label="Page Layout" type="group">
       <textWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="small,medium,large,full,custom" defaultValue="full" conditionTrigger="true" mandatory="true"/>
       <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="textWidth=='custom'"/>
+      <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;((textWidth!='full'&amp;&amp;textWidth!=undefined)||removeTxt!='false')"/>
       <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="textWidth!='full'"/>
-      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
       <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="textWidth=='full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-      <textTop label="Text" type="TextArea" height="100" optional="true"/>
+      <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="textWidth!='full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-      <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+      <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="textWidth!='full'"/>
     </textBelowGroup>
 
@@ -10759,18 +10775,19 @@
         <layoutGroup label="Page Layout" type="group">
             <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
             <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+            <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
             <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
-            <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+            <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
             <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
         </layoutGroup>
 
         <textTopGroup label="Text Above Panel" type="group" optional="true">
-            <textTop label="Text" type="TextArea" height="100" optional="true"/>
+            <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
             <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
         </textTopGroup>
 
         <textBelowGroup label="Text Below Panel" type="group" optional="true">
-            <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+            <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
             <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
         </textBelowGroup>
 
@@ -11206,18 +11223,19 @@
     <layoutGroup label="Page Layout" type="group">
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Full" conditionTrigger="true" mandatory="true"/>
         <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle=='false'&amp;&amp;((panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||removeTxt!='false')"/>
         <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'&amp;&amp;panelWidth!=undefined"/>
-        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="true"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="true" conditionTrigger="true"/>
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'||panelWidth==undefined"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 	
@@ -11842,18 +11860,19 @@
     <layoutGroup label="Page Layout" type="group">
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
         <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
         <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
-        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
         <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
@@ -12549,18 +12568,19 @@
     <layoutGroup label="Page Layout" type="group">
       <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true" mandatory="true"/>
       <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+      <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
       <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
-      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
       <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
-      <textTop label="Text" type="TextArea" height="100" optional="true"/>
+      <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textTopGroup>
 
     <textBelowGroup label="Text Below Panel" type="group" optional="true">
-      <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+      <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 	
