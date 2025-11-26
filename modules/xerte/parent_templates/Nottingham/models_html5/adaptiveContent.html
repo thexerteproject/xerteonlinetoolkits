@@ -25,6 +25,7 @@
     };
 
     this.createDiagram = function(data, identifier, showall_only, interaction) {
+        var originalData = [...data];
         var importData = data;
         var numSubmits = importData.length;
         var latest_ts = "";
@@ -59,10 +60,6 @@
         }
         if (radarData === 'personal'|| radarData === null) {
             importData.forEach(function (obj) {
-                if (objlabel == null) {
-                    objlabel = obj.graph.label;
-                }
-
                 for (var i = 0; i < obj.graph.classvalues.length; i++) {
                     if (mean_all[i] == null) {
                         mean_all[i] = obj.graph.classvalues[i];
@@ -303,6 +300,7 @@
             const graph = new DashboardGraphs.RadarChartOpinion({
               classLabels: classtitles,
               datasets: datasets,
+              statements: originalData,
               options: {
                 ctx: ctx,
                 textSize: textSize,
@@ -355,9 +353,10 @@
                     colors = interaction.getAttribute('graphColorScale').split(",");
                 }
 
-                const graph = new DashboardGraphs.HorizontalBarGraphWithAverages({
+                const graph = new DashboardGraphs.HorizontalBarGraphWithAveragesOpinion({
                   classLabels: classtitles,
                   datasets: datasets,
+                  statements: data,
                   options: {
                     barColors: interaction.getAttribute('graphColorScale').split(","),
                     ctx: ctx,
@@ -846,6 +845,7 @@
               Explanation +
               "</div>"
       }
+      return '';
   }
 
 
@@ -1884,40 +1884,12 @@
       if (IncorrectText == undefined) {
         IncorrectText = "Incorrect";
       }
-      var xerteurl = interaction.getAttribute("xerteurl");
-      if (xerteurl == null || xerteurl == "") {
-        xerteurl = x_siteUrl;
-      }
       var xertelo = interaction.getAttribute("xertelo");
       if (xertelo == null || xertelo == "") {
           xertelo = x_TemplateId;
       }
       var ownstatements = filterOwnStatements(data, xertelo);
 
-      var nrbars = interaction.getAttribute("graphNrDataPoints");
-      if (nrbars == undefined) {
-        nrbars = 10;
-      }
-      var followBlock = interaction.getAttribute("graphFollowBlock");
-      if (followBlock == undefined) {
-          followBlock = false;
-      }
-      var graphFitInfoInBar = interaction.getAttribute("graphFitInfoInBar");
-      if (graphFitInfoInBar == undefined) {
-          graphFitInfoInBar = false;
-      }
-      var graphShowAvg = interaction.getAttribute("graphShowAvg");
-      if (graphShowAvg == undefined) {
-          graphShowAvg = false;
-      }
-      var graphShowScore = interaction.getAttribute("graphShowScore");
-      if (graphShowScore == undefined) {
-          graphShowScore = false;
-      }
-      var graphShowAvgLine = interaction.getAttribute("graphShowAvgBar");
-      if (graphShowAvgLine == undefined) {
-          graphShowAvgLine = false;
-      }
       var MultiPeriod = x_currentPageXML.getAttribute("multiPeriodVersion");
       if (MultiPeriod == undefined) {
           MultiPeriod = "off";
@@ -2223,92 +2195,44 @@
           }
 
           for (let i = 0; i < periods.length; i++) {
-              div = $(
-                  "#" + escapeUrl(url, type, interactionIndex) + "-graph-container" + i
-              );
+              const div = $(`#${escapeUrl(url, type, interactionIndex)}-graph-container${i}`);
 
               let graphSpace = "";
 
-              if (
-                  interaction.getAttribute("actualGraphType") == "pie_marks" ||
-                  interaction.getAttribute("actualGraphType") == "bar_comb_marks" ||
-                  interaction.getAttribute("actualGraphType") == "polar_area_per_category" ||
-                  interaction.getAttribute("actualGraphType") == "bar_marks" ||
-                  interaction.getAttribute("actualGraphType") == "bar_marks_score" ||
-                  interaction.getAttribute("actualGraphType") == "bar_answers" ||
-                  interaction.getAttribute("actualGraphType") == "line_average_marks" ||
-                  interaction.getAttribute("actualGraphType") == "line_own_marks"
-              ) {
-
-                  //add period labels above graph if needed
-                  if (periods[i][0] !== "01-01-0000") {
-                      graphSpace += "<p class='periodDisplay'>" + periods[i][0] + " : " + periods[i][1] + "</p>";
-                  }
-                  graphSpace += "<div class='graph-container-period'>";
-                  graphSpace += "<div class='graph'><canvas id='" +
-                      escapeUrl(url, type, interactionIndex) +
-                      `-graph${i}'></canvas></div>`;
-                  graphSpace += "<div class='graph'><canvas id='" +
-                      escapeUrl(url, type, interactionIndex) +
-                      `-graph${i}-2'></canvas></div>`;
-                  graphSpace += appendExplanation(interaction, showExplanation, Explanation, ExplanationPanelWidth);
-                  graphSpace += '</div>';
-
-
-                  div.append(graphSpace);
-              } else if (
-                  interaction.getAttribute("actualGraphType") == "hor_bar_comb_marks_avg"
-              ) {
-
-                  //add period labels above graph if needed
-                  if (periods[i][0] !== "01-01-0000") {
-                      graphSpace += "<p class='periodDisplay'>" + periods[i][0] + " : " + periods[i][1] + "</p>";
-                  }
-                  graphSpace += "<div class='graph-container-period'>";
-                  graphSpace += "<div class='graph'><div id='" +
-                      escapeUrl(url, type, interactionIndex) +
-                      `-graph${i}'></div></div>`;
-                  graphSpace += "<div class='graph'><div id='" +
-                      escapeUrl(url, type, interactionIndex) +
-                      `-graph${i}-2'></div></div>`;
-                  graphSpace += appendExplanation(interaction, showExplanation, Explanation, ExplanationPanelWidth);
-                  graphSpace += '</div>';
-
-
-                  div.append(graphSpace);
-              } else {
-
-                  //add period labels above graph if needed
-                  if (periods[i][0] !== "01-01-0000") {
-                      graphSpace += "<p class='periodDisplay'>" + periods[i][0] + " : " + periods[i][1] + "</p>";
-                  }
-                  graphSpace += "<div class='graph-container-period'>";
-                  graphSpace += "<div class='graph'><svg id='" +
-                      escapeUrl(url, type, interactionIndex) +
-                      `-graph${i}' width='700' height='300' viewBox='0 0 700 300'></svg></div>`;
-                  graphSpace += appendExplanation(interaction, showExplanation, Explanation, ExplanationPanelWidth);
-                  graphSpace += '</div>';
-
-                  div.append(graphSpace);
-                  //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("width", '700');
-                  //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("height", '300');
-                  //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("preserveAspectRatio", "xMinYMin meet");
-                  //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute("viewBox", "0 0 700 300");
-                  //document.getElementById(escapeUrl(url, type, interactionIndex) + "-graph").setAttribute('viewBox','0 0 '+Math.min(width,height) +' '+Math.min(width,height) )
-                  //.attr('preserveAspectRatio','xMinYMin')
+              //add period labels above graph if needed
+              if (periods[i][0] !== "01-01-0000") {
+                const periodDisplay = `
+                  <p class="periodDisplay">
+                    ${periods[i][0]} : ${periods[i][1]}
+                  </p>
+                `;
+                
+                graphSpace += periodDisplay;
               }
-
+              
+              const graphContainerPeriod = `
+                <div class='graph-container-period'>
+                  <div class='graph'>
+                    <canvas id="${escapeUrl(url, type, interactionIndex)}-graph${i}">
+                    </canvas>
+                  </div>
+                  ${appendExplanation(interaction, showExplanation, Explanation, ExplanationPanelWidth)}
+                </div>
+              `;
+              
+              graphSpace += graphContainerPeriod;
+              
+              div.append(graphSpace);
           }
 
           for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
-              if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always'){
-                  statements = periodStatements[currentPeriod];
-                  ownstatements = ownstatementsPeriods[currentPeriod];
-              }
+            if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always'){
+                statements = periodStatements[currentPeriod];
+                ownstatements = ownstatementsPeriods[currentPeriod];
+            }
 
           // Get the canvas to draw the graph on
-          const ctx = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod;
-          const ctx2 = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod + "-2";
+          const ctx = `${escapeUrl(url, type, interactionIndex)}-graph${currentPeriod}`;
 
           const interactionType = interaction.getAttribute("interactionType");
           const actualGraphType = interaction.getAttribute("actualGraphType");
@@ -2323,17 +2247,17 @@
                   ctx,
                   blockNames: barName,
                   blockRanges: barNameValue,
-                  followBlock: followBlock == 'true',
-                  graphFitInfoInBar: graphFitInfoInBar == 'true',
+                  followBlock: interaction.getAttribute("graphFollowBlock") == 'true',
+                  graphFitInfoInBar: interaction.getAttribute("graphFitInfoInBar") == 'true',
                   groupScoreLabel: interaction.getAttribute("groupScore"),
                   groupUsersLabel: interaction.getAttribute("groupUserLabel"),
-                  nrOfBars: nrbars,
+                  nrOfBars: interaction.getAttribute("graphNrDataPoints"),
                   ownScoreLabel: interaction.getAttribute("ownScoreLabelBarMarks"),
                   scoreRange: barRange,
-                  showAvg: graphShowAvg == 'true',
-                  showAvgLine: graphShowAvgLine == 'true',
+                  showAvg: interaction.getAttribute("graphShowAvg") == 'true',
+                  showAvgLine: interaction.getAttribute("graphShowAvgBar") == 'true',
                   showNumberOfParticipants: interaction.getAttribute("showNrOfParticipants") == 'true',
-                  showScore: graphShowScore == 'true',
+                  showScore: interaction.getAttribute("graphShowScore") == 'true',
                   userScore: score,
                   userScoreLabel: interaction.getAttribute("userScore"),
                   userStatement: ownstatements[0],
@@ -2351,10 +2275,10 @@
                   blockRanges: barNameValue,
                   blockNames: barName,
                   ctx,
-                  followBlock: followBlock == 'true',
+                  followBlock: interaction.getAttribute("graphFollowBlock") == 'true',
                   groupScoreLabel: interaction.getAttribute("groupScore"),
                   groupUserLabel,
-                  nrOfBars: nrbars,
+                  nrOfBars: interaction.getAttribute("graphNrDataPoints"),
                   showNumberOfParticipants: interaction.getAttribute("showNrOfParticipants") == 'true',
                   userScoreLabel: interaction.getAttribute("userScore"),
                   userStatement: ownstatements[0],
@@ -2383,7 +2307,7 @@
                 statements: statements,
                 options: {
                   barColors: [...barColors],
-                  ctx: ctx,
+                  ctx,
                   xAxisLabel: interaction.getAttribute("xAxisLabelLineAvgMarks"),
                   yAxisLabel: interaction.getAttribute("yAxisLabelLineAvgMarks"),
                 }
@@ -2394,7 +2318,7 @@
                 statements: statements,
                 options: {
                   barColors: [...barColors],
-                  ctx: ctx,
+                  ctx,
                   xAxisLabel: interaction.getAttribute("xAxisLabelLineOwnMarks"),
                   yAxisLabel: interaction.getAttribute("yAxisLabelLineOwnMarks"),
                 }
@@ -2438,9 +2362,23 @@
               new DashboardGraphs.BarGraphCombinedMarks({
                 statements: statements,
                 options: {
-                  ctx: ctx2,
+                  ctx,
                   trackingPassed: x_params.trackingPassed,
                   //graphColorScale: interaction.getAttribute("graphColorScale"),
+                }
+              }).draw();
+              break;
+            case 'hor_bar_comb_marks_avg':
+              if (interactionType !== 'grouping' && interactionType !== 'groupings' && interactionType !== 'opinionclasses') {
+                // This graph type only works with grouping and classes and is no linger an options
+                // from score. It is still here as grouping relies on score for features.
+                throw new Error(`Horizontal bar combined marks does not work with '${interactionType}.`)
+              }
+              new DashboardGraphs.HorizontalBarGraphWithAverages({
+                statements: statements,
+                options: {
+                  ctx,
+                  graphColorScale: interaction.getAttribute("graphColorScale"),
                 }
               }).draw();
               break;
@@ -2449,185 +2387,7 @@
               break;
           }
 
-          if (interaction.getAttribute("actualGraphType") == "bar_comb_marks") {
-              let passingGrade = x_params.trackingPassed;
-              if (passingGrade == null) {
-                  passingGrade = "55";
-              } else {
-                  if (passingGrade.indexOf("%") >= 0) {
-                      passingGrade = parseInt(passingGrade) + "";
-                  } else if (
-                      parsefloat(passingGrade) >= 0 &&
-                      parsefloat(passingGrade) <= 1
-                  ) {
-                      passingGrade = parseFloat(passingGrade) * 100.0 + "";
-                  }
-              }
-              let ldData = [];
-              let ldLabels = [];
-              let ldPassing = [];
-              let visitedGroups = {};
-              for (let statement in statements) {
-                  try {
-                      let group =
-                          statements[statement].context.contextActivities.grouping[0]
-                              .definition.name["en-US"];
-                      if (!(group in visitedGroups)) {
-                          visitedGroups[group] = [statements[statement].result.score.raw];
-                      } else {
-                          visitedGroups[group].push(statements[statement].result.score.raw);
-                      }
-                  } catch (e) {
-                      //console.log(e);
-                  }
-              }
-              const sortObject = (obj) =>
-                  Object.keys(obj)
-                      .sort()
-                      .reduce((res, key) => ((res[key] = obj[key]), res), {});
-              visitedGroups = sortObject(visitedGroups);
-              const average = (list) =>
-                  list.reduce((prev, curr) => prev + curr) / list.length;
-              for (let group in visitedGroups) {
-                  ldData.push(average(visitedGroups[group]));
-                  ldLabels.push(group);
-                  ldPassing.push(Number(passingGrade));
-              }
-              //statements.forEach(x => {
-              //    ldData.push(x.result.score.raw)
-              //    ldLabels.push(x.context.contextActivities.grouping[0].definition.name['en-US'])
-              //    ldPassing.push(Number(passingGrade));
-              //});
-              let ctx = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod;
-              let options = {
-                  maintainAspectRatio: false,
-                  legend: {
-                      display: false,
-                  },
-                  scales: {
-                      yAxes: [
-                          {
-                              ticks: {
-                                  suggestedMin: 0,
-                                  suggestedMax: 100,
-                              },
-                          },
-                      ],
-                  },
-              };
-              var mixedChart = new Chart(ctx, {
-                  type: "bar",
-                  data: {
-                      datasets: [
-                          {
-                              label: "Bar Dataset",
-                              data: ldData,
-                              backgroundColor: "rgba(40, 64, 150, 0.8)",
-                              borderColor: "rgba(40, 64, 150, 1)",
-                              order: 1,
-                          },
-                          {
-                              label: "Line Dataset",
-                              data: ldPassing,
-
-                              // Changes this dataset to become a line
-                              type: "line",
-                              fill: false,
-                              backgroundColor: "rgba(40, 200, 64, 1)",
-                              borderColor: "rgba(40, 200, 64, 1)",
-                              order: 2,
-                          },
-                      ],
-                      labels: ldLabels,
-                  },
-                  options: options,
-              });
-
-          } else if (
-              interaction.getAttribute("actualGraphType") == "hor_bar_comb_marks_avg"
-          ) {
-            //only works via groupings
-            //no longer an option from score
-            //still here as grouping relies on score for features
-            console.log('kaas', visitedGroups);
-              let ctx = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod;
-
-              let labelCounter = 0;
-              let data = [];
-              for (key in visitedGroups) {
-                  data.push({
-                      x: key,
-                      y: Math.round(visitedGroups[key][0], 2),
-                      goals: [
-                          {
-                              name: "Avg of others",
-                              value: 1,
-                              strokeWidth: 5,
-                              strokeColor: "#775DD0",
-                          },
-                      ],
-                  });
-                  labelCounter += 1;
-              }
-              let colors = [
-                  "#FF6384",
-                  "#4BC0C0",
-                  "#FFCD56",
-                  "#C9CBCF",
-                  "#36A2EB",
-                  "#B284BE",
-              ];
-              if (interaction.getAttribute('graphColorScale') != null && interaction.getAttribute('graphColorScale') != '') {
-                  colors = interaction.getAttribute('graphColorScale').split(",");
-              }
-              var options = {
-                  series: [
-                      {
-                          data,
-                      },
-                  ],
-                  chart: {
-                      toolbar: {
-                          show: false,
-                      },
-                      height: 350,
-                      type: "bar",
-                  },
-                  plotOptions: {
-                      bar: {
-                          horizontal: true,
-                          distributed: true,
-                      },
-                  },
-                  colors: colors,
-                  dataLabels: {
-                      formatter: function (val, opt) {
-                          const goals =
-                              opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex]
-                                  .goals;
-
-                          if (goals && goals.length) {
-                              return `${val}%`;
-                          }
-                          return val;
-                      },
-                  },
-                  legend: {
-                      show: true,
-                      showForSingleSeries: true,
-                      customLegendItems: ["Passing Score"],
-                      markers: {
-                          fillColors: ["#775DD0"],
-                      },
-                  },
-              };
-              var chart = new ApexCharts(
-                  document.querySelector(`#${ctx}`),
-                  options
-              );
-              chart.render();
-          }
-          //size score section to be similar to graph
+         //size score section to be similar to graph
           let graphHeight = $(`#${escapeUrl(url, type, interactionIndex)}-graph${currentPeriod}`).height();
           $(`#${escapeUrl(url, type, interactionIndex)}-score${currentPeriod}`).css({"min-height": `${graphHeight}px`});
           }
@@ -2653,10 +2413,6 @@
         if (nrParticipantsText == undefined) {
             nrParticipantsText = "The number of participants is: {0}";
         }
-        var nrbars = interaction.getAttribute("graphNrDataPoints");
-        if (nrbars == undefined) {
-            nrbars = 10;
-        }
         var xertelo = interaction.getAttribute("xertelo");
         if (xertelo == "") {
             xertelo = x_TemplateId
@@ -2681,11 +2437,6 @@
             for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
                 ownstatementsPeriods.push(filterOwnStatements(periodStatements[currentPeriod], xertelo));
             }
-        }
-
-        var graphFitInfoInBar = interaction.getAttribute("graphFitInfoInBar");
-        if (graphFitInfoInBar == undefined) {
-            graphFitInfoInBar = false;
         }
 
         var barColors = [
@@ -2836,32 +2587,13 @@
                     answer_dataset = statements;
                 }
 
-                //var dash = new ADL.XAPIDashboard();
-                //if (!multipleAnswers) {
-                //  dash.addStatements(data);
-                //} else {
-                //  dash.addStatements(dataset);
-                //}
-                var xDomain = [];
-                if (
-                    statements.length > 0 &&
-                    statements[0].object.definition != "undefined" &&
-                    statements[0].object.definition.choices != "undefined"
-                ) {
-                    var choices = statements[0].object.definition.choices;
-                    for (var i = 0; i < choices.length; i++) {
-                        xDomain[i] = choices[i].id;
-                    }
-                }
-
                 let ctx = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod;
-                let ctx2 = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod + "-2";
 
                 const graph = new DashboardGraphs.BarGraphGivenAnswers({
                   statements: data,
                   options: {
                     barColors: [...barColors],
-                    ctx: ctx2,
+                    ctx: ctx,
                     userAnswer: givenAnswer,
                     xAxisLabel: interaction.getAttribute("xAxisLabelBarAnswers"),
                     yAxisLabel: interaction.getAttribute("yAxisLabelBarAnswers"),
@@ -2869,112 +2601,6 @@
                 });
                 graph.draw();
 
-                //get used labels and #
-                let labels = {};
-                let barBorderColor = barColors.slice();
-                if (!multipleAnswers) {
-                    for (let i = 0; i < answer_dataset.length; i++) {
-                        if (!labels.hasOwnProperty(answer_dataset[i].result.response)) {
-                            labels[answer_dataset[i].result.response] = 1;
-                        } else {
-                            labels[answer_dataset[i].result.response] += 1;
-                        }
-                        if (answer_dataset[i].result.response == givenAnswer) {
-                            barBorderColor[Object.keys(labels).indexOf(answer_dataset[i].result.response)] = "#484848";
-                        }
-                    }
-                } else {
-                    for (let i = 0; i < answer_dataset.length; i++) {
-                        if (!labels.hasOwnProperty(answer_dataset[i].result.response)) {
-                            labels[answer_dataset[i].result.response] = 1;
-                        } else {
-                            labels[answer_dataset[i].result.response] += 1;
-                        }
-                        if (answer_dataset[i].result.response == givenAnswer) {
-                            barBorderColor[Object.keys(labels).indexOf(answer_dataset[i].result.response)] = "#484848";
-                        }
-                    }
-                }
-                var barData = [];
-                let totalActualResponseCounter = 0;
-                //match used labels and # to xDomain
-                if (xDomain.length == 0) {
-                    xDomain = Object.keys(labels);
-                    barData = Object.values(labels);
-                    totalActualResponseCounter = barData.length;
-                } else {
-                    barData = new Array(xDomain.length).fill(0);
-                    for (let i = 0; i < xDomain.length; i++) {
-                        if (labels[xDomain[i]] !== undefined) {
-                            barData[i] = labels[xDomain[i]];
-                            totalActualResponseCounter += labels[xDomain[i]];
-                        }
-                    }
-                }
-                if (!multipleAnswers) {
-                    for (let i = 0; i < barData.length; i++) {
-                        barData[i] = barData[i] / totalActualResponseCounter * 100;
-                    }
-                } else {
-                    for (let i = 0; i < barData.length; i++) {
-                        barData[i] = barData[i] / totalActualResponseCounter * 100;
-                    }
-                }
-
-                let bardata = {
-                    labels: labelsNoUnderscore,
-                    datasets: [
-                        {
-                            type: "bar",
-                            label: "data",
-                            data: barData,
-                            borderWidth: 5,
-                            backgroundColor: barColors,
-                            borderColor: barBorderColor,
-                            yID: "id1",
-                        },
-                    ],
-                };
-
-                new Chart(ctx, {
-                    data: bardata,
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: yAxisLabelBarAnswers,
-                                    beginAtZero: true,
-                                },
-                                position: "left",
-                                min: 0,
-                                max: 100,
-                                id: "id1",
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: xAxisLabelBarAnswers,
-                                    beginAtZero: true,
-                                },
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false,
-                                labels: {
-                                    filter: function (item, chart) {
-                                        // Logic to remove a particular legend item goes here
-                                        return !item.text.includes('My First dataset');
-                                    }
-                                }
-                            }
-                        },
-                        events: ['click']
-                    },
-                });
                 let graphHeight = $(`#${escapeUrl(url, type, interactionIndex)}-graph-container${currentPeriod}`).height();
                 $(`#${escapeUrl(url, type, interactionIndex)}-score${currentPeriod}`).css({"min-height": `${graphHeight}px`});
             }
