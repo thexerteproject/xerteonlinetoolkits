@@ -145,10 +145,10 @@
 	  <off label="Uit"/>
 	  <invert label="Hoog contrast"/>
 	  <blackYellow label="Zwart op geel"/>
-	  <dark label="Dark mode"/>
-	  <light label="Light mode"/>
+	  <dark label="Donkere modus"/>
+	  <light label="Lichte modus"/>
 	  <noBg label="Verwijder achtergrond afbeeldingen"/>
-	  <responsiveTxt label="Responsieve tekst" tip="Als resonsieve tekst aan staat, wordt de tekst grootte aangepast aand grootte van het scherm waar je dit project op bekijkt. Als je de browser zoom functie gebruikt om de tekst te vergroten dan raden we aan om de responsieve tekst uit te zetten voor een betere ervaring."/>
+	  <responsiveTxt label="Responsieve tekst" tip="Zet 'responsieve tekst' aan als je wilt dat de tekstgrootte zich aanpast aan het scherm waar je op werkt. Gebruik je een inzoomfunctie in je browser, zet dan 'responsieve tekst' uit."/>
   </colourChanger>
 
   <resources label="Bronnen" text="{x} Bronnen Beschikbaar" completeText="{y} van {x} Bronnen bekekekn">

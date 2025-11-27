@@ -38,6 +38,11 @@
     <nextTxt label="Next Arrow Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
 
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+      <qfFlexhotspot label="Number of Hotspots" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
     <newNodes>
 	  <flexhotspot><![CDATA[<flexhotspot name="Enter Hotspot Title" text="" x="0" y="0" w="100" h="100"/>]]></flexhotspot>
     </newNodes>

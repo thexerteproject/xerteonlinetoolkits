@@ -16,7 +16,7 @@ if (!isset($_SESSION['toolkits_logon_username']) && !is_user_permitted("projecta
     die('{"status": "error", "message": "Session is invalid or expired"}');
 }
 
-if ($_FILES["file"]["error"] > 0) {
+if (isset($_FILES["file"]["error"]) && $_FILES["file"]["error"] > 0) {
     echo "Return Code: " . $_FILES["file"]["error"] . "<br />";
 } else {
     $merge = isset($_POST['merge']);

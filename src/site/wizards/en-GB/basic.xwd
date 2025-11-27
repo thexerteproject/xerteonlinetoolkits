@@ -12,6 +12,16 @@
 			<categoryInfo label="Categories" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" headers="Category name,Options" newRow="," defaultValue="|" optional="true" editable="1,1" wysiwyg="false,true" tooltip="Set up the categories used to filter in searches. Categories must have a name and contain one or more options (each option on a separate line)"/>
 			<categoryTxt label="Text" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Search introduction text"/>
 		</searchGroup>
+
+		<!-- <AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true" lightbox="form" condition="hasrole('aiuser')">
+			<aiSelector advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" conditionTrigger="true" optional="true"/>
+            <subject verification="^.+$"  label="Subject" type="TextInput" tooltip = "The subject on which a bootstrap learning object should be generated." wysiwyg="false" optional="true"/>
+            <uploadPrompt label="Upload file?" type="checkbox" defaultValue="false" tooltip="Check to upload a file or when using a video or audio link as a source. Please ensure the uploaded file corresponds to the requested subject. If relevant information is not found in the file, the AI will attempt to supplement with its own knowledge." optional ="true"/>
+            <file label="File" type="media" defaultValue="Upload a file" tooltip = "Select a video, audio, powerpoint, PDF or other text file to be used for content generation." optional="true"/>
+            <fileAccessPrompt label="Allow information supplementation" type="checkbox" defaultValue="false" tooltip = "Instruct the AI to use information beyond what was provided in the file, using its own knowledge stores. Keep in mind that this may result in inaccurate information and should be thoroughly double-checked!" optional ="true"/>
+            <aiButton type="aibutton" optional="true"/>
+            <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
+        </AIGroup> -->
 		
 		<glossaryGroup type="group" label="Glossary" optional="true">
 			<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" defaultValue="term|definition" optional="true" wysiwyg="false,true"/>
