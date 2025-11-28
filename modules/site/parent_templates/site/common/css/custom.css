@@ -139,6 +139,7 @@ h2.sectionTitle {
 
 h3.contentTitle {
     font-size: 31.5px;
+    clear: both;
 }
 
 /* --TABLE OF CONTENTS-------------------------------------------------------------- */
@@ -461,6 +462,10 @@ h3.contentTitle {
 
     section div.navigator li a {
         text-decoration: none;
+    }
+
+    .topBtn {
+        clear: both;
     }
 
     /* --GLOSSARY-------------------------------------------------------------- */
