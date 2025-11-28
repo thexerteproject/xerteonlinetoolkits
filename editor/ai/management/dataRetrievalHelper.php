@@ -2,7 +2,7 @@
 
 require_once (str_replace('\\', '/', __DIR__) . "/../../../website_code/php/management/vendor_option_component.php");
 
-if(!isset($_SESSION['toolkits_logon_id'])){
+if(!isset($_SESSION['toolkits_logon_username']) && php_sapi_name() !== 'cli'){
     die("Session ID not set");
 }
 

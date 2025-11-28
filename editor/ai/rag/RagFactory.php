@@ -6,7 +6,7 @@ require_once (str_replace('\\', '/', __DIR__) . "/MistralRAG.php");
 require_once (str_replace('\\', '/', __DIR__) . "/OpenAIRAG.php");
 require_once (str_replace('\\', '/', __DIR__) . "/TfidfRAG.php");
 
-if (!isset($_SESSION['toolkits_logon_username'])) {
+if (!isset($_SESSION['toolkits_logon_username']) && php_sapi_name() !== 'cli') {
     die('Sesison id is not set');
 }
 

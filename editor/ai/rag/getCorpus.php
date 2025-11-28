@@ -26,6 +26,22 @@ function normalize_path(string $path): string
     return $p;
 }
 
+function prepareURL(string $uploadPath): string
+{
+    global $xerte_toolkits_site;
+    // Move up from rag/ai/editor to the XOT root
+    $basePath = __DIR__ . '/../../../';
+    $full = realpath(urldecode($basePath . $uploadPath));
+
+    if ($full === false) {
+        throw new Exception("Invalid path: {$uploadPath}");
+    }
+
+    x_check_path_traversal($full, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
+    return $full;
+}
+
 global $xerte_toolkits_site;
 if(!isset($_SESSION['toolkits_logon_id'])){
     die("Session ID not set");
@@ -41,10 +57,10 @@ try {
     $type   = x_clean_input($input['type']   ?? '',    'string');
     $gridId = x_clean_input($input['gridId'] ?? '',    'string');
     $format = x_clean_input($input['format'] ?? '',    'string');
-
+    $baseURL = x_clean_input($input['baseURL'] ?? '',    'string');
     // Prep directories & API keys
 
-    $baseDir = $_SESSION['uploadDir'];
+    $baseDir = prepareURL($baseURL);//$_SESSION['uploadDir'];
     x_check_path_traversal($baseDir);
 
     //get settings from the management table, which help us decide which options to use
@@ -116,8 +132,13 @@ try {
                 $csv_parsed .= '|';
             }
         }
-        // strip the trailing "||"
-        $filesStructured = substr($csv_parsed, 0, -2);
+        if ($csv_parsed === '') {
+            // No entries at all: send the placeholder expected by the frontend
+            $filesStructured = '|';
+        } else {
+            // strip the trailing "||"
+            $filesStructured = substr($csv_parsed, 0, -2);
+        }
     } else if ($format == "json"){
         $filesStructured = $anonymizedCorpus;
     }
@@ -137,6 +158,7 @@ try {
     http_response_code(500);
     echo json_encode([
         'success' => false,
+        'type' => 'generalError',
         'message' => $ex->getMessage()
     ], JSON_THROW_ON_ERROR);
 }

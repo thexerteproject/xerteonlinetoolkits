@@ -1,20 +1,22 @@
 <?php
 
 require_once (str_replace('\\', '/', __DIR__) . "/../../../website_code/php/database_library.php");
+require_once (str_replace('\\', '/', __DIR__) . "/ActorContext.php");
 
 function log_ai_request($response, $category, $vendor, $details=null)
 {
     global $xerte_toolkits_site;
 
-    if (!isset($_SESSION['toolkits_logon_id'])) {
+    if((!isset($_SESSION['toolkits_logon_id'])) && (php_sapi_name() !== 'cli')) {
         die("Session ID not set");
     }
 
-    // Actor from session
-    $actor = array(
-        'user_id' => isset($_SESSION['toolkits_logon_username']) ? $_SESSION['toolkits_logon_username'] : null,
-        'workspace_id' => isset($_SESSION['XAPI_PROXY']) ? $_SESSION['XAPI_PROXY'] : null
-    );
+    if (php_sapi_name() == 'cli'){
+        $actor = ActorContext::get();
+    } else {
+        $actor['user_id'] = $_SESSION['toolkits_logon_username'] ?? null;
+        $actor['workspace_id'] = $_SESSION['XAPI_PROXY'] ?? null;
+    }
 
     $category = strtolower($category);
     $vendor = strtolower($vendor);

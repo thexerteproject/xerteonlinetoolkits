@@ -11,6 +11,8 @@ require_once (str_replace('\\', '/', __DIR__) . "/../../../config.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../../../vendor_config.php");
 require_once (str_replace('\\', '/', __DIR__) . "/RagFactory.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../management/dataRetrievalHelper.php");
+require_once (str_replace('\\', '/', __DIR__) . "/../logging/ActorContext.php");
+require_once __DIR__ . '/sync_job_store.php';
 
 use function rag\makeRag;
 use function transcribe\makeTranscriber;
@@ -53,8 +55,22 @@ function normalize_path(string $path): string
 ob_start();
 global $xerte_toolkits_site;
 
-if(!isset($_SESSION['toolkits_logon_id'])){
-    die("Session ID not set");
+if (php_sapi_name() !== 'cli') {
+    http_response_code(405);
+    header('Content-Type: text/plain');
+    echo "syncCorpus.php is a background worker. Start jobs via syncCorpus_start.php.\n";
+    exit;
+}
+
+/*Helper for updating job progress. Creates an associative array patch that can be passed directly to the job update method.*/
+function sync_patch(string $status, string $stage, string $message, ?int $progress = null, array $extra = []) {
+    $patch = array_merge([
+        'status'  => $status,  // running|processed|error
+        'stage'   => $stage,
+        'message' => $message,
+    ], $extra);
+    if ($progress !== null) $patch['progress'] = $progress;
+    return $patch;
 }
 
 try {
@@ -62,13 +78,25 @@ try {
     //get settings from the management table, which help us decide which options to use
     $managementSettings = get_block_indicators();
 
-    // 1. Decode JSON payload
-    $raw = file_get_contents('php://input');
-    $input = json_decode($raw, true);
+    //Get the relevant job input via job id
+    $job_id=$argv[1];
+    $sync_data_dir=$argv[2];
 
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception('Malformed JSON input: ' . json_last_error_msg());
+    $jobStore = new sync_job_store(null, $sync_data_dir);
+    $job = $jobStore->sync_job_read($job_id);
+    $input_path = $job['input_path'] ?? null;
+    if ($input_path && file_exists($input_path)) {
+        $raw = file_get_contents($input_path);
+        $input = json_decode($raw, true);
     }
+
+    //Set actor context, which is needed for logging
+    ActorContext::set(
+        $job['user_id'],
+        $job['workspace_id']
+    );
+
+
     //todo alek this needs cleaning
     $gridData = $input['gridData'] ?? [];
     $baseUrl = $input['baseURL'] ?? '';
@@ -126,6 +154,10 @@ try {
                 // 2) Process the file
                 $transcript = $transcriptMgr->process($uploadUrl);
 
+                //transcription in progress
+                $patch = sync_patch('running', 'Transcription', 'Transcribing file...', '15');
+                $jobStore->sync_job_update($job_id, $patch);
+
                 // 3) Record success
                 $results[] = [
                     'file'       => $uploadUrl,
@@ -149,6 +181,9 @@ try {
         }
         // break the reference
         unset($row);
+        //Transcription done; encoding in progress
+        $patch = sync_patch('running', 'Encoding', 'Encoding file...', '55');
+        $jobStore->sync_job_update($job_id, $patch);
 
         //Filter any errors, as failing the transcript step likely means there's an error with the file path, file type or otherwise
         $gridData = array_filter($gridData, function($row) {
@@ -157,7 +192,7 @@ try {
 
         // 5. Once all transcripts are accounted for, run the RAG on all listed files, including the transcripts
         // 5.1 Create a list of all file objects with the relevant data to be processed
-        $fileObjects = array_map(function($row) use ($baseDir) {
+        $fileObjects = array_map(function($row) use ($baseDir, $xerte_toolkits_site) {
             $path = normalize_path(urldecode(ltrim($row['col_2']))); //first normalize whatever is in col 2, just in case a valid path has already been substituted if it's a transcript
             //If it's already a full path, don't do anything extra. If it isn't, add the base directory
             if(!(realpath($path))){
@@ -216,7 +251,7 @@ try {
         return $str;
     }
 
-// 2) Seed from transcription‐step results
+    // 2) Seed from transcription‐step results
     $map = [];
     foreach ($results as $row) {
         $id = normalize_id($row['file']);
@@ -229,7 +264,7 @@ try {
         ];
     }
 
-// 3) Merge in RAG results
+    // 3) Merge in RAG results
     foreach ($ragResults as $row) {
         $id = normalize_id($row['source']);
         if (!isset($map[$id])) {
@@ -243,19 +278,27 @@ try {
         $map[$id]['rag_status'] = trim($row['status']);
     }
 
-// 4) Re‐index as a zero‑based array
+    // 4) Re‐index as a zero‑based array
     $fullResults = array_values($map);
 
-    // 6. Return JSON
-    echo json_encode([
-        'success' => true,
-        'results' => $fullResults
-    ], JSON_THROW_ON_ERROR);
+    //job has finished
+    $completion_info = [
+        'completion_info' => [
+            'success' => true,
+            'results' => $fullResults
+        ]
+    ];
+    $patch = sync_patch('processed', 'Finalizing', 'Processing finished. File is ready to use!', '100', $completion_info);
+    $jobStore->sync_job_update($job_id, $patch);
 
 } catch (Exception $ex) {
-    echo json_encode([
-        'success' => false,
-        'error' => $ex->getMessage()
-    ], JSON_THROW_ON_ERROR);
+    $completion_info = [
+        'completion_info' => [
+            'success' => false,
+            'error' => $ex->getMessage()
+        ]
+    ];
+    $patch = sync_patch('error', 'Error', 'We encountered an error. Please try again later. If this problem persists, please contact an administrator.', '100', $completion_info);
+    $jobStore->sync_job_update($job_id, $patch);
 }
 

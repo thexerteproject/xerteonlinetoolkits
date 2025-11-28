@@ -1223,7 +1223,10 @@ var EDITOR = (function ($, parent) {
                 if (idxPreviewAny !== -1) {
                     // slice and strip quotes again just in case
                     //When normalizing in the corpus, if we see preview.xml, we update the LO in corpus.
-                    updateCorpusSingle(false, true);
+                    let completion_info = updateCorpusSingle(false, true);
+                    const first = completion_info.results?.[0] || {};
+                    const displaymsg = first.rag_status || first.transcription_status || completion_info?.error || 'No status available';
+                    alert(displaymsg);
                     return raw.slice(idxPreviewAny).replace(/^['"]+|['"]+$/g, '');
                 }
 
@@ -1233,13 +1236,13 @@ var EDITOR = (function ($, parent) {
             }
             //Upload a single file to the corpus
             async function updateCorpusSingle(postData, corpusGrid = false, useLoInCorpus) {
-                //  Show wait cursor
+                // Show wait cursor
                 $('body, .featherlight, .featherlight-content').css("cursor", "wait");
 
                 const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
-                try {
+
                 // Build grid row
-                let singleRow = {};
+                let singleRow;
                 if (!useLoInCorpus) {
                     singleRow = {
                         col_1: postData['col_1'],
@@ -1258,36 +1261,79 @@ var EDITOR = (function ($, parent) {
 
                 const payload = { name, baseURL, gridData: [singleRow], corpusGrid, useLoInCorpus };
 
-                // Return Promise and reset cursor in finally
-
-                    return await new Promise((resolve, reject) => {
+                try {
+                    // 1) Start the job and wait for the start response (job_id)
+                    const resp = await new Promise((resolve, reject) => {
                         $.ajax({
-                            url: 'editor/ai/rag/syncCorpus.php',
+                            url: 'editor/ai/rag/syncCorpus_start.php',
                             method: 'POST',
                             contentType: 'application/json',
                             data: JSON.stringify(payload),
-                            success: function(resp) {
-                                console.log('Corpus sync succeeded:', resp);
-                                const first = resp.results?.[0] || {};
-                                const displaymsg =
-                                    first.rag_status ||
-                                    first.transcription_status ||
-                                    resp?.error ||
-                                    'No status available';
-                                alert(displaymsg);
-                                resolve(resp);
+
+                            success: function (resp) {
+                                console.log('Corpus sync started:', resp);
+
+                                resolve(resp); // just resolve the start response
                             },
-                            error: function(xhr, status, err) {
+
+                            error: function (xhr, status, err) {
                                 console.error('Corpus sync failed:', err);
                                 alert(`${language.vendorApi.contextAlerts.syncErrorGenericMsg}`);
                                 reject(err);
                             }
                         });
                     });
+
+                    // 2) Now poll until the job is actually finished
+                    const finalStatus = await pollJobStatus(resp.job_id, baseURL);
+
+                    // 3) Return final status / completion info
+                    return finalStatus;
+
                 } finally {
                     // Reset cursor no matter what
                     $('body, .featherlight, .featherlight-content').css("cursor", "default");
                 }
+            }
+
+            async function pollJobStatus(jobId, baseURL) {
+                return new Promise((resolve, reject) => {
+
+                    const statusUrl = "editor/ai/rag/syncCorpus_status.php?job_id=" +
+                        encodeURIComponent(jobId) + "&baseURL=" +
+                        encodeURIComponent(baseURL);
+
+                    function checkStatus() {
+                        $.ajax({
+                            url: statusUrl,
+                            method: "GET",
+                            cache: false,
+                            success: function (data) {
+                                if (data.status === "processed") {
+                                    const first = data['completion_info'].results?.[0] || {};
+                                    resolve(data['completion_info']);
+                                    return;
+                                }
+
+                                if (data.status === "error") {
+                                    reject(data['completion_info']);
+                                    return;
+                                }
+
+                                setTimeout(checkStatus, 3000);
+                            },
+                            error: function (xhr, status, err) {
+                                console.log("Polling error:", err);
+
+                                // Fail after a set time, assuming polling fails (not that the job resulted in an error)
+                                setTimeout(checkStatus, 5000);
+                            }
+                        });
+                    }
+
+                    // start polling
+                    checkStatus();
+                });
             }
 
             function updateGrid(name, id) {
@@ -1333,24 +1379,28 @@ var EDITOR = (function ($, parent) {
             }
             (async () => {
                 try {
-                    await updateCorpusSingle(postdata, false, false);
+                    let completion_info = await updateCorpusSingle(postdata, false, false);
+                    const first = completion_info.results?.[0] || {};
+                    const displaymsg = first.rag_status || first.transcription_status || completion_info?.error || 'No status available';
+                    alert(displaymsg);
+
                 } catch (e) {
                     console.error(e);
                 }
+
+                //There is no need to continue with the rest, because updateGrid and updateCorpusSingle already handle the data to and from the backend
+                if ((addMode && options.closeAfterAdd) || (!addMode && options.closeAfterEdit)) {
+                    // close the edit/add dialog
+                    $.jgrid.hideModal("#editmod"+grid_id,
+                        {gb:"#gbox_"+grid_id,jqm:options.jqModal,onClose:options.onClose});
+                }
+
+                //Always update the grid so that it matches the actual corpus
+                updateGrid(name, id);
+
+                this.processing = true;
+                return {};
             })();
-
-            //There is no need to continue with the rest, because updateGrid and updateCorpusSingle already handle the data to and from the backend
-            if ((addMode && options.closeAfterAdd) || (!addMode && options.closeAfterEdit)) {
-                // close the edit/add dialog
-                $.jgrid.hideModal("#editmod"+grid_id,
-                    {gb:"#gbox_"+grid_id,jqm:options.jqModal,onClose:options.onClose});
-            }
-
-            //Always update the grid so that it matches the actual corpus
-            updateGrid(name, id);
-
-            this.processing = true;
-            return {};
         }
 
         if (postdata[id_in_postdata])
@@ -1520,8 +1570,8 @@ var EDITOR = (function ($, parent) {
                 alert(`${raw} ${language.vendorApi.contextAlerts.unrecognisedContextPathMsg}`);
                 throw new Error(`Unrecognized path: ${raw}`);
             }
-
-            function corpusUpdate(grid, name, id) {
+            //Start a sync job
+            async function corpusUpdate(grid, name, id) {
                 const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
 
                 const allRows = grid.map(row => {
@@ -1534,26 +1584,74 @@ var EDITOR = (function ($, parent) {
 
                 //  Show wait cursor
                 $('body, .featherlight, .featherlight-content').css("cursor", "wait");
-
-                //  Return a Promise so this can be awaited
-                return new Promise((resolve, reject) => {
-                    $.ajax({
-                        url: 'editor/ai/rag/syncCorpus.php',
-                        method: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(payload),
-                        success: function(resp) {
-                            resolve(resp);
-                        },
-                        error: function(xhr, status, err) {
-                            alert(`${language.vendorApi.contextAlerts.syncErrorGenericMsg}`);
-                            reject(err);
-                        },
-                        complete: function() {
-                            //  Reset cursor no matter what
-                            $('body, .featherlight, .featherlight-content').css("cursor", "default");
-                        }
+                try {
+                    let resp = await new Promise((resolve, reject) => {
+                        $.ajax({
+                            url: 'editor/ai/rag/syncCorpus_start.php',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(payload),
+                            success: function(resp) {
+                                resolve(resp);
+                            },
+                            error: function(xhr, status, err) {
+                                alert(`${language.vendorApi.contextAlerts.syncErrorGenericMsg}`);
+                                reject(err);
+                            },
+                            complete: function() {
+                                //  Reset cursor no matter what
+                                $('body, .featherlight, .featherlight-content').css("cursor", "default");
+                            }
+                        });
                     });
+
+                    // 2) Now poll until the job is actually finished
+                    const finalStatus = await pollJobStatus(resp.job_id, baseURL);
+
+                    // 3) Return final status / completion info
+                    return finalStatus;
+                } finally {
+                    // Reset cursor no matter what
+                    $('body, .featherlight, .featherlight-content').css("cursor", "default");
+                }
+            }
+
+            async function pollJobStatus(jobId, baseURL) {
+                return new Promise((resolve, reject) => {
+
+                    const statusUrl = "editor/ai/rag/syncCorpus_status.php?job_id=" +
+                        encodeURIComponent(jobId) + "&baseURL=" +
+                        encodeURIComponent(baseURL);
+
+                    function checkStatus() {
+                        $.ajax({
+                            url: statusUrl,
+                            method: "GET",
+                            cache: false,
+                            success: function (data) {
+
+                                if (data.status === "processed") {
+                                    const first = data['completion_info'].results?.[0] || {};
+                                    resolve(data['completion_info']);
+                                    return;
+                                }
+
+                                if (data.status === "error") {
+                                    reject(data['completion_info']);
+                                    return;
+                                }
+
+                                setTimeout(checkStatus, 3000);
+                            },
+                            error: function (xhr, status, err) {
+                                console.log("Polling error:", err);
+                                setTimeout(checkStatus, 5000);
+                            }
+                        });
+                    }
+
+                    // start polling
+                    checkStatus();
                 });
             }
 
@@ -2577,6 +2675,10 @@ var EDITOR = (function ($, parent) {
 
     readyLocalJgGridData = function(key, name){
         var data_lo = lo_data[key].attributes[name];
+        // For lightboxes, on the very first load the attribute might not yet be there. We treat it as a empty table as a work-around.
+        if (typeof data_lo === 'undefined' || data_lo === '') {
+            data_lo = '|';
+        }
         var rows = [];
         $.each(data_lo.split('||'), function(j, row){
             var records = row.split('|');
@@ -6385,6 +6487,18 @@ var EDITOR = (function ($, parent) {
                         html.prop('disabled', true);
                         event.preventDefault();
 
+                        if ($("#job-ui").length === 0) {
+                            const jobUI = `
+                              <div id="job-ui" style="margin-top:1em;">
+                                <div id="job-spinner">⏳</div>
+                                <div id="job-status">Starting…</div>
+                                <div id="job-progress-container" style="width:100%;background:#eee;height:4px;">
+                                  <div id="job-progress" style="width:0%;height:4px;background:#4caf50;"></div>
+                                </div>
+                              </div>`;
+                            $(this).after(jobUI);
+                        }
+
                         let constructorObject = getConstructorFromLightbox(html, event.data.group);
 
                         if (constructorObject === false) {return}
@@ -6502,8 +6616,7 @@ var EDITOR = (function ($, parent) {
                         async function updateCorpus(fileUrl, corpusGrid = false, useLoInCorpus) {
                             const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
 
-                            // 1. Construct a grid row with only fileUrl in col_2, others as empty strings
-                            let singleRow = {};
+                            let singleRow;
                             if (!useLoInCorpus) {
                                 singleRow = {
                                     col_1: "",
@@ -6521,35 +6634,102 @@ var EDITOR = (function ($, parent) {
                             }
 
                             const payload = { name, baseURL, gridData: [singleRow], corpusGrid, useLoInCorpus };
+
                             $('body, .featherlight, .featherlight-content').css("cursor", "wait");
 
-                            // 2. Send it off
-                            // Return a Promise that resolves or rejects with the AJAX result
-                            return new Promise((resolve, reject) => {
-                                $.ajax({
-                                    url: 'editor/ai/rag/syncCorpus.php',
-                                    method: 'POST',
-                                    contentType: 'application/json',
-                                    data: JSON.stringify(payload),
-                                    success: function(resp) {
-                                        const first = resp.results?.[0] || {};
-                                        const displaymsg =
-                                            first.rag_status ||
-                                            first.transcription_status ||
-                                            resp?.error ||
-                                            'No status available';
-                                        alert(displaymsg);
-                                        resolve(resp);
-                                    },
-                                    error: function(xhr, status, err) {
-                                        console.error('Corpus sync failed:', err);
-                                        alert(`${language.vendorApi.contextAlerts.syncErrorGenericMsg}`);
-                                        reject(err);
-                                    }, complete: function() {
-                                        // Always reset cursor
-                                        $('body, .featherlight, .featherlight-content').css("cursor", "default");
-                                    }
+                            try {
+                                // 1) Start the job and wait for the "start" response (job_id)
+                                const resp = await new Promise((resolve, reject) => {
+                                    $.ajax({
+                                        url: 'editor/ai/rag/syncCorpus_start.php',
+                                        method: 'POST',
+                                        contentType: 'application/json',
+                                        data: JSON.stringify(payload),
+
+                                        success: function (resp) {
+                                            $("#job-ui").show();
+                                            $("#job-status").text("Sync request queued…");
+                                            $("#job-progress").css("width", "0%");
+                                            resolve(resp);
+                                        },
+
+                                        error: function (xhr, status, err) {
+                                            console.error('Corpus sync failed:', err);
+                                            alert(`${language.vendorApi.contextAlerts.syncErrorGenericMsg}`);
+                                            reject(err);
+                                        }
+                                    });
                                 });
+
+                                // 2) Now poll until the job is really done
+                                const finalStatus = await pollJobStatus(resp.job_id, baseURL);
+
+                                // 3) Return the final completion info / status
+                                return finalStatus;
+
+                            } finally {
+                                // always reset cursor
+                                $('body, .featherlight, .featherlight-content').css("cursor", "default");
+                            }
+                        }
+
+                        async function pollJobStatus(jobId, baseURL) {
+                            return new Promise((resolve, reject) => {
+
+                                const statusUrl = "editor/ai/rag/syncCorpus_status.php?job_id=" +
+                                    encodeURIComponent(jobId) + "&baseURL=" +
+                                    encodeURIComponent(baseURL);
+
+                                const statusEl = $("#job-status");
+                                const spinner = $("#job-spinner");
+
+                                function checkStatus() {
+                                    $.ajax({
+                                        url: statusUrl,
+                                        method: "GET",
+                                        cache: false,
+                                        success: function (data) {
+
+                                            // Update UI
+                                            statusEl.text((data.stage || data.status || "Loading...") +
+                                                " — " + (data.message || ""));
+
+                                            if (data.progress !== undefined) {
+                                                $("#job-progress").css("width", data.progress + "%");
+                                            }
+
+                                            if (data.status === "processed") {
+                                                spinner.hide();
+                                                const first = data['completion_info'].results?.[0] || {};
+                                                const displaymsg =
+                                                    first.rag_status ||
+                                                    first.transcription_status ||
+                                                    data['completion_info']?.error ||
+                                                    'No status available';
+                                                //alert(displaymsg);
+                                                statusEl.text("✅ Sync complete!");
+                                                resolve(data['completion_info']);
+                                                return;
+                                            }
+
+                                            if (data.status === "error") {
+                                                spinner.hide();
+                                                statusEl.text("❌ Sync failed: " + (data.error || "unknown"));
+                                                reject(data['completion_info']);
+                                                return;
+                                            }
+
+                                            setTimeout(checkStatus, 3000);
+                                        },
+                                        error: function (xhr, status, err) {
+                                            console.log("Polling error:", err);
+                                            setTimeout(checkStatus, 5000);
+                                        }
+                                    });
+                                }
+
+                                // start polling
+                                checkStatus();
                             });
                         }
 
@@ -6611,10 +6791,18 @@ var EDITOR = (function ($, parent) {
                         *
                          */
                         async function doCorpusCheck(fileUrl, loSettings) {
+                            const statusEl = $("#job-status");
                             if (loSettings['useLoInCorpus'] === true){
                                 alert(`${language.vendorApi.contextAlerts.contextUpdatePreviewMsg}`);
                                 await savepreviewPromise();
                                 const data = await updateCorpus(fileUrl, false, true);
+                                const first = data.results?.[0] || {};
+                                const displaymsg =
+                                    first.rag_status ||
+                                    first.transcription_status ||
+                                    resp?.error ||
+                                    'No status available';
+                                alert(displaymsg);
                                 if ((data?.results?.[0]?.continue_request === 'false')|| (data.success === false)){
                                     return false;
                                 }else{
@@ -6630,10 +6818,18 @@ var EDITOR = (function ($, parent) {
 
                                     if (match) {
                                         alert(`${language.vendorApi.contextAlerts.contextFileFoundProceedMsg}`);
+                                        statusEl.text("✅ File already synced!");
                                         return match.metaData.source;  // file found
                                     } else {
                                         if (confirm(`${language.vendorApi.contextAlerts.contextInPageProcessPromptMsg}`)){
                                             let fileStatus = await updateCorpus(fileUrl, false);
+                                            const first = fileStatus.results?.[0] || {};
+                                            const displaymsg =
+                                                first.rag_status ||
+                                                first.transcription_status ||
+                                                resp?.error ||
+                                                'No status available';
+                                            alert(displaymsg);
                                             if ((fileStatus?.results?.[0]?.continue_request === 'false') || (fileStatus.success === false)) {
                                                 return false;
                                             } else {
@@ -6771,6 +6967,7 @@ var EDITOR = (function ($, parent) {
             function updateGrid(name, id) {
                 //the load happens on page load or instantiation, we don't need to do this for everything
                 const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+                console.log("About to start AJAX. Wish me luck!");
 
                 $.ajax({
                     url: 'editor/ai/rag/getCorpus.php',
@@ -6785,11 +6982,6 @@ var EDITOR = (function ($, parent) {
                         format: "csv"
                     }),
                     success: function(resp) {
-                        if (!resp?.corpus) {
-                            //alert('No corpus data found!');
-                            setAttributeValue(key, [name], ['|']);
-                            return;
-                        }
                         var gridId = '#' + resp.gridId + '_jqgrid';
                         $(gridId).jqGrid('clearGridData');
                         setAttributeValue(key, [resp.type], [resp.corpus]);
@@ -6802,7 +6994,6 @@ var EDITOR = (function ($, parent) {
                         if (resp.corpus && typeof resp.corpus === "string") {
                             // Remove leading/trailing whitespace, split on newlines, filter out empty lines
                             totalFiles = resp.corpus.trim().split('\n').filter(line => line.trim() !== '').length;
-                            //alert(`✅ AI context resources are up to date!`);
                         }
                     },
                     error: function(xhr, status, err) {

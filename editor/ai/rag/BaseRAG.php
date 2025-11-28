@@ -238,7 +238,7 @@ abstract class BaseRAG
      */
     protected function isHashProcessed(string $fileHash, string $fileName, bool $autoAdd = false, $metaData = null): bool
     {
-        if(!isset($_SESSION['toolkits_logon_id'])) {
+        if((!isset($_SESSION['toolkits_logon_id'])) && (php_sapi_name() !== 'cli')) {
             die("Session ID not set");
         }
 
@@ -311,6 +311,7 @@ abstract class BaseRAG
      */
     private function processFileChunks($filePath, $meta, $fileSource)
     {
+        global $xerte_toolkits_site;
         $fileName = basename($fileSource);
         $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
 
