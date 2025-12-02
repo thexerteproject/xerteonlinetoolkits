@@ -51,6 +51,22 @@ class anthropicApi extends BaseAiApi
         return $answer;
     }
 
+    protected function extract_json_object(string $text): ?string
+    {
+        // Find the first "{" and last "}"
+        $start = strpos($text, '{');
+        $end   = strrpos($text, '}');
+
+        if ($start === false || $end === false || $end < $start) {
+            return null; // No JSON found
+        }
+
+        // Extract substring containing the JSON
+        $json = substr($text, $start, $end - $start + 1);
+
+        return trim($json);
+    }
+
     protected function buildQueries(array $inputs): array
     {
         //todo remove
@@ -59,7 +75,7 @@ class anthropicApi extends BaseAiApi
             $apiKey = $xerte_toolkits_site->anthropic_key;
 
             $payload = [
-                'model' => 'claude-3-5-sonnet-20241022',
+                'model' => 'claude-haiku-4-5-20251001',
                 'max_tokens' => 4096,
                 'messages' => [
                     ['role' => 'user', 'content' => <<<SYS
@@ -67,7 +83,7 @@ You are a query‐builder assistant.
 Given my inputs (as JSON), output *strictly* a JSON object with two fields:
   • "frequency_query": a single query string for TF–IDF matching
   • "vector_query":   a single query string for vector embedding similarity
-Do not wrap your response in any extra text.
+Do not wrap your response in any extra text, and do not add any extra text outside the brackets.
 SYS
                     ],
                     ['role' => 'assistant', 'content' => 'Understood. Which inputs would you like me to process first?'],
@@ -102,7 +118,8 @@ SYS
                 }
 
                 if (isset($decoded['content'][0]['text'])) {
-                    $decoded = json_decode($decoded['content'][0]['text'], true, 512, JSON_THROW_ON_ERROR);
+                    $decoded = $this->extract_json_object($this->total_clean_machine($decoded['content'][0]['text']));
+                    $decoded = json_decode($decoded, true, 512, JSON_THROW_ON_ERROR);
                 }
 
                 return $decoded;

@@ -2,7 +2,7 @@
 class anthropic_model {
 	public $context;
 	public $chat_url = "https://api.anthropic.com/v1/messages";
-	public $model = "claude-3-5-sonnet-20241022";
+	public $model = "claude-haiku-4-5-20251001";
 	public $temperature = 0.2;
 	public $max_tokens = 4096;
 	public $learning_prompt;
@@ -11,7 +11,7 @@ class anthropic_model {
 
 	public function __construct($type, $model = null, $context = "standard", $sub_type = null){
         $default_model_override = [
-            "categories" => "claude-3-haiku-20240307",
+            /*"categories" => "claude-3-haiku-20240307",
             "columnpage" => "claude-3-haiku-20240307",
             "crossword" => "claude-3-haiku-20240307",
             "inventory" => "claude-3-haiku-20240307",
@@ -20,7 +20,7 @@ class anthropic_model {
             "nestedpage" => "claude-3-haiku-20240307",
             "nestedtab" => "claude-3-haiku-20240307",
             "quiz" => "claude-3-haiku-20240307",
-            "topxq" => "claude-3-haiku-20240307",
+            "topxq" => "claude-3-haiku-20240307",*/
         ];
 
 		if($model == null) {

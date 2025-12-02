@@ -118,7 +118,6 @@ class pexelsApi extends BaseApi
 
 
         if ($overrideSettings === false || $overrideSettings === 'false') {
-            //todo used to be jsondecode(jsonencode(settings))
             $aiParams = $settings;
         } else {
             $ex = $this->extractParameters($query, $aiOptions);
