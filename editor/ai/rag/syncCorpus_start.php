@@ -44,7 +44,7 @@ $job_id = $jobStore->sync_generate_job_id();
 $jobStore->sync_job_create($job_id, [
     'status' => 'queued',
     'stage' => 'queued',
-    'message' => 'Queued',
+    'message' => 'Preparing to start processing...',
     'progress' => 0,
     'user_id' => $user_id,
     'workspace_id' => $workspace_id,

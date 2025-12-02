@@ -151,12 +151,12 @@ try {
             }
 
             try {
-                // 2) Process the file
-                $transcript = $transcriptMgr->process($uploadUrl);
-
                 //transcription in progress
                 $patch = sync_patch('running', 'Transcription', 'Transcribing file...', '15');
                 $jobStore->sync_job_update($job_id, $patch);
+
+                // 2) Process the file
+                $transcript = $transcriptMgr->process($uploadUrl);
 
                 // 3) Record success
                 $results[] = [

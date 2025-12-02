@@ -37,6 +37,24 @@ class TranscriptManager {
         return $p;
     }
 
+    private function toRelativeRagPath(string $fullPath): string
+    {
+        // Normalize all separators to forward slashes for storage
+        $normalized = str_replace(['\\', '/'], '/', $fullPath);
+
+        $anchor = 'RAG/transcripts';
+
+        $pos = stripos($normalized, $anchor);
+
+        if ($pos !== false) {
+            $relative = substr($normalized, $pos);
+            return $relative;
+        }
+
+        // Fallback: if RAG is not found, return the full path
+        return basename($fullPath);
+    }
+
     public function process($fileSource) {
         if (!$this->mediaHandler->isUrl($fileSource)){
             $source = $this->appendBase($this->normalize_path(urldecode($fileSource))); //if source is not a URL, but a partial file path, append to full file path.
@@ -59,7 +77,7 @@ class TranscriptManager {
 
         $entry = [
             'source' => $source,
-            'transcript_path' => $transcriptPath,
+            'transcript_path' => $this->toRelativeRagPath($transcriptPath),
             'processed_at' => date('c')
         ];
         $this->registry->set($id, $entry);
