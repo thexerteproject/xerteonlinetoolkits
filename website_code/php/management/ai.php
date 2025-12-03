@@ -75,7 +75,9 @@ if (is_user_admin()) {
                 continue;
             }
 
-            echo "<p>" . MANAGEMENT_ENABLE_VENDOR . $vendor->vendor . "<form><input type=\"checkbox\" id=\"" . $vendor->vendor . "_enabled\" name=\"" . $vendor->vendor . "_enabled\" " . ($vendor->enabled ? " checked" : "") . "/></form></p>";
+            $id = $vendor->type . "_" . $vendor->vendor . "_enabled";
+            echo "<p>" . MANAGEMENT_ENABLE_VENDOR . $vendor->vendor .
+                "<form><input type=\"checkbox\" id=\"" . $id . "\" name=\"" . $id . "\" " . ($vendor->enabled ? " checked" : "") . "/></form></p>";
 
             //next vendor if current has no sub options
             if ($vendor->has_no_sub_options() ) { continue; }
@@ -84,8 +86,9 @@ if (is_user_admin()) {
 
             //generate sub options html
             foreach ($vendor->sub_options as $sub_option=>$value) {
-                $id_string = $vendor->vendor . "_" . str_replace(' ', '_', $sub_option);
-                echo "<input type=\"checkbox\" id=\"" . $id_string . "\" name=\"" . $id_string . "\" " . ($value == "true" ? " checked" : "") . "/><label for=\"" . $id_string . "\">" . $sub_option . "</label>";
+                $id_string = $vendor->type . "_" . $vendor->vendor . "_" . str_replace(' ', '_', $sub_option);
+                echo "<input type=\"checkbox\" id=\"" . $id_string . "\" name=\"" . $id_string . "\" " .
+                    ($value == "true" ? " checked" : "") . "/><label for=\"" . $id_string . "\">" . $sub_option . "</label>";
             }
 
             echo "</form></p>";
