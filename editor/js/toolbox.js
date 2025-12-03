@@ -653,6 +653,53 @@ var EDITOR = (function ($, parent) {
         return false;
     },
 
+        //Required for resolving xml conditionals for AI or other API-based services, please do not remove
+    vendor_is_available = function (vendorType, vendor = "all") {
+        debugger
+        // Helper: is a single row active?
+        const isRowActive = function (row) {
+            // Must match the type/category
+            if (row.type !== vendorType) {
+                return false;
+            }
+
+            // Must be enabled
+            if (row.enabled != "1") {
+                return false;
+            }
+
+            // If this vendor doesn't require a key, it's active as-is
+            if (row.needs_key == "0") {
+                return true;
+            }
+
+            // If it *does* require a key, check via vendor_options
+            return vendorHasApiKey(vendorType, row.vendor);
+        };
+
+        // If we're checking a specific vendor in this category
+        if (vendor !== "all") {
+            for (let i = 0; i < management_helper_table.length; i++) {
+                const row = management_helper_table[i];
+                if (row.type === vendorType && row.vendor === vendor) {
+                    return isRowActive(row);
+                }
+            }
+            return false; // no matching row
+        }
+
+        // vendor === "all": is there at least one active vendor in this category?
+        for (let i = 0; i < management_helper_table.length; i++) {
+            const row = management_helper_table[i];
+
+            if (isRowActive(row)) {
+                return true; // found at least one active vendor
+            }
+        }
+
+        return false; // none active
+    },
+
     vendor_has_option = function(option, vendor = "all") {
         if(vendor == "all") {
             for(let i = 0; i < management_helper_table.length; i++){
@@ -4713,12 +4760,22 @@ var EDITOR = (function ($, parent) {
         }
         return true;
     }
+    vendorHasApiKey = function (vendorGroup, vendor) {
+        return (
+            vendor_options[vendorGroup] !== undefined &&
+            vendor_options[vendorGroup][vendor] !== undefined &&
+            (
+                vendor_options[vendorGroup][vendor].has_key === true ||
+                vendor_options[vendorGroup][vendor].needs_key === false
+            )
+        );
+    };
+
     //verifies if an API key is needed and if it exists.
     hasApiKeyInstalled = function (vendorGroup, vendor) {
-        if (vendor_options[vendorGroup] !== undefined && vendor_options[vendorGroup][vendor] !== undefined && (vendor_options[vendorGroup][vendor].has_key === true || vendor_options[vendorGroup][vendor].needs_key === false)) {
+        if (vendorHasApiKey(vendorGroup, vendor)) {
             return true;
         }
-
         alert(language.vendorApi.missingKey);
         return false;
     }
