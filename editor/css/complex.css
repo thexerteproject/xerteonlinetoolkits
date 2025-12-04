@@ -1613,6 +1613,10 @@ body.fl-jqgrid-top > .featherlight { z-index: 940 !important; }
 	box-sizing: border-box;
 }
 
+html.with-featherlight .featherlight {
+	background: rgba(0, 0, 0, 0.8);
+}
+
 
 /* start of xertecss.css
 

@@ -787,30 +787,30 @@ var EDITOR = (function ($, parent) {
             }
 
             var tr = $('<tr>');
-                        //todo move to footer of lightbos (footer does not yet exists)
-						if(options.advanced == "true" && lightboxMode == "form"){
-								if(window?.showAdvanced?.[key] == undefined) {
-                                    if (!all_options.some(opt => opt.name === "toggleAdvanced")){
-										window.showAdvanced = {};
-										console.log(arguments);
-										all_options.push({
-												name: "toggleAdvanced",
-												value: {
-														type: "toggleAdvanced",
-														label: "Show advanced options",
-														optional: "true",
-														group: options.group,
-												}
-										});
-								    }
-                                }
-								if(window.showAdvanced[key] == undefined) {
-										showAdvanced[key] = false;
-								}
-								if(!window.showAdvanced[key]) {
-										tr.css("display", "none");
-								}
-						}
+            //todo move to footer of lightbos (footer does not yet exists)
+            if(options.advanced == "true" && lightboxMode == "form"){
+                    if(window?.showAdvanced?.[key] == undefined) {
+                        if (!all_options.some(opt => opt.name === "toggleAdvanced")){
+                            window.showAdvanced = {};
+                            console.log(arguments);
+                            all_options.push({
+                                    name: "toggleAdvanced",
+                                    value: {
+                                            type: "toggleAdvanced",
+                                            label: "Show advanced options",
+                                            optional: "true",
+                                            group: options.group,
+                                    }
+                            });
+                        }
+                    }
+                    if(window.showAdvanced[key] == undefined) {
+                            showAdvanced[key] = false;
+                    }
+                    if(!window.showAdvanced[key]) {
+                            tr.css("display", "none");
+                    }
+            }
 
             if (options.deprecated) {
                 var td = $('<td>')
