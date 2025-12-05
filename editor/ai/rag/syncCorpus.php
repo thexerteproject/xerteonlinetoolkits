@@ -80,11 +80,14 @@ try {
 
     //Get the relevant job input via job id
     $job_id=$argv[1];
+
     $sync_data_dir=$argv[2];
+    x_check_path_traversal($sync_data_dir, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
 
     $jobStore = new sync_job_store(null, $sync_data_dir);
     $job = $jobStore->sync_job_read($job_id);
-    $input_path = $job['input_path'] ?? null;
+    $input_path = $sync_data_dir . '/jobs/' . $job_id . '_input.json' ?? null;
     if ($input_path && file_exists($input_path)) {
         $raw = file_get_contents($input_path);
         $input = json_decode($raw, true);
@@ -97,11 +100,55 @@ try {
     );
 
 
-    //todo alek this needs cleaning
     $gridData = $input['gridData'] ?? [];
-    $baseUrl = $input['baseURL'] ?? '';
-    $corpusScope = $input['corpusGrid'] ?? true;
-    $useLoInCorpus = $input['useLoInCorpus'] ?? false;
+    function sanitize_grid_data(array $gridData)
+    {
+        $sanitized = [];
+
+        foreach ($gridData as $rowIndex => $row) {
+            $sanitizedRow = [];
+
+            foreach ($row as $colName => $value) {
+                // Always treat grid inputs as strings
+                $sanitizedRow[$colName] = x_clean_input($value, 'string');
+            }
+
+            $sanitized[$rowIndex] = $sanitizedRow;
+        }
+
+        return $sanitized;
+    }
+    sanitize_grid_data($gridData);
+
+    function dump_vars_with_types($filepath, array $vars)
+    {
+        $output = "";
+
+        foreach ($vars as $name => $value) {
+            $type = gettype($value);
+
+            // Convert arrays or objects to readable strings
+            if (is_array($value) || is_object($value)) {
+                $display = print_r($value, true);
+            } else {
+                $display = var_export($value, true);
+            }
+
+            $output .= "{$name} ({$type}): {$display}\n";
+        }
+
+        file_put_contents($filepath, $output);
+    }
+
+    $baseUrl = x_clean_input($input['baseURL'] ?? '', 'string');
+    $corpusScope = x_clean_input($input['corpusGrid'] ?? true, 'bool');
+    $useLoInCorpus = x_clean_input($input['useLoInCorpus'] ?? false, 'bool');
+
+    dump_vars_with_types('C:\xampp\htdocs\xot\editor\ai\rag\dump.txt', [
+        'baseUrl'       => $baseUrl,
+        'corpusScope'   => $corpusScope,
+        'useLoInCorpus' => $useLoInCorpus,
+    ]);
 
     // 2. Prep directories & API keys
     $baseDir = prepareURL($baseUrl);

@@ -14,7 +14,6 @@ header('Content-Type: application/json');
 $job_id = $_GET['job_id'] ?? '';
 $baseURL = $_GET['baseURL'] ?? '';
 $jobStore = new sync_job_store($baseURL);
-$jobStore->sync_ensure_directories();
 if ($job_id === '') {
     http_response_code(400);
     echo json_encode(['error' => 'Missing job_id']);

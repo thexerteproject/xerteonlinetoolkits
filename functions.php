@@ -352,6 +352,12 @@ function x_clean_input($input, $expected_type = null, $specialcharsflags = ENT_Q
                 die("Expected numeric value, got " . htmlentities($sanitized, $specialcharsflags));
             }
         }
+        else if ($expected_type == 'bool') {
+            if (!is_bool($input)) {
+                die("Expected boolean, got " . htmlentities($sanitized, $specialcharsflags));
+            }
+            return $input; // do not modify booleans
+        }
     }
     return $sanitized;
 }

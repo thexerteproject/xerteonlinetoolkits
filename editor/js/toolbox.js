@@ -7026,7 +7026,6 @@ var EDITOR = (function ($, parent) {
             function updateGrid(name, id) {
                 //the load happens on page load or instantiation, we don't need to do this for everything
                 const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
-                console.log("About to start AJAX. Wish me luck!");
 
                 $.ajax({
                     url: 'editor/ai/rag/getCorpus.php',
