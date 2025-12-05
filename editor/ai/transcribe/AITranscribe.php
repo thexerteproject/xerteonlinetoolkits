@@ -33,7 +33,8 @@ abstract class AITranscribe {
     /**
      * Format transcription segments with start/end timestamps.
      */
-    protected function formatSegmentsWithTimestamps($vttContent) {
+    protected function formatSegmentsWithTimestamps($vttContent, bool $secondsOnly = false)
+    {
         $lines = preg_split('/\R/', $vttContent);
         $formattedText = '';
         $currentStart = $currentEnd = null;
@@ -55,8 +56,9 @@ abstract class AITranscribe {
             )) {
                 // Flush previous cue
                 if ($currentStart !== null) {
-                    $formattedText .= "S: {$currentStart} E: {$currentEnd} Text: {$currentText}\n";
+                    $formattedText .= $this->formatCueLine($currentStart, $currentEnd, $currentText, $secondsOnly);
                 }
+
                 // Start a new cue
                 $currentStart = $m[1];
                 $currentEnd   = $m[2];
@@ -64,16 +66,49 @@ abstract class AITranscribe {
                 continue;
             }
 
-            // Otherwise it’s cue text; accumulate (space‑separated)
+            // Otherwise it’s cue text; accumulate (space-separated)
             $currentText .= ($currentText === '' ? '' : ' ') . $line;
         }
 
         // Flush the very last cue
         if ($currentStart !== null) {
-            $formattedText .= "S: {$currentStart} E: {$currentEnd} Text: {$currentText}\n";
+            $formattedText .= $this->formatCueLine($currentStart, $currentEnd, $currentText, $secondsOnly);
         }
 
         return $this->removeSpecialCharacters($formattedText);
+    }
+
+    /**
+     * Helper: format a single cue line either as hh:mm:ss.mmm or seconds with 1 decimal.
+     */
+    protected function formatCueLine(string $start, string $end, string $text, bool $secondsOnly): string
+    {
+        if ($secondsOnly) {
+            $startSec = $this->timestampToSeconds($start);
+            $endSec   = $this->timestampToSeconds($end);
+
+            // Always 1 decimal place, e.g. 3.3, 76.9, 120.0
+            return sprintf("S: %.1f E: %.1f Text: %s\n", $startSec, $endSec, $text);
+        }
+
+        // The original timestamps
+        return "S: {$start} E: {$end} Text: {$text}\n";
+    }
+
+    /**
+     * Convert "HH:MM:SS.mmm" to seconds (float), rounded to 1 decimal.
+     */
+    protected function timestampToSeconds(string $timestamp): float
+    {
+        // Split into H, M, S.mmm
+        [$h, $m, $s] = explode(':', $timestamp);
+
+        $seconds = ((int) $h) * 3600
+            + ((int) $m) * 60
+            + (float) $s; // handles the .mmm part
+
+        // Round to 1 decimal place as requested
+        return round($seconds, 1);
     }
 
     /**
@@ -357,7 +392,7 @@ class OpenAITranscribe extends AITranscribe
             return $this->formatJsonSegments($allSegments);
         }
         if ($responseFormat === 'vtt') {
-            return $this->formatSegmentsWithTimestamps($allVtt);
+            return $this->formatSegmentsWithTimestamps($allVtt, true);
         }
         // srt or plain text
         return trim($allText);
@@ -498,7 +533,7 @@ class GladiaTranscribe extends AITranscribe {
         }
         $this->cleanupChunkedFiles();
 
-        return $this->formatSegmentsWithTimestamps($allVtt);
+        return $this->formatSegmentsWithTimestamps($allVtt, true);
     }
 
     /**
