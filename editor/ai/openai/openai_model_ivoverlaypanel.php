@@ -1,5 +1,5 @@
 <?php
-class openai_ai_ivoverlaypanel extends openai_model {
+class openai_model_ivoverlaypanel extends openai_model {
 	public function __construct($type, $model = null, $context = "standard", $sub_type = null, $model_template = null, $assistantOn = false, $assistantId = null){
 		if($assistantId != null){
 			$this->assistantId = $assistantId;
