@@ -655,7 +655,6 @@ var EDITOR = (function ($, parent) {
 
         //Required for resolving xml conditionals for AI or other API-based services, please do not remove
     vendor_is_available = function (vendorType, vendor = "all") {
-        debugger
         // Helper: is a single row active?
         const isRowActive = function (row) {
             // Must match the type/category
@@ -4719,7 +4718,11 @@ var EDITOR = (function ($, parent) {
             for (let input = 0; input < formInputValues.length ; input++) {
                 if (formInputValues[input].getAttribute('type') === 'wysiwyg') {
                     formState[formInputValues[input].getAttribute('name')] = formInputValues[input].textContent;
-                } else {
+                }
+                if(formInputValues[input].className === 'ckeditor'){
+                    formState[formInputValues[input].name] = formState[formInputValues[input].name];
+                }
+                else {
                     formState[formInputValues[input].name] = formInputValues[input].type !== 'checkbox' ? formInputValues[input].value : String(formInputValues[input].checked);
                 }
             }
@@ -4793,7 +4796,7 @@ var EDITOR = (function ($, parent) {
 
                 let formFieldValue = "";
 
-                if (this.getAttribute('type') === 'wysiwyg') {
+                if ((this.getAttribute('type') === 'wysiwyg') || (this.getAttribute('class') === 'ckeditor')){
                     formFieldValue = this.textContent ;
                 } else {
                     formFieldValue = this.value;
@@ -4973,7 +4976,7 @@ var EDITOR = (function ($, parent) {
                                 triggerRedrawPage(event.data.key);
                             } else {
                                 //lightbox so redraw only the lightbox form.
-                                triggerRedrawForm(event.data.group, event.data.key, "", "redraw");
+                                triggerRedrawForm(event.data.group, event.data.key, "", "initialize");
                             }
                         }
 					});
@@ -5782,7 +5785,7 @@ var EDITOR = (function ($, parent) {
                                     triggerRedrawPage(event.data.key);
                                 } else {
                                     //lightbox so redraw only the lightbox form.
-                                    triggerRedrawForm(event.data.group, event.data.key, "", "redraw");
+                                    triggerRedrawForm(event.data.group, event.data.key, "", "initialize");
                                 }
                             }
 						})
@@ -7001,7 +7004,7 @@ var EDITOR = (function ($, parent) {
 					.addClass('toggleAdvanced')
 					.click(() => {
 						window.showAdvanced[key] = !window.showAdvanced[key];
-						triggerRedrawForm(options.group, key, "", "redraw");
+						triggerRedrawForm(options.group, key, "", "initialize");
 					});
 				if(window.showAdvanced[key]){
 						html.attr("checked", "true");
@@ -7142,7 +7145,7 @@ var EDITOR = (function ($, parent) {
                                     triggerRedrawPage(event.data.key);
                                 } else {
                                     //lightbox so redraw only the lightbox form.
-                                    triggerRedrawForm(event.data.group, event.data.key, "", "redraw");
+                                    triggerRedrawForm(event.data.group, event.data.key, "", "initialize");
                                 }
                             }
 						})
