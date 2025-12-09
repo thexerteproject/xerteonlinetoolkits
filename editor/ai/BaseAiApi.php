@@ -352,8 +352,24 @@ abstract class BaseAiApi
         return $payload;
     }
 
-    public function ai_request($p, $type, $subtype, $context, $baseUrl, $selectedCode, $useCorpus = false, $fileList = null, $restrictCorpusToLo = false){
+    //Strips the input array from html entities, paragraph tags and the like; it only confuses the model if left.
+    function cleanArray($arr) {
+        return array_map(function ($v) {
+            if (!is_string($v)) return $v;
 
+            // 1. Convert &lt;p&gt; to <p>
+            $v = html_entity_decode($v, ENT_QUOTES, 'UTF-8');
+
+            // 2. Strip HTML tags
+            $v = strip_tags($v);
+
+            // 3. Trim whitespace
+            return trim($v);
+        }, $arr);
+    }
+
+    public function ai_request($p, $type, $subtype, $context, $baseUrl, $selectedCode, $useCorpus = false, $fileList = null, $restrictCorpusToLo = false){
+        $p = $this->cleanArray($p);
         try {
             $this->setupLanguageInstructions($selectedCode);
             $managementSettings = get_block_indicators();

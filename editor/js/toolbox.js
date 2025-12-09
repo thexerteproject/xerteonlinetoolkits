@@ -4976,7 +4976,7 @@ var EDITOR = (function ($, parent) {
                                 triggerRedrawPage(event.data.key);
                             } else {
                                 //lightbox so redraw only the lightbox form.
-                                triggerRedrawForm(event.data.group, event.data.key, "", "initialize");
+                                triggerRedrawForm(event.data.group, event.data.key, "", "redraw");
                             }
                         }
 					});
@@ -6382,6 +6382,34 @@ var EDITOR = (function ($, parent) {
                         html.prop('disabled', true);
                         event.preventDefault();
 
+                        triggerRedrawForm(options.group, key, "", "redraw");
+
+                        function cleanTextField(input) {
+                            if (typeof input !== "string") return input;
+
+                            // 1. Decode HTML entities (&lt;p&gt; to <p>, etc)
+                            const txt = document.createElement("textarea");
+                            txt.innerHTML = input;
+                            input = txt.value;
+
+                            // 2. Strip HTML tags (<p>...</p>)
+                            input = input.replace(/<[^>]*>/g, "");
+
+                            // 3. Replace non-breaking spaces (decoded &nbsp;)
+                            input = input.replace(/\u00A0/g, " ");
+
+                            // 4. Replace literal "&nbsp;" if still present
+                            input = input.replace(/&nbsp;/g, " ");
+
+                            // 5. Normalize whitespace (remove extra spaces, tabs, newlines)
+                            input = input.replace(/\s+/g, " ");
+
+                            // 6. Trim leading/trailing whitespace
+                            input = input.trim();
+
+                            return input;
+                        }
+
                         let constructorObject = getConstructorFromLightbox(html, event.data.group);
                         if (constructorObject === false) {return}
                         let api = constructorObject['imgApi'] !== undefined
@@ -6451,6 +6479,8 @@ var EDITOR = (function ($, parent) {
                                 return;
                             }
                         }
+
+                        query = cleanTextField(query);
 
                         img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject, event.data.key, event.data.value);
                         html.prop('disabled', false);
@@ -6560,6 +6590,8 @@ var EDITOR = (function ($, parent) {
                               </div>`;
                             $(this).after(jobUI);
                         }
+
+                        triggerRedrawForm(options.group, key, "", "initialize");
 
                         let constructorObject = getConstructorFromLightbox(html, event.data.group);
 
