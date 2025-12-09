@@ -581,15 +581,7 @@
 													});
 
 												} else {
-													//image
-													event.stopPropagation()
-													hideOnClickOutside($("#hotspot_bubble_holder"));
-													$("#hotspot_bubble_holder").show()
-													$("#hotspot_bubble_holder").empty()
-													$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble" tabindex="0">' + '</div>');
-
-													setBubble(hsInfo, hsShape, _this, this)
-
+													setBubble(hsInfo, hsShape, _this, this);
 												}
 											}
 
@@ -619,15 +611,7 @@
 													$.featherlight(dialogHtml, {});
 													x_pageContentsUpdated();
 												} else {
-													//close hotspot bubble on click outside
-													event.stopPropagation()
-													hideOnClickOutside($("#hotspot_bubble_holder"));
-
-													$("#hotspot_bubble_holder").show()
-													$("#hotspot_bubble_holder").empty()
-													$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble" tabindex="0">' + '</div>');
-
-													setBubble(hsInfo, hsShape, _this, this)
+													setBubble(hsInfo, hsShape, _this, this);
 												}
 											}
 										}
@@ -702,15 +686,7 @@
 													});
 
 												} else {
-													//image
-													event.stopPropagation()
-													hideOnClickOutside($("#hotspot_bubble_holder"));
-													$("#hotspot_bubble_holder").show()
-													$("#hotspot_bubble_holder").empty()
-													$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble" tabindex="0">' + '</div>');
-
-													setBubble(hsInfo, hsShape, _this, this)
-
+													setBubble(hsInfo, hsShape, _this, this);
 												}
 											} else if (hsInfo == "text") {
 												dialogHtml = x_addLineBreaks(_this.getAttribute("hotspotPopUp"));
@@ -722,15 +698,7 @@
 													$.featherlight(dialogHtml, {});
 													x_pageContentsUpdated();
 												} else {
-													//close hotspot bubble on click outside
-													event.stopPropagation()
-													hideOnClickOutside($("#hotspot_bubble_holder"));
-
-													$("#hotspot_bubble_holder").show()
-													$("#hotspot_bubble_holder").empty()
-													$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble" tabindex="0">' + '</div>');
-
-													setBubble(hsInfo, hsShape, _this, this)
+													setBubble(hsInfo, hsShape, _this, this);
 												}
 											}
 											if (hsType == 'dialog' ) {
@@ -888,25 +856,9 @@
 
 	};
 
-	function hideOnClickOutside(selector) {
-		const outsideClickListener = (event) => {
-			const $target = $(event.target);
-			if (!$target.closest(selector).length && !$(selector).is(':empty')) {
-				$("#pageContents .selected").removeClass("selected");
-				$("#pageContents .highlighted").removeClass("highlighted");
-				$('#hotspot_bubble_holder').empty()
-				removeClickListener();
-			}
-		}
-
-		const removeClickListener = () => {
-			document.removeEventListener('click', outsideClickListener);
-		}
-
-		document.addEventListener('click', outsideClickListener);
-	}
-
 	function setBubble(hsInfo, hsShape, _this, thisTmp) {
+		$("#hotspot_bubble_holder").show().empty();
+    	$("#hotspot_bubble_holder").append('<div id="hotspot_bubble" class="hotspot_bubble" tabindex="0"></div>');
 		$hotspot_bubble = $("#hotspot_bubble");
 
 		(_this.getAttribute("showTitle") == 'true' && _this.getAttribute("name") !== "") ? bubble_content = "<h3>" + _this.getAttribute("name") + "</h3><br/>" : bubble_content = ""
@@ -1022,7 +974,12 @@
 					direction = 0;
 				}
 			})
-			.focusout(function() {
+			.focusout(function(event) {
+				// If focus is leaving because user clicked a link inside the bubble → do nothing
+				if ($(event.relatedTarget).closest('#hotspot_bubble_holder').length) {
+					return;
+				}
+
 				// bubble will be focused automatically on open so keyboard can access its contents
 				// when tabbing away from bubble it focuses on next or previous bubble
 				if ($("#pageContents").data("thisFocus") != undefined) {
@@ -1042,9 +999,7 @@
 					$("#pageContents").removeData("nextFocus");
 				}
 			});
-
-		hideOnClickOutside($hotspot_bubble);
-	}
+	};
 
 	connectorHotspotImage.init();
 	
