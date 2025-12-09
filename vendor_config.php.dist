@@ -1,0 +1,21 @@
+<?php
+//Generative AI Keys
+$xerte_toolkits_site->openai_key = '';
+$xerte_toolkits_site->mistral_key = '';
+$xerte_toolkits_site->anthropic_key ='';
+
+//Transcription keys
+$xerte_toolkits_site->gladia_key = '';
+$xerte_toolkits_site->whisper_key = '';
+
+//Encoding Models
+$xerte_toolkits_site->mistralenc_key = '';
+$xerte_toolkits_site->openaienc_key = ''; //uses same key as open AI
+
+//Image retreival and/or generation keys
+$xerte_toolkits_site->pexels_key = '';
+$xerte_toolkits_site->pixabay_key = '';
+$xerte_toolkits_site->unsplash_key = '';
+$xerte_toolkits_site->dalle2_key = ''; //uses same key as open AI
+$xerte_toolkits_site->dalle3_key = ''; //uses same key as open AI
+$xerte_toolkits_site->gptImage1_key = ''; //uses same key as open AI

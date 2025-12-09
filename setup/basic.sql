@@ -26,6 +26,7 @@ DROP TABLE IF EXISTS `$template_group_rights` ;
 DROP TABLE IF EXISTS `$folderrights` ;
 DROP TABLE IF EXISTS `$folder_group_rights` ;
 DROP TABLE IF EXISTS `$oai_publish` ;
+DROP TABLE If EXISTS `$management_helper` ;
 
 DROP TABLE IF EXISTS `$lti_context` ;
 DROP TABLE IF EXISTS `$lti_keys` ;
@@ -397,3 +398,27 @@ insert into `$role`(`roleid`, `name`) values
   (6, 'projectadmin'),
   (7, 'harvestadmin'),
   (8, 'aiuser');
+
+CREATE TABLE IF NOT EXISTS `$management_helper` (
+    `interaction_id` int(11) NOT NULL AUTO_INCREMENT,
+    `vendor` VARCHAR(10) NOT NULL,
+    `label` VARCHAR(34) NOT NULL,
+    `type` VARCHAR(10) NOT NULL,
+    `needs_key` BOOLEAN NOT NULL,
+    `enabled` BOOLEAN NOT NULL ,
+    `sub_options` TEXT,
+    PRIMARY KEY (`interaction_id`)
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `management_helper` VALUES
+                                    (1, 'openai', 'GPT (Openai)', 'ai', 1, 0, '{\"generate image\":\"false\",\"image uploads\":\"false\"}'),
+                                    (2, 'anthropic', 'Claude (Anthropic)', 'ai', 1, 0, '{\"generate image\":\"false\"}'),
+                                    (3, 'mistral', 'Mistral AI', 'ai', 1, 0, '{\"generate image\":\"false\"}'),
+                                    (4, 'pexels', 'Pexels', 'image', 1, 0, '{}'),
+                                    (5, 'pixabay', 'Pixabay', 'image', 1, 0, '{}'),
+                                    (6, 'unsplash', 'Unsplash', 'image', 1, 0, '{}'),
+                                    (7, 'wikimedia', 'Wikimedia Foundation', 'image', 0, 0, '{}'),
+                                    (8, 'dalle2', 'DallE2 (Generative)', 'image', 1, 0, '{}'),
+                                    (9, 'dalle3', 'DallE3 (Generative)', 'image', 1, 0, '{}');
+
+-- todo alek add changes here from the upgrade file.

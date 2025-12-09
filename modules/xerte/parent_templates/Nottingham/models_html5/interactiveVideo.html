@@ -343,6 +343,7 @@
                     this.loadPopcorn();
                 } else {
                     this.setUp();
+                    x_pageLoaded();
                 }
 
             } else {
@@ -401,8 +402,10 @@
 				}
 				$.getScript(x_templateLocation + fileLocation + ".js")
 					.done(function(setttings, textStatus){
-						if (++i >= plugins.length)
-							interactiveVideo.setUp();
+						if (++i >= plugins.length) {
+                            interactiveVideo.setUp();
+                            x_pageLoaded();
+                        }
 					})
 					.fail(function( jqxhr, settings, exception ) {
 						console.log("Failed to load plugin:" + exception);
@@ -768,7 +771,6 @@
                 this.addEvents();
             }
             this.initTracking();
-            x_pageLoaded();
         };
 
         this.addEvents = function() {
