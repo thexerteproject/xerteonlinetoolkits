@@ -4720,7 +4720,8 @@ var EDITOR = (function ($, parent) {
                     formState[formInputValues[input].getAttribute('name')] = formInputValues[input].textContent;
                 }
                 if(formInputValues[input].className === 'ckeditor'){
-                    formState[formInputValues[input].name] = formState[formInputValues[input].name];
+                    formInputValues[input].value = formState[formInputValues[input].name];
+                    //formState[formInputValues[input].name] = formState[formInputValues[input].name];
                 }
                 else {
                     formState[formInputValues[input].name] = formInputValues[input].type !== 'checkbox' ? formInputValues[input].value : String(formInputValues[input].checked);
@@ -5785,7 +5786,7 @@ var EDITOR = (function ($, parent) {
                                     triggerRedrawPage(event.data.key);
                                 } else {
                                     //lightbox so redraw only the lightbox form.
-                                    triggerRedrawForm(event.data.group, event.data.key, "", "initialize");
+                                    triggerRedrawForm(event.data.group, event.data.key, "", "redraw");
                                 }
                             }
 						})
@@ -6591,7 +6592,7 @@ var EDITOR = (function ($, parent) {
                             $(this).after(jobUI);
                         }
 
-                        triggerRedrawForm(options.group, key, "", "initialize");
+                        triggerRedrawForm(options.group, key, "", "redraw");
 
                         let constructorObject = getConstructorFromLightbox(html, event.data.group);
 
@@ -6633,7 +6634,7 @@ var EDITOR = (function ($, parent) {
                         delete constructorObject.updateLoOnRequest;
 
                         // Check if fileUrl is "Upload a file", empty, or just whitespace
-                        if (aiSettings['fileUrl'] === "Upload a file or enter a video link here..." || !aiSettings['fileUrl'] || aiSettings['fileUrl'].trim() === "") {
+                        if (aiSettings['fileUrl'] === "Upload a file or enter a video link here..." || aiSettings['fileUrl'] === "Select a file or enter a video link here..." || !aiSettings['fileUrl'] || aiSettings['fileUrl'].trim() === "") {
                             aiSettings['fileUrl'] = null;
                         }
 
