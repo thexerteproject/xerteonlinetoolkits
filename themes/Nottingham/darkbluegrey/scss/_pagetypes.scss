@@ -316,6 +316,10 @@ a.hotspot, a.hotspot.selected {
   background:$brightcolor;
   color:$fontcolorfobrightcolor;
 }
+//*****mcq*****/
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected {
+  background: $lightestcolor;
+}
 //*****opinion********/
 .x_opinion_page #pageContents input {
   padding-left: 0;

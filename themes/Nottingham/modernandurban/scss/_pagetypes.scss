@@ -449,3 +449,8 @@ table.header.shaded th:not(:last-of-type),
 table.footer.shaded :not(thead) tr:last-of-type td:not(:last-of-type) {
 	border-right-color: $lightestcolor;
 }
+
+//*****mcq*****/
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected {
+  background: $blackordarkest;
+}

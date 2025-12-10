@@ -302,7 +302,10 @@ a.hotspot, a.hotspot.selected {
   border-color:darken($lightestcolor, 70%);
   color:$whiteorlightest;
 }
-
+//*****mcq*****/
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected {
+  background: $blackordarkest;
+}
 //*****opinion********/
 .x_opinion_page #pageContents input {
   padding-left: 0;

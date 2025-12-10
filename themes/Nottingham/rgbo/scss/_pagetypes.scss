@@ -529,3 +529,8 @@ table.footer.shaded tbody tr:last-child {
 table.headerCol.shaded td.header {
 	background-color: inherit;
 }
+
+//*****mcq*****/
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected {
+  background: $brightcolor;
+}

@@ -410,6 +410,10 @@ a.hotspot, a.hotspot.selected {
   color: #ffffff;
 }
 
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected {
+  background: #000000;
+}
+
 .x_opinion_page #pageContents input {
   padding-left: 0;
 }

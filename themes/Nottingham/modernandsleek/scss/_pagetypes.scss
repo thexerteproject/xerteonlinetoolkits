@@ -459,3 +459,8 @@ table.headerCol.shaded td.header {
 	background:	$darkestcolor;
 	color: $fontcolorfordarkestcolor;
 }
+
+//*****mcq*****/
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected {
+  background: $lightestcolor;
+}
