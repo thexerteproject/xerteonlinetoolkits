@@ -20,7 +20,7 @@
 		<trackVideo label="Track Video Progress" optional="true" type="ComboBox" data="no_mcqs,only_video,no,yes" options="Only if no MCQ's,Only video,No (only track MCQ's),Yes" defaultValue="no_mcqs"  tooltip="Track video progress as part of the score. By default the video view percentage is only taken into account if there are no Multiple Choice Questions (MCQ's) present. Here you can choose to include the video progress (or not) in the score (when tracking)." />
 		<!-- <judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" tooltip='if this option is disable the answer are still tracked but does not count towards the score.you have to enable "Show pages with 0 tracking weight" for the answers to show on the results page if this option is off'/> -->
 
-	    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+	    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
           <qfPanel label="Number of Panels" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
           <qfButton type="quickfillbutton" optional="true"/>
         </QFGroup>
@@ -51,7 +51,7 @@
 		<audioPosition label="Audio Player Position" type="ComboBox" data="panel,bottom" options="In Panel,At Bottom" defaultValue="panel" optional="true"/>
 		<aspectRatio label="Media aspect ratio" type="ComboBox" data="1.333333,1.777777,2.333333,0.5625,0,428571" options="4:3,16:9,21:9,9:16,9:21" defaultValue="1.777777" optional="true" tooltip="The aspect ratio used for embedded videos from external sites, e.g. YouTube. The aspect ratio of MP4s uploaded to projects will be automatically detected."/>
 
-	    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+	    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
             <qfSynchXot label="Number of Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
             <qfSynchXotChange label="Number of Page Changes per Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
             <qfSynchWebpage label="Number of Embedded Webpages" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
@@ -84,7 +84,7 @@
 
 		<name label="Panel Title" type="TextInput" wysiwyg="true"/>
 
-        <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+        <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
             <qfSynchXot label="Number of Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
             <qfSynchXotChange label="Number of Page Changes per Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
             <qfSynchWebpage label="Number of Embedded Webpages" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>

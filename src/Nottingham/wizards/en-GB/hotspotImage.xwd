@@ -38,7 +38,7 @@
     <nextTxt label="Next Arrow Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 	<priorTxt label="Prior Arrow Label" type="TextInput" wysiwyg="true" language="true"/>
 
-    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
       <qfFlexhotspot label="Number of Hotspots" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
       <qfButton type="quickfillbutton" optional="true"/>
     </QFGroup>
