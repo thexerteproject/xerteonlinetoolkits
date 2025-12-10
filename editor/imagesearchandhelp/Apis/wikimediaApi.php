@@ -36,7 +36,10 @@ class wikimediaApi extends BaseApi
 
             $res = $this->httpGet($url);
             if (!$res->ok) {
-                return ["status" => "error", "message" => $res->error ?? ("HTTP " . $res->status)];
+                return [
+                    'status'  => 'error',
+                    'message' => isset($res->error) ? $res->error : ('HTTP ' . $res->status),
+                ];
             }
 
 
@@ -46,11 +49,15 @@ class wikimediaApi extends BaseApi
             }
 
 
-            $pages = $resultDecoded['query']['pages'] ?? [];
+            $pages = isset($resultDecoded['query']['pages'])
+                ? $resultDecoded['query']['pages']
+                : [];
 
 
             foreach ($pages as $page) {
-                $imgUrl = $page['imageinfo'][0]['url'] ?? '';
+                $imgUrl = isset($page['imageinfo'][0]['url'])
+                    ? $page['imageinfo'][0]['url']
+                    : '';
                 $ext = strtolower(pathinfo(parse_url($imgUrl, PHP_URL_PATH), PATHINFO_EXTENSION));
                 if (in_array($ext, $allowedExtensions, true)) {
                     $filteredPages[$page['pageid']] = $page;
@@ -75,6 +82,7 @@ class wikimediaApi extends BaseApi
 
     private function rewritePrompt($query, $conversation = [])
     {
+        global $xerte_toolkits_site;
         $chat = new AiChat($xerte_toolkits_site);
 
 
@@ -117,7 +125,7 @@ class wikimediaApi extends BaseApi
         }
 
 
-        $rewrittenPrompt = trim($resp['content'] ?? '');
+        $rewrittenPrompt = trim(isset($resp['content']) ? $resp['content'] : '');
         $conversation[] = ["role" => "system", "content" => $rewrittenPrompt];
 
 
@@ -129,6 +137,7 @@ class wikimediaApi extends BaseApi
 
     private function extractParameters($input)
     {
+        global $xerte_toolkits_site;
         $chat = new AiChat($xerte_toolkits_site);
 
 
@@ -169,7 +178,7 @@ class wikimediaApi extends BaseApi
         }
 
 
-        $rewrittenPrompt = trim($resp['content'] ?? '');
+        $rewrittenPrompt = trim(isset($resp['content']) ? $resp['content'] : '');
         $conversation[] = ["role" => "system", "content" => $rewrittenPrompt];
 
 
@@ -254,6 +263,7 @@ class wikimediaApi extends BaseApi
         $path = rtrim($target, '/') . "/media";
         $this->ensureDir($path);
 
+        global $xerte_toolkits_site;
         x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
 
         if (isset($apiResponse['query']['pages'])) {
@@ -265,8 +275,13 @@ class wikimediaApi extends BaseApi
                     if ($downloadResult->status === "success") {
                         $downloadedPaths[] = $downloadResult->path;
 
-                        $authorName = $page['imageinfo'][0]['user'] ?? 'Unknown';
-                        $imageTitle = $page['title'] ?? '';
+                        $authorName = isset($page['imageinfo'][0]['user'])
+                            ? $page['imageinfo'][0]['user']
+                            : 'Unknown';
+
+                        $imageTitle = isset($page['title'])
+                            ? $page['title']
+                            : '';
                         $imageUrl   = $url;
 
                         $htmlEmbed = "<p>Image by <a href=\"https://commons.wikimedia.org/wiki/User:$authorName\" target=\"_blank\">$authorName</a> on Wikimedia Commons. <a href=\"$imageUrl\" target=\"_blank\">View Image</a>.</p>";

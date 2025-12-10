@@ -47,6 +47,6 @@ class openai_model_ivoverlaypanel extends openai_model {
 			$this->defaultPrompt = constant("DEFAULT_PROMPT_" . $upper_type . "_BOOTSTRAP");
 		} else {
 			die("not supported context: " . $context);
-		};	
+		}
 	}
 }

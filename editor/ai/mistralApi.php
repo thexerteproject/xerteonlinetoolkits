@@ -12,7 +12,8 @@ class mistralApi extends BaseAiApi
             $authorization = "Authorization: Bearer " . $xerte_toolkits_site->mistral_key;
 
             $payload["messages"][max(sizeof($payload["messages"]) - 1, 0)]["content"] = $prompt;
-            $new_payload = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            $cleanPayload = $this->json_utf8_substitute($payload);
+            $new_payload  = json_encode($cleanPayload, JSON_UNESCAPED_UNICODE);
 
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_POST, 1);
@@ -39,7 +40,7 @@ class mistralApi extends BaseAiApi
         });
     }
 
-    protected function buildQueries(array $inputs): array
+    protected function buildQueries(array $inputs)
     {
         return $this->safeExecute(function () use ($inputs) {
             try {
@@ -57,7 +58,7 @@ Given user inputs (as JSON), output *strictly* a JSON object with two fields:
 Do not wrap your response in any extra text.
 SYS
                         ],
-                        ['role' => 'user', 'content' => json_encode($inputs, JSON_THROW_ON_ERROR)]
+                        ['role' => 'user', 'content' => json_encode($inputs)]
                     ],
                     'response_format' => [
                         'type' => 'json_schema',
@@ -85,7 +86,7 @@ SYS
                         'Content-Type: application/json',
                         'Authorization: Bearer ' . $apiKey,
                     ],
-                    CURLOPT_POSTFIELDS => json_encode($payload, JSON_THROW_ON_ERROR),
+                    CURLOPT_POSTFIELDS => json_encode($payload),
                 ]);
 
                 $resp = curl_exec($ch);
@@ -95,7 +96,7 @@ SYS
                     throw new Exception('cURL error: ' . curl_error($ch));
                 }
 
-                $decoded = json_decode($resp, true, 512, JSON_THROW_ON_ERROR);
+                $decoded = json_decode($resp, true, 512);
 
                 if (isset($decoded['detail'])) {
                     $message = is_string($decoded['detail'])
@@ -106,7 +107,7 @@ SYS
 
                 // If the model wrapped in a "choices" array, adjust accordingly:
                 if (isset($decoded['choices'][0]['message']['content'])) {
-                    $decoded = json_decode($decoded['choices'][0]['message']['content'], true, 512, JSON_THROW_ON_ERROR);
+                    $decoded = json_decode($decoded['choices'][0]['message']['content'], true, 512);
                 }
                 return $decoded;
             } finally {
@@ -116,7 +117,7 @@ SYS
     }
 
 
-    protected function parseResponse($results) : string
+    protected function parseResponse($results)
     {
         $answer = "";
         foreach ($results as $result) {

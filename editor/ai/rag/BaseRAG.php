@@ -54,9 +54,9 @@ abstract class BaseRAG
         $this->sessionId = "token is busted";
     }
 
-    abstract protected function supportsProviderEmbeddings(): bool;
+    abstract protected function supportsProviderEmbeddings();
     //public function providerActive(): bool { return false; }
-    abstract protected function getEmbeddings(array $texts): array;
+    abstract protected function getEmbeddings(array $texts);
 
     /**
      * processDirectory
@@ -106,7 +106,8 @@ abstract class BaseRAG
      *   - Then, it removes any files that used to be in corpus.json but are no longer in the list
      *   - Finally, it cleans up stale artifacts and re-computes TF-IDF vectors for the updated corpus.
      *
-     * @param string[] $filePaths Array of full file paths to include in the corpus.
+     * @param array[] $filePaths Each element is:
+     *                ['path' => string, 'metadata' => array]
      * @param bool $corpusGrid A boolean specifying whether the received list represents the state of the entire corpus. Deletes stale artifacts by default.
      * @return array              An array of per-file results or errors.
      */
@@ -158,7 +159,7 @@ abstract class BaseRAG
                         );
                     }
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $results[] = [
                     'file'  => $path,
                     'source' => $source,
@@ -186,7 +187,7 @@ abstract class BaseRAG
             file_put_contents($this->corpusFile, json_encode($corp, JSON_PRETTY_PRINT));
 
             if (!empty($hashesToPurge)) {
-                $filterStream = function(string $path) use ($hashesToPurge) {
+                $filterStream = function($path) use ($hashesToPurge) {
                     if (!file_exists($path)) return;
                     $in  = fopen($path, 'r');
                     $out = fopen("{$path}.tmp", 'w');
@@ -231,12 +232,13 @@ abstract class BaseRAG
      * Checks whether this content‑hash was seen before.
      * Records filenames + timestamps for debugging.
      *
-     * @param string $fileHash  SHA‑256 of the file contents
-     * @param string $fileName  Name of the file being processed
-     * @param bool   $autoAdd   If true, record new hashes and metadata
+     * @param string $fileHash SHA‑256 of the file contents
+     * @param string $fileName Name of the file being processed
+     * @param bool $autoAdd If true, record new hashes and metadata
      * @return bool             True if we’ve already processed this exact hash
+     * @throws \Exception
      */
-    protected function isHashProcessed(string $fileHash, string $fileName, bool $autoAdd = false, $metaData = null): bool
+    protected function isHashProcessed($fileHash, $fileName, $autoAdd = false, $metaData = null)
     {
         if((!isset($_SESSION['toolkits_logon_id'])) && (php_sapi_name() !== 'cli')) {
             die("Session ID not set");
@@ -296,6 +298,36 @@ abstract class BaseRAG
         return false;
     }
 
+    // Helper: recursively walk data and replace invalid UTF-8 sequences in strings. Needed for pre-PHP 7.2 version support.
+    private function json_utf8_substitute($value)
+    {
+        if (is_array($value)) {
+            foreach ($value as $k => $v) {
+                $value[$k] = $this->json_utf8_substitute($v);
+            }
+        } elseif (is_object($value)) {
+            foreach ($value as $k => $v) {
+                $value->$k = $this->json_utf8_substitute($v);
+            }
+        } elseif (is_string($value)) {
+            if (function_exists('mb_convert_encoding')) {
+                // This effectively replaces invalid UTF-8 sequences with U+FFFD
+                $value = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+            } elseif (function_exists('iconv')) {
+                // Fallback: drop invalid bytes (≈ JSON_INVALID_UTF8_IGNORE, not SUBSTITUTE)
+                // Not 100% equivalent, but avoids json_encode() failures.
+                $converted = @iconv('UTF-8', 'UTF-8//IGNORE', $value);
+                if ($converted !== false) {
+                    $value = $converted;
+                }
+            }
+            // If neither mb_convert_encoding nor iconv exist, we just leave it;
+            // json_encode may still fail.
+        }
+
+        return $value;
+    }
+
 
     /**
      * processFileChunks
@@ -308,6 +340,7 @@ abstract class BaseRAG
      *   - The resulting chunks are appended to the global chunks file.
      *
      * @param string $filePath The path to the file.
+     * @throws \Exception
      */
     private function processFileChunks($filePath, $meta, $fileSource)
     {
@@ -379,7 +412,7 @@ abstract class BaseRAG
             try {
                 $loader  = DocumentLoaderFactory::getLoader($filePath);
                 $content = $loader->load();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 echo "Error loading file {$fileName}: " . $e->getMessage() . "\n";
                 fclose($outHandle);
                 return "Error loading file {$fileName}: " . $e->getMessage() . "\n";
@@ -388,15 +421,25 @@ abstract class BaseRAG
             $chunksArr  = splitTextByFileType($content, $extension, $this->chunkSize);
             $chunkIndex = time();
             foreach ($chunksArr as $chunkText) {
-                $data = [
+                $data = array(
                     'id'        => $fileName . '-' . $chunkIndex++,
                     'file'      => $fileName,
                     'fileHash'  => $fileHash,
                     'createdAt' => $now,
                     'chunk'     => $chunkText
-                ];
-                if (($encoded = json_encode($data, JSON_INVALID_UTF8_SUBSTITUTE)) === false) {
-                    echo("JSON encode failed: " . json_last_error_msg());
+                );
+
+                if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+                    // PHP >= 7.2: use native behavior
+                    $encoded = json_encode($data, JSON_INVALID_UTF8_SUBSTITUTE);
+                } else {
+                    // PHP 5.6: emulate SUBSTITUTE by cleaning strings first
+                    $cleanData = $this->json_utf8_substitute($data);
+                    $encoded   = json_encode($cleanData);
+                }
+
+                if ($encoded === false) {
+                    echo "JSON encode failed: " . json_last_error_msg();
                 } else {
                     fwrite($outHandle, $encoded . "\n");
                 }
@@ -443,7 +486,9 @@ abstract class BaseRAG
         $validHashes = [];
         if (file_exists($this->corpusFile)) {
             $corp        = json_decode(file_get_contents($this->corpusFile), true);
-            $validHashes = array_keys($corp['hashes'] ?? []);
+            $validHashes = array_keys(
+                isset($corp['hashes']) ? $corp['hashes'] : []
+            );
         }
 
         // 3) Scan chunks; pick only those whose fileHash is both valid and not yet embedded
@@ -523,7 +568,7 @@ abstract class BaseRAG
      *
      * @param array|null $allowedFileHashes Optional array of allowed file hashes to filter by.
      */
-    private function generateTfidfPersistent(array $allowedFileHashes = null): void
+    private function generateTfidfPersistent(array $allowedFileHashes = null)
     {
         $df = [];
         $totalDocs = 0;
@@ -567,8 +612,8 @@ abstract class BaseRAG
             $corpus = json_decode(file_get_contents('corpus.json'), true);
         }
         $idfData = [
-            'files' => $corpus['files'] ?? [],
-            'idf' => $idf
+            'files' => isset($corpus['files']) ? $corpus['files'] : [],
+            'idf'   => $idf,
         ];
 
         // Write to either the normal file or the temp file, depending on filtering
@@ -591,7 +636,7 @@ abstract class BaseRAG
             $tf = $this->computeTf($chunkData['chunk']);
             $tfidf = [];
             foreach ($tf as $token => $freq) {
-                $tfidf[$token] = $freq * ($idf[$token] ?? 0);
+                $tfidf[$token] = $freq * (isset($idf[$token]) ? $idf[$token] : 0);
             }
             $result = [
                 'id' => $chunkData['id'],
@@ -741,7 +786,7 @@ abstract class BaseRAG
      * @param array|null $allowedFileHashes Optional array of allowed file hashes to filter by.
      * @return array The top matching chunks with their similarity scores.
      */
-    private function getContextCosine(string $question, int $topK = 2, array $allowedFileHashes = null)
+    private function getContextCosine($question, $topK = 2, array $allowedFileHashes = null)
     {
         $questionEmbedding = $this->getEmbedding($question);
         $similarities = [];
@@ -789,10 +834,10 @@ abstract class BaseRAG
         $results = [];
         foreach ($topIds as $id) {
             $results[] = [
-                'id' => $id,
-                'chunk' => $chunksMap[$id]['chunk'] ?? "",
-                'file' => $chunksMap[$id]['file'] ?? "",
-                'score' => $similarities[$id]
+                'id'    => $id,
+                'chunk' => isset($chunksMap[$id]['chunk']) ? $chunksMap[$id]['chunk'] : "",
+                'file'  => isset($chunksMap[$id]['file'])  ? $chunksMap[$id]['file']  : "",
+                'score' => $similarities[$id],
             ];
         }
         return $results;
@@ -836,7 +881,7 @@ abstract class BaseRAG
         $questionTf = $this->computeTf($question);
         $questionVector = [];
         foreach ($questionTf as $token => $freq) {
-            $questionVector[$token] = $freq * ($idf[$token] ?? 0);
+            $questionVector[$token] = $freq * (isset($idf[$token]) ? $idf[$token] : 0);
         }
 
         // Build a map of chunk id to chunk text.
@@ -876,10 +921,10 @@ abstract class BaseRAG
         $results = [];
         foreach ($topIds as $id) {
             $results[] = [
-                'id' => $id,
-                'chunk' => $chunksMap[$id]['chunk'] ?? "",
-                'file' => $chunksMap[$id]['file'] ?? "",
-                'score' => $similarities[$id]
+                'id'    => $id,
+                'chunk' => isset($chunksMap[$id]['chunk']) ? $chunksMap[$id]['chunk'] : "",
+                'file'  => isset($chunksMap[$id]['file'])  ? $chunksMap[$id]['file']  : "",
+                'score' => $similarities[$id],
             ];
         }
         return $results;
@@ -982,7 +1027,7 @@ abstract class BaseRAG
      * @param array $vec2 Second numeric vector.
      * @return float Similarity score between 0 and 1.
      */
-    protected function euclideanSimilarity(array $vec1, array $vec2): float
+    protected function euclideanSimilarity(array $vec1, array $vec2)
     {
         $sum = 0;
         $n = count($vec1);
@@ -1054,10 +1099,10 @@ abstract class BaseRAG
         $results = [];
         foreach ($topIds as $id) {
             $results[] = [
-                'id' => $id,
-                'chunk' => $chunksMap[$id]['chunk'] ?? "",
-                'file' => $chunksMap[$id]['file'] ?? "",
-                'score' => $similarities[$id]
+                'id'    => $id,
+                'chunk' => isset($chunksMap[$id]['chunk']) ? $chunksMap[$id]['chunk'] : "",
+                'file'  => isset($chunksMap[$id]['file'])  ? $chunksMap[$id]['file']  : "",
+                'score' => $similarities[$id],
             ];
         }
         return $results;
@@ -1100,7 +1145,7 @@ abstract class BaseRAG
         $questionTf = $this->computeTf($question);
         $questionVector = [];
         foreach ($questionTf as $token => $freq) {
-            $questionVector[$token] = $freq * ($idf[$token] ?? 0);
+            $questionVector[$token] = $freq * (isset($idf[$token]) ? $idf[$token] : 0);
         }
 
         // Build mapping: chunk id => chunk text.
@@ -1141,10 +1186,10 @@ abstract class BaseRAG
         $results = [];
         foreach ($topIds as $id) {
             $results[] = [
-                'id' => $id,
-                'chunk' => $chunksMap[$id]['chunk'] ?? "",
-                'file' => $chunksMap[$id]['file'] ?? "",
-                'score' => $similarities[$id]
+                'id'    => $id,
+                'chunk' => isset($chunksMap[$id]['chunk']) ? $chunksMap[$id]['chunk'] : "",
+                'file'  => isset($chunksMap[$id]['file'])  ? $chunksMap[$id]['file']  : "",
+                'score' => $similarities[$id],
             ];
         }
         return $results;
@@ -1158,13 +1203,13 @@ abstract class BaseRAG
      * @param array $vec2 Second associative vector.
      * @return float Similarity score between 0 and 1.
      */
-    protected function euclideanSimilarityAssoc(array $vec1, array $vec2): float
+    protected function euclideanSimilarityAssoc(array $vec1, array $vec2)
     {
         $allKeys = array_unique(array_merge(array_keys($vec1), array_keys($vec2)));
         $sum = 0;
         foreach ($allKeys as $key) {
-            $a = $vec1[$key] ?? 0;
-            $b = $vec2[$key] ?? 0;
+            $a = isset($vec1[$key]) ? $vec1[$key] : 0;
+            $b = isset($vec2[$key]) ? $vec2[$key] : 0;
             $sum += pow($a - $b, 2);
         }
         $distance = sqrt($sum);
@@ -1177,14 +1222,14 @@ abstract class BaseRAG
      *
      * @param array $fileList a list of full or partial file source paths.
      */
-    private function matchSourceToHashes(array $fileList) : array{
-        function normalize_path(string $path): string
+    private function matchSourceToHashes(array $fileList) {
+        function normalize_path($path)
         {
             // 1) turn backslashes into forward-slashes
             $p = str_replace('\\', '/', $path);
 
             // 2) collapse multiple slashes into one
-            return preg_replace('#/+#', '/', $p);;
+            return preg_replace('#/+#', '/', $p);
         }
 
         $corpusData = json_decode(file_get_contents($this->corpusFile), true);
@@ -1200,7 +1245,9 @@ abstract class BaseRAG
             $file = $path;
             $matched = false;
             foreach ($corpusData['hashes'] as $hash => $entry) {
-                $entrySource = $entry['metaData']['source'] ?? '';
+                $entrySource = isset($entry['metaData']['source'])
+                    ? $entry['metaData']['source']
+                    : '';
                 if (basename($entrySource) === basename($file)) {
                     $allowedFileHashes[] = $hash; // just add the hash to the output array
                     $matched = true;
@@ -1331,7 +1378,10 @@ abstract class BaseRAG
         // Sort merged results by combined_score descending.
         $mergedCandidates = array_values($merged);
         usort($mergedCandidates, function ($a, $b) {
-            return $b['combined_score'] <=> $a['combined_score'];
+            if ($b['combined_score'] == $a['combined_score']) {
+                return 0;
+            }
+            return ($b['combined_score'] < $a['combined_score']) ? -1 : 1;
         });
 
         // Load all chunks grouped by file to support overlap.
@@ -1352,7 +1402,11 @@ abstract class BaseRAG
         // Sort each file's chunks by id.
         foreach ($chunksGrouped as $file => &$chunksArr) {
             usort($chunksArr, function ($a, $b) {
-                return $a['id'] <=> $b['id'];
+                if ($a['id'] == $b['id']) {
+                    return 0;
+                }
+                return ($a['id'] < $b['id']) ? -1 : 1;
+
             });
         }
         unset($chunksArr);
@@ -1494,7 +1548,7 @@ abstract class BaseRAG
      * Remove all chunk & embedding entries whose fileHash
      * is no longer in the global corpus, then rebuild IDF/TF‑IDF.
      */
-    private function cleanupStaleArtifacts(): void
+    private function cleanupStaleArtifacts()
     {
         // 1) Load valid hashes from the corpus
         if (!file_exists($this->corpusFile)) {
@@ -1502,14 +1556,14 @@ abstract class BaseRAG
             return;
         }
         $corp        = json_decode(file_get_contents($this->corpusFile), true);
-        $validHashes = array_keys($corp['hashes'] ?? []);
+        $validHashes = array_keys(isset($corp['hashes']) ? $corp['hashes'] : []);
         if (empty($validHashes)) {
             echo "Corpus is empty—nothing to keep.\n";
             return;
         }
 
         // 2) Helper to rewrite JSONL, keeping only valid fileHashes
-        $filterJsonl = function(string $path) use ($validHashes) {
+        $filterJsonl = function($path) use ($validHashes) {
             if (!file_exists($path)) {
                 echo "File not found (skipping): {$path}\n";
                 return;

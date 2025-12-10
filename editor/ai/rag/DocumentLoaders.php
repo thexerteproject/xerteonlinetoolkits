@@ -3,47 +3,47 @@ require_once __DIR__ . '/../../../vendor/autoload.php';
 use Smalot\PdfParser\Parser;
 
 interface DocumentLoader {
-    public function load(): string;
+    public function load();
 }
 
 class TextLoader implements DocumentLoader {
-    private string $filePath;
+    private $filePath;
 
-    public function __construct(string $filePath) {
+    public function __construct($filePath) {
         global $xerte_toolkits_site;
         x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
         $this->filePath = $filePath;
     }
 
-    public function load(): string {
+    public function load() {
         return file_exists($this->filePath) ? file_get_contents($this->filePath) : '';
     }
 }
 
 class HtmlLoader implements DocumentLoader {
-    private string $filePath;
+    private $filePath;
 
-    public function __construct(string $filePath) {
+    public function __construct($filePath) {
         global $xerte_toolkits_site;
         x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
         $this->filePath = $filePath;
     }
 
-    public function load(): string {
+    public function load(){
         return file_exists($this->filePath) ? strip_tags(file_get_contents($this->filePath)) : '';
     }
 }
 
 class CsvLoader implements DocumentLoader {
-    private string $filePath;
+    private $filePath;
 
-    public function __construct(string $filePath) {
+    public function __construct($filePath) {
         global $xerte_toolkits_site;
         x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
         $this->filePath = $filePath;
     }
 
-    public function load(): string {
+    public function load(){
         if (!file_exists($this->filePath)) return '';
 
         $content = '';
@@ -57,21 +57,21 @@ class CsvLoader implements DocumentLoader {
 }
 
 class XmlLoader implements DocumentLoader {
-    private string $filePath;
+    private $filePath;
 
-    public function __construct(string $filePath) {
+    public function __construct($filePath) {
         global $xerte_toolkits_site;
         x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
         $this->filePath = $filePath;
     }
 
-    public function load(): string {
+    public function load() {
         if (!file_exists($this->filePath)) return '';
 
         return $this->stripXMLTagsFromFile($this->filePath);
     }
 
-    private function stripXMLTagsFromFile($filePath): string {
+    private function stripXMLTagsFromFile($filePath) {
         $dom = new DOMDocument();
         // Suppress warnings for malformed XML, handle CDATA as text
         @$dom->load($filePath, LIBXML_NOCDATA);
@@ -84,7 +84,7 @@ class XmlLoader implements DocumentLoader {
         return trim($textContent);
     }
 
-    private function extractTextAndAttributes($node): string {
+    private function extractTextAndAttributes($node) {
         //todo alek make sure this is complete, maybe load from other file
         $allowedAttributes = [
             'name', 'text', 'goals', 'audience', 'prereq', 'howto', 'summary', 'nextsteps', 'pageintro', 'tip', 'side1', 'side2', 'txt', 'instruction', 'prompt', 'answer', 'intro', 'feedback', 'unit', 'question', 'hint', 'label', 'passage', 'initialtext', 'initialtitle', 'suggestedtext', 'suggestedtitle', 'generalfeedback', 'instructions', 'p1', 'p2', 'title', 'introduction', 'wrongtext', 'wordanswer', 'words', 'url', 'targetnew', 'linkid',
@@ -125,15 +125,15 @@ class XmlLoader implements DocumentLoader {
 }
 
 class DocxLoader implements DocumentLoader {
-    private string $filePath;
+    private $filePath;
 
-    public function __construct(string $filePath) {
+    public function __construct($filePath) {
         global $xerte_toolkits_site;
         x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
         $this->filePath = $filePath;
     }
 
-    public function load(): string {
+    public function load() {
         if (!file_exists($this->filePath)) return '';
 
         $zip = new ZipArchive();
@@ -151,15 +151,15 @@ class DocxLoader implements DocumentLoader {
 }
 
 class OdtLoader implements DocumentLoader {
-    private string $filePath;
+    private $filePath;
 
-    public function __construct(string $filePath) {
+    public function __construct($filePath) {
         global $xerte_toolkits_site;
         x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
         $this->filePath = $filePath;
     }
 
-    public function load(): string {
+    public function load() {
         if (!file_exists($this->filePath)) return '';
 
         $zip = new ZipArchive();
@@ -177,15 +177,15 @@ class OdtLoader implements DocumentLoader {
 }
 
 class XlsxLoader implements DocumentLoader {
-    private string $filePath;
+    private $filePath;
 
-    public function __construct(string $filePath) {
+    public function __construct($filePath) {
         global $xerte_toolkits_site;
         x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
         $this->filePath = $filePath;
     }
 
-    public function load(): string {
+    public function load() {
         if (!file_exists($this->filePath)) return '';
 
         $zip = new ZipArchive();
@@ -226,15 +226,15 @@ class XlsxLoader implements DocumentLoader {
 }
 
 class PptxLoader implements DocumentLoader {
-    private string $filePath;
+    private $filePath;
 
-    public function __construct(string $filePath) {
+    public function __construct($filePath) {
         global $xerte_toolkits_site;
         x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
         $this->filePath = $filePath;
     }
 
-    public function load(): string {
+    public function load() {
         if (!file_exists($this->filePath)) {
             return '';
         }
@@ -264,15 +264,15 @@ class PptxLoader implements DocumentLoader {
 }
 
 class PdfLoader implements DocumentLoader {
-    private string $filePath;
+    private $filePath;
 
-    public function __construct(string $filePath) {
+    public function __construct($filePath) {
         global $xerte_toolkits_site;
         x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
         $this->filePath = $filePath;
     }
 
-    public function load(): string {
+    public function load() {
         if (!file_exists($this->filePath)) return '';
 
         $parser = new Parser();
@@ -284,7 +284,7 @@ class PdfLoader implements DocumentLoader {
 }
 
 class DocumentLoaderFactory {
-    public static function getLoader(string $filePath): DocumentLoader {
+    public static function getLoader($filePath) {
         global $xerte_toolkits_site;
         x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
         $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));

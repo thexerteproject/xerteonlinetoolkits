@@ -13,9 +13,17 @@ class pexelsApi extends BaseApi
 
 
         // Accept both legacy names and normalized ones
-        $orientation = $aiParams->pexelsOrientation ?? ($aiParams->orientation ?? 'unmentioned');
-        $color = $aiParams->pexelsColor ?? ($aiParams->color ?? 'unmentioned');
-        $size = $aiParams->pexelsSize ?? ($aiParams->size ?? 'unmentioned');
+        $orientation = isset($aiParams->pexelsOrientation)
+            ? $aiParams->pexelsOrientation
+            : (isset($aiParams->orientation) ? $aiParams->orientation : 'unmentioned');
+
+        $color = isset($aiParams->pexelsColor)
+            ? $aiParams->pexelsColor
+            : (isset($aiParams->color) ? $aiParams->color : 'unmentioned');
+
+        $size = isset($aiParams->pexelsSize)
+            ? $aiParams->pexelsSize
+            : (isset($aiParams->size) ? $aiParams->size : 'unmentioned');
 
 
         if (!empty($orientation) && $orientation !== 'unmentioned') {
@@ -41,7 +49,10 @@ class pexelsApi extends BaseApi
         $url = $this->buildPexelsUrl($query, $aiParams, $perPage, $page);
         $res = $this->httpGet($url, $headers);
         if (!$res->ok) {
-            return (object)["status" => "error", "message" => $res->error ?? ("HTTP " . $res->status)];
+            return (object) array(
+                'status'  => 'error',
+                'message' => isset($res->error) ? $res->error : ('HTTP ' . $res->status),
+            );
         }
         if (isset($res->json->error)) {
             return (object)["status" => "error", "message" => "API error: " . $res->json->error];
@@ -52,7 +63,7 @@ class pexelsApi extends BaseApi
     /**
      * Extracts {orientation,color,size} from natural language using any AI provider
      */
-    private function extractParameters(string $input, array $options = [])
+    private function extractParameters($input, array $options = [])
     {
         global $xerte_toolkits_site;
         $chat = new AiChat($xerte_toolkits_site);
@@ -76,7 +87,7 @@ class pexelsApi extends BaseApi
             return (object)['status' => 'error', 'message' => $resp['error']];
         }
 
-        $text = trim($resp['content'] ?? '');
+        $text = trim(isset($resp['content']) ? $resp['content'] : '');
         $text = preg_replace('/^```json|```$/m', '', $text);
         $decoded = json_decode($text);
         if (!$decoded) {
@@ -85,7 +96,7 @@ class pexelsApi extends BaseApi
         return (object)['status' => 'success', 'params' => $decoded];
     }
 
-    private function rewritePrompt(string $query, array $options = [])
+    private function rewritePrompt($query, array $options = [])
     {
         global $xerte_toolkits_site;
         $chat = new AiChat($xerte_toolkits_site);
@@ -94,7 +105,9 @@ class pexelsApi extends BaseApi
             ['role' => 'user', 'content' => $query],
         ];
         $resp = $chat->complete($messages, $this->aiProvider, $options + ['max_tokens' => 160, 'temperature' => 0.7]);
-        return $resp['ok'] ? trim($resp['content'] ?? $query) : $query;
+        return $resp['ok']
+            ? trim(isset($resp['content']) ? $resp['content'] : $query)
+            : $query;
     }
 
     public function sh_request($query, $target, $interpretPrompt, $overrideSettings, $settings)
@@ -107,6 +120,7 @@ class pexelsApi extends BaseApi
         $baseDir = rtrim($target, '/\\') . '/media';
         $this->ensureDir($baseDir);
 
+        global $xerte_toolkits_site;
         x_check_path_traversal($baseDir, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
 
 
@@ -134,7 +148,11 @@ class pexelsApi extends BaseApi
             return (object)[ 'status' => 'error', 'message' => $apiResponse->message, 'paths' => $downloadedPaths ];
         }
 
-        foreach ($apiResponse->photos ?? [] as $photo) {
+        $photos = (isset($apiResponse->photos) && is_array($apiResponse->photos))
+            ? $apiResponse->photos
+            : array();
+
+        foreach ($photos as $photo) {
             $url = $photo->src->original;
             $encodedName = basename(parse_url($url, PHP_URL_PATH));
             $decodedName = urldecode($encodedName);

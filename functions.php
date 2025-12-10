@@ -608,7 +608,7 @@ function x_set_session_name()
 
 //
 //Function that ensures a folder exists in the learning object
-function verify_LO_folder($LO, $folder): void
+function verify_LO_folder($LO, $folder)
 {
     global $xerte_toolkits_site;
 

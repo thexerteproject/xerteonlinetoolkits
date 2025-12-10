@@ -12,10 +12,10 @@ class TfidfRAG extends BaseRAG
         $this->apiKey = $apiKey;
     }
 
-    protected function supportsProviderEmbeddings(): bool { return false; }
+    protected function supportsProviderEmbeddings() { return false; }
 
     /*Retrieve an embedding for a single piece of text*/
-    protected function getEmbeddings($text): array
+    protected function getEmbeddings(array $texts)
     {
         return [];
     }

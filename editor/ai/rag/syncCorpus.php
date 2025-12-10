@@ -21,7 +21,7 @@ use function transcribe\makeTranscriber;
  * Given a user-supplied relative path, resolve it against your project root
  * and ensure it exists.
  */
-function prepareURL(string $uploadPath): string
+function prepareURL($uploadPath)
 {
     global $xerte_toolkits_site;
     // Move up from rag/ai/editor to your XOT root
@@ -41,7 +41,7 @@ function prepareURL(string $uploadPath): string
  * Normalize any Windows or Unix path string to use forward-slashes
  * and collapse duplicates.
  */
-function normalize_path(string $path): string
+function normalize_path($path)
 {
     // 1) turn backslashes into forward-slashes
     $p = str_replace('\\', '/', $path);
@@ -63,7 +63,7 @@ if (php_sapi_name() !== 'cli') {
 }
 
 /*Helper for updating job progress. Creates an associative array patch that can be passed directly to the job update method.*/
-function sync_patch(string $status, string $stage, string $message, ?int $progress = null, array $extra = []) {
+function sync_patch($status, $stage, $message, $progress = null, array $extra = []) {
     $patch = array_merge([
         'status'  => $status,  // running|processed|error
         'stage'   => $stage,
@@ -87,7 +87,7 @@ try {
 
     $jobStore = new sync_job_store(null, $sync_data_dir);
     $job = $jobStore->sync_job_read($job_id);
-    $input_path = $sync_data_dir . '/jobs/' . $job_id . '_input.json' ?? null;
+    $input_path = $sync_data_dir . '/jobs/' . $job_id . '_input.json';
     if ($input_path && file_exists($input_path)) {
         $raw = file_get_contents($input_path);
         $input = json_decode($raw, true);
@@ -100,7 +100,7 @@ try {
     );
 
 
-    $gridData = $input['gridData'] ?? [];
+    $gridData = isset($input['gridData']) ? $input['gridData'] : [];
     function sanitize_grid_data(array $gridData)
     {
         $sanitized = [];
@@ -140,9 +140,9 @@ try {
         file_put_contents($filepath, $output);
     }
 
-    $baseUrl = x_clean_input($input['baseURL'] ?? '', 'string');
-    $corpusScope = x_clean_input($input['corpusGrid'] ?? true, 'bool');
-    $useLoInCorpus = x_clean_input($input['useLoInCorpus'] ?? false, 'bool');
+    $baseUrl       = x_clean_input(isset($input['baseURL']) ? $input['baseURL']  : '','string');
+    $corpusScope   = x_clean_input(isset($input['corpusGrid']) ? $input['corpusGrid'] : true,'bool');
+    $useLoInCorpus = x_clean_input(isset($input['useLoInCorpus']) ? $input['useLoInCorpus']: false,'bool');
 
     dump_vars_with_types('C:\xampp\htdocs\xot\editor\ai\rag\dump.txt', [
         'baseUrl'       => $baseUrl,
@@ -153,6 +153,7 @@ try {
     // 2. Prep directories & API keys
     $baseDir = prepareURL($baseUrl);
     $mediaPath = $baseDir . DIRECTORY_SEPARATOR .'RAG' . DIRECTORY_SEPARATOR . 'corpus';
+    verify_LO_folder($mediaPath, '/RAG/corpus');
 
     x_check_path_traversal($mediaPath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
 
@@ -186,7 +187,7 @@ try {
     if (!$useLoInCorpus){
         // 1) Walk grid data by reference, so we can update col_2 in place
         foreach ($gridData as &$row) {
-            $uploadUrl = urldecode(ltrim($row['col_2'])) ?? null;
+            $uploadUrl = isset($row['col_2']) ? urldecode(ltrim($row['col_2'])) : null;
 
             if (!$uploadUrl) {
                 $results[] = [
@@ -249,8 +250,8 @@ try {
             return [
                 'path'     => $path,
                 'metadata' => [
-                    'name'        => $row['col_1'] ?? null,
-                    'description' => $row['col_3'] ?? null,
+                    'name'        => isset($row['col_1']) ? $row['col_1'] : null,
+                    'description' => isset($row['col_3']) ? $row['col_3'] : null,
                     'source' => $row['col_4'] ?: $path,
                 ]
             ];
@@ -282,7 +283,7 @@ try {
     ob_end_clean();
 
     // 1) Normalization helper
-    function normalize_id(string $str): string {
+    function normalize_id($str) {
         // URLs stay as‑is
         if (filter_var($str, FILTER_VALIDATE_URL)) {
             return $str;

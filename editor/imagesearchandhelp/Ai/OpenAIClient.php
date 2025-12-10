@@ -9,7 +9,7 @@ class OpenAIClient implements AiClientInterface
 
 
 
-    public function __construct(string $apiKey)
+    public function __construct($apiKey)
     {
         $this->apiKey = $apiKey;
         $this->actor = array('user_id'=>$_SESSION['toolkits_logon_username'],'workspace_id'=>$_SESSION['XAPI_PROXY']);
@@ -18,7 +18,7 @@ class OpenAIClient implements AiClientInterface
     }
 
 
-    public function chat(array $messages, array $options = []): array
+    public function chat(array $messages, array $options = [])
     {
         if(!isset($_SESSION['toolkits_logon_id'])) {
             die("Session ID not set");
@@ -27,8 +27,8 @@ class OpenAIClient implements AiClientInterface
         $payload = [
             'model' => !empty($options['model']) ? $options['model'] : 'gpt-4o-mini',
             'messages' => $messages,
-            'max_tokens' => $options['max_tokens'] ?? 400,
-            'temperature' => $options['temperature'] ?? 0.7,
+            'max_tokens'  => isset($options['max_tokens'])  ? $options['max_tokens']  : 400,
+            'temperature' => isset($options['temperature']) ? $options['temperature'] : 0.7,
         ];
 
 
@@ -54,10 +54,14 @@ class OpenAIClient implements AiClientInterface
         curl_close($ch);
         $json = json_decode($raw, true);
         if ($status < 200 || $status >= 300) {
-            $msg = $json['error']['message'] ?? ('HTTP ' . $status);
+            $msg = (isset($json['error']) && isset($json['error']['message']))
+                ? $json['error']['message']
+                : 'HTTP ' . $status;
             return ['ok' => false, 'error' => $msg, 'raw' => $json];
         }
-        $content = $json['choices'][0]['message']['content'] ?? null;
+        $content = isset($json['choices'][0]['message']['content'])
+            ? $json['choices'][0]['message']['content']
+            : null;
         return ['ok' => true, 'content' => $content, 'raw' => $json];
     }
 }

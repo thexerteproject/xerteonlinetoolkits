@@ -69,7 +69,7 @@ function parse_data($csv_parsed, $input, $nr_columns)
     return $csv_parsed;
 }
 
-function get_delimiter($file ,$nr_columns): string
+function get_delimiter($file ,$nr_columns)
 {
     $top10 = array_slice($file, 0, 10);
     //test for comma

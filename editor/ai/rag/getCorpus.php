@@ -15,7 +15,7 @@ use function rag\makeRag;
 
 ob_start();
 
-function normalize_path(string $path): string
+function normalize_path($path)
 {
     // 1) turn backslashes into forward-slashes
     $p = str_replace('\\', '/', $path);
@@ -26,7 +26,7 @@ function normalize_path(string $path): string
     return $p;
 }
 
-function prepareURL(string $uploadPath): string
+function prepareURL($uploadPath)
 {
     global $xerte_toolkits_site;
     // Move up from rag/ai/editor to the XOT root
@@ -54,10 +54,10 @@ try {
     $input = json_decode($raw, true);
 
     //$baseUrl = $input['baseURL'] ?? '';
-    $type   = x_clean_input($input['type']   ?? '',    'string');
-    $gridId = x_clean_input($input['gridId'] ?? '',    'string');
-    $format = x_clean_input($input['format'] ?? '',    'string');
-    $baseURL = x_clean_input($input['baseURL'] ?? '',    'string');
+    $type    = x_clean_input(isset($input['type'])    ? $input['type']    : '', 'string');
+    $gridId  = x_clean_input(isset($input['gridId'])  ? $input['gridId']  : '', 'string');
+    $format  = x_clean_input(isset($input['format'])  ? $input['format']  : '', 'string');
+    $baseURL = x_clean_input(isset($input['baseURL']) ? $input['baseURL'] : '', 'string');
     // Prep directories & API keys
 
     $baseDir = prepareURL($baseURL);//$_SESSION['uploadDir'];
@@ -117,16 +117,17 @@ try {
         //Build the rows using the | symbol as a separator
         $csv_parsed = '';
         foreach ($anonymizedCorpus['hashes'] as $entry) {
-            $files = $entry['files']    ?? [];
-            $meta  = $entry['metaData'] ?? [];
-            $name        = $meta['name']        ?? '';
-            $description = $meta['description'] ?? '';
-            $fileSource  = $meta['source']      ?? '';
+            $files = isset($entry['files'])    ? $entry['files']    : [];
+            $meta  = isset($entry['metaData']) ? $entry['metaData'] : [];
+
+            $name        = isset($meta['name'])        ? $meta['name']        : '';
+            $description = isset($meta['description']) ? $meta['description'] : '';
+            $fileSource  = isset($meta['source'])      ? $meta['source']      : '';
 
             foreach ($files as $file) {
-                $cells = [ $name, $fileSource, $description ];
+                $cells = [$name, $fileSource, $description];
                 foreach ($cells as $cell) {
-                    $safe = str_replace('|',' ', $cell);
+                    $safe = str_replace('|', ' ', $cell);
                     $csv_parsed .= ($safe === '' ? ' ' : $safe) . '|';
                 }
                 $csv_parsed .= '|';
@@ -160,5 +161,5 @@ try {
         'success' => false,
         'type' => 'generalError',
         'message' => $ex->getMessage()
-    ], JSON_THROW_ON_ERROR);
+    ]);
 }

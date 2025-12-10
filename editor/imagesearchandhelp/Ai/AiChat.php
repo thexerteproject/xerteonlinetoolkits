@@ -9,7 +9,7 @@ require_once (str_replace('\\', '/', __DIR__) . "/OpenAIClient.php");
 
 class AiChat
 {
-    private array $clients = [];
+    private $clients = [];
 
     public function __construct($site)
     {
@@ -24,7 +24,7 @@ class AiChat
         }
     }
 
-    public function complete(array $messages, string $provider = 'mistral', array $options = [])
+    public function complete(array $messages, $provider = 'mistral', array $options = [])
     {
         if (!isset($this->clients[$provider])) {
             return ['ok' => false, 'error' => "AI provider '$provider' is not configured."];

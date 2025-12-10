@@ -11,8 +11,8 @@ require_once __DIR__ . '/sync_job_store.php';
 
 header('Content-Type: application/json');
 
-$job_id = $_GET['job_id'] ?? '';
-$baseURL = $_GET['baseURL'] ?? '';
+$job_id  = isset($_GET['job_id'])  ? $_GET['job_id']  : '';
+$baseURL = isset($_GET['baseURL']) ? $_GET['baseURL'] : '';
 $jobStore = new sync_job_store($baseURL);
 if ($job_id === '') {
     http_response_code(400);
@@ -27,13 +27,14 @@ if (!$job) {
     exit;
 }
 
-echo json_encode([
+echo json_encode(array(
     'job_id' => $job['job_id'],
-    'status' => $job['status'],     // queued|running|processed|error
-    'stage' => $job['stage'] ?? null,
-    'message' => $job['message'] ?? null,
-    'progress' => $job['progress'] ?? null,
-    'error' => $job['error'] ?? null,
-    'updated_at' => $job['updated_at'] ?? null,
-    'completion_info'=>$job['completion_info'] ?? null,
-]);
+    'status' => $job['status'], // queued|running|processed|error
+    'stage' => isset($job['stage']) ? $job['stage'] : null,
+    'message' => isset($job['message']) ? $job['message'] : null,
+    'progress' => isset($job['progress']) ? $job['progress'] : null,
+    'error' => isset($job['error']) ? $job['error'] : null,
+    'updated_at' => isset($job['updated_at']) ? $job['updated_at'] : null,
+    'completion_info' => isset($job['completion_info']) ? $job['completion_info'] : null,
+));
+

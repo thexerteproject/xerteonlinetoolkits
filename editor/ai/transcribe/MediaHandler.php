@@ -63,7 +63,7 @@ class MediaHandler {
      */
     private function isSupportedUrl($url) {
         $parsedUrl = parse_url($url);
-        $host = $parsedUrl['host'] ?? '';
+        $host = isset($parsedUrl['host']) ? $parsedUrl['host'] : '';
         foreach ($this->supportedHosts as $supportedHost) {
             if (strpos($host, $supportedHost) !== false) {
                 return true;
@@ -235,7 +235,7 @@ class MediaHandler {
      *
      * @param string $url The video URL.
      * @param string $lang Language code (default: 'en').
-     * @return mixed The subtitle file path if found, or false otherwise.
+     * @return false|string The subtitle file path if found, or false otherwise.
      */
     private function downloadManualSubtitles($url, $lang = 'en') {
         // Use system temp files to store transcripts
@@ -262,7 +262,7 @@ class MediaHandler {
      *
      * @param string $url
      * @param string $lang
-     * @return mixed Path to subtitles file or false.
+     * @return Exception|false Path to subtitles file or false.
      */
     public function downloadAutoSubtitles($url, $lang = 'en') {
         //todo alek this downloads twice, this one needs help
@@ -401,7 +401,6 @@ class MediaHandler {
      * Note that the actual AI transcription is handled by an injected transcriber
      *
      * @param string $input URL or file path.
-     * @param object $transcriber An instance of your AI transcription service.
      * @param string $lang Language code for subtitles (default "en").
      * @return string The final transcript.
      */

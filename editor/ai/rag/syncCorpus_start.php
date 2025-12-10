@@ -76,7 +76,7 @@ $spec = [
     'PHP_IDE_CONFIG' => 'serverName=cli-worker',
 ]);*/
 
-$proc = proc_open($cmd, $spec, $pipes, __DIR__); // include $env here when debugging;
+$proc = proc_open($cmd, $spec, $pipes, __DIR__/*, $env*/); // include $env here when debugging;
 
 if (is_resource($proc)) {
     //sleep(1); // give Xdebug time to connect
@@ -96,5 +96,5 @@ ob_end_clean();
 echo json_encode([
     'success' => true,
     'job_id' =>  $job_id,
-], JSON_THROW_ON_ERROR);
+]);
 

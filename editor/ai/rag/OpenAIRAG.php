@@ -12,7 +12,7 @@ class OpenAIRAG extends BaseRAG
         $this->apiKey = $apiKey;
     }
 
-    protected function supportsProviderEmbeddings(): bool { return true; }
+    protected function supportsProviderEmbeddings() { return true; }
 
     /* Retrieve an embedding for a single piece of text (OpenAI) */
     protected function getEmbedding($text)
@@ -47,10 +47,16 @@ class OpenAIRAG extends BaseRAG
 
         $decoded = json_decode($response, true);
         if (isset($decoded['error'])) {
-            throw new \RuntimeException('OpenAI error: ' . ($decoded['error']['message'] ?? 'unknown'));
+            throw new \RuntimeException(
+                'OpenAI error: ' . (isset($decoded['error']['message'])
+                    ? $decoded['error']['message']
+                    : 'unknown')
+            );
         }
 
-        $emb = $decoded["data"][0]["embedding"] ?? [];
+        $emb = isset($decoded['data'][0]['embedding'])
+            ? $decoded['data'][0]['embedding']
+            : [];
         if (empty($emb)) {
             throw new \RuntimeException('Embedding failed.');
         }
@@ -59,11 +65,11 @@ class OpenAIRAG extends BaseRAG
     }
 
     /* Retrieve embeddings in batches (OpenAI) */
-    protected function getEmbeddings(array $texts): array
+    protected function getEmbeddings(array $texts)
     {
         // For OpenAI, the limit is per-input (~8191 tokens for embeddings).
         // We use a simple per-item safety check plus a count-based batcher.
-        $approxTokens = function (string $s): int {
+        $approxTokens = function ($s) {
             // Rough heuristic: ~4 chars per token, similar to mistral
             return (int)ceil(strlen($s) / 4);
         };
@@ -120,13 +126,19 @@ class OpenAIRAG extends BaseRAG
 
             $decoded = json_decode($response, true);
             if (isset($decoded['error'])) {
-                throw new \RuntimeException('OpenAI error: ' . ($decoded['error']['message'] ?? 'unknown'));
+                throw new \RuntimeException(
+                    'OpenAI error: ' . (isset($decoded['error']['message'])
+                        ? $decoded['error']['message']
+                        : 'unknown')
+                );
             }
 
             if (isset($decoded["data"])) {
                 // OpenAI preserves order: data[i] corresponds to input[i]
                 foreach ($decoded["data"] as $row) {
-                    $all[] = $row["embedding"] ?? [];
+                    $all[] = isset($row['embedding'])
+                        ? $row['embedding']
+                        : [];
                 }
             }
         }

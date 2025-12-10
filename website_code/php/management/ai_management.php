@@ -24,6 +24,7 @@ _load_language_file("/website_code/php/management/ai_management.inc");
 require("../user_library.php");
 
 if(is_user_admin()) {
+    global $xerte_toolkits_site;
     $form_state = x_clean_input_array($_POST['form_state']);
 
     $database_id = database_connect("ai and image settings updated", "ai and image settings update failed");
@@ -74,7 +75,6 @@ if(is_user_admin()) {
           WHERE vendor = ? AND type = ?";
 
         $res = db_query_one($query, [$enabled, $sub_options_json, $vendor, $type]);
-
         if ($res === false) {
             echo MANAGEMENT_AI_FAIL . " Database error.";
         }

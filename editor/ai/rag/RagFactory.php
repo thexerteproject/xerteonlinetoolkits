@@ -12,8 +12,9 @@ if (!isset($_SESSION['toolkits_logon_username']) && php_sapi_name() !== 'cli') {
 
 function makeRag(array $cfg)
 {
-    $provider = $cfg['provider'] ?? 'none';
-    $adminEnabled = (bool)($cfg['enabled'] ?? true);
+    $provider = isset($cfg['provider']) ? $cfg['provider'] : 'none';
+    $adminEnabled = (bool)(isset($cfg['enabled']) ? $cfg['enabled'] : true);
+
 
     if ($adminEnabled && $provider === 'openaienc' && !empty($cfg['api_key'])) {
         return new OpenAIRAG($cfg['api_key'], $cfg['encoding_directory']);

@@ -26,7 +26,7 @@ class TranscriptManager {
         return $finalPath;
     }
 
-    private function normalize_path(string $path): string
+    private function normalize_path($path)
     {
         // 1) turn backslashes into forward-slashes
         $p = str_replace('\\', '/', $path);
@@ -37,7 +37,7 @@ class TranscriptManager {
         return $p;
     }
 
-    private function toRelativeRagPath(string $fullPath): string
+    private function toRelativeRagPath($fullPath)
     {
         // Normalize all separators to forward slashes for storage
         $normalized = str_replace(['\\', '/'], '/', $fullPath);

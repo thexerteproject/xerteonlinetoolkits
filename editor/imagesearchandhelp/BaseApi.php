@@ -15,13 +15,13 @@ abstract class BaseApi
 
     }
 
-    protected function clean(string $text): string
+    protected function clean($text)
     {
         return trim(strip_tags($text));
     }
 
 
-    protected function httpPostJson(string $url, array $payload, array $headers = [], int $timeout = 60)
+    protected function httpPostJson($url, array $payload, array $headers = [], $timeout = 60)
     {
         $ch = curl_init($url);
 
@@ -52,7 +52,7 @@ abstract class BaseApi
     }
 
 
-    protected function httpGet(string $url, array $headers = [], int $timeout = 60)
+    protected function httpGet($url, array $headers = [], $timeout = 60)
     {
         $ch = curl_init($url);
         curl_setopt_array($ch, [
@@ -80,7 +80,7 @@ abstract class BaseApi
     }
 
 
-    protected function ensureDir(string $dir)
+    protected function ensureDir($dir)
     {
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
@@ -88,7 +88,7 @@ abstract class BaseApi
     }
 
 
-    protected function downloadBinary(string $url, string $saveDir, string $prefix = '', ?string $filename = null)
+    protected function downloadBinary($url, $saveDir, $prefix = '', $filename = null)
     {
         global $xerte_toolkits_site;
         x_check_path_traversal($saveDir, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');

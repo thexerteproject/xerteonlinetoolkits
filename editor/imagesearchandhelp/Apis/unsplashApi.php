@@ -27,6 +27,7 @@ class unsplashApi extends BaseApi
 
     private function GET_Unsplash($query, $aiParams, $perPage = 3, $page = 1)
     {
+        global $xerte_toolkits_site;
         $headers = [
             'Authorization: Client-ID ' . $xerte_toolkits_site->unsplash_key,
             'Content-Type: application/json',
@@ -34,7 +35,10 @@ class unsplashApi extends BaseApi
         $url = $this->buildUnsplashUrl($query, $aiParams, $perPage, $page);
         $res = $this->httpGet($url, $headers);
         if (!$res->ok) {
-            return (object)["status" => "error", "message" => $res->error ?? ("HTTP " . $res->status)];
+            return (object) array(
+                'status'  => 'error',
+                'message' => isset($res->error) ? $res->error : ('HTTP ' . $res->status),
+            );
         }
         if (isset($res->json->errors)) {
             return (object)["status" => "error", "message" => implode(', ', $res->json->errors)];
@@ -45,6 +49,7 @@ class unsplashApi extends BaseApi
 
     private function extractParameters($input)
     {
+        global $xerte_toolkits_site;
         $chat = new AiChat($xerte_toolkits_site);
 
 
@@ -84,7 +89,7 @@ class unsplashApi extends BaseApi
         }
 
 
-        $rewrittenPrompt = trim($resp['content'] ?? '');
+        $rewrittenPrompt = trim(isset($resp['content']) ? $resp['content'] : '');
         $conversation[] = ["role" => "system", "content" => $rewrittenPrompt];
 
 
@@ -96,6 +101,7 @@ class unsplashApi extends BaseApi
 
     private function rewritePrompt($query)
     {
+        global $xerte_toolkits_site;
         $chat = new AiChat($xerte_toolkits_site);
         $systemMessage = "You are an AI assistant. Rewrite the following user query to be more effective for image search when using an API like Unsplash.";
         $resp = $chat->complete([
@@ -111,7 +117,7 @@ class unsplashApi extends BaseApi
         if (!$resp['ok']) {
             return $query; // fallback
         }
-        return trim($resp['content'] ?? $query);
+        return trim(isset($resp['content']) ? $resp['content'] : $query);
     }
 
     private function downloadImageFromUnsplash($imageUrl, $saveTo)
@@ -128,13 +134,17 @@ class unsplashApi extends BaseApi
     // Unsplash ToS: must report downloads via download_location
     private function trackUnsplashDownload($downloadLocationUrl)
     {
+        global $xerte_toolkits_site;
         $headers = [
             'Authorization: Client-ID ' . $xerte_toolkits_site->unsplash_key,
             'Content-Type: application/json',
         ];
         $res = $this->httpGet($downloadLocationUrl, $headers);
         if (!$res->ok) {
-            return (object)["status" => "error", "message" => $res->error ?? ("HTTP " . $res->status)];
+            return (object) array(
+                'status'  => 'error',
+                'message' => isset($res->error) ? $res->error : ('HTTP ' . $res->status),
+            );
         }
         if (isset($res->json->errors)) {
             return (object)["status" => "error", "message" => implode(', ', $res->json->errors)];
@@ -178,12 +188,16 @@ class unsplashApi extends BaseApi
             ];
         }
 
-
+        global $xerte_toolkits_site;
         $path = $target . "/media";
         $this->ensureDir($path);
         x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
 
-        foreach ($apiResponse->results ?? [] as $photo) {
+        $results = (isset($apiResponse->results) && is_array($apiResponse->results))
+            ? $apiResponse->results
+            : array();
+
+        foreach ($results as $photo) {
             $url = $photo->urls->regular; // Use "regular" as in original
 
 

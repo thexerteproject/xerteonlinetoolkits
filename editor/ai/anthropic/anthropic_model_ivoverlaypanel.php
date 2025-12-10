@@ -33,6 +33,6 @@ class anthropic_model_ivoverlaypanel extends anthropic_model {
 			}
 		} else {
 			die("not supported context: " . $context);
-		};
+		}
 	}
 }

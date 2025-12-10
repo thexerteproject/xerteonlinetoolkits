@@ -5,6 +5,7 @@ class openaitranslateApi
 {
     function __construct() {
         require_once (str_replace('\\', '/', __DIR__) . "/../../../config.php");
+        global $xerte_toolkits_site;
         $this->xerte_toolkits_site = $xerte_toolkits_site;
     }
 
@@ -167,7 +168,9 @@ class openaitranslateApi
 
         // Use a unique delimiter unlikely to appear in normal text
         $uniqueDelimiter = "@@@###@@@";
-        $numberedTexts = array_map(fn($text, $index) => "ID_{$index}: {$text}", $texts, array_keys($texts));
+        $numberedTexts = array_map(function ($text, $index) {
+            return "ID_{$index}: {$text}";
+        }, $texts, array_keys($texts));
         $concatenatedText = implode("\n{$uniqueDelimiter}\n", $numberedTexts);
 
         $systemMessage = "You are an AI translator. Translate each text segment from English to " . $target_language . ". Segments are identified by 'ID_x:' and separated by '{$uniqueDelimiter}'. Translate each fully without skipping anything, even if it seems redundant. Return each translation separated by '{$uniqueDelimiter}', and include the 'ID_x:' labels in your output.";
@@ -214,7 +217,9 @@ class openaitranslateApi
         $translatedTexts = preg_split('/\s*' . preg_quote($uniqueDelimiter, '/') . '\s*/', $translatedText);
 
         // Remove unique identifiers (ID_x:) after translation
-        $translatedTexts = array_map(fn($text) => preg_replace('/^ID_\d+:\s*/', '', $text), $translatedTexts);
+        $translatedTexts = array_map(function ($text) {
+            return preg_replace('/^ID_\d+:\s*/', '', $text);
+        }, $translatedTexts);
 
         return array_map('trim', $translatedTexts);
     }

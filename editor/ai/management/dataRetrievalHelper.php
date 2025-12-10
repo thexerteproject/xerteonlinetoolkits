@@ -13,9 +13,12 @@ if(!isset($_SESSION['toolkits_logon_username']) && php_sapi_name() !== 'cli'){
  * @param vendor_option_component $v
  * @return bool
  */
-function is_vendor_active(vendor_option_component $v): bool
+function is_vendor_active(vendor_option_component $v)
 {
-    return ($v->enabled ?? false) && ( !($v->needs_key ?? false) || ($v->has_key ?? false) );
+    return (isset($v->enabled) ? $v->enabled : false)
+        && ( !(isset($v->needs_key) ? $v->needs_key : false)
+            || (isset($v->has_key) ? $v->has_key : false)
+        );
 }
 
 /**
@@ -26,13 +29,15 @@ function is_vendor_active(vendor_option_component $v): bool
  * @param array<string,array<int,string>> $defaults
  * @return array<string,array<int,string>>
  */
-function normalize_preferences(array $preferences, array $defaults): array
+function normalize_preferences(array $preferences, array $defaults)
 {
     $norm = $defaults;
     foreach ($preferences as $type => $pref) {
         $list = is_array($pref) ? $pref : [$pref];
         $norm[$type] = array_values(array_unique(array_map(
-            static fn($v) => strtolower(trim((string)$v)),
+            function ($v) {
+                return strtolower(trim((string) $v));
+            },
             $list
         )));
     }
@@ -49,13 +54,14 @@ function normalize_preferences(array $preferences, array $defaults): array
  * @param array<int,string> $preferencesForType Lowercased ordered vendor names
  * @return string|null Selected vendor name or null if none are active
  */
-function choose_vendor(array $activeVendors, array $preferencesForType): ?string
+function choose_vendor(array $activeVendors, array $preferencesForType)
 {
     if (!$activeVendors) {
         return null;
     }
     if (count($activeVendors) === 1) {
-        return array_key_first($activeVendors);
+        reset($activeVendors);
+        return key($activeVendors);
     }
 
     $byLower = [];
@@ -73,7 +79,7 @@ function choose_vendor(array $activeVendors, array $preferencesForType): ?string
     return $names[0];
 }
 
-function get_vendor_settings(): array
+function get_vendor_settings()
 {
     global $xerte_toolkits_site;
     $query = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}management_helper WHERE enabled = 1 ORDER BY type ASC";
@@ -92,7 +98,7 @@ function get_vendor_settings(): array
 }
 
 
-function get_block_indicators(array $preferences = []): array
+function get_block_indicators(array $preferences = [])
 {
     // Default priorities used only to break ties when multiple vendors are active.
     $defaultPriorities = [
@@ -120,15 +126,19 @@ function get_block_indicators(array $preferences = []): array
             $activeVendors[$vendorName] = [
                 'vendor'    => $vendorName,
                 'label'     => $vendor->label,
-                'has_key'   => $vendor->has_key ?? false,
-                'needs_key' => $vendor->needs_key ?? false,
-                'key_name'  => ($vendor->needs_key ?? false) ? "{$vendor->vendor}_key" : null, // pointer only; not the secret
+                'has_key'   => isset($vendor->has_key) ? $vendor->has_key : false,
+                'needs_key' => isset($vendor->needs_key) ? $vendor->needs_key : false,
+                'key_name'  => (isset($vendor->needs_key) ? $vendor->needs_key : false)
+                    ? "{$vendor->vendor}_key"
+                    : null, // pointer only; not the secret
                 'type'      => $vendor->type,
             ];
         }
 
         // Use preferences for the current type; fall back to the "model" alias list where appropriate.
-        $typePrefs = $prefs[$type] ?? ($prefs['model'] ?? []);
+        $typePrefs = isset($prefs[$type])
+            ? $prefs[$type]
+            : (isset($prefs['model']) ? $prefs['model'] : []);
         $chosen    = choose_vendor($activeVendors, $typePrefs);
 
         $out[$type] = [
@@ -152,7 +162,7 @@ function get_block_indicators(array $preferences = []): array
  * @param string $type  type filter (e.g. 'ai', 'image')
  * @return bool True if active, false otherwise
  */
-function vendor_is_active(string $vendorName, string $type): bool
+function vendor_is_active($vendorName, $type)
 {
     $vendorName = strtolower(trim($vendorName));
     $vendorTypes = get_vendor_settings();

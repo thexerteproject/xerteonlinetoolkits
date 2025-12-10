@@ -13,7 +13,7 @@ class openaiApi extends BaseAiApi
         return $results;
     }
 
-    protected function buildQueries(array $inputs): array
+    protected function buildQueries(array $inputs)
     {
         //todo remove
         return $this->safeExecute(function () use ($inputs){
@@ -21,36 +21,41 @@ class openaiApi extends BaseAiApi
                 global $xerte_toolkits_site;
                 $apiKey = $xerte_toolkits_site->openai_key;
 
-                $payload = [
+                $payload = array(
                     'model' => 'gpt-4o-mini',   // pick any model that supports Structured Outputs
-                    'messages' => [
-                        ['role' => 'developer', 'content' => <<<SYS
-                        You are a query‐builder assistant.
-                        Given user inputs (as JSON), output *strictly* a JSON object with two fields:
-                          • "frequency_query": a single query string for TF–IDF matching  
-                          • "vector_query":   a single query string for vector embedding similarity  
-                        Do not wrap your response in any extra text.
-                        SYS
-                        ],
-                        ['role' => 'user', 'content' => json_encode($inputs, JSON_THROW_ON_ERROR)]
-                    ],
-                    'response_format' => [
-                        'type' => 'json_schema',
-                        'json_schema' => [
-                            'name' => 'TwoQueries',
-                            'schema' => [
-                                'type' => 'object',
-                                'properties' => [
-                                    'frequency_query' => ['type' => 'string'],
-                                    'vector_query' => ['type' => 'string'],
-                                ],
-                                'required' => ['frequency_query', 'vector_query'],
+                    'messages' => array(
+                        array(
+                            'role'    => 'developer',
+                            'content' => <<<'SYS'
+You are a query‐builder assistant.
+Given user inputs (as JSON), output *strictly* a JSON object with two fields:
+  • "frequency_query": a single query string for TF–IDF matching  
+  • "vector_query":   a single query string for vector embedding similarity  
+Do not wrap your response in any extra text.
+SYS
+                        ),
+                        array(
+                            'role'    => 'user',
+                            'content' => json_encode($inputs),
+                        ),
+                    ),
+                    'response_format' => array(
+                        'type'        => 'json_schema',
+                        'json_schema' => array(
+                            'name'   => 'TwoQueries',
+                            'schema' => array(
+                                'type'       => 'object',
+                                'properties' => array(
+                                    'frequency_query' => array('type' => 'string'),
+                                    'vector_query'    => array('type' => 'string'),
+                                ),
+                                'required'             => array('frequency_query', 'vector_query'),
                                 'additionalProperties' => false,
-                            ],
+                            ),
                             'strict' => false,
-                        ],
-                    ],
-                ];
+                        ),
+                    ),
+                );
 
 
                 $ch = curl_init('https://api.openai.com/v1/chat/completions');
@@ -61,7 +66,7 @@ class openaiApi extends BaseAiApi
                         'Content-Type: application/json',
                         'Authorization: Bearer ' . $apiKey,
                     ],
-                    CURLOPT_POSTFIELDS => json_encode($payload, JSON_THROW_ON_ERROR),
+                    CURLOPT_POSTFIELDS => json_encode($payload),
                 ]);
 
                 $resp = curl_exec($ch);
@@ -70,13 +75,18 @@ class openaiApi extends BaseAiApi
                     throw new \Exception('cURL error on create: ' . curl_error($ch));
                 }
 
-                $decoded = json_decode($resp, true, 512, JSON_THROW_ON_ERROR);
+                $decoded = json_decode($resp, true, 512);
 
 
 
-                if ($decoded['error'] ?? '') {
-                    throw new \Exception('API error: ' . ($decoded['error']['type'] ?? '') . ' ' . ($decoded['error']['message'] ?? 'Unknown error'));
+                if (!empty($decoded['error'])) {
+                    $err  = $decoded['error'];
+                    $type = (is_array($err) && isset($err['type']))    ? $err['type']    : '';
+                    $msg  = (is_array($err) && isset($err['message'])) ? $err['message'] : 'Unknown error';
+
+                    throw new \Exception('API error: ' . $type . ' ' . $msg);
                 }
+
 
                 // Extract the generated JSON payload
                 if (isset($decoded['choices'][0]['message']['content'])) {
@@ -85,8 +95,7 @@ class openaiApi extends BaseAiApi
                     $queries = json_decode(
                         $content,
                         true,
-                        512,
-                        JSON_THROW_ON_ERROR
+                        512
                     );
                 } else {
                     throw new \Exception('Unexpected response format: ' . $resp);
@@ -101,7 +110,7 @@ class openaiApi extends BaseAiApi
         });
     }
 
-    protected function parseResponse($results): string
+    protected function parseResponse($results)
     {
         $answer = "";
         foreach ($results as $result) {
@@ -124,7 +133,8 @@ class openaiApi extends BaseAiApi
             $authorization = "Authorization: Bearer " . $xerte_toolkits_site->openai_key;
 
             $payload["messages"][max(sizeof($payload["messages"]) - 1, 0)]["content"] = $prompt;
-            $new_payload = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            $cleanPayload = $this->json_utf8_substitute($payload);
+            $new_payload  = json_encode($cleanPayload, JSON_UNESCAPED_UNICODE);
 
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_POST, 1);
@@ -145,14 +155,15 @@ class openaiApi extends BaseAiApi
     }
 
     private function POST_OpenAi_Assistant($prompt, $payload, $url)
-    {
+    { //TODO: See whether any of this code can be re-used for the responses api which suceeds Assistants, then remove
         return $this->safeExecute(function () use ($prompt, $payload, $url) {
             global $xerte_toolkits_site;
             $authorization = "Authorization: Bearer " . $xerte_toolkits_site->openai_key;
 
             //add user supplied prompt to payload
             $payload['thread']["messages"][max(sizeof($payload["thread"]["messages"]) - 1, 0)]["content"] = $prompt;
-            $new_payload = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            $cleanPayload = $this->json_utf8_substitute($payload);
+            $new_payload  = json_encode($cleanPayload, JSON_UNESCAPED_UNICODE);
 
             $payload_str = print_r($payload, true);
             file_put_contents("./ai_payloads.txt", $payload_str, FILE_APPEND);
@@ -169,15 +180,17 @@ class openaiApi extends BaseAiApi
             curl_close($curl);
 
             $resultArray = json_decode($result, true);// Decode to array for easier handling
-            if ($resultArray['error'] ?? '') {
-                throw new \Exception('API error: ' . ($resultArray['error']['type'] ?? '') . ' ' . ($resultArray['error']['message'] ?? 'Unknown error'));
+            if (!empty($resultArray['error'])) {
+                $err  = $resultArray['error'];
+                $type = (is_array($err) && isset($err['type']))    ? $err['type']    : '';
+                $msg  = (is_array($err) && isset($err['message'])) ? $err['message'] : 'Unknown error';
+                throw new \Exception('API error: ' . $type . ' ' . $msg);
             }
 
             if (isset($resultArray['id']) && isset($resultArray['thread_id'])) {
                 $runId = $resultArray['id'];
                 $threadId = $resultArray['thread_id'];
                 $startTime = time();
-                //todo move to async function to free up server resources
                 do {
                     sleep(5); // Wait for 5 seconds before checking status
                     $result = $this->GET_OpenAi_Run_Status($runId, $threadId);

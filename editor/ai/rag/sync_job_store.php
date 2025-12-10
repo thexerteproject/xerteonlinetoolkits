@@ -45,7 +45,7 @@ class sync_job_store
         return self::SYNC_MAX_CONCURRENT_WORKERS;
     }
 
-    private function sync_ensure_directories(): void
+    private function sync_ensure_directories()
     {
         foreach ([$this->sync_data_dir, $this->sync_job_dir] as $dir) {
             if (!is_dir($dir)) {
@@ -55,19 +55,19 @@ class sync_job_store
     }
 
 // a unique job id
-function sync_generate_job_id(): string
+function sync_generate_job_id()
 {
     return bin2hex(random_bytes(16));
 }
 
 // Path to a job's JSON file.
-private function sync_job_path(string $job_id): string
+private function sync_job_path($job_id)
 {
     return $this->sync_job_dir . '/' . $job_id . '.json';
 }
 
 // Create a new job record (queued).
-function sync_job_create(string $job_id, array $fields = [], ?string $input_json = null): array
+function sync_job_create($job_id, array $fields = [], $input_json = null)
 {
     $job = array_merge([
         'job_id' => $job_id,
@@ -100,7 +100,7 @@ function sync_job_create(string $job_id, array $fields = [], ?string $input_json
 }
 
 // Read a job record.
-function sync_job_read(string $job_id): ?array
+function sync_job_read($job_id)
 {
     $p = $this->sync_job_path($job_id);
     if (!is_file($p)) return null;
@@ -108,9 +108,12 @@ function sync_job_read(string $job_id): ?array
 }
 
 // Update selected fields (atomic write).
-function sync_job_update(string $job_id, array $patch): array
+function sync_job_update($job_id, array $patch)
 {
-    $cur = $this->sync_job_read($job_id) ?? ['job_id' => $job_id];
+    $cur = $this->sync_job_read($job_id);
+    if ($cur === null) {
+        $cur = array('job_id' => $job_id);
+    }
     $new = array_merge($cur, $patch, ['updated_at' => gmdate('c')]);
 
     $p = $this->sync_job_path($job_id);
@@ -121,12 +124,12 @@ function sync_job_update(string $job_id, array $patch): array
 }
 
 // Count jobs currently marked "running". Helps to cap concurrency.
-function sync_count_running_jobs(): int
+function sync_count_running_jobs()
 {
     $count = 0;
     foreach (glob($this->sync_job_dir . '/*.json') as $file) {
         $j = json_decode(@file_get_contents($file), true);
-        if (is_array($j) && ($j['status'] ?? '') === 'running') {
+        if (is_array($j) && (isset($j['status']) ? $j['status'] : '') === 'running') {
             $count++;
         }
     }

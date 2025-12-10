@@ -9,7 +9,7 @@ require_once __DIR__.'/../logging/log_ai_request.php';
  */
 abstract class AITranscribe {
     protected $apiKey;
-    protected string $mediaPath;
+    protected $mediaPath;
 
     /**
      * Constructor accepts the API key.
@@ -28,12 +28,12 @@ abstract class AITranscribe {
     /**
      * @var string|null  Path to the last temp directory used for chunking.
      */
-    protected ?string $chunkTmpDir = null;
+    protected $chunkTmpDir = null;
 
     /**
      * Format transcription segments with start/end timestamps.
      */
-    protected function formatSegmentsWithTimestamps($vttContent, bool $secondsOnly = false)
+    protected function formatSegmentsWithTimestamps($vttContent, $secondsOnly = false)
     {
         $lines = preg_split('/\R/', $vttContent);
         $formattedText = '';
@@ -81,7 +81,7 @@ abstract class AITranscribe {
     /**
      * Helper: format a single cue line either as hh:mm:ss.mmm or seconds with 1 decimal.
      */
-    protected function formatCueLine(string $start, string $end, string $text, bool $secondsOnly): string
+    protected function formatCueLine($start, $end, $text, $secondsOnly)
     {
         if ($secondsOnly) {
             $startSec = $this->timestampToSeconds($start);
@@ -98,10 +98,10 @@ abstract class AITranscribe {
     /**
      * Convert "HH:MM:SS.mmm" to seconds (float), rounded to 1 decimal.
      */
-    protected function timestampToSeconds(string $timestamp): float
+    protected function timestampToSeconds($timestamp)
     {
         // Split into H, M, S.mmm
-        [$h, $m, $s] = explode(':', $timestamp);
+        list($h, $m, $s) = explode(':', $timestamp);
 
         $seconds = ((int) $h) * 3600
             + ((int) $m) * 60
@@ -140,12 +140,12 @@ abstract class AITranscribe {
      * @param array $segments  Each element has 'start', 'end', and 'text' keys.
      * @return string
      */
-    protected function formatJsonSegments(array $segments): string
+    protected function formatJsonSegments(array $segments)
     {
         $out = '';
         foreach ($segments as $seg) {
             // Format seconds.fraction to H:i:s.ms
-            $fmt = function(float $sec) {
+            $fmt = function($sec) {
                 $h = floor($sec / 3600);
                 $m = floor(($sec % 3600) / 60);
                 $s = $sec % 60;
@@ -159,7 +159,7 @@ abstract class AITranscribe {
         return $this->removeSpecialCharacters($out);
     }
 
-    protected function shiftVttTimestamps(string $vtt, float $offsetSeconds): string
+    protected function shiftVttTimestamps($vtt, $offsetSeconds)
     {
         // Callback to shift each HH:MM:SS.mmm timestamp by $offsetSeconds
         return preg_replace_callback(
@@ -188,10 +188,10 @@ abstract class AITranscribe {
      * @throws \RuntimeException      On failure to create temp dir or if FFmpeg returns non‐zero.
      */
     protected function prepareChunkedFiles(
-        string $filePath,
-        int    $maxBytes       = 25 * 1024 * 1024,
-        int    $segmentSeconds = 900
-    ): array {
+        $filePath,
+        $maxBytes       = 25 * 1024 * 1024,
+        $segmentSeconds = 900
+    )  {
         global $xerte_toolkits_site;
 
         // Check whether the file does not have path traversal
@@ -231,7 +231,7 @@ abstract class AITranscribe {
      * Remove any leftover chunk files from the last call to prepareChunkedFiles().
      * Safe to call even if nothing was split.
      */
-    protected function cleanupChunkedFiles(): void
+    protected function cleanupChunkedFiles()
     {
         if ($this->chunkTmpDir && \is_dir($this->chunkTmpDir)) {
             //todo handle errs/warnings
@@ -283,10 +283,10 @@ class OpenAITranscribe extends AITranscribe
      */
     public function transcribeAudioTimestamped(
         $filePath,
-        string $model = 'whisper-1',
-        string $responseFormat = 'vtt',
-        ?string $timestampGranularities = 'segment'
-    ): string {
+        $model = 'whisper-1',
+        $responseFormat = 'vtt',
+        $timestampGranularities = 'segment'
+    )  {
         global $xerte_toolkits_site;
 
         // Check whether the file does not have path traversal
@@ -565,7 +565,7 @@ class GladiaTranscribe extends AITranscribe {
      * @return bool                    True if deletion succeeded.
      * @throws \RuntimeException       On HTTP errors or cURL failures.
      */
-    protected function deleteGladiaTranscription(string $transcriptionId): bool
+    protected function deleteGladiaTranscription($transcriptionId)
     {
         $url = "https://api.gladia.io/v2/pre-recorded/{$transcriptionId}";
 
