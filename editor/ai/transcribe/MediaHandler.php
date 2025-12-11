@@ -133,6 +133,8 @@ class MediaHandler {
 
         exec($command, $output, $returnVar);
 
+        _debug($output);
+
         if ($returnVar !== 0) {
             throw new Exception("Failed to download video: " . implode("\n", $output));
         }
@@ -180,6 +182,12 @@ class MediaHandler {
             fclose($pipes[1]);
             fclose($pipes[2]);
             $return_var = proc_close($process);
+
+            // Log everything
+            _debug("ffmpeg exit code: " . $return_var);
+            _debug("ffmpeg STDOUT:\n" . $stdout);
+            _debug("ffmpeg STDERR:\n" . $stderr);
+
 
             if ($return_var != 0) {
                 throw new Exception("Error extracting audio from video. FFmpeg output:\n");
