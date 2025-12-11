@@ -144,16 +144,13 @@ try {
     $corpusScope   = x_clean_input(isset($input['corpusGrid']) ? $input['corpusGrid'] : true,'bool');
     $useLoInCorpus = x_clean_input(isset($input['useLoInCorpus']) ? $input['useLoInCorpus']: false,'bool');
 
-    dump_vars_with_types('C:\xampp\htdocs\xot\editor\ai\rag\dump.txt', [
-        'baseUrl'       => $baseUrl,
-        'corpusScope'   => $corpusScope,
-        'useLoInCorpus' => $useLoInCorpus,
-    ]);
 
     // 2. Prep directories & API keys
     $baseDir = prepareURL($baseUrl);
+    $url_parts = explode('/', $baseUrl);
+    end($url_parts);
+    verify_LO_folder(prev($url_parts), '/RAG/corpus');
     $mediaPath = $baseDir . DIRECTORY_SEPARATOR .'RAG' . DIRECTORY_SEPARATOR . 'corpus';
-    verify_LO_folder($mediaPath, '/RAG/corpus');
 
     x_check_path_traversal($mediaPath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
 

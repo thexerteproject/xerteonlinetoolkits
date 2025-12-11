@@ -117,7 +117,7 @@ class MediaHandler {
         }
 
         //todo might break on linux
-        if ($lang == "") {
+        if ($lang == ""){
             $command = "yt-dlp -f best -o " . escapeshellarg($outputPath)
                 . " " . escapeshellarg($url);
         } else if ($auto) {
@@ -129,6 +129,7 @@ class MediaHandler {
                 . " --skip-download -o " . escapeshellarg($outputPath)
                 . " " . escapeshellarg($url);
         }
+        _debug($command);
 
         exec($command, $output, $returnVar);
 
@@ -154,6 +155,7 @@ class MediaHandler {
         //todo might break on linux, shouldnt
         $command = "ffmpeg -i " . escapeshellarg($videoFilePath)
             . " -q:a 0 -map a " . escapeshellarg($outputAudioPath) . " 2>&1";
+        _debug($command);
 
         $descriptors = [
             0 => ["pipe", "r"],
