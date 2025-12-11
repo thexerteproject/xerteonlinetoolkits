@@ -1015,14 +1015,17 @@ li.ui-state-default.ui-draggable:not(.selected):focus {
   color: #990000;
 }
 
-.x_mcq_page #pageContents .optionGroup.answerBtn.selected {
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
   border-color: #000000;
   background: #000000;
   color: #FFFF99;
 }
 
 .x_mcq_page #pageContents .optionGroup.answerBtn:not(.selected):hover,
-.x_mcq_page #pageContents .optionGroup.answerBtn:not(.selected).ui-state-focus {
+.x_mcq_page #pageContents .optionGroup.answerBtn:not(.selected).ui-state-focus,
+.x_quiz_page #pageContents .optionGroup.answerBtn:not(.selected):hover,
+.x_quiz_page #pageContents .optionGroup.answerBtn:not(.selected).ui-state-focus {
   background: #e6e600;
   color: #000000;
 }

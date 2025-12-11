@@ -9,6 +9,10 @@
 		margin-bottom:	15px;
 	}
 
+	#optionHolder.hidden {
+		display: none !important;
+	}
+
 	#pageContents input {
 		float:		left;
 		display:	block;
@@ -24,6 +28,41 @@
 		position:		relative;
 		margin-left:	2em;
 		display:		block;
+	}
+
+	#pageContents #optionHolder.answerBtn {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 1em;
+	}
+
+	#pageContents .optionGroup.answerBtn,
+	#pageContents .optionGroup.answerBtn .ui-button-text {
+		padding: 0;
+		margin: 0;
+	}
+
+	#pageContents .optionGroup.answerBtn input {
+		width: 0 !important;
+		height: 0 !important;
+	}
+
+	#pageContents .optionGroup.answerBtn .optionTxt {
+		padding: .5em 1em;
+		margin: 0;
+	}
+
+	#pageContents .optionGroup.answerBtn .optionTxt p {
+		padding: 0;
+		margin: 0;
+		color: unset;
+		background: unset;
+	}
+
+	#pageContents .optionGroup.answerBtn.selected {
+		background-color: white;
+		background-image: none;
 	}
 	
 	#feedback, #buttonHolder {

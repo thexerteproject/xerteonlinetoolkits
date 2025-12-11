@@ -410,7 +410,8 @@ a.hotspot, a.hotspot.selected {
   color: #ffffff;
 }
 
-.x_mcq_page #pageContents .optionGroup.answerBtn.selected {
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
   background: #000000;
 }
 
