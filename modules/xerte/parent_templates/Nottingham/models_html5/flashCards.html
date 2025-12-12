@@ -53,7 +53,7 @@
 			
 			var btnsShown = false;
 			
-			if ($pageContents.hasClass('horiz')) {
+			if ($pageContents && $pageContents.hasClass('horiz')) {
 				const cardMargin = parseInt($cards.find('.card').css('margin-left')) + parseInt($cards.find('.card').css('margin-right'));
 
 				$('.btnHolder').hide();
@@ -156,7 +156,7 @@
 					.find('.front, .back').height(maxH);
 			}
 			
-			if ($pageContents.hasClass('horiz') && btnsShown == true) {
+			if ($pageContents && $pageContents.hasClass('horiz') && btnsShown == true) {
 				$('.btnHolder')
 					.css('margin-top', 0)
 					.css('margin-top', ($cards.height() - $('.btnHolder').height()) / 2)

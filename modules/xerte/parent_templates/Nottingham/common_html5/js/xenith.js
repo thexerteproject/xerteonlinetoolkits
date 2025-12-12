@@ -7894,17 +7894,21 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 		// this will be overridden on smaller screens (where columns are rearranged into rows) and panel height will be 'auto'
 		// can also be overridden if panelHeight is set to 'fit'
 		const data = pageData.find(obj => obj.page === x_currentPage);
-		if ((data.attributes.fullH || $.isArray(data.attributes.fullH)) || (data.attributes.panelStyle !== "true" && data.attributes.panelHeight !== "fit" && (data.elements.topTxt == undefined || data.elements.topTxt.length === 0) && (data.elements.bottomTxt == undefined || data.elements.bottomTxt.length === 0) && (data.attributes.panelWidth !== "full" || data.elements.textColumn == undefined || data.elements.textColumn.length === 0))) {
-			// force height to exclude height of certain elements
-			const excludeH = $.isArray(data.attributes.fullH) ? data.attributes.fullH.map(id => $("." + id)) : [];
-			const panelH = x_getAvailableHeight([data.elements.panel, $(".splitScreen")], excludeH, (data.attributes.fullH || $.isArray(data.attributes.fullH ? true : false)));
-			data.elements.panel.height(panelH);
-			return panelH;
-		} else if (data.attributes.maxFullH) {
-			// panel isn't fixed height but may still have a max height, e.g. if it contains an image that takes its size from the panel size
-			const panelH = x_getAvailableHeight([data.elements.panel, $(".splitScreen")], [], true);
-			data.elements.panel.css("max-height", panelH);
-			return false;
+		if (data) {
+			if ((data.attributes.fullH || $.isArray(data.attributes.fullH)) || (data.attributes.panelStyle !== "true" && data.attributes.panelHeight !== "fit" && (data.elements.topTxt == undefined || data.elements.topTxt.length === 0) && (data.elements.bottomTxt == undefined || data.elements.bottomTxt.length === 0) && (data.attributes.panelWidth !== "full" || data.elements.textColumn == undefined || data.elements.textColumn.length === 0))) {
+				// force height to exclude height of certain elements
+				const excludeH = $.isArray(data.attributes.fullH) ? data.attributes.fullH.map(id => $("." + id)) : [];
+				const panelH = x_getAvailableHeight([data.elements.panel, $(".splitScreen")], excludeH, (data.attributes.fullH || $.isArray(data.attributes.fullH ? true : false)));
+				data.elements.panel.height(panelH);
+				return panelH;
+			} else if (data.attributes.maxFullH) {
+				// panel isn't fixed height but may still have a max height, e.g. if it contains an image that takes its size from the panel size
+				const panelH = x_getAvailableHeight([data.elements.panel, $(".splitScreen")], [], true);
+				data.elements.panel.css("max-height", panelH);
+				return false;
+			} else {
+				return false;
+			}
 		} else {
 			return false;
 		}
