@@ -2556,9 +2556,9 @@ function x_checkPages(type, id, pageArray) {
 function x_setUpPagePosition(project) {
 	// remove classes that might have been used to turn on/off page position settings at page level
 	if (project !== true) {
-		$x_mainHolder.removeClass("x_noVerticalCentre");
+		$x_mainHolder.removeClass("x_noVerticalCentre x_noVerticalCentrePanel");
 		$x_pageDiv.removeClass("x_noMaxW");
-		$x_pageHolder.removeClass("x_verticalCentre");
+		$x_pageHolder.removeClass("x_verticalCentre x_verticalCentrePanel");
 	}
 
 	// set a maximum width and align content horizontally on the screen (centre by default)
@@ -2607,27 +2607,44 @@ function x_setUpPagePosition(project) {
 	}
 
 	// centre page content vertically on the screen
-	if ((project && x_params.verticalAlign === "true") || project !== true) {
-		if (project && x_params.verticalAlign === "true") {
-			// turn on for the whole project
-			$x_mainHolder.addClass("x_verticalCentre");
-
-		} else if (project !== true) {
-			// these pages don't work with vertical centre yet - some of them will break & others are never able to be centred as the content is always at least full height
-			const nonWorkingPages = ['adaptiveContent','audioSlideshow','chart','embedDiv','hotspotImage','imageCompare','imageSequence','interactiveVideo','media360','mediaLesson','memory','perspectives','rss','rssdownload','SictTimeline','tabNavExtra','textHighlight','thumbnailViewer','title','videoSynch'];
-			if (x_currentPageXML.getAttribute("verticalAlign") != undefined && (nonWorkingPages == undefined || nonWorkingPages.indexOf(x_pageInfo[x_currentPage].type) < 0)) {
-				if (x_currentPageXML.getAttribute("verticalAlign") === "true") {
-					// turn on for this page
-					$x_pageHolder.addClass("x_verticalCentre");
-				} else if (x_currentPageXML.getAttribute("verticalAlign") === "false") {
-					// turn off for this page
-					$x_mainHolder.addClass("x_noVerticalCentre");
-				}
-			} else if (nonWorkingPages != undefined && nonWorkingPages.indexOf(x_pageInfo[x_currentPage].type) >= 0) {
-				// always turn off for this type of page as it won't work properly
-				$x_mainHolder.addClass("x_noVerticalCentre");
-			}
+	// related option individually centres columns vertically
+	if (project && x_params.verticalAlign === "true") {
+		// turn on for the whole project
+		$x_mainHolder.addClass("x_verticalCentre");
+		if (x_params.verticalAlignPanel === "true") {
+			$x_mainHolder.addClass("x_verticalCentrePanel");
 		}
+
+	} else if (project !== true) {
+		// these pages don't work with vertical centre yet - some of them will break & others are never able to be centred as the content is always at least full height
+		const nonWorkingPages = ['imageSequence', 'mediaLesson', 'morphImages', 'thumbnailViewer', 'SictTimeline', 'perspectives', 'connectorMenu', 'links'];
+		if (x_currentPageXML.getAttribute("verticalAlign") != undefined && (nonWorkingPages == undefined || nonWorkingPages.indexOf(x_pageInfo[x_currentPage].type) < 0)) {
+			if (x_currentPageXML.getAttribute("verticalAlign") === "true") {
+				// turn on for this page
+				$x_pageHolder.addClass("x_verticalCentre");
+				if (x_currentPageXML.getAttribute("verticalAlignPanel") === "true") {
+					$x_pageHolder.addClass("x_verticalCentrePanel");
+				} else if (x_currentPageXML.getAttribute("verticalAlignPanel") === "false") {
+					$x_mainHolder.addClass("x_noVerticalCentrePanel");
+				}
+			} else if (x_currentPageXML.getAttribute("verticalAlign") === "false") {
+				// turn off for this page
+				$x_mainHolder.addClass("x_noVerticalCentre x_noVerticalCentrePanel");
+			}
+		} else if (nonWorkingPages != undefined && nonWorkingPages.indexOf(x_pageInfo[x_currentPage].type) >= 0) {
+			// always turn off for this type of page as it won't work properly
+			$x_mainHolder.addClass("x_noVerticalCentre x_noVerticalCentrePanel");
+		}
+	}
+}
+
+// function adds the scrolling class when required - this helps determine whether the x_verticalCentrePanel css should be applied or not
+// columns should only be centred if all columns fit on screen with no scrolling - otherwise align top
+function x_checkForScrolling() {
+	if ($x_pageHolder.prop('scrollHeight') > $x_pageHolder.innerHeight()) {
+		$x_pageHolder.addClass("x_scrolling");
+	} else {
+		$x_pageHolder.removeClass("x_scrolling");
 	}
 }
 
@@ -3147,14 +3164,7 @@ function x_changePageStep3() {
         // checks if size has changed since last load - if it has, call function in current page model which does anything needed to adjust for the change
         var prevSize = builtPage.data("size");
         if (prevSize[0] != $x_mainHolder.width() || prevSize[1] != $x_mainHolder.height()) {
-			if (typeof window[pt].sizeChanged === "function") window[pt].sizeChanged();
-
-            // calls function in any customHTML that's been loaded into page
-            if ($(".customHTMLHolder").length > 0) {
-                if (typeof customHTML.sizeChanged === "function") {
-                	customHTML.sizeChanged();
-                }
-            }
+			x_sizeChanged();
         }
 
 		// any custom header styles will be disabled if a custom theme (via accessibility options) is in use
@@ -3619,6 +3629,8 @@ function x_pageLoaded() {
 	}
 
 	XENITH.SIDEBAR.pageLoad(true);
+
+	x_checkForScrolling();
 }
 
 //convert picker color to #value
@@ -3876,23 +3888,26 @@ function x_updateCss2(updatePage) {
     }
 
     if (updatePage != false) {
-        try {
-            // calls function in current page model which does anything needed on size change
-            if (x_pageInfo[x_currentPage].type == "text") {
-                simpleText.sizeChanged(); // errors if you just call text.sizeChanged()
-            } else {
-                eval(x_pageInfo[x_currentPage].type).sizeChanged();
-            }
-        }
-        catch(e) {} // Catch error thrown when you call sizeChanged() on an unloaded model
-
-        // calls function in any customHTML that's been loaded into page
-        if ($(".customHTMLHolder").length > 0) {
-            try { customHTML.sizeChanged(); } catch(e) {};
-        }
+		x_sizeChanged();
     }
 
     $(".x_popupDialog").parent().detach();
+}
+
+function x_sizeChanged() {
+	// get short page type var
+	let pt = x_pageInfo[x_currentPage].type;
+	if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
+	if (typeof window[pt].sizeChanged === "function") window[pt].sizeChanged();
+
+	// calls function in any customHTML that's been loaded into page
+	if ($(".customHTMLHolder").length > 0) {
+		if (typeof customHTML.sizeChanged === "function") {
+			customHTML.sizeChanged();
+		}
+	}
+
+	x_checkForScrolling();
 }
 
 // functions open dialogs e.g. glossary, table of contents - just reattach if it's already loaded previously

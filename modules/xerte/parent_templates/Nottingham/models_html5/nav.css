@@ -95,7 +95,14 @@
 		gap: 1em;
 	}
 
-	
+	#x_mainHolder.x_verticalCentrePanel:not(.x_noVerticalCentre):not(.x_noVerticalCentrePanel) #x_pageHolder:not(.x_scrolling) #navHolder .column,
+	#x_pageHolder.x_verticalCentrePanel:not(.x_scrolling) #navHolder .column {
+		display: flex;
+		justify-content: safe center;
+		flex-direction: column;
+	}
+
+
 	/* __slides__ */
 	
 	#pageContents.slide .navChildTitle {

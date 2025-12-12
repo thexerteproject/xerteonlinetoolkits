@@ -41,4 +41,11 @@
 		margin-top:	10px;
 		border-top:	1px solid gray;
 	}
+
+	#x_mainHolder.x_verticalCentrePanel:not(.x_noVerticalCentre):not(.x_noVerticalCentrePanel) #x_pageHolder:not(.x_scrolling) #columnHolder .column,
+	#x_pageHolder.x_verticalCentrePanel:not(.x_scrolling) #columnHolder .column {
+		display: flex;
+		justify-content: safe center;
+		flex-direction: column;
+	}
 	

@@ -1893,6 +1893,15 @@ button.resourceLink {
 	margin-top: 1em;
 }
 
+#x_mainHolder.x_verticalCentrePanel:not(.x_noVerticalCentre):not(.x_noVerticalCentrePanel) #x_pageHolder:not(.x_scrolling) .splitScreen_A,
+#x_mainHolder.x_verticalCentrePanel:not(.x_noVerticalCentre):not(.x_noVerticalCentrePanel) #x_pageHolder:not(.x_scrolling) .splitScreen_B,
+#x_pageHolder.x_verticalCentrePanel:not(.x_scrolling) .splitScreen_A,
+#x_pageHolder.x_verticalCentrePanel:not(.x_scrolling) .splitScreen_B {
+	display: flex;
+	justify-content: safe center;
+	flex-direction: column;
+}
+
 @media (max-width: 480px) {
 	/* split screen layout used in lots of page models - stack vertically on smaller screens */
 	.splitScreen {

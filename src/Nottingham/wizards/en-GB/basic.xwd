@@ -18,7 +18,10 @@
 		<horizontalAlign label="Horizontal Alignment" optional="true" defaultValue="centre" options="Right,Centre,Left" data="right,centre,left" type="ComboBox"/>
 	</maxWidthGroup>
 
-  	<verticalAlign label="Centre Content Vertically" optional="true" type="CheckBox" defaultValue="true" tooltip="Centre the content vertically on the page. Can be used alongside the 'Maximum Width' optional properties to also centre content horizontally. A centre content vertically optional property is also available on each page where you can adjust these settings on a page by page basis."/>
+	<verticalAlignGroup type="group" label="Centre Content Vertically" optional="true" tooltip="Centre the content vertically on the page. Can be used alongside the 'Maximum Width' optional properties to also centre content horizontally. A centre content vertically optional property is also available on each page where you can adjust these settings on a page by page basis.">
+  		<verticalAlign label="Centre Content Vertically" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true"/>
+  		<verticalAlignPanel label="Centre Columns Individually" optional="true" type="CheckBox" defaultValue="true" condition="verticalAlign=='true'" tooltip="On pages that contain column layouts, e.g. page text next to a panel, centre each column vertically on the page"/>
+	</verticalAlignGroup>
 
 	<fixDisplay optional="true" type="TextInput" label="Fixed Display Size" defaultValue="800,600" condition="displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!='')" tooltip="Sets the project dimensions (in pixels) when 'display mode' is set to 'fixed size'" />
 	
