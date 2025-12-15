@@ -55,7 +55,7 @@ function xml_to_xerte_content(data, key, pos, tree, realParent) {
             var size = children.length;
             // Add all populated children of top level object for example "quiz"
             // Or if nodes exist, update attributes of children
-            //todo Alek this should be a recursive function now only works for 1 level in tree.
+            //todo this should be a recursive function; now only works for 1 level in tree. Not a priority, since there's currently no situation where it's necessary to go deeper than one level down the tree.
             for (let i = 0; i < size; i++) {
                 const child = children[i];
                 // Try to get linkID, but if it's a non-element node, default to undefined
@@ -87,8 +87,8 @@ function xml_to_xerte_content(data, key, pos, tree, realParent) {
             var node = tree.get_node(key, false);
             if (node) {
                 // Refresh the node to reflect the updated attributes
-                //tree.refresh_node(node);
                 realParent.tree.showNodeData(node.id, true);
+                tree.rename_node(node, lo_data[key]['attributes']['name']);
             }
 
             // Resolve targets for decision_tree children

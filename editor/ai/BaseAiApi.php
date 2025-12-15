@@ -16,7 +16,7 @@ abstract class BaseAiApi
 
     protected $languageMessage;
 
-     protected $globalInstructions = [];
+     protected $globalInstructions = ["Output must be plain text only. Do not use Markdown (no *, _, backticks, or Markdown headings/lists). Use HTML only, and escape it for XML (e.g., &lt;em&gt;...&lt;/em&gt;)."];
 
     const DEFAULT_MSG = 'An unexpected error occurred. If this persists, please inform your administrator.';
 
@@ -225,7 +225,7 @@ abstract class BaseAiApi
 
     protected function setupLanguageInstructions ($selectedCode){
         $languages = [
-            'en-GB' => ['English', 'IMPORTANT: All non-structural output within the XML should be in English!'],
+            'en-GB' => ['English', 'IMPORTANT: All non-structural output within the XML should be in British English!'],
             'nl-NL' => ['Nederlands', 'BELANGRIJK: Alle niet-structurele output binnen de XML moet in het Nederlands zijn!'],
             'nl-BE' => ['Vlaams', 'BELANGRIJK: Alle niet-structurele output binnen de XML moet in het Vlaams zijn!'],
             'fr-FR' => ['Français', 'IMPORTANT : Toute sortie non structurelle dans le XML doit être en français !'],
