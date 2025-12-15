@@ -635,6 +635,21 @@ a.hotspot, a.hotspot.selected {
 .x_timeline_page .label.panel.ui-draggable.selected p {
   color: $contrastcolor;
 }
+//*****mcq*****/
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+  border-color: $contrastcolor;
+  background: $panelcolor;
+  color: $contrastcolor;
+}
+.x_mcq_page #pageContents .optionGroup.answerBtn:not(.selected):hover,
+.x_mcq_page #pageContents .optionGroup.answerBtn:not(.selected).ui-state-focus,
+.x_quiz_page #pageContents .optionGroup.answerBtn:not(.selected):hover,
+.x_quiz_page #pageContents .optionGroup.answerBtn:not(.selected).ui-state-focus {
+  background: $contrastcolor;
+  color: $panelcolor;
+  border-color: $contrastcolor;
+}
 
 //***********************************Charts*************************************/
 //***Charts Table***/

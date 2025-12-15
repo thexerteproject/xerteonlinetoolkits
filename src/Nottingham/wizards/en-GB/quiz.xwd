@@ -81,7 +81,7 @@
     </QFGroup>
 
     <newNodes>
-      <question><![CDATA[<question prompt="" name="Question" type="Single Answer" />]]></question>
+      <question><![CDATA[<question prompt="" name="Question" type="Single Answer" answerType="radio" />]]></question>
 	</newNodes>
 
   </quiz>
@@ -90,7 +90,8 @@
 
     <prompt label="Question" type="TextArea"  height="100" placeholder="Enter question text here"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" tooltip="The label is used to identify this question on the results page and when tracking results, e.g. via SCORM/LTI/xAPI"/>
-    <type label="Question Type" options="Single Answer,Multiple Answer"  type="ComboBox"  data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120" />
+    <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" conditionTrigger="true"/>
+    <answerType label="Answer Input" type="ComboBox" options="Radio Buttons,Buttons" data="radio,button" defaultValue="radio" mandatory="true" condition="type=='Single Answer'"/>
 
 	<feedbackGroup type="group" label="Feedback" optional="true">
     	<feedback type="TextArea" height="40" label="General Feedback" optional="true" tooltip="Feedback shown when an answer is submitted. Can be used in conjunction with tailored feedback for each answer option."/>

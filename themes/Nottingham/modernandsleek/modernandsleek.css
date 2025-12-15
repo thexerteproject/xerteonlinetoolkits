@@ -573,6 +573,11 @@ table.headerCol.shaded td.header {
   color: #ffffff;
 }
 
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+  background: #EDEDED;
+}
+
 #x_footerBlock {
   font-size: 1em;
   color: #ffffff;

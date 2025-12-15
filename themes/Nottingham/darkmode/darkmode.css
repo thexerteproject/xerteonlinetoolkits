@@ -711,6 +711,22 @@ a.hotspot, a.hotspot.selected {
   background: #1e1e1e;
 }
 
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+  border-color: #7094DB;
+  background: #1e1e1e;
+  color: #7094DB;
+}
+
+.x_mcq_page #pageContents .optionGroup.answerBtn:not(.selected):hover,
+.x_mcq_page #pageContents .optionGroup.answerBtn:not(.selected).ui-state-focus,
+.x_quiz_page #pageContents .optionGroup.answerBtn:not(.selected):hover,
+.x_quiz_page #pageContents .optionGroup.answerBtn:not(.selected).ui-state-focus {
+  background: #7094DB;
+  color: #000000;
+  border-color: #7094DB;
+}
+
 .x_modelAnswer_page #copyTxt {
   color: #D13759;
 }
