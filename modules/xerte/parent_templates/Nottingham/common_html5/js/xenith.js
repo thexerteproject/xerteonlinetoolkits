@@ -5272,16 +5272,18 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					}
 					
 					$x_glossaryHover
+						.stop(true, true) 
 						.html(myDefinition)
 						.css({
-						"left"	:$activeTooltip.offset().left + 20,
-						"top"	:$activeTooltip.offset().top + 20
-					});
+							"left"	:$activeTooltip.offset().left + 20,
+							"top"	:$activeTooltip.offset().top + 20
+						});
 					
 					// Queue reparsing of MathJax - fails if no network connection
 					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
-
-					$x_glossaryHover.fadeIn("slow");
+					
+					// Show instantly (no fade) to avoid race conditions when hovering quickly
+					$x_glossaryHover.show();
 					
 					if (x_browserInfo.touchScreen == true) {
 						$x_mainHolder.on("click.glossary", function() {}); // needed so that mouseleave works on touch screen devices
@@ -5289,7 +5291,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 				})
 				.on("mouseleave", ".x_glossary", function(e) {
 					$x_mainHolder.off("click.glossary");
-					$x_glossaryHover.hide();
+					$x_glossaryHover.stop(true, true).hide();
 					window.removeEventListener("keydown", escapeHandler);
 				})
 				.on("mousemove", ".x_glossary", function(e) {
