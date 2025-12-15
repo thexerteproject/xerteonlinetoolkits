@@ -1689,9 +1689,9 @@ function upgrade_54()
 
         if ($ok) {
             $ok = db_query("INSERT INTO `management_helper` VALUES 
-                                    (1, 'openai', 'GPT (Openai)', 'ai', 1, 0, '{\"generate image\":\"false\",\"image uploads\":\"false\"}'),
-                                    (2, 'anthropic', 'Claude (Anthropic)', 'ai', 1, 0, '{\"generate image\":\"false\"}'),
-                                    (3, 'mistral', 'Mistral AI', 'ai', 1, 0, '{\"generate image\":\"false\"}'),
+                                    (1, 'openai', 'GPT (Openai)', 'ai', 1, 0, '{}'),
+                                    (2, 'anthropic', 'Claude (Anthropic)', 'ai', 1, 0, '{}'),
+                                    (3, 'mistral', 'Mistral AI', 'ai', 1, 0, '{}'),
                                     (4, 'pexels', 'Pexels', 'image', 1, 0, '{}'),
                                     (5, 'pixabay', 'Pixabay', 'image', 1, 0, '{}'),
                                     (6, 'unsplash', 'Unsplash', 'image', 1, 0, '{}'),

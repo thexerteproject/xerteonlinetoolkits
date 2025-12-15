@@ -33,7 +33,9 @@ class RegistryHandler {
     }
 
     public function get($id) {
-        return $this->data['processed_videos'][$id] ?? null;
+        return isset($this->data['processed_videos'][$id])
+            ? $this->data['processed_videos'][$id]
+            : null;
     }
 
     public function set($id, $entry) {
@@ -57,7 +59,9 @@ class RegistryHandler {
     private function normalizeUrl($url) {
         if (strpos($url, 'youtube.com') !== false || strpos($url, 'youtu.be') !== false) {
             parse_str(parse_url($url, PHP_URL_QUERY), $query);
-            return $query['v'] ?? basename(parse_url($url, PHP_URL_PATH));
+            return isset($query['v'])
+                ? $query['v']
+                : basename(parse_url($url, PHP_URL_PATH));
         }
         return strtolower(trim($url));
     }

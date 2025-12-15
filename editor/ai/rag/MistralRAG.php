@@ -12,7 +12,7 @@ class MistralRAG extends BaseRAG
         $this->apiKey = $apiKey;
     }
 
-    protected function supportsProviderEmbeddings(): bool { return true; }
+    protected function supportsProviderEmbeddings() { return true; }
 
     /*Retrieve an embedding for a single piece of text*/
     protected function getEmbedding($text)
@@ -36,9 +36,11 @@ class MistralRAG extends BaseRAG
         log_ai_request($response, 'encoding', 'mistralenc');
 
         $decoded = json_decode($response, true);
-        $embeddings = $decoded["data"][0]["embedding"] ?? [];
+        $embeddings = isset($decoded['data'][0]['embedding'])
+            ? $decoded['data'][0]['embedding']
+            : [];
         if (empty($embeddings)) {
-            throw new Exception('Embedding failed.');
+            throw new \Exception('Embedding failed.');
         }
 
         return $embeddings;
@@ -46,7 +48,7 @@ class MistralRAG extends BaseRAG
 
     /*Retrieve embeddings in batches, in line with the maximum allowed token size of the mistral embed model
     In principle, the max token size is 16384. Since token size is only approximated, though, go with a lower number.*/
-    protected function getEmbeddings(array $texts): array
+    protected function getEmbeddings(array $texts)
     {
         $maxTokensPerBatch = 15000;
         $url = "https://api.mistral.ai/v1/embeddings";
@@ -91,13 +93,15 @@ class MistralRAG extends BaseRAG
             $decoded = json_decode($response, true);
             if (isset($decoded["data"])) {
                 foreach ($decoded["data"] as $embedding) {
-                    $embeddings[] = $embedding["embedding"] ?? [];
+                    $embeddings[] = isset($embedding['embedding'])
+                        ? $embedding['embedding']
+                        : [];
                 }
             }
         }
 
         if (empty($embeddings)) {
-            throw new Exception('Embedding failed.');
+            throw new \Exception('Embedding failed.');
         }
 
         return $embeddings;

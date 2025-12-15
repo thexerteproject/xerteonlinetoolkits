@@ -39,9 +39,9 @@
 
 		<name label="Overlay" type="TextInput"/>
 
-		<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="hasrole('aiuser')">
+		<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
             <subject verification="^.+$"  label="Subject" tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'. Multiple subjects from the video may be chosen. Selecting a subject which is not talked about or directly referenced in the video may lead to content and timestamp inaccuracies." type="TextInput" defaultValue="" placeholder="Enter a subject here..." optional="true"/>
-			<additionalInstructions label="Additional Instructions" type="text" tooltip="Provide any additional instructions or requests on how the generated result should look like here. Please note that certain instructions may break the structure of the generated response. If this occurs, alter the way the instructions are worded and attempt to generate this page again; or leave this field blank." wysiwyg="true" height="50" placeholder="Write your instructions here..." optional="true"/>
+			<additionalInstructions label="Additional Instructions" type="text" tooltip="You can leave this blank or provide additional instructions or requests on how the generated result should look. Please note that certain instructions may break the structure of the generated response. If this occurs, change the wording and attempt to generate again." wysiwyg="true" height="50" placeholder="Write your instructions here..." optional="true"/>
             <subtype label="Object Type" tooltip="Pick which kind of content to generate!" options="Generate Text Object,Generate Multiple Choice Question" type="comboBox" data="text_object,mcq" defaultValue="text_object" optional="true" conditionTrigger="true"/>
             <nrq label="Number of Multiple Choice Questions" type="TextInput" defaultValue="3" optional="true" condition="subtype=='mcq'" verification="^\d+$"/>
             <nra label="Answers per Question" type="TextInput" tooltip="Amount of answers generated respective to each question. For example, '5' will generate five answers per question." defaultValue="4" optional="true" condition="subtype=='mcq'"/>
@@ -53,7 +53,7 @@
             <aiButton type="aibutton" optional="true"/>
         </AIGroup>
 
-        <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+        <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
             <qfIvSynchTextPlus label="Number of Text Objects" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
             <qfIvSynchMCQ label="Number of Multiple Choice Questions" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
             <qfIvSynchMCQOption label="Number of Answers per MCQ" type="TextInput" wysiwyg="true" defaultValue = "4" optional="true"/>

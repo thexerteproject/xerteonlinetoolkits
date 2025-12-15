@@ -1,7 +1,7 @@
 <?php
 class  openai_model {
 	private $model = "gpt-4o";
-	private $assistantId = "asst_IyiBKzr8nvwddAzVKuh6OnlC";
+	private $assistantId = "";
 	protected $chat_url = "https://api.openai.com/v1/chat/completions";
 	protected $temperature = 0.2;
 	protected $max_tokens = 3096;
@@ -16,9 +16,9 @@ class  openai_model {
 		if($assistantId != null){
 			$this->assistantId = $assistantId;
 		}
-		if($assistantOn && $type != "modelanswer") {
+		/*if($assistantOn && $type != "modelanswer") {
 			$this->chat_url = "https://api.openai.com/v1/threads/runs";
-		}
+		}*/
 		$this->assistantOn = $assistantOn;
 
         $default_model_override = [
@@ -67,7 +67,7 @@ class  openai_model {
 	}
 
 	public function get_payload() {
-		if ($this->assistantOn) {
+		/*if ($this->assistantOn) {
 				//default payload for threads/runs endpoint
 				return [
 					"assistant_id" => $this->assistantId, // Required: The ID of the assistant to use for the run
@@ -136,7 +136,7 @@ class  openai_model {
 					// Optional: Uncomment to enable parallel function calling during tool use
 					// "parallel_tool_calls" => true,
 				];
-			} else {
+			} else {*/
 				//default payload for chat/completions endpoint
 				return [
 					"model" => $this->model,
@@ -149,7 +149,6 @@ class  openai_model {
 						["role" => "user", "content" => ""]
 					]
 				];
-			}
 	}
 
 	public function get_chat_url() {

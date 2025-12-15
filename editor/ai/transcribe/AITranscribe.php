@@ -9,15 +9,13 @@ require_once __DIR__.'/../logging/log_ai_request.php';
  */
 abstract class AITranscribe {
     protected $apiKey;
-    protected string $mediaPath;
+    protected $mediaPath;
 
     /**
      * Constructor accepts the API key.
      */
     public function __construct($apiKey, $basePath) {
         $this->apiKey = $apiKey;
-        $this->actor = array('user_id'=>$_SESSION['toolkits_logon_username'],'workspace_id'=>$_SESSION['XAPI_PROXY']);
-        //$this->sessionId = $_SESSION['token'];
         $this->mediaPath = $basePath . DIRECTORY_SEPARATOR . 'RAG' . DIRECTORY_SEPARATOR . 'transcripts';
         $this->sessionId = "token is busted";
     }
@@ -30,12 +28,13 @@ abstract class AITranscribe {
     /**
      * @var string|null  Path to the last temp directory used for chunking.
      */
-    protected ?string $chunkTmpDir = null;
+    protected $chunkTmpDir = null;
 
     /**
      * Format transcription segments with start/end timestamps.
      */
-    protected function formatSegmentsWithTimestamps($vttContent) {
+    protected function formatSegmentsWithTimestamps($vttContent, $secondsOnly = false)
+    {
         $lines = preg_split('/\R/', $vttContent);
         $formattedText = '';
         $currentStart = $currentEnd = null;
@@ -57,8 +56,9 @@ abstract class AITranscribe {
             )) {
                 // Flush previous cue
                 if ($currentStart !== null) {
-                    $formattedText .= "S: {$currentStart} E: {$currentEnd} Text: {$currentText}\n";
+                    $formattedText .= $this->formatCueLine($currentStart, $currentEnd, $currentText, $secondsOnly);
                 }
+
                 // Start a new cue
                 $currentStart = $m[1];
                 $currentEnd   = $m[2];
@@ -66,16 +66,49 @@ abstract class AITranscribe {
                 continue;
             }
 
-            // Otherwise it’s cue text; accumulate (space‑separated)
+            // Otherwise it’s cue text; accumulate (space-separated)
             $currentText .= ($currentText === '' ? '' : ' ') . $line;
         }
 
         // Flush the very last cue
         if ($currentStart !== null) {
-            $formattedText .= "S: {$currentStart} E: {$currentEnd} Text: {$currentText}\n";
+            $formattedText .= $this->formatCueLine($currentStart, $currentEnd, $currentText, $secondsOnly);
         }
 
         return $this->removeSpecialCharacters($formattedText);
+    }
+
+    /**
+     * Helper: format a single cue line either as hh:mm:ss.mmm or seconds with 1 decimal.
+     */
+    protected function formatCueLine($start, $end, $text, $secondsOnly)
+    {
+        if ($secondsOnly) {
+            $startSec = $this->timestampToSeconds($start);
+            $endSec   = $this->timestampToSeconds($end);
+
+            // Always 1 decimal place, e.g. 3.3, 76.9, 120.0
+            return sprintf("S: %.1f E: %.1f Text: %s\n", $startSec, $endSec, $text);
+        }
+
+        // The original timestamps
+        return "S: {$start} E: {$end} Text: {$text}\n";
+    }
+
+    /**
+     * Convert "HH:MM:SS.mmm" to seconds (float), rounded to 1 decimal.
+     */
+    protected function timestampToSeconds($timestamp)
+    {
+        // Split into H, M, S.mmm
+        list($h, $m, $s) = explode(':', $timestamp);
+
+        $seconds = ((int) $h) * 3600
+            + ((int) $m) * 60
+            + (float) $s; // handles the .mmm part
+
+        // Round to 1 decimal place as requested
+        return round($seconds, 1);
     }
 
     /**
@@ -107,12 +140,12 @@ abstract class AITranscribe {
      * @param array $segments  Each element has 'start', 'end', and 'text' keys.
      * @return string
      */
-    protected function formatJsonSegments(array $segments): string
+    protected function formatJsonSegments(array $segments)
     {
         $out = '';
         foreach ($segments as $seg) {
             // Format seconds.fraction to H:i:s.ms
-            $fmt = function(float $sec) {
+            $fmt = function($sec) {
                 $h = floor($sec / 3600);
                 $m = floor(($sec % 3600) / 60);
                 $s = $sec % 60;
@@ -126,7 +159,7 @@ abstract class AITranscribe {
         return $this->removeSpecialCharacters($out);
     }
 
-    protected function shiftVttTimestamps(string $vtt, float $offsetSeconds): string
+    protected function shiftVttTimestamps($vtt, $offsetSeconds)
     {
         // Callback to shift each HH:MM:SS.mmm timestamp by $offsetSeconds
         return preg_replace_callback(
@@ -155,10 +188,10 @@ abstract class AITranscribe {
      * @throws \RuntimeException      On failure to create temp dir or if FFmpeg returns non‐zero.
      */
     protected function prepareChunkedFiles(
-        string $filePath,
-        int    $maxBytes       = 25 * 1024 * 1024,
-        int    $segmentSeconds = 900
-    ): array {
+        $filePath,
+        $maxBytes       = 25 * 1024 * 1024,
+        $segmentSeconds = 900
+    )  {
         global $xerte_toolkits_site;
 
         // Check whether the file does not have path traversal
@@ -198,7 +231,7 @@ abstract class AITranscribe {
      * Remove any leftover chunk files from the last call to prepareChunkedFiles().
      * Safe to call even if nothing was split.
      */
-    protected function cleanupChunkedFiles(): void
+    protected function cleanupChunkedFiles()
     {
         if ($this->chunkTmpDir && \is_dir($this->chunkTmpDir)) {
             //todo handle errs/warnings
@@ -250,10 +283,10 @@ class OpenAITranscribe extends AITranscribe
      */
     public function transcribeAudioTimestamped(
         $filePath,
-        string $model = 'whisper-1',
-        string $responseFormat = 'vtt',
-        ?string $timestampGranularities = 'segment'
-    ): string {
+        $model = 'whisper-1',
+        $responseFormat = 'vtt',
+        $timestampGranularities = 'segment'
+    )  {
         global $xerte_toolkits_site;
 
         // Check whether the file does not have path traversal
@@ -359,7 +392,7 @@ class OpenAITranscribe extends AITranscribe
             return $this->formatJsonSegments($allSegments);
         }
         if ($responseFormat === 'vtt') {
-            return $this->formatSegmentsWithTimestamps($allVtt);
+            return $this->formatSegmentsWithTimestamps($allVtt, true);
         }
         // srt or plain text
         return trim($allText);
@@ -500,7 +533,7 @@ class GladiaTranscribe extends AITranscribe {
         }
         $this->cleanupChunkedFiles();
 
-        return $this->formatSegmentsWithTimestamps($allVtt);
+        return $this->formatSegmentsWithTimestamps($allVtt, true);
     }
 
     /**
@@ -532,7 +565,7 @@ class GladiaTranscribe extends AITranscribe {
      * @return bool                    True if deletion succeeded.
      * @throws \RuntimeException       On HTTP errors or cURL failures.
      */
-    protected function deleteGladiaTranscription(string $transcriptionId): bool
+    protected function deleteGladiaTranscription($transcriptionId)
     {
         $url = "https://api.gladia.io/v2/pre-recorded/{$transcriptionId}";
 

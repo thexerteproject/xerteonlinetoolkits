@@ -15,7 +15,7 @@ use function rag\makeRag;
 
 ob_start();
 
-function normalize_path(string $path): string
+function normalize_path($path)
 {
     // 1) turn backslashes into forward-slashes
     $p = str_replace('\\', '/', $path);
@@ -24,6 +24,22 @@ function normalize_path(string $path): string
     $p = preg_replace('#/+#', '/', $p);
 
     return $p;
+}
+
+function prepareURL($uploadPath)
+{
+    global $xerte_toolkits_site;
+    // Move up from rag/ai/editor to the XOT root
+    $basePath = __DIR__ . '/../../../';
+    $full = realpath(urldecode($basePath . $uploadPath));
+
+    if ($full === false) {
+        throw new Exception("Invalid path: {$uploadPath}");
+    }
+
+    x_check_path_traversal($full, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
+    return $full;
 }
 
 global $xerte_toolkits_site;
@@ -38,13 +54,13 @@ try {
     $input = json_decode($raw, true);
 
     //$baseUrl = $input['baseURL'] ?? '';
-    $type   = x_clean_input($input['type']   ?? '',    'string');
-    $gridId = x_clean_input($input['gridId'] ?? '',    'string');
-    $format = x_clean_input($input['format'] ?? '',    'string');
-
+    $type    = x_clean_input(isset($input['type'])    ? $input['type']    : '', 'string');
+    $gridId  = x_clean_input(isset($input['gridId'])  ? $input['gridId']  : '', 'string');
+    $format  = x_clean_input(isset($input['format'])  ? $input['format']  : '', 'string');
+    $baseURL = x_clean_input(isset($input['baseURL']) ? $input['baseURL'] : '', 'string');
     // Prep directories & API keys
 
-    $baseDir = $_SESSION['uploadDir'];
+    $baseDir = prepareURL($baseURL);//$_SESSION['uploadDir'];
     x_check_path_traversal($baseDir);
 
     //get settings from the management table, which help us decide which options to use
@@ -101,23 +117,29 @@ try {
         //Build the rows using the | symbol as a separator
         $csv_parsed = '';
         foreach ($anonymizedCorpus['hashes'] as $entry) {
-            $files = $entry['files']    ?? [];
-            $meta  = $entry['metaData'] ?? [];
-            $name        = $meta['name']        ?? '';
-            $description = $meta['description'] ?? '';
-            $fileSource  = $meta['source']      ?? '';
+            $files = isset($entry['files'])    ? $entry['files']    : [];
+            $meta  = isset($entry['metaData']) ? $entry['metaData'] : [];
+
+            $name        = isset($meta['name'])        ? $meta['name']        : '';
+            $description = isset($meta['description']) ? $meta['description'] : '';
+            $fileSource  = isset($meta['source'])      ? $meta['source']      : '';
 
             foreach ($files as $file) {
-                $cells = [ $name, $fileSource, $description ];
+                $cells = [$name, $fileSource, $description];
                 foreach ($cells as $cell) {
-                    $safe = str_replace('|',' ', $cell);
+                    $safe = str_replace('|', ' ', $cell);
                     $csv_parsed .= ($safe === '' ? ' ' : $safe) . '|';
                 }
                 $csv_parsed .= '|';
             }
         }
-        // strip the trailing "||"
-        $filesStructured = substr($csv_parsed, 0, -2);
+        if ($csv_parsed === '') {
+            // No entries at all: send the placeholder expected by the frontend
+            $filesStructured = '|';
+        } else {
+            // strip the trailing "||"
+            $filesStructured = substr($csv_parsed, 0, -2);
+        }
     } else if ($format == "json"){
         $filesStructured = $anonymizedCorpus;
     }
@@ -137,6 +159,7 @@ try {
     http_response_code(500);
     echo json_encode([
         'success' => false,
+        'type' => 'generalError',
         'message' => $ex->getMessage()
-    ], JSON_THROW_ON_ERROR);
+    ]);
 }

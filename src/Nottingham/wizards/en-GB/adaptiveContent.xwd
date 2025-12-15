@@ -31,7 +31,7 @@
 
      </periodGroup>
 
-    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
       <qfInteraction label="Number of Source Interactions" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
       <qfInteractionBlock label="Number of Interaction Blocks per Source Interaction" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
       <qfButton type="quickfillbutton" optional="true"/>

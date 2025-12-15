@@ -9,7 +9,7 @@
  * @return array           An array of text chunks.
  */
 
-function splitTextByFileType(string $text, string $fileType, $maxSize): array {
+function splitTextByFileType($text, $fileType, $maxSize) {
     // Trim text to remove any leading/trailing whitespace that could affect splitting.
     $text = trim($text);
     if ($text === '') {
@@ -48,7 +48,7 @@ function splitTextByFileType(string $text, string $fileType, $maxSize): array {
 /**
  * Split plain text into chunks by paragraphs, sentences, then smaller punctuation.
  */
-function splitPlainText(string $text, int $maxSize): array {
+function splitPlainText($text, $maxSize) {
     $chunks = [];
 
     // 1. Split by double newlines (paragraphs)
@@ -99,7 +99,7 @@ function splitPlainText(string $text, int $maxSize): array {
 /**
  * Split HTML/XML content into chunks by DOM element boundaries.
  */
-function splitHtmlXml(string $html, int $maxSize): array {
+function splitHtmlXml($html, $maxSize) {
     $chunks = [];
     $dom = new DOMDocument();
     libxml_use_internal_errors(true);
@@ -183,7 +183,7 @@ function splitHtmlXml(string $html, int $maxSize): array {
 /**
  * Split JSON string into chunks along top-level structures (objects/arrays).
  */
-function splitJson(string $json, int $maxSize): array {
+function splitJson($json, $maxSize) {
     $chunks = [];
 
     // Attempt to decode JSON into PHP array/object
@@ -260,7 +260,7 @@ function splitJson(string $json, int $maxSize): array {
 /**
  * Split Markdown text into chunks by headings, then paragraphs, then list items.
  */
-function splitMarkdown(string $markdown, int $maxSize): array {
+function splitMarkdown($markdown, $maxSize) {
     $chunks = [];
     $lines = preg_split("/\r?\n/", $markdown);
     if (!$lines) {
@@ -333,7 +333,7 @@ function splitMarkdown(string $markdown, int $maxSize): array {
 /**
  * Split CSV text into chunks by grouping rows.
  */
-function splitCsv(string $text, int $maxSize): array {
+function splitCsv($text, $maxSize) {
     // Split the CSV text by newlines into rows.
     $rows = explode("\n", $text);
     $chunks = [];
@@ -359,7 +359,7 @@ function splitCsv(string $text, int $maxSize): array {
 /**
  * Fallback: split a string into fixed-length chunks (trying not to break words).
  */
-function splitByLength(string $text, int $maxSize): array {
+function splitByLength($text, $maxSize) {
     $text = trim($text);
     if ($text === '' || $maxSize <= 0) {
         return [$text];

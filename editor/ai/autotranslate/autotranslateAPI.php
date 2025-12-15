@@ -14,9 +14,9 @@
 //    die('{"status": "error", "message": "prompt must not be empty"}');
 //}
 
-$api = $_POST["api"] ?? 'openai';
-$base_url = $_POST["baseUrl"] ?? 'None';
-$target_language = $_POST["targetLanguage"] ?? 'NL';
+$api = $_POST["api"];
+$base_url = $_POST["baseUrl"];
+$target_language = $_POST["targetLanguage"];
 
 $allowed_apis = ['openai', 'deepl', 'googleautotranslate'];
 

@@ -6,14 +6,15 @@ require_once (str_replace('\\', '/', __DIR__) . "/MistralRAG.php");
 require_once (str_replace('\\', '/', __DIR__) . "/OpenAIRAG.php");
 require_once (str_replace('\\', '/', __DIR__) . "/TfidfRAG.php");
 
-if (!isset($_SESSION['toolkits_logon_username'])) {
+if (!isset($_SESSION['toolkits_logon_username']) && php_sapi_name() !== 'cli') {
     die('Sesison id is not set');
 }
 
 function makeRag(array $cfg)
 {
-    $provider = $cfg['provider'] ?? 'none';
-    $adminEnabled = (bool)($cfg['enabled'] ?? true);
+    $provider = isset($cfg['provider']) ? $cfg['provider'] : 'none';
+    $adminEnabled = (bool)(isset($cfg['enabled']) ? $cfg['enabled'] : true);
+
 
     if ($adminEnabled && $provider === 'openaienc' && !empty($cfg['api_key'])) {
         return new OpenAIRAG($cfg['api_key'], $cfg['encoding_directory']);

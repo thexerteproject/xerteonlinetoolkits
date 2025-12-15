@@ -8,5 +8,5 @@ interface AiClientInterface
      * @param array $options ['model'=>string, 'max_tokens'=>int, 'temperature'=>float]
      * @return array ['ok'=>bool, 'content'=>string|null, 'raw'=>mixed|null, 'error'=>string|null]
      */
-    public function chat(array $messages, array $options = []): array;
+    public function chat(array $messages, array $options = []);
 }

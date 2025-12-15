@@ -33,7 +33,10 @@ class pixabayApi extends BaseApi
         $res = $this->httpGet($url);
 
         if (!$res->ok) {
-            return (object)["status" => "error", "message" => $res->error ?? ("HTTP " . $res->status)];
+            return (object) array(
+                'status'  => 'error',
+                'message' => isset($res->error) ? $res->error : ('HTTP ' . $res->status),
+            );
         }
 
         if (isset($res->json->error)) {
@@ -81,7 +84,7 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
             return (object)["status" => "error", "message" => $resp['error']];
         }
 
-        $rewrittenPrompt = trim($resp['content'] ?? '');
+        $rewrittenPrompt = trim(isset($resp['content']) ? $resp['content'] : '');
         $conversation[] = ["role" => "system", "content" => $rewrittenPrompt];
 
         return [
@@ -128,7 +131,7 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
             return (object)["status" => "error", "message" => $resp['error']];
         }
 
-        $text = trim($resp['content'] ?? '');
+        $text = trim(isset($resp['content']) ? $resp['content'] : '');
         // Be forgiving: strip code fences if present
         $text = preg_replace('/^```json|```$/m', '', $text);
         $decoded = json_decode($text);
@@ -182,9 +185,14 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
 
         $path = rtrim($target, '/') . "/media";
         $this->ensureDir($path);
+        global $xerte_toolkits_site;
         x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
 
-        foreach ($apiResponse->hits ?? [] as $photo) {
+        $hits = (isset($apiResponse->hits) && is_array($apiResponse->hits))
+            ? $apiResponse->hits
+            : array();
+
+        foreach ($hits as $photo) {
             $url = $photo->largeImageURL; // best quality
             $downloadResult = $this->downloadImageFromPixabay($url, $path);
             if ($downloadResult->status === 'success') {

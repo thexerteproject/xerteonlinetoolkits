@@ -12,7 +12,17 @@ class anthropicApi extends BaseAiApi
         $authorization = "x-api-key: " . $xerte_toolkits_site->anthropic_key;
 
         $payload["messages"][max(sizeof($payload["messages"])-1, 0)]["content"] = $prompt;
-        $new_payload = json_encode($payload, JSON_UNESCAPED_UNICODE|JSON_INVALID_UTF8_SUBSTITUTE);
+            $flags = JSON_UNESCAPED_UNICODE;
+
+            if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+                // PHP  >= 7.2: use native flag
+                $flags |= JSON_INVALID_UTF8_SUBSTITUTE;
+                $new_payload = json_encode($payload, $flags);
+            } else {
+                // PHP 5.6: emulate SUBSTITUTE by cleaning strings first
+                $cleanPayload = $this->json_utf8_substitute($payload);
+                $new_payload  = json_encode($cleanPayload, $flags);
+            }
 
 
         $curl = curl_init();
@@ -32,7 +42,11 @@ class anthropicApi extends BaseAiApi
         $resultConform = json_decode($resultConform);
 
         if ($resultConform->type=="error") {
-            throw new \Exception('API error: ' . ($resultConform->error->message ?? 'Unknown error'));
+            $message = 'Unknown error';
+            if (isset($resultConform->error) && isset($resultConform->error->message)) {
+                $message = $resultConform->error->message;
+            }
+            throw new \Exception('API error: ' . $message);
         }
 
         return $resultConform;
@@ -51,7 +65,23 @@ class anthropicApi extends BaseAiApi
         return $answer;
     }
 
-    protected function buildQueries(array $inputs): array
+    protected function extract_json_object($text)
+    {
+        // Find the first "{" and last "}"
+        $start = strpos($text, '{');
+        $end   = strrpos($text, '}');
+
+        if ($start === false || $end === false || $end < $start) {
+            return null; // No JSON found
+        }
+
+        // Extract substring containing the JSON
+        $json = substr($text, $start, $end - $start + 1);
+
+        return trim($json);
+    }
+
+    protected function buildQueries(array $inputs)
     {
         //todo remove
         return $this->safeExecute(function () use ($inputs) {
@@ -59,7 +89,7 @@ class anthropicApi extends BaseAiApi
             $apiKey = $xerte_toolkits_site->anthropic_key;
 
             $payload = [
-                'model' => 'claude-3-5-sonnet-20241022',
+                'model' => 'claude-haiku-4-5-20251001',
                 'max_tokens' => 4096,
                 'messages' => [
                     ['role' => 'user', 'content' => <<<SYS
@@ -67,11 +97,11 @@ You are a query‐builder assistant.
 Given my inputs (as JSON), output *strictly* a JSON object with two fields:
   • "frequency_query": a single query string for TF–IDF matching
   • "vector_query":   a single query string for vector embedding similarity
-Do not wrap your response in any extra text.
+Do not wrap your response in any extra text, and do not add any extra text outside the brackets.
 SYS
                     ],
                     ['role' => 'assistant', 'content' => 'Understood. Which inputs would you like me to process first?'],
-                    ['role' => 'user', 'content' => json_encode($inputs, JSON_THROW_ON_ERROR)],
+                    ['role' => 'user', 'content' => json_encode($inputs)],
                 ],
             ];
 
@@ -85,7 +115,7 @@ SYS
                         'x-api-key: ' . $apiKey,
                         'anthropic-version: 2023-06-01',
                     ],
-                    CURLOPT_POSTFIELDS => json_encode($payload, JSON_THROW_ON_ERROR),
+                    CURLOPT_POSTFIELDS => json_encode($payload),
                 ]);
 
                 $resp = curl_exec($ch);
@@ -95,14 +125,18 @@ SYS
                     throw new \Exception('cURL error: ' . curl_error($ch));
                 }
 
-                $decoded = json_decode($resp, true, 512, JSON_THROW_ON_ERROR);
+                $decoded = json_decode($resp, true, 512);
 
-                if (($decoded['type'] ?? '') === 'error') {
-                    throw new \Exception('API error: ' . ($decoded['error']['message'] ?? 'Unknown error'));
+                if ((isset($decoded['type']) ? $decoded['type'] : '') === 'error') {
+                    $message = isset($decoded['error']['message'])
+                        ? $decoded['error']['message']
+                        : 'Unknown error';
+                    throw new \Exception('API error: ' . $message);
                 }
 
                 if (isset($decoded['content'][0]['text'])) {
-                    $decoded = json_decode($decoded['content'][0]['text'], true, 512, JSON_THROW_ON_ERROR);
+                    $decoded = $this->extract_json_object($this->total_clean_machine($decoded['content'][0]['text']));
+                    $decoded = json_decode($decoded, true, 512);
                 }
 
                 return $decoded;

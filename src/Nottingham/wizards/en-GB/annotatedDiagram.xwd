@@ -26,7 +26,7 @@
 	<link label="Hide list" type="Checkbox" optional="true" defaultValue="false" tooltip="Enable or disable the list" />
 
 	<movieSize label="Video Size (w,h)" type="textInput" defaultValue="320,240" optional="true" deprecated="This property is deprecated."/>
-    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
       <qfFlexhotspot label="Number of Hotspots" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
       <qfButton type="quickfillbutton" optional="true"/>
     </QFGroup>
@@ -44,7 +44,7 @@
     <name label="Group Title" type="TextInput" wysiwyg="true" />
     <text label="Text" type="TextArea" height="250" placeholder="Description for the hotspot" />
 
-    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
       <qfFlexhotspot label="Number of Hotspots" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
       <qfButton type="quickfillbutton" optional="true"/>
     </QFGroup>

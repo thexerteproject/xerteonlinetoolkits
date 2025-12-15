@@ -43,7 +43,7 @@
         <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </autoSuggestionGroup>
 
-    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate a blank template based on your specifications." optional="true">
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
       <qfResultStep label="Number of Result Steps" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
       <qfInfoStep label="Number of Info Steps" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
       <qfSliderStep label="Number of Slider Steps" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>

@@ -9,8 +9,8 @@ if(!isset($_SESSION['toolkits_logon_id'])) {
 
 ob_start();
 $query = x_clean_input($_POST["query"]);
-$api = x_clean_input($_POST["api"]) ?? 'pexels';
-$textApi = x_clean_input($_POST["textApi"]) ?? 'mistral';
+$api     = x_clean_input(isset($_POST['api']) ? $_POST['api'] : 'pexels');
+$textApi = x_clean_input(isset($_POST['textApi']) ? $_POST['textApi'] : 'mistral');
 $url = x_clean_input($_POST["target"]);
 $interpretPrompt = x_clean_input($_POST["interpretPrompt"]);
 $overrideSettings = x_clean_input($_POST["overrideSettings"]);
@@ -37,6 +37,7 @@ $_SESSION["paths_img_search"] = array();
 $result->credits = array();
 
 for($i = 0; $i < count($result->paths); $i++){
+    global $xerte_toolkits_site;
     $full_path = $result->paths[$i];
 
     $web_path = str_replace($xerte_toolkits_site->root_file_path, $xerte_toolkits_site->site_url, $full_path);

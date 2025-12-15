@@ -1,20 +1,22 @@
 <?php
 
 require_once (str_replace('\\', '/', __DIR__) . "/../../../website_code/php/database_library.php");
+require_once (str_replace('\\', '/', __DIR__) . "/ActorContext.php");
 
 function log_ai_request($response, $category, $vendor, $details=null)
 {
     global $xerte_toolkits_site;
 
-    if (!isset($_SESSION['toolkits_logon_id'])) {
+    if((!isset($_SESSION['toolkits_logon_id'])) && (php_sapi_name() !== 'cli')) {
         die("Session ID not set");
     }
 
-    // Actor from session
-    $actor = array(
-        'user_id' => isset($_SESSION['toolkits_logon_username']) ? $_SESSION['toolkits_logon_username'] : null,
-        'workspace_id' => isset($_SESSION['XAPI_PROXY']) ? $_SESSION['XAPI_PROXY'] : null
-    );
+    if (php_sapi_name() == 'cli'){
+        $actor = ActorContext::get();
+    } else {
+        $actor['user_id'] = isset($_SESSION['toolkits_logon_username']) ? $_SESSION['toolkits_logon_username'] : null;
+        $actor['workspace_id'] = isset($_SESSION['XAPI_PROXY']) ? $_SESSION['XAPI_PROXY'] : null;
+    }
 
     $category = strtolower($category);
     $vendor = strtolower($vendor);
@@ -498,7 +500,9 @@ function map_imagegen_openai($res, $ev, $details)
     $imagesRequested = isset($details['imagesrequested']) ? (int)$details['imagesrequested'] : null;
 
     // Parse dimensions from $details['imagesize']
-    [$w, $h, $dimStr] = _parse_image_dimensions_any($details['imagesize'] ?? null);
+    list($w, $h, $dimStr) = _parse_image_dimensions_any(
+        isset($details['imagesize']) ? $details['imagesize'] : null
+    );
 
     // Event fields
     $ev['model']       = $model;
@@ -644,7 +648,7 @@ function array_check($arr, $key, $default = null)
  *   - "00:00.000 --> 07:08.900"
  *   - With extra cue settings after the end time (align:, position:, etc.)
  */
-function vtt_duration_seconds(?string $vtt): ?float
+function vtt_duration_seconds($vtt)
 {
     if (!is_string($vtt) || strpos($vtt, '-->') === false) {
         return null;
@@ -670,7 +674,7 @@ function vtt_duration_seconds(?string $vtt): ?float
  * Parse a VTT/SRT timestamp into seconds.
  * Accepts hh:mm:ss.mmm, mm:ss.mmm, or ss.mmm; comma or dot decimals.
  */
-function vtt_parse_timestamp_to_seconds(string $ts): ?float
+function vtt_parse_timestamp_to_seconds($ts)
 {
     $ts = trim($ts);
     $ts = str_replace(',', '.', $ts);               // allow SRT-style commas
@@ -681,10 +685,10 @@ function vtt_parse_timestamp_to_seconds(string $ts): ?float
     $parts = explode(':', $ts);
     // Allow ss(.mmm), mm:ss(.mmm), or hh:mm:ss(.mmm)
     if (count($parts) === 3) {
-        [$h, $m, $s] = $parts;
+        list($h, $m, $s) = $parts;
         return (int)$h * 3600 + (int)$m * 60 + (float)$s;
     } elseif (count($parts) === 2) {
-        [$m, $s] = $parts;
+        list($m, $s) = $parts;
         return (int)$m * 60 + (float)$s;
     } elseif (count($parts) === 1) {
         return (float)$parts[0];
@@ -699,10 +703,10 @@ function vtt_parse_timestamp_to_seconds(string $ts): ?float
  * - Otherwise scans common fields (or all top-level string fields) for a match
  * - No heavy recursion to keep it lightweight
  */
-function vtt_find_candidate($res, array $preferredFields = null): ?string
+function vtt_find_candidate($res, array $preferredFields = null)
 {
     // quick helper to judge if a string looks like VTT/SRT
-    $looksLike = function ($s): bool {
+    $looksLike = function ($s) {
         if (!is_string($s)) return false;
         if (stripos($s, 'WEBVTT') === 0 && strpos($s, '-->') !== false) return true;
         if (strpos($s, '-->') === false) return false;
@@ -732,7 +736,7 @@ function vtt_find_candidate($res, array $preferredFields = null): ?string
     }
 
     // Default list of likely fields to check first
-    $preferredFields = $preferredFields ?? [
+    $preferredFields = isset($preferredFields) ? $preferredFields : [
         'vtt','webvtt','srt','captions','subtitles','subtitle','subtitle_vtt',
         'text','body','data','content','transcript'
     ];

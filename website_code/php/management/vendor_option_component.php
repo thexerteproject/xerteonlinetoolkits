@@ -2,13 +2,13 @@
 
 class vendor_option_component
 {
-    public string $vendor;
-    public string $type;
-    public string $label;
-    public bool $needs_key;
-    public bool $has_key;
-    public bool $enabled;
-    public stdClass $sub_options;
+    public $vendor;
+    public $type;
+    public $label;
+    public $needs_key;
+    public $has_key;
+    public $enabled;
+    public $sub_options;
 
     public function __construct($vendor)
     {
@@ -48,7 +48,7 @@ class vendor_option_component
         }
 
     //check if vendor has no sub options
-    public function has_no_sub_options(): bool
+    public function has_no_sub_options()
     {
         if (!(array)$this->sub_options) {
             return true;
@@ -57,7 +57,7 @@ class vendor_option_component
     }
 
     //check if api key exists for vendor
-    private function has_api_key() : void {
+    private function has_api_key(){
         global $xerte_toolkits_site;
         if ($this->needs_key) {
             $key_name = $this->vendor . '_key';

@@ -9,12 +9,12 @@ require_once (str_replace('\\', '/', __DIR__) . "/TranscriptManager.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../../../config.php");
 
 
-function makeTranscriber(array $cfg): TranscriptManager
+function makeTranscriber(array $cfg)
 {
     global $xerte_toolkits_site;
-    $provider = $cfg['provider'] ?? 'none';
+    $provider = isset($cfg['provider']) ? $cfg['provider'] : 'none';
     $baseDir = $cfg['basedir'];
-    $adminEnabled = (bool)($cfg['enabled'] ?? true);
+    $adminEnabled = (bool)(isset($cfg['enabled']) ? $cfg['enabled'] : true);
 
     $transcriber = new UninitializedTranscribe($cfg['api_key'], $baseDir);
 
@@ -36,7 +36,7 @@ function makeTranscriber(array $cfg): TranscriptManager
     x_check_path_traversal($transcriptDir, $xerte_toolkits_site->users_file_area_full);
 
     $registryHandler = new RegistryHandler($transcriptDir);
-    $transcriptMgr = new TranscriptManager($registryHandler, $mediaHandler, /*$corpusSync*/);
+    $transcriptMgr = new TranscriptManager($registryHandler, $mediaHandler);
 
     return $transcriptMgr;
 }

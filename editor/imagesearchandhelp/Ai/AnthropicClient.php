@@ -7,7 +7,7 @@ class AnthropicClient implements AiClientInterface
 {
     private $apiKey;
 
-    public function __construct(string $apiKey)
+    public function __construct($apiKey)
     {
         $this->apiKey = $apiKey;
         $this->actor = array('user_id'=>$_SESSION['toolkits_logon_username'],'workspace_id'=>$_SESSION['XAPI_PROXY']);
@@ -16,7 +16,7 @@ class AnthropicClient implements AiClientInterface
     }
 
 
-    public function chat(array $messages, array $options = []): array
+    public function chat(array $messages, array $options = [])
     {
         if(!isset($_SESSION['toolkits_logon_id'])) {
             die("Session ID not set");
@@ -41,8 +41,8 @@ class AnthropicClient implements AiClientInterface
 
         $payload = [
             'model' => !empty($options['model']) ? $options['model'] : 'claude-3-5-sonnet-20241022',
-            'max_tokens' => $options['max_tokens'] ?? 400,
-            'temperature' => $options['temperature'] ?? 0.7,
+            'max_tokens'  => isset($options['max_tokens'])  ? $options['max_tokens']  : 400,
+            'temperature' => isset($options['temperature']) ? $options['temperature'] : 0.7,
             'messages' => $converted,
         ];
 
@@ -70,11 +70,15 @@ class AnthropicClient implements AiClientInterface
         curl_close($ch);
         $json = json_decode($raw, true);
         if ($status < 200 || $status >= 300) {
-            $msg = $json['error']['message'] ?? ('HTTP ' . $status);
+            $msg = (isset($json['error']) && isset($json['error']['message']))
+                ? $json['error']['message']
+                : ('HTTP ' . $status);
             return ['ok' => false, 'error' => $msg, 'raw' => $json];
         }
         // Anthropic returns content as an array of blocks
-        $content = $json['content'][0]['text'] ?? null;
+        $content = (isset($json['content'][0]['text']))
+            ? $json['content'][0]['text']
+            : null;
         return ['ok' => true, 'content' => $content, 'raw' => $json];
     }
 }
