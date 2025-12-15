@@ -24,11 +24,12 @@ class sync_job_store
     public function __construct($baseUrl, $syncDataDir = null)
     {
         global $xerte_toolkits_site;
-        $this->baseUserDir = $xerte_toolkits_site->root_file_path . $baseUrl . 'RAG';
+        $this->baseUserDir = $xerte_toolkits_site->root_file_path . $baseUrl ;
         // Check whether the file path does not have path traversal
         if ($baseUrl!==null){
             x_check_path_traversal($this->baseUserDir, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
         }
+        $this->baseUserDir.= 'RAG';
 
         if ($syncDataDir!==null){
             //Check traversal for the supplied dir, just in case

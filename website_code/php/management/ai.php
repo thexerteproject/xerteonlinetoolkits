@@ -61,6 +61,9 @@ if (is_user_admin()) {
     } else {
         die("Failed to retrieve helper table");
     }
+    echo '<div class="admin_guide_ref">';
+    echo MANAGEMENT_AI_ADMIN_GUIDE_MESSAGE . ' <p><a href="' . MANAGEMENT_AI_ADMIN_GUIDE_URL . '" target="_blank" rel="noopener noreferrer">' . MANAGEMENT_AI_ADMIN_GUIDE_URL . '</a></p>';
+    echo '<div>';
 
     foreach ($blocks_groups as $group) {
         echo "<h2>" . $group . MANAGEMENT_VENDOR . "</h2>";
