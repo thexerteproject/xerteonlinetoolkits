@@ -427,3 +427,9 @@ table.footer.shaded tbody tr:last-child {
 table.headerCol.shaded td.header {
 	background-color: $brightcolor;
 }
+
+//*****mcq*****/
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+  background: $lightestcolor;
+}

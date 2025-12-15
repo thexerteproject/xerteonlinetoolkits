@@ -661,6 +661,11 @@ table.headerCol.shaded td.header {
   background-color: inherit;
 }
 
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+  background: green;
+}
+
 #x_footerBlock {
   font-size: 1em;
   color: #000000;
