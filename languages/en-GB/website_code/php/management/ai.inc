@@ -13,7 +13,29 @@
 
 	define("MANAGEMENT_SETTINGS", " settings");
 
+    define("MANAGEMENT_VENDOR_AI_OPENAI", "OpenAI");
+    define("MANAGEMENT_VENDOR_AI_MISTRAL", "Mistral");
+    define("MANAGEMENT_VENDOR_AI_ANTHROPIC", "Anthropic");
+    define("MANAGEMENT_VENDOR_ENCODING_OPENAIENC", "OpenAI");
+    define("MANAGEMENT_VENDOR_ENCODING_MISTRALENC", "Mistral");
+    define("MANAGEMENT_VENDOR_IMAGE_PEXELS", "Pexels");
+    define("MANAGEMENT_VENDOR_IMAGE_PIXABAY", "Pixabay");
+    define("MANAGEMENT_VENDOR_IMAGE_UNSPLASH", "Unsplash");
+    define("MANAGEMENT_VENDOR_IMAGE_WIKIMEDIA", "Wikimedia Foundation");
+    define("MANAGEMENT_VENDOR_IMAGEGEN_DALLE2", "Dalle 2");
+    define("MANAGEMENT_VENDOR_IMAGEGEN_DALLE3", "Dalle 3");
+    define("MANAGEMENT_VENDOR_IMAGEGEN_GPT1", "GPT Image 1");
+    define("MANAGEMENT_VENDOR_TRANSCRIPTION_OPENAI", "OpenAI");
+    define("MANAGEMENT_VENDOR_TRANSCRIPTION_GLADIA", "Gladia");
+
     define("MANAGEMENT_VENDOR", " vendors");
+
+    define("MANAGEMENT_VENDOR_GROUP_AI", "AI Content Generation");
+    define("MANAGEMENT_VENDOR_GROUP_IMAGE", "Image Retrieval");
+    define("MANAGEMENT_VENDOR_GROUP_IMAGEGEN", "Image Generation");
+    define("MANAGEMENT_VENDOR_GROUP_ENCODING", "Encoding");
+    define("MANAGEMENT_VENDOR_GROUP_TRANSCRIPTION", "Transcription");
+
 
 	define("MANAGEMENT_ENABLE_VENDOR", "Allow usage of ");
 
