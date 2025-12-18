@@ -24,7 +24,9 @@
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			
+			if (x_currentPageXML.getAttribute("magnifier") == "true") {
+				this.setUpMagnifierEscape();
+			}
 		}
 		
 		// function called every time the size of the LO is changed
@@ -37,11 +39,36 @@
 				}
 				
 				var offset = textGraphics.calculateOffset();
-				if (x_currentPageXML.getAttribute("imagesize") != "full screen") {
+				if (x_currentPageXML.getAttribute("imagesize") != "Full screen") {
 					$("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "60%");
+					$("#pageImg").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
+					$("#pageImg").css("max-height", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
+
 				}
-				$pageImg.css("max-height", x_browserInfo.mobile == true ? $x_mobileScroll.height() - $x_footerBlock.height() - offset[1] : $x_pageHolder.height() - offset[1]);
 				
+				if (x_currentPageXML.getAttribute("imagesize") == "small") {
+	                $("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "40%");
+					$("#pageImg").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
+					$("#pageImg").css("max-height", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
+
+				}
+	
+				if (x_currentPageXML.getAttribute("imagesize") == "auto") {
+	                $("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "60%");
+					$("#pageImg").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
+					$("#pageImg").css("max-height", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
+
+					
+				}
+
+				if (x_currentPageXML.getAttribute("imagesize") == "big") {
+	                $("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "80%");
+					$("#pageImg").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
+					$("#pageImg").css("max-height", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
+
+				}
+
+
 				if ($("#imgCaption").length > 0) {
 					$("#imgCaption").width($pageImg.width());
 				}
@@ -136,7 +163,7 @@
 			if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
 				$imgCaption.html(x_currentPageXML.getAttribute("caption"));
 			} else {
-				$imgCaption.remove();
+				$imgCaption.unwrap().remove();
 			}
 			
 			if (hidePanel == "true") {
@@ -261,6 +288,25 @@
 						.attr('alt', x_currentPageXML.getAttribute("tip"))
 						.addClass('x_noLightBox');
 				}
+
+				this.setUpMagnifierEscape();
+			}
+		}
+
+		this.setUpMagnifierEscape = function() {
+			if (x_currentPageXML.getAttribute("magnifier") == "true") {
+				$(document).off(".pageEvent");
+				$(".magnifiedImg").removeClass("escape");
+
+				// escape key will close any open magnifiers
+				$(document).on("keydown.pageEvent", function (e) {
+					// has .pageEvent namespace so it can be removed on page change from xenith.js
+					var charCode = e.charCode || e.keyCode;
+					if (charCode == 27 && $(".magnifier").is(":visible") && !$(".magnifiedImg").hasClass("escape")) {
+						$(".magnifiedImg").addClass("escape");
+						$(".magnifier").hide();
+					}
+				});
 			}
 		}
 	}
@@ -274,9 +320,11 @@
 	
 	<div id="imgHolder" class="mobileAlign">
 		<div id="imgInnerDiv" class="panel inline">
-			<img id="pageImg" style="visibility: hidden" />
-			<div id="pageAudio"></div>
-			<p id="imgCaption"></p>
+			<figure>
+				<img id="pageImg"/>
+				<div id="pageAudio"></div>
+				<figcaption id="imgCaption"></figcaption>
+			</figure>
 			<div id="transcriptHolder">
 				<button id="transcriptBtn"/>
 				<div id="transcript"></div>
