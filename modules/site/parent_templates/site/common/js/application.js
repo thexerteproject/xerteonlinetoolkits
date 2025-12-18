@@ -1190,6 +1190,13 @@ function setup() {
 				function() { $(this).css('color', navBarText); }
 			);
 		}
+
+
+   var itemCount = $('#nav li').length;
+
+  if (itemCount > 10) {
+  	$(".bs-docs-sidenav.affix").css("top", "65px");
+  }
 	}
 
 	// --------------- Optional Footer properties --------------------
@@ -1635,7 +1642,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 					pageIndex = $pageIndex;
 					found = true;
 					if (sectionNum == undefined) {
-						sectionNum = index + 1;
+						sectionNum = index + 0;
 					}
 					pageLinkType = false;
 					pageRefType = 'id';
@@ -1748,11 +1755,15 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 			
 			//sectie menu onder menu balk en menu balk sticky
 			$(".navbar-fixed-top").css("position", "sticky");
+			$(".navbar-fixed-bottom").css("position", "sticky");
+			
 			
 		}
 		else
 		{
 		$(".navbar-fixed-top").css("position", "static");
+		$(".navbar-fixed-bottom").css("position", "static");
+		
 			// fixedheight = false;
 		}
 			// nav bar can be hidden on standalone pages
