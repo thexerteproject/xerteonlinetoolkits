@@ -1,7 +1,8 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../../config.php");
+require_once (dirname(__FILE__) . "/../../config.php");
 require_once (str_replace('\\', '/', __DIR__) . "/management/dataRetrievalHelper.php");
+_load_language_file("/editor/ai_internal/ai.inc");
 
 if(!isset($_SESSION['toolkits_logon_id'])) {
     die("Session ID not set");
@@ -42,7 +43,7 @@ $selectedCode       = x_clean_input($_POST['language']);
 $managementSettings = get_block_indicators();
 
 if (!in_array($ai_api, array_keys($managementSettings['ai']['active_vendors']))) {
-    die(json_encode(["status" => "error", "message" => "Requested api is not found as an option"]));
+    die(json_encode(["status" => "error", "message" => AI_INTERNAL_ALLREQUESTS_REQUESTED_API_NOT_FOUND]));
 }
 
 //dynamically load needed api method

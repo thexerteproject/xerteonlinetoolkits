@@ -4,15 +4,16 @@ header('Content-Type: application/json');
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
+require_once (str_replace('\\', '/', __DIR__) . "/../../../config.php");
 require_once (str_replace('\\', '/', __DIR__) . "/BaseRAG.php");
 require_once (str_replace('\\', '/', __DIR__) . "/MistralRAG.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../transcribe/TranscriberFactory.php");
-require_once (str_replace('\\', '/', __DIR__) . "/../../../config.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../../../vendor_config.php");
 require_once (str_replace('\\', '/', __DIR__) . "/RagFactory.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../management/dataRetrievalHelper.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../logging/ActorContext.php");
 require_once __DIR__ . '/sync_job_store.php';
+\_load_language_file("/editor/ai_internal/ai.inc");
 
 use function rag\makeRag;
 use function transcribe\makeTranscriber;
@@ -197,7 +198,7 @@ try {
 
             try {
                 //transcription in progress
-                $patch = sync_patch('running', 'Transcription', 'Transcribing file...', '15');
+                $patch = sync_patch('running', AI_SYNC_PATCH_STAGE_TRANSCRIPTION, AI_SYNC_PATCH_MESSAGE_TRANSCRIPTION, '15');
                 $jobStore->sync_job_update($job_id, $patch);
 
                 // 2) Process the file
@@ -227,7 +228,7 @@ try {
         // break the reference
         unset($row);
         //Transcription done; encoding in progress
-        $patch = sync_patch('running', 'Encoding', 'Encoding file...', '55');
+        $patch = sync_patch('running', AI_SYNC_PATCH_STAGE_ENCODING, AI_SYNC_PATCH_MESSAGE_ENCODING, '55');
         $jobStore->sync_job_update($job_id, $patch);
 
         //Filter any errors, as failing the transcript step likely means there's an error with the file path, file type or otherwise
@@ -261,8 +262,8 @@ try {
             [
                 ['path'     => $path,
                 'metadata' => [
-                    'name'        => 'Learning Object',
-                    'description' => 'The last synced version of the learning object preview.',
+                    'name'        => AI_SYNC_LEARNING_OBJECT,
+                    'description' => AI_SYNC_LEARNING_OBJECT_DESCRIPTOR,
                     'source' => $path,
                     ]
                 ]
@@ -273,7 +274,7 @@ try {
     try {
         $ragResults = $rag->processFileList($fileObjects, $corpusScope);
     } catch (Exception $e){
-        throw new Exception('An error occured while processing your file: ' . $e );
+        throw new Exception(AI_SYNC_FILE_PROCESS_ERROR . " " . $e );
     }
 
     $debugOutput = ob_get_contents();
@@ -333,7 +334,7 @@ try {
             'results' => $fullResults
         ]
     ];
-    $patch = sync_patch('processed', 'Finalizing', 'Processing finished. File is ready to use!', '100', $completion_info);
+    $patch = sync_patch('processed', AI_SYNC_PATCH_STAGE_FINALIZING, AI_SYNC_PATCH_MESSAGE_FINALIZING, '100', $completion_info);
     $jobStore->sync_job_update($job_id, $patch);
 
 } catch (Exception $ex) {
@@ -343,7 +344,7 @@ try {
             'error' => $ex->getMessage()
         ]
     ];
-    $patch = sync_patch('error', 'Error', 'We encountered an error. Please try again later. If this problem persists, please contact an administrator.', '100', $completion_info);
+    $patch = sync_patch('error', AI_SYNC_PATCH_STAGE_ERROR, AI_SYNC_PATCH_MESSAGE_ERROR, '100', $completion_info);
     $jobStore->sync_job_update($job_id, $patch);
 }
 

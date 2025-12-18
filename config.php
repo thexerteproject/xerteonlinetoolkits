@@ -344,6 +344,11 @@ if (file_exists(dirname(__FILE__) . '/vendor_config.php'))
     require_once(dirname(__FILE__) . '/vendor_config.php');
 }
 
+if (file_exists(dirname(__FILE__) . '/ai_sync_worker_config.php'))
+{
+    require_once(dirname(__FILE__) . '/ai_sync_worker_config.php');
+}
+
 // vendor, enabled, type, needs_key, sub_options
 $management_helper_table_rows = db_query("select * from {$xerte_toolkits_site->database_table_prefix}management_helper");
 $xerte_toolkits_site->management_helper_table = array();
