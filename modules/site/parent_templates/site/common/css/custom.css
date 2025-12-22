@@ -125,6 +125,12 @@ color: #6FD9D9;
 	cursor: pointer;
 }
 
+#pageLinks.stickyTop, .navbar-fixed-top.stickyTop {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
 
 /* --HEADINGS-------------------------------------------------------------- */
 h2.sectionTitle {
@@ -509,6 +515,10 @@ h3.contentTitle {
         z-index: 5;
         margin: 0;
         opacity: 0.5;
+    }
+
+    .navigator.tabbable {
+        margin-bottom: 1em;
     }
 
 /* --SEARCH-------------------------------------------------------------- */

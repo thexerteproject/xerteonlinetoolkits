@@ -108,7 +108,7 @@ if($_FILES["fileToUpload"]["name"])
         $zip = new ZipArchive();
         $x = $zip->open($importfile);
 
-        x_check_zip($zip);
+        x_check_zip($zip, 'template');
 
         $templateFound = false;
         $mediaFound = false;
@@ -273,7 +273,7 @@ function returnParentObject($targetFolder)
         return 0;
     }
 
-    $query = "SELECT * FROM `originaltemplatesdetails` WHERE template_name=?";
+    $query = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails WHERE template_name=?";
     $params = array($targetFolder);
 
     $row = db_query_one($query, $params);

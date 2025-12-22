@@ -8,5 +8,5 @@ Options -Indexes
 #prevent execution of php code (and other code)
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule .*\.(php|php[0-9]|phtml|pl|sh|java|py|log)$ - [F]
+    RewriteRule .*\.(php|php[0-9]|phar|phtml|pl|sh|java|py|log)$ - [F]
 </IfModule>

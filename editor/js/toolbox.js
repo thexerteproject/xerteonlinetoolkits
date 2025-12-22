@@ -542,7 +542,11 @@ var EDITOR = (function ($, parent) {
                     var tree = $.jstree.reference("#treeview");
                     var parent = tree.get_parent(key);
                     return evaluateConditionExpression(ctree.property, parent)
-                } else if (ctree.object.object.name == 'theme_list') {
+                } else if (ctree.object.name == 'treeroot') {
+                    var key = 'treeroot';
+                    return evaluateConditionExpression(ctree.property, key)
+                }
+                else if (ctree.object.object.name == 'theme_list') {
 					return theme_list[currtheme][ctree.property.name];
 				} else {
                     return null;
@@ -872,6 +876,11 @@ var EDITOR = (function ($, parent) {
 						.addClass('fa-caret-up');
 
 					$fieldset.removeClass('collapsed');
+
+                    // refresh codemirror fields as otherwise they may show empty until in focus
+                    $fieldset.find(".CodeMirror").each(function() {
+                        $(this)[0].CodeMirror.refresh();
+                    });
 				}
 			});
 		}
@@ -1577,7 +1586,9 @@ var EDITOR = (function ($, parent) {
                 showUncommentButton: true,
 
                 // Whether or not to show the showAutoCompleteButton button on the toolbar
-                showAutoCompleteButton: true
+                showAutoCompleteButton: true,
+
+                autoRefresh: true
 
             };
             lti_session = lti_session !== "" ? "&" + lti_session : "";

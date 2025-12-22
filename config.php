@@ -40,7 +40,7 @@ global $xerte_toolkits_site;
 // and logging (to /tmp/debug.log) are turned on; either of these may help you
 // diagnose installation and integration issues. 
 global $development;
-$development = true;
+$development = false;
 
 ini_set('error_reporting', 0);
 ini_set('display_errors', 0);
@@ -211,7 +211,6 @@ if (file_exists(__DIR__ . "/reverse_proxy_conf.php"))
 {
     require_once(__DIR__ . "/reverse_proxy_conf.php");
 }
-_debug("_SERVER: " . print_r($_SERVER, true));
 $host = (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '');
 if (isset($_SERVER['HTTP_X_FORWARDED_HOST']))
 {
@@ -340,9 +339,11 @@ if ((!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== tr
             // skip session_start() as we'll probably stomp on Moodle's session if we do.
         } else {
 
-            ini_set('session.cookie_httponly', '1');
-            session_start();
+        ini_set('session.cookie_httponly', '1');
+        if (isset($scheme) && $scheme == 'https://') {
+            ini_set('session.cookie_secure', '1');
         }
+        session_start();
     }
 }
 

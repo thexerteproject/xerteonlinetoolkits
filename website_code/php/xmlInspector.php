@@ -116,6 +116,7 @@ class XerteXMLInspector
     protected $language;
     protected $theme;
     protected $glossary;
+    protected $chapters;
     protected $resultpageEnabled;
     protected $hasResultPage;
     protected $pages;
@@ -326,13 +327,20 @@ class XerteXMLInspector
         $this->resultpageEnabled = (string)($rElmnt['resultpage']);
         $this->hasResultPage = ($rElmnt->children());
         
-        $nodes = $this->xml->xpath('/*/*');
+        $nodes = $this->xml->xpath('/*/*|/*/chapter/*');
 
         $i = 0;
+        $this->chapters = false;
         foreach ($nodes as $node) {
-            $this->addModel($node->getName());
-            $this->addPage($node, $i);
-            $i++;
+            if ($node->getName() != 'chapter') {
+                $this->addModel($node->getName());
+                $this->addPage($node, $i);
+                $i++;
+            }
+            else
+            {
+                $this->chapters = true;
+            }
         }
         $this->mediaIsUsed = false;
         $str = (string)$this->xml['media'];
@@ -428,6 +436,11 @@ class XerteXMLInspector
     public function glossaryUsed()
     {
         return $this->glossary;
+    }
+
+    public function chaptersUsed()
+    {
+        return $this->chapters;
     }
 
     public function getPage($page)

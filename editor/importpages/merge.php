@@ -127,7 +127,10 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 	{
         $root = $xmlTarget->documentElement;
 
-        $node = $xmlSource->documentElement->childNodes->item($page);
+        // Select all page nodes from source, ignoring chapters
+        $nodes = $xPath->evaluate("/*/*[not(name()='chapter')]|/*/chapter/*");
+
+        $node = $nodes[$page];
 
         // Convert to text, do filemapping, go back to xml
         $nodeXmlStr = $xmlSource->saveXML($node);

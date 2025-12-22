@@ -2,6 +2,7 @@
 
 require_once("../../../config.php");
 require_once "properties_library.php";
+require_once("../template_status.php");
 require_once "../user_library.php";
 
 

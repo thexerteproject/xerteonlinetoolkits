@@ -1313,6 +1313,8 @@ function x_cssSetUp(param) {
 						}).fail(function() {
 							x_cssSetUp("themeCss");
 						});
+				} else {
+					x_cssSetUp("themeCss");
 				}
 			} else {
 				x_cssSetUp("projectStylesheet");
@@ -1725,6 +1727,34 @@ function x_continueSetUp1() {
 				});
 		}
 
+		// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
+		// it's overridden by logo in theme folder
+		// default & theme logos can also be overridden by images uploaded via Icon optional property
+		// Also make sure that the logo is set up before the progress bar is initialised
+
+		var $logo = $('#x_headerBlock img.x_icon');
+		$logo[x_params.icHide === 'true'  || $logo.attr('src') === '' ? 'hide' : 'show']();
+		//$('#x_headerBlock img.x_icon').data('defaultLogo', $('#x_headerBlock .x_icon').attr('src'));
+
+		// the theme logo is being used - add a class that will allow for the different size windows to display different logos
+		if (($logo.attr('src') || '').indexOf('themes/') > -1) $logo.addClass('themeLogo');
+
+		var icPosition = "x_floatLeft";
+		if (x_params.icPosition != undefined && x_params.icPosition != "") {
+			icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
+		}
+		// If the theme places the icon to the right, add the appropriate class
+		if ($logo.css('float') == 'right') {
+			icPosition = "x_floatRight";
+		}
+		$logo.addClass(icPosition);
+
+		if (x_params.icTip != undefined && x_params.icTip != "") {
+			$logo.attr('alt', x_params.icTip);
+		} else {
+			$logo.attr('aria-hidden', 'true');
+		}
+
 		XENITH.RESOURCES.init();
 		XENITH.PROGRESSBAR.init();
 
@@ -1735,27 +1765,6 @@ function x_continueSetUp1() {
 
 		XENITH.ACCESSIBILITY.buildBtn();
 
-		// default logo used is logo.png in modules/xerte/parent_templates/Nottingham/common_html5/
-		// it's overridden by logo in theme folder
-		// default & theme logos can also be overridden by images uploaded via Icon optional property
-		var $logo = $('#x_headerBlock img.x_icon');
-		$logo[x_params.icHide === 'true'  || $logo.attr('src') === '' ? 'hide' : 'show']();
-		//$('#x_headerBlock img.x_icon').data('defaultLogo', $('#x_headerBlock .x_icon').attr('src'));
-
-		var icPosition = "x_floatLeft";
-		if (x_params.icPosition != undefined && x_params.icPosition != "") {
-			icPosition = (x_params.icPosition === 'right') ? "x_floatRight" : "x_floatLeft";
-		}
-		$logo.addClass(icPosition);
-
-		// the theme logo is being used - add a class that will allow for the different size windows to display different logos
-		if (($logo.attr('src') || '').indexOf('themes/') > -1) $logo.addClass('themeLogo');
-
-		if (x_params.icTip != undefined && x_params.icTip != "") {
-			$logo.attr('alt', x_params.icTip);
-		} else {
-			$logo.attr('aria-hidden', 'true');
-		}
 
 		// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
 		// add link to LO title?
@@ -5263,16 +5272,18 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					}
 					
 					$x_glossaryHover
+						.stop(true, true) 
 						.html(myDefinition)
 						.css({
-						"left"	:$activeTooltip.offset().left + 20,
-						"top"	:$activeTooltip.offset().top + 20
-					});
+							"left"	:$activeTooltip.offset().left + 20,
+							"top"	:$activeTooltip.offset().top + 20
+						});
 					
 					// Queue reparsing of MathJax - fails if no network connection
 					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
-
-					$x_glossaryHover.fadeIn("slow");
+					
+					// Show instantly (no fade) to avoid race conditions when hovering quickly
+					$x_glossaryHover.show();
 					
 					if (x_browserInfo.touchScreen == true) {
 						$x_mainHolder.on("click.glossary", function() {}); // needed so that mouseleave works on touch screen devices
@@ -5280,7 +5291,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 				})
 				.on("mouseleave", ".x_glossary", function(e) {
 					$x_mainHolder.off("click.glossary");
-					$x_glossaryHover.hide();
+					$x_glossaryHover.stop(true, true).hide();
 					window.removeEventListener("keydown", escapeHandler);
 				})
 				.on("mousemove", ".x_glossary", function(e) {
@@ -6263,6 +6274,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 		}
 
 		// add the x% COMPLETE text holder to the progress bar
+		let leftOffset = 10;
 		if (progressBarPercentage !== false) {
 			$pbTxt = $('<div class="pbTxt">' + progressBarPercentage.replace("{x}", 100) + '</div>');
 
@@ -6273,19 +6285,39 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			}
 
 			// on smaller screens the % text goes above the progress bar - on larger screens the text is next to the progress bar
-			if (x_browserInfo.mobile != true && progressBarPosition != "footer") {
-				$pbTxt.css({
-					"width": $pbTxt.width() + parseInt($pbTxt.css("padding-left")),
-					"margin-left": -$pbTxt.outerWidth(true)
-				});
-				$pbHolder.css("padding-left", $pbTxt.outerWidth() + Math.round($("#x_headerBlock .x_icon").width()));
-			} else if (progressBarPosition != "footer") {
-				$pbHolder.css("padding-left", Math.round($("#x_headerBlock .x_icon").width()) + 10);
+			if (progressBarPosition != "footer") {
+				if (x_browserInfo.mobile !== true) {
+					$pbTxt.css({"width": $pbTxt.width() + parseInt($pbTxt.css("padding-left"))});
+					$pbTxt.css({"margin-left": -$pbTxt.outerWidth(true)});
+				}
+
+				leftOffset = x_browserInfo.mobile !== true ? $pbTxt.outerWidth() : leftOffset;
 			}
 		}
 
-		$pbContainer = $('<div class="pbContainer"></div>').appendTo($pbHolder);
+		// on smaller screens the % text goes above the progress bar - on larger screens the text is next to the progress bar
+		if (progressBarPosition != "footer") {
+			// left logo
+			if ($("#x_headerBlock .x_floatLeft.x_icon:visible").length > 0) {
+				$pbHolder.css("padding-left", leftOffset + Math.round($("#x_headerBlock .x_floatLeft.x_icon").outerWidth()));
+			} else {
+				$pbHolder.css("padding-left", leftOffset);
+			}
+
+			// right logo
+			if ($("#x_headerBlock .x_floatRight.x_icon:visible").length > 0) {
+				$pbHolder.css("padding-right", Math.round($("#x_headerBlock .x_floatRight.x_icon").width()) + 10);
+			}
+		}
+
+		$pbContainer = $('<div class="pbContainer"></div>');
 		$pbBar = $('<div class="pbPercent pbBar">&nbsp;</div>');
+
+		if (progressBarPosition == "footer") {
+			$pbContainer.prependTo($pbHolder);
+		} else {
+			$pbContainer.appendTo($pbHolder);
+		}
 
 		const $pbBarContainer = $('<div class="pbBarContainer"/>');
 		const $pbMarkerContainer = $('<div class="pbMarkerContainer"/>');
@@ -7173,7 +7205,7 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 					for (let j=0; j<pageResourceInfo.length; j++) {
 						const resource = pageResourceInfo[j].split("|");
 						// the resource is either a link, file path (resources[1]) or a Xerte page link (resources[2])
-						if (resource.length === 4 && resource[1].trim() !== "" || resource[2] !== "") {
+						if (resource.length === 4 && ((resource[1] != undefined && resource[1].trim() !== "") || (resource[2] != undefined && resource[2].trim() !== ""))) {
 							pageResources.push({
 								"title": resource[0],
 								"link": resource[1].trim() !== "" ? resource[1].trim() : resource[2],

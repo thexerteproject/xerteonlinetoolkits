@@ -244,36 +244,67 @@ optional: feedback page synch play enable
 				$target = $("#" + options.target);
 				var $optionText = options.name !== "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text);
 				$target.hide();
+				debugger;
+				// Store the answers in a temporary array
+				var elements = [];
+				(options.childNodes).each(function(i) {
+					elements.push(
+						{
+							label:		this.getAttribute("name"),
+							text:		this.getAttribute("text"),
+							correct:	this.getAttribute("correct"),
+							feedback:	this.getAttribute("feedback"),
+							audioFB:	this.getAttribute("audioFB"),
+							transcript:	this.getAttribute("audioTranscript") != undefined && this.getAttribute("audioTranscript") != '' ? this.getAttribute("audioTranscript") : false,
+							page:		this.getAttribute("page"),
+							synch:		this.getAttribute("synch"),
+							play:		this.getAttribute("play"),
+							enable:		this.getAttribute("enable")
+						}
+					);
+				});
 
+				// Randomise the answers, if required
+				if (options.answerOrder != undefined && options.answerOrder == 'random') {
+					for (var tmp, j, k, i = elements.length; i--;) {
+						j = Math.floor(Math.random() * elements.length);
+						k = Math.floor(Math.random() * elements.length);
+						tmp = elements[j];
+						elements[j] = elements[k];
+						elements[k] = tmp;
+					}
+				}
+
+				$target.data('optionElements', elements);
 				$optHolder = $('<div class="optionHolder"/>').appendTo($target);
 
-				if ($(options.childNodes).length == 0) {
+				if (elements.length == 0) {
 					$optHolder.html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
 				} else {
 					// create answer options (could be buttons, radio list or drop down menu)
-					$(options.childNodes).each(function(i) {
-						if (judge == false && (this.getAttribute("correct") == "true" && judgeOverride == "true")) {
+					$(elements).each(function(i) {
+						if (judge == false && (this.correct == "true" && judgeOverride == "true")) {
 							judge = true;
 							autoEnable = false;
 						}
 						
-						if (tempEnable == false && ((this.getAttribute("page") != undefined && this.getAttribute("page") != "") || (this.getAttribute("synch") == undefined && this.getAttribute("synch") == "") || this.getAttribute("play") == "true" || this.getAttribute("enable") == "true")) {
+						if (tempEnable == false && ((this.page != undefined && this.page != "") || (this.synch == undefined && this.synch == "") || this.play == "true" || this.enable == "true")) {
 							tempEnable = true;
 						}
 						
 						var authorSupport = "";
 						if (x_params.authorSupport == "true") {
-							if (this.getAttribute("synch") != undefined && this.getAttribute("synch") != "") {
+							if (this.synch != undefined && this.synch != "") {
 								var skipTxt = x_currentPageXML.getAttribute("supportSkip") != undefined ? x_currentPageXML.getAttribute("supportSkip") : "skip";
-								authorSupport += ' <span class="alert">[' + skipTxt + ":" + this.getAttribute("synch") + ']</span>';
+								authorSupport += ' <span class="alert">[' + skipTxt + ":" + this.synch + ']</span>';
 							}
-							if (this.getAttribute("page") != undefined && this.getAttribute("page") != "") {
-								var pageNum = x_lookupPage("linkID", this.getAttribute("page")),
+							if (this.page != undefined && this.page != "") {
+								var pageNum = x_lookupPage("linkID", this.page),
 									skipTxt = x_currentPageXML.getAttribute("supportPage") != undefined ? x_currentPageXML.getAttribute("supportPage") : "page";
 								if (pageNum != null) {
 									authorSupport += ' <span class="alert">[' + skipTxt + ":" + x_pages[pageNum].getAttribute("name") + ']</span>';
-								} else if ($.isNumeric(this.getAttribute("page"))) {
-									authorSupport += ' <span class="alert">[' + skipTxt + ":" + this.getAttribute("page") + ']</span>';
+								} else if ($.isNumeric(this.page)) {
+									authorSupport += ' <span class="alert">[' + skipTxt + ":" + this.page + ']</span>';
 								}
 							}
 						}
@@ -281,7 +312,7 @@ optional: feedback page synch play enable
 						if (options.type == "button") {
 							$('<button/>')
 								.appendTo($optHolder)
-								.button({"label": this.getAttribute("text") + authorSupport})
+								.button({"label": this.text + authorSupport})
 								.click(function() {
 									$feedbackDiv.html("");
 									selected = [i];
@@ -305,7 +336,7 @@ optional: feedback page synch play enable
 								$option
 									.attr({
 										"id": options.target + "_option" + i,
-										"value": this.getAttribute("text")
+										"value": this.text
 									})
 									.data("index", i)
 									.change(function() {
@@ -336,7 +367,7 @@ optional: feedback page synch play enable
 									});
 								
 								$optionTxt
-									.html(x_addLineBreaks(this.getAttribute("text")) + authorSupport)
+									.html(x_addLineBreaks(this.text) + authorSupport)
 									.attr("for", options.target + "_option" + i)
 									.data("option", $option);
 								
@@ -373,8 +404,8 @@ optional: feedback page synch play enable
 								var $option = $('<option/>').appendTo($optGroup);
 								
 								$option
-									.attr("value", this.getAttribute("text"))
-									.html(this.getAttribute("text") + authorSupport);
+									.attr("value", this.text)
+									.html(this.text + authorSupport);
 							}
 						}
 					});
