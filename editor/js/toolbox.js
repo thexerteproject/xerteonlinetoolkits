@@ -4747,17 +4747,16 @@ var EDITOR = (function ($, parent) {
         const fieldReference = fieldlabel || name;
         if (!regex.test(inputValue.trim())) {
                 const regexString = regexCondition.toString();
-                //todo alek make languiage dynamic
-                let errorMsg=`Please fill in the ${fieldReference} field correctly.`;
+                let errorMsg= language.vendorApi.inputValidations.fieldFilledIncorrectlyMsg +` ${fieldReference}.`;
 
                 if (regexString === '^\\d+$') {
-                     errorMsg = `Please enter a valid numeral in the ${fieldReference} field. For example: '60', not 'sixty'.`;
+                     errorMsg = language.vendorApi.inputValidations.fieldInvalidNumeralMsg + ` ${fieldReference}. ` + language.vendorApi.inputValidations.fieldInvalidNumeralExampleMsg;
 
                 } else if (regexString === '^.+$') {
-                    errorMsg = `${fieldReference} is a mandatory field! Please fill it in.`;
+                    errorMsg = `${fieldReference} ` + language.vendorApi.inputValidations.mandatoryFieldMissingMsg;
 
                 } else if (regexString === '^(\\s*[^,]+\\s*,\\s*)+[^,]+\\s*$') {
-                    errorMsg = `Please make sure to enter at least two valid items separated by a comma in ${fieldReference} field. For example: 'Apples, Oranges, Berries'.`;
+                    errorMsg = language.vendorApi.inputValidations.fieldInvalidCommaListMsg + ` ${fieldReference}. ` + language.vendorApi.inputValidations.fieldInvalidCommaListExampleMsg;
                 }
             alert(errorMsg);
             return false;

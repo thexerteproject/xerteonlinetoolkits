@@ -541,7 +541,6 @@ class GladiaTranscribe extends AITranscribe {
      */
     protected function pollForResult($resultUrl, $headers) {
         while (true) {
-            //todo alek rework to async to free up server resources
             $curl = curl_init();
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($curl, CURLOPT_URL, $resultUrl);

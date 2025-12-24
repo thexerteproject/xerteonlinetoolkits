@@ -165,8 +165,7 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
             : $query;
 
         if ($overrideSettings === 'false' || $overrideSettings === false) {
-            //todo alek again?
-            $aiParams = json_decode(json_encode($settings));
+            $aiParams = $settings;
         } else {
             $tmp = $this->extractParameters($query);
             $aiParams = $tmp->params;
