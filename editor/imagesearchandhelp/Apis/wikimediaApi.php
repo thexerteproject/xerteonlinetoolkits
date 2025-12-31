@@ -264,7 +264,7 @@ class wikimediaApi extends BaseApi
         $this->ensureDir($path);
 
         global $xerte_toolkits_site;
-        x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+        x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified', 'folder');
 
         if (isset($apiResponse['query']['pages'])) {
             foreach ($apiResponse['query']['pages'] as $page) {

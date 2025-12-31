@@ -185,7 +185,7 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
         $path = rtrim($target, '/') . "/media";
         $this->ensureDir($path);
         global $xerte_toolkits_site;
-        x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+        x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified', 'folder');
 
         $hits = (isset($apiResponse->hits) && is_array($apiResponse->hits))
             ? $apiResponse->hits

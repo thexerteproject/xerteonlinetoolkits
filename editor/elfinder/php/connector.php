@@ -46,12 +46,12 @@ $rootpath = x_clean_input($_REQUEST['uploadDir']);
 $rooturl = x_clean_input($_REQUEST['uploadURL']);
 
 // Check uploadDir and check for path traversal
-x_check_path_traversal($rootpath, $xerte_toolkits_site->users_file_area_full, "Invalid upload location");
+x_check_path_traversal($rootpath, $xerte_toolkits_site->users_file_area_full, "Invalid upload location", "folder");
 
 // Check uploadURL
 // First create a path from URL
 $uploadURL = x_convert_user_area_url_to_path($rooturl);
-x_check_path_traversal($uploadURL, $xerte_toolkits_site->users_file_area_full, "Invalid upload location");
+x_check_path_traversal($uploadURL, $xerte_toolkits_site->users_file_area_full, "Invalid upload location", "folder");
 
 //extra option to support alternative corpus file storage
 $folder_space = 'media';

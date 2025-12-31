@@ -191,7 +191,7 @@ class unsplashApi extends BaseApi
         global $xerte_toolkits_site;
         $path = $target . "/media";
         $this->ensureDir($path);
-        x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+        x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified', 'folder');
 
         $results = (isset($apiResponse->results) && is_array($apiResponse->results))
             ? $apiResponse->results

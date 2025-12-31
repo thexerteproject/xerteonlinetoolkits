@@ -45,5 +45,5 @@
 
     define("MANAGEMENT_AI_ADMIN_GUIDE_URL", "https://xot.xerte.org.uk/play_651");
 
-    define("MANAGEMENT_AI_ADMIN_GUIDE_MESSAGE", "<h3>Manual & Advice</h3><p>For detailed and up-to-date instructions, including recommended vendor combinations, suggestions and advice, please refer to the Xerte AI admin reference and installation guide: </p>");
+    define("MANAGEMENT_AI_ADMIN_GUIDE_MESSAGE", "<h3>Manual & Advice</h3><p>For detailed and up-to-date instructions, including recommended vendor combinations, suggestions and advice, please refer to the Xerte Assistant & AI Admin Guide: </p>");
 
