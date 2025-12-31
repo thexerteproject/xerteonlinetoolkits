@@ -25,7 +25,7 @@ abstract class BaseRAG
         require_once(str_replace('\\', '/', __DIR__) . "/DocumentLoaders.php");
 
         // Check whether the file does not have path traversal
-        x_check_path_traversal($encodingDirectory, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+        x_check_path_traversal($encodingDirectory, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified', 'folder');
 
         // Ensure the base directory exists
         if (!is_dir($encodingDirectory)) {

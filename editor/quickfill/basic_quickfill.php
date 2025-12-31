@@ -13,7 +13,7 @@ class basicquickfill
         // Construct the final XWD path
         $xwdPath = $xotBaseDir . DIRECTORY_SEPARATOR . "modules" . DIRECTORY_SEPARATOR . "xerte" . DIRECTORY_SEPARATOR . "parent_templates" . DIRECTORY_SEPARATOR . "Nottingham" . DIRECTORY_SEPARATOR . "wizards" . DIRECTORY_SEPARATOR . $language;
         $expectedPath = $xotBaseDir . DIRECTORY_SEPARATOR . "modules" . DIRECTORY_SEPARATOR . "xerte" . DIRECTORY_SEPARATOR . "parent_templates" . DIRECTORY_SEPARATOR . "Nottingham" . DIRECTORY_SEPARATOR . "wizards" . DIRECTORY_SEPARATOR;
-        x_check_path_traversal($xwdPath, $expectedPath, 'Invalid file path specified');
+        x_check_path_traversal($xwdPath, $expectedPath, 'Invalid file path specified', 'folder');
 
         // Ensure the directory exists
         if (!is_dir($xwdPath)) {
