@@ -54,12 +54,12 @@ if (!isset($_SESSION['uploadDir']) || !isset($_SESSION['uploadURL']))
 {
     die("Invalid upload location");
 }
-x_check_path_traversal($_SESSION['uploadDir'], $xerte_toolkits_site->users_file_area_full, "Invalid upload location");
+x_check_path_traversal($_SESSION['uploadDir'], $xerte_toolkits_site->users_file_area_full, "Invalid upload location", "folder");
 
 // Check uploadURL
 // First create a path from URL by replacing site_url with root_file_path
 $uploadURL = x_convert_user_area_url_to_path($_SESSION['uploadURL']);
-x_check_path_traversal($uploadURL, $xerte_toolkits_site->users_file_area_full, "Invalid upload location");
+x_check_path_traversal($uploadURL, $xerte_toolkits_site->users_file_area_full, "Invalid upload location", "folder");
 
 $mode = 'standalone';
 if (isset($_REQUEST['mode']) && x_clean_input($_REQUEST['mode'])=='cke') {

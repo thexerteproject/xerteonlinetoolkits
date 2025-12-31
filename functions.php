@@ -455,13 +455,25 @@ function x_check_zip($zip, $type="")
     }
 }
 
-function x_check_path_traversal($path, $expected_path=null, $message=null)
+function x_check_zip_file($file){
+    $zip = new ZipArchive();
+    $x = $zip->open($file);
+
+    x_check_zip($zip);
+}
+
+function x_check_path_traversal($path, $expected_path=null, $message=null, $type='file')
 {
     global $xerte_toolkits_site;
     $mesg = ($message != null ? $message : "Path traversal detected!");
     // Account for Windows, because realpath changes / to \
     if(DIRECTORY_SEPARATOR !== '/') {
         $rpath = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        if (strpos($rpath, DIRECTORY_SEPARATOR) !== 0 || strpos($rpath, ':') !== 1){
+            // Relative path, so convert to absolute path
+            $rpath = str_replace('/',  DIRECTORY_SEPARATOR, $xerte_toolkits_site->root_file_path . $rpath);
+        }
+
         if ($expected_path != null) {
             $rexpected_path = str_replace('/', DIRECTORY_SEPARATOR, $expected_path);
         }
@@ -469,7 +481,17 @@ function x_check_path_traversal($path, $expected_path=null, $message=null)
     else
     {
         $rpath = $path;
+        if (strpos($rpath, '/') !== 0){
+            // Relative path, so convert to absolute path
+            $rpath = $xerte_toolkits_site->root_file_path . $rpath;
+        }
         $rexpected_path = $expected_path;
+    }
+    if ($type === 'folder') {
+        // Ensure that folder exists for realpath to work
+        if (!is_dir($rpath)) {
+            die($mesg);
+        }
     }
     // Trim dangling DIRECTORY_SEPARATOR
     $rpath = rtrim($rpath, '/\\');
