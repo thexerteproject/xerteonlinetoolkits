@@ -24,7 +24,7 @@ $allowed_apis = ['openai', 'deepl', 'googleautotranslate'];
 if (!in_array($api, $allowed_apis)){
     die(json_encode(["status" => "error", "message" => "api is not allowed"]));
 }
-//todo Alek convert api name to lowercase
+$api = strtolower($api);
 
 //dynamically load needed api methods
 require_once(dirname(__FILE__) . "/" . $api ."translateApi.php");

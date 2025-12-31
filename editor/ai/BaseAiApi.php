@@ -3,13 +3,14 @@ use function rag\makeRag;
 
 require_once __DIR__.'/logging/log_ai_request.php';
 require_once(dirname(__FILE__) . "/../../config.php");
+_load_language_file("/editor/ai_internal/ai.inc");
 
 
 global $xerte_toolkits_site;
 
 abstract class BaseAiApi
 {
-//constructor must be like this when adding new api
+    //constructor must be like this when adding new api
     private $api;
 
     private $languageName;
@@ -18,16 +19,16 @@ abstract class BaseAiApi
 
      protected $globalInstructions = ["Output must be plain text only. Do not use Markdown (no *, _, backticks, or Markdown headings/lists). Use HTML only, and escape it for XML (e.g., &lt;em&gt;...&lt;/em&gt;)."];
 
-    const DEFAULT_MSG = 'An unexpected error occurred. If this persists, please inform your administrator.';
+    const DEFAULT_MSG = AI_INTERNAL_BASEREQUEST_ERROR_DEFAULT;
 
     //List of error messages which can explicitly be sent to the frontend.
     const ALLOWED_USER_MESSAGES = [
         // API
-        'There was an error with the API response. If this persists, please inform your administrator.',
+        AI_INTERNAL_BASEREQUEST_ERROR_API,
         // Network
-        'There was an unexpected network error. Please wait a few minutes, then try again. If this persists, please inform your administrator.',
+        AI_INTERNAL_BASEREQUEST_ERROR_NETWORK,
         //JSON/Parse
-        'There was an unexpected error while processing your request. If this persists, please inform your administrator.',
+        AI_INTERNAL_BASEREQUEST_ERROR_JSONPARSE,
         // Generic
         self::DEFAULT_MSG,
     ];
@@ -68,10 +69,10 @@ abstract class BaseAiApi
         error_log(sprintf('[%s] %s', $context, $e->getMessage()));
 
         $messages = [
-            'api'    => 'There was an error with the API response. If this persists, please inform your administrator.',
-            'json'   => 'There was an unexpected error while processing your request. If this persists, please inform your administrator.',
-            'curl'   => 'There was an unexpected network error. Please wait a few minutes, then try again. If this persists, please inform your administrator.',
-            'default'=> 'An unexpected error occurred. If this persists, please inform your administrator.'
+            'api'    => AI_INTERNAL_BASEREQUEST_ERROR_API,
+            'json'   => AI_INTERNAL_BASEREQUEST_ERROR_JSONPARSE,
+            'curl'   => AI_INTERNAL_BASEREQUEST_ERROR_NETWORK,
+            'default'=> AI_INTERNAL_BASEREQUEST_ERROR_DEFAULT,
         ];
 
         return isset($messages[$type]) ? $messages[$type] : $messages['default'];
