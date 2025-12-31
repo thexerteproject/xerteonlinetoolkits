@@ -1680,7 +1680,8 @@ function upgrade_54()
         `type` VARCHAR(16) NOT NULL,
         `needs_key` BOOLEAN NOT NULL,
         `enabled` BOOLEAN NOT NULL ,
-        `sub_options` TEXT,  
+        `sub_options` TEXT,
+        `preferred_model` TEXT,
         PRIMARY KEY (`interaction_id`)
       )"
         );
@@ -1753,23 +1754,6 @@ function upgrade_55()
   `cost_total` DECIMAL(18,6) DEFAULT NULL,
 
   PRIMARY KEY (`id`),
-
-  KEY `idx_when` (`occurred_at`),
-  KEY `idx_category_when` (`category`, `occurred_at`),
-  KEY `idx_service_when` (`service`, `occurred_at`),
-  KEY `idx_model_when` (`model`, `occurred_at`),
-  KEY `idx_status_when` (`status`, `occurred_at`),
-  KEY `idx_request_when` (`request_id`, `occurred_at`),
-
-  KEY `idx_user_when` (`actor_user_id`, `occurred_at`),
-  KEY `idx_workspace_when` (`actor_workspace_id`, `occurred_at`),
-
-  KEY `idx_tokens_when` (`total_tokens`, `occurred_at`),
-  KEY `idx_audio_when` (`audio_ms`, `occurred_at`),
-  KEY `idx_cost_when` (`cost_total`, `occurred_at`),
-  KEY `idx_images_when` (`images_requested`, `occurred_at`),
-  KEY `idx_images_rcv_when` (`images_received`, `occurred_at`),
-  KEY `idx_image_wh_when` (`image_width`, `image_height`, `occurred_at`)
 );");
 
         $message .= "Creating ai_request_logs table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
