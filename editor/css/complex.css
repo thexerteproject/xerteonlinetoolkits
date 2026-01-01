@@ -606,6 +606,9 @@ div.ui-layout-north div.content {
 	width:100%;
 	padding:0;
 }
+.elevated div.ui-layout-north div.content {
+	background-image: url(../img/warning.png);
+}
 
 .elevated div.ui-layout-north div.content {
 	background-image: url(../img/warning.png);
@@ -737,7 +740,12 @@ form.csvUpload input[name=merge] {
 	font-size: 0.8em;
 }
 
-#mainPanel select.deprecated, #lightboxPanel select.deprecated{
+#mainPanel input[name=merge]{
+	float: right;
+	margin-bottom: 20px;
+}
+
+#mainPanel select.deprecated, #lightboxPanel select.deprecated {
 	width: 95%;
 }
 

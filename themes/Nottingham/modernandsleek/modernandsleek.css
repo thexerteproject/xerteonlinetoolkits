@@ -4,8 +4,10 @@
   font-family: "Libre Franklin";
   font-style: normal;
   font-weight: 400;
-  src: url("fonts/libre-franklin-v12-latin-ext_latin-regular.eot"); /* IE9 Compat Modes */
-  src: local(""), url("fonts/libre-franklin-v12-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.woff") format("woff"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.svg#LibreFranklin") format("svg"); /* Legacy iOS */
+  src: url("fonts/libre-franklin-v12-latin-ext_latin-regular.eot");
+  /* IE9 Compat Modes */
+  src: local(""), url("fonts/libre-franklin-v12-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.woff") format("woff"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/libre-franklin-v12-latin-ext_latin-regular.svg#LibreFranklin") format("svg");
+  /* Legacy iOS */
 }
 /*---colours to use - sleek and modern:  #2f2E33, #D5D6D2, #FFFF, #3A5199---*/
 /*define color pallette*/
@@ -835,6 +837,7 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   #x_footerProgress {
     display: block;
   }
+
   #x_pageNo {
     vertical-align: top;
     text-align: center;
@@ -846,15 +849,18 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
     z-index: 100;
     font-size: 12px;
   }
+
   #x_footerBlock button {
     /*font-size: 1em;
     width: 1em;*/
     margin-left: 5px;
   }
+
   .pbContainer {
     display: block;
     margin-top: 1.2em;
   }
+
   .pbTxt {
     display: block;
     text-align: center;
@@ -1586,7 +1592,8 @@ h3 {
 
 #x_mainHolder {
   background: #ffffff;
-  border: none !important; /*remove this to restore the default border*/
+  border: none !important;
+  /*remove this to restore the default border*/
 }
 
 body:not(.sb_right):not(.sb_left) #x_mainHolder {

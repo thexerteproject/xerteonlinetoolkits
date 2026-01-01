@@ -751,7 +751,7 @@
 						if (hs_hover === 'true'){
 							// add a delay to check whether the mouse has been moved over the bubble  if it has then don't auto close the bubble
 							setTimeout(function() {
-								if (!connectorHotspotImage.delayBubbleClose && $("#pageContents .selected")[0] == event.target ) {
+								if (!connectorHotspotImage.delayBubbleClose && $("#pageContents .selected")[0] == event.target) {
 									$("#pageContents .selected").removeClass("selected");
 									$("#pageContents .highlighted").removeClass("highlighted");
 									$('#hotspot_bubble_holder').empty();

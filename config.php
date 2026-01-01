@@ -317,12 +317,33 @@ if (file_exists(dirname(__FILE__) . '/lrsdb_config.php'))
     require_once(dirname(__FILE__) . '/lrsdb_config.php');
 }
 
-if(!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true)
-{
-    if($xerte_toolkits_site->authentication_method == "Moodle") {
-        // skip session_start() as we'll probably stomp on Moodle's session if we do.
-    }
-    else {
+$xerte_toolkits_site->tsugi_session = false;
+
+if ((!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true)) {
+    if (isset($_GET['tsugisession'])) {
+        $tsugi_disable_xerte_session = true;
+        require_once("config.php");
+        // _debug("xapi_proxy: setting tsugi session");
+        if (x_clean_input($_GET['tsugisession']) == "1") {
+            $contents = "";
+
+            // _debug("xapi_proxy: TSUGI session");
+            if (file_exists($xerte_toolkits_site->tsugi_dir)) {
+                require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
+            }
+            $xerte_toolkits_site->tsugi_session = true;
+            session_start();
+        } else {
+            // _debug("xapi_proxy: setting normal session");
+            ini_set('session.use_cookies', 0);
+            ini_set('session.use_only_cookies', 0);
+            ini_set('session.use_trans_sid', 1);
+            session_start();
+        }
+    } else {
+        if ($xerte_toolkits_site->authentication_method == "Moodle") {
+            // skip session_start() as we'll probably stomp on Moodle's session if we do.
+        } else {
 
         ini_set('session.cookie_httponly', '1');
         if (isset($scheme) && $scheme == 'https://') {
@@ -337,8 +358,17 @@ $xerte_toolkits_site->rights = "";
 if (isset($_SESSION['elevated']) && $_SESSION['elevated'])
 {
     $xerte_toolkits_site->rights = 'elevated';
+} else {
+    $xerte_toolkits_site->rights = 'normal';
 }
 
+if (file_exists(dirname(__FILE__) . '/config_edlib.php'))
+{
+    require_once(dirname(__FILE__) . '/config_edlib.php');
+}
+else{
+    $xerte_toolkits_site->edlib_key_name = "";
+}
 if (file_exists(dirname(__FILE__) . '/vendor_config.php'))
 {
     require_once(dirname(__FILE__) . '/vendor_config.php');

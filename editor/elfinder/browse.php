@@ -88,6 +88,12 @@ if (isset($_REQUEST['loc'])) {
     }
 }
 
+$connector_url = 'php/connector.php?uploadDir=' . $_SESSION['uploadDir'] . '&uploadURL=' . $_SESSION['uploadURL'] . '&loc=' . $file_location;
+
+if (isset($_SESSION["lti_enabled"]) && $_SESSION["lti_enabled"]) {
+    $connector_url .= '&' . session_name().'=' . session_id() . "&tsugisession=0";
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -136,7 +142,7 @@ if (isset($_REQUEST['loc'])) {
             ?>
 
             $('#elfinder').elfinder({
-                url : 'php/connector.php?uploadDir=<?php echo $_SESSION['uploadDir'];?>&uploadURL=<?php echo $_SESSION['uploadURL'];?>&loc=<?php echo $file_location;?>',       // connector URL (REQUIRED)
+                url : '<?php echo $connector_url; ?>',       // connector URL (REQUIRED)
                 lang: '<?php echo $lang;?>',     // language (OPTIONAL)
                 uiOptions : {
                     // toolbar configuration
