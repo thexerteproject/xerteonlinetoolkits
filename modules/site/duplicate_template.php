@@ -103,7 +103,7 @@ function duplicate_template_site($folder_name_id,$id_to_copy,$tutorial_id_from_p
      */
     $username = get_template_creator_username($id_to_copy);
     $dir_path = $xerte_toolkits_site->users_file_area_full . $id_to_copy. "-" . $username . "-" . $tutorial_id_from_post . "/";
-    x_check_path_traversal($dir_path, $xerte_toolkits_site->users_file_area_full, "Failed to check path traversal on folder " . $dir_path);
+    x_check_path_traversal($dir_path, $xerte_toolkits_site->users_file_area_full, "Failed to check path traversal on folder " . $dir_path, "folder");
     /*
      * Get the id of the folder we are looking to copy into
      */

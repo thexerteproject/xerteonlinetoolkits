@@ -302,11 +302,10 @@ a.hotspot, a.hotspot.selected {
   border-color:darken($lightestcolor, 70%);
   color:$whiteorlightest;
 }
-
-//*****model answer*****/
-.x_modelAnswer_page #answerTxt {
-  border-radius: $mediumroundedcorners;
-  width: 98%;
+//*****mcq*****/
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+  background: $blackordarkest;
 }
 //*****opinion********/
 .x_opinion_page #pageContents input {

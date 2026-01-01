@@ -249,11 +249,6 @@ a.hotspot, a.hotspot.selected {
   border-color:$lightestcolor;
 }
 
-//*****model answer*****/
-.x_modelAnswer_page #answerTxt {
-  border-radius: $mediumroundedcorners;
-  width: 98%;
-}
 //*****opinion********/
 .x_opinion_page #pageContents input {
   padding-left: 0;
@@ -453,4 +448,10 @@ table.headerCol.shaded td.header {
 table.header.shaded th:not(:last-of-type),
 table.footer.shaded :not(thead) tr:last-of-type td:not(:last-of-type) {
 	border-right-color: $lightestcolor;
+}
+
+//*****mcq*****/
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+  background: $blackordarkest;
 }

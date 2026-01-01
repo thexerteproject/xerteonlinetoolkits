@@ -76,9 +76,9 @@ if (!isset($_FILES['upload']))
 $uploadpath = x_clean_input($_REQUEST['uploadPath']);
 $uploadurl = x_clean_input($_REQUEST['uploadURL']);
 
-x_check_path_traversal($uploadpath, $xerte_toolkits_site->users_file_area_full, IMAGEUPOLOAD_NOT_UPLOADED);
+x_check_path_traversal($uploadpath, $xerte_toolkits_site->users_file_area_full, IMAGEUPOLOAD_NOT_UPLOADED, 'folder');
 $url_path = x_convert_user_area_url_to_path($uploadurl);
-x_check_path_traversal($url_path, $xerte_toolkits_site->users_file_area_full, IMAGEUPOLOAD_NOT_UPLOADED);
+x_check_path_traversal($url_path, $xerte_toolkits_site->users_file_area_full, IMAGEUPOLOAD_NOT_UPLOADED, 'folder');
 
 if (isset($_FILES['upload']['error']) && $_FILES['upload']['error'] != 0)
 {

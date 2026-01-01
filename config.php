@@ -40,7 +40,7 @@ global $xerte_toolkits_site;
 // and logging (to /tmp/debug.log) are turned on; either of these may help you
 // diagnose installation and integration issues. 
 global $development;
-$development = false;
+$development = true;
 
 ini_set('error_reporting', 0);
 ini_set('display_errors', 0);
@@ -135,6 +135,10 @@ $xerte_toolkits_site->enable_mime_check = true_or_false($row['enable_mime_check'
 $xerte_toolkits_site->mimetypes = explode(",", $row['mimetypes']);
 $xerte_toolkits_site->enable_file_ext_check = true_or_false($row['enable_file_ext_check']);
 $xerte_toolkits_site->file_extensions = explode(",", strtolower($row['file_extensions']));
+// Remove empty extensions
+$xerte_toolkits_site->file_extensions = array_filter($xerte_toolkits_site->file_extensions, function($ext) {
+    return !empty(trim($ext));
+});
 $xerte_toolkits_site->enable_clamav_check = true_or_false($row['enable_clamav_check']);
 $xerte_toolkits_site->name = $row['site_name'];
 $xerte_toolkits_site->demonstration_page = $xerte_toolkits_site->site_url . $row['demonstration_page'];
@@ -237,6 +241,8 @@ if ($host != '' && $scheme != '' && (!isset($force_site_url_from_db) || !$force_
     $site_url = $scheme . $host . $port . $subdir;
     $xerte_toolkits_site->site_url = $site_url;
 }
+
+x_set_session_name();
 
 $learning_objects = new StdClass();
 
@@ -348,6 +354,7 @@ if ((!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== tr
 }
 
 // Check whether elevated rights are active
+$xerte_toolkits_site->rights = "";
 if (isset($_SESSION['elevated']) && $_SESSION['elevated'])
 {
     $xerte_toolkits_site->rights = 'elevated';
@@ -361,4 +368,26 @@ if (file_exists(dirname(__FILE__) . '/config_edlib.php'))
 }
 else{
     $xerte_toolkits_site->edlib_key_name = "";
+}
+if (file_exists(dirname(__FILE__) . '/vendor_config.php'))
+{
+    require_once(dirname(__FILE__) . '/vendor_config.php');
+}
+
+if (file_exists(dirname(__FILE__) . '/ai_sync_worker_config.php'))
+{
+    require_once(dirname(__FILE__) . '/ai_sync_worker_config.php');
+}
+
+// vendor, enabled, type, needs_key, sub_options
+$management_helper_table_rows = db_query("select * from {$xerte_toolkits_site->database_table_prefix}management_helper");
+$xerte_toolkits_site->management_helper_table = array();
+foreach($management_helper_table_rows as $row){
+    $object = new stdClass();
+    $object->vendor = $row["vendor"];
+    $object->needs_key = $row["needs_key"];
+    $object->type = $row["type"];
+    $object->enabled = $row["enabled"];
+    $object->sub_options = json_decode($row["sub_options"]);
+    $xerte_toolkits_site->management_helper_table[] = $object;
 }

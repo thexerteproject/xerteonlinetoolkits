@@ -31,7 +31,7 @@ if(is_user_admin()){
     }
     $module = x_clean_input($_POST['name'], 'string');
     $dirpath = $xerte_toolkits_site->root_file_path . "modules/" . $module . "/templates/";
-    x_check_path_traversal($dirpath, $xerte_toolkits_site->root_file_path . 'modules', "Invalid module name");
+    x_check_path_traversal($dirpath, $xerte_toolkits_site->root_file_path . 'modules', "Invalid module name", 'folder');
 	if(file_exists($dirpath)){
 	
 		$dir = opendir($dirpath);

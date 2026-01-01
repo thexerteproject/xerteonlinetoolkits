@@ -370,11 +370,6 @@ a.hotspot, a.hotspot.selected {
   border-color: #d6c338;
 }
 
-.x_modelAnswer_page #answerTxt {
-  border-radius: 2vmin;
-  width: 98%;
-}
-
 .x_opinion_page #pageContents input {
   padding-left: 0;
 }
@@ -531,6 +526,11 @@ table.footer.shaded tbody tr:last-child {
 .x_grid_page table.header.shaded tr:first-child,
 table.headerCol.shaded td.header {
   background-color: #B45819;
+}
+
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+  background: #d6c338;
 }
 
 #x_footerBlock {

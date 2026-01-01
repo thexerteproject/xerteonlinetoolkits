@@ -70,7 +70,7 @@ if (isset($_POST['code'])) {
     $code = x_clean_input($_POST['code'], 'string');
     $langdir = $xerte_toolkits_site->root_file_path . "languages/" . $code;
     // Check for path traversal
-    x_check_path_traversal($langdir, $xerte_toolkits_site->root_file_path, DELETE_LANGUAGE_FAILED . DELETE_LANGUAGE_INVALIDCODE);
+    x_check_path_traversal($langdir, $xerte_toolkits_site->root_file_path, DELETE_LANGUAGE_FAILED . DELETE_LANGUAGE_INVALIDCODE, 'folder');
 
     if (file_exists($langdir)) {
 

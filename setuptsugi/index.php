@@ -314,19 +314,18 @@ $_SESSION['admin'] = true;
         }
 		else if ($phpversion < "8.0")
 		{
-			echo "Your PHP version is ". $phpversion . ". Using branch php-72-x.<br>";
+			echo "Your PHP version is ". $phpversion . ". Using branch php-72-x of thexerteproject/tsugi fork.<br>";
 			$branch = "php-72-x";
 		}
 		else if ($phpversion < "8.1")
 		{
-			echo "Your PHP version is ". $phpversion . ". Using branch php-80-x.<br>";
+			echo "Your PHP version is ". $phpversion . ". Using branch php-80-x of thexerteproject/tsugi fork.<br>";
 			$branch = "php-80-x";
 		}
         else if ($phpversion < "8.4")
         {
-            echo "Your PHP version is ". $phpversion . ". Using tag 25.5.1 (php 8.2 and 8.3).<br>";
-            $branch = "master";
-            $tag = "25.5.1";
+            echo "Your PHP version is ". $phpversion . ". Using branch php-82-x of thexerteproject/tsugi fork.<br>";
+            $branch = "php-82-x";
         }
 		else
 		{
@@ -419,7 +418,16 @@ $_SESSION['admin'] = true;
         global $xerte_toolkits_site;
         //$url = "https://github.com/$u/$repo/archive/master.zip";
         if (!isset($tag) || $tag==="") {
-            $url = "https://github.com/tsugiproject/tsugi/archive/refs/heads/{$branch}.zip";
+            if ($branch === 'master')
+            {
+                // Using the original TSUGI repository
+                $url = "https://github.com/tsugiproject/tsugi/archive/refs/heads/{$branch}.zip";
+            }
+            else
+            {
+                // Using patched fork
+                $url = "https://github.com/thexerteproject/tsugi/archive/refs/heads/{$branch}.zip";
+            }
             $version = $branch;
         }
         else

@@ -316,10 +316,10 @@ a.hotspot, a.hotspot.selected {
   background:$brightcolor;
   color:$fontcolorfobrightcolor;
 }
-//*****model answer*****/
-.x_modelAnswer_page #answerTxt {
-  border-radius: $mediumroundedcorners;
-  width: 98%;
+//*****mcq*****/
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+  background: $lightestcolor;
 }
 //*****opinion********/
 .x_opinion_page #pageContents input {
