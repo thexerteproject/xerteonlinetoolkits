@@ -1,0 +1,165 @@
+<?php
+
+header('Content-Type: application/json');
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
+
+require_once (str_replace('\\', '/', __DIR__) . "/../../../config.php");
+require_once (str_replace('\\', '/', __DIR__) . "/BaseRAG.php");
+require_once (str_replace('\\', '/', __DIR__) . "/MistralRAG.php");
+require_once (str_replace('\\', '/', __DIR__) . "/../../../vendor_config.php");
+require_once (str_replace('\\', '/', __DIR__) . "/RagFactory.php");
+require_once (str_replace('\\', '/', __DIR__) . "/../management/dataRetrievalHelper.php");
+
+use function rag\makeRag;
+
+ob_start();
+
+function normalize_path($path)
+{
+    // 1) turn backslashes into forward-slashes
+    $p = str_replace('\\', '/', $path);
+
+    // 2) collapse multiple slashes into one
+    $p = preg_replace('#/+#', '/', $p);
+
+    return $p;
+}
+
+function prepareURL($uploadPath)
+{
+    global $xerte_toolkits_site;
+    // Move up from rag/ai/editor to the XOT root
+    $basePath = __DIR__ . '/../../../';
+    $full = realpath(urldecode($basePath . $uploadPath));
+
+    if ($full === false) {
+        throw new Exception("Invalid path: {$uploadPath}");
+    }
+
+    x_check_path_traversal($full, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+
+    return $full;
+}
+
+global $xerte_toolkits_site;
+if(!isset($_SESSION['toolkits_logon_id'])){
+    die("Session ID not set");
+}
+
+try {
+
+
+    $raw = file_get_contents('php://input');
+    $input = json_decode($raw, true);
+
+    //$baseUrl = $input['baseURL'] ?? '';
+    $type    = x_clean_input(isset($input['type'])    ? $input['type']    : '', 'string');
+    $gridId  = x_clean_input(isset($input['gridId'])  ? $input['gridId']  : '', 'string');
+    $format  = x_clean_input(isset($input['format'])  ? $input['format']  : '', 'string');
+    $baseURL = x_clean_input(isset($input['baseURL']) ? $input['baseURL'] : '', 'string');
+    // Prep directories & API keys
+
+    $baseDir = prepareURL($baseURL);//$_SESSION['uploadDir'];
+    x_check_path_traversal($baseDir);
+
+    //get settings from the management table, which help us decide which options to use
+    $managementSettings = get_block_indicators();
+
+    $encodingKey = $xerte_toolkits_site->{$managementSettings['encoding']['key_name']};
+    $provider = $managementSettings['encoding']['active_vendor'];
+    $cfg = [
+        'api_key' => $encodingKey,
+        'encoding_directory' => $baseDir,
+        'provider' => $provider
+    ];
+    $rag = makeRag($cfg);
+
+    $corpusFile = $rag->getCorpusDirectory();
+    $corpus = ['hashes' => []];
+    if (file_exists($corpusFile)) {
+        $raw    = file_get_contents($corpusFile);
+        $corpus = json_decode($raw, true) ?: $corpus;
+
+        // Loop over each hash entry
+        foreach ($corpus['hashes'] as $hash => $entry) {
+            if (isset($entry['metaData']['source']) && is_string($entry['metaData']['source'])) {
+                $src = $entry['metaData']['source'];
+
+                // If it’s a URL, leave it
+                if (!preg_match('#^https?://#i', $src)) {
+                    // Otherwise strip up to "RAG/corpus/" or "preview.xml"
+                    $src = normalize_path($src);
+                    $needleCorpus = 'RAG/corpus/';
+                    $needlePreview = 'preview.xml';
+
+                    $posCorpus = strpos($src, $needleCorpus);
+                    $posPreview = strpos($src, $needlePreview);
+
+                    if ($posCorpus !== false) {
+                        $src = 'FileLocation + \'' . substr($src, $posCorpus) . '\'';
+                    } elseif ($posPreview !== false) {
+                        $src = 'FileLocation + \'' . substr($src, $posPreview) . '\'';
+                    }
+                }
+
+                // 4) write it back
+                $corpus['hashes'][$hash]['metaData']['source'] = $src;
+            }
+        }
+
+    }
+    //Replace the hashes with simple indexes, as full hashes are not needed
+    $anonymizedCorpus = $corpus;
+    $anonymizedCorpus['hashes'] = array_values($corpus['hashes']);
+
+    if ($format == "csv"){
+        //Build the rows using the | symbol as a separator
+        $csv_parsed = '';
+        foreach ($anonymizedCorpus['hashes'] as $entry) {
+            $files = isset($entry['files'])    ? $entry['files']    : [];
+            $meta  = isset($entry['metaData']) ? $entry['metaData'] : [];
+
+            $name        = isset($meta['name'])        ? $meta['name']        : '';
+            $description = isset($meta['description']) ? $meta['description'] : '';
+            $fileSource  = isset($meta['source'])      ? $meta['source']      : '';
+
+            foreach ($files as $file) {
+                $cells = [$name, $fileSource, $description];
+                foreach ($cells as $cell) {
+                    $safe = str_replace('|', ' ', $cell);
+                    $csv_parsed .= ($safe === '' ? ' ' : $safe) . '|';
+                }
+                $csv_parsed .= '|';
+            }
+        }
+        if ($csv_parsed === '') {
+            // No entries at all: send the placeholder expected by the frontend
+            $filesStructured = '|';
+        } else {
+            // strip the trailing "||"
+            $filesStructured = substr($csv_parsed, 0, -2);
+        }
+    } else if ($format == "json"){
+        $filesStructured = $anonymizedCorpus;
+    }
+
+
+
+    $debugOutput = ob_get_contents();
+    ob_end_clean();
+
+    echo json_encode([
+        'type'   => $type,
+        'corpus'    => $filesStructured,
+        'gridId' => $gridId
+    ]);
+
+} catch (Exception $ex) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'type' => 'generalError',
+        'message' => $ex->getMessage()
+    ]);
+}

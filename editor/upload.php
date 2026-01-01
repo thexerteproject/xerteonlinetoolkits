@@ -23,6 +23,7 @@ require_once(dirname(__FILE__) . "/../config.php");
 require (dirname(__FILE__) . "/../" . $xerte_toolkits_site->php_library_path . "user_library.php");
 require (dirname(__FILE__) . "/../" . $xerte_toolkits_site->php_library_path . "template_status.php");
 
+require_once(dirname(__FILE__) . "/../plugins.php");
 function check_abs_media_path($absmedia)
 {
     global $xerte_toolkits_site;
@@ -95,6 +96,11 @@ if (!isset($_SESSION['toolkits_logon_username']) && !is_user_admin())
 // Check for Preview/Publish
 $fileupdate = x_clean_input($_POST["fileupdate"]);
 $filename = x_clean_input($_POST["filename"]);
+
+$store_lti = "";
+if(isset($_POST['lti_save'])){
+    $store_lti = x_clean_input($_POST["lti_save"]);
+}
 
 $mode = $fileupdate ? "publish" : "preview";
 if ($mode == 'publish')
@@ -192,6 +198,21 @@ if ($mode == "publish")
 
     update_oai($data, $template_id);
     //_debug("upload: updated table");
+
+    if ($store_lti !== ""){
+
+        $lockfile_path = x_clean_input($_POST["filename"]);
+        $lockfile_path = explode('/', $lockfile_path);
+        if (sizeof($lockfile_path) === 3){
+            $_POST['file_path'] = $lockfile_path[1] . "/";
+        }
+
+        include (dirname(__FILE__) . "/../website_code/php/versioncontrol/template_close.php");
+
+
+        store_lti($template_id);
+    }
+
 }
 
 echo true;
@@ -335,4 +356,12 @@ function update_oai($data, $template_id){
             }
         }
     }
+}
+
+function store_lti($template_id) {
+    global $xerte_toolkits_site;
+    $qry = "SELECT template_name from " . $xerte_toolkits_site->database_table_prefix . "templatedetails WHERE template_id=" . $template_id;
+    $result = db_query_one($qry);
+    apply_filters('lti_callback', $result['template_name'], $template_id, $xerte_toolkits_site->site_url);
+    exit();
 }

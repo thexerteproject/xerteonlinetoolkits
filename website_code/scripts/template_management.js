@@ -470,6 +470,25 @@ function edit_window_close(path) {
 
 /**
  *
+ * Function edit window close
+ * Simpler version for lti based window close events
+ * @version 1.0
+ * @author Timo Boer
+ */
+
+function edit_window_close_lti(path) {
+
+    $.ajax({
+        type: "POST",
+        url: "website_code/php/versioncontrol/template_close.php?" + lti_session,
+        data: {
+            file_path: path
+        }
+    })
+}
+
+/**
+ *
  * Function example window
  * This function requests the screen size for an example template
  * @param string examole_id = the id of the example

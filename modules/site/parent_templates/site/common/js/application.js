@@ -2425,7 +2425,7 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 		if (topBtnRound == 'true') {
 			//add FA icon and make button round via .top-round class
 			//create round button
-			var $button = $('<a class="btn btn-mini pull-right top-round" href="#skipLink"><span class="sr-only">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</span><i class="fa fa-angle-up fa-2x" aria-hidden="true"></i></a>');
+			var $button = $('<a class="topBtn btn btn-mini pull-right top-round" href="#skipLink"><span class="sr-only">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</span><i class="fa fa-angle-up fa-2x" aria-hidden="true"></i></a>');
 			//attach the button
 			section.append(
 				$('<p>')
@@ -2433,7 +2433,7 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 					.append($button));
 		} else {
 			//original default button
-			section.append($('<p><br><a class="btn btn-mini pull-right" href="#skipLink">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</a></p>'));
+			section.append($('<p><br><a class="topBtn btn btn-mini pull-right" href="#skipLink">' + (languageData.find("top")[0] != undefined && languageData.find("top")[0].getAttribute('label') != null ? languageData.find("top")[0].getAttribute('label') : 'Top') + '</a></p>'));
 		}
 	} else if ($(data).find('learningObject').attr('topBtnHide') == 'true') {
 		section.append($('<p>').append($('<br>')));

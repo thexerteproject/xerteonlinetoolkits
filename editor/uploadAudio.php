@@ -39,10 +39,10 @@ $url = ""; if (isset($_GET["uploadURL"])) $url = x_clean_input($_GET["uploadURL"
 if ($path == "" || $url == "") {
     die('{"status": "error", "message": "Paths not set properly"}');
 }
-x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, '{"status": "error", "message": "Invalid path specified"}');
+x_check_path_traversal($path, $xerte_toolkits_site->users_file_area_full, '{"status": "error", "message": "Invalid path specified"}', 'folder');
 
 $check_url = x_convert_user_area_url_to_path($url);
-x_check_path_traversal($check_url, $xerte_toolkits_site->users_file_area_full, '{"status": "error", "message": "Invalid URL specified"}');
+x_check_path_traversal($check_url, $xerte_toolkits_site->users_file_area_full, '{"status": "error", "message": "Invalid URL specified"}', 'folder');
 
 $media_path = $path . "/media/";
 $media_url = $url . "/media/";

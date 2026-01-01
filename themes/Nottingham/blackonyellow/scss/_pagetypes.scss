@@ -570,6 +570,21 @@ li.ui-state-default.ui-draggable:not(.selected):focus {
   color: $red;
 }
 
+//*****mcq*****/
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+  border-color: $bordercolor;
+  background: $btnhoverbackgroundcolor;
+  color: $btnhovertxtcolor;
+}
+.x_mcq_page #pageContents .optionGroup.answerBtn:not(.selected):hover,
+.x_mcq_page #pageContents .optionGroup.answerBtn:not(.selected).ui-state-focus,
+.x_quiz_page #pageContents .optionGroup.answerBtn:not(.selected):hover,
+.x_quiz_page #pageContents .optionGroup.answerBtn:not(.selected).ui-state-focus{
+  background: $midyellow;
+  color: $mainfontcolour;
+}
+
 //*****opinion********/
 .x_opinion_page input.slider {
   border-radius: 10px;

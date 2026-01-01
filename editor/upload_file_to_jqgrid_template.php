@@ -16,7 +16,7 @@ if (!isset($_SESSION['toolkits_logon_username']) && !is_user_permitted("projecta
     die('{"status": "error", "message": "Session is invalid or expired"}');
 }
 
-if ($_FILES["file"]["error"] > 0) {
+if (isset($_FILES["file"]["error"]) && $_FILES["file"]["error"] > 0) {
     echo "Return Code: " . $_FILES["file"]["error"] . "<br />";
 } else {
     $merge = isset($_POST['merge']);
@@ -69,7 +69,7 @@ function parse_data($csv_parsed, $input, $nr_columns)
     return $csv_parsed;
 }
 
-function get_delimiter($file ,$nr_columns): string
+function get_delimiter($file ,$nr_columns)
 {
     $top10 = array_slice($file, 0, 10);
     //test for comma

@@ -253,11 +253,16 @@ var EDITOR = (function ($, parent) {
         $('.ui-layout-center .header').append($('<div>').attr('id', 'pagetype'));
         // Save buttons
         var buttons = $('<div />').attr('id', 'save_buttons');
-        $([
-            {name:language.btnPreview.$label, tooltip: language.btnPreview.$tooltip, icon:'fa-play', id:'preview_button', click:preview},
-            //{name:language.btnSaveXerte.$label, tooltip: language.btnSaveXerte.$tooltip, icon:'editor/img/publish.png', id:'save_button', click:savepreview},
-            {name:language.btnPublishXot.$label, tooltip: language.btnPublishXot.$tooltip, icon:'fa-globe', id:'publish_button', click:publish}
-        ])
+        //todo hide button in non lti
+
+        let buttons_content = [{name:language.btnPreview.$label, tooltip: language.btnPreview.$tooltip, icon:'fa-play', id:'preview_button', click:preview},
+            {name:language.btnPublishXot.$label, tooltip: language.btnPublishXot.$tooltip, icon:'fa-globe', id:'publish_button', click:publish}];
+
+        if (lti_session) {
+            buttons_content.push({name:'Save', tooltip: "Save project to Edlib", icon:'fas fa-save', id:'lti_save_button', click:lti_save});
+        }
+
+        $(buttons_content)
         .each(function(index, value) {
             var button = $('<button>')
                 .attr('id', value.id)
@@ -339,8 +344,9 @@ var EDITOR = (function ($, parent) {
             }
         }
         var new_tab = clickevent.ctrlKey;
+        upload_url ??= "editor/upload.php";
         var ajax_call = $.ajax({
-                url: "editor/upload.php",
+                url: upload_url,
                 data: {
                     fileupdate: 0, //0= preview->preview.xml
                     filename: previewxmlurl,
@@ -361,13 +367,14 @@ var EDITOR = (function ($, parent) {
         .done(function() {
             //alert( "success" );
             // We would also launch the preview window from here
+            preview_url ??= "preview.php?template_id="
             $('#loader').hide();
             if (new_tab)
             {
-                window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "_blank");
+                window.open(preview_url + template_id + urlparam, "_blank");
             }
             else {
-                window.open(site_url + "preview.php?template_id=" + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width + ", resizable=yes, scrollbars=1");
+                window.open(preview_url + template_id + urlparam, "previewwindow" + template_id, "height=" + template_height + ", width=" + template_width + ", resizable=yes, scrollbars=1");
             }
         })
         .fail(function(data, status, error) {
@@ -385,15 +392,16 @@ var EDITOR = (function ($, parent) {
     		return;
     	}
         var json = build_json("treeroot");
+        upload_url ??= "editor/upload.php";
         var ajax_call = $.ajax({
-                url: "editor/upload.php",
+                url: upload_url,
                 data: {
                     fileupdate: 1, // 1=publish -> data.xml
                     filename: dataxmlurl,
                     preview: previewxmlurl,
                     lo_data: encodeURIComponent(JSON.stringify(json)),
                     absmedia: rlourlvariable,
-                    template_id: template_id
+                    template_id: template_id,
                 },
 
                 dataType: "json",
@@ -402,6 +410,41 @@ var EDITOR = (function ($, parent) {
         ).done(function() {
             $('#loader').hide();
             //alert( "success" );
+        })
+        .fail(function() {
+            $('#loader').hide();
+			// alert from publish button click
+			var sessionError = language.Alert.sessionError;
+			var msg = sessionError != undefined ? sessionError.replace(/\\n/g, "\n") : "error";
+			alert(msg);
+        });
+    },
+
+    lti_save = function () {
+        if(typeof merged !== 'undefined' && merged == true){
+            return;
+        }
+        var json = build_json("treeroot");
+        upload_url ??= "editor/upload.php";
+        var ajax_call = $.ajax({
+                url: upload_url,
+                data: {
+                    fileupdate: 1, // 1=publish -> data.xml
+                    filename: dataxmlurl,
+                    preview: previewxmlurl,
+                    lo_data: encodeURIComponent(JSON.stringify(json)),
+                    absmedia: rlourlvariable,
+                    template_id: template_id,
+                    lti_save: "true"
+                },
+
+                dataType: "html",
+                type: "POST"
+            }
+        ).done(function(result) {
+            $('#loader').hide();
+            //alert( "success" );
+            $("body").html(result);
         })
         .fail(function() {
             $('#loader').hide();
@@ -422,8 +465,9 @@ var EDITOR = (function ($, parent) {
     		return;
     	}
         var json = build_json("treeroot");
+        upload_url ??= "editor/upload.php";
         var ajax_call = $.ajax({
-                url: "editor/upload.php",
+                url: upload_url,
                 data: {
                     fileupdate: 0, // 1=publish -> data.xml
                     filename: previewxmlurl,
@@ -777,7 +821,7 @@ var EDITOR = (function ($, parent) {
         {
             $('#pagetype').html('');
         }
-		
+
         var node_options = wizard_data[node_name].node_options;
         if (wizard_data[node_name].menu_options.label)
         {
@@ -872,13 +916,17 @@ var EDITOR = (function ($, parent) {
 			
             // If the main node has a label, display the node item second (unconditionaly)
             if (node_label.length > 0 && !node_options['cdata']) {
-                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], node_name, '', key, node_label);
+                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], node_name, '', key, false, node_label);
             }
 
 			getGroups(node_options['normal']);
 
             // The rest of the normal params
             for (var i = 0; i < node_options['normal'].length; i++) {
+                //skip step for assistant lightbox features
+                if (node_options['normal'][i].value.lightbox === "form") {
+                    continue;
+                }
                 attribute_name = node_options['normal'][i].name;
                 if (node_options['normal'][i].value.children == undefined) {
                     attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
@@ -928,6 +976,7 @@ var EDITOR = (function ($, parent) {
                 .addClass("optButtonContainer");
             var table = $('<table>'); // contains opt props specific to this page type
             var table2 = $('<table>'); // contains opt props used on all page types
+            var tableLightbox = $('<table>'); //contains opt props using lightboxes
             var flashonly = $('<img>')
                 .attr('src', 'editor/img/flashonly.png')
                 .attr('alt', 'Flash only attribute');
@@ -945,7 +994,7 @@ var EDITOR = (function ($, parent) {
                 }
                 attribute_name = node_options['optional'][i].name;
                 attribute_value = toolbox.getAttributeValue(attributes, attribute_name, node_options, key);
-                if (attribute_value.found || $.inArray(true, found) > -1) {
+                if ( (attribute_value.found || $.inArray(true, found) > -1 ) && node_options['optional'][i].value.lightbox !== 'form') {
                     node_options['optional'][i].found = true;
                 }
                 else
@@ -976,6 +1025,8 @@ var EDITOR = (function ($, parent) {
                 if (!sorted_options['optional'][i].value.deprecated) {
                     // Create button for right panel
                     var label = attribute_label + (sorted_options['optional'][i].value.type == 'group' ? '...' : '');
+					let icon = $('<i>').addClass('fa').addClass('fa-lg').addClass("xerte-icon").height(14);
+
                     var button = $('<button>')
                         .attr('id', 'insert_opt_' + attribute_name)
                         .addClass('btnInsertOptParam')
@@ -984,7 +1035,8 @@ var EDITOR = (function ($, parent) {
                                 key: key,
                                 attribute: attribute_name,
                                 default: (sorted_options['optional'][i].value.defaultValue ? sorted_options['optional'][i].value.defaultValue : ""),
-                                children: sorted_options['optional'][i].value.children
+                                children: sorted_options['optional'][i].value.children,
+                                lightbox: sorted_options['optional'][i].value.lightbox ?? ""
                             },
                             function (event) {
 								
@@ -1010,10 +1062,14 @@ var EDITOR = (function ($, parent) {
 										parent.toolbox.insertOptionalProperty(data.key, data.attribute, data.default, true, "opt_" + data.attribute);
 									}
 								}
-								
-								checkForOptGroup(event.data);
+
+                                if (event.data.lightbox !== "form") {
+                                    checkForOptGroup(event.data);
+                                } else {
+                                    toolbox.triggerRedrawForm(event.data.attribute, event.data.key, event.data.children, 'initialize');
+                                }
                             })
-                        .append($('<i>').addClass('fa').addClass('fa-plus-circle').addClass('fa-lg').addClass("xerte-icon").height(14));
+                        .append(icon);
                     if (sorted_options['optional'][i].value.flashonly) {
                         label += flashonlytxt;
                     }
@@ -1059,16 +1115,21 @@ var EDITOR = (function ($, parent) {
                         var tablerow = $('<tr>')
                             .append($('<td>')
                                 .append(button));
-
-                        if (sorted_options['optional'][i].value.common) {
-                            // chapter folders don't share general optional properties with pages
-                            if (node_name != "chapter") {
-                                table2.append(tablerow);
-                            }
+                        if (sorted_options['optional'][i].value.subgroup === 'assistant') {
+														icon.addClass('fa-wand-magic');
+                            tableLightbox.append(tablerow);
                         } else {
-                            table.append(tablerow);
-                        }
+														icon.addClass('fa-plus-circle');
+                            if (sorted_options['optional'][i].value.common) {
+                                // chapter folders don't share general optional properties with pages
+                                if (node_name != "chapter") {
+                                    table2.append(tablerow);
+                                }
+                            } else {
+                                table.append(tablerow);
+                            }
 
+                        }
                     }
                 }
             }
@@ -1080,6 +1141,13 @@ var EDITOR = (function ($, parent) {
                     table.prepend(tablerow);
                 }
                 html.append(table);
+            }
+
+            if (tableLightbox.find("tr").length > 0) {
+                    var tablerow = $('<tr>')
+                        .append('<td class="optPropTitle">' + (language.optionalAssistantPropHTML && language.optionalAssistantPropHTML.$general ? language.optionalAssistantPropHTML.$general : "Assistant") + '</td>');
+                    tableLightbox.prepend(tablerow);
+                html.append(tableLightbox);
             }
 
             if (table2.find("tr").length > 0) {
@@ -1347,33 +1415,33 @@ var EDITOR = (function ($, parent) {
 			}
 		});
     },
-	
+
 	groupSetUp = function(group, attributes, node_options, key) {
 		toolbox.displayGroup('#mainPanel .wizard', group.name, group.value, key);
 
 		// group children aren't sorted into alphabetical order - they appear in order taken from xml
 		var groupChildren = group.value.children;
-		
+
 		for (var j = 0; j < groupChildren.length; j++) {
-			
+
 			// set up a nested group
 			if (groupChildren[j].value.type == 'group') {
 				var foundGroup = checkGroupFound(groupChildren[j], attributes, groupChildren, key);
 				if ($.inArray(true, foundGroup) > -1) {
 					groupChildren[j].found = true;
 				}
-				
+
 				var visible = true;
 				if (typeof groupChildren[j].value.condition != "undefined") {
 					visible = parent.toolbox.evaluateCondition(groupChildren[j].value.condition, key);
 				}
 				groupChildren[j].visible = visible;
 				groupSetUp(groupChildren[j], attributes, node_options, key);
-				
+
 			// display a parameter within this group
 			} else {
 				var tableOffset = (group.value.cols ? j % parseInt(group.value.cols, 10) : '');
-				
+
 				if (toolbox.getAttributeValue(attributes, groupChildren[j].name, node_options, key).found == true || !groupChildren[j].value.deprecated) {
 					toolbox.displayParameter(
 						'#mainPanel .wizard #groupTable_' + group.name + ((tableOffset == '' || tableOffset == 0) ? '' : '_' + tableOffset),
@@ -1404,11 +1472,96 @@ var EDITOR = (function ($, parent) {
         return found;
 	}
 
-    addNodeToTree = function(key, pos, nodeName, xmlData, tree, select)
+    addAINodeToTree = function(key, pos, nodeName, xmlData, tree, select, addChildren = false) {
+        try {
+            //Immediately return when root node is CDATA
+            if(xmlData.nodeType === Node.CDATA_SECTION_NODE){
+                return;
+            }
+
+            var lkey = parent.tree.generate_lo_key();
+            var attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
+            var extranodes = addChildren;
+
+            $(xmlData.attributes).each(function() {
+                attributes[this.name] = this.value;
+            });
+            lo_data[lkey] = {};
+            lo_data[lkey]['attributes'] = attributes;
+
+            // Handling node data for text and CDATA sections
+            if (xmlData.firstChild) {
+                if (xmlData.firstChild.nodeType === 3 || xmlData.firstChild.nodeType === 4) { // Text or CDATA Section
+                    lo_data[lkey]['data'] = xmlData.firstChild.data;
+                } else if (xmlData.firstChild.nodeType === 1) { // Element Node
+                    extranodes = true;
+                }
+            }
+
+            // Build the JSON object for the treeview
+            var treeLabel = nodeName;
+            if (xmlData.attributes['name']) {
+                treeLabel = xmlData.attributes['name'].value;
+            } else {
+                if (wizard_data[treeLabel] && wizard_data[treeLabel].menu_options && wizard_data[treeLabel].menu_options.menuItem) {
+                    treeLabel = wizard_data[treeLabel].menu_options.menuItem;
+                }
+            }
+
+
+            // Add icons to the node, all should be switched off
+            var hiddenIcon = toolbox.getExtraTreeIcon(lkey, "hidden", false);
+            var passwordIcon = toolbox.getExtraTreeIcon(lkey, "password", false);
+            var standaloneIcon = toolbox.getExtraTreeIcon(lkey, "standalone", false);
+            var unmarkIcon = toolbox.getExtraTreeIcon(lkey, "unmark", false);
+            var advancedIcon = toolbox.getExtraTreeIcon(lkey, "advanced", simple_mode && template_sub_pages.indexOf(nodeName) == -1);
+
+            treeLabel = '<span id="' + lkey + '_container">' + unmarkIcon + hiddenIcon + passwordIcon + standaloneIcon + advancedIcon + '</span><span id="' + lkey + '_text">' + treeLabel + '</span>';
+            var this_json = {
+                id: lkey,
+                text: treeLabel,
+                type: nodeName,
+                state: {
+                    opened: true
+                }
+            };
+
+            // Add a safety check before calling validateInsert
+            if (wizard_data[nodeName] && wizard_data[nodeName]['menu_options']) {
+                // add nodes, skip validation for CDATA nodes
+                if (validateInsert(key, nodeName, tree)) {
+                    var newKey = tree.create_node(key, this_json, pos, function () {
+                        if (select) {
+                            tree.deselect_all();
+                            tree.select_node(lkey);
+                        }
+                    });
+                }
+            } else {
+                console.log("Invalid wizard data for node:", nodeName);
+                throw new Error ("Invalid wizard data for node: " + nodeName);
+            }
+
+            // Any children to add
+            if (extranodes) {
+                $.each(xmlData.childNodes, function(nr, child) {
+                    if (child.nodeType == 1) { // Element Nodes
+                        addAINodeToTree(lkey, 'last', child.nodeName, child, tree, false, addChildren);
+                    }
+                });
+            }
+        } catch (error) {
+            console.log('Error occurred:', error);
+            throw error;
+        }
+
+    },
+
+    addNodeToTree = function(key, pos, nodeName, xmlData, tree, select, addChildren =  false)
     {
         var lkey = parent.tree.generate_lo_key();
         var attributes = {nodeName: nodeName, linkID : 'PG' + new Date().getTime()};
-        var extranodes = false;
+        var extranodes = addChildren;
         $(xmlData.attributes).each(function() {
             attributes[this.name] = this.value;
         });
@@ -1472,7 +1625,7 @@ var EDITOR = (function ($, parent) {
             $.each(xmlData.childNodes, function(nr, child) {   // Was children
                 if (child.nodeType == 1)
                 {
-                    addNodeToTree(lkey,'last',child.nodeName,child,tree,false);
+                    addNodeToTree(lkey,'last',child.nodeName,child,tree,false, addChildren);
                 }
             });
         }
@@ -1547,6 +1700,319 @@ var EDITOR = (function ($, parent) {
 
         addNodeToTree('treeroot',pos,nodeName,xmlData,tree,true);
     },
+
+    ai_content_generator = function(aiSettings, constructorObject) {
+        return new Promise((resolve, reject) => {
+            try {
+                var tree = $.jstree.reference("#treeview");
+                // Show wait icon
+                $('body').css("cursor", "wait")
+                $('.featherlight').css("cursor", "wait")
+                $('.featherlight-content').css("cursor", "wait")
+                //todo move over to aiSettings instead of current.
+                //todo also ensure aiAPI extracts settings from aiSettings
+                $.ajax({
+                    url: "editor/ai/aiAPI.php",
+                    type: "POST",
+                    data: {
+                        type: aiSettings['type'],
+                        language: aiSettings['language'],
+                        prompt: constructorObject,
+                        api: aiSettings['modelSelection'],
+                        url: aiSettings['fullUrl'],
+                        textSnippet: aiSettings['textSnippet'],
+                        context: aiSettings['sourceContext'],
+                        assistantPrompt: aiSettings['assisstantPrompt'],
+                        baseUrl: aiSettings['baseUrl'],
+                        useCorpus: aiSettings['useCorpus'],
+                        contextScope: aiSettings['contextScope'],
+                        modelTemplate: aiSettings['modelTemplate'],
+                        fileList: aiSettings['fileList'],
+                        useLoInCorpus: aiSettings['loSettings']['useLoInCorpus'],
+                        restrictCorpusToLo: aiSettings['loSettings']['restrictCorpusToLo']
+                    },
+                    success: function(data) {
+                        try {
+                            xml_to_xerte_content(data, aiSettings['key'], 'last', tree, parent);
+                            $.featherlight.close();
+                        } catch (error) {
+                            console.log('Error occurred in success callback:', error);
+                            reject(error);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        // Handle any errors from the AJAX request and reject the promise
+                        console.error("AJAX request failed:", textStatus, errorThrown);
+                        reject(new Error(`AJAX error: ${textStatus}`)); // Reject with an error
+                    }
+                });
+            } catch (error) {
+                console.error("Error occurred in ai_content_generator:", error);
+                reject(error); // Reject the promise with the caught error
+            }
+        });
+    };
+
+    savepreviewPromise = function (timeoutMs = 120000) {
+        // If the legacy flag makes the save a no-op, resolve immediately
+        if (typeof merged !== 'undefined' && merged == true) {
+            return Promise.resolve('skipped');
+        }
+
+        return new Promise((resolve, reject) => {
+            // Only match the specific AJAX fired by savepreviewasync
+            //todo timo look at this later.
+            const matches = (s) => {
+                if (!s) return false;
+                const url = (s.url || '').toString();
+                const method = (s.type || s.method || 'GET').toUpperCase();
+                if (!/editor\/upload\.php(?:\?|$)/.test(url)) return false;
+                if (method !== 'POST') return false;
+
+                const dataStr = typeof s.data === 'string' ? s.data : $.param(s.data || {});
+                if (!/(^|&)fileupdate=0(&|$)/.test(dataStr)) return false;
+
+                // Extra safety: ensure it's for the current preview file if available
+                if (typeof previewxmlurl !== 'undefined') {
+                    const encoded = encodeURIComponent(previewxmlurl);
+                    if (dataStr.indexOf('filename=' + encoded) === -1) return false;
+                }
+                return true;
+            };
+
+            let timer;
+            const cleanup = () => {
+                $(document).off('ajaxSuccess', onSuccess);
+                $(document).off('ajaxError', onError);
+                clearTimeout(timer);
+            };
+
+            const onSuccess = (e, jqXHR, settings) => {
+                if (!matches(settings)) return;
+                cleanup();
+                resolve(); // no payload needed
+            };
+
+            const onError = (e, jqXHR, settings, thrown) => {
+                if (!matches(settings)) return;
+                cleanup();
+                reject(thrown || new Error('Preview save failed'));
+            };
+
+            // Listen first so we can't miss the event
+            $(document).on('ajaxSuccess', onSuccess);
+            $(document).on('ajaxError', onError);
+
+            // Timeout guard
+            timer = setTimeout(() => {
+                cleanup();
+                reject(new Error('Timed out waiting for preview save'));
+            }, timeoutMs);
+
+            // Kick off the legacy async save
+            savepreviewasync(true);
+        });
+    };
+
+    quick_fill = function(event, node_type, parameters) {
+        return new Promise((resolve, reject) => {
+            try {
+                // Call aiAPI.php via jQuery's AJAX method
+                var tree = $.jstree.reference("#treeview");
+                // Show wait icon
+                $('body').css("cursor", "wait");
+                console.log("Start Quick Fill process, please wait...");
+                $.ajax({
+                    url: "editor/quickfill/quickfillAPI.php",
+                    type: "POST",
+                    data: {
+                        type: node_type,
+                        parameters: parameters,
+                    },
+                    success: function(data) {
+                        try {
+                            xml_to_xerte_content(data, event.data.key, 'last', tree, parent);
+                        } catch (error) {
+                            console.log('Error occurred in success callback:', error);
+                            reject(error);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        // Handle any errors from the AJAX request and reject the promise
+                        console.error("AJAX request failed:", textStatus, errorThrown);
+                        reject(new Error(`AJAX error: ${textStatus}`)); // Reject with an error
+                    }
+                });
+            } catch (error) {
+                console.error("Error occurred in quick_fill:", error);
+                reject(error); // Reject the promise with the caught error
+            }
+        });
+    };
+
+img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings, key, name){
+        $('body').css("cursor", "wait");
+		let input_type = "checkbox";
+		let image_data;
+		if(settings['ishButton']) {
+				input_type = "radio";
+		}
+
+        let image_preview = $("<div class=\"img_search_preview\"><div class=\"img_search_loading\">loading...</div></div>");
+        let keepClicked = false;
+        let selection_window = $.featherlight(image_preview, {
+            closeOnClick: false,
+            beforeClose: function() {
+                    if (keepClicked) return true;
+
+                    let $boxes = image_preview.find("input[type='" + input_type + "']");
+                    let allIndices = $.makeArray($boxes).map(cb => +cb.value);
+                    let keptIndices = $.makeArray($boxes)
+                        .filter(cb => cb.checked)
+                        .map(cb => +cb.name);
+
+                    // if they’d checked something, ask whether to keep them
+                    let toDelete;
+                        if (keptIndices.length) {
+                            let keep = confirm(`${language.imageSelection.closeWindowWithSelectionsMsg1} ${keptIndices.length} \n\n ${language.imageSelection.closeWindowWithSelectionsMsg2}\n${language.imageSelection.closeWindowWithSelectionsMsg3}`);
+                            toDelete = keep
+                                ? allIndices.filter(i => keptIndices.indexOf(i) === -1)
+                                : allIndices;
+                        }
+                        else {
+                            // nothing checked → just delete everything
+                            toDelete = allIndices;
+                        }
+
+                        // send the cleanup
+                        let form = new FormData();
+                        toDelete.forEach(i => form.append("indices_to_delete[]", i));
+                        navigator.sendBeacon(
+                            "editor/imagesearchandhelp/imgSelection.php",
+                            form
+                        );
+
+                        return true;  // now let the lightbox close
+                    }
+				});
+				image_preview = $(".img_search_preview");
+        $.ajax({
+            url: "editor/imagesearchandhelp/imgSHAPI.php",
+            type: "POST",
+            data: {query: query, api: api, target: url, textApi: settings['textApi'],interpretPrompt: interpretPrompt, overrideSettings: overrideSettings, settings: settings},
+            success: function(data_json) {
+								image_preview.find(".img_search_loading").remove();
+								let header = $("<h1>" + language.imageSelection.title + "</h1>");
+								image_data = JSON.parse(data_json);
+								image_preview.append(header);
+								let image_preview_images = $("<div class=\"image_preview_images\"></div>");
+								image_preview.append(image_preview_images);
+								let submit_button = $("<input type=\"submit\" value=\"" + language.imageSelection.keepButtonText + "\">").click(function() {
+                                        keepClicked = true;
+										let indices_to_delete = [];
+										let indices_selected = [];
+										for(let input of $.makeArray(image_preview.find("input[type=\"" + input_type + "\"]"))){
+												if(!input.checked){
+														indices_to_delete.push(+input.value);
+												}else {
+														indices_selected.push(+input.value);
+												}
+										}
+										$.ajax({
+												url: "editor/imagesearchandhelp/imgSelection.php",
+												type: "POST",
+												data: {indices_to_delete: indices_to_delete},
+												success: function(data){
+                                                        alert(`${language.imageSelection.imageSavedSuccessMsg}`);
+														selection_window.close();
+														if(settings['ishButton']) {
+
+                                                            toolbox.setAttributeValue(key ,[name], [image_data.paths[indices_selected[0]]]);
+                                                            savepreviewPromise();
+
+                                                            toolbox.triggerRedrawPage(key);
+														}
+												},
+												error: function(xhr, status, error){
+														console.log("Error deleting images: ", error);
+                                                    alert(`${language.imageSelection.deletionError}`);
+												},
+                                                complete: function() {
+                                                    $.featherlight.close();
+                                                }
+										});
+								});
+								image_preview.append("<br>").append(submit_button);
+								image_preview_images.height($(".img_search_preview").innerHeight() - submit_button.outerHeight(true) - header.outerHeight(true));
+
+                                image_preview.css("position", "relative");
+
+								$(window).on("resize", function() {
+										let width = ($(".img_search_preview .image_preview_images").innerWidth()/5) - 20 /*padding*/ - credits_button_width;
+										image_preview_images.height($(".img_search_preview").innerHeight() - submit_button.outerHeight(true) - header.outerHeight(true));
+										$(".img_search_preview").find(".img_search_preview_image").each(function() {
+												this.width = width;
+												$(this).css("max-height", image_preview_images.height()/2);
+										});
+								});
+								
+								let credits_button_width = 0;
+                                if (image_data.paths.length === 0) {
+                                    let no_image_text = "<div>" + language.imageSelection.noImagesReturnedMsg + "<div>";
+                                    image_preview_images.append(no_image_text);
+                                }
+								for(let i = 0; i < image_data.paths.length; i++){
+                                    let image_url = image_data.paths[i];
+                                    let select_input = $("<input type=\"" + input_type + "\" id=\"check" + i + "\" name=\"image\" value=\"" + i + "\">");
+                                    let image = $('<img class="img_search_preview_image">');
+                                    image.attr("src", image_url);
+                                    image.attr("title", image_data.credits[i]);
+                                    // Small wrapper that becomes the positioning context for the button
+                                    let frame = $('<span class="img_frame"></span>').append(image);
+                                    let label = $('<label for="check' + i + '"></label>').append(frame);
+                                    let container = $('<div class="img_search_container"></div>');
+                                    image_preview_images.append(container);
+                                    container.append(select_input).append(label);
+                                    // Enlarge button. Prevent the label/checkbox from toggling on click
+                                    let enlarge_button = $(
+                                        '<button title="Enlarge" type="button" class="enlarge_button">' +
+                                        '<i class="fa fa-lg fa-search xerte-icon"></i>' +
+                                        '</button>'
+                                    ).on("click", function (e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        $.featherlight(image_url);
+                                    });
+
+                                    frame.append(enlarge_button);
+
+										image.on("load", function () {
+												let width = ($(".img_search_preview .image_preview_images").innerWidth()/5) - 20 /*padding*/ - credits_button_width;
+												this.width = width;
+												$(this).css("max-height", image_preview_images.height()/2);
+										});
+								}
+								$(window).on("resize", function() {
+										let width = ($(".img_search_preview .image_preview_images").innerWidth()/5) - 20 /*padding*/ - credits_button_width;
+										//let width = ($(".img_search_preview").innerWidth()-20*5/*padding inline*/)/5;
+										$(".img_search_preview").find(".img_search_preview_image").each(function() {
+												this.width = width;
+										});
+								});
+            },
+            error: function(xhr, status, error) {
+                console.error("Error retrieving image results:", error);
+								image_preview.find(".img_search_loading").remove();
+								image_preview.text("an error occurred");
+            },
+            complete: function() {
+                // This function runs after the AJAX request completes (whether success or error)
+                $('body').css("cursor", "default");
+                console.log("Image API request completed.");
+            }
+        });
+        },
+
 
     validateInsert = function(key, newNode, tree)
     {

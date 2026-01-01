@@ -19,7 +19,7 @@
  */
 
 /**
- * This routine expects data that will be ransformed into a document that word can accept
+ * This routine expects data that will be transformed into a document that word can accept
  *
  * This is su=imply building an html file and storing as .doc file. Word will do the work
  *
@@ -125,16 +125,22 @@ while ($ipos !== false) {
         if ($epos !== false) {
             $imgfile = substr($doc, $bpos, $epos - $bpos);
             $imgparts = pathinfo($imgfile);
-            if (strlen($imgparts["extension"]) > 0 && strpos($imgfile, "../") === false) {
+            // check path traversal
+            if (strlen($imgparts["extension"]) > 0) {
                 // Check file location
                 if (strpos($imgfile, $xerte_toolkits_site->users_file_area_short) === 0) {
-                    if ($validator->isValid($imgfile)) {
+                    x_check_path_traversal($imgfile, $xerte_toolkits_site->users_file_area_full, "Invalid image file path");
+                    if ($validator->isValidImage($imgfile)) {
                         $imgdata = file_get_contents($imgfile);
                     } else {
                         $imgdata = "";
                     }
                 } else if (strpos($imgfile, "http") === 0) {
-                    $imgdata = file_get_contents($imgfile);
+                    if ($validator->isValidImage($imgfile)) {
+                        $imgdata = file_get_contents($imgfile);
+                    } else {
+                        $imgdata = "";
+                    }
                 } else {
                     $imgdata = "";
                 }

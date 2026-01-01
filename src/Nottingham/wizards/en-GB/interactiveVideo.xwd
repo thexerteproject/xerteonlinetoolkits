@@ -39,6 +39,29 @@
 
 		<name label="Overlay" type="TextInput"/>
 
+		<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
+            <subject verification="^.+$"  label="Subject" tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'. Multiple subjects from the video may be chosen. Selecting a subject which is not talked about or directly referenced in the video may lead to content and timestamp inaccuracies." type="TextInput" defaultValue="" placeholder="Enter a subject here..." optional="true"/>
+			<additionalInstructions label="Additional Instructions" type="text" tooltip="You can leave this blank or provide additional instructions or requests on how the generated result should look. Please note that certain instructions may break the structure of the generated response. If this occurs, change the wording and attempt to generate again." wysiwyg="true" height="50" placeholder="Write your instructions here..." optional="true"/>
+            <subtype label="Object Type" tooltip="Pick which kind of content to generate!" options="Generate Text Object,Generate Multiple Choice Question" type="comboBox" data="text_object,mcq" defaultValue="text_object" optional="true" conditionTrigger="true"/>
+            <nrq label="Number of Multiple Choice Questions" type="TextInput" defaultValue="3" optional="true" condition="subtype=='mcq'" verification="^\d+$"/>
+            <nra label="Answers per Question" type="TextInput" tooltip="Amount of answers generated respective to each question. For example, '5' will generate five answers per question." defaultValue="4" optional="true" condition="subtype=='mcq'"/>
+            <nrt label="Text Object Details" verification="^\d+$" type="TextInput" tooltip = "Specify the number of text objects to generate, alongside any additional requests. A text object is a general, blank canvas which can be used to highlight or supplement information from the uploaded video. This means that the content inside is flexible and can be made according to request. For example: '3 text objects, one of which is a start card, one a reminder of something in the video, and one a fun fact giving new information about something mentioned in the video' should give an introductory card, a reminder after an important fact and a fun fact to learn something extra." wysiwyg="true" defaultValue="3" optional="true" condition="subtype=='text_object'"/>
+            <infoGenSettings advanced="true" label="For this page, the following settings will be used instead of those assigned on the learning-object level:" type="info" optional="true"/>
+            <aiSelector advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" overrideField="baseAiSettings" conditionTrigger="true" optional="true"/>
+			<range advanced="true" label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the complexity of the language. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." defaultValuePH="Intermediate English B2" overrideField="baseRange" placeholder="Enter reading level. Defaults to 'Intermediate English, B2'" optional="true"/>
+            <file label="Video" type="mediaCorpus" defaultValue="Upload a file or enter a video link here..." tooltip = "Select a video to be used for generating the content, or paste a video link from youtube, vimeo or peertube directly." optional="true"/>
+            <aiButton type="aibutton" optional="true"/>
+        </AIGroup>
+
+        <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
+            <qfIvSynchTextPlus label="Number of Text Objects" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfIvSynchMCQ label="Number of Multiple Choice Questions" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+            <qfIvSynchMCQOption label="Number of Answers per MCQ" type="TextInput" wysiwyg="true" defaultValue = "4" optional="true"/>
+            <qfIvSynchXot label="Number of Embeded XOT Projects" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+            <qfIvSynchXotChange label="Number of Pages per Embeded XOT Project" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfButton type="quickfillbutton" optional="true"/>
+        </QFGroup>
+
 		<newNodes>
 			<ivSynchXot><![CDATA[<ivSynchXot name="Enter Title" url="" page="" hide="none" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchXot>
 			<ivSynchMCQ><![CDATA[<ivSynchMCQ name="Enter Title" text="" type="radio" answerType="single" synchStart="0" clearpanel="true" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></ivSynchMCQ>
@@ -110,7 +133,7 @@
 		</captionOptions>
 
 	</ivSynchSlide>
-	
+
 	<ivSynchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
 
 		<name label="Title" type="TextInput" wysiwyg="true"/>
@@ -147,8 +170,10 @@
 		<continueBtnTxt label="Continue Button Label" type="TextInput" wysiwyg="true" language="true"/>
 		<topOption label="Drop Down Menu Option 1" type="TextInput" wysiwyg="true" language="true"/>
 
+    	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
+
 		<newNodes>
-			<ivSynchMCQOption><![CDATA[<synchMCQOption name="Answer" text="" correct="false"/>]]></ivSynchMCQOption>
+			<ivSynchMCQOption><![CDATA[<ivSynchMCQOption name="Answer" text="Option text" correct="false"/>]]></ivSynchMCQOption>
 		</newNodes>
 
 	</ivSynchMCQ>
@@ -189,7 +214,7 @@
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
 
 		<newNodes>
-			<ivSynchXotChange><![CDATA[<synchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></ivSynchXotChange>
+			<ivSynchXotChange><![CDATA[<ivSynchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></ivSynchXotChange>
 		</newNodes>
 
 	</ivSynchXot>
@@ -202,6 +227,4 @@
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
 
 	</ivSynchXotChange>
-	
-
 </wizard>

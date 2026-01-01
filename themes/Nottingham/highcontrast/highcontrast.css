@@ -1117,6 +1117,22 @@ a.hotspot, a.hotspot.selected {
   color: #00FFFF;
 }
 
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+  border-color: #00FFFF;
+  background: #000000;
+  color: #00FFFF;
+}
+
+.x_mcq_page #pageContents .optionGroup.answerBtn:not(.selected):hover,
+.x_mcq_page #pageContents .optionGroup.answerBtn:not(.selected).ui-state-focus,
+.x_quiz_page #pageContents .optionGroup.answerBtn:not(.selected):hover,
+.x_quiz_page #pageContents .optionGroup.answerBtn:not(.selected).ui-state-focus {
+  background: #00FFFF;
+  color: #000000;
+  border-color: #00FFFF;
+}
+
 .x_table_page table.header.simple tr:first-child {
   border: none;
 }

@@ -1781,6 +1781,17 @@ function x_continueSetUp1() {
 		XENITH.ACCESSIBILITY.buildBtn();
 
 
+		XENITH.RESOURCES.init();
+		XENITH.PROGRESSBAR.init();
+
+		// hide page counter
+		if (x_params.pageCounter == "true") {
+			$x_pageNo.remove();
+		}
+
+		XENITH.ACCESSIBILITY.buildBtn();
+
+
 		// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
 		// add link to LO title?
 		if (x_params.homePageLink != undefined && x_params.homePageLink === 'true') {
@@ -5314,16 +5325,18 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					}
 					
 					$x_glossaryHover
+						.stop(true, true)
 						.html(myDefinition)
 						.css({
-						"left"	:$activeTooltip.offset().left + 20,
-						"top"	:$activeTooltip.offset().top + 20
-					});
+							"left"	:$activeTooltip.offset().left + 20,
+							"top"	:$activeTooltip.offset().top + 20
+						});
 					
 					// Queue reparsing of MathJax - fails if no network connection
 					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
 
-					$x_glossaryHover.fadeIn("slow");
+					// Show instantly (no fade) to avoid race conditions when hovering quickly
+					$x_glossaryHover.show();
 					
 					if (x_browserInfo.touchScreen == true) {
 						$x_mainHolder.on("click.glossary", function() {}); // needed so that mouseleave works on touch screen devices
@@ -5331,7 +5344,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 				})
 				.on("mouseleave", ".x_glossary", function(e) {
 					$x_mainHolder.off("click.glossary");
-					$x_glossaryHover.hide();
+					$x_glossaryHover.stop(true, true).hide();
 					window.removeEventListener("keydown", escapeHandler);
 				})
 				.on("mousemove", ".x_glossary", function(e) {
