@@ -121,7 +121,7 @@ class pexelsApi extends BaseApi
         $this->ensureDir($baseDir);
 
         global $xerte_toolkits_site;
-        x_check_path_traversal($baseDir, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+        x_check_path_traversal($baseDir, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified', 'folder');
 
 
         $aiOptions = ['model' => $this->providerModel];

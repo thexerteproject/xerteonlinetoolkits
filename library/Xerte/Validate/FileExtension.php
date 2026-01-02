@@ -23,7 +23,6 @@ class Xerte_Validate_FileExtension
 
     public static $BLACKLIST = array();
 
-
     public static function canRun()
     {
         return function_exists('pathinfo');
@@ -53,6 +52,9 @@ class Xerte_Validate_FileExtension
             return true;
         }
 
+        // Determine mimetype and check against blacklist
+        $mimetype = mime_content_type($filename);
+
         if (in_array($extension, self::$BLACKLIST)) {
             _debug("Invalid file uploaded - extension '$extension' matches entry in blacklist");
             $this->messages["INVALID_EXTENSION"] = "Invalid file extension - $extension is blacklisted";
@@ -62,6 +64,47 @@ class Xerte_Validate_FileExtension
         return true;
     }
 
+    public function isValidImage($filename)
+    {
+        $this->messages = array();
+
+        if (!$filename) {
+            $this->messages['FILE_NO_FILE'] = "No file selected";
+            return false;
+        }
+
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+        if (strncasecmp(PHP_OS, 'Win', 3) == 0) {
+            /* This is for Windows filenames. */
+            if (empty($extension)) {
+                _debug("File extension not found for '$filename'.");
+                $this->messages['NO_EXTENSION'] = "File extension not found.";
+                return false;
+            }
+        }
+        elseif (!strlen($extension)) {
+            return true;
+        }
+
+        // Determine mimetype and check against blacklist
+        // Please note that mime_content_type and finfo_file only seem to work on local files and not on URLs
+        // So instead of using those we use exif_imagetype which is specifically for images
+        $mimetype = image_type_to_mime_type(exif_imagetype($filename));
+        if (strpos($mimetype, 'image') !== 0) {
+            _debug("Invalid file uploaded - mimetype '$mimetype' is not an image");
+            $this->messages["INVALID_MIMETYPE"] = "Invalid file type - $mimetype is not an image";
+            return false;
+        }
+
+        if (in_array($extension, self::$BLACKLIST)) {
+            _debug("Invalid file uploaded - extension '$extension' matches entry in blacklist");
+            $this->messages["INVALID_EXTENSION"] = "Invalid file extension - $extension is blacklisted";
+            return false;
+        }
+
+        return true;
+    }
 
     public function getMessages()
     {

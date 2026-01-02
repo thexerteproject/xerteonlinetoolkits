@@ -4,6 +4,7 @@ namespace rag;
 use DocumentLoaderFactory;
 
 require_once __DIR__.'/../logging/log_ai_request.php';
+\_load_language_file("/editor/ai_internal/ai.inc");
 
 abstract class BaseRAG
 {
@@ -25,7 +26,7 @@ abstract class BaseRAG
         require_once(str_replace('\\', '/', __DIR__) . "/DocumentLoaders.php");
 
         // Check whether the file does not have path traversal
-        x_check_path_traversal($encodingDirectory, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
+        x_check_path_traversal($encodingDirectory, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified', 'folder');
 
         // Ensure the base directory exists
         if (!is_dir($encodingDirectory)) {
@@ -451,7 +452,7 @@ abstract class BaseRAG
         // 4) Finally, record this hash as processed
         $this->isHashProcessed($fileHash, $fileName, true, $meta);
         echo "Processed chunks for {$fileName}.\n";
-        return "Processed content for {$fileName} successfully.\n";
+        return AI_RAG_PROCESSED_CONTENT_FOR. " {$fileName} " . AI_RAG_SUCCESSFULLY . "\n";
     }
 
 

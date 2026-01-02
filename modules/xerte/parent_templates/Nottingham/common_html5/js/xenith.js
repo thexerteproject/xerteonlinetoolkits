@@ -1781,6 +1781,17 @@ function x_continueSetUp1() {
 		XENITH.ACCESSIBILITY.buildBtn();
 
 
+		XENITH.RESOURCES.init();
+		XENITH.PROGRESSBAR.init();
+
+		// hide page counter
+		if (x_params.pageCounter == "true") {
+			$x_pageNo.remove();
+		}
+
+		XENITH.ACCESSIBILITY.buildBtn();
+
+
 		// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
 		// add link to LO title?
 		if (x_params.homePageLink != undefined && x_params.homePageLink === 'true') {
@@ -5314,7 +5325,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					}
 					
 					$x_glossaryHover
-						.stop(true, true) 
+						.stop(true, true)
 						.html(myDefinition)
 						.css({
 							"left"	:$activeTooltip.offset().left + 20,
@@ -5323,7 +5334,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 					
 					// Queue reparsing of MathJax - fails if no network connection
 					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
-					
+
 					// Show instantly (no fade) to avoid race conditions when hovering quickly
 					$x_glossaryHover.show();
 					

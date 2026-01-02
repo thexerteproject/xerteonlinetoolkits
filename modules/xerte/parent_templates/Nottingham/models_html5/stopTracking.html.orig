@@ -1,0 +1,102 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var stopTracking = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			
+		}
+		
+		this.init = function() {
+			var $closeText = $("#closingText"),
+                $splitScreen = $("#pageContents .splitScreen");
+            $closeText.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+            // ignores superscript support data in xml as it will do it automatically with <sub> <sup> tags
+			if (x_currentPageXML.getAttribute("textWidth") != null) {
+                if (x_currentPageXML.getAttribute("textWidth") == "small") {
+                    $splitScreen.addClass("large");
+                } else if (x_currentPageXML.getAttribute("textWidth") == "medium") {
+                    $splitScreen.addClass("medium");
+                } else if (x_currentPageXML.getAttribute("textWidth") == "large") {
+                    $splitScreen.addClass("small");
+                }
+                else
+                {
+                    $("#pageContents .panel").appendTo($("#pageContents"));
+                    $splitScreen.remove();
+                }
+            }
+			else {
+                $("#pageContents .panel").appendTo($("#pageContents"));
+                $splitScreen.remove();
+            }
+			if (x_currentPageXML.getAttribute("textWidth") != null && x_currentPageXML.getAttribute("textWidth") != "full")
+            {
+                $("#textHolder").html(x_currentPageXML.getAttribute("textIntro"));
+
+            }
+            if (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))
+            {
+                var lbl = (x_currentPageXML.getAttribute("buttonLbl") != null ? x_currentPageXML.getAttribute("buttonLbl") : "Close and finish tracking of this session");
+                $("#closeBtn").button({
+                    label: lbl
+                }).click(function(){
+                    // Disable all the buttons and menu
+                    XTTerminate();
+                    $('#x_footerRight button').button("disable");
+                    $('#closeBtn').hide();
+                    $closeText.html(x_addLineBreaks(x_currentPageXML.getAttribute('textAfter')));
+                });
+            }
+            else
+            {
+                $('#closeBtn').hide();
+                $closeText.html(x_addLineBreaks(x_currentPageXML.getAttribute('textAfter')));
+            }
+
+
+			// call this function in every model once everything's loaded
+			x_pageLoaded();
+		}
+	};
+
+    stopTracking.init();
+	
+</script>
+
+
+
+<div id="pageContents">
+    <div class="splitScreen">
+        <div id="textHolder" class="left"></div>
+        <div class="panel right" id="infoHolder">
+            <div id="closingText"></div>
+            <div class="center"><button id="closeBtn"></button></div>
+        </div>
+
+    </div>
+</div>

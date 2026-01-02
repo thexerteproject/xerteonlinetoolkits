@@ -11,6 +11,6 @@
 	 */
 
 
-    define("MANAGEMENT_AI_SUCCESS", "Ai changes made");
+    define("MANAGEMENT_AI_SUCCESS", "AI changes made");
 
-    define("MANAGEMENT_AI_FAIL", "Ai changes failed");
+    define("MANAGEMENT_AI_FAIL", "AI changes failed");

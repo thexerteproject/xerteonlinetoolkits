@@ -1856,13 +1856,13 @@ var EDITOR = (function ($, parent) {
                 }
             }
         }
-
+        lti_session = lti_session !== "" ? "&" + lti_session : "";
         var ckoptions = {
-            filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
-            filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
-            filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
-            uploadUrl : 'editor/uploadImage.php?mode=dragdrop&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
-            uploadAudioUrl : 'editor/uploadAudio.php?mode=record&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+            filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
+            filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
+            filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
+            uploadUrl : 'editor/uploadImage.php?mode=dragdrop' + lti_session + '&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
+            uploadAudioUrl : 'editor/uploadAudio.php?mode=record' + lti_session + '&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
             mathJaxClass :  'mathjax',
             mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
             toolbarStartupExpanded : false,
@@ -2153,12 +2153,13 @@ var EDITOR = (function ($, parent) {
                 autoRefresh: true
 
             };
+            lti_session = lti_session !== "" ? "&" + lti_session : "";
             var ckoptions = {
-                filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
-                filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
-                filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
-                uploadUrl : 'editor/uploadImage.php?mode=dragdrop&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
-                uploadAudioUrl : 'editor/uploadAudio.php?mode=record&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+                filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+                filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
+                filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+                uploadUrl : 'editor/uploadImage.php?mode=dragdrop' + lti_session + '&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
+                uploadAudioUrl : 'editor/uploadAudio.php?mode=record' + lti_session + '&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
                 mathJaxClass :  'mathjax',
                 mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
                 toolbarStartupExpanded : defaultToolBar,
@@ -2249,6 +2250,7 @@ var EDITOR = (function ($, parent) {
     },
 
     convertTextInputs = function () {
+        lti_session = lti_session !== "" ? "&" + lti_session : "";
         $.each(textinputs_options, function (i, options) {
             if (options) {
                 $('#'+options.id).ckeditor(function(){
@@ -2299,11 +2301,11 @@ var EDITOR = (function ($, parent) {
 						[ 'RemoveFormat'],
                         [ 'Sourcedialog' ]
                     ],
-                    filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
-                    filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
-                    filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
-                    uploadUrl : 'editor/uploadImage.php?mode=dragdrop&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
-                    uploadAudioUrl : 'editor/uploadAudio.php?mode=record&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
+                    filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
+                    filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
+                    filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
+                    uploadUrl : 'editor/uploadImage.php?mode=dragdrop' + lti_session + '&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
+                    uploadAudioUrl : 'editor/uploadAudio.php?mode=record' + lti_session + '&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
                     mathJaxClass :  'mathjax',
                     mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
                     //extraPlugins : 'sourcedialog,image3,fontawesome,rubytext,editorplaceholder',
@@ -2603,7 +2605,7 @@ var EDITOR = (function ($, parent) {
                 rowList: [5,10,15,20,30],
                 viewrecords: true,
                 pager: '#' + id + '_nav',
-                editurl: 'editor/js/vendor/jqgrid/jqgrid_dummy.php',
+                editurl: 'editor/js/vendor/jqgrid/jqgrid_dummy.php' + '?' + lti_session,
                 rownumbers:true,
                 gridview:true,
                 ondblClickRow: function(rowid, ri, ci) {
@@ -3034,7 +3036,7 @@ var EDITOR = (function ($, parent) {
                 }
                 window.elFinder = null;
             };
-            window.open('editor/elfinder/browse.php?type=media&lang=' + languagecodevariable.substr(0, 2) + '&uploadDir=' + rlopathvariable + '&uploadURL=' + rlourlvariable + '&loc=' + tmp_loc, 'Browse file', "height=600, width=800");
+            window.open('editor/elfinder/browse.php?type=media' + lti_session + '&lang=' + languagecodevariable.substr(0, 2) + '&uploadDir=' + rlopathvariable + '&uploadURL=' + rlourlvariable + '&loc=' + tmp_loc, 'Browse file', "height=600, width=800");
         },
 
         previewFile = function (alt, src, title) {
@@ -4766,17 +4768,16 @@ var EDITOR = (function ($, parent) {
         const fieldReference = fieldlabel || name;
         if (!regex.test(inputValue.trim())) {
                 const regexString = regexCondition.toString();
-                //todo alek make languiage dynamic
-                let errorMsg=`Please fill in the ${fieldReference} field correctly.`;
+                let errorMsg= language.vendorApi.inputValidations.fieldFilledIncorrectlyMsg +` ${fieldReference}.`;
 
                 if (regexString === '^\\d+$') {
-                     errorMsg = `Please enter a valid numeral in the ${fieldReference} field. For example: '60', not 'sixty'.`;
+                     errorMsg = language.vendorApi.inputValidations.fieldInvalidNumeralMsg + ` ${fieldReference}. ` + language.vendorApi.inputValidations.fieldInvalidNumeralExampleMsg;
 
                 } else if (regexString === '^.+$') {
-                    errorMsg = `${fieldReference} is a mandatory field! Please fill it in.`;
+                    errorMsg = `${fieldReference} ` + language.vendorApi.inputValidations.mandatoryFieldMissingMsg;
 
                 } else if (regexString === '^(\\s*[^,]+\\s*,\\s*)+[^,]+\\s*$') {
-                    errorMsg = `Please make sure to enter at least two valid items separated by a comma in ${fieldReference} field. For example: 'Apples, Oranges, Berries'.`;
+                    errorMsg = language.vendorApi.inputValidations.fieldInvalidCommaListMsg + ` ${fieldReference}. ` + language.vendorApi.inputValidations.fieldInvalidCommaListExampleMsg;
                 }
             alert(errorMsg);
             return false;
@@ -5922,7 +5923,7 @@ var EDITOR = (function ($, parent) {
                         $.ajax({
                             type: 'POST',
                             dataType: 'text',
-                            url: 'editor/upload_file_to_jqgrid_template.php',
+                            url: 'editor/upload_file_to_jqgrid_template.php' + '?' + lti_session,
                             data: form_data,
                             contentType: false,
                             processData: false,

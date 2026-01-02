@@ -40,7 +40,7 @@ global $xerte_toolkits_site;
 // and logging (to /tmp/debug.log) are turned on; either of these may help you
 // diagnose installation and integration issues. 
 global $development;
-$development = true;
+$development = false;
 
 ini_set('error_reporting', 0);
 ini_set('display_errors', 0);
@@ -116,8 +116,9 @@ if (!database_connect($xerte_toolkits_site)) {
 
 $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}sitedetails");
 
+$integration_config = false;
 if ($row['integration_config_path'] != "" && (!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true)) {
-    require_once($row['integration_config_path']);
+    $integration_config = $row['integration_config_path'];
 }
 
 unset($row['integration_config_path']);
@@ -315,18 +316,41 @@ if (file_exists(dirname(__FILE__) . '/lrsdb_config.php'))
     require_once(dirname(__FILE__) . '/lrsdb_config.php');
 }
 
-if(!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true)
-{
-    if($xerte_toolkits_site->authentication_method == "Moodle") {
-        // skip session_start() as we'll probably stomp on Moodle's session if we do.
-    }
-    else {
+$xerte_toolkits_site->tsugi_session = false;
+if (!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true) {
+    if (isset($_GET['tsugisession'])) {
+        if (substr(x_clean_input($_GET['tsugisession']), 0, 1) == "1") {
+            $contents = "";
 
-        ini_set('session.cookie_httponly', '1');
-        if (isset($scheme) && $scheme == 'https://') {
-            ini_set('session.cookie_secure', '1');
+            // _debug("config session setup: TSUGI session, referer=" . $_SERVER['HTTP_REFERER'] . ", request_uri=" . $_SERVER['REQUEST_URI']);
+            if (file_exists($xerte_toolkits_site->tsugi_dir)) {
+                require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
+            }
+            $xerte_toolkits_site->tsugi_session = true;
+            session_start();
+        } else {
+            // _debug("config session setup: non-cookie session, referer=" . $_SERVER['HTTP_REFERER'] . ", request_uri=" . $_SERVER['REQUEST_URI'] . ", session=" . print_r($_SESSION, true));
+            ini_set('session.use_cookies', 0);
+            ini_set('session.use_only_cookies', 0);
+            ini_set('session.use_trans_sid', 1);
+            session_start();
         }
-        session_start();
+    } else {
+        if ($xerte_toolkits_site->authentication_method == "Moodle") {
+            // skip session_start() as we'll probably stomp on Moodle's session if we do.
+            // _debug("config session setup: Moodle session, referer=" . $_SERVER['HTTP_REFERER'] . ", request_uri=" . $_SERVER['REQUEST_URI']);
+            if ($integration_config !== false)
+            {
+                require_once($integration_config);
+            }
+        } else {
+            // _debug("config session setup: normal session, referer=" . $_SERVER['HTTP_REFERER'] . ", request_uri=" . $_SERVER['REQUEST_URI']);
+            ini_set('session.cookie_httponly', '1');
+            if (isset($scheme) && $scheme == 'https://') {
+                ini_set('session.cookie_secure', '1');
+            }
+            session_start();
+        }
     }
 }
 
@@ -335,11 +359,25 @@ $xerte_toolkits_site->rights = "";
 if (isset($_SESSION['elevated']) && $_SESSION['elevated'])
 {
     $xerte_toolkits_site->rights = 'elevated';
+} else {
+    $xerte_toolkits_site->rights = 'normal';
 }
 
+if (file_exists(dirname(__FILE__) . '/config_edlib.php'))
+{
+    require_once(dirname(__FILE__) . '/config_edlib.php');
+}
+else{
+    $xerte_toolkits_site->edlib_key_name = "";
+}
 if (file_exists(dirname(__FILE__) . '/vendor_config.php'))
 {
     require_once(dirname(__FILE__) . '/vendor_config.php');
+}
+
+if (file_exists(dirname(__FILE__) . '/ai_sync_worker_config.php'))
+{
+    require_once(dirname(__FILE__) . '/ai_sync_worker_config.php');
 }
 
 // vendor, enabled, type, needs_key, sub_options
