@@ -243,8 +243,6 @@ if ($host != '' && $scheme != '' && (!isset($force_site_url_from_db) || !$force_
     $xerte_toolkits_site->site_url = $site_url;
 }
 
-x_set_session_name();
-
 $learning_objects = new StdClass();
 
 foreach (glob(dirname(__FILE__) . "/modules/**/templates/**/*.info") as $infoFile) {

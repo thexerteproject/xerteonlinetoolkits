@@ -561,6 +561,7 @@ var EDITOR = (function ($, parent) {
         }
     },
 
+
     showToolbar = function(){
         parent.toolbox.showToolBar($('#toolbar_cb').prop('checked'));
     },
@@ -1134,20 +1135,23 @@ var EDITOR = (function ($, parent) {
                 }
             }
 
+            if (tableLightbox.find("tr").length > 0) {
+                var tablerow = $('<tr>')
+                    .append('<td class="optPropTitle">' + (language.optionalAssistantPropHTML && language.optionalAssistantPropHTML.$general ? language.optionalAssistantPropHTML.$general : "Assistants") + '</td>');
+                //tableLightbox.prepend(tablerow);
+                html.append(tableLightbox);
+            }
+
             if (table.find("tr").length > 0) {
+                var optionaltitlerow = $('<tr>')
+                    .append('<td class="optMainTitle">' + (language.optionalPropHTML ? language.optionalPropHTML.$label : "Optional Properties") + '</td>');
                 if (menu_options.menu != undefined) {
                     var tablerow = $('<tr>')
                         .append('<td class="optPropTitle">' + menu_options.menuItem + '</td>');
                     table.prepend(tablerow);
                 }
+                table.prepend(optionaltitlerow);
                 html.append(table);
-            }
-
-            if (tableLightbox.find("tr").length > 0) {
-                    var tablerow = $('<tr>')
-                        .append('<td class="optPropTitle">' + (language.optionalAssistantPropHTML && language.optionalAssistantPropHTML.$general ? language.optionalAssistantPropHTML.$general : "Assistant") + '</td>');
-                    tableLightbox.prepend(tablerow);
-                html.append(tableLightbox);
             }
 
             if (table2.find("tr").length > 0) {
