@@ -112,8 +112,8 @@ function show_template($row, $xapi_enabled=false){
 
     $string_for_flash_xml = $xmlfile;
 
-	$template_path = "/modules/" . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . "/";
-    $js_dir = "/modules/" . $row['template_framework'] . "/";
+	$template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . "/";
+    $js_dir = "modules/" . $row['template_framework'] . "/";
 
     list($x, $y) = explode("~",get_template_screen_size($row['template_name'],$row['template_framework']));
 
