@@ -789,24 +789,20 @@ var EDITOR = (function ($, parent) {
             //todo move to footer of lightbos (footer does not yet exists)
             if(options.advanced == "true" && lightboxMode == "form"){
                     if(window?.showAdvanced?.[key] == undefined) {
-                        if (!all_options.some(opt => opt.name === "toggleAdvanced")){
+                        if (window.showAdvanced == undefined){
                             window.showAdvanced = {};
-                            console.log(arguments);
-                            all_options.push({
-                                    name: "toggleAdvanced",
-                                    value: {
-                                            type: "toggleAdvanced",
-                                            label: "Show advanced options",
-                                            optional: "true",
-                                            group: options.group,
-                                    }
-                            });
                         }
                     }
+                    setTimeout(function() {
+                        $("#lb_advanced_cb, #lb_advanced_cb_span")
+                            .switchClass("disabled", "enabled")
+                            .prop("disabled", false);
+                    }, 250);
+
                     if(window.showAdvanced[key] == undefined) {
-                            showAdvanced[key] = false;
+                            showAdvanced[key] = { 'enabled' : false, 'group': options.group };
                     }
-                    if(!window.showAdvanced[key]) {
+                    if(!window.showAdvanced[key]['enabled']) {
                             tr.css("display", "none");
                     }
             }
@@ -4609,15 +4605,35 @@ var EDITOR = (function ($, parent) {
     {
         parent.tree.showNodeData(key, true);
     };
+    lbShowAdvanced = function(key)
+    {
+        window.showAdvanced[key]['enabled'] = !window.showAdvanced[key]['enabled'];
+        triggerRedrawForm(window.showAdvanced[key]['group'], key, "", "initialize");
+    }
 
     lightboxSetUp = function(group, attributes, node_options, key, formState="") {
 
         let groupChildren = group.value.children;
-        var lightboxHtml = $("<form id='lightbox_" + group.name + "' style='width: 50vw' ></form>");
+        let title  = wizard_data[lo_data[key]['attributes'].nodeName].menu_options.menuItem;
+        let lightboxHtml = $("<div></div>");
+        let lightboxHeader = $("<div id=\"lb_header\" class=\"header\"></div>");
+        lightboxHeader.append($("<div>").text(title));
+        let lightboxBody = $("<form id='lightbox_" + group.name + "' class='lightbox-form'></form>");
+        let lightboxAdvancedCbChecked = "";
+        if (window.showAdvanced && window.showAdvanced[key] && window.showAdvanced[key]['enabled'])
+        {
+            lightboxAdvancedCbChecked = "checked";
+        }
+        let lightboxFooter = $("<div id=\"lb_footer\" class=\"footer\">\n" +
+            "            <div id=\"checkbox_outer\"><table><tr><td id=\"checkbox_holder\">" +
+            "            <input type=\"checkbox\" id=\"lb_advanced_cb\" title='" + language.chkShowAdvanced.$tooltip + "' " + lightboxAdvancedCbChecked + " disabled class='disabled' onchange='lbShowAdvanced(\"" + key + "\")'> <label id=\"lb_advanced_cb_span\" for=\"lb_advanced_cb\" class=\"disabled\">" + language.chkShowAdvanced.$label + "</label>" +
+            "</td></tr></table></div>\n" +
+            "        </div>");
+
         let lightboxTable = $("<table id='lightboxPanel' class='content'></table>");
         let lightboxId = "#lightbox_" + group.name;
-				let name = wizard_data[lo_data[key]['attributes'].nodeName].menu_options.menuItem;
-				lightboxHtml.append($("<div>").text(name));
+        //let name = wizard_data[lo_data[key]['attributes'].nodeName].menu_options.menuItem;
+        //lightboxHtml.append($("<div>").text(name));
 
         //build lightbox form content input by input
         for (var j = 0; j < groupChildren.length; j++) {
@@ -4633,7 +4649,10 @@ var EDITOR = (function ($, parent) {
                 group.value.lightbox
             );
         }
-        lightboxHtml.append(lightboxTable);
+        lightboxBody.append(lightboxTable);
+        lightboxHtml.append(lightboxHeader);
+        lightboxHtml.append(lightboxBody);
+        lightboxHtml.append(lightboxFooter);
 
         // ensure global is always present
         window.lightboxCKEditorIds = window.lightboxCKEditorIds || [];

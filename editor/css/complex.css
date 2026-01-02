@@ -197,6 +197,12 @@ input.media, input.date
     border-top-right-radius: 4px;
 }
 
+#lb_header {
+	font-weight: bold;
+	text-align: left;
+	padding-left: 15px;
+}
+
 .subhead ,
 .footer {
     border: 0;
@@ -215,6 +221,11 @@ input.media, input.date
     z-index: 100;
 }
 .subhead { border-bottom: 1px solid #777; }
+
+#lb_footer.footer{
+	bottom:0px;
+	height: 32px;
+}
 
 .content {
 	padding:	5px;
@@ -878,6 +889,12 @@ td.flashonly, td.deprecated{
 	padding: 10px;
 }
 
+.optButtonContainer .optMainTitle {
+	background-color: #f0f0f2;
+	padding: 10px;
+	border-bottom: 1px solid #dedede;
+}
+
 .divInsertOptParam {
     width:100%;
 }
@@ -1034,10 +1051,14 @@ div.hotspotEditor {
 
 .featherlight .featherlight-content
 {
-	padding:5px !important;
+	padding:0px !important;
 	min-width: 0 !important;
 	max-width: 95%;
 	border-bottom: none !important;
+}
+
+.featherlight-content {
+	background: rgba(0,0,0,0) !important;
 }
 
 .hotspotEditor
@@ -1613,10 +1634,17 @@ body.fl-jqgrid-top > .featherlight { z-index: 940 !important; }
 	box-sizing: border-box;
 }
 
+.lightbox-form
+{
+	width: 60vw;
+	overflow-y: auto;
+	overflow-x: hidden;
+	max-height: 60vh;
+}
+
 html.with-featherlight .featherlight {
 	background: rgba(0, 0, 0, 0.8);
 }
-
 
 /* start of xertecss.css
 
