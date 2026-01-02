@@ -303,15 +303,15 @@ function x_clean_input_array($input, $expected_type = null, $specialcharsflags =
     foreach ($input as $key => $value) {
         $sanitized[$key] = trim($input[$key]);
         $sanitized[$key] = stripslashes($sanitized[$key]);
-        $sanitized[$key] = htmlspecialchars($sanitized[$key], $specialcharsflags);
+        $sanitized[$key] = htmlentities($sanitized[$key], $specialcharsflags);
         if ($array_type != null) {
             if ($array_type == 'string') {
                 if (!is_string($sanitized[$key])) {
-                    die("Expected string, got " . htmlspecialchars($sanitized[$key], $specialcharsflags));
+                    die("Expected string, got " . htmlentities($sanitized[$key], $specialcharsflags));
                 }
             } else if ($array_type == 'numeric') {
                 if (!is_numeric($sanitized[$key])) {
-                    die("Expected numeric value, got ". htmlspecialchars($sanitized[$key],$specialcharsflags));
+                    die("Expected numeric value, got ". htmlentities($sanitized[$key],$specialcharsflags));
                 }
             }
         }
@@ -319,11 +319,11 @@ function x_clean_input_array($input, $expected_type = null, $specialcharsflags =
     if ($expected_type != null) {
         if ($expected_type == 'array_numeric') {
             if (!is_array($sanitized)) {
-                die("Expected numeric array, got " . htmlspecialchars($sanitized,$specialcharsflags));
+                die("Expected numeric array, got " . htmlentities($sanitized,$specialcharsflags));
             }
         } else if ($expected_type == 'array_string') {
             if (!is_array($sanitized)) {
-                die("Expected string array, got " . htmlspecialchars($sanitized,$specialcharsflags));
+                die("Expected string array, got " . htmlentities($sanitized,$specialcharsflags));
             }
         }
     }
@@ -340,17 +340,23 @@ function x_clean_input($input, $expected_type = null, $specialcharsflags = ENT_Q
     }
     $sanitized = trim($input);
     $sanitized = stripslashes($sanitized);
-    $sanitized = htmlspecialchars($sanitized, $specialcharsflags);
+    $sanitized = htmlentities($sanitized, $specialcharsflags);
     if ($expected_type != null) {
         if ($expected_type == 'string') {
             if (!is_string($sanitized)) {
-                die("Expected string, got " . htmlspecialchars($sanitized, $specialcharsflags));
+                die("Expected string, got " . htmlentities($sanitized, $specialcharsflags));
             }
         }
         else if ($expected_type == 'numeric') {
             if (!is_numeric($sanitized)) {
-                die("Expected numeric value, got " . htmlspecialchars($sanitized, $specialcharsflags));
+                die("Expected numeric value, got " . htmlentities($sanitized, $specialcharsflags));
             }
+        }
+        else if ($expected_type == 'bool') {
+            if (!is_bool($input)) {
+                die("Expected boolean, got " . htmlentities($sanitized, $specialcharsflags));
+            }
+            return $input; // do not modify booleans
         }
     }
     return $sanitized;
@@ -360,9 +366,9 @@ function x_clean_input_json($input)
 {
     $sanitized = trim($input);
     $sanitized = stripslashes($sanitized);
-    $sanitized = htmlspecialchars($sanitized,  ENT_NOQUOTES);
+    $sanitized = htmlentities($sanitized,  ENT_NOQUOTES);
     if (!is_string($sanitized)) {
-        die("Expected string, got " . htmlspecialchars($sanitized,  ENT_NOQUOTES));
+        die("Expected string, got " . htmlentities($sanitized,  ENT_NOQUOTES));
     }
     return $sanitized;
 }
@@ -613,4 +619,17 @@ function x_set_session_name()
     $hash = str_replace('=', '', $hash);
     $current_session_name = session_name();
     session_name($current_session_name . "_" . $hash);
+}
+
+//
+//Function that ensures a folder exists in the learning object
+function verify_LO_folder($LO, $folder)
+{
+    global $xerte_toolkits_site;
+
+    $user_files_dir = $xerte_toolkits_site->users_file_area_full . $LO . $folder;
+
+    if (!is_dir($user_files_dir)) {
+        mkdir($user_files_dir, 0777, true);
+    }
 }

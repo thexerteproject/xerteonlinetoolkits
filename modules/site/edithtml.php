@@ -19,26 +19,8 @@
  */
 
 require_once (__DIR__ . "/../../website_code/php/themes_library.php");
+require_once (__DIR__ . "/../../website_code/php/editor_support_library.php");
 
-/**
- * Created by PhpStorm.
- * User: tom
- * Date: 10-5-14
- * Time: 12:24
- */
-
-function get_children ($parent_id, $lookup, $column, $type) {
-    // children
-    $children = array();
-    //we are at a leaf level
-    if (empty($lookup[$parent_id]['children'])){
-        return $children;
-    }
-    foreach ($lookup[$parent_id]['children'] as $node) {
-        $children[] = array('name' => $node[$column], 'value' => $node[$column], 'children' => get_children($node[$type], $lookup, $column, $type));
-    }
-    return $children;
-}
 
 /**
  *
@@ -143,7 +125,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         $lookup = $lookup + array($node['category_id'] => $node);
     }
     foreach ($lookup as $node){
-        if ($node['parent_id'] != null){
+        if ($node['parent_id'] != null && $node['parent_id'] != 0){
             $lookup[$node['parent_id']]['children'][] = $node;
         }
     }
@@ -151,7 +133,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $parsed_categories = array();
     foreach ($lookup as $value){
         //find all tree origins
-        if ($value['parent_id'] == null) {
+        if ($value['parent_id'] == null || $value['parent_id'] == 0) {
             //add node and all its children recursively
             $node = array('name' => $value['category_name'], 'value' => $value['category_name'], 'children' => get_children($value['category_id'], $lookup, 'category_name', 'category_id'));
             $parsed_categories[] = $node;
@@ -170,7 +152,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         $lookup = $lookup + array($node['educationlevel_id'] => $node);
     }
     foreach ($lookup as $node){
-        if ($node['parent_id'] != null){
+        if ($node['parent_id'] != null && $node['parent_id'] != 0){
             $lookup[$node['parent_id']]['children'][] = $node;
         }
     }
@@ -178,7 +160,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $parsed_educationlevels = array();
     foreach ($lookup as $value){
         //find all tree origins
-        if ($value['parent_id'] == null) {
+        if ($value['parent_id'] == null || $value['parent_id'] == 0) {
             //add node and all its children recursively
             $node = array('name' => $value['educationlevel_name'], 'value' => $value['educationlevel_name'], 'children' => get_children($value['educationlevel_id'], $lookup, 'educationlevel_name', 'educationlevel_id'));
             $parsed_educationlevels[] = $node;
@@ -219,6 +201,23 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     {
         $body_class = ' class="elevated"';
     }
+
+    $vendors = get_vendor_settings();
+    $corpus_upload_types = array();
+    if (array_key_exists('ai', $vendors )){
+        foreach ($vendors['ai'] as $vendor){
+            foreach ($vendor->sub_options as $option_name=>$value){
+                if ($value) {
+                    $option_exploded = explode(" ", $option_name);
+                    if ($option_exploded[1] == 'uploads' && !in_array($option_exploded[0], $corpus_upload_types)) {
+                        $corpus_upload_types[] = $option_exploded[0];
+                    }
+                }
+            }
+        }
+    }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $_SESSION['toolkits_language'];?>">
@@ -360,6 +359,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
 <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css">
 
+<!-- load js ai master file -->
+<script type="text/javascript" src="modules/xerte/parent_templates/Nottingham/common_html5/js/ai-master.js"></script>
+
 <!-- load exactly the same codemirror scripts as needed by ckeditor -->
 <script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.addons.min.js?version=<?php echo $version;?>"></script>
@@ -396,6 +398,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "template_sub_pages=" . json_encode($template_sub_pages) . ";\n";
     echo "simple_lo_page=" . ($simple_lo_page ? "true" : "false") . ";\n";
     echo "disable_advanced=" . ($disable_advanced ? "true" : "false") . ";\n";
+    echo "vendor_options=" . json_encode($vendors) . ";\n";
+    echo "corpus_upload_types=" . json_encode($corpus_upload_types) . ";\n";
+    echo "management_helper_table=" . json_encode($xerte_toolkits_site->management_helper_table) . ";\n";
 
     echo "oai_pmh_available=" . ($oai_pmh ? "true" : "false") . ";\n";
     echo "roles=" . json_encode($user_roles) . ";\n";

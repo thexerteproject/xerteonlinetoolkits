@@ -4,13 +4,24 @@
 		overflow:	auto;
 	}
 	
-	#pageContents button {
-		margin:		10px;
-		float:		right;
+	#btnHolder {
+		text-align: right;
 	}
 	
 	#answer {
 		margin-top:	1em;
+		overflow: auto;
+	}
+
+	#prompt .prompt:not(:last-of-type) {
+		border-bottom: 1px solid #ccc;
+		margin-bottom: 1em;
+		padding-bottom: 1em;
+	}
+
+	#fbTxt.border {
+		border-top: 1px solid #ccc;
+		padding-top: 1em;
 	}
 	
 	#pageContents .panelImg {
@@ -26,16 +37,21 @@
 		max-width: 80%;
 	}
 	
-	#answerTxt {
+	.answerTxt {
 		display:	block;
 		width:		100%;
 		box-sizing: border-box;
 		resize:		vertical;
 		margin:	0.5em auto;
 	}
-	
-	#copyTxt {
-		color:		#b50202;
-		font-size:	0.8em;
+
+	.pageBlock h4, .pageBlock h5, #toSelect h4, #toSelect h5 {
+		padding-left: 0.3em;
+		padding-right: 0.3em;
+		margin: 0;
 	}
-	
+
+	#btnHolder {
+		margin-top: 1em;
+	}
+

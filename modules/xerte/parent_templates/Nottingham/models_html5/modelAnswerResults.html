@@ -23,7 +23,14 @@
 	var modelAnswerResults = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$("#panelTxt").html(modelAnswerResults.getData());
+			// refresh the data that's shown everytime this page is viewed
+			const data = this.getData();
+			if (data.found) {
+				$("#panelTxt").html(data.string);
+				this.refineData();
+			} else {
+				$("#panelTxt").html(x_getLangInfo(x_languageData.find("noData")[0], "label", "No page data"));
+			}
 		}
 		
 		// function called every time the size of the LO is changed
@@ -33,7 +40,7 @@
 		}
 		
 		this.init = function() {
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			const panelWidth = x_currentPageXML.getAttribute("panelWidth");
 			if (panelWidth == "Small") {
 				$("#pageContents .splitScreen").addClass("large");
 			} else if (panelWidth == "Large") {
@@ -41,50 +48,179 @@
 			} else {
 				$("#pageContents .splitScreen").addClass("medium");
 			}
-			
-			// if language attributes aren't in xml will have to use english fall back
-			var copyBtnLabel = x_currentPageXML.getAttribute("copyBtnLabel");
-			if (copyBtnLabel == undefined) {
-				copyBtnLabel = "Select Text";
-			}
-			var copyTxt = x_currentPageXML.getAttribute("copypasteinfo");
-			if (copyTxt == undefined) {
-				copyTxt = "Note: Click the 'Select Text' button to highlight the text on the right and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference.";
+
+			// page text might be in cdata (3.14 & earlier) or in text attribute
+			const pageText = x_currentPageXML.childNodes[0] == undefined || x_currentPageXML.childNodes[0] == "" || x_currentPageXML.childNodes[0].nodeValue == undefined ? (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") !== "" ? x_currentPageXML.getAttribute("text") : "") : x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue);
+			$("#textHolder").html(pageText);
+
+			// set up copy to clipboard button
+			// this is either turned on with an optional property (>v3.15) or will be on if copypasteinfo exists
+			if (x_currentPageXML.getAttribute("copyPaste") === 'true' || (x_currentPageXML.getAttribute("copyPaste") !== 'false' && (x_currentPageXML.getAttribute("copyPaste") !== 'false' && x_currentPageXML.getAttribute("copypasteinfo") != undefined && x_currentPageXML.getAttribute("copypasteinfo") !== ""))) {
+				$("#copyBtn")
+						.button({
+							label: x_currentPageXML.getAttribute("copyBtn2Label") != undefined ? x_currentPageXML.getAttribute("copyBtn2Label") : "Copy"
+						})
+						.click(async function() {
+							// copy to clipboard using function in xenith.js
+							// if it fails then text will be selected and alert will give instructions to Ctrl+C to copy
+							x_copyText($("#panelTxt"), x_getLangInfo(x_languageData.find("copy")[0], "fail", "Copying text to clipboard failed. Use Ctrl+C to manually copy the text to the clipboard."), "panelTxt", x_getLangInfo(x_languageData.find("copy")[0], "selected", "Text selected"));
+						})
+						.focusout(function () {
+							setTimeout(function() { $("#screenReaderInfo").html(""); }, 100)
+						})
+						.hide();
+			} else {
+				$("#copyBtn").remove();
 			}
 
-			var cdata = x_currentPageXML.childNodes[0] == undefined ? '' : x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue);
-			$("#textHolder").html(cdata + '<hr/><div id="copyTxt"><p>' + copyTxt + '</p></div><button id="copyBtn">' + copyBtnLabel + '</button>');
-			
-			$("#copyBtn")
-				.button({
-					label:	copyBtnLabel
-				})
-				.click(function() {
-					x_selectText("panelTxt");
-					$("#screenReaderInfo").html(x_getLangInfo(x_languageData.find("screenReaderInfo").find("modelAnswerResults")[0], "selected", "") != null ? x_getLangInfo(x_languageData.find("screenReaderInfo").find("modelAnswerResults")[0], "selected", "") : "");
-				})
-				.focusout(function() {
-					$("#screenReaderInfo").html("");
-				});
-			
-			$("#panelTxt").html(modelAnswerResults.getData());
-			
+			// set up download button
+			if (x_currentPageXML.getAttribute("showDownload") === 'true') {
+				$("#downloadBtn")
+						.button({
+							label: x_currentPageXML.getAttribute("downloadTxt") != undefined ? x_currentPageXML.getAttribute("downloadTxt") : "Download"
+						})
+						.click(function() {
+							// download a Word doc containing the text shown in the #panelTxt div
+
+							// styles used in downloaded word doc
+							let styles = 'body, .ui-widget { font-family: Arial, sans-serif; -webkit-font-smoothing: antialiased; color: black; font-size: 12pt; } ';
+							styles += 'table.tableDoc { font-size: 1em; margin: 0.2em; padding: 0.2em; width: 100%; border-collapse: collapse; } ';
+
+							// remove page links from the text data
+							let $panelTxt = $("#panelTxt").clone();
+							$panelTxt.find("a.dataPageLink").contents().unwrap();
+
+							const docData = {
+								"filename": x_currentPageXML.getAttribute("filename") != undefined && x_currentPageXML.getAttribute("filename").trim() !== "" ? x_currentPageXML.getAttribute("filename") : "model_answer_results",
+								"orientation": x_currentPageXML.getAttribute("fileOrientation") != undefined ? x_currentPageXML.getAttribute("fileOrientation") : "portrait",
+								"documentName": '<h1>' + x_params.name + '</h1><h2>' + x_currentPageXML.getAttribute('name') + '</h2>',
+								"pages": [{ pageName: "", pageText: $panelTxt.html() }], // add all data into one 'page' (download.php was written for documentation page so expects info in specific format)
+
+								// these styles are the same as those used in documentation page model
+								"styles": styles,
+								"size": x_currentPageXML.getAttribute('fileOrientation') == 'landscape' ? '841.7pt 595.45pt' : '595.45pt 841.7pt',
+								"h1": "20px",
+								"h2": "18px",
+								"h3": "16px",
+								"p": "15px"
+							}
+
+							let form = document.createElement("form");
+							form.method = 'post';
+							form.target = 'displayjson';
+							form.action = (typeof x_downloadURL != 'undefined') ? x_downloadURL : 'download.php';
+
+							$('<input type="hidden">') // IE compatibility
+									.attr({
+										name: 'data',
+										value: JSON.stringify(docData)
+									})
+									.appendTo(form);
+							document.body.appendChild(form);
+							form.submit();
+							document.body.removeChild(form);
+						})
+						.hide();
+			} else {
+				$("#downloadBtn").remove();
+			}
+
+			const data = this.getData();
+			if (data.found) {
+				$("#panelTxt").html(data.string);
+				this.refineData();
+			} else {
+				$("#panelTxt").html(x_getLangInfo(x_languageData.find("noData")[0], "label", "No page data"));
+			}
+
 			this.sizeChanged();
 			x_pageLoaded();
 		}
 		
-		// function gets saved data about all modelAnswer pages in the project
+		// function gets saved data about modelAnswer pages in the project
 		this.getData = function() {
-			var dataString = "";
-			for (var i=0; i<x_pageInfo.length; i++) {
-				var thisObject = x_pageInfo[i];
-				if (thisObject.type == "modelAnswer") {
-					if (thisObject.savedData != undefined) { // ignores skipped pages
+			// by default all viewed model answer pages will be shown
+			// if you only want some to be shown, you can add nested 'model answer pages' to this results page to specify which model answer pages to show
+			const pages = [];
+			$(x_currentPageXML).children().each(function() {
+				if (this.getAttribute("page") !== "") {
+					pages.push(this.getAttribute("page"));
+				}
+			});
+
+			// if this results page is a standalone page opening in a lightbox, ensure it gets the data about model answer pages from the parent project
+			const isStandalone = x_pageInfo[x_currentPage].standalone && x_pages[x_currentPage].getAttribute('linkTarget') === 'lightbox'
+					&& parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current() && parent.window.x_pageInfo != undefined;
+			const thisPageInfo = isStandalone ? parent.window.x_pageInfo : x_pageInfo;
+
+			let dataString = "";
+			let dataFound = true;
+			const pageString = x_currentPageXML.getAttribute("pageTxt") != undefined ? x_currentPageXML.getAttribute("pageTxt") : "Page";
+			const pageUnviewed = x_currentPageXML.getAttribute("notViewed") != undefined ? x_currentPageXML.getAttribute("notViewed") : "Page not viewed";
+			for (let i=0; i<thisPageInfo.length; i++) {
+				const thisObject = thisPageInfo[i];
+				// only show info for modelAnswer pages, that have not been skipped, & have been selected to be shown (or all if not set)
+				let includeUnviewed = x_currentPageXML.getAttribute("unviewed") === "true" ? true : false;
+				if (thisObject.type == "modelAnswer" && (thisObject.savedData != undefined || includeUnviewed) && (pages.length === 0 || pages.indexOf(thisObject.linkID) !== -1)) {
+					if (thisObject.savedData != undefined) {
 						dataString += thisObject.savedData;
+
+					} else {
+						// page was not viewed
+						const thisLink = '<a href="#" class="dataPageLink" onclick="x_navigateToPage(false,{type:\'linkID\',ID:\'' + x_pages[i].getAttribute("linkID") + '\'}); return false;">';
+						if (thisObject.standalone != true && x_pages[i] !== "menu") {
+							dataString += '<div class="pageBlock"><h3 class="dataPageH">';
+							if (x_pages[i].getAttribute("name") != undefined && x_pages[i].getAttribute("name") !== "") {
+								dataString += thisLink + x_pages[i].getAttribute("name") + '</a>';
+							} else {
+								const pageNum = x_normalPages.indexOf(i) - (XENITH.PAGEMENU.menuPage ? 1 : 0);
+								dataString += thisLink + pageString + ' ' + (pageNum+1) + '</a>:';
+							}
+							dataString += '</h3>';
+							dataString += '<div class="dataQuestionAnswer"><p><em>' + pageUnviewed + '</em></p></div>';
+							dataString += '</div>';
+						} else {
+							dataString += '<div class="pageBlock standalone">';
+							dataString += '<h3 class="dataPageH">' + thisLink + x_pages[i].getAttribute("name") + '</a></h3>';
+							dataString += '<div class="dataQuestionAnswer"><p><em>' + pageUnviewed + '</em></p></div>';
+							dataString += '</div>';
+						}
 					}
 				}
 			}
-			return dataString;
+
+			if (dataString.length > 0) {
+				$("#copyBtn, #downloadBtn").show();
+			} else {
+				dataFound = false;
+			}
+
+			return { string: dataString, found: dataFound};
+		}
+
+		// function removes parts of the dataString that are not needed from the page
+		this.refineData = function() {
+			// author can customise the type of data that is shown from model answer pages
+			// most are on by default & need to be turned off using 'customise results' optional property, except page text which is not shown unless the optional property is turned on
+			const dataToShow = ["dataPageH", "dataPageTxt", "dataPageFb", "dataQuestionH", "dataQuestionTxt", "dataQuestionAnswer", "dataQuestionFb"];
+			for (let i = 0; i < dataToShow.length; i++) {
+				if (x_currentPageXML.getAttribute(dataToShow[i]) === "false" || (dataToShow[i] === "dataPageTxt" && x_currentPageXML.getAttribute(dataToShow[i]) == undefined)) {
+					$("#panelTxt ." + dataToShow[i]).remove();
+				} else {
+					// should page title be made into a link back to that model answer page? the link is already there so remove if this setting isn't turned on
+					if (dataToShow[i] === "dataPageH" && x_currentPageXML.getAttribute("dataPageLink") !== "true") {
+						$("a.dataPageLink").contents().unwrap();
+					}
+				}
+			}
+
+			// remove every question block entirely if all the question level data strings are not shown
+			if (x_currentPageXML.getAttribute("dataQuestionH") === "false" && x_currentPageXML.getAttribute("dataQuestionTxt") === "false" && x_currentPageXML.getAttribute("dataQuestionAnswer") === "false" && x_currentPageXML.getAttribute("dataQuestionFb") === "false") {
+				$("#panelTxt").remove(".questionBlock");
+			}
+
+			// move data for any standalone pages which have not been viewed to the end
+			$("#panelTxt .standalone").appendTo("#panelTxt");
 		}
 	}
 	
@@ -102,6 +238,10 @@
 		<div id="infoHolder" class="right">
 			<div class="panel" tabindex="0">
 				<div id="panelTxt"></div>
+				<div id="btnHolder">
+					<button id="copyBtn"/>
+					<button id="downloadBtn"/>
+				</div>
 			</div>
 		</div>
 		

@@ -635,11 +635,6 @@ a.hotspot, a.hotspot.selected {
   border: 2px solid #cfcfcf;
 }
 
-.x_modelAnswer_page #answerTxt {
-  border-radius: 2vmin;
-  width: 98%;
-}
-
 .x_modelAnswer_page #answer {
   overflow: auto;
 }

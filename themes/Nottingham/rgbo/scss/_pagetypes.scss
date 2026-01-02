@@ -295,11 +295,6 @@ a.hotspot, a.hotspot.selected {
   color:$whiteorlightest;
 }
 
-//*****model answer*****/
-.x_modelAnswer_page #answerTxt {
-  border-radius: $mediumroundedcorners;
-  width: 98%;
-}
 //*****opinion********/
 .x_opinion_page #pageContents input {
   padding-left: 0;
@@ -533,4 +528,10 @@ table.footer.shaded tbody tr:last-child {
 
 table.headerCol.shaded td.header {
 	background-color: inherit;
+}
+
+//*****mcq*****/
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+  background: $brightcolor;
 }

@@ -742,9 +742,19 @@ a.hotspot, a.hotspot.selected {
   background: #EDEDED;
 }
 
-.x_modelAnswer_page #answerTxt {
-  border-radius: 0;
-  width: 98%;
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+  border-color: #278384;
+  color: #278384;
+}
+
+.x_mcq_page #pageContents .optionGroup.answerBtn:not(.selected):hover,
+.x_mcq_page #pageContents .optionGroup.answerBtn:not(.selected).ui-state-focus,
+.x_quiz_page #pageContents .optionGroup.answerBtn:not(.selected):hover,
+.x_quiz_page #pageContents .optionGroup.answerBtn:not(.selected).ui-state-focus {
+  background: #278384;
+  color: #FFFFFF;
+  border-color: #278384;
 }
 
 .x_modelAnswer_page #copyTxt {

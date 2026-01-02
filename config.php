@@ -40,7 +40,7 @@ global $xerte_toolkits_site;
 // and logging (to /tmp/debug.log) are turned on; either of these may help you
 // diagnose installation and integration issues. 
 global $development;
-$development = false;
+$development = true;
 
 ini_set('error_reporting', 0);
 ini_set('display_errors', 0);
@@ -242,6 +242,8 @@ if ($host != '' && $scheme != '' && (!isset($force_site_url_from_db) || !$force_
     $xerte_toolkits_site->site_url = $site_url;
 }
 
+x_set_session_name();
+
 $learning_objects = new StdClass();
 
 foreach (glob(dirname(__FILE__) . "/modules/**/templates/**/*.info") as $infoFile) {
@@ -331,8 +333,26 @@ if(!isset($tsugi_disable_xerte_session) || $tsugi_disable_xerte_session !== true
 }
 
 // Check whether elevated rights are active
+$xerte_toolkits_site->rights = "";
 if (isset($_SESSION['elevated']) && $_SESSION['elevated'])
 {
     $xerte_toolkits_site->rights = 'elevated';
 }
 
+if (file_exists(dirname(__FILE__) . '/vendor_config.php'))
+{
+    require_once(dirname(__FILE__) . '/vendor_config.php');
+}
+
+// vendor, enabled, type, needs_key, sub_options
+$management_helper_table_rows = db_query("select * from {$xerte_toolkits_site->database_table_prefix}management_helper");
+$xerte_toolkits_site->management_helper_table = array();
+foreach($management_helper_table_rows as $row){
+    $object = new stdClass();
+    $object->vendor = $row["vendor"];
+    $object->needs_key = $row["needs_key"];
+    $object->type = $row["type"];
+    $object->enabled = $row["enabled"];
+    $object->sub_options = json_decode($row["sub_options"]);
+    $xerte_toolkits_site->management_helper_table[] = $object;
+}

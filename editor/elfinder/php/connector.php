@@ -53,6 +53,22 @@ x_check_path_traversal($rootpath, $xerte_toolkits_site->users_file_area_full, "I
 $uploadURL = x_convert_user_area_url_to_path($rooturl);
 x_check_path_traversal($uploadURL, $xerte_toolkits_site->users_file_area_full, "Invalid upload location", "folder");
 
+//extra option to support alternative corpus file storage
+$folder_space = 'media';
+if (isset($_REQUEST['loc'])) {
+    $folder_space = x_clean_input($_REQUEST['loc']);
+    //ensure $file_location is always media or corpus
+    if (!in_array($folder_space, ['media', 'RAG/corpus'], true)) {
+        die("Invalid location");
+    }
+    if ($folder_space == 'RAG/corpus') {
+        $path_parts = explode('/', $rootpath);
+        end($path_parts);
+        $lastElement = prev($path_parts);
+        verify_LO_folder($lastElement, '/RAG/corpus');
+    }
+}
+
 include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderConnector.class.php';
 include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinder.class.php';
 include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderVolumeDriver.class.php';
@@ -101,11 +117,11 @@ $opts = array(
 	'roots' => array(
 		array(
 			'driver'        => 'LocalFileSystem',   // driver for accessing file system (REQUIRED)
-			'path'          => $rootpath . "/media",         // path to files (REQUIRED)
-			'URL'           => $rooturl . "/media", // URL to files (REQUIRED)
+			'path'          => $rootpath . "/" . $folder_space,         // path to files (REQUIRED)
+			'URL'           => $rooturl . "/" . $folder_space, // URL to files (REQUIRED)
 			'accessControl' => 'access',             // disable and hide dot starting files (OPTIONAL)
-            'tmbPath'       => $rootpath . "/media/.tmb",
-            'tmbURL'        => $rooturl . "/media/.tmb",
+            'tmbPath'       => $rootpath . "/" . $folder_space . "/.tmb",
+            'tmbURL'        => $rooturl . "/" . $folder_space . "/.tmb",
             'tmbCrop'       => false,
             'uploadDeny' => array('text/x-php','application/x-php'),
             'disabled'      => array('archive', 'extract', 'forward', 'netmount', 'netunmount', 'zipdl'),

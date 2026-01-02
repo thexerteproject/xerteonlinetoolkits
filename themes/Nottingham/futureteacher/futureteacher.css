@@ -413,9 +413,9 @@ a.hotspot, a.hotspot.selected {
   color: #ffffff;
 }
 
-.x_modelAnswer_page #answerTxt {
-  border-radius: 3px;
-  width: 98%;
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+  background: #000000;
 }
 
 .x_opinion_page #pageContents input {
