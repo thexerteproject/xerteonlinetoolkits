@@ -24,15 +24,6 @@
         // function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			this.optionElements = $("#pageContents").data("optionElements");
-			
-			if ($(x_currentPageXML).children().length > 0) {
-				this.startQ();
-				$("#feedback").find('.feedbackBlock').html("");
-				$("#optionHolder input:checked").prop("checked", false);
-				$("#checkBtn")
-					.show()
-					.button("disable");
-			}
 		}
 
 		// function called every time the size of the LO is changed
@@ -121,11 +112,11 @@
         {
             var answerFeedback = "",
 				genFeedback,
-                    correct = (x_currentPageXML.getAttribute("type") == "Multiple Answer"),
-                    l_options = [],
-                    l_answers = [],
-                    l_feedbacks = [],
-                    selected = $("#optionHolder input");
+				correct = (x_currentPageXML.getAttribute("type") == "Multiple Answer"),
+				l_options = [],
+				l_answers = [],
+				l_feedbacks = [],
+				selected = $("#optionHolder input");
 			
             if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
 				genFeedback = x_addLineBreaks(x_currentPageXML.getAttribute("feedback"));
@@ -185,115 +176,171 @@
                     l_feedbacks.push(x_GetTrackingTextFromHTML(selectedOption.feedback, ""));
                 }
             }
-			
-            var singleRight = x_currentPageXML.getAttribute("singleRight") != undefined ? x_currentPageXML.getAttribute("singleRight") : "Your answer is correct",
-				singleWrong = x_currentPageXML.getAttribute("singleWrong") != undefined ? x_currentPageXML.getAttribute("singleWrong") : "Your answer is incorrect",
-				multiRight = x_currentPageXML.getAttribute("multiRight") != undefined ? x_currentPageXML.getAttribute("multiRight") : "You have selected all the correct answers",
-				multiWrong = x_currentPageXML.getAttribute("multiWrong") != undefined ? x_currentPageXML.getAttribute("multiWrong") : "You have not selected the correct combination of answers";
 
-            var rightWrongTxt = "";
-            // add correct feedback depending on if question overall has been answered correctly or not
-			if (x_currentPageXML.getAttribute("markFeedback") != 'false') { // new optional property allows for this feedback to be turned off
-				if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
-					if ($("#pageContents").data("judge") == true) { // there is a correct answer for question
-						if (correct == true) {
-							rightWrongTxt = multiRight != '' ? '<p>' + multiRight + '</p>' : '';
-						} else {
-							rightWrongTxt = multiWrong != '' ? '<p>' + multiWrong + '</p>' : '';
+			if (l_options.length > 0) {
+
+				var singleRight = x_currentPageXML.getAttribute("singleRight") != undefined ? x_currentPageXML.getAttribute("singleRight") : "Your answer is correct",
+						singleWrong = x_currentPageXML.getAttribute("singleWrong") != undefined ? x_currentPageXML.getAttribute("singleWrong") : "Your answer is incorrect",
+						multiRight = x_currentPageXML.getAttribute("multiRight") != undefined ? x_currentPageXML.getAttribute("multiRight") : "You have selected all the correct answers",
+						multiWrong = x_currentPageXML.getAttribute("multiWrong") != undefined ? x_currentPageXML.getAttribute("multiWrong") : "You have not selected the correct combination of answers";
+
+				var rightWrongTxt = "";
+				// add correct feedback depending on if question overall has been answered correctly or not
+				if (x_currentPageXML.getAttribute("markFeedback") != 'false') { // new optional property allows for this feedback to be turned off
+					if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
+						if ($("#pageContents").data("judge") == true) { // there is a correct answer for question
+							if (correct == true) {
+								rightWrongTxt = multiRight != '' ? '<p>' + multiRight + '</p>' : '';
+							} else {
+								rightWrongTxt = multiWrong != '' ? '<p>' + multiWrong + '</p>' : '';
+							}
 						}
-					}
-				} else {
-					if ($("#pageContents").data("judge") == true) { // there is a correct answer for question
-						if (correct == true) {
-							rightWrongTxt = singleRight != '' ? '<p>' + singleRight + '</p>' : '';
-						} else {
-							rightWrongTxt = singleWrong != '' ? '<p>' + singleWrong + '</p>' : '';
-						}
-					}
-				}
-			}
-			
-			var feedback = 0,
-				feedbackDiv = ['top', 'middle', 'bottom'],
-				// order feedback is shown - default is: general feedback > answer feedback > correct/incorrect feedback
-				feedbackOrder = x_currentPageXML.getAttribute("feedbackPos") == undefined ? 'GAC' : x_currentPageXML.getAttribute("feedbackPos");
-			
-			feedbackOrder = [...feedbackOrder];
-			
-			if (answerFeedback != undefined && answerFeedback != '') { feedback++; } else { feedbackOrder.splice(feedbackOrder.indexOf('A'), 1); }
-			if (genFeedback != undefined && genFeedback != '') { feedback++; } else { feedbackOrder.splice(feedbackOrder.indexOf('G'), 1); }
-			if (rightWrongTxt != undefined && rightWrongTxt != '') { feedback++; } else { feedbackOrder.splice(feedbackOrder.indexOf('C'), 1); }
-			
-			// show the feedback in the order specified
-			for (var i=0; i<feedbackDiv.length; i++) {
-				if (i<feedback) {
-					var thisFeedback;
-					if (feedbackOrder[i] == 'G') {
-						thisFeedback = genFeedback;
-					} else if (feedbackOrder[i] == 'A') {
-						thisFeedback = answerFeedback;
 					} else {
-						thisFeedback = rightWrongTxt;
+						if ($("#pageContents").data("judge") == true) { // there is a correct answer for question
+							if (correct == true) {
+								rightWrongTxt = singleRight != '' ? '<p>' + singleRight + '</p>' : '';
+							} else {
+								rightWrongTxt = singleWrong != '' ? '<p>' + singleWrong + '</p>' : '';
+							}
+						}
 					}
-					
-					$('#' + feedbackDiv[i] + 'Feedback')
-						.html(thisFeedback)
-						.show();
-					
-				} else {
-					$('#' + feedbackDiv[i] + 'Feedback')
-						.html('')
-						.hide();
 				}
-			}
-			
-			var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
-            if (feedbackLabel == undefined) {
-                feedbackLabel = "Feedback";
-            }
-			$("#feedbackHeader").html(feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '');
-			
-            $("#feedback")
-				.find(".audioHolder").each(function() {
+
+				var feedback = 0,
+						feedbackDiv = ['top', 'middle', 'bottom'],
+						// order feedback is shown - default is: general feedback > answer feedback > correct/incorrect feedback
+						feedbackOrder = x_currentPageXML.getAttribute("feedbackPos") == undefined ? 'GAC' : x_currentPageXML.getAttribute("feedbackPos");
+
+				feedbackOrder = [...feedbackOrder];
+
+				if (answerFeedback != undefined && answerFeedback != '') {
+					feedback++;
+				} else {
+					feedbackOrder.splice(feedbackOrder.indexOf('A'), 1);
+				}
+				if (genFeedback != undefined && genFeedback != '') {
+					feedback++;
+				} else {
+					feedbackOrder.splice(feedbackOrder.indexOf('G'), 1);
+				}
+				if (rightWrongTxt != undefined && rightWrongTxt != '') {
+					feedback++;
+				} else {
+					feedbackOrder.splice(feedbackOrder.indexOf('C'), 1);
+				}
+
+				// show the feedback in the order specified
+				for (var i = 0; i < feedbackDiv.length; i++) {
+					if (i < feedback) {
+						var thisFeedback;
+						if (feedbackOrder[i] == 'G') {
+							thisFeedback = genFeedback;
+						} else if (feedbackOrder[i] == 'A') {
+							thisFeedback = answerFeedback;
+						} else {
+							thisFeedback = rightWrongTxt;
+						}
+
+						$('#' + feedbackDiv[i] + 'Feedback')
+								.html(thisFeedback)
+								.show();
+
+					} else {
+						$('#' + feedbackDiv[i] + 'Feedback')
+								.html('')
+								.hide();
+					}
+				}
+
+				var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
+				if (feedbackLabel == undefined) {
+					feedbackLabel = "Feedback";
+				}
+
+				// show the feedback in the order specified
+				for (var i = 0; i < feedbackDiv.length; i++) {
+					if (i < feedback) {
+						var thisFeedback;
+						if (feedbackOrder[i] == 'G') {
+							thisFeedback = genFeedback;
+						} else if (feedbackOrder[i] == 'A') {
+							thisFeedback = answerFeedback;
+						} else {
+							thisFeedback = rightWrongTxt;
+						}
+
+						$('#' + feedbackDiv[i] + 'Feedback')
+								.html(thisFeedback)
+								.show();
+
+					} else {
+						$('#' + feedbackDiv[i] + 'Feedback')
+								.html('')
+								.hide();
+					}
+				}
+				$("#feedbackHeader").html(feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '');
+
+				$("#feedback")
+						.hide()
+						.find(".audioHolder").each(function () {
 					$(this).mediaPlayer({
-						type	:"audio",
-						source	:$(this).data("audio"),
-						width	:"100%"
+						type: "audio",
+						source: $(this).data("audio"),
+						width: "100%"
 					});
-					
+
 					// manually add a transcript button to the end of the audio bar
 					if ($(this).data("transcript") !== false) {
 						x_addAudioTranscript($("#feedback").find(".audioHolder"), $(this).data("transcript"));
 					}
 				});
 
-            $(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+				// to avoid a sudden jump in layout, feedback should slide in gradually if content is centred vertically
+				if (x_checkVerticalCentre()) {
+					$("#feedback").slideDown(function() {
+						// refresh feedback so it is picked up by screen readers now not hidden
+						$("#feedback .feedbackBlock").each(function() {
+							$(this).html($(this).html());
+						});
+					});
+				} else {
+					$("#feedback").show();
+					$("#checkBtn").hide();
 
-			// scroll to the feedback div so there is less chance of feedback being completely off screen
-			$("#mainPanel").animate({
-				scrollTop: $("#mainPanel").scrollTop() - $("#mainPanel").offset().top + $("#feedback").offset().top
-			}, 500);
+					// refresh feedback so it is picked up by screen readers now not hidden
+					setTimeout(() => {
+						$("#feedback .feedbackBlock").each(function () {
+							$(this).html($(this).html());
+						});
+					},0);
+				}
+				$("#checkBtn").button("disable");
 
-			let judge = $("#pageContents").data("judge");
+				// scroll to the feedback div so there is less chance of feedback being completely off-screen
+				$("#mainPanel").animate({
+					scrollTop: $("#mainPanel").scrollTop() - $("#mainPanel").offset().top + $("#feedback").offset().top
+				}, 500);
 
-            var result = {
-                success: correct || !judge,
-                score: correct ? 100.0 : 0.0,
-				judge: judge
-			};
-            XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
-            XTSetPageScore(x_currentPage, (correct || !judge ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
-            if (XTGetMode() == "normal")
-            {
-                // Disable all options
-                var i=0;
-                for (i=0; i<mcq.currNrOptions; i++)
-                {
-                    $("#option"+i).attr("disabled", "disabled");
-                }
-            }
+				let judge = $("#pageContents").data("judge");
 
-            x_pageContentsUpdated();
+				var result = {
+					success: correct || !judge,
+					score: correct ? 100.0 : 0.0,
+					judge: judge
+				};
+				XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
+				XTSetPageScore(x_currentPage, (correct || !judge ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
+				if (XTGetMode() == "normal") {
+					// Disable all options
+					var i = 0;
+					for (i = 0; i < mcq.currNrOptions; i++) {
+						$("#option" + i).attr("disabled", "disabled");
+					}
+				}
+
+				x_pageContentsUpdated();
+			}
         }
 
 		this.init = function() {
@@ -308,6 +355,7 @@
 			// set up split screen layout
 			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
+			$("#feedback").hide();
 			$("#question").html(x_addLineBreaks(x_currentPageXML.getAttribute("prompt")));
 			
 			var $optionHolder = $("#optionHolder");
@@ -369,7 +417,16 @@
 								"id"		:"option" + i
 								})
 							.change(function() {
-								$("#feedback").find('.feedbackBlock').html("");
+								// to avoid a sudden jump in layout, feedback should slide up gradually if content is centred vertically
+								if (x_checkVerticalCentre()) {
+									if ($("#feedback").is(":visible")) {
+										$("#feedback").slideUp(function () {
+											$("#feedback").find('.feedbackBlock').html("");
+										});
+									}
+								} else {
+									$("#feedback").hide().find('.feedbackBlock').html("");
+								}
 								var $checkBtn = $("#checkBtn"),
 									$selected = $("#optionHolder input:checked");
 								
@@ -410,7 +467,6 @@
 						disabled: true
 					})
 					.click(function() {
-						$(this).hide();
 						mcq.showFeedBackandTrackScore();
 						mcq.checked = true;
 					})

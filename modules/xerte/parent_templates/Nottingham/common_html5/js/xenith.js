@@ -2638,6 +2638,16 @@ function x_setUpPagePosition(project) {
 	}
 }
 
+// function returns whether page contents is centred vertically
+// used in page models as the way feedback is shown may change when centred vertically (e.g. slide in rather than just appear)
+function x_checkVerticalCentre() {
+	if (($x_mainHolder.hasClass("x_verticalCentre") && !$x_mainHolder.hasClass("x_noVerticalCentre")) || $x_pageHolder.hasClass("x_verticalCentre")) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 // function adds the scrolling class when required - this helps determine whether the x_verticalCentrePanel css should be applied or not
 // columns should only be centred if all columns fit on screen with no scrolling - otherwise align top
 function x_checkForScrolling() {
