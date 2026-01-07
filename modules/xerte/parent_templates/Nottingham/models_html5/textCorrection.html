@@ -24,7 +24,7 @@
 				$attempts,
 				$answer,
 				$textArea;
-			
+
             this.pageChanged = function() {
 				$pageContents = $('#pageContents');
 				$attempts = $("#attempts");
@@ -34,7 +34,10 @@
 
             this.sizeChanged = function() {
                 // panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
-                XENITH.SPLITSCREEN.resizePanel();
+                const panelH = XENITH.SPLITSCREEN.resizePanel();
+
+                // this will be used later when showing feedback - it is done differently depending on whether content is centred vertically on the page & whether panel is full height
+                $("#pageContents").data("slideIn", x_checkVerticalCentre() && panelH === false);
             };
 
             this.leavePage = function () {
@@ -58,7 +61,7 @@
                 }else{
                     result = 0;
                 }
-				
+
                 XTExitInteraction(x_currentPage, 0, result,[], input, []);
                 XTSetPageScore(x_currentPage, result);
             };
@@ -68,7 +71,7 @@
 				$attempts = $("#attempts");
 				$answer = $("#answer");
 				$textArea = $(".answer textarea");
-				
+
 				$pageContents.data('hasExited', false)
 
                 var weighting = 1.0;
@@ -97,19 +100,19 @@
 				if (x_currentPageXML.getAttribute("disableAnswers") !== "false") {
 					var correctLabel = x_currentPageXML.getAttribute("correctLabel") !== null ? x_currentPageXML.getAttribute("correctLabel") : 'Correct Answer',
 						convertedAnswer = '<p>' + answer.replace(/(?:\r\n|\r|\n)/g, '<br>') + '</p>';
-					
+
 					$answer.data("fb", "<h3 class='fbLabel'>" + correctLabel + "</h3>" + convertedAnswer);
 				} else {
 					$answer.remove();
 				}
-				
+
 				//Add aria-label to answer box
 				var answerFieldLabel = x_currentPageXML.getAttribute("answerLabel");
 				if (answerFieldLabel === undefined | answerFieldLabel === null) {
 					answerFieldLabel = "Answer";
 				}
 				$textArea.attr({"aria-label" : answerFieldLabel});
-			
+
                 if(x_currentPageXML.getAttribute("copyText") === "true"){
 					var placeHolder = $('<div>').html(originalQuestion).text().trim();
                     $textArea
@@ -126,14 +129,14 @@
                 var correct = '<p>' + correctIcon + x_currentPageXML.getAttribute("textRight") + '</p>';
                 var checkButtonTxt = x_currentPageXML.getAttribute("checkBtn");
                 var attemptLabel = x_currentPageXML.getAttribute("attemptLabel");
-				
+
                 if( x_currentPageXML.getAttribute("attemptLabel") == null){
                     attemptLabel = "Attempts remaining";
                 }
-				
+
 				// no. of tries allowed
 				var amountOfTries = x_currentPageXML.getAttribute("amountOfTries");
-				
+
 				if (amountOfTries !== null && amountOfTries !== undefined) {
 					$pageContents.data('triesLeft', parseInt(amountOfTries));
 					$attempts.html('<p>' + attemptLabel + ": " + amountOfTries + '</p>');
@@ -141,20 +144,20 @@
 					$pageContents.data('triesLeft', undefined);
 					$attempts.remove();
 				}
-				
+
                 $("#checkButton")
                     .button({
                         label: checkButtonTxt
                     })
                     .click(function () {
-						
+
                         var input = $textArea.val(),
 							attemptMade = !(input === "" || ($textArea.data('placeHolder') != undefined && $textArea.data('placeHolder') == input));
-						
+
 						if (attemptMade && $pageContents.data('triesLeft') !== undefined) {
 							$pageContents.data('triesLeft', $pageContents.data('triesLeft') - 1);
 						}
-						
+
 						var triesLeft = $pageContents.data('triesLeft');
 
 						if ($attempts.length > 0) {
@@ -166,13 +169,13 @@
                             label = x_currentPageXML.getAttribute("trackinglabel");
                         }
                         XTEnterInteraction(x_currentPage, 0, "text", label, "",$pageContents.data('answer'), x_currentPageXML.getAttribute("FurtherClarification"));
-						
+
 						var $correctOrNot = $("#correctOrNot");
                         $correctOrNot.html("");
-						
+
 						if (!attemptMade) {
 							$correctOrNot.append(incompleet);
-							
+
 						} else {
 							if (input == $pageContents.data('answer')) {
 								$correctOrNot.append(correct);
@@ -187,24 +190,41 @@
                         if (attemptMade && (input === $pageContents.data('answer') || triesLeft == undefined || triesLeft <= 0)) {
 							// disable check btn & text area when correct answer entered or max tries reached
 							if ((triesLeft != undefined && triesLeft <= 0) || input == $pageContents.data('answer')) {
-								$(this).hide();
-								$attempts.hide();
+                                if ($("#pageContents").data("slideIn")) {
+                                    $(this).slideUp();
+                                    $attempts.slideUp();
+                                } else {
+                                    $(this).hide();
+                                    $attempts.hide();
+                                }
 								$textArea.attr('readonly','true');
 							}
 
                             // show the correct answer unless answer entered is correct or show answer optional property is off
                             if (input !== $pageContents.data('answer')) {
                                 $answer.html($answer.data("fb"));
+
+                                if ($("#pageContents").data("slideIn")) {
+                                    $answer.slideDown();
+                                }
                             }
 
 							// feedback
                             if (x_currentPageXML.getAttribute("showFurtherClarification") !== "false" && x_currentPageXML.getAttribute("FurtherClarification") != undefined && x_currentPageXML.getAttribute("FurtherClarification").trim() != '') {
                                 $('#FurtherClarification').html($('#FurtherClarification').data("fb"));
+
+                                if ($("#pageContents").data("slideIn")) {
+                                    $('#FurtherClarification').slideDown();
+                                }
                             }
                         }
                     });
-					
+
                 this.sizeChanged();
+
+                if ($("#pageContents").data("slideIn")) {
+                    $("#answer, #FurtherClarification").hide();
+                }
 
                 x_pageLoaded();
             }

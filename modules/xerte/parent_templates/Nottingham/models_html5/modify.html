@@ -28,7 +28,10 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
-			XENITH.SPLITSCREEN.resizePanel();
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
+
+			// this will be used later when showing feedback - it is done differently depending on whether content is centred vertically on the page & whether panel is full height
+			$("#pageContents").data("slideIn", x_checkVerticalCentre() && panelH === false);
 		}
 
 		this.init = function() {
@@ -61,10 +64,10 @@
 			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
 			if (x_currentPageXML.getAttribute("answerType") == "false") {
-				var $modelTxt = $('<div id="modelTxt" aria-label="Feedback" aria-live="polite"></div>').appendTo($('#panel'));
+				var $modelTxt = $('<div id="modelTxt" aria-label="Feedback" aria-live="polite"></div>').insertBefore($('#button'));
 				$modelTxt.html(x_currentPageXML.getAttribute("answer"));
 			} else {
-				var $modelTxt = $('<textarea id="modelTxt" rows="5" readonly aria-label="Feedback" aria-live="polite"></textarea>').appendTo($('#panel'));
+				var $modelTxt = $('<textarea id="modelTxt" rows="5" readonly aria-label="Feedback" aria-live="polite"></textarea>').insertBefore($('#button'));
 				$modelTxt.html($("<div>").html(x_currentPageXML.getAttribute("answer")).text());
 			}
 			var modelAnswerTxt = "";
@@ -88,7 +91,7 @@
 			}
 			
 			if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
-				$('#panel').append('<div id="feedbackTxt">' + x_currentPageXML.getAttribute("feedback") + '</div>');
+				$('<div id="feedbackTxt">' + x_currentPageXML.getAttribute("feedback") + '</div>').insertBefore($("#button"));
 				$('#feedbackTxt').hide();
 			}
 			
@@ -99,9 +102,14 @@
 			$("#button")
 				.button({ label: feedbackBtnTxt })
 				.click(function() {
-					$(this).hide();
-					$("#modelTxt").show();
-					$('#feedbackTxt').show();
+					// to avoid a sudden jump in layout, feedback should slide in gradually if content is centred vertically & panel is full height
+					if ($("#pageContents").data("slideIn")) {
+						$(this).slideUp(200);
+						$("#modelTxt, #feedbackTxt").slideDown();
+					} else {
+						$(this).hide();
+						$("#modelTxt, #feedbackTxt").show();
+					}
 					
 					var answerTxt = $("#answerTxt").val();
 					result =

@@ -30,7 +30,10 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
-			XENITH.SPLITSCREEN.resizePanel();
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
+
+			// this will be used later when showing feedback - it is done differently depending on whether content is centred vertically on the page & whether panel is full height
+			$("#pageContents").data("slideIn", x_checkVerticalCentre() && panelH === false);
 
 			if (x_browserInfo.mobile == false && $(".panelImg img").length > 0) {
 				// makes sure image doesn't take up too much vertical space & will try to fit text, image, answer box on screen without scrolling if possible
@@ -316,6 +319,15 @@
 								$(this).html($(this).data("feedback"));
 							});
 
+							if ($("#pageContents").data("slideIn")) {
+								$("#fbTxt, .fbTxt").slideDown(function() {
+									// refresh feedback so it is picked up by screen readers now not hidden
+									$("#fbTxt, .fbTxt").each(function() {
+										$(this).html($(this).html());
+									});
+								});
+							}
+
 							$("#copyBtn, #downloadBtn").show();
 
 							x_pageContentsUpdated();
@@ -353,6 +365,11 @@
 			}
 
 			this.sizeChanged();
+
+			if ($("#pageContents").data("slideIn")) {
+				$("#fbTxt,.fbTxt").hide();
+			}
+
 			this.saveData();
 			x_pageLoaded();
 		};
