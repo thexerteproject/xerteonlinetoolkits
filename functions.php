@@ -160,6 +160,10 @@ function _include_javascript_file($file_path) {
         $url_param=substr($file_path, $parpos);
         $file_path = substr($file_path, 0, $parpos);
     }
+    else
+    {
+        $url_param = "";
+    }
     if (isset($_GET['language']) && is_dir($languages . x_clean_input($_GET['language']))) {
         $_SESSION['toolkits_language'] = x_clean_input($_GET['language']);
     }
@@ -475,7 +479,7 @@ function x_check_path_traversal($path, $expected_path=null, $message=null, $type
     // Account for Windows, because realpath changes / to \
     if(DIRECTORY_SEPARATOR !== '/') {
         $rpath = str_replace('/', DIRECTORY_SEPARATOR, $path);
-        if (strpos($rpath, DIRECTORY_SEPARATOR) !== 0 || strpos($rpath, ':') !== 1){
+        if (strpos($rpath, DIRECTORY_SEPARATOR) !== 0 && strpos($rpath, ':') !== 1){
             // Relative path, so convert to absolute path
             $rpath = str_replace('/',  DIRECTORY_SEPARATOR, $xerte_toolkits_site->root_file_path . $rpath);
         }
