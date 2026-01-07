@@ -29,7 +29,10 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
-			XENITH.SPLITSCREEN.resizePanel();
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
+
+			// this will be used later when showing feedback - it is done differently depending on whether content is centred vertically on the page & whether panel is full height
+			$("#pageContents").data("slideIn", x_checkVerticalCentre() && panelH === false);
 			
 			if ($("#pageContents .audioHolder").length > 0) {
 				var audioBarW = 0;
@@ -296,8 +299,8 @@
 					}
 				});
 
-				// to avoid a sudden jump in layout, feedback should slide in gradually if content is centred vertically
-				if (x_checkVerticalCentre()) {
+				// to avoid a sudden jump in layout, feedback should slide in gradually if content is centred vertically & panel is full height
+				if ($("#pageContents").data("slideIn")) {
 					$("#feedback").slideDown(function() {
 						// refresh feedback so it is picked up by screen readers now not hidden
 						$("#feedback .feedbackBlock").each(function() {
@@ -417,8 +420,8 @@
 								"id"		:"option" + i
 								})
 							.change(function() {
-								// to avoid a sudden jump in layout, feedback should slide up gradually if content is centred vertically
-								if (x_checkVerticalCentre()) {
+								// to avoid a sudden jump in layout, feedback should slide up gradually if content is centred vertically & panel is full height
+								if ($("#pageContents").data("slideIn")) {
 									if ($("#feedback").is(":visible")) {
 										$("#feedback").slideUp(function () {
 											$("#feedback").find('.feedbackBlock').html("");

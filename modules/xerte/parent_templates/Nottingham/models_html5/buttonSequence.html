@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-	
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var buttonSequence = new function() {
@@ -28,7 +28,10 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
-			XENITH.SPLITSCREEN.resizePanel();
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
+
+			// this will be used later when showing feedback - it is done differently depending on whether content is centred vertically on the page & whether panel is full height
+			$("#pageContents").data("slideIn", x_checkVerticalCentre() && panelH === false);
 		}
 		
 		this.init = function() {
@@ -42,42 +45,54 @@
 			// set up split screen layout
 			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
-			const $panel = $("#myPanel");
 			const $infoGroup = $(".infoGroup:first");
 			
-			$(x_currentPageXML).children()
-				.each(function(i) {
-					var $thisGroup;
-					$thisGroup = $infoGroup.clone().appendTo($panel);
-					if (i == $(x_currentPageXML).children().length - 1) {
-						$thisGroup.find("button").remove();
-					}
-					$thisGroup.find(".infoBtn").hide();
-				});
-			
+			$(x_currentPageXML).children().each(function() {
+				$infoGroup.clone().insertAfter($infoGroup).hide();
+			});
+
 			$infoGroup.find(".infoTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("intro")));
-			
-			$panel.children()
-				.each(function(i) {
-					if (i != $panel.children().length - 1) {
-						$panel.find(".infoGroup:eq(" + i + ") .infoBtn")
-							.button({
-								label:	$(x_currentPageXML).children()[i].getAttribute("name")
-								})
-							.click(function() {
-								var $this = $(this);
-								$this.hide();
-								if ($this.parent().index() != $("#pageContents .infoGroup").length-1) {
-									var $thisGroup = $("#pageContents .infoGroup:eq(" + ($this.parent().index() + 1) + ")");
-									$thisGroup.find(".infoTxt").html(x_addLineBreaks($(x_currentPageXML).children()[$thisGroup.index() - 1].getAttribute("text")));
-									$thisGroup.find(".infoBtn")
-										.show()
-										.focus();
-									
-									x_pageContentsUpdated();
-								}
-							});
+
+			$("#infoBtn")
+				.button({
+					label: $(x_currentPageXML).children()[$("#pageContents .infoGroup:visible").index()].getAttribute("name")
+					})
+				.click(function() {
+					const $this = $(this);
+					const $thisGroup = $("#pageContents .infoGroup:visible").last();
+					const $nextGroup = $thisGroup.next(".infoGroup");
+
+					// it's the last item - hide button
+					if ($nextGroup.next(".infoGroup").length === 0) {
+						if ($("#pageContents").data("slideIn")) {
+							$this.parent("#btnHolder").slideUp(300);
+						} else {
+							$this.parent("#btnHolder").hide();
+						}
+					} else {
+						$this.button({
+							label: $(x_currentPageXML).children()[$nextGroup.index()].getAttribute("name")
+						});
 					}
+
+					// to avoid a sudden jump in layout, feedback should slide in gradually if content is centred vertically & panel is full height
+					if ($("#pageContents").data("slideIn")) {
+						$nextGroup.find(".infoTxt")
+								.html(x_addLineBreaks($(x_currentPageXML).children()[$nextGroup.index() - 1].getAttribute("text")))
+
+						$nextGroup.slideDown(function() {
+							// refresh feedback so it is picked up by screen readers now not hidden
+							$nextGroup.find(".infoTxt").html($nextGroup.find(".infoTxt").html());
+						});
+					} else {
+						$nextGroup.show();
+						// timeout ensures that this will be announced by screen readers
+						setTimeout(() => {
+							$nextGroup.find(".infoTxt").html(x_addLineBreaks($(x_currentPageXML).children()[$nextGroup.index() - 1].getAttribute("text")));
+						}, 0);
+					}
+
+					x_pageContentsUpdated();
 				});
 			
 			this.sizeChanged();
@@ -98,7 +113,9 @@
 		<div id="myPanel" class="panelContent panel" tabindex="0">
 			<div class="infoGroup">
 				<div class="infoTxt" aria-live="polite">&nbsp;</div>
-				<button class="infoBtn"></button>
+			</div>
+			<div id="btnHolder">
+				<button id="infoBtn"></button>
 			</div>
 		</div>
 	</div>

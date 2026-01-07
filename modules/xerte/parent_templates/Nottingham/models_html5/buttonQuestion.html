@@ -28,7 +28,10 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
-			XENITH.SPLITSCREEN.resizePanel();
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
+
+			// this will be used later when showing feedback - it is done differently depending on whether content is centred vertically on the page & whether panel is full height
+			$("#pageContents").data("slideIn", x_checkVerticalCentre() && panelH === false);
 		}
 		
 		this.init = function() {
@@ -49,8 +52,14 @@
 					label: x_currentPageXML.getAttribute("label") == undefined || x_currentPageXML.getAttribute("label") == "" ? "Let's See" : x_currentPageXML.getAttribute("label")
 				})
 				.click(function() {
-					$(this).hide();
-					$("#answer").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+					// to avoid a sudden jump in layout, feedback should slide in gradually if content is centred vertically & panel is full height
+					if ($("#pageContents").data("slideIn")) {
+						$(this).parent("#btnHolder").slideUp(200);
+						$("#answer").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback"))).hide().slideDown();
+					} else {
+						$(this).parent("#btnHolder").hide();
+						$("#answer").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+					}
 					x_pageContentsUpdated();
 				});
 
@@ -71,7 +80,9 @@
 	<div id="infoHolder" class="splitScreen_B">
 		<div class="panelContent panel" tabindex="0">
 			<div id="prompt"></div>
-			<button id="button"></button>
+			<div id="btnHolder">
+				<button id="button"></button>
+			</div>
 			<div id="answer" aria-live="polite"></div>
 		</div>
 	</div>
