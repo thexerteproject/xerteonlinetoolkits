@@ -43,7 +43,7 @@ include $xerte_toolkits_site->php_library_path . "display_library.php";
 
 require_once(dirname(__FILE__) . "/website_code/php/login_library.php");
 
-if ($xerte_toolkits_site->altauthentication != "" && (isset($_GET['altauth']) || $xerte_toolkits_site->altauthentication == $_SESSION['altauth']))
+if ($xerte_toolkits_site->altauthentication != "" && (isset($_GET['altauth']) || (isset($_SESSION['altauth']) && $xerte_toolkits_site->altauthentication == $_SESSION['altauth'])))
 {
     $xerte_toolkits_site->authentication_method = $xerte_toolkits_site->altauthentication;
     $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
