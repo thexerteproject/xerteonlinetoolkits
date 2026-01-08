@@ -1673,7 +1673,9 @@ function upgrade_54()
 {
     $message = "";
     if (!_table_exists("management_helper")) {
-        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `management_helper` (
+        $table = table_by_key('management_helper');
+
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS $table (
         `interaction_id` int(11) NOT NULL AUTO_INCREMENT,
         `vendor` VARCHAR(16) NOT NULL,
         `label` VARCHAR(34) NOT NULL,
@@ -1689,7 +1691,7 @@ function upgrade_54()
         $message .= "Creating management helper table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
 
         if ($ok) {
-            $ok = db_query("INSERT INTO `management_helper` VALUES 
+            $ok = db_query("INSERT INTO $table VALUES 
                                     (1, 'openai', 'GPT (Openai)', 'ai', 1, 0, '{}'),
                                     (2, 'anthropic', 'Claude (Anthropic)', 'ai', 1, 0, '{}'),
                                     (3, 'mistral', 'Mistral AI', 'ai', 1, 0, '{}'),
@@ -1721,7 +1723,9 @@ function upgrade_55()
 {
     $message = "";
     if (!_table_exists("ai_request_logs")) {
-        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `ai_request_logs` (
+        $table = table_by_key('ai_request_logs');
+
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS $table (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `schema_version` VARCHAR(16) NOT NULL DEFAULT '1.0',
 
@@ -1753,7 +1757,7 @@ function upgrade_55()
   `cost_pricing_version` VARCHAR(32) DEFAULT NULL,
   `cost_total` DECIMAL(18,6) DEFAULT NULL,
 
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 );");
 
         $message .= "Creating ai_request_logs table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
