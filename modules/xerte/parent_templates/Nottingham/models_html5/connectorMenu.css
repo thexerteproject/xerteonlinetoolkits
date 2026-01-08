@@ -36,6 +36,9 @@
 	gap: 1em;
 }
 
+#subMenuHolder {
+	overflow: auto;
+}
 
 @media (min-width: 768px) {
 	#subMenuItems{

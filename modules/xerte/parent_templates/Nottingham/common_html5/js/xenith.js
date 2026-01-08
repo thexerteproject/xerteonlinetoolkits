@@ -2617,7 +2617,7 @@ function x_setUpPagePosition(project) {
 
 	} else if (project !== true) {
 		// these pages don't work with vertical centre yet & will break when it's applied - ensure it is always disabled when current page is of one of these types
-		const nonWorkingPages = ['imageSequence', 'mediaLesson', 'morphImages', 'thumbnailViewer', 'SictTimeline', 'perspectives', 'connectorMenu', 'interactiveVideo', 'links'];
+		const nonWorkingPages = ['imageSequence', 'mediaLesson', 'morphImages', 'thumbnailViewer', 'SictTimeline', 'perspectives', 'interactiveVideo'];
 		if (x_currentPageXML.getAttribute("verticalAlign") != undefined && (nonWorkingPages == undefined || nonWorkingPages.indexOf(x_pageInfo[x_currentPage].type) < 0)) {
 			if (x_currentPageXML.getAttribute("verticalAlign") === "true") {
 				// turn on for this page

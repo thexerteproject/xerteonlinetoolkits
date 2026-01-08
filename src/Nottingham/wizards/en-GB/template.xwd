@@ -2933,7 +2933,7 @@
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Full" conditionTrigger="true" mandatory="true"/>
         <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
         <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle=='false'&amp;&amp;((panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||(removeTxt=='true'||text==undefined))"/>
-        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'&amp;&amp;panelWidth!=undefined"/>
         <panelStyle label="Remove Panel Style" type="CheckBox" conditionTrigger="true" defaultValue="true"/>
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="false" conditionTrigger="true" condition="panelWidth=='Full'||panelWidth==undefined"/>
     </layoutGroup>
