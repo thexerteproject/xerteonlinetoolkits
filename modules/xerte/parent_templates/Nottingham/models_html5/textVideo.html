@@ -56,10 +56,10 @@
 			const maxH = x_currentPageXML.getAttribute("full") == "true" ? $x_pageHolder.outerHeight() : x_getAvailableHeight([$("#videoHolder")], [$('.transcriptHolder')], true)
 
 			// make sure width of video isn't more than screen width when padding & margin on panel are accounted for
-			var width = x_currentPageXML.getAttribute("full") == "true" ? $x_pageDiv.outerWidth() : $x_pageDiv.width() * maxW;
+			var width = x_currentPageXML.getAttribute("full") == "true" ? $x_pageDiv.outerWidth() : $x_innerPage.width() * maxW;
 
 			if (x_currentPageXML.getAttribute("full") != "true") {
-				if (width > $x_pageDiv.width() - ($pageVideo.parent('.panel').outerWidth(true) - $pageVideo.parent('.panel').width())) {
+				if (width > $x_innerPage.width() - ($pageVideo.parent('.panel').outerWidth(true) - $pageVideo.parent('.panel').width())) {
 					width -= ($pageVideo.parent('.panel').outerWidth(true) - $pageVideo.parent('.panel').width());
 				}
 

@@ -40,7 +40,7 @@
 				
 				var offset = textGraphics.calculateOffset();
 				if (x_currentPageXML.getAttribute("imagesize") != "full screen") {
-					$("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "60%");
+					$("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_innerPage.width() - offset[0] : "60%");
 				}
 				$pageImg.css("max-height", x_browserInfo.mobile == true ? $x_mobileScroll.height() - $x_footerBlock.height() - offset[1] : $x_pageHolder.height() - offset[1]);
 				
@@ -172,7 +172,7 @@
 							});
 						} else { // auto
 							$imgInnerDiv.css({
-								"max-width": textAlign == "Top" || textAlign == "Bottom" ? $x_pageHolder.width() - offset[0] : "60%"
+								"max-width": textAlign == "Top" || textAlign == "Bottom" ? $x_innerPage.width() - offset[0] : "60%"
 							});
 						}
 					}

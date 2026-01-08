@@ -91,12 +91,12 @@
 
 			if ($panelHolder.find(".panel").length == 1) {
 				$panelHolder.find(".panel")
-						.width(Math.floor($x_pageHolder.width() - ($x_pageDiv.outerWidth(true) - $x_pageDiv.width()) - ($panelHolder.find(".panel").outerWidth(true) - $panelHolder.find(".panel").width())))
+						.width(Math.floor($x_innerPage.width() - ($panelHolder.find(".panel").outerWidth(true) - $panelHolder.find(".panel").width())))
 						.height(Math.floor(x_getAvailableHeight([$panelHolder.find(".panel")])));
 
 			} else {
 				$panelHolder.find(".panel.tileH")
-						.width(Math.floor(($x_pageHolder.width() - ($x_pageDiv.outerWidth(true) - $x_pageDiv.width()) - (($panelHolder.find(".panel.tileH").outerWidth(true) - $panelHolder.find(".panel.tileH").width()) * (numTileH-1)) - ($panelHolder.find(".panel.tileH").outerWidth() - $panelHolder.find(".panel.tileH").width())) / numTileH))
+						.width(Math.floor(($x_innerPage.width() - (($panelHolder.find(".panel.tileH").outerWidth(true) - $panelHolder.find(".panel.tileH").width()) * (numTileH-1)) - ($panelHolder.find(".panel.tileH").outerWidth() - $panelHolder.find(".panel.tileH").width())) / numTileH))
 						.css('height', '');
 
 				$panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseFloat($("#infoHolder .accTitle").css("padding-top")) * 2);

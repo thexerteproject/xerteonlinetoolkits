@@ -249,15 +249,14 @@
 				panelOuterH = $panel.outerHeight() - $panel.height();
 			
 			var align = x_browserInfo.mobile == true ? "Top" : x_currentPageXML.getAttribute("align");
-			
-			var imgMaxW = Math.round($x_pageHolder.width() * (align == "Top" ? 1 : maxPanel) - panelOuterW - (align == "Top" ? parseInt($x_pageDiv.css("padding-left")) * 2 : 0)),
+
+			var imgMaxW = Math.round($x_innerPage.width() * (align == "Top" ? 1 : maxPanel) - panelOuterW/* - (align == "Top" ? parseInt($x_pageDiv.css("padding-left")) * 2 : 0)*/),
 				imgMaxH = $x_pageHolder.height() * (align == "Top" ? maxPanel : 1) - (parseInt($x_pageDiv.css("padding-left")) * 2) - panelOuterH;
-			
 			x_scaleImg($img, imgMaxW, imgMaxH, true, $img.data('firstLoad'), false);
 			
 			// position imageHolder correctly
 			if (align == "Top") {
-				$panel.css("margin-left", ($x_pageDiv.width() - $panel.outerWidth()) / 2);
+				$panel.css("margin-left", ($x_innerPage.width() - $panel.outerWidth()) / 2);
 			}
 			
 			$img
@@ -268,7 +267,7 @@
 				});
 			
 			if ($pageContents.data("hsType") == "centre" && align == "Left") {
-				$(".listItem").css("minWidth", $x_pageDiv.width() - $panel.outerWidth(true) - parseInt($(".listItem").css('padding-left')) - parseInt($(".listItem").css('padding-right')) - 20);
+				$(".listItem").css("minWidth", $x_innerPage.width() - $panel.outerWidth(true) - parseInt($(".listItem").css('padding-left')) - parseInt($(".listItem").css('padding-right')) - 20);
 			}
 			
 			// now get info about hotspots & create them
@@ -608,9 +607,9 @@
 		
 		this.resizeCanvas = function() {
 			$x_pageHolder.css('overflow', 'hidden');
-			
+
 			$canvas.attr({
-				width: $x_pageDiv.width(),
+				width: $x_innerPage.width(),
 				height: $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2
 			});
 			

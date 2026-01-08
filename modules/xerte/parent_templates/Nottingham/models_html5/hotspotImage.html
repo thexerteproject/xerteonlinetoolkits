@@ -129,10 +129,10 @@
 			const maxW = x_browserInfo.mobile != true ? 0.6 : 1;
 			const maxH = 1;
 				
-			let imgMaxW = Math.round($x_pageHolder.width() * maxW),
+			let imgMaxW = Math.round($x_innerPage.width() * maxW),
 				imgMaxH = Math.round(x_getAvailableHeight([$("#panel"), $("#mapster_wrap_0")], [$("#btnHolder")], true) * maxH);
 			
-			imgMaxW -= ($("#panel").outerWidth(true) - $("#panel").width()) + ($("#x_pageDiv").outerWidth(true) - $("#x_pageDiv").width());
+			imgMaxW -= ($("#panel").outerWidth(true) - $("#panel").width()) + ($x_pageDiv.outerWidth() - $x_pageDiv.width());
 
 			$img.mapster('unbind');
 

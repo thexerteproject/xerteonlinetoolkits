@@ -71,7 +71,7 @@ var x_languageData  = [],
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
 
-var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL,
+var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_innerPage, $x_footerBlock, $x_footerL,
 	$x_introBtn, $x_helpBtn, $x_pageIntroBtn, $x_pageResourcesBtn, $x_glossaryBtn, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_cssBtn, $x_background;
 
 $(document).keydown(function(e) {
@@ -2999,7 +2999,8 @@ function x_passwordPage(pswds) {
 			$x_pageDiv.css("height", "100%");
 			let paddingBlock = $x_pageDiv.innerHeight() - $x_pageDiv.height(); // padding top and bottom
 			$x_pageDiv.css("height", "calc(100% - " + paddingBlock + "px)");
-			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
+			$x_pageDiv.append('<div id="x_page' + x_currentPage + '" class="innerPage"></div>');
+			$x_innerPage = $x_pageDiv.find(".innerPage");
 
 			var $pswdBlock = $('#x_page' + x_currentPage);
 			$pswdBlock.css('height', '100%');
@@ -3112,6 +3113,7 @@ function x_changePageStep3() {
 
         var builtPage = x_pageInfo[x_currentPage].built;
         $x_pageDiv.append(builtPage);
+		$x_innerPage = $x_pageDiv.find(".innerPage");
         builtPage.hide();
         builtPage.fadeIn();
 
@@ -3199,7 +3201,8 @@ function x_changePageStep3() {
 			customLoadCss(pt);
 		}
 		function loadModel() {
-			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
+			$x_pageDiv.append('<div id="x_page' + x_currentPage + '" class="innerPage"></div>');
+			$x_innerPage = $x_pageDiv.find(".innerPage");
 			$("#x_page" + x_currentPage).css("visibility", "hidden");
 
 			if (!XENITH.PAGEMENU.isThisMenu()) {

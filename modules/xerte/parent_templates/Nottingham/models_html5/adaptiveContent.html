@@ -1429,7 +1429,7 @@
 
     // Function called every time the size of the LO is changed.
     this.sizeChanged = function () {
-      var width = $x_pageHolder.width();
+      var width = $x_innerPage.width();
       var height = $x_pageHolder.height();
       if (width > height) {
         $("#diagram").width(height * 0.9);

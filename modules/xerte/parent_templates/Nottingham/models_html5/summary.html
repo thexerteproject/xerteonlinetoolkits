@@ -171,7 +171,7 @@
             const offset = $("#mediaHolder").hasClass("pageAudio") ? x_audioBarH : 0;
 
             // max width is 48% of page width or the original width of the image (whichever is smaller)
-            const maxW = ($x_pageHolder.width() - ($x_pageDiv.outerWidth(true) - $x_pageDiv.width()) - ($("#mediaHolder .panel").outerWidth(true) - $("#mediaHolder .panel").width())) * (x_browserInfo.mobile === false ? .48 : 1);
+            const maxW = ($x_innerPage.width() - ($x_pageDiv.outerWidth() - $x_pageDiv.width()) - ($("#mediaHolder .panel").outerWidth(true) - $("#mediaHolder .panel").width())) * (x_browserInfo.mobile === false ? .48 : 1);
             // max-height is 100% of page height or the original height of the image (whichever is smaller)
             const maxH = x_getAvailableHeight([$mediaHolder, $mediaHolder.find(".panel")], [offset], true);
 
