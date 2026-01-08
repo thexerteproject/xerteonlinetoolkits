@@ -917,7 +917,7 @@ var EDITOR = (function ($, parent) {
 			
             // If the main node has a label, display the node item second (unconditionaly)
             if (node_label.length > 0 && !node_options['cdata']) {
-                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], node_name, '', key, false, node_label);
+                toolbox.displayParameter('#mainPanel .wizard', node_options['normal'], node_name, '', key, "", "none", node_label);
             }
 
 			getGroups(node_options['normal']);
