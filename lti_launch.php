@@ -65,7 +65,7 @@ if(is_numeric($id) || $id == null)
     else{
         $islti13 = false;
     }
-    if ($islti13) {
+    if ($islti13 && isset($LAUNCH->context)) {
         $msg = array();
         $nrps = $LAUNCH->context->loadNamesAndRoles(false, $msg);
         //DONE: get all emails of current users add to array
