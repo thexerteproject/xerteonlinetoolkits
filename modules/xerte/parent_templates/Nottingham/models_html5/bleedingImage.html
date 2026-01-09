@@ -51,7 +51,7 @@
 			$pageContents	= $("#pageContents");
 			
 			var	$textHolder	= $("#textHolder"),
-				$panel		= $("#pageContents .panel"),
+				$panel		= $("#pageContents .panelContent"),
 				$pageImg	= $("#pageImg"),
 				addMargin	= x_currentPageXML.getAttribute("addmargin");
 			
@@ -238,8 +238,8 @@
 			// calculates available space when image is full screen
 			var offset = [0, 0];
 			if (x_currentPageXML.getAttribute("addmargin") == "true") {
-				offset.splice(0, 1, offset[0] + ($(".panel").outerWidth() - $(".panel").width()));
-				offset.splice(1, 1, offset[1] + ($(".panel").outerHeight() - $(".panel").height()));
+				offset.splice(0, 1, offset[0] + ($(".panelContent").outerWidth() - $(".panelContent").width()));
+				offset.splice(1, 1, offset[1] + ($(".panelContent").outerHeight() - $(".panelContent").height()));
 			}
 			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
 				offset.splice(1, 1, offset[1] + x_audioBarH);
@@ -309,7 +309,7 @@
 <div id="pageContents">
 	
 	<div id="imgHolder" class="mobileAlign">
-		<div class="panel inline">
+		<div class="panelContent panel inline">
 			<img id="pageImg" style="visibility: hidden" />
 			<div id="pageAudio"></div>
 		</div>

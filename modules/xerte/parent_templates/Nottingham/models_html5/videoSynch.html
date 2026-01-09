@@ -54,8 +54,8 @@ var videoSynch = new function() {
 
 			let maxW = "100%";
 			let maxH = $(".popcornMedia.embed").width() / aspectRatio[0] * aspectRatio[1];
-			if (maxH > x_getAvailableHeight([$("#videoHolder"),$("#videoHolder .panel")])) {
-				maxH = x_getAvailableHeight([$("#videoHolder"),$("#videoHolder .panel")]);
+			if (maxH > x_getAvailableHeight([$("#videoHolder"),$("#videoHolder .videoPanel")])) {
+				maxH = x_getAvailableHeight([$("#videoHolder"),$("#videoHolder .videoPanel")]);
 				maxW = maxH / aspectRatio[1] * aspectRatio[0];
 			}
 
@@ -347,7 +347,7 @@ videoSynch.init();
 <div id="pageContents">
 	
 	<div id="videoHolder" class="splitScreen_A">
-		<div class="panel">
+		<div class="videoPanel panel">
 			<div id="pageVideo"></div>
 		</div>
 		<div id="mainText"></div>

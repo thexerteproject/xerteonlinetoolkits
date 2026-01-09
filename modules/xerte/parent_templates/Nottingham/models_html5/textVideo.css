@@ -47,7 +47,7 @@
 		overflow: hidden;
 	}
 	
-	.x_mobile .mobileAlign .panel.inline {
+	.x_mobile .mobileAlign #videoHolder.panel.inline {
 		margin-left: 0;
 		margin-right: 0;
 	}

@@ -38,7 +38,7 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel"),
+				var $panel = $("#pageContents #panelContent"),
 					$btnHolder = $("#btnHolder");
 				
 				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
@@ -69,7 +69,7 @@
 			// buttonWidth attribute not used as they will be sized automatically
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
 			if (panelWidth == "Full") {
-				$("#pageContents .panel").appendTo($("#pageContents"));
+				$("#pageContents #panelContent").appendTo($("#pageContents"));
 				$("#pageContents .splitScreen").remove();
 			} else {
 				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
@@ -225,7 +225,7 @@
 			
 			
 			if (x_browserInfo.mobile == true) {
-				$("#pageContents .panel").prepend($btnHolder);
+				$("#pageContents #panelContent").prepend($btnHolder);
 			}
 			
 			$btnHolder.buttonset();
@@ -310,7 +310,7 @@
 		<div id="textHolder" class="left"></div>
 		
 		<div class="right">
-			<div class="panel">
+			<div id="panelContent" class="panel">
 				<div id="btnHolder">
 					<input type="radio" name="radio" class="panelBtn"/><label class="panelBtnLabel"></label>
 				</div>

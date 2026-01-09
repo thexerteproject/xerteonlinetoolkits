@@ -59,8 +59,8 @@
 			var width = x_currentPageXML.getAttribute("full") == "true" ? $x_pageDiv.outerWidth() : $x_innerPage.width() * maxW;
 
 			if (x_currentPageXML.getAttribute("full") != "true") {
-				if (width > $x_innerPage.width() - ($pageVideo.parent('.panel').outerWidth(true) - $pageVideo.parent('.panel').width())) {
-					width -= ($pageVideo.parent('.panel').outerWidth(true) - $pageVideo.parent('.panel').width());
+				if (width > $x_innerPage.width() - ($pageVideo.parent('#videoHolder').outerWidth(true) - $pageVideo.parent('#videoHolder').width())) {
+					width -= ($pageVideo.parent('#videoHolder').outerWidth(true) - $pageVideo.parent('#videoHolder').width());
 				}
 
 				// fixed size video - still don't show too large for page
@@ -108,7 +108,7 @@
 					$("#textHolder").remove();
 				}
 
-				const $panel = $("#pageContents .panel");
+				const $panel = $("#videoHolder");
 				const textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom
 				if (textAlign == "Top" || textAlign == "Bottom") {
 					if (textAlign == "Top") {
@@ -178,7 +178,7 @@
 			// full screen
 			if (x_currentPageXML.getAttribute("full") == "true") {
 				$x_pageHolder.addClass('full');
-				$("#pageContents .panel").removeClass("panel inline");
+				$("#videoHolder").removeClass("panel inline");
 			}
 
 			if (videoSrc.substr(0,7) == "<iframe") {
@@ -211,7 +211,7 @@
 									}
 								});
 					} else {
-						$("#pageContents .panel").removeClass("panel inline");
+						$("#videoHolder").removeClass("panel inline");
 					}
 				}
 

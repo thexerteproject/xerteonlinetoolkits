@@ -1,6 +1,6 @@
 /* dictation.html */
 
-	#pageContents .panel {
+	#pageContents .panelContent.panel {
 		overflow:	auto;
 	}
 

@@ -88,9 +88,9 @@
 			} else {
 				$("#textHolder").html(x_currentPageXML.childNodes[0] == undefined ? '' : x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
 				if (x_currentPageXML.getAttribute("align") == "Right") {
-					$("#pageContents .panel").addClass("x_floatLeft");
+					$("#imgPanel").addClass("x_floatLeft");
 				} else {
-					$("#pageContents .panel").addClass("x_floatRight");
+					$("#imgPanel").addClass("x_floatRight");
 				}
 			}
 
@@ -125,12 +125,12 @@
 				imgMaxW = 250; // mobile
 				imgMaxH = 250;
 			} else if (x_currentPageXML.getAttribute("align") == "Hide text") {
-				imgMaxW = $x_innerPage.width() - ($("#imgHolder .panel").outerWidth() - $("#imgHolder .panel").width());
-				imgMaxH = x_getAvailableHeight([$("#imgHolder .panel")]);
+				imgMaxW = $x_innerPage.width() - ($("#imgPanel").outerWidth() - $("#imgPanel").width());
+				imgMaxH = x_getAvailableHeight([$("#imgPanel")]);
 				
 			} else if (imageSize != undefined) {
 				imgMaxW = $x_innerPage.width();
-				imgMaxH = x_getAvailableHeight([$("#imgHolder .panel")]);
+				imgMaxH = x_getAvailableHeight([$("#imgPanel")]);
 
 				if (imageSize == "small") {
 					imgMaxW = imgMaxW * 0.2;
@@ -140,7 +140,7 @@
 					imgMaxW = imgMaxW * 0.6;
 				}
 				
-				imgMaxW -= ($("#imgHolder .panel").outerWidth() - $("#imgHolder .panel").width());
+				imgMaxW -= ($("#imgPanel").outerWidth() - $("#imgPanel").width());
 				
 			} else { // fixed (this isn't an option now but was default before imagesize added to xwd)
 				imgMaxW = 400; // desktop / tablet
@@ -183,7 +183,7 @@
 <div id="pageContents">
 
 	<div id="imgHolder" class="mobileAlign">
-		<div class="panel inline">
+		<div id="imgPanel" class="panel inline">
             <div id="shorturltodisplay">*</div>
 			<div id="qrcode"></div>
 			<div id="pageAudio"></div>

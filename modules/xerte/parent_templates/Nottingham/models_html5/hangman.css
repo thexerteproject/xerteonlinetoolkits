@@ -1,6 +1,6 @@
 /* hangman.html */
 
-	#infoHolder .panel {
+	#infoHolder .panelContent.panel {
 		overflow:	auto;
 	}
 
@@ -63,7 +63,7 @@
 	}
 @media screen and (min-width: 767px) {
 
-	.panel button {
+	.panelContent.panel button {
 		font-size: 4vmin;
 	}
 

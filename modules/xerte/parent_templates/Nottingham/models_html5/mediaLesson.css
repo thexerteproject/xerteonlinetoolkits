@@ -37,29 +37,29 @@
 		z-index: 3;
 	}
 	
-	#panelHolder .panel.tileH {
+	#panelHolder .layoutPanel.panel.tileH {
 		display:	inline-block;
 	}
 
-	#panelHolder .panel.fullW {
+	#panelHolder .layoutPanel.panel.fullW {
 		display:	block;
 	}
 	
 	
-	#panelHolder .panel {
+	#panelHolder .layoutPanel.panel {
 		vertical-align:	top;
 		overflow:		auto;
 	}
 	
-	#panelHolder .top .panel.halfH {
+	#panelHolder .top .layoutPanel.panel.halfH {
 		margin-bottom:	15px;
 	}
 	
-	#panelHolder .panel.tileH:not(:last-of-type) {
+	#panelHolder .layoutPanel.panel.tileH:not(:last-of-type) {
 		margin-right:	15px;
 	}
 	
-	#panelHolder .panel.tileV:not(:last-of-type) {
+	#panelHolder .layoutPanel.panel.tileV:not(:last-of-type) {
 		margin-bottom:	15px;
 	}
 	
@@ -86,19 +86,19 @@
 		margin-bottom:	10px;
 	}
 	
-	.panel h3 {
+	.layoutPanel.panel h3 {
 		border-bottom:	1px solid #CCCCCC;
 		padding-bottom:	10px;
 		margin-bottom:	1em;
 	}
 	
-	.panel h4 {
+	.layoutPanel.panel h4 {
 		margin-top:		10px;
 		margin-bottom:	5px;
 		padding-left: 0.3em;
 	}
 	
-	.panel h5 {
+	.layoutPanel.panel h5 {
 		margin-bottom:	0.5em;
 		margin-top:		0.5em;
 		padding-left: 0.3em;
@@ -110,7 +110,7 @@
 		height: 1px;
 	}
 	
-	.panel .contentBlock {
+	.layoutPanel.panel .contentBlock {
 		width:			100%;
 		margin-bottom:	5px;
 		z-index: 10;

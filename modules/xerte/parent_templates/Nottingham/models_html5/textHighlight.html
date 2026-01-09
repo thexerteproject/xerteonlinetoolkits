@@ -70,7 +70,7 @@
 		this.resizeEditable = function($editableDiv) {
 			if (!$editableDiv.is($("#suggestedTxt"))) {
 				var btnHolderH = $editableDiv.parent().find('.btnHolder').length > 0 ? $editableDiv.parent().find('.btnHolder').outerHeight() : 0;
-				$editableDiv.innerHeight(Math.floor($editableDiv.parents('.panel, .navChild').height() - btnHolderH));
+				$editableDiv.innerHeight(Math.floor($editableDiv.parents('.leftPanel, .panelContent, .navChild').height() - btnHolderH));
 			}
 		};
 
@@ -236,10 +236,10 @@
 			const right = left == 'left' ? 'panelB' : position.panelB.length > 0 ? 'panelB' : undefined;
 
 			if (left == 'panelA') {
-				$contentHolder.find('.left .panel').addClass('panelA');
-				$contentHolder.find('.right .panel').addClass('panelB');
+				$contentHolder.find('.left .leftPanel').addClass('panelA');
+				$contentHolder.find('.right .panelContent').addClass('panelB');
 			} else {
-				$contentHolder.find('.right .panel').addClass('panelA');
+				$contentHolder.find('.right .panelContent').addClass('panelA');
 				$contentHolder.find('.left').addClass('introTxt').empty();
 			}
 
@@ -256,7 +256,7 @@
 				// only one panel so full width with nothing to left of navigator panel
 				attributes.panelWidth = "full";
 				attributes.removeTxt = "true";
-				$contentHolder.find('.right .panel').removeClass('panelB').addClass('panelA');
+				$contentHolder.find('.right .panelContent').removeClass('panelB').addClass('panelA');
 			}
 
 			// set up split screen layout
@@ -722,7 +722,7 @@
 	
 	<div id="contentHolder">
 		<div class="left splitScreen_A">
-			<div class="panel"></div>
+			<div class="panel leftPanel"></div>
 		</div>
 
 		<div class="right splitScreen_B">

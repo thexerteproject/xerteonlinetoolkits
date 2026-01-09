@@ -101,23 +101,23 @@
 
                 if (fileExt == "mp3") {
                     // audio
-                    $mediaHolder = $('<div id="mediaHolder" class="pageAudio"><div class="panel"><div id="pageAudio"></div></div></div>');
+                    $mediaHolder = $('<div id="mediaHolder" class="pageAudio"><div class="mediaPanel panel"><div id="pageAudio"></div></div></div>');
 
                     // add an accompanying image above the audio player
                     if (audioImg != null && audioImg != "") {
                         $mediaHolder.addClass("pageImg");
 
                         const alt = tip != null && tip != "" ? ' alt="' + tip + '"' : '';
-                        $mediaHolder.find(".panel").prepend('<img'+ alt + '/>');
+                        $mediaHolder.find(".mediaPanel").prepend('<img'+ alt + '/>');
                     }
 
                 } else if (fileExt == "jpeg" || fileExt == "jpg" || fileExt == "png" || fileExt == "gif" || fileExt == "svg") {
                     // image
                     const alt = tip != null && tip != "" ? ' alt="' + tip + '"' : '';
-                    $mediaHolder = $('<div id="mediaHolder" class="pageImg"><div class="panel"><img' + alt + '/></div></div>');
+                    $mediaHolder = $('<div id="mediaHolder" class="pageImg"><div class="mediaPanel panel"><img' + alt + '/></div></div>');
 
                 } else {
-                    $mediaHolder = $('<div id="mediaHolder" class="pageVideo"><div class="panel"><div id="pageVideo"></div></div></div>');
+                    $mediaHolder = $('<div id="mediaHolder" class="pageVideo"><div class="mediaPanel panel"><div id="pageVideo"></div></div></div>');
 
                     if (url.substr(0,7) === "<iframe") {
                         $mediaHolder.addClass("iframe");
@@ -187,9 +187,9 @@
             const offset = $("#mediaHolder").hasClass("pageAudio") ? x_audioBarH : 0;
 
             // max width is 48% of page width or the original width of the image (whichever is smaller)
-            const maxW = ($x_innerPage.width() - ($x_pageDiv.outerWidth() - $x_pageDiv.width()) - ($("#mediaHolder .panel").outerWidth(true) - $("#mediaHolder .panel").width())) * (x_browserInfo.mobile === false ? .48 : 1);
+            const maxW = ($x_innerPage.width() - ($x_pageDiv.outerWidth() - $x_pageDiv.width()) - ($("#mediaHolder .mediaPanel").outerWidth(true) - $("#mediaHolder .mediaPanel").width())) * (x_browserInfo.mobile === false ? .48 : 1);
             // max-height is 100% of page height or the original height of the image (whichever is smaller)
-            const maxH = x_getAvailableHeight([$mediaHolder, $mediaHolder.find(".panel")], [offset], true);
+            const maxH = x_getAvailableHeight([$mediaHolder, $mediaHolder.find(".mediaPanel")], [offset], true);
 
             return [maxW, maxH];
         }
@@ -215,10 +215,10 @@
                 $iframe.width(width);
                 $iframe.height(height);
             } else {
-                $("#mediaHolder .panel").width(width);
-                $("#mediaHolder .panel .mejs-container").width(width);
-                $("#mediaHolder .panel").height(height);
-                $("#mediaHolder .panel .mejs-container").height(height);
+                $("#mediaHolder .mediaPanel").width(width);
+                $("#mediaHolder .mediaPanel .mejs-container").width(width);
+                $("#mediaHolder .mediaPanel").height(height);
+                $("#mediaHolder .mediaPanel .mejs-container").height(height);
             }
 
         }
@@ -266,8 +266,8 @@
                 tempW = Math.floor(tempW * scale);
             }
 
-            const prevW = $mediaHolder.find(".panel").width();
-            $mediaHolder.find(".panel").css({
+            const prevW = $mediaHolder.find(".mediaPanel").width();
+            $mediaHolder.find(".mediaPanel").css({
                 'width'	:tempW,
                 'height':tempH
             });

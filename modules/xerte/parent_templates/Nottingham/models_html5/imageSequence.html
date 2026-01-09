@@ -348,7 +348,7 @@
 				
 				// not previously viewed so preload all images in series
 				if (thisSeries.viewed == false) {
-					$textHolder.find('#loadMsg').html('<div class="panel">' + loadTxt + '<div class="loadMsgSpinner fa-3x"><i class="fas fa-spinner fa-spin"></i><div></div>').show();
+					$textHolder.find('#loadMsg').html('<div class="panelContent panel">' + loadTxt + '<div class="loadMsgSpinner fa-3x"><i class="fas fa-spinner fa-spin"></i><div></div>').show();
 					preloadImgs(imgs[imgPos], function(){
 						imageSequence.initialiseViewer(thisSeries, imgPos);
 					});
@@ -370,7 +370,7 @@
 				$imgHolder.find('.imgs').empty();
 				$imgHolder.find('.resetBtn').hide();
 				
-				$textHolder.find('#loadMsg').html('<div class="panel">' + x_currentPageXML.getAttribute("load") + '<div class="fa-3x"><i class="fas fa-spinner fa-spin"></i><div></div>').show();
+				$textHolder.find('#loadMsg').html('<div class="panelContent panel">' + x_currentPageXML.getAttribute("load") + '<div class="fa-3x"><i class="fas fa-spinner fa-spin"></i><div></div>').show();
 				$textHolder.find('#mainTxt').html('').show();
 				
 				var $thisImg = $('<img class="singleImg x_noLightBox" id="img_0" alt="' + thisSeries.tooltip + '">');

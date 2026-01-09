@@ -1,6 +1,6 @@
 /* chart.html */
 
-	#infoHolder .panel {
+	#infoHolder .panelContent.panel {
 		overflow:	auto;
 	}
 

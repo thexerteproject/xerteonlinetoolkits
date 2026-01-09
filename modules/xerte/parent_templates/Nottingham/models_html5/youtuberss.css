@@ -39,7 +39,7 @@
 		font-weight:	bold;
 	}
 	
-	#youtuberssHolder .panel {
+	#youtuberssHolder .panelContent.panel {
 		overflow:	auto;
 	}
 

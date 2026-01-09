@@ -100,9 +100,9 @@
 		
 		this.calcWidth = function() {
 			if ($("#textHolder").length > 0 && x_browserInfo.mobile == false) {
-				return $x_pageHolder.width() - $("#textHolder").width() - parseInt($("div.right").css("margin-left")) - (parseInt($x_pageDiv.css("padding-left")) * 2) - (parseInt($("div.panel").css("padding-left")) * 2);
+				return $x_pageHolder.width() - $("#textHolder").width() - parseInt($("div.right").css("margin-left")) - (parseInt($x_pageDiv.css("padding-left")) * 2) - (parseInt($("#panel").css("padding-left")) * 2);
 			} else {
-				return $x_pageHolder.width() - (parseInt($x_pageDiv.css("padding-left")) * 2) - (parseInt($("div.panel").css("padding-left")) * 2);
+				return $x_pageHolder.width() - (parseInt($x_pageDiv.css("padding-left")) * 2) - (parseInt($("#panel").css("padding-left")) * 2);
 			}
 		}
 	}

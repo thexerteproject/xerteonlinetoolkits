@@ -125,7 +125,7 @@
 					.addClass('fitHeight')
 					.find('.front, .back').height(maxH);
 				
-				$cards.find('.panel .cardInner, .cardImg img').css('max-height', Math.floor(maxH - parseInt($cards.find('.panel .cardInner').css('margin-top')) - $('.flipBtnHolder').outerHeight(true)));
+				$cards.find('.cardSide .cardInner, .cardImg img').css('max-height', Math.floor(maxH - parseInt($cards.find('.cardSide .cardInner').css('margin-top')) - $('.flipBtnHolder').outerHeight(true)));
 				
 			// each card is the height of its tallest side
 			} else if (cardHeight == 'fit') {
@@ -174,7 +174,7 @@
 			
 			$('iframe.mediaHolder').each(function() {
 				var $this = $(this),
-					maxH = Math.floor($this.closest('.panel').height() - parseInt($this.closest('.cardInner').css('margin-top')) - $this.closest('.panel').find('.flipBtnHolder').outerHeight(true))
+					maxH = Math.floor($this.closest('.cardSide').height() - parseInt($this.closest('.cardInner').css('margin-top')) - $this.closest('.cardSide').find('.flipBtnHolder').outerHeight(true))
 				
 				$this.height(maxH);
 			})
@@ -192,8 +192,8 @@
 				
 				var tempW = $cardVideo.data('max-width'),
 					tempH = $cardVideo.data('max-height'),
-					maxW = $cardVideo.closest('.panel').width() - (parseInt($cardVideo.closest('.cardInner').css('margin-left')) * 2),
-					maxH = $cardVideo.closest('.panel').height() - parseInt($cardVideo.closest('.cardInner').css('margin-top')) - $cardVideo.closest('.cardInner').find('.emptyDiv').height();
+					maxW = $cardVideo.closest('.cardSide').width() - (parseInt($cardVideo.closest('.cardInner').css('margin-left')) * 2),
+					maxH = $cardVideo.closest('.cardSide').height() - parseInt($cardVideo.closest('.cardInner').css('margin-top')) - $cardVideo.closest('.cardInner').find('.emptyDiv').height();
 				
 				if (tempW > maxW) {
 					var scale = maxW / tempW;
@@ -305,8 +305,8 @@
 				
 				$thisCard = $('<div>')
 								.addClass('card')
-								.append('<div class="front panel" role="region" aria-labelledby="card' + i + '_0Title"/>')
-								.append('<div class="back panel" role="region" aria-labelledby="card' + i + '_1Title"/>');
+								.append('<div class="cardSide front panel" role="region" aria-labelledby="card' + i + '_0Title"/>')
+								.append('<div class="cardSide back panel" role="region" aria-labelledby="card' + i + '_1Title"/>');
 
 				$thisCard.appendTo($cards);
 
@@ -616,9 +616,9 @@
 
 		this.activateCard = function($card, isFlipped, focus) {
 			const currentSide = isFlipped == true ? 1 : 0;
-			const $currentSide = $card.find('.panel:eq(' + currentSide + ')');
+			const $currentSide = $card.find('.cardSide:eq(' + currentSide + ')');
 			const hiddenSide = isFlipped == true ? 0 : 1;
-			const $hiddenSide = $card.find('.panel:eq(' + hiddenSide + ')');
+			const $hiddenSide = $card.find('.cardSide:eq(' + hiddenSide + ')');
 
 			// force tabindex to be on for elements on visible side & off for elements on hidden side
 			// otherwise you can tab to elements that aren't shown
