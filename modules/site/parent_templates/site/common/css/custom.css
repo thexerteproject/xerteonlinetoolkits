@@ -233,7 +233,7 @@ h3.contentTitle {
     }
 
     /* --PANELS-------------------------------------------------------------- */
-    .panel {
+    .panel:not(.editorStyle) {
         position: relative;
         margin: 15px 0;
         padding: 39px 19px 14px;
@@ -245,7 +245,7 @@ h3.contentTitle {
         border-radius: 4px;
     }
     /* Echo out a label for the example */
-    .panel:after {
+    .panel:not(.editorStyle):after {
         content: attr(title);
         position: absolute;
         top: -1px;

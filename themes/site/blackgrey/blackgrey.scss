@@ -171,20 +171,20 @@ a:hover{
 }
 
 /* --PANELS-------------------------------------------------------------- */
-.panel {
+.panel:not(.editorStyle) {
   background-color: $panelcolor;
-  border: 1px solid $panelcolor;
+  border: 1px solid $whiteorlightest;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
   color:$whiteorlightest;
 }
 /* Echo out a label for the example */
-.panel:after {
+.panel:not(.editorStyle):after {
   font-size: 12px;
   font-weight: bold;
   background-color: $panelcolor;
-  border: 1px solid $panelcolor;
+  border: 1px solid $whiteorlightest;
   color: $whiteorlightest;
   -webkit-border-radius: 4px 0 4px 0;
   -moz-border-radius: 4px 0 4px 0;

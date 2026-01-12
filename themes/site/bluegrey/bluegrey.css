@@ -55,6 +55,21 @@
   color: #ffffff;
 }
 
+.panel.editorStyle {
+  margin: 1em 0;
+  padding: 14px 19px;
+  background-color: #007899;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+.panel.editorStyle.inline {
+  display: inline-block;
+}
+
 .highlight1 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: #fff;
@@ -578,9 +593,9 @@ a:hover {
 }
 
 /* --PANELS-------------------------------------------------------------- */
-.panel {
+.panel:not(.editorStyle) {
   background-color: #007899;
-  border: 1px solid #007899;
+  border: 1px solid #ffffff;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
@@ -588,11 +603,11 @@ a:hover {
 }
 
 /* Echo out a label for the example */
-.panel:after {
+.panel:not(.editorStyle):after {
   font-size: 12px;
   font-weight: bold;
   background-color: #007899;
-  border: 1px solid #007899;
+  border: 1px solid #ffffff;
   color: #ffffff;
   -webkit-border-radius: 4px 0 4px 0;
   -moz-border-radius: 4px 0 4px 0;

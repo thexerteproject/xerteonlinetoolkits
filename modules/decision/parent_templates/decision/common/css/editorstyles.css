@@ -84,6 +84,21 @@
   color: white;
 }
 
+.panel.editorStyle {
+  margin: 1em 0;
+  padding: 14px 19px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
+}
+
+.panel.editorStyle.inline {
+  display: inline-block;
+}
+
 .highlight1 {
   font-family: Arial, sans-serif;
   background: #fff;
@@ -93,6 +108,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #F07E31;
 }
@@ -106,6 +122,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #2F9739;
 }
@@ -119,6 +136,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #4185C5;
 }
@@ -132,6 +150,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #00A1A3;
 }
@@ -145,6 +164,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #603784;
 }
@@ -158,6 +178,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #D13759;
 }
@@ -496,4 +517,6 @@ cite {
   /*font-weight:400;
   margin-left:20px;*/
   padding: 10px;
-}/*# sourceMappingURL=editorstyles.css.map */
+}
+
+/*# sourceMappingURL=editorstyles.css.map */
