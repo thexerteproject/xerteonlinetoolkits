@@ -1688,6 +1688,11 @@ body:not(.sb_right):not(.sb_left) #x_mainHolder {
   border-color: orange;
 }
 
+.panel .panel.editorStyle {
+  background: #ffffff;
+  border-color: #ffffff;
+}
+
 .panelPage {
   padding: 1%;
 }

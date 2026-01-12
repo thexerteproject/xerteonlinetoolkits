@@ -1434,6 +1434,11 @@ a:visited {
   color: #000000;
 }
 
+.panel .panel.editorStyle {
+  background: #ffffff;
+  border-color: #ffffff;
+}
+
 .panelPage {
   padding: 1%;
   color: #000000;

@@ -21,8 +21,8 @@
 .x_interactiveText_page #pageContents.show #btnHolder,
 .x_interactiveText_page #pageContents.find #btnHolder,
 .x_interactiveText_page #pageContents.find2 #btnHolder,
-.x_interactiveVideo_page .panel h3,
-.x_mediaLesson_page .panel h3,
+.x_interactiveVideo_page .videoPanel.panel h3,
+.x_mediaLesson_page .layoutPanel.panel h3,
 .x_youtuberss_page #resultsHolder .shadedDiv {
   border-bottom: $hrLine solid $defaultpagebackground;
 }
@@ -156,7 +156,7 @@
   border-color: $lightestcolor2;
 }
 //*****media lesson*****/
-.x_mediaLesson_page #panelHolder .panel {
+.x_mediaLesson_page #panelHolder .layoutPanel.panel {
   overflow-x: hidden;
 }
 //*****PDF*****/

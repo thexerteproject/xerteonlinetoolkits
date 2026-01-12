@@ -86,6 +86,10 @@ body:not(.sb_right):not(.sb_left) #x_mainHolder {
 	box-shadow: none;
 	border-color: $brightcolor;
 }
+.panel .panel.editorStyle {
+	background: $defaultpagebackground;
+	border-color: $defaultpagebackground;
+}
 .panelPage{
 	padding:1%;
 }

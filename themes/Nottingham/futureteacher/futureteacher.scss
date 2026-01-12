@@ -79,6 +79,10 @@ a:visited{color:$linkvisited;}
 	box-shadow: none;
 	color:$blackordarkest;
 }
+.panel .panel.editorStyle {
+	background: $defaultpagebackground;
+	border-color: $defaultpagebackground;
+}
 .panelPage{
 	padding:1%;
 	color:$blackordarkest;

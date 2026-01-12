@@ -1541,6 +1541,11 @@ a:hover {
   color: #ffffff;
 }
 
+.panel .panel.editorStyle {
+  background: #3F4957;
+  border-color: #3F4957;
+}
+
 .panelPage {
   padding: 1%;
   color: #ffffff;

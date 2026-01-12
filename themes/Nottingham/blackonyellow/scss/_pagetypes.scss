@@ -166,7 +166,7 @@ li.ui-state-default.ui-draggable:not(.selected):focus {
 
 //*****Lines & borders*****/
 .x_columnPage_page #textHolder, .x_textGraphics_page #imgCaption.transcript, .x_imageSequence_page #controlBar,
-.x_mediaLesson_page .panel h3, .x_nav_page #pageContents.col #textHolder,
+.x_mediaLesson_page .layoutPanel.panel h3, .x_nav_page #pageContents.col #textHolder,
 .x_nav_page #pageContents.slide #btnHolder.top, .x_tabNavExtra_page .paneList, .x_table_page #footnote,
 .x_decision_page #overviewHolder .overviewStep,
 .x_documentation_page #pages:not(:last-child),
@@ -176,7 +176,7 @@ li.ui-state-default.ui-draggable:not(.selected):focus {
 .x_interactiveText_page #pageContents.find #btnHolder, #pageContents.find2 #btnHolder,
 .x_interactiveText_page #groupInfo h3,
 .x_interactiveText_page #questionHolder,
-.x_interactiveVideo_page .panel h3,
+.x_interactiveVideo_page .videoPanel.panel h3,
 .x_mcq_page #feedback h3,
 .x_quiz_page #feedbackGroup h3,
 .x_textCorrection_page h3.fbLabel,

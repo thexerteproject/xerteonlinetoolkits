@@ -116,6 +116,10 @@ a:hover{
 	box-shadow: none;
 	color:$whiteorlightest;
 }
+.panel .panel.editorStyle {
+	background: $defaultpagebackground;
+	border-color: $defaultpagebackground;
+}
 .panelPage{
 	padding:1%;
 	color:$whiteorlightest;

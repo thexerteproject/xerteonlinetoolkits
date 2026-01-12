@@ -1494,6 +1494,11 @@ body:not(.sb_right):not(.sb_left) #x_mainHolder {
   border-color: #B45819;
 }
 
+.panel .panel.editorStyle {
+  background: #ffffff;
+  border-color: #ffffff;
+}
+
 .panelPage {
   padding: 1%;
 }
