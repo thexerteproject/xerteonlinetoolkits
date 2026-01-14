@@ -1,8 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <mcq><![CDATA[<mcq name="Enter Page Title" instruction="" prompt="" type="Single Answer"
-      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"
+      <mcq><![CDATA[<mcq name="Enter Page Title" instruction="" prompt="" type="Single Answer" answerType="radio" align="Left" panelWidth="Medium"
 	  feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
 	  multiWrong="You have not selected the correct combination of answers" 
 	  checkBtnTxt="Check" />]]></mcq>
