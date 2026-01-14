@@ -131,7 +131,7 @@ if (has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) ||
      */
 
     $dir_path = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/media/";
-    x_check_path_traversal($dir_path, $xerte_toolkits_site->users_file_area_full, "Invalid file specified");
+    x_check_path_traversal($dir_path, $xerte_toolkits_site->users_file_area_full, "Invalid file specified", "folder");
 
     $xmlpath = $xerte_toolkits_site->users_file_area_full . $end_of_path .  "/data.xml";
 

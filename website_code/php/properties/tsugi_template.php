@@ -23,15 +23,10 @@
 
 
 	require_once("../../../functions.php");
-
 	require_once "../template_status.php";
-
 	require_once "../url_library.php";
-
 	require_once "../user_library.php";
-
 	require_once "properties_library.php";
-
     function generatePwd($length){
         $a = str_split("abcdefghijklmnopqrstuvwxyABCDEFGHIJKLMNOPQRSTUVWXY0123456789");
         shuffle($a);

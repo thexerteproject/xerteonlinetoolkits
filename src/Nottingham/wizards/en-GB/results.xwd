@@ -90,7 +90,7 @@
         <inCorrectTooltip label="Incorrect tooltip" type="TextInput" wysiwyg="false" language="true" />
         <completeTooltip label="Complete tooltip" type="TextInput" wysiwyg="false" language="true" />
         <inCompleteTooltip label="Incomplete tooltip" type="TextInput" wysiwyg="false" language="true" />
-        <NACompleteTooltip label="Not applicable complete tooltip" type="TextInput" wysiwyg="false" language="true" />
+        <NACompleteTooltip label="Completion not applicable tooltip" type="TextInput" wysiwyg="false" language="true" />
         <detailsTooltip label="Details available tooltip" type="TextInput" wysiwyg="false" language="true" />
         <noDetailsTooltip label="Details not available tooltip" type="TextInput" wysiwyg="false" language="true" />
         <userNameDialogTitle label="User name dialog title" type="TextInput" wysiwyg="false" language="true" />

@@ -415,6 +415,43 @@ function themes_list(){
 	});
 }
 
+function ai_list(){
+	function_to_use="ai";
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/management/ai.php",
+		data: {no_id: 1},
+	})
+		.done(function(response){
+			management_stateChanged(response);
+		});
+}
+
+// Function update ai
+//
+// remove a share, and check who did it
+
+function update_ai(){
+	let form_inputs = $('#admin_area :input');
+	let form_state = {};
+	for (let input = 0; input < form_inputs.length; input++) {
+		if (form_inputs[input].type === 'checkbox') {
+			form_state[form_inputs[input].name] = form_inputs[input].checked;
+		} else {
+			form_state[form_inputs[input].name] = form_inputs[input].value;
+		}
+	}
+	$.ajax({
+		type: "POST",
+		url: "website_code/php/management/ai_management.php",
+		data: {
+			form_state : form_state
+		},
+	})
+		.done(function (response) {
+			management_alert_stateChanged(response);
+		});
+}
 
 // Function delete sharing template
 //
@@ -1156,6 +1193,7 @@ function save_changes(){
 			  break;
 		case "course": update_course();
 			break;
+		case "ai": update_ai();
 		default: break;
 
 

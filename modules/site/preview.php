@@ -58,7 +58,7 @@ function get_logo_path($suffix, $LO_logo, $theme_path, $template_path) {
 
     // Lastly check the default location
     foreach($extensions as $ext) {
-        if (file_exists($template_path . 'common/img/logo'. $suffix[1] . '.' . $ext)) { 
+        if (file_exists($template_path . 'common/img/logo'. $suffix[1] . '.' . $ext)) {
             return $template_path . 'common/img/logo' . $suffix[1] . '.'. $ext;
         }
     }

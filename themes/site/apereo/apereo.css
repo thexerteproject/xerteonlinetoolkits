@@ -1,5 +1,6 @@
 @charset "UTF-8";
-/*start here and set the default values for all the variables*/ /*start here and set the default values for all the variables*/
+/*start here and set the default values for all the variables*/
+/*start here and set the default values for all the variables*/
 /*You should not edit the editorstyles.css file directly or change values directly unless you wish to override something*/
 .panel1 {
   border-radius: 1vmin;
@@ -65,6 +66,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #065465;
 }
@@ -78,6 +80,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #4e9794;
 }
@@ -91,6 +94,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #0F566A;
 }
@@ -104,6 +108,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #00A1A3;
 }
@@ -117,6 +122,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #0F1E25;
 }
@@ -130,6 +136,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #D13759;
 }
@@ -431,11 +438,13 @@ tt {
 ::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.8);
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 10px;
   border-radius: 10px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.8);
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
@@ -488,7 +497,8 @@ a {
 /* --JUMBOTRON-------------------------------------------------------------------- */
 .jumbotron {
   color: #ffffff;
-  background: #0F1E25; /* Old browsers */
+  background: #0F1E25;
+  /* Old browsers */
   background-color: #0F1E25;
   background-image: linear-gradient(3deg, #0F1E25 0%, #0F1E25 100%);
 }
@@ -501,6 +511,10 @@ a {
 /* --NAVBAR-------------------------------------------------------------- */
 .navbar-inverse .navbar-inner {
   background-color: #0F566A;
+  background-image: -moz-linear-gradient(top, #0F566A, #0F566A);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0F566A), to(#0F566A));
+  background-image: -webkit-linear-gradient(top, #0F566A, #0F566A);
+  background-image: -o-linear-gradient(top, #0F566A, #0F566A);
   background-image: linear-gradient(to bottom, #0F566A, #0F566A);
   background-repeat: repeat-x;
   border-color: black;
@@ -542,6 +556,8 @@ a {
 /* --TABLE OF CONTENTS-------------------------------------------------------------- */
 .bs-docs-sidenav {
   background-color: #EFEFEF;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
   border-radius: 6px;
 }
 
@@ -554,15 +570,21 @@ a {
 }
 
 .bs-docs-sidenav > li:first-child > a {
+  -webkit-border-radius: 6px 6px 0 0;
+  -moz-border-radius: 6px 6px 0 0;
   border-radius: 6px 6px 0 0;
 }
 
 .bs-docs-sidenav > li:last-child > a {
+  -webkit-border-radius: 0 0 6px 6px;
+  -moz-border-radius: 0 0 6px 6px;
   border-radius: 0 0 6px 6px;
 }
 
 .bs-docs-sidenav > .active > a {
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.1), inset -1px 0 0 rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.1), inset -1px 0 0 rgba(0, 0, 0, 0.1);
   box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.1), inset -1px 0 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -609,6 +631,8 @@ a {
 .panel {
   background-color: #45494C;
   border: 1px solid #1A2B30;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
   border-radius: 4px;
   color: #89C2C0;
 }
@@ -620,6 +644,8 @@ a {
   background-color: #45494C;
   border: 1px solid #45494C;
   color: #ffffff;
+  -webkit-border-radius: 4px 0 4px 0;
+  -moz-border-radius: 4px 0 4px 0;
   border-radius: 4px 0 4px 0;
 }
 
@@ -664,4 +690,6 @@ a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
 
 .oddSection {
   background: #f7f7f7;
-}/*# sourceMappingURL=apereo.css.map */
+}
+
+/*# sourceMappingURL=apereo.css.map */

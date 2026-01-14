@@ -370,7 +370,7 @@ function makeRecordFromTemplate($metadataPrefix,$template, $metadata){
                     'educational_code' => $metadata->educode,
                     'location' => ($xerte_toolkits_site->site_url . 'play.php?template_id=' . $template['template_id']),
                 ),
-                'keywords' => explode("\n", $metadata->keywords),
+                'keywords' => ($metadata->keywords != "" ? explode("\n", $metadata->keywords) : array()),
                 'relation' => array(
                     'thumbnail' => $metadata->thumbnail,
                     'download' => $metadata->download

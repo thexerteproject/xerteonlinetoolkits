@@ -50,7 +50,28 @@
 	<overviewString label="Overview Label" type="TextInput" wysiwyg="true" language="true"/>
 	<helpString label="Question Help Label" type="TextInput" wysiwyg="true" language="true"/>
 	<btnLabel label="Next Button Label" type="TextInput" wysiwyg="true" language="true"/>
-	
+
+    <autoSuggestionGroup type="group" label="Auto Suggestions" optional="true">
+        <importantNotice label="Please make sure to publish the learning object after you apply a suggestion. This helps the model stay up-to-date with your changes!" type="info" optional="true"/>
+        <additionalInstructions label="Additional Information" type="text"  tooltip="Enter any extra requests here. For example, 'I want to add an multiple choice question about X' or 'I think I need more information steps.'" wysiwyg="true" optional="true" height="100"/>
+        <suggestion1 label="Suggestion 1" type="text" wysiwyg="true" optional="true"/>
+        <suggestion2 label="Suggestion 2" type="text" wysiwyg="true" optional="true"/>
+        <suggestSelect label="Suggestion to apply" options="Suggestion 1, Suggestion 2" type="comboBox" data="suggestion1,suggestion2" defaultValue="suggestion1" width="120" optional="true"/>
+        <generateSuggestionsButton type="generatesuggestionbutton" optional="true"/>
+        <applySuggestionsButton type="applysuggestionbutton" optional="true"/>
+        <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
+    </autoSuggestionGroup>
+
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
+      <qfResultStep label="Number of Result Steps" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfInfoStep label="Number of Info Steps" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfSliderStep label="Number of Slider Steps" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfSliderStepOption label="Number of Options per Slider Step" type="TextInput" wysiwyg="true" defaultValue = "4" optional="true"/>
+      <qfMcqStep label="Number of MCQ Steps" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+      <qfMcqStepOption label="Number of Answers per MCQ Step" type="TextInput" wysiwyg="true" defaultValue = "4" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
 	<newNodes>
 		<resultStep><![CDATA[<resultStep name="e.g. R1" text="" destinationBtn="Continue"/>]]></resultStep>
 		<infoStep><![CDATA[<infoStep name="e.g. I1" targetNew="" text=""/>]]></infoStep>

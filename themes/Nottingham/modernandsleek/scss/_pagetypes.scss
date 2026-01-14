@@ -465,3 +465,9 @@ table.headerCol.shaded td.header {
   border-radius:$mediumroundedcorners;
   background: $brightcolor;
 }
+
+//*****mcq*****/
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+  background: $lightestcolor;
+}

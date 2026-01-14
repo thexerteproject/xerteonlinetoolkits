@@ -41,11 +41,11 @@ _debug("SERVER: " . print_r($_SERVER, true));
 _debug("LTI launch request: " . print_r($_POST, true));
 
 if (isset($_GET["template_id"])) {
-    $id = $_GET["template_id"];
+    $id = x_clean_input($_GET["template_id"]);
 }
 else if(isset($_POST["template_id"]))
 {
-    $id = $_POST["template_id"];
+    $id = x_clean_input($_POST["template_id"]);
     // Hack for the rest of Xerte
     $_GET['template_id'] = $id;
 }
@@ -65,7 +65,7 @@ if(is_numeric($id) || $id == null)
     else{
         $islti13 = false;
     }
-    if ($islti13) {
+    if ($islti13 && isset($LAUNCH->context)) {
         $msg = array();
         $nrps = $LAUNCH->context->loadNamesAndRoles(false, $msg);
         //DONE: get all emails of current users add to array
@@ -103,7 +103,7 @@ if(is_numeric($id) || $id == null)
     }
     if ($group===false && isset($_REQUEST['group']))
     {
-        $group = $_REQUEST['group'];
+        $group = x_clean_input($_REQUEST['group']);
     }
     if ($group !== false)
     {
@@ -116,7 +116,7 @@ if(is_numeric($id) || $id == null)
     }
     if ($course===false && isset($_REQUEST['course']))
     {
-        $course = $_REQUEST['course'];
+        $course = x_clean_input($_REQUEST['course']);
     }
     if ($course !== false)
     {
@@ -129,7 +129,7 @@ if(is_numeric($id) || $id == null)
     }
     if ($module===false && isset($_REQUEST['module']))
     {
-        $module = $_REQUEST['module'];
+        $module = x_clean_input($_REQUEST['module']);
     }
     if ($module !== false)
     {
@@ -150,7 +150,7 @@ if(is_numeric($id) || $id == null)
             _debug('Context id set from custom parameter');
         }
         if ($lticontextid === false && isset($_REQUEST['context_id'])) {
-            $lticontextid = $_REQUEST['context_id'];
+            $lticontextid = x_clean_input($_REQUEST['context_id']);
             _debug('Context id set from request');
         }
         if ($lticontextid === false) {
@@ -169,7 +169,7 @@ if(is_numeric($id) || $id == null)
     }
     if ($lticontextname===false && isset($_REQUEST['context_title']))
     {
-        $lticontextname = $_REQUEST['context_title'];
+        $lticontextname = x_clean_input($_REQUEST['context_title']);
     }
     if ($lticontextname === false)
     {

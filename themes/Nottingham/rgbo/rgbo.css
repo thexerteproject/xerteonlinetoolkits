@@ -4,8 +4,10 @@
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  src: url("fonts/roboto-v29-latin-ext_latin-regular.eot"); /* IE9 Compat Modes */
-  src: local(""), url("fonts/roboto-v29-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/roboto-v29-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/roboto-v29-latin-ext_latin-regular.woff") format("woff"), url("fonts/roboto-v29-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/roboto-v29-latin-ext_latin-regular.svg#Roboto") format("svg"); /* Legacy iOS */
+  src: url("fonts/roboto-v29-latin-ext_latin-regular.eot");
+  /* IE9 Compat Modes */
+  src: local(""), url("fonts/roboto-v29-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/roboto-v29-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/roboto-v29-latin-ext_latin-regular.woff") format("woff"), url("fonts/roboto-v29-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/roboto-v29-latin-ext_latin-regular.svg#Roboto") format("svg");
+  /* Legacy iOS */
 }
 /*black*/
 /*blue*/
@@ -666,6 +668,11 @@ table.headerCol.shaded td.header {
   background: orange;
 }
 
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+    background: green;
+}
+
 #x_footerBlock {
   font-size: 1em;
   color: #000000;
@@ -927,6 +934,7 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   #x_footerProgress {
     display: block;
   }
+
   #x_pageNo {
     vertical-align: top;
     text-align: center;
@@ -938,20 +946,24 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
     z-index: 100;
     font-size: 12px;
   }
+
   #x_footerBlock button {
     /*font-size: 1.4rem;
     width: 1em;*/
     margin-left: 5px;
   }
+
   #x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
     /*font-size: 1.4rem;
     width: 1em;*/
     margin-left: 5px;
   }
+
   .pbContainer {
     display: block;
     margin-top: 1.2em;
   }
+
   .pbTxt {
     display: block;
     text-align: center;
@@ -961,6 +973,7 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   #x_footerProgress {
     display: block;
   }
+
   #x_pageNo {
     vertical-align: top;
     text-align: center;
@@ -975,14 +988,17 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
     z-index: 100;
     font-size: 12px;
   }
+
   #x_footerBlock button {
     font-size: 1.3em;
     width: 1.1em;
     margin-left: 5px;
   }
+
   .pbContainer {
     margin-top: 1.2em;
   }
+
   .pbTxt {
     text-align: center;
   }
@@ -1652,7 +1668,8 @@ a:hover {
 
 #x_mainHolder {
   background: #ffffff;
-  border: none !important; /*remove this to restore the default border*/
+  border: none !important;
+  /*remove this to restore the default border*/
 }
 
 body:not(.sb_right):not(.sb_left) #x_mainHolder {

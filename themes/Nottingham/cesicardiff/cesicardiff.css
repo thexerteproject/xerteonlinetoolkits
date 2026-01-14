@@ -4,48 +4,60 @@
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 300;
-  src: url("fonts/open-sans-v29-latin-ext_latin-300.eot"); /* IE9 Compat Modes */
-  src: local(""), url("fonts/open-sans-v29-latin-ext_latin-300.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans-v29-latin-ext_latin-300.woff2") format("woff2"), url("fonts/open-sans-v29-latin-ext_latin-300.woff") format("woff"), url("fonts/open-sans-v29-latin-ext_latin-300.ttf") format("truetype"), url("fonts/open-sans-v29-latin-ext_latin-300.svg#OpenSans") format("svg"); /* Legacy iOS */
+  src: url("fonts/open-sans-v29-latin-ext_latin-300.eot");
+  /* IE9 Compat Modes */
+  src: local(""), url("fonts/open-sans-v29-latin-ext_latin-300.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans-v29-latin-ext_latin-300.woff2") format("woff2"), url("fonts/open-sans-v29-latin-ext_latin-300.woff") format("woff"), url("fonts/open-sans-v29-latin-ext_latin-300.ttf") format("truetype"), url("fonts/open-sans-v29-latin-ext_latin-300.svg#OpenSans") format("svg");
+  /* Legacy iOS */
 }
 /* open-sans-regular - latin-ext_latin */
 @font-face {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 400;
-  src: url("fonts/open-sans-v29-latin-ext_latin-regular.eot"); /* IE9 Compat Modes */
-  src: local(""), url("fonts/open-sans-v29-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans-v29-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/open-sans-v29-latin-ext_latin-regular.woff") format("woff"), url("fonts/open-sans-v29-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/open-sans-v29-latin-ext_latin-regular.svg#OpenSans") format("svg"); /* Legacy iOS */
+  src: url("fonts/open-sans-v29-latin-ext_latin-regular.eot");
+  /* IE9 Compat Modes */
+  src: local(""), url("fonts/open-sans-v29-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans-v29-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/open-sans-v29-latin-ext_latin-regular.woff") format("woff"), url("fonts/open-sans-v29-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/open-sans-v29-latin-ext_latin-regular.svg#OpenSans") format("svg");
+  /* Legacy iOS */
 }
 /* open-sans-700 - latin-ext_latin */
 @font-face {
   font-family: "Open Sans";
   font-style: normal;
   font-weight: 700;
-  src: url("fonts/open-sans-v29-latin-ext_latin-700.eot"); /* IE9 Compat Modes */
-  src: local(""), url("fonts/open-sans-v29-latin-ext_latin-700.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans-v29-latin-ext_latin-700.woff2") format("woff2"), url("fonts/open-sans-v29-latin-ext_latin-700.woff") format("woff"), url("fonts/open-sans-v29-latin-ext_latin-700.ttf") format("truetype"), url("fonts/open-sans-v29-latin-ext_latin-700.svg#OpenSans") format("svg"); /* Legacy iOS */
+  src: url("fonts/open-sans-v29-latin-ext_latin-700.eot");
+  /* IE9 Compat Modes */
+  src: local(""), url("fonts/open-sans-v29-latin-ext_latin-700.eot?#iefix") format("embedded-opentype"), url("fonts/open-sans-v29-latin-ext_latin-700.woff2") format("woff2"), url("fonts/open-sans-v29-latin-ext_latin-700.woff") format("woff"), url("fonts/open-sans-v29-latin-ext_latin-700.ttf") format("truetype"), url("fonts/open-sans-v29-latin-ext_latin-700.svg#OpenSans") format("svg");
+  /* Legacy iOS */
 }
 /* roboto-300 - latin-ext_latin */
 @font-face {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 300;
-  src: url("fonts/roboto-v30-latin-ext_latin-300.eot"); /* IE9 Compat Modes */
-  src: local(""), url("fonts/roboto-v30-latin-ext_latin-300.eot?#iefix") format("embedded-opentype"), url("fonts/roboto-v30-latin-ext_latin-300.woff2") format("woff2"), url("fonts/roboto-v30-latin-ext_latin-300.woff") format("woff"), url("fonts/roboto-v30-latin-ext_latin-300.ttf") format("truetype"), url("fonts/roboto-v30-latin-ext_latin-300.svg#Roboto") format("svg"); /* Legacy iOS */
+  src: url("fonts/roboto-v30-latin-ext_latin-300.eot");
+  /* IE9 Compat Modes */
+  src: local(""), url("fonts/roboto-v30-latin-ext_latin-300.eot?#iefix") format("embedded-opentype"), url("fonts/roboto-v30-latin-ext_latin-300.woff2") format("woff2"), url("fonts/roboto-v30-latin-ext_latin-300.woff") format("woff"), url("fonts/roboto-v30-latin-ext_latin-300.ttf") format("truetype"), url("fonts/roboto-v30-latin-ext_latin-300.svg#Roboto") format("svg");
+  /* Legacy iOS */
 }
 /* roboto-regular - latin-ext_latin */
 @font-face {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  src: url("fonts/roboto-v30-latin-ext_latin-regular.eot"); /* IE9 Compat Modes */
-  src: local(""), url("fonts/roboto-v30-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/roboto-v30-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/roboto-v30-latin-ext_latin-regular.woff") format("woff"), url("fonts/roboto-v30-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/roboto-v30-latin-ext_latin-regular.svg#Roboto") format("svg"); /* Legacy iOS */
+  src: url("fonts/roboto-v30-latin-ext_latin-regular.eot");
+  /* IE9 Compat Modes */
+  src: local(""), url("fonts/roboto-v30-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("fonts/roboto-v30-latin-ext_latin-regular.woff2") format("woff2"), url("fonts/roboto-v30-latin-ext_latin-regular.woff") format("woff"), url("fonts/roboto-v30-latin-ext_latin-regular.ttf") format("truetype"), url("fonts/roboto-v30-latin-ext_latin-regular.svg#Roboto") format("svg");
+  /* Legacy iOS */
 }
 /* roboto-700 - latin-ext_latin */
 @font-face {
   font-family: "Roboto";
   font-style: normal;
   font-weight: 700;
-  src: url("fonts/roboto-v30-latin-ext_latin-700.eot"); /* IE9 Compat Modes */
-  src: local(""), url("fonts/roboto-v30-latin-ext_latin-700.eot?#iefix") format("embedded-opentype"), url("fonts/roboto-v30-latin-ext_latin-700.woff2") format("woff2"), url("fonts/roboto-v30-latin-ext_latin-700.woff") format("woff"), url("fonts/roboto-v30-latin-ext_latin-700.ttf") format("truetype"), url("fonts/roboto-v30-latin-ext_latin-700.svg#Roboto") format("svg"); /* Legacy iOS */
+  src: url("fonts/roboto-v30-latin-ext_latin-700.eot");
+  /* IE9 Compat Modes */
+  src: local(""), url("fonts/roboto-v30-latin-ext_latin-700.eot?#iefix") format("embedded-opentype"), url("fonts/roboto-v30-latin-ext_latin-700.woff2") format("woff2"), url("fonts/roboto-v30-latin-ext_latin-700.woff") format("woff"), url("fonts/roboto-v30-latin-ext_latin-700.ttf") format("truetype"), url("fonts/roboto-v30-latin-ext_latin-700.svg#Roboto") format("svg");
+  /* Legacy iOS */
 }
 /*set background colors*/
 /* default #2196F3;*/
@@ -300,6 +312,7 @@
   #x_footerProgress {
     display: block;
   }
+
   #x_pageNo {
     vertical-align: top;
     text-align: center;
@@ -311,15 +324,18 @@
     z-index: 100;
     font-size: 12px;
   }
+
   #x_footerBlock button {
     /*font-size: 1em;
     width: 1em;*/
     margin-left: 5px;
   }
+
   .pbContainer {
     display: block;
     margin-top: 1.2em;
   }
+
   .pbTxt {
     display: block;
     text-align: center;
@@ -1248,7 +1264,7 @@ img {
   /* background: #fff!important; */
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border: 1px solid rgb(85, 85, 85);
+  border: 1px solid #555555;
   /* color: black; */
   border-radius: 4px;
   font-family: "Roboto", sans-serif;

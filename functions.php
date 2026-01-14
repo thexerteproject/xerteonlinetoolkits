@@ -160,6 +160,10 @@ function _include_javascript_file($file_path) {
         $url_param=substr($file_path, $parpos);
         $file_path = substr($file_path, 0, $parpos);
     }
+    else
+    {
+        $url_param = "";
+    }
     if (isset($_GET['language']) && is_dir($languages . x_clean_input($_GET['language']))) {
         $_SESSION['toolkits_language'] = x_clean_input($_GET['language']);
     }
@@ -352,6 +356,12 @@ function x_clean_input($input, $expected_type = null, $specialcharsflags = ENT_Q
                 die("Expected numeric value, got " . htmlentities($sanitized, $specialcharsflags));
             }
         }
+        else if ($expected_type == 'bool') {
+            if (!is_bool($input)) {
+                die("Expected boolean, got " . htmlentities($sanitized, $specialcharsflags));
+            }
+            return $input; // do not modify booleans
+        }
     }
     return $sanitized;
 }
@@ -455,13 +465,25 @@ function x_check_zip($zip, $type="")
     }
 }
 
-function x_check_path_traversal($path, $expected_path=null, $message=null)
+function x_check_zip_file($file){
+    $zip = new ZipArchive();
+    $x = $zip->open($file);
+
+    x_check_zip($zip);
+}
+
+function x_check_path_traversal($path, $expected_path=null, $message=null, $type='file')
 {
     global $xerte_toolkits_site;
     $mesg = ($message != null ? $message : "Path traversal detected!");
     // Account for Windows, because realpath changes / to \
     if(DIRECTORY_SEPARATOR !== '/') {
         $rpath = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        if (strpos($rpath, DIRECTORY_SEPARATOR) !== 0 && strpos($rpath, ':') !== 1){
+            // Relative path, so convert to absolute path
+            $rpath = str_replace('/',  DIRECTORY_SEPARATOR, $xerte_toolkits_site->root_file_path . $rpath);
+        }
+
         if ($expected_path != null) {
             $rexpected_path = str_replace('/', DIRECTORY_SEPARATOR, $expected_path);
         }
@@ -469,7 +491,17 @@ function x_check_path_traversal($path, $expected_path=null, $message=null)
     else
     {
         $rpath = $path;
+        if (strpos($rpath, '/') !== 0){
+            // Relative path, so convert to absolute path
+            $rpath = $xerte_toolkits_site->root_file_path . $rpath;
+        }
         $rexpected_path = $expected_path;
+    }
+    if ($type === 'folder') {
+        // Ensure that folder exists for realpath to work
+        if (!is_dir($rpath)) {
+            die($mesg);
+        }
     }
     // Trim dangling DIRECTORY_SEPARATOR
     $rpath = rtrim($rpath, '/\\');
@@ -591,4 +623,17 @@ function x_set_session_name()
     $hash = str_replace('=', '', $hash);
     $current_session_name = session_name();
     session_name($current_session_name . "_" . $hash);
+}
+
+//
+//Function that ensures a folder exists in the learning object
+function verify_LO_folder($LO, $folder)
+{
+    global $xerte_toolkits_site;
+
+    $user_files_dir = $xerte_toolkits_site->users_file_area_full . $LO . $folder;
+
+    if (!is_dir($user_files_dir)) {
+        mkdir($user_files_dir, 0777, true);
+    }
 }

@@ -231,20 +231,22 @@ class XerteXWDBuilder
 				printf("    Model " . $node->getName() . " is added.\n");
 				
 				// add nodes from basicPages.xwd to all pages
-				if ($page == true) {
 					global $basicPageXML;
 					$node = dom_import_simplexml($node);
 					
 					foreach ($basicPageXML->children() as $child) {
 						$child  = dom_import_simplexml($child);
+						$scope = $child->getAttribute('scope');
+
+						//For the first page, each common node will be added while for all subpages we add only those whose scope has been set to 'all'
+						if ($scope=='all' || $page === true){
 						$child  = $node->ownerDocument->importNode($child, TRUE);
 						$node->appendChild($child);
+						}
 					}
 					$node = simplexml_import_dom($node);
-					
 					$page = false;
 					printf("    Common nodes added.\n");
-				}
 				$this->addChildNode($this->xml, $node);
 			}
 		}

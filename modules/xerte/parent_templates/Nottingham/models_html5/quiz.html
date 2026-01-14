@@ -21,20 +21,16 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var quiz = new function() {
-		var questions,
-			currentAnswers,
-			currentQ,
-			qNoTxt,
-			myProgress,
-            resultsShown = false,
-			tracked = false;
-
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			if ($(x_currentPageXML).children().length > 0) {
-				this.startQs();
-			}
-			if ($("#vidHolder").length > 0) {
+			const $pageContents = $("#pageContents");
+			this.questions = $pageContents.data("questions");
+			this.currentAnswers = $pageContents.data("currentAnswers");
+			this.currentQ = $pageContents.data("currentQ");
+			this.myProgress = $pageContents.data("myProgress");
+			this.tracked = $pageContents.data("tracked");
+
+            if ($("#vidHolder").length > 0) {
 				this.loadVideo();
 			}
 		};
@@ -78,34 +74,25 @@
 			}
 		};
 
-
 		this.leavePage = function() {
 			if ($(x_currentPageXML).children().length > 0) {
 				if (!this.tracked) {
 					this.showFeedBackandTrackResults();
 				}
-				if (!this.resultsShown) {
-					this.showResults();
-				}
 			}
-		}
 
+			$("#pageContents").data({
+				questions: this.questions,
+				currentAnswers: this.currentAnswers,
+				currentQ: this.currentQ,
+				myProgress: this.myProgress,
+				tracked: this.tracked
+			});
+		}
 
 		this.startQs = function() {
 			$("#feedbackGroup").find('.feedbackBlock').html("");
-			
-			// if language attributes aren't in xml will have to use english fall back
-			this.qNoTxt = x_currentPageXML.getAttribute("quesCount");
-			if (this.qNoTxt == undefined) {
-				this.qNoTxt = "Question {i} of {n}";
-			}
-            this.showfeedback = true;
-            if (x_currentPageXML.getAttribute("showfeedback") != undefined)
-            {
-                this.showfeedback = x_currentPageXML.getAttribute("showfeedback") == "true";
-            }
-
-			$("#optionHolder").show();
+			$("#optionHolder").removeClass("hidden");
 			$("#checkBtn, #nextBtn, #restartBtn").button("disable");
 			
             this.currentQ = 0;
@@ -134,12 +121,72 @@
 				}
 			}
 			// Track the quiz page
-            this.weighting = 1.0;
-            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
-            {
-                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
-            }
-            XTSetPageType(x_currentPage, 'numeric', numQs, this.weighting);
+            const weighting = x_currentPageXML.getAttribute("trackingWeight") != undefined ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
+            XTSetPageType(x_currentPage, 'numeric', numQs, weighting);
+
+			this.currentAnswers = [];
+
+			// get answer options etc. for all questions now & set up tracking
+			// do now instead of when each question is shown as otherwise the answers won't all show on results page if not completed in the first view of the page
+			const correctOptions = [];
+			const correctFeedback = [];
+			const correctAnswer = [];
+
+			for (let i=0; i<this.questions.length; i++) {
+				this.currentAnswers.push([]);
+				correctOptions.push([]);
+				correctFeedback.push([]);
+				correctAnswer.push([]);
+
+				var $thisQ = $(x_currentPageXML).children()[this.questions[i]];
+
+				$($thisQ).children().each(function() {
+					var label;
+					if (this.getAttribute("name") == undefined || this.getAttribute("name")=="")
+					{
+						label = $("<div>").html(this.getAttribute("text")).text();
+					}
+					else
+					{
+						label = this.getAttribute("name");
+					}
+					quiz.currentAnswers[i].push({
+						text:		this.getAttribute("text"),
+						name:       label,
+						correct:	this.getAttribute("correct"),
+						feedback:	this.getAttribute("feedback"),
+						audioFB:	this.getAttribute("audioFB"),
+						transcript:	this.getAttribute("audioTranscript") != undefined && this.getAttribute("audioTranscript") != '' ? this.getAttribute("audioTranscript") : false
+					});
+				});
+
+				// Randomise the answers, if required
+				if ($thisQ.getAttribute("answerOrder") == 'random') {
+					for (var tmp, j, k, l = this.currentAnswers[i].length, m = l; m--;) {
+						j = Math.floor(Math.random() * l);
+						k = Math.floor(Math.random() * l);
+						tmp = this.currentAnswers[i][j];
+						this.currentAnswers[i][j] = this.currentAnswers[i][k];
+						this.currentAnswers[i][k] = tmp;
+					}
+				}
+
+				$.each(this.currentAnswers[i], function(j, thisOption) {
+					correctOptions[i].push({
+						id: (j + 1) + "",
+						answer: thisOption.name,
+						result: thisOption.correct == 'true'
+					});
+					if (thisOption.correct == 'true') {
+						correctAnswer[i].push(thisOption.name);
+					}
+					correctFeedback[i].push(thisOption.feedback);
+				});
+
+				const name = $thisQ.getAttribute("name") ? $thisQ.getAttribute("name") : $thisQ.getAttribute("prompt");
+
+				XTEnterInteraction(x_currentPage, this.questions[i], 'multiplechoice', name, correctOptions[i], correctAnswer[i], correctFeedback[i], x_currentPageXML.getAttribute("grouping"));
+			}
 
 			this.loadQ();
 
@@ -157,7 +204,10 @@
 
 				var $thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
 
-				$("#qNo").html(this.qNoTxt.replace("{i}", this.currentQ + 1).replace("{n}", this.questions.length));
+
+				// if language attributes aren't in xml will have to use english fall back
+				const qNoTxt = x_currentPageXML.getAttribute("quesCount") == undefined ? "Question {i} of {n}" : x_currentPageXML.getAttribute("quesCount");
+				$("#qNo").html(qNoTxt.replace("{i}", this.currentQ + 1).replace("{n}", this.questions.length));
 
 				var infoString = $thisQ.getAttribute("prompt");
 				
@@ -194,73 +244,35 @@
 				} else {
 					var $optionHolder = $("#optionHolder");
 					if ($thisQ.getAttribute("type") == "Multiple Answer") {
+						$optionHolder.removeClass("answerBtn")
 						$optionHolder.html('<div class="optionGroup"><input type="checkbox" name="option" /><label class="optionTxt"></label></div>');
+					} else if ($thisQ.getAttribute("answerType") == "button") {
+						$optionHolder
+								.addClass("answerBtn")
+								.html('<div class="optionGroup answerBtn"><input type="checkbox" name="option" /><label class="optionTxt"></label></div>');
 					} else {
+						$optionHolder.removeClass("answerBtn")
 						$optionHolder.html('<div class="optionGroup"><input type="radio" name="option" /><label class="optionTxt"></label></div>');
 					}
 					var $optionGroup = $optionHolder.find(".optionGroup"),
-						$checkBtn = $("#checkBtn"),
-						correctOptions = [],
-						correctAnswer = [],
-						correctFeedback = [];
-					
-					// Store the answers in a temporary array
-					this.currentAnswers = [];
-					$($thisQ).children().each(function(i) {
-					    var label;
-					    if (this.getAttribute("name") == undefined || this.getAttribute("name")=="")
-						{
-						    label = $("<div>").html(this.getAttribute("text")).text();
-						}
-						else
-						{
-						    label = this.getAttribute("name");
-						}
-						quiz.currentAnswers.push(
-							{
-								text:		this.getAttribute("text"),
-								name:       label,
-								correct:	this.getAttribute("correct"),
-								feedback:	this.getAttribute("feedback"),
-								audioFB:	this.getAttribute("audioFB"),
-								transcript:	this.getAttribute("audioTranscript") != undefined && this.getAttribute("audioTranscript") != '' ? this.getAttribute("audioTranscript") : false
-							}
-						);
+						$checkBtn = $("#checkBtn");
 
-					});
-
-					// Randomise the answers, if required
-					if ($thisQ.getAttribute("answerOrder") == 'random') {
-						for (var tmp, j, k, l = this.currentAnswers.length, i = l; i--;) {
-							j = Math.floor(Math.random() * l);
-							k = Math.floor(Math.random() * l);
-							tmp = this.currentAnswers[j];
-							this.currentAnswers[j] = this.currentAnswers[k];
-							this.currentAnswers[k] = tmp;
-						}
-					}
-
-					$.each(this.currentAnswers, function(i, thisOption) {
+					$.each(this.currentAnswers[this.currentQ], function(i, thisOption) {
 							var $thisOptionGroup, $thisOption, $thisOptionTxt;
 							if (i != 0) {
 								$thisOptionGroup = $optionGroup.clone().appendTo($optionHolder);
 							} else {
 								$thisOptionGroup = $optionGroup;
 							}
+
+							if ($thisOptionGroup.hasClass("answerBtn")) {
+								$thisOptionGroup.button();
+							}
+
 							$thisOption = $thisOptionGroup.find("input");
 							$thisOptionTxt = $thisOptionGroup.find(".optionTxt");
 								
 							quiz.currNrOptions = i+1;
-
-							correctOptions.push({
-								id: (i+1)+"",
-								answer: thisOption.name,
-								result: thisOption.correct == 'true'
-							});
-							if (thisOption.correct == 'true') {
-                                correctAnswer.push(thisOption.name);
-                            }
-							correctFeedback.push(thisOption.feedback);
 
 							$thisOption
 								.attr({
@@ -269,34 +281,58 @@
 									})
 								.data("correct", thisOption.correct)
 								.change(function() {
+									const $selected = $("#optionHolder input:checked");
 									$("#feedbackGroup").find('.feedbackBlock').html("");
-									var $selected = $("#optionHolder input:checked");
-									if ($selected.length > 0) {
-										$checkBtn.button("enable");
-									} else {
-										$checkBtn.button("disable");
-									}
 									$("#nextBtn").button("disable");
-								})
-								.focusin(function() {
-									$thisOptionGroup.addClass("highlight");
-								})
-								.focusout(function() {
-									$thisOptionGroup.removeClass("highlight");
+
+									if (!$thisOptionGroup.hasClass("answerBtn")) {
+										// radio button / checkbox
+										if ($selected.length > 0) {
+											$checkBtn.button("enable");
+										} else {
+											$checkBtn.button("disable");
+										}
+
+									} else if ($selected.length > 0) {
+										// toggle button
+										if ($selected.length > 1) {
+											$selected.not($(this))
+													.prop("checked", false)
+													.parents(".answerBtn").removeClass("selected");
+										}
+										$(this).parents(".answerBtn").addClass("selected");
+										quiz.showFeedBackandTrackResults();
+										quiz.checked = true;
+
+									} else if ($(".answerBtn.selected").length > 0) {
+										$(".answerBtn.selected").removeClass("selected");
+									}
 								});
+
+							if ($thisQ.getAttribute("type") == "Multiple Answer" || $thisQ.getAttribute("answerType") !== "button") {
+								$thisOption
+										.focusin(function () {
+											$thisOptionGroup.addClass("highlight");
+										})
+										.focusout(function () {
+											$thisOptionGroup.removeClass("highlight");
+										});
+							} else {
+								$thisOption
+										.focusin(function () {
+											$thisOptionGroup.addClass("ui-state-focus");
+										})
+										.focusout(function () {
+											$thisOptionGroup.removeClass("ui-state-focus");
+										});
+							}
 
 							$thisOptionTxt
 								.attr("for", "option" + i)
 								.data("option", $thisOption)
 								.html(x_addLineBreaks(thisOption.text));
 						});
-					var name = $thisQ.getAttribute("prompt");
-					if ($thisQ.getAttribute("name"))
-					{
-						name = $thisQ.getAttribute("name");
-					}
 
-					XTEnterInteraction(x_currentPage, this.questions[this.currentQ], 'multiplechoice', name, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 					quiz.checked = false;
 					$('#qNo').attr('tabIndex', "-1").focus();
 				}
@@ -330,8 +366,8 @@
 
 			// get feedback for selected options and check if they are correct
 			for (var i=0; i<selected.length; i++) {
-				var optionIndex = $(selected[i]).parent().index(),
-						selectedOption = quiz.currentAnswers[optionIndex];
+				var optionIndex = $(selected[i]).parents(".optionGroup").index(),
+						selectedOption = quiz.currentAnswers[this.currentQ][optionIndex];
 
 				if (correct != false && selectedOption.correct == "true") {
 					correct = true;
@@ -351,7 +387,7 @@
 			if (correct != false && currentQuestion.getAttribute("type") == "Multiple Answer") {
 				var notSelected = $("#optionHolder input:not(:checked)");
 				for (var i=0; i<notSelected.length; i++) {
-					var notSelectedOption = quiz.currentAnswers[$(notSelected[i]).parent().index()];
+					var notSelectedOption = quiz.currentAnswers[quiz.currentQ][$(notSelected[i]).parents(".optionGroup").index()];
 					if (notSelectedOption.correct == "true") {
 						correct = false;
 					}
@@ -369,160 +405,6 @@
 
         this.showFeedBackandTrackResults = function() {
 			var currentQuestion = $(x_currentPageXML).children()[quiz.questions[quiz.currentQ]];
-			var thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
-            const trackData = this.isCorrect(currentQuestion);
-			const correct = trackData.correct;
-
-            var rightWrongTxt = "";
-            if (x_currentPageXML.getAttribute("judge") != "false") {
-
-                // add correct feedback depending on if question overall has been answered correctly or not
-                if (currentQuestion.getAttribute("type") == "Multiple Answer") {
-                    if (correct == true) {
-                        rightWrongTxt = '<p>' + $("#pageContents").data("multiRight") + '</p>';
-                    } else {
-                        rightWrongTxt = '<p>' + $("#pageContents").data("multiWrong") + '</p>';
-                    }
-                } else {
-                    if (correct == true) {
-                        rightWrongTxt = '<p>' + $("#pageContents").data("singleRight") + '</p>';
-                    } else {
-                        rightWrongTxt = '<p>' + $("#pageContents").data("singleWrong") + '</p>';
-                    }
-                }
-            }
-
-			var feedbackDiv = ['top', 'middle', 'bottom'],
-				feedbackOrder = thisQ.getAttribute('feedbackPos') == undefined ? 'GAC' : thisQ.getAttribute('feedbackPos');
-
-			feedbackOrder = [...feedbackOrder];
-			
-            if(this.showfeedback){
-            	if(thisQ.getAttribute("type") != "Multiple Answer"){
-					for (var i=0; i<feedbackDiv.length; i++) {
-						var thisFeedback;
-						if (feedbackOrder[i] == 'G') {
-							thisFeedback = thisQ.getAttribute('feedback');
-						} else if (feedbackOrder[i] == 'A') {
-							if(trackData.selectedOption !== undefined && trackData.selectedOption[0] !== undefined && trackData.selectedOption[0] !== null){
-								const selectedOption = trackData.selectedOption[0];
-								thisFeedback = selectedOption.feedback;
-								if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {
-									thisFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '" data-transcript="' + selectedOption.transcript + '"></div>';
-								}
-							}
-						} else {
-							thisFeedback = rightWrongTxt;
-						}
-
-						// to avoid a sudden jump in layout, feedback should slide in gradually if content is centred vertically & panel is full height
-						if ($("#pageContents").data("slideIn")) {
-							$('#' + feedbackDiv[i] + 'Feedback')
-									.hide()
-									.html(thisFeedback)
-									.slideDown();
-						} else {
-							$('#' + feedbackDiv[i] + 'Feedback')
-									.show()
-									.html(thisFeedback);
-						}
-					}
-
-					var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
-					if (feedbackLabel == undefined) {
-						feedbackLabel = "Feedback";
-					}
-					$("#feedbackHeader").html(feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '');
-				}else{
-
-					for (var p=0; p<feedbackDiv.length; p++) {
-						var thisFeedback;
-						if (feedbackOrder[p] == 'G') {
-							thisFeedback = thisQ.getAttribute('feedback');
-						} else if (feedbackOrder[p] == 'A') {
-							var selectedInput = $("#optionHolder input:checked")
-							var multipleFeedback = []
-							var feedback = "";
-
-							for(var f = 0; f <selectedInput.length; f++){
-								multipleFeedback.push(selectedInput[f].value);
-							}
-
-							for(var l = 0; l < multipleFeedback.length; l++){
-								for(var j = 0; j < thisQ.children.length; j++){
-									if(multipleFeedback[l] === thisQ.children[j].attributes.text.value){
-										feedback += thisQ.children[j].attributes.feedback.value;
-										if (thisQ.children[j].attributes.audioFB != undefined && thisQ.children[j].attributes.audioFB.value != undefined && thisQ.children[j].attributes.audioFB.value != "") {
-											var transcriptInfo = thisQ.children[j].attributes.audioTranscript != undefined ? 'data-transcript="' + thisQ.children[j].attributes.audioTranscript.value + '"' : '';
-											feedback += '<div class="audioHolder" data-audio="' + thisQ.children[j].attributes.audioFB.value + '" ' + transcriptInfo + '></div>';
-										}
-									}
-								}
-							}
-							thisFeedback = feedback;
-						} else {
-							thisFeedback = rightWrongTxt;
-						}
-
-						// to avoid a sudden jump in layout, feedback should slide in gradually if content is centred vertically & panel is full height
-						if ($("#pageContents").data("slideIn")) {
-							$('#' + feedbackDiv[p] + 'Feedback')
-									.hide()
-									.html(thisFeedback)
-									.slideDown();
-						} else {
-							$('#' + feedbackDiv[p] + 'Feedback')
-									.show()
-									.html(thisFeedback);
-						}
-					}
-					
-					var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
-					if (feedbackLabel == undefined) {
-						feedbackLabel = "Feedback";
-					}
-					
-					$("#feedbackHeader").html(feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '');
-				}
-				
-				$('#feedbackGroup').find('.audioHolder').each(function() {
-					quiz.loadAudio($(this), $(this).data('audio'), $(this).data('transcript'));
-				});
-				
-				$("#nextBtn").button("enable");
-				$("#checkBtn").button("disable");
-
-				if (XTGetMode() == "normal")
-				{
-					// Disable all options
-					var i=0;
-					for (i=0; i<quiz.currNrOptions; i++)
-					{
-						$("#option"+i).attr("disabled", "disabled");
-					}
-				}
-
-				// scroll to the buttonHolder div so there is less chance of feedback being completely off screen
-				// not scrolling to feedback directly so the buttons won't be out of sight
-				$("#mainPanel").animate({
-					scrollTop: $("#mainPanel").scrollTop() - $("#mainPanel").offset().top + $("#buttonHolder").offset().top
-				}, 500);
-
-			} else {
-				$("#checkBtn").button("disable");
-				this.nextQuestion();
-			}
-
-			x_pageContentsUpdated();
-        }
-
-		this.nextQuestion = function() {
-
-			// scroll back to top of panel
-			$("#mainPanel").animate({scrollTop: 0}, 0);
-
-			this.tracked = true;
-			var currentQuestion = $(x_currentPageXML).children()[quiz.questions[quiz.currentQ]];
 
 			const trackData = this.isCorrect(currentQuestion);
 			// Track answer
@@ -533,6 +415,159 @@
 
 			XTExitInteraction(x_currentPage, quiz.questions[quiz.currentQ], result, trackData.options, trackData.answer, trackData.feedback, x_currentPageXML.getAttribute("trackinglabel"));
 			quiz.myProgress.splice(quiz.currentQ, 1, trackData.correct);
+
+			if (trackData.selectedOption.length > 0) {
+				this.tracked = true;
+				var currentQuestion = $(x_currentPageXML).children()[this.questions[this.currentQ]];
+				var thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
+				const correct = trackData.correct;
+
+				var rightWrongTxt = "";
+				if (x_currentPageXML.getAttribute("judge") != "false") {
+
+					// add correct feedback depending on if question overall has been answered correctly or not
+					if (currentQuestion.getAttribute("type") == "Multiple Answer") {
+						if (correct == true) {
+							rightWrongTxt = '<p>' + $("#pageContents").data("multiRight") + '</p>';
+						} else {
+							rightWrongTxt = '<p>' + $("#pageContents").data("multiWrong") + '</p>';
+						}
+					} else {
+						if (correct == true) {
+							rightWrongTxt = '<p>' + $("#pageContents").data("singleRight") + '</p>';
+						} else {
+							rightWrongTxt = '<p>' + $("#pageContents").data("singleWrong") + '</p>';
+						}
+					}
+				}
+
+				var feedbackDiv = ['top', 'middle', 'bottom'],
+						feedbackOrder = thisQ.getAttribute('feedbackPos') == undefined ? 'GAC' : thisQ.getAttribute('feedbackPos');
+
+				feedbackOrder = [...feedbackOrder];
+
+				const showfeedback = x_currentPageXML.getAttribute("showfeedback") != undefined ? x_currentPageXML.getAttribute("showfeedback") == "true" : true;
+				if (showfeedback) {
+					if (thisQ.getAttribute("type") != "Multiple Answer") {
+						for (var i = 0; i < feedbackDiv.length; i++) {
+							var thisFeedback;
+							if (feedbackOrder[i] == 'G') {
+								thisFeedback = thisQ.getAttribute('feedback');
+							} else if (feedbackOrder[i] == 'A') {
+								if (trackData.selectedOption !== undefined && trackData.selectedOption[0] !== undefined && trackData.selectedOption[0] !== null) {
+									const selectedOption = trackData.selectedOption[0];
+									thisFeedback = selectedOption.feedback;
+									if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {
+										thisFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '" data-transcript="' + selectedOption.transcript + '"></div>';
+									}
+								}
+							} else {
+								thisFeedback = rightWrongTxt;
+							}
+
+						// to avoid a sudden jump in layout, feedback should slide in gradually if content is centred vertically & panel is full height
+						if ($("#pageContents").data("slideIn")) {
+							$('#' + feedbackDiv[i] + 'Feedback')
+									.hide()
+									.html(thisFeedback)
+									.slideDown();
+						} else {
+							$('#' + feedbackDiv[i] + 'Feedback')
+									.show()
+									.html(thisFeedback);
+						}
+					}
+
+						var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
+						if (feedbackLabel == undefined) {
+							feedbackLabel = "Feedback";
+						}
+						$("#feedbackHeader").html(feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '');
+					} else {
+
+						for (var p = 0; p < feedbackDiv.length; p++) {
+							var thisFeedback;
+							if (feedbackOrder[p] == 'G') {
+								thisFeedback = thisQ.getAttribute('feedback');
+							} else if (feedbackOrder[p] == 'A') {
+								var selectedInput = $("#optionHolder input:checked")
+								var multipleFeedback = []
+								var feedback = "";
+
+								for (var f = 0; f < selectedInput.length; f++) {
+									multipleFeedback.push(selectedInput[f].value);
+								}
+
+								for (var l = 0; l < multipleFeedback.length; l++) {
+									for (var j = 0; j < thisQ.children.length; j++) {
+										if (multipleFeedback[l] === thisQ.children[j].attributes.text.value) {
+											feedback += thisQ.children[j].attributes.feedback.value;
+											if (thisQ.children[j].attributes.audioFB != undefined && thisQ.children[j].attributes.audioFB.value != undefined && thisQ.children[j].attributes.audioFB.value != "") {
+												var transcriptInfo = thisQ.children[j].attributes.audioTranscript != undefined ? 'data-transcript="' + thisQ.children[j].attributes.audioTranscript.value + '"' : '';
+												feedback += '<div class="audioHolder" data-audio="' + thisQ.children[j].attributes.audioFB.value + '" ' + transcriptInfo + '></div>';
+											}
+										}
+									}
+								}
+								thisFeedback = feedback;
+							} else {
+								thisFeedback = rightWrongTxt;
+							}
+
+                            // to avoid a sudden jump in layout, feedback should slide in gradually if content is centred vertically & panel is full height
+                            if ($("#pageContents").data("slideIn")) {
+                                $('#' + feedbackDiv[p] + 'Feedback')
+                                        .hide()
+                                        .html(thisFeedback)
+                                        .slideDown();
+                            } else {
+                                $('#' + feedbackDiv[p] + 'Feedback')
+                                        .show()
+                                        .html(thisFeedback);
+                            }
+                        }
+
+                        var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
+                        if (feedbackLabel == undefined) {
+                            feedbackLabel = "Feedback";
+                        }
+
+                        $("#feedbackHeader").html(feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '');
+                    }
+
+                    $('#feedbackGroup').find('.audioHolder').each(function() {
+                        quiz.loadAudio($(this), $(this).data('audio'), $(this).data('transcript'));
+                    });
+
+                    $("#nextBtn").button("enable");
+                    $("#checkBtn").button("disable");
+
+					if (XTGetMode() == "normal") {
+						// Disable all options
+						var i = 0;
+						for (i = 0; i < quiz.currNrOptions; i++) {
+							$("#option" + i).attr("disabled", "disabled");
+						}
+					}
+
+					// scroll to the buttonHolder div so there is less chance of feedback being completely off screen
+					// not scrolling to feedback directly so the buttons won't be out of sight
+					$("#mainPanel").animate({
+						scrollTop: $("#mainPanel").scrollTop() - $("#mainPanel").offset().top + $("#buttonHolder").offset().top
+					}, 500);
+
+				} else {
+					$("#checkBtn").button("disable");
+					this.nextQuestion();
+				}
+			}
+
+			x_pageContentsUpdated();
+        }
+
+		this.nextQuestion = function() {
+			// scroll back to top of panel
+			$("#mainPanel").animate({scrollTop: 0}, 0);
 
 			// Continue to next question
 			quiz.currentQ++;
@@ -567,7 +602,7 @@
             $("#feedbackHeader").html(fbTxt);
 			$("#questionAudio").empty();
 
-            $("#optionHolder").hide();
+            $("#optionHolder").addClass("hidden"); // hide with class rather than .hide() as otherwise the display: flex css (added when div has answerBtn class) gets added as inline style when shown & therefore stays there even when answerBtn class is removed
 			$("#nextBtn, #checkBtn").button("disable");
             if (XTGetMode() != "normal")
             {
@@ -577,7 +612,6 @@
 
             var scormScore = Math.round((myScore * 100 / quiz.questions.length) * 100)/100;
             XTSetPageScore(x_currentPage, scormScore);
-            this.resultsShown = true;
         };
 
 		this.loadVideo = function() {
@@ -604,9 +638,38 @@
 		this.init = function() {
 			const $textHolder = $("#textHolder");
 
-            this.resultsShown = false;
-
-			$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
+			if (panelWidth == "Full") {
+				$("#infoHolder .panel").appendTo($("#pageContents"));
+				$splitScreen.remove();
+			} else {
+				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
+				
+				var textAlign = x_currentPageXML.getAttribute("align");
+				if (textAlign != "right" || (x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "")) {
+					if (panelWidth == "Small") {
+						$splitScreen.addClass("large");
+					} else if (panelWidth == "Large") {
+						$splitScreen.addClass("small");
+					} else {
+						$splitScreen.addClass("medium");
+					}
+				} else {
+					$textHolder
+						.removeClass("left")
+						.addClass("right")
+						.appendTo($splitScreen);
+					$("#infoHolder")
+						.removeClass("right")
+						.addClass("left");
+					if (panelWidth == "Small") {
+						$splitScreen.addClass("medium");
+					} else if (panelWidth == "Large") {
+						$splitScreen.addClass("xlarge");
+					} else {
+						$splitScreen.addClass("large");
+					}
+				}
+			}
 
 			if (x_currentPageXML.getAttribute("video") != undefined && x_currentPageXML.getAttribute("video") != "") {
 				$textHolder.append('<div id="vidHolder" class="panel inline"><div id="pageVideo"></div></div>');

@@ -26,7 +26,7 @@ require_once(dirname(__FILE__) .  '/../../website_code/php/config/popcorn.php');
 
 //popcorn bestanden toevoegen
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
-require(dirname(__FILE__) .  '/../../website_code/php/user_library.php');
+require_once(dirname(__FILE__) .  '/../../website_code/php/user_library.php');
 
 function process_logos($LO_logo, $theme_path, $template_path, $page_content) {
     $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';

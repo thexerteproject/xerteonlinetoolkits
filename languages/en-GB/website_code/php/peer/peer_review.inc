@@ -26,4 +26,3 @@
     define("PEER_REVIEW_USER_FEEDBACK","Your feedback has been sent to the user");
 
 	define("PEER_REVIEW_PROBLEM","A problem has occured");
-

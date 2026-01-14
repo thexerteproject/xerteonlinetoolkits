@@ -55,9 +55,9 @@
     <copypasteinfo2 label="Copy &amp; Paste Info" defaultValue="Note: Click the 'Select Text' button to highlight the instruction, question, your response and the feedback and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true" deprecated="This property is deprecated - use the 'Copy Button' optional property to add a button that copies responses to the clipboard"/>
     <copypasteinfo label="Copy &amp; Paste Info (Flash)" defaultValue="Note: the instruction and question, your response and the feedback, have been copied to the clipboard which you can paste (ctrl + v) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true" deprecated="This property is no longer required" />
     <label label="Button Label" defaultValue="deprecated - for backward compatibility only" type="TextInput" wysiwyg="true" optional="true" deprecated="This property is no longer required"/>
-	
+
 	<required label="Require Answer" type="CheckBox" optional="true" defaultValue="true" tooltip="Require text to be entered in all text areas before answers can be submitted" />
-	
+
 	<imgInfo type="group" label="Image" optional="true" deprecated="This optional property is deprecated as multiple text areas, with associated images, can now be added to the page. This image will continue to work on this page but this optional property will not be available on new model answer pages.">
 		<image label="File" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
 		<tooltip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>

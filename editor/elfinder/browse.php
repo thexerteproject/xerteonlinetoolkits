@@ -54,12 +54,12 @@ if (!isset($_SESSION['uploadDir']) || !isset($_SESSION['uploadURL']))
 {
     die("Invalid upload location");
 }
-x_check_path_traversal($_SESSION['uploadDir'], $xerte_toolkits_site->users_file_area_full, "Invalid upload location");
+x_check_path_traversal($_SESSION['uploadDir'], $xerte_toolkits_site->users_file_area_full, "Invalid upload location", "folder");
 
 // Check uploadURL
 // First create a path from URL by replacing site_url with root_file_path
 $uploadURL = x_convert_user_area_url_to_path($_SESSION['uploadURL']);
-x_check_path_traversal($uploadURL, $xerte_toolkits_site->users_file_area_full, "Invalid upload location");
+x_check_path_traversal($uploadURL, $xerte_toolkits_site->users_file_area_full, "Invalid upload location", "folder");
 
 $mode = 'standalone';
 if (isset($_REQUEST['mode']) && x_clean_input($_REQUEST['mode'])=='cke') {
@@ -78,6 +78,21 @@ if (isset($_REQUEST['langCode']))
     $lang = x_clean_input($_REQUEST['langCode']);
 }
 
+//extra option to support alternative corpus file storage
+$file_location = 'media';
+if (isset($_REQUEST['loc'])) {
+    $file_location = x_clean_input($_REQUEST['loc']);
+    //ensure $file_location is always media or corpus
+    if (!in_array($file_location, ['media', 'RAG/corpus'], true)) {
+        die("Invalid location");
+    }
+}
+
+$connector_url = 'php/connector.php?uploadDir=' . $_SESSION['uploadDir'] . '&uploadURL=' . $_SESSION['uploadURL'] . '&loc=' . $file_location;
+
+if (isset($_SESSION["lti_enabled"]) && $_SESSION["lti_enabled"]) {
+    $connector_url .= '&' . session_name().'=' . session_id() . "&tsugisession=0";
+}
 
 ?>
 <!DOCTYPE html>
@@ -127,7 +142,7 @@ if (isset($_REQUEST['langCode']))
             ?>
 
             $('#elfinder').elfinder({
-                url : 'php/connector.php?uploadDir=<?php echo $_SESSION['uploadDir'];?>&uploadURL=<?php echo $_SESSION['uploadURL'];?>',       // connector URL (REQUIRED)
+                url : '<?php echo $connector_url; ?>',       // connector URL (REQUIRED)
                 lang: '<?php echo $lang;?>',     // language (OPTIONAL)
                 uiOptions : {
                     // toolbar configuration
