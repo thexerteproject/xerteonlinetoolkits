@@ -15,7 +15,7 @@
   <homeButton label="Home"/>
   
   <homeLink description="Go to Home page"/>
-  
+
   <glossaryButton label="Glossary"/>
   
   <projectIntroButton label="Introduction"/>
@@ -27,7 +27,7 @@
   <footerTools hide="Hide footer tools" show="Show footer tools"/>
   
   <sideBar hide="Hide side bar" show="Show side bar"/>
-  
+
   <toc label="Table of Contents" htmlDescription="Use the tab key to select a page. Press space to go to that page.">
 	  <closeButton description="Close Table of Contents"/>
   </toc>
@@ -42,7 +42,7 @@
 	  <closeButton description="Close Special Characters"/>
 	  <dialog instruction="Use CAPS and SHIFT" on="ON" off="OFF" caps="Caps"/>
   </kbLanguage>
-  
+
   <errorPage label="No template is currently available for this page type."/>
   
   <errorBrowser label="Your browser does not fully support this page type."/>
@@ -78,12 +78,12 @@
 	<item>Full Screen</item>
 	<item>fill window</item>
   </sizes>
-  
+
   <vocab>
 	  <page>Page</page>
 	  <of>of</of>
   </vocab>
-  
+
   <movieController>
 	<stopButton label="Reset Movie" description="Stop Movie Button"/>
 	<playButton label="Play Movie" description="Play Movie Button"/>

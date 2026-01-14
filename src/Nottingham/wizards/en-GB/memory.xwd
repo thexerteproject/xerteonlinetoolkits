@@ -37,6 +37,11 @@
 
     <resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
 
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
+        <qfMatchItem label="Number of Items" type="TextInput" wysiwyg="true" defaultValue = "6" optional="true"/>
+        <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
     <newNodes>
       <matchItem><![CDATA[<matchItem name="Enter Card Label" url=""/>]]></matchItem>
     </newNodes>

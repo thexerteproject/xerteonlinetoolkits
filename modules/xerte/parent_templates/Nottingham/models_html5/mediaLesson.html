@@ -307,7 +307,7 @@
 		this.loadMedia = function($holder, type, data) {
 			loadMedia($holder, type, data);
 		}
-		
+
 		this.init = function() {
             this.panelbaseid = "panel_" + x_currentPage + '_';
 			if (!!document.createElement("canvas").getContext) {
@@ -334,6 +334,7 @@
 					this.loadPopcorn();
 				} else {
 					this.setUp();
+					x_pageLoaded();
 				}
 
 			} else {
@@ -391,8 +392,10 @@
 				}
 				$.getScript(x_templateLocation + fileLocation + ".js")
 					.done(function(setttings, textStatus){
-						if (++i >= plugins.length)
+						if (++i >= plugins.length) {
 							mediaLesson.setUp();
+							x_pageLoaded();
+						}
 					})
 					.fail(function( jqxhr, settings, exception ) {
 						console.log("Failed to load plugin:" + exception);
@@ -705,7 +708,6 @@
 			$('.mainMedia').parents('.layoutPanel')
 				.addClass('mediaPanel')
 				.append('<div id="srInfo" class="sr-only" aria-live="assertive"></div>');
-			x_pageLoaded();
 		};
 
 		this.addEvents = function() {

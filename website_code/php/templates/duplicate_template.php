@@ -27,10 +27,10 @@
  * @package
  */
 
-require_once("../../../config.php");
-include "../user_library.php";
-include "../template_library.php";
-include "../template_status.php";
+require_once (dirname(__FILE__) . "/../../../config.php");
+require_once dirname(__FILE__) . "/../user_library.php";
+include dirname(__FILE__) . "/../template_library.php";
+include dirname(__FILE__) . "/../template_status.php";
 
 require $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "xerte/duplicate_template.php";
 require $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . "site/duplicate_template.php";
@@ -100,12 +100,18 @@ if(is_user_creator_or_coauthor($template_id)){
     $query_for_new_template = "INSERT INTO {$prefix}templatedetails "
     . "(creator_id, template_type_id, date_created, date_modified, access_to_whom, template_name, extra_flags)"
             . " VALUES (?,?,?,?,?,?,?)";
+
+    $access = "Private";
+    if (isset($_SESSION['lti_enabled']) and $_SESSION['lti_enabled']){
+        $access = "Public";
+    }
+
     $params = array(
             $_SESSION['toolkits_logon_id'],
         $row_template_type['template_type_id'],
         date('Y-m-d H:i:s'),
         date('Y-m-d H:i:s'),
-        "Private",
+        $access,
         COPY_OF . htmlspecialchars($template_name),
         $row_template_type['extra_flags']);
 
@@ -116,7 +122,6 @@ if(is_user_creator_or_coauthor($template_id)){
         $params = array($new_template_id, $_SESSION['toolkits_logon_id'] , "creator" , $folder_id);
 
         if(db_query($query_for_template_rights, $params) !== FALSE){
-
             receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
 
             duplicate_template($row_template_type['template_framework'], $new_template_id,$template_id,$row_template_type['template_name']);

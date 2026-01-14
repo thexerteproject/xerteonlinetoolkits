@@ -5,13 +5,13 @@
       panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="left" panelStyle="false" removeTxt="false"
       instructions="" judge="true" showfeedback="true" feedback=""
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" generalFeedbackLabel="General Feedback"
-	  singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" 
-	  multiWrong="You have not selected the correct combination of answers" 
-	  onCompletion="You have completed the exercise" score="You scored {i} / {n}" 
-	  submitBtnText="Submit" 
-	  nextBtnText="Next" 
-	  restartBtnText="Restart" 
-	  />]]></quiz>      
+	  singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers"
+	  multiWrong="You have not selected the correct combination of answers"
+	  onCompletion="You have completed the exercise" score="You scored {i} / {n}"
+	  submitBtnText="Submit"
+	  nextBtnText="Next"
+	  restartBtnText="Restart"
+	  />]]></quiz>
     </newNodes>
   </pageWizard>
 
@@ -68,46 +68,70 @@
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true" />
     <score label="You scored {i} out of {n} marks" type="TextInput" wysiwyg="true" language="true" />
     <submitBtnText label="Submit Button Label" type="TextInput" wysiwyg="true" language="true" />
-    <submitBtnTip label="Submit Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
+    <submitBtnTip label="Submit Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
     <submitBtnWidth label="Submit Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
     <nextBtnText label="Next Button Label" type="TextInput" wysiwyg="true" language="true" />
-    <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
+    <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
     <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
     <restartBtnText label="Restart Button Label" type="TextInput" wysiwyg="true" language="true" />
     <restartBtnTip label="Restart Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
     <restartBtnWidth label="Restart Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
 
+	<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
+        <subject verification="^.+$"  label="Subject" type="TextInput" placeholder="Enter a subject here..." tooltip = "This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." optional="true"/>
+        <additionalInstructions label="Additional Instructions" type="text" tooltip="You can leave this blank or provide additional instructions or requests on how the generated result should look. Please note that certain instructions may break the structure of the generated response. If this occurs, change the wording and attempt to generate again." wysiwyg="true" height="50" placeholder="Write your instructions here..." optional="true"/>
+        <uploadPrompt label="Information Source" options="None (uses model base knowledge), All Context Resources,Learning Object (Limited Scope), Single File (Limited Scope)" type="comboBox" data="false,context,lo,true" defaultValue="false" tooltip="Select ‘All Context Resources’ when you wish to use all of the sources in the context resources table.  Select  'Learning Object (limited Scope)’' when you wish to use the latest preview of the learning object as the single source for generating this content. Select ‘Single File (Limited Scope)’ when you wish to use one uploaded file, video or audio link, as the only source (you will be prompted to upload it if it has not already been added). Please ensure the source content corresponds to the requested subject. If relevant information is not found in the sources the AI will attempt to supplement with its own knowledge." conditionTrigger="true" optional="true"/>
+        <textSnippet label="Text Snippet" type="text" tooltip="Provide the text snippet you wish the model to use as a source for generating the interactivity." placeholder="''" condition="uploadPrompt=='trueText'" optional="true"/>
+        <file label="File / Video Link" type="mediaCorpus" defaultValue="Select a file or enter a video link here..." tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation. If you've selected a file or used a video link which has not yet been processed, you may have to wait up to a few minutes for processing to finish, especially for larger videos." condition="uploadPrompt=='true'" optional="true"/>
+        <nrq label="Number of Questions" verification="^\d+$" type="TextInput" defaultValue="3" optional="true" />
+        <nra label="Number of Answers" verification="^\d+$" type="TextInput" tooltip="Number of answers generated respective to each question. For example, '5' will generate five answers per question." defaultValue = "4" optional="true"/>
+        <infoGenSettings advanced="true" label="For this page, the following settings will be used instead of those assigned on the learning-object level:" type="info" optional="true"/>
+        <aiSelector advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" overrideField="baseAiSettings" conditionTrigger="true" optional="true"/>
+        <range advanced="true" label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the complexity of the language. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." defaultValuePH="Intermediate English B2" placeholder="Enter reading level. Defaults to 'Intermediate English, B2'" overrideField="baseRange" optional="true"/>
+        <eduLevel advanced="true" label="Education Level" type="TextInput" tooltip="The education level for which the content is intended. Examples: University students, HBO students in the Netherlands, Middle school students who already have learned the basics, etc." defaultValuePH="University" placeholder="Enter educational level. Defaults to 'University.'" overrideField="baseEduLevel" optional="true"/>
+        <tone advanced="true" label="Tone and Style" type="TextInput" defaultValuePH="Semi-formal" placeholder="Enter an indicator of tone. Defaults to 'Semi-formal.'" tooltip = "Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." overrideField="baseTone" optional="true"/>
+        <aiButton type="aibutton" optional="true"/>
+        <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
+    </AIGroup>
+
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
+      <numberOfQuestions label="Number of Questions" verification="^\d+$" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+      <numberOfAnswers label="Number of Answers" type="TextInput" tooltip="Number of answers generated respective to each question. For example, '5' will generate five answers per question." wysiwyg="true" defaultValue = "4" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
     <newNodes>
-      <question><![CDATA[<question prompt="" name="Question" type="Single Answer" />]]></question>
+      <question><![CDATA[<question prompt="" name="Question" type="Single Answer" answerType="radio" />]]></question>
 	</newNodes>
-	
+
   </quiz>
 
   <question menuItem="Question" icon="icComment">
-  
+
     <prompt label="Question" type="TextArea"  height="100" placeholder="Enter question text here"/>
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" tooltip="The label is used to identify this question on the results page and when tracking results, e.g. via SCORM/LTI/xAPI"/>
-    <type label="Question Type" options="Single Answer,Multiple Answer"  type="ComboBox"  data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120" />
-	
+    <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" conditionTrigger="true"/>
+    <answerType label="Answer Input" type="ComboBox" options="Radio Buttons,Buttons" data="radio,button" defaultValue="radio" mandatory="true" condition="type=='Single Answer'"/>
+
 	<feedbackGroup type="group" label="Feedback" optional="true">
     	<feedback type="TextArea" height="40" label="General Feedback" optional="true" tooltip="Feedback shown when an answer is submitted. Can be used in conjunction with tailored feedback for each answer option."/>
     	<markFeedback label="Mark Answer" type="CheckBox" defaultValue="true" optional="true" tooltip="Mark answer as correct or incorrect in feedback block (at least one answer option must also be set as correct for this to be shown)"/>
     	<feedbackPos label="Feedback Order" options="General > Answer > Correct/Incorrect,General > Correct/Incorrect > Answer,Answer > Correct/Incorrect > General,Answer > General > Correct/Incorrect,Correct/Incorrect > General > Answer,Correct/Incorrect > Answer > General" type="ComboBox" data="GAC,GCA,ACG,AGC,CGA,CAG" defaultValue="GAC" width="120" optional="true" tooltip="The order the different types of feedback are shown within the feedback block. Default order is General feedback > Answer feedback > Correct/Incorrect feedback"/>
     </feedbackGroup>
-	
+
 	<imgInfo type="group" label="Image" optional="true">
 		<image label="Image" type="Media" defaultValue="" placeholder="Select an image" optional="true" />
 		<tip label="Image Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgInfo>
-	
+
 	<soundGroup type="group" label="Audio" optional="true" tooltip="Add an audio player below the question text">
 		<sound label="File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</soundGroup>
-	
+
 	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
-		
+
     <newNodes>
       <option><![CDATA[<option text="" name="Answer" feedback="" correct="false"/>]]></option>
     </newNodes>

@@ -4,8 +4,10 @@
   font-family: "Varela Round";
   font-style: normal;
   font-weight: 400;
-  src: url("../fonts/varela-round-v19-latin-ext_latin-regular.eot"); /* IE9 Compat Modes */
-  src: local(""), url("../fonts/varela-round-v19-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/varela-round-v19-latin-ext_latin-regular.woff2") format("woff2"), url("../fonts/varela-round-v19-latin-ext_latin-regular.woff") format("woff"), url("../fonts/varela-round-v19-latin-ext_latin-regular.ttf") format("truetype"), url("../fonts/varela-round-v19-latin-ext_latin-regular.svg#VarelaRound") format("svg"); /* Legacy iOS */
+  src: url("../fonts/varela-round-v19-latin-ext_latin-regular.eot");
+  /* IE9 Compat Modes */
+  src: local(""), url("../fonts/varela-round-v19-latin-ext_latin-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/varela-round-v19-latin-ext_latin-regular.woff2") format("woff2"), url("../fonts/varela-round-v19-latin-ext_latin-regular.woff") format("woff"), url("../fonts/varela-round-v19-latin-ext_latin-regular.ttf") format("truetype"), url("../fonts/varela-round-v19-latin-ext_latin-regular.svg#VarelaRound") format("svg");
+  /* Legacy iOS */
 }
 /* default #2196F3;*/
 /*start here and set the default values for all the variables*/
@@ -531,6 +533,11 @@ table.headerCol.shaded td.header {
   background: #B45819;
 }
 
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+    background: #d6c338;
+}
+
 #x_footerBlock {
   font-size: 1em;
   color: #ffffff;
@@ -783,6 +790,7 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
   #x_footerProgress {
     display: block;
   }
+
   #x_pageNo {
     vertical-align: top;
     text-align: center;
@@ -794,15 +802,18 @@ body:not(.sb_right):not(.sb_left) #x_footerBlock {
     z-index: 100;
     font-size: 12px;
   }
+
   #x_footerBlock button {
     /*font-size: 1em;
     width: 1em;*/
     margin-left: 5px;
   }
+
   .pbContainer {
     display: block;
     margin-top: 1.2em;
   }
+
   .pbTxt {
     display: block;
     text-align: center;
@@ -1467,7 +1478,8 @@ a:hover {
 
 #x_mainHolder {
   background: #ffffff;
-  border: none !important; /*remove this to restore the default border*/
+  border: none !important;
+  /*remove this to restore the default border*/
 }
 
 body:not(.sb_right):not(.sb_left) #x_mainHolder {

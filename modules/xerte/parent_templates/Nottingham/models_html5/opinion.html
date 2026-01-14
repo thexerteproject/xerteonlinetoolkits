@@ -91,7 +91,7 @@
 				textSize = 12;
 			}
 			$pageContents.data('textSize', textSize);
-			
+
 			$("#canvas-container")
 					.css('width', width)
 					.css('height', height);
@@ -107,13 +107,13 @@
 		this.loadAudio = function(currentQuestion, soundFile, transcript)
 		{
 			if (soundFile != undefined && soundFile != "")
-			{	
+			{
 				$("#questionAudio" + currentQuestion).mediaPlayer({
 					type	:"audio",
 					source	:soundFile,
 					width	:"100%"
 				});
-				
+
 				// manually add a transcript button to the end of the audio bar
 				if (transcript != undefined && transcript != '') {
 					x_addAudioTranscript($("#questionAudio" + currentQuestion), transcript);
@@ -948,7 +948,7 @@
           			$("#mainPanel").animate({ scrollTop: 0 }, "fast");
 					opinion.trackQuestions();
 				});
-			
+
 			// reset button
             $("#resetBtn")
 				.button({

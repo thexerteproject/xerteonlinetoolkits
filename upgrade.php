@@ -1659,3 +1659,112 @@ function upgrade_52()
         }
     }
 }
+
+function upgrade_53()
+{
+    $roleTable = table_by_key("role");
+
+    $ok = db_query("insert into $roleTable(`roleid`, `name`) values (8, 'aiuser')");
+    $message = "Creating extra role aiuser - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+}
+
+function upgrade_54()
+{
+    $message = "";
+    if (!_table_exists("management_helper")) {
+        $table = table_by_key('management_helper');
+
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS $table (
+        `interaction_id` int(11) NOT NULL AUTO_INCREMENT,
+        `vendor` VARCHAR(16) NOT NULL,
+        `label` VARCHAR(34) NOT NULL,
+        `type` VARCHAR(16) NOT NULL,
+        `needs_key` BOOLEAN NOT NULL,
+        `enabled` BOOLEAN NOT NULL ,
+        `sub_options` TEXT,
+        `preferred_model` TEXT,
+        PRIMARY KEY (`interaction_id`)
+      )"
+        );
+
+        $message .= "Creating management helper table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        if ($ok) {
+            $ok = db_query("INSERT INTO $table VALUES 
+                                    (1, 'openai', 'GPT (Openai)', 'ai', 1, 0, '{}', ''),
+                                    (2, 'anthropic', 'Claude (Anthropic)', 'ai', 1, 0, '{}', ''),
+                                    (3, 'mistral', 'Mistral AI', 'ai', 1, 0, '{}', ''),
+                                    (4, 'pexels', 'Pexels', 'image', 1, 0, '{}', ''),
+                                    (5, 'pixabay', 'Pixabay', 'image', 1, 0, '{}', ''),
+                                    (6, 'unsplash', 'Unsplash', 'image', 1, 0, '{}', ''),
+                                    (7, 'wikimedia', 'Wikimedia Foundation', 'image', 0, 0, '{}', ''),
+                                    (8, 'dalle2', 'DallE2 (Generative)', 'imagegen', 1, 0, '{}', ''),
+                                    (9, 'dalle3', 'DallE3 (Generative)', 'imagegen', 1, 0, '{}', ''),
+                                    (10, 'gpt1', 'GPT Image 1', 'imagegen', 1, 0, '{}', ''),
+                                    (11, 'gladia', 'Gladia (Transcription)', 'transcription', 1, 0, '{}', ''),
+                                    (12, 'openai', 'Open AI (Transcription)', 'transcription', 1, 0, '{}', ''),
+                                    (13, 'mistralenc', 'Mistral (Encoding)', 'encoding', 1, 0, '{}', ''),
+                                    (14, 'openaienc', 'OpenAI (Encoding)', 'encoding', 1, 0, '{}', '')
+                                    ");
+            $message .= "Populating management helper table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+        }
+
+
+    }
+    else{
+        $message .= "Table management_helper already exists - ok ? true". "<br>";
+    }
+
+    return $message;
+}
+
+function upgrade_55()
+{
+    $message = "";
+    if (!_table_exists("ai_request_logs")) {
+        $table = table_by_key('ai_request_logs');
+
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS $table (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `schema_version` VARCHAR(16) NOT NULL DEFAULT '1.0',
+
+  `occurred_at` DATETIME NOT NULL,
+  `ingested_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  `category` VARCHAR(32) NOT NULL,
+  `service` VARCHAR(32) NOT NULL,
+  `model` VARCHAR(128) DEFAULT NULL,
+  `request_id` VARCHAR(128) DEFAULT NULL,
+  `status` ENUM('ok','error') NOT NULL DEFAULT 'ok',
+  `error_message` TEXT,
+
+  `actor_user_id` VARCHAR(64) DEFAULT NULL,
+  `actor_workspace_id` VARCHAR(64) DEFAULT NULL,
+
+  `input_tokens` BIGINT UNSIGNED DEFAULT NULL,
+  `output_tokens` BIGINT UNSIGNED DEFAULT NULL,
+  `total_tokens` BIGINT UNSIGNED DEFAULT NULL,
+  `audio_ms` BIGINT UNSIGNED DEFAULT NULL,
+  `audio_seconds` DECIMAL(12,3) DEFAULT NULL,
+  `images_requested` BIGINT UNSIGNED DEFAULT NULL,
+  `images_received` BIGINT UNSIGNED DEFAULT NULL,
+  `image_dimensions` VARCHAR(64) DEFAULT NULL,
+  `image_width` INT UNSIGNED DEFAULT NULL,
+  `image_height` INT UNSIGNED DEFAULT NULL,
+
+  `cost_currency` VARCHAR(12) DEFAULT NULL,
+  `cost_pricing_version` VARCHAR(32) DEFAULT NULL,
+  `cost_total` DECIMAL(18,6) DEFAULT NULL,
+
+  PRIMARY KEY (`id`)
+);");
+
+        $message .= "Creating ai_request_logs table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    } else {
+        $message .= "Table ai_request_logs already exists - ok ? true<br>";
+    }
+
+    return $message;
+}

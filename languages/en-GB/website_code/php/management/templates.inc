@@ -79,4 +79,3 @@
     define("TEMPLATE_UPLOAD_TEMPLATEDISPLAYNAME", "Enter the template display name");
 
     define("TEMPLATE_UPLOAD_TEMPLATEDESCRIPTION", "Enter the template description");
-

@@ -44,6 +44,28 @@
 				}
 				$pageImg.css("max-height", x_browserInfo.mobile == true ? $x_mobileScroll.height() - $x_footerBlock.height() - offset[1] : $x_pageHolder.height() - offset[1]);
 				
+				if (x_currentPageXML.getAttribute("imagesize") == "Small") {
+					$("#imgInnerDiv").css("width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "40%");
+					$("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "40%");
+
+					$("#pageImg").css("width","100%");
+				}
+				
+				if (x_currentPageXML.getAttribute("imagesize") == "Auto") {  // for historical reasons this is called Auto but functions as Medium
+					$("#imgInnerDiv").css("width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "60%");
+					$("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "60%");
+
+					$("#pageImg").css("width","100%");
+				}
+				
+				if (x_currentPageXML.getAttribute("imagesize") == "Big") {
+					$("#imgInnerDiv").css("width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "80%");
+					$("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "80%");
+
+					$("#pageImg").css("width","100%");
+				}
+
+
 				if ($("#imgCaption").length > 0) {
 					$("#imgCaption").width($pageImg.width());
 				}

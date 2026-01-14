@@ -57,12 +57,12 @@
 				var answerTxt;
 				if (this.optionElements[i].label != undefined)
 				{
-					var answerTxt=this.optionElements[i].label;
+					answerTxt=this.optionElements[i].label;
 				}
 				else
 				{
 					// Create fallback label
-					var answerTxt = (x_currentPageXML.getAttribute('answerTxt') != undefined ? x_currentPageXML.getAttribute('answerTxt') : "Option");
+					answerTxt = (x_currentPageXML.getAttribute('answerTxt') != undefined ? x_currentPageXML.getAttribute('answerTxt') : "Option");
 					answerTxt += ' ' + (i+1);
 					answerTxt = x_GetTrackingTextFromHTML(this.optionElements[i].text, answerTxt);
 				}
@@ -111,11 +111,11 @@
 			}
         }
 
-        this.showFeedBackandTrackScore = function()
-        {
+        this.showFeedBackandTrackScore = function() {
             var answerFeedback = "",
 				genFeedback,
 				correct = (x_currentPageXML.getAttribute("type") == "Multiple Answer"),
+                answered = false,
 				l_options = [],
 				l_answers = [],
 				l_feedbacks = [],
@@ -129,7 +129,7 @@
             }
 
             for (var i=0; i<selected.length; i++) {
-                var optionIndex = $(selected[i]).parent().index(),
+                var optionIndex = $(selected[i]).parents(".answerBtn").length > 0 ? $(selected[i]).parents(".answerBtn").index() : $(selected[i]).parent().index(),
 					selectedOption = this.optionElements[optionIndex],
 					currCorrect;
 
@@ -146,6 +146,7 @@
                 }
 
                 if ($(selected[i]).is(':checked')) {
+					answered = true;
 					var tempFeedback = "";
                     tempFeedback += selectedOption.feedback;
 					if (tempFeedback != "" && tempFeedback.indexOf('<p') == -1) {
@@ -179,13 +180,11 @@
                     l_feedbacks.push(x_GetTrackingTextFromHTML(selectedOption.feedback, ""));
                 }
             }
-
-			if (l_options.length > 0) {
-
+			if (answered) {
 				var singleRight = x_currentPageXML.getAttribute("singleRight") != undefined ? x_currentPageXML.getAttribute("singleRight") : "Your answer is correct",
-						singleWrong = x_currentPageXML.getAttribute("singleWrong") != undefined ? x_currentPageXML.getAttribute("singleWrong") : "Your answer is incorrect",
-						multiRight = x_currentPageXML.getAttribute("multiRight") != undefined ? x_currentPageXML.getAttribute("multiRight") : "You have selected all the correct answers",
-						multiWrong = x_currentPageXML.getAttribute("multiWrong") != undefined ? x_currentPageXML.getAttribute("multiWrong") : "You have not selected the correct combination of answers";
+                    singleWrong = x_currentPageXML.getAttribute("singleWrong") != undefined ? x_currentPageXML.getAttribute("singleWrong") : "Your answer is incorrect",
+                    multiRight = x_currentPageXML.getAttribute("multiRight") != undefined ? x_currentPageXML.getAttribute("multiRight") : "You have selected all the correct answers",
+                    multiWrong = x_currentPageXML.getAttribute("multiWrong") != undefined ? x_currentPageXML.getAttribute("multiWrong") : "You have not selected the correct combination of answers";
 
 				var rightWrongTxt = "";
 				// add correct feedback depending on if question overall has been answered correctly or not
@@ -259,33 +258,10 @@
 				if (feedbackLabel == undefined) {
 					feedbackLabel = "Feedback";
 				}
-
-				// show the feedback in the order specified
-				for (var i = 0; i < feedbackDiv.length; i++) {
-					if (i < feedback) {
-						var thisFeedback;
-						if (feedbackOrder[i] == 'G') {
-							thisFeedback = genFeedback;
-						} else if (feedbackOrder[i] == 'A') {
-							thisFeedback = answerFeedback;
-						} else {
-							thisFeedback = rightWrongTxt;
-						}
-
-						$('#' + feedbackDiv[i] + 'Feedback')
-								.html(thisFeedback)
-								.show();
-
-					} else {
-						$('#' + feedbackDiv[i] + 'Feedback')
-								.html('')
-								.hide();
-					}
-				}
 				$("#feedbackHeader").html(feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '');
 
 				$("#feedback")
-						.hide()
+                        .hide()
 						.find(".audioHolder").each(function () {
 					$(this).mediaPlayer({
 						type: "audio",
@@ -298,7 +274,6 @@
 						x_addAudioTranscript($("#feedback").find(".audioHolder"), $(this).data("transcript"));
 					}
 				});
-
 				// to avoid a sudden jump in layout, feedback should slide in gradually if content is centred vertically & panel is full height
 				if ($("#pageContents").data("slideIn")) {
 					$("#feedback").slideDown(function() {
@@ -361,16 +336,21 @@
 			$("#feedback").hide();
 			$("#question").html(x_addLineBreaks(x_currentPageXML.getAttribute("prompt")));
 			
-			var $optionHolder = $("#optionHolder");
+			var $optionHolder = $("#optionHolder").append('<div class="optionGroup"></div>');
 			
 			if ($(x_currentPageXML).children().length == 0) {
 				$("#optionHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
 				$("#checkBtn").remove();
 			} else {
 				if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
-					$optionHolder.find("input[type='radio']").remove();
+					$optionHolder.find(".optionGroup").append('<input type="checkbox" name="option" /><label class="optionTxt"></label>');
+				} else if (x_currentPageXML.getAttribute("answerType") == "button") {
+					$optionHolder.addClass("answerBtn")
+							.find(".optionGroup").addClass("answerBtn")
+							.append('<input type="checkbox" name="option" /><label class="optionTxt"></label>');
+					$("#checkBtn").remove();
 				} else {
-					$optionHolder.find("input[type='checkbox']").remove();
+					$optionHolder.find(".optionGroup").append('<input type="radio" name="option" /><label class="optionTxt"></label>');
 				}
 
 				var $optionGroup = $optionHolder.find(".optionGroup");
@@ -403,76 +383,100 @@
 				}
 				
 				$.each(this.optionElements, function(i, thisOption) {
+						mcq.currNrOptions = i+1;
+
 						var $thisOptionGroup, $thisOption, $thisOptionTxt;
 						if (i != 0) {
 							$thisOptionGroup = $optionGroup.clone().appendTo($optionHolder);
 						} else {
 							$thisOptionGroup = $optionGroup;
 						}
+
+						if ($thisOptionGroup.hasClass("answerBtn")) {
+							$thisOptionGroup.button();
+						}
+
 						$thisOption = $thisOptionGroup.find("input");
 						$thisOptionTxt = $thisOptionGroup.find(".optionTxt");
 
-						mcq.currNrOptions = i+1;
-
 						$thisOption
-							.attr({
-								"value"		:thisOption.text,
-								"id"		:"option" + i
+								.attr({
+									"value"		:thisOption.text,
+									"id"		:"option" + i
 								})
-							.change(function() {
-								// to avoid a sudden jump in layout, feedback should slide up gradually if content is centred vertically & panel is full height
-								if ($("#pageContents").data("slideIn")) {
-									if ($("#feedback").is(":visible")) {
-										$("#feedback").slideUp(function () {
-											$("#feedback").find('.feedbackBlock').html("");
-										});
+								.change(function() {
+                                    // to avoid a sudden jump in layout, feedback should slide up gradually if content is centred vertically & panel is full height
+                                    if ($("#pageContents").data("slideIn")) {
+                                        if ($("#feedback").is(":visible")) {
+                                            $("#feedback").slideUp(function () {
+                                                $("#feedback").find('.feedbackBlock').html("");
+                                            });
+                                        }
+                                    } else {
+                                        $("#feedback").hide().find('.feedbackBlock').html("");
+                                    }
+									var $checkBtn = $("#checkBtn"),
+										$selected = $("#optionHolder input:checked");
+
+									if (!$thisOptionGroup.hasClass("answerBtn")) {
+										// radio button / checkbox
+										$checkBtn.show();
+										if ($selected.length == 0) {
+											$checkBtn.button("disable");
+										} else if ($selected.length > 0) {
+											$checkBtn.button("enable");
+										}
+									} else if ($selected.length > 0) {
+										// toggle button
+										if ($selected.length > 1) {
+											$selected.not($(this))
+													.prop("checked", false)
+													.parents(".answerBtn").removeClass("selected");
+										}
+										$(this).parents(".answerBtn").addClass("selected");
+										mcq.showFeedBackandTrackScore();
+										mcq.checked = true;
+									} else if ($(".answerBtn.selected").length > 0) {
+										$(".answerBtn.selected").removeClass("selected");
 									}
-								} else {
-									$("#feedback").hide().find('.feedbackBlock').html("");
-								}
-								var $checkBtn = $("#checkBtn"),
-									$selected = $("#optionHolder input:checked");
-								
-								$checkBtn.show();
-								if ($selected.length == 0) {
-									$checkBtn.button("disable");
-								} else if ($selected.length > 0) {
-									$checkBtn.button("enable");
-								}
-							})
-							.focusin(function() {
-								$thisOptionGroup.addClass("highlight");
-							})
-							.focusout(function() {
-								$thisOptionGroup.removeClass("highlight");
-							});
+								});
+
+						if (x_currentPageXML.getAttribute("type") == "Multiple Answer" || x_currentPageXML.getAttribute("answerType") !== "button") {
+							$thisOption
+								.focusin(function () {
+									$thisOptionGroup.addClass("highlight");
+								})
+								.focusout(function () {
+									$thisOptionGroup.removeClass("highlight");
+								});
+						} else {
+							$thisOption
+									.focusin(function () {
+										$thisOptionGroup.addClass("ui-state-focus");
+									})
+									.focusout(function () {
+										$thisOptionGroup.removeClass("ui-state-focus");
+									});
+						}
 
 						$thisOptionTxt
-							.attr("for", "option" + i)
-							.data("option", $thisOption)
-							.html(thisOption.text);
+								.attr("for", "option" + i)
+								.data("option", $thisOption)
+								.html(thisOption.text);
 					});
 
-
-				// checkBtnWidth attribute not used as button will be sized automatically
-				// if language attributes aren't in xml will have to use english fall back
-				var checkBtnTxt = x_currentPageXML.getAttribute("checkBtnTxt");
-				if (checkBtnTxt == undefined) {
-					checkBtnTxt = "Check";
+				// check button is not shown if answer type is button
+				if ($("#checkBtn").length > 0) {
+					$("#checkBtn")
+							.button({
+								label: x_currentPageXML.getAttribute("checkBtnTxt") == undefined ? x_currentPageXML.getAttribute("checkBtnTxt") : "Check",
+								disabled: true
+							})
+							.click(function () {
+								mcq.showFeedBackandTrackScore();
+								mcq.checked = true;
+							})
 				}
-				var checkBtnTip = x_currentPageXML.getAttribute("checkBtnTip");
-				if (checkBtnTip == undefined) {
-					checkBtnTip = "Check Answer";
-				}
-				$("#checkBtn")
-					.button({
-						label: checkBtnTxt,
-						disabled: true
-					})
-					.click(function() {
-						mcq.showFeedBackandTrackScore();
-						mcq.checked = true;
-					})
 
 				this.startQ();
 				
@@ -497,13 +501,7 @@
 		<div id="mainPanel" class="panelContent panel" tabindex="0">
 			<fieldset class="noStyle">
 				<legend id="question"></legend>
-				<div id="optionHolder">
-					<div class="optionGroup">
-						<input type="radio" name="option" />
-						<input type="checkbox" name="option" />
-						<label class="optionTxt"></label>
-					</div>
-				</div>
+				<div id="optionHolder"></div>
 				<button id="checkBtn"></button>
 				<div id="feedback" aria-live="polite">
 					<div id="feedbackHeader" class="feedbackBlock"></div>

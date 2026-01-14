@@ -232,7 +232,8 @@ function get_template_data_as_xml($template_id, $creator_user_name="", $template
 
 function change_copied_xml($xmlfile)
 {
-    $xml = simplexml_load_file($xmlfile);
+    $xml = file_get_contents($xmlfile);
+    $xml = simplexml_load_string($xml);
     if ((string)$xml['oaiPmhAgree'] === 'true')
     {
         $xml['oaiPmhAgree'] = 'false';

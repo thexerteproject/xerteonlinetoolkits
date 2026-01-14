@@ -26,6 +26,7 @@ DROP TABLE IF EXISTS `$template_group_rights` ;
 DROP TABLE IF EXISTS `$folderrights` ;
 DROP TABLE IF EXISTS `$folder_group_rights` ;
 DROP TABLE IF EXISTS `$oai_publish` ;
+DROP TABLE If EXISTS `$management_helper` ;
 
 DROP TABLE IF EXISTS `$lti_context` ;
 DROP TABLE IF EXISTS `$lti_keys` ;
@@ -397,3 +398,67 @@ insert into `$role`(`roleid`, `name`) values
   (6, 'projectadmin'),
   (7, 'harvestadmin'),
   (8, 'aiuser');
+
+CREATE TABLE IF NOT EXISTS `$management_helper` (
+    `interaction_id` int(11) NOT NULL AUTO_INCREMENT,
+    `vendor` VARCHAR(10) NOT NULL,
+    `label` VARCHAR(34) NOT NULL,
+    `type` VARCHAR(10) NOT NULL,
+    `needs_key` BOOLEAN NOT NULL,
+    `enabled` BOOLEAN NOT NULL ,
+    `sub_options` TEXT,
+    `preferred_model` TEXT,
+    PRIMARY KEY (`interaction_id`)
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `management_helper` VALUES
+                                    (1, 'openai', 'GPT (Openai)', 'ai', 1, 0, '{}', ''),
+                                    (2, 'anthropic', 'Claude (Anthropic)', 'ai', 1, 0, '{}', ''),
+                                    (3, 'mistral', 'Mistral AI', 'ai', 1, 0, '{}', ''),
+                                    (4, 'pexels', 'Pexels', 'image', 1, 0, '{}', ''),
+                                    (5, 'pixabay', 'Pixabay', 'image', 1, 0, '{}', ''),
+                                    (6, 'unsplash', 'Unsplash', 'image', 1, 0, '{}', ''),
+                                    (7, 'wikimedia', 'Wikimedia Foundation', 'image', 0, 0, '{}', ''),
+                                    (8, 'dalle2', 'DallE2 (Generative)', 'imagegen', 1, 0, '{}', ''),
+                                    (9, 'dalle3', 'DallE3 (Generative)', 'imagegen', 1, 0, '{}', ''),
+                                    (10, 'gpt1', 'GPT Image 1', 'imagegen', 1, 0, '{}', ''),
+                                    (11, 'gladia', 'Gladia (Transcription)', 'transcription', 1, 0, '{}', ''),
+                                    (12, 'openai', 'Open AI (Transcription)', 'transcription', 1, 0, '{}', ''),
+                                    (13, 'mistralenc', 'Mistral (Encoding)', 'encoding', 1, 0, '{}', ''),
+                                    (14, 'openaienc', 'OpenAI (Encoding)', 'encoding', 1, 0, '{}', '');
+
+
+CREATE TABLE IF NOT EXISTS `ai_request_logs` (
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `schema_version` VARCHAR(16) NOT NULL DEFAULT '1.0',
+
+    `occurred_at` DATETIME NOT NULL,
+    `ingested_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    `category` VARCHAR(32) NOT NULL,
+    `service` VARCHAR(32) NOT NULL,
+    `model` VARCHAR(128) DEFAULT NULL,
+    `request_id` VARCHAR(128) DEFAULT NULL,
+    `status` ENUM('ok','error') NOT NULL DEFAULT 'ok',
+    `error_message` TEXT,
+
+    `actor_user_id` VARCHAR(64) DEFAULT NULL,
+    `actor_workspace_id` VARCHAR(64) DEFAULT NULL,
+
+    `input_tokens` BIGINT UNSIGNED DEFAULT NULL,
+    `output_tokens` BIGINT UNSIGNED DEFAULT NULL,
+    `total_tokens` BIGINT UNSIGNED DEFAULT NULL,
+    `audio_ms` BIGINT UNSIGNED DEFAULT NULL,
+    `audio_seconds` DECIMAL(12,3) DEFAULT NULL,
+    `images_requested` BIGINT UNSIGNED DEFAULT NULL,
+    `images_received` BIGINT UNSIGNED DEFAULT NULL,
+    `image_dimensions` VARCHAR(64) DEFAULT NULL,
+    `image_width` INT UNSIGNED DEFAULT NULL,
+    `image_height` INT UNSIGNED DEFAULT NULL,
+
+    `cost_currency` VARCHAR(12) DEFAULT NULL,
+    `cost_pricing_version` VARCHAR(32) DEFAULT NULL,
+    `cost_total` DECIMAL(18,6) DEFAULT NULL,
+
+    PRIMARY KEY (`id`),
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;;
