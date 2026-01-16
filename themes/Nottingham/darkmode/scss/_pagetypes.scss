@@ -127,24 +127,17 @@ table.headerCol.shaded td.header {
 .x_transcriptReader_page .highlight {
   background: $lighterpanel;
 }
-//*****image compare*****/
+//*****compare images*****/
 .x_imageCompare_page #slider {
-  background: $dark5;
+  background-color: $panelcolor;
 }
+
 .x_imageCompare_page #slider_handle {
-  background: $dark5;
-  border: 4px solid $mainfontcolour;
+  background-color: $selectedbutton;
 }
-.x_imageCompare_page #slider:focus #slider_handle,.x_imageCompare_page #slider:hover #slider_handle {
-  border-color: $contrastcolor;
-}
-.x_imageCompare_page #slider_handle.vertical {
-  height: 10px;
-  bottom: 4px;
-}
-.x_imageCompare_page #slider_handle.horizontal {
-  width: 10px;
-  right: 4px;
+
+.x_imageCompare_page #slider_handle i {
+  color: $mainlight;
 }
 //*****thumbnailViewer******/
 .x_thumbnailViewer_page #thumbOverlayLeft,

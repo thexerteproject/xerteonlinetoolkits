@@ -496,3 +496,16 @@ table.headerCol.shaded td.header {
   border-radius:$mediumroundedcorners;
   background: $contrastcolor;
 }
+
+//*****compare images*****/
+.x_imageCompare_page #slider {
+  background-color: $panelbordercolor;
+}
+
+.x_imageCompare_page #slider_handle {
+  background-color: $defaultpagebackground;
+}
+
+.x_imageCompare_page #slider_handle i {
+  color: $mainfontcolour;
+}

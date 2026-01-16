@@ -237,26 +237,15 @@ table.headerCol.shaded td.header {
 }
 
 .x_imageCompare_page #slider {
-  background: #4d4d4d;
+  background-color: #1e1e1e;
 }
 
 .x_imageCompare_page #slider_handle {
-  background: #4d4d4d;
-  border: 4px solid #E0E0E0;
+  background-color: #4d4d4d;
 }
 
-.x_imageCompare_page #slider:focus #slider_handle, .x_imageCompare_page #slider:hover #slider_handle {
-  border-color: #7094DB;
-}
-
-.x_imageCompare_page #slider_handle.vertical {
-  height: 10px;
-  bottom: 4px;
-}
-
-.x_imageCompare_page #slider_handle.horizontal {
-  width: 10px;
-  right: 4px;
+.x_imageCompare_page #slider_handle i {
+  color: #E0E0E0;
 }
 
 .x_thumbnailViewer_page #thumbOverlayLeft,
