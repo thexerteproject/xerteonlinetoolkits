@@ -27,7 +27,7 @@
  * @package
  */
 
-require_once('../../../config.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
 
 if(empty($_SESSION) || !isset($_SESSION['toolkits_logon_id'])) {
     die("Session expired; please login again.");
@@ -35,7 +35,7 @@ if(empty($_SESSION) || !isset($_SESSION['toolkits_logon_id'])) {
 
 _load_language_file("/website_code/php/versioncontrol/template_close.inc");
 
-require('../template_status.php');
+require_once(dirname(__FILE__) . '/../template_status.php');
 
 $users_array = array();
 

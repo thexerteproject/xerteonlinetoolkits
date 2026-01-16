@@ -18,4 +18,4 @@ $xerte_toolkits_site->pixabay_key = '';
 $xerte_toolkits_site->unsplash_key = '';
 $xerte_toolkits_site->dalle2_key = ''; //can use the same key as open AI
 $xerte_toolkits_site->dalle3_key = ''; //can use the same key as open AI
-$xerte_toolkits_site->gptImage1_key = ''; //can use the same key as open AI
+$xerte_toolkits_site->gpt1_key = ''; //can use the same key as open AI

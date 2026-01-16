@@ -8,6 +8,7 @@
  */
 
 require_once (str_replace('\\', '/', __DIR__) . "/../../../config.php");
+global $xerte_toolkits_site;
 if (!isset($_SESSION['toolkits_logon_username']) && php_sapi_name() !== 'cli')
 {
     die("Session ID not set.");
@@ -15,7 +16,7 @@ if (!isset($_SESSION['toolkits_logon_username']) && php_sapi_name() !== 'cli')
 class sync_job_store
 {
     // Max number of background workers we allow at once.
-    const SYNC_MAX_CONCURRENT_WORKERS = 4;
+    private $sync_max_concurrent_workers;
 
     private $baseUserDir;
     private $sync_data_dir;
@@ -24,7 +25,8 @@ class sync_job_store
     public function __construct($baseUrl, $syncDataDir = null)
     {
         global $xerte_toolkits_site;
-        $this->baseUserDir = $xerte_toolkits_site->root_file_path . $baseUrl ;
+        $this->sync_max_concurrent_workers = $xerte_toolkits_site->ai_sync_max_concurrent_workers ?? '4';
+        $this->baseUserDir = $xerte_toolkits_site->root_file_path . $baseUrl;
         // Check whether the file path does not have path traversal
         if ($baseUrl!==null){
             x_check_path_traversal($this->baseUserDir, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');
@@ -43,7 +45,7 @@ class sync_job_store
     }
 
     public function get_max_concurrent(){
-        return self::SYNC_MAX_CONCURRENT_WORKERS;
+        return $this->sync_max_concurrent_workers;
     }
 
     private function sync_ensure_directories()

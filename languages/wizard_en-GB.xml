@@ -43,7 +43,7 @@
 	<addProp label="Add" tooltip="add" />
 	<optionalProp label="Optional Properties:"/>
 	<optionalPropHTML label="Optional Properties" general="General"/>
-	<optionalAssistantPropHTML label="Ai features and tools" general="Assistant"/>
+	<optionalAssistantPropHTML label="Ai features and tools" general="Assistants"/>
 	<chkShowLanguage label="Show Language Options" tooltip="If language options are available, show them."/>
 	<chkShowAdvanced label="Show Advanced Options" tooltip="If advanced options are available, show them."/>
     <chkShowToolbar label="Show Toolbar" tooltip="Show all the toolbars by default."/>
@@ -281,7 +281,16 @@
 			<contextFileUploadMissingInput>You've selected the 'file upload' option but haven't selected a file or provided a valid link. Please select an uploaded file, upload a new file, or use a youtube, vimeo or video.dlearning link.</contextFileUploadMissingInput>
 			<contextSnippetMissingInput>You've selected the 'Submit Snippet' option but haven't included any text.</contextSnippetMissingInput>
 		</contextAlerts>
-		<generationComplete>The content generation has finished. Please double-check the generated results!</generationComplete>
+		<inputValidations>
+			<fieldFilledIncorrectlyMsg>Please fill in the following field correctly:</fieldFilledIncorrectlyMsg>
+			<mandatoryFieldMissingMsg>is a mandatory field! Please fill it in.</mandatoryFieldMissingMsg>
+			<fieldInvalidNumeralMsg>Please enter a valid numeral in the following field:</fieldInvalidNumeralMsg>
+			<fieldInvalidNumeralExampleMsg>For example: '60', not 'sixty'.</fieldInvalidNumeralExampleMsg>
+			<fieldInvalidCommaListMsg>Please make sure to enter at least two valid items separated by a comma in the following field:</fieldInvalidCommaListMsg>
+			<fieldInvalidCommaListExampleMsg>For example: 'Apples, Oranges, Berries'.</fieldInvalidCommaListExampleMsg>
+
+		</inputValidations>
+		<generationComplete>The content generation has finished. When using AI, models may hallucinate, forget or ignore provided context, or otherwise make mistakes. Please double-check the generated results!</generationComplete>
 	</vendorApi>
 	<lightbox>
 		<settingsButton>Open Settings</settingsButton>

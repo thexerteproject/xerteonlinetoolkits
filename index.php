@@ -192,6 +192,7 @@ $version = getVersion();
     <script type="text/javascript" src="website_code/scripts/jquery-ui-i18n.min.js?version=<?php echo $version;?>"></script>
     <script type="text/javascript" src="website_code/scripts/result.js?version=<?php echo $version;?>"></script>
     <script type="text/javascript" src="website_code/scripts/user_settings.js?version=<?php echo $version;?>"></script>
+    <script type="text/javascript" src="modules/xerte/parent_templates/Nottingham/common_html5/js/dashboard-graphs.main.js?version=<?php echo $version;?>"></script>
 
     <?php
     _include_javascript_file("website_code/scripts/xapi_dashboard_data.js?version=" . $version);

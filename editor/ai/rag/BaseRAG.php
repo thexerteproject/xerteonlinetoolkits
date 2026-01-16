@@ -4,6 +4,7 @@ namespace rag;
 use DocumentLoaderFactory;
 
 require_once __DIR__.'/../logging/log_ai_request.php';
+\_load_language_file("/editor/ai_internal/ai.inc");
 
 abstract class BaseRAG
 {
@@ -451,7 +452,7 @@ abstract class BaseRAG
         // 4) Finally, record this hash as processed
         $this->isHashProcessed($fileHash, $fileName, true, $meta);
         echo "Processed chunks for {$fileName}.\n";
-        return "Processed content for {$fileName} successfully.\n";
+        return AI_RAG_PROCESSED_CONTENT_FOR. " {$fileName} " . AI_RAG_SUCCESSFULLY . "\n";
     }
 
 

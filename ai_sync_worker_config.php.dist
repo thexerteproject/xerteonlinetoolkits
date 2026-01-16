@@ -1,0 +1,2 @@
+<?php
+$xerte_toolkits_site->ai_sync_max_concurrent_workers = '';

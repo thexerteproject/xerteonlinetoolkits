@@ -43,7 +43,7 @@
 	<addProp label="Voeg in" tooltip="Toevoegen" />
 	<optionalProp label="Extra eigenschappen:"/>
 	<optionalPropHTML general="Algemeen" label="Extra eigenschappen"/>
-	<optionalAssistantPropHTML label="Ai functies en hulpmiddelen" general="Assistent"/>
+	<optionalAssistantPropHTML label="Ai functies en hulpmiddelen" general="Assistenten"/>
 	<chkShowLanguage label="Toon taal opties" tooltip="Laat de taal opties zien als die er zijn."/>
 	<chkShowAdvanced label="Toon geavanceerde opties" tooltip="Laat de geavanceerde opties zien, als die er zijn."/>
     <chkShowToolbar label="Toon knoppenbalk" tooltip="Zet standaard de knoppen balk aan."/>

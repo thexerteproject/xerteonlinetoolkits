@@ -4,9 +4,9 @@ header('Content-Type: application/json');
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
+require_once (str_replace('\\', '/', __DIR__) . "/../../../config.php");
 require_once (str_replace('\\', '/', __DIR__) . "/BaseRAG.php");
 require_once (str_replace('\\', '/', __DIR__) . "/MistralRAG.php");
-require_once (str_replace('\\', '/', __DIR__) . "/../../../config.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../../../vendor_config.php");
 require_once (str_replace('\\', '/', __DIR__) . "/RagFactory.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../management/dataRetrievalHelper.php");
