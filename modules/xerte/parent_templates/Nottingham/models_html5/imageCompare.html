@@ -18,18 +18,6 @@
  * limitations under the License.
  */
 
-/* **
-#1301 Fixed various layout issues with image compare page:
-- simplified code & allow for extra align text options (top, bottom, left, right)
-- allow text to wrap beneath image in similar way to other image pages
-- allow max width functionality (previously disabled for this page) #1008
-- fix issue where slider could be moved too far left
-- added extra options to customise the appearance & initial position of the slider
-- allow mouse click to select slider (so keyboard can then move) & click on image to jump to that slider position
-- add apereo license to model file
-
-Fixed xenith.js bug when calling sizeChanged function (accidentally introduced in a previous commit)
-*/
 	var imageCompare = new function() {
 		this.position = 50;
 		this.$slider;
