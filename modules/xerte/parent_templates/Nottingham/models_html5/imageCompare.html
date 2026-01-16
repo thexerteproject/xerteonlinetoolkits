@@ -1,198 +1,232 @@
 <script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* **
+#1301 Fixed various layout issues with image compare page:
+- simplified code & allow for extra align text options (top, bottom, left, right)
+- allow text to wrap beneath image in similar way to other image pages
+- allow max width functionality (previously disabled for this page) #1008
+- fix issue where slider could be moved too far left
+- added extra options to customise the appearance & initial position of the slider
+- allow mouse click to select slider (so keyboard can then move) & click on image to jump to that slider position
+- add apereo license to model file
+
+Fixed xenith.js bug when calling sizeChanged function (accidentally introduced in a previous commit)
+*/
 	var imageCompare = new function() {
 		this.position = 50;
+		this.$slider;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			this.position = 50;
-			this.updatePosition();
+			this.position = $("#pageContents").data("position");
+			this.$slider = $("#slider");
 		}
-		
+
+		this.leavePage = function() {
+			$("#pageContents").data("position", this.position);
+		}
+
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(firstLoad = false) {
+			const sizePercentage = x_browserInfo.mobile == true ? 1 : parseInt(x_currentPageXML.getAttribute("imageSize"))/100;
+			let maxImageWidth = Math.round(($x_innerPage.width() - parseInt($(".image_holder").css("padding-right")) + parseInt($(".image_holder").css("padding-left"))) * sizePercentage);
+			let maxImageHeight = x_getAvailableHeight([$(".image_holder")], [], true);
 
-			// set the width & height for the images - 100% minus any padding on the panel
-			$("#img1, #img2").css({
-				"width": "calc(100% - " + (parseInt($(".image_holder").css("padding-right")) + parseInt($(".image_holder").css("padding-right"))) + "px)",
-				"height": "calc(100% - " + (parseInt($(".image_holder").css("padding-top")) + parseInt($(".image_holder").css("padding-bottom"))) + "px)"
-			});
+			x_scaleImg($(".image_holder"), maxImageWidth, maxImageHeight, true, firstLoad, true);
+			$(".image")
+					.width($(".image_holder").width())
+					.height($(".image_holder").height());
 
-			let mobileHeightComp = 0;
-			if(x_browserInfo.mobile){
-				mobileHeightComp = $("#x_headerBlock").height();
-			}
-			$("#x_pageHolder").css("top", mobileHeightComp);
-			let pageDiv = $("#x_pageDiv") ;
-			let paddingInline = pageDiv.innerWidth() - pageDiv.width(); // padding left and right
-			let paddingBlock = pageDiv.innerHeight() - pageDiv.height(); // padding top and bottom
-			let pageHeight = $("#x_pageHolder").innerHeight() - mobileHeightComp - (paddingBlock*2);
-			let pageWidth = $("#x_pageHolder").innerWidth() - (paddingInline*2);
-			let maxImageWidth = pageWidth - 20;
-			let maxImageheight = pageHeight - 20;
-			let holder = $(".holder");
-			const sizePercentage = parseInt(x_currentPageXML.getAttribute("imageSize"))/100;
-			if(sizePercentage !== 1){
-				holder.css("left", paddingInline/2);
-				pageHeight -= 10;
-				holder.addClass("sized");
-				let textElem = $(".text");
-				let textSize = 1.0-sizePercentage;
-				let holderPaddingTop = (holder.innerHeight() - holder.height())/2 
-				if(this.textPosition == "top"){
-					holder.width(pageWidth);
-					holder.height(pageHeight*sizePercentage);
-					maxImageheight = (pageHeight*sizePercentage) - 20;
-					holder.css("margin-top", pageHeight*textSize + holderPaddingTop + 20)
-					textElem.width(pageWidth);
-					textElem.height(pageHeight*textSize)
-				}else{
-					holder.width(pageWidth*sizePercentage);
-					holder.height(pageHeight);
-					maxImageWidth = (pageWidth*sizePercentage) - 20;
-					holder.css("margin-left", pageWidth*textSize + holderPaddingTop)
-					textElem.width(pageWidth*textSize);
-					textElem.height(pageHeight)
-				}
-			}else {
-				holder.css("right", "auto");
-				holder.width(pageWidth);
-				holder.height(pageHeight);
-				maxImageWidth += 20;
-				maxImageheight += 20;
-			}
-
-			x_scaleImg($(".image_holder"), maxImageWidth, maxImageheight, null, firstLoad, true);
+			$(".image").css("left", $(".image_holder").css("padding-left"));
 		}
 
 		// updates the ui with the position in javascript
 		this.updatePosition = function() {
 			let img2Elem = $("#img2");
-			let slider = $("#slider");
-			if(x_currentPageXML.getAttribute("sliderPosition") == "vertical"){
+			if (x_currentPageXML.getAttribute("sliderPosition") == "vertical") {
 				img2Elem.css("clip-path", "inset("+ this.position + "% -50% -50% -50%)");
-				slider.css("top", this.position + "%");
-			}else {
+				this.$slider.css("top", "calc(" + this.position + "% - " + (this.$slider.height()/2) + "px)");
+			} else {
 				img2Elem.css("clip-path", "inset(-50% -50% -50% "+ this.position + "%)");
-				slider.css("left", this.position + "%");
+				this.$slider.css("left", "calc(" + this.position + "% - " + (this.$slider.width()/2) + "px)");
 			}
 		}
-		
-		this.init = function() {
-			let loadedimgs = 0;
 
-			let img1Url = x_currentPageXML.getAttribute("url1");
-			let img2Url = x_currentPageXML.getAttribute("url2");
-			let text = x_currentPageXML.getAttribute("text");
-			this.textPosition = x_currentPageXML.getAttribute("textPosition");
-		
-			let textElem = $(".text");
-			if(parseInt(x_currentPageXML.getAttribute("imageSize"))/100 !== 1){
-				$(".holder").addClass("sized");
-				textElem.html(text);
-			}else {
-				textElem.remove();
+		this.init = function() {
+			// add & position text
+			let $text = $(".text");
+			let $imgHolder = $(".holder");
+			let $imgInnerDiv = $(".image_holder");
+			const fullScreen = parseInt(x_currentPageXML.getAttribute("imageSize"))/100 == 1;
+
+			let textAlign = x_currentPageXML.getAttribute("textPosition");
+
+			if (!fullScreen) {
+				$text.html(x_currentPageXML.getAttribute("text"));
+
+				if (x_browserInfo.mobile == true && textAlign != "top") {
+					// to make best use of space, image is always top of bottom (full width) on smaller devices
+					textAlign = "Bottom";
+				}
+
+				if (textAlign == "top" || textAlign == "bottom") {
+					if (textAlign == "top") {
+						$("#pageContents").prepend($text);
+					}
+					$imgHolder
+							.addClass("centerAlign")
+							.addClass(textAlign);
+
+				} else if (textAlign == "right") {
+					$imgInnerDiv.addClass("x_floatLeft");
+
+				} else {
+					$imgInnerDiv.addClass("x_floatRight");
+				}
+
+			} else {
+				// no text when image is full screen
+				$text.remove();
+				$imgHolder.addClass("centerAlign fullScreen");
 			}
 
-			let img1Elem = $("#img1")[0];
-			let img2Elem = $("#img2")[0];
-
-			// set the width & height for the images - 100% minus any padding on the panel
-			$("#img1, #img2").css({
-				"width": "calc(100% - " + (parseInt($(".image_holder").css("padding-right")) + parseInt($(".image_holder").css("padding-right"))) + "px)",
-				"height": "calc(100% - " + (parseInt($(".image_holder").css("padding-top")) + parseInt($(".image_holder").css("padding-bottom"))) + "px)"
-			});
-
-			let slider = $("#slider");
+			// set up slider
+			this.$slider = $("#slider");
 			const slideHint = x_getLangInfo(x_languageData.find("screenReaderInfo").find("imageCompare")[0], "slideHint") != undefined ? x_getLangInfo(x_languageData.find("screenReaderInfo").find("imageCompare")[0], "slideHint") : (x_params.language === "en-GB" ? "Image slider" : undefined);
 			if (slideHint != undefined) {
-				slider.attr("aria-label", slideHint);
+				this.$slider.attr("aria-label", slideHint);
 			}
 
-			// use of temporary images to ensure all images are load and fullsize with loaded to get original aspectratio
-			let tempImg1 = new Image();
-			let tempImg2 = new Image();
-
-			let onImageLoad = () => { 
-				loadedimgs++;
-				if(loadedimgs == 2){
-					let minHeight =  Math.min(tempImg1.height, tempImg2.height);
-					let minWidth = Math.min(tempImg1.width, tempImg2.width);
-					$(".image_holder").width(minWidth);
-					$(".image_holder").height(minHeight);
-					this.sizeChanged(true);
- 				}
-			};
-
-			tempImg1.onload = onImageLoad;
-			tempImg2.onload = onImageLoad;
-
-			if(x_currentPageXML.getAttribute("sliderPosition") == "vertical"){
+			if (x_currentPageXML.getAttribute("sliderPosition") == "vertical") {
 				$("#slider, #slider_handle").addClass("vertical");
 			} else {
 				$("#slider, #slider_handle").addClass("horizontal");
+				$("#slider_handle i.fa-chevron-up").removeClass("fa-chevron-up").addClass("fa-chevron-left");
+				$("#slider_handle i.fa-chevron-down").removeClass("fa-chevron-down").addClass("fa-chevron-right");
+			}
+
+			if (x_currentPageXML.getAttribute("sliderBar") == "false") {
+				this.$slider.addClass("invisible");
+			}
+			if (x_currentPageXML.getAttribute("sliderInit") !== undefined && $.isNumeric(x_currentPageXML.getAttribute("sliderInit"))) {
+				let initPosition = Math.max(Math.min(Number(x_currentPageXML.getAttribute("sliderInit")),100),0);
+				this.position = initPosition;
 			}
 
 			let prevEvent;
-			slider.on("mousedown touchstart", function(event) {
+			this.$slider.on("mousedown touchstart", function(event) {
 				event.preventDefault();
 				$(this).data("dragging", true);
 				prevEvent = event;
 				$(".image_holder").css("cursor", "move");
 			});
-			
-			//this on the image holder because then you don't have to move slowly and stay on the slider
-			$(".image_holder").on("mousemove touchmove", (event) => {
- 				if(!slider.data("dragging")) return;
-				event.preventDefault();
-				let deltaPosition;
-				if(x_currentPageXML.getAttribute("sliderPosition") == "vertical"){
-					let screenY = event.screenY != null? event.screenY : event.originalEvent.touches[0].screenY;
-					let prevScreenY = prevEvent.screenY != null? prevEvent.screenY : prevEvent.originalEvent.touches[0].screenY;
-					deltaPosition = 100 / $(".image_holder").height() * (screenY-prevScreenY);
-				}else{
-					let screenX = event.screenX != null? event.screenX : event.originalEvent.touches[0].screenX;
-					let prevScreenX = prevEvent.screenX != null? prevEvent.screenX : prevEvent.originalEvent.touches[0].screenX;
-					deltaPosition = 100 / $(".image_holder").width() * (screenX-prevScreenX);
-				}
-				this.position = Math.min(100, Math.max(this.position + deltaPosition, 0));
-				this.updatePosition();
-				prevEvent = event;
-			});
+
+			// this is on the image holder & not the slide because then you don't have to move slowly and stay on the slider
+			$(".image_holder")
+					.on("mousemove touchmove", (event) => {
+						if (!imageCompare.$slider.data("dragging")) return;
+						event.preventDefault();
+						let deltaPosition;
+						if (x_currentPageXML.getAttribute("sliderPosition") == "vertical") {
+							let screenY = event.screenY != null? event.screenY : event.originalEvent.touches[0].screenY;
+							let prevScreenY = prevEvent.screenY != null? prevEvent.screenY : prevEvent.originalEvent.touches[0].screenY;
+							deltaPosition = 100 / $(".image_holder").height() * (screenY-prevScreenY);
+						} else {
+							let screenX = event.screenX != null? event.screenX : event.originalEvent.touches[0].screenX;
+							let prevScreenX = prevEvent.screenX != null? prevEvent.screenX : prevEvent.originalEvent.touches[0].screenX;
+							deltaPosition = 100 / $(".image_holder").width() * (screenX-prevScreenX);
+						}
+						imageCompare.position = Math.min(100, Math.max(imageCompare.position + deltaPosition, 0));
+						imageCompare.updatePosition();
+						prevEvent = event;
+					})
+					.on("mouseup", function(e) {
+						if (imageCompare.$slider.data("dragging") !== true) {
+							if (imageCompare.$slider.hasClass("vertical")) {
+								imageCompare.position = e.offsetY / $(".image_holder").height() * 100;
+							} else {
+								imageCompare.position = e.offsetX / $(".image_holder").width() * 100;
+							}
+							imageCompare.updatePosition();
+						}
+					});
 
 			$("body").on("mouseup touchend", function() {
-				slider.data("dragging", false);
+				imageCompare.$slider.data("dragging", false);
 				$(".image_holder").css("cursor", "default");
 			});
 
-			slider.on("keyup", (event) =>{
-				let delta = 0;
-				if (event.which == 36) { // home
-					this.position = 0;
-				} else if (event.which == 35) { // end
-					this.position = 100;
-				} else {
-					if (x_currentPageXML.getAttribute("sliderPosition") == "vertical") {
-						if (event.which == 40) {// down arrow
-							delta = 5
-						} else if (event.which == 38) {// up arrow
-							delta = -5;
-						}
+			this.$slider
+				.on("keyup", (event) => {
+					let delta = 0;
+					if (event.which == 36) { // home
+						imageCompare.position = 0;
+					} else if (event.which == 35) { // end
+						imageCompare.position = 100;
 					} else {
-						if (event.which == 39) {// right arrow
-							delta = 5
-						} else if (event.which == 37) {// left arrow
-							delta = -5;
+						if (x_currentPageXML.getAttribute("sliderPosition") == "vertical") {
+							if (event.which == 40) {// down arrow
+								delta = 5
+							} else if (event.which == 38) {// up arrow
+								delta = -5;
+							}
+						} else {
+							if (event.which == 39) {// right arrow
+								delta = 5
+							} else if (event.which == 37) {// left arrow
+								delta = -5;
+							}
 						}
+						imageCompare.position = Math.min(100, Math.max(imageCompare.position + delta, 0));
 					}
-					this.position = Math.min(100, Math.max(this.position + delta, 0));
+					imageCompare.updatePosition();
+				})
+				.on("click", function() {
+					$(this).focus();
+				});
+
+			// use of temporary images to ensure all images are loaded and full size to get original aspect ratio
+			let loadedimgs = 0;
+			let tempImg1 = new Image();
+			let tempImg2 = new Image();
+
+			let onImageLoad = () => {
+				loadedimgs++;
+				if (loadedimgs == 2) {
+					let minHeight =  Math.min(tempImg1.height, tempImg2.height);
+					let minWidth = Math.min(tempImg1.width, tempImg2.width);
+					$(".image_holder").width(minWidth);
+					$(".image_holder").height(minHeight);
+					this.sizeChanged(true);
 				}
-				this.updatePosition();
-			});
-			
-			tempImg1.src = img1Url;
-			tempImg2.src = img2Url;
-			img1Elem.src = img1Url;
-			img2Elem.src = img2Url;
+			};
+
+			let img1Elem = $("#img1")[0];
+			let img2Elem = $("#img2")[0];
+			tempImg1.onload = onImageLoad;
+			tempImg2.onload = onImageLoad;
+			tempImg1.src = x_currentPageXML.getAttribute("url1");
+			tempImg2.src = x_currentPageXML.getAttribute("url2");
+			img1Elem.src = x_currentPageXML.getAttribute("url1");
+			img2Elem.src = x_currentPageXML.getAttribute("url2");
 			img1Elem.alt = x_currentPageXML.getAttribute("tip1");
 			img2Elem.alt = x_currentPageXML.getAttribute("tip2");
 
@@ -208,15 +242,19 @@
 </script>
 
 <div id="pageContents">
-	<div class="text">
-	</div>
 	<div class="holder">
-		<div class="image_holder panel">
+		<div class="image_holder panel inline">
 			<img class="image x_noLightBox" id="img1" alt="" src="" />
 			<img class="image x_noLightBox" id="img2" alt="" src="" />
 			<div id="slider" tabindex="0">
-				<div id="slider_handle"></div>
+				<div id="slider_handle">
+					<i class="fa-solid fa-chevron-up"></i>
+					<i class="fa-solid fa-chevron-down"></i>
+				</div>
 			</div>
 		</div>
 	</div>
+	<div id="textHolder" class="text">
+	</div>
+
 </div>

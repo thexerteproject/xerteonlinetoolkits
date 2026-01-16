@@ -2565,7 +2565,7 @@ function x_setUpPagePosition(project) {
 	// set a maximum width and align content horizontally on the screen (centre by default)
 	if ((project && x_params.maxWidth != undefined && x_params.maxWidth != "") || (project !== true && x_currentPageXML.getAttribute("maxWidthToggle") === "true" && x_currentPageXML.getAttribute("maxWidth") != undefined && x_currentPageXML.getAttribute("maxWidth") !== "")) {
 		// these pages don't work with max width yet
-		const nonWorkingPages = ['imageCompare', 'title'];
+		const nonWorkingPages = ['title'];
 
 		if (project) {
 			// set max width & horizontal alignment for all working pages in the project
@@ -3177,7 +3177,7 @@ function x_changePageStep3() {
         // checks if size has changed since last load - if it has, call function in current page model which does anything needed to adjust for the change
         var prevSize = builtPage.data("size");
         if (prevSize[0] != $x_mainHolder.width() || prevSize[1] != $x_mainHolder.height()) {
-			x_sizeChanged(false, true);
+			x_sizeChanged();
         }
 
 		// any custom header styles will be disabled if a custom theme (via accessibility options) is in use
@@ -3907,22 +3907,20 @@ function x_updateCss2(updatePage) {
     $(".x_popupDialog").parent().detach();
 }
 
-function x_sizeChanged(page, custom) {
+function x_sizeChanged() {
 	try {
 		// get short page type var
-		if (page !== false) {
-			let pt = x_pageInfo[x_currentPage].type;
-			if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
-			if (typeof window[pt].sizeChanged === "function") window[pt].sizeChanged();
+		let pt = x_pageInfo[x_currentPage].type;
+		if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
+		if (typeof window[pt].sizeChanged === "function") {
+			window[pt].sizeChanged();
 		}
 	} catch(e) {} // Catch error thrown when you call sizeChanged() on an unloaded model
 
-	if (custom !== false) {
-		// calls function in any customHTML that's been loaded into page
-		if ($(".customHTMLHolder").length > 0) {
-			if (typeof customHTML.sizeChanged === "function") {
-				customHTML.sizeChanged();
-			}
+	// calls function in any customHTML that's been loaded into page
+	if ($(".customHTMLHolder").length > 0) {
+		if (typeof customHTML.sizeChanged === "function") {
+			customHTML.sizeChanged();
 		}
 	}
 
