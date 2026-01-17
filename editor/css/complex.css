@@ -201,6 +201,7 @@ input.media, input.date
 	font-weight: bold;
 	text-align: left;
 	padding-left: 15px;
+	height: fit-content;
 }
 
 .subhead ,
@@ -504,8 +505,10 @@ span.button-close-east			{ background: url(../img/chevron-right_444444_15.png) n
 
 #optional_title
 {
-    margin-top: 4px;
-
+	margin-top: 10px;
+	padding-left: 10px;
+	font-weight: bold;
+	text-align: left;
 }
 
 #pagetype
@@ -901,6 +904,7 @@ td.flashonly, td.deprecated{
 	background-color: #f0f0f2;
 	padding: 10px;
 	border-bottom: 1px solid #dedede;
+	font-weight: bold;
 }
 
 .divInsertOptParam {
@@ -1644,10 +1648,10 @@ body.fl-jqgrid-top > .featherlight { z-index: 940 !important; }
 
 .lightbox-form
 {
-	width: 60vw;
+	width: 80vw;
 	overflow-y: auto;
 	overflow-x: hidden;
-	max-height: 60vh;
+	max-height: 70vh;
 }
 
 html.with-featherlight .featherlight {
