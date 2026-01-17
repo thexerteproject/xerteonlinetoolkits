@@ -27,7 +27,12 @@
 			highlightsIndexArray = [],
 			highlightsArray = [],
 			allHighlightsArray = [];
-		
+
+		const itemSelectedLabel = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected");
+		const itemNotSelectedLabel = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "noSelect", "Not selected");
+		const tickLabel = x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct");
+		const crossLabel = x_getLangInfo(x_languageData.find("cross")[0], "title", "Incorrect");
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $('#pageContents');
@@ -196,7 +201,7 @@
 					if((attempts >= maxAttempts || (amountOfCorrect === amountOfCorrectOptions && amountOfWrong === 0)) && amountOfCorrect+amountOfWrong > 0){
 						
 						if (x_currentPageXML.getAttribute("answers") == "true"){
-							
+
 							highlightsArray.forEach((highlight)=>{
 								var points = JSON.parse(highlight.getAttribute("points")),
 									lowestPoint = points[0];
@@ -215,12 +220,22 @@
 									.css({top: lowestPoint.y * resize, left: lowestPoint.x * resize})
 									.appendTo("#markingIcons");
 							})
-							
+
 							allHighlightsArray.forEach((highlight, index)=>{
-								if(highlight.getAttribute('truth') === "true" && $.inArray(highlight, highlightsArray) == -1){
-									$('area[data-key="'+index+'"]').mapster('deselect')
-									$('img').mapster('set_options', optionsCorrect);
-									$('area[data-key="'+index+'"]').mapster('select')
+								if(highlight.getAttribute('truth') === "true") {
+									if ($.inArray(highlight, highlightsArray) == -1) {
+										// highlight any unselected correct answers label with "Correct: not selected"
+										$('area[data-key="' + index + '"]').mapster('deselect')
+										$('img').mapster('set_options', optionsCorrect);
+										$('area[data-key="' + index + '"]').mapster('select')
+										$('area[data-key="' + index + '"]').attr("title", tickLabel + ": " + itemNotSelectedLabel);
+									} else {
+										// label correctly selected answers with "Correct: item selected"
+										$('area[data-key="' + index + '"]').attr("title", tickLabel + ": " + itemSelectedLabel);
+									}
+								} else if ($.inArray(highlight, highlightsArray) > -1) {
+									// label incorrectly selected answers with "Incorrect: item selected"
+									$('area[data-key="' + index + '"]').attr("title", crossLabel + ": " + itemSelectedLabel);
 								}
 							})
 						}
@@ -250,8 +265,8 @@
 						$('#hsHolder').addClass('complete');
 						
 						$("#checkButton").hide();
-						var h3 = $('<h3>').append(scoreLabel)
-						$("#score").html(h3);
+						var p = $('<p>').append(scoreLabel);
+						$("#score").html(p);
 						if (x_currentPageXML.getAttribute("generalFeedback") != undefined && x_currentPageXML.getAttribute("generalFeedback") != "" ) {
 							$("#generalFeedback").html('<hr/>' + x_currentPageXML.getAttribute("generalFeedback"));
 						}
@@ -328,14 +343,14 @@
 								scoreTxt = scoreTxt.replace("/a", remainingAttempts);
 							}
 
-							var h3 = $('<h3>').append(scoreTxt);
-							$("#score").html(h3);
+							var p = $('<p>').append(scoreTxt);
+							$("#score").html(p);
 							
 						}else{
 							// no attempt was made
 							var warning = x_currentPageXML.getAttribute("warning") != undefined ? x_currentPageXML.getAttribute("warning") : "You have not selected anything";
-							var h3 = $('<h3>').append(warning)
-							$("#score").html(h3);
+							var p = $('<p>').append(warning)
+							$("#score").html(p);
 							attempts--;
 						}
 
@@ -378,7 +393,7 @@
 			$('.mapster_el').remove(); // force this to be removes as sometimes it's not (don't know why unbind below doesn't always work)
 			$img.mapster('unbind');
 			
-			var imgMaxW, imgMaxH = .95;
+			var imgMaxW, imgMaxH = 1;
 			if (x_browserInfo.mobile == true) {
 				imgMaxW = 1;
 			} else if (x_currentPageXML.getAttribute("textWidth") == "none") {
@@ -392,9 +407,8 @@
 			}
 			
 			imgMaxW = Math.round($x_pageHolder.width() * imgMaxW);
-			imgMaxH = Math.round($x_pageHolder.height() * imgMaxH);
+			imgMaxH = Math.round(x_getAvailableHeight([$("#panel"), $("#textContents")], [$("#checkButton")]) * imgMaxH);
 			imgMaxW -= ($("#panel").outerWidth(true) - $("#panel").width()) + ($("#x_pageDiv").outerWidth(true) - $("#x_pageDiv").width());
-			imgMaxH -= ($("#panel").outerHeight(true) - $("#panel").height()) + ($("#textContents").outerHeight(true) - $("#textContents").height()) + $("#checkButton").outerHeight(true) + ($("#x_pageDiv").outerHeight(true) - $("#x_pageDiv").height());
 			
 			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
 
@@ -407,7 +421,7 @@
 			$('#panel').css({
 				'max-width' : $img.width() + 'px',
 			});
-			
+
 			this.createHS();
 		};
 
@@ -441,7 +455,7 @@
 					correctAnswer.push(answerTxt);
 				}
 				correctFeedback.push(x_GetTrackingTextFromHTML(this.getAttribute('text'), ""));
-				var $hotspot = $('<area class="hotspot" data-key="'+i+'"  shape="poly" href="#" tabindex="0" />');
+				var $hotspot = $('<area class="hotspot" data-key="'+i+'"  shape="poly" href="#" />');
 				var coords = [];
 				var coords_string = "";
 				
@@ -474,12 +488,16 @@
 
 						var $this = $(this);
 						if($this.hasClass('hotspot') && highlightsIndexArray.indexOf(i) == -1){
-							$this.addClass("selected");
+							$this
+								.attr("title", itemSelectedLabel)
+								.addClass("selected");
 							highlightsArray.push(_this);
 							highlightsIndexArray.push(i);
 
 						}else{
-							$this.removeClass("selected")
+							$this
+								.removeAttr("title")
+								.removeClass("selected")
 							const index = highlightsArray.indexOf(_this);
 							if (index > -1) {
 								highlightsArray.splice(index, 1);
@@ -632,7 +650,7 @@
 				<div id="textContents">
 					<button id="checkButton"></button>
 					<div id="text">
-						<div id="score"></div>
+						<div id="score" aria-live="polite"></div>
 					</div>
 				</div>
 				
@@ -640,7 +658,7 @@
 			
 			<div id="textHolder">
 				<div id="mainTxt"></div>
-				<div id="generalFeedback"></div>
+				<div id="generalFeedback" aria-live="polite"></div>
 			</div>
 			
 		</fieldset>

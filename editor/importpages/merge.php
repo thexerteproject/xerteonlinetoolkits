@@ -127,7 +127,10 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 	{
         $root = $xmlTarget->documentElement;
 
-        $node = $xmlSource->documentElement->childNodes->item($page);
+        // Select all page nodes from source, ignoring chapters
+        $nodes = $xPath->evaluate("/*/*[not(name()='chapter')]|/*/chapter/*");
+
+        $node = $nodes[$page];
 
         // Convert to text, do filemapping, go back to xml
         $nodeXmlStr = $xmlSource->saveXML($node);
@@ -300,15 +303,23 @@ function addNode($index, $node, $root)
 }
 
 
-$source_project = $_REQUEST["source_project"];
-$source_pages = explode(",", $_REQUEST["source_pages"]);
+$source_project = x_clean_input($_REQUEST["source_project"], 'numeric');
+$source_pages = explode(",", x_clean_input($_REQUEST["source_pages"]));
 if($_REQUEST["source_pages"] == "")
 {
 	$source_pages = array();
 }
-$target_project = $_REQUEST["target_project"];
-$target_insert_page_position = $_REQUEST["target_page_position"];
-$merge_glossary= $_REQUEST["merge_glossary"];
-$overwrite_glossary = $_REQUEST["overwrite_glossary"];
+else
+{
+    foreach ($source_pages as $page) {
+        if (!is_numeric($page)) {
+            die("Invalid page number");
+        }
+    }
+}
+$target_project = x_clean_input($_REQUEST["target_project"], 'numeric');
+$target_insert_page_position = x_clean_input($_REQUEST["target_page_position"], 'numeric');
+$merge_glossary= x_clean_input($_REQUEST["merge_glossary"]);
+$overwrite_glossary = x_clean_input($_REQUEST["overwrite_glossary"]);
 merge_pages_to_project($source_project, $source_pages, $target_project, $target_insert_page_position, $merge_glossary, $overwrite_glossary);
 

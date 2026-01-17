@@ -20,46 +20,52 @@
 	 * limitations under the License.
 	 */
 	var SictTimeline = new function() {
-
-		var counter = 0;
-		var img = []
-		var items = []
-
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			setTimeout(function (){
-				SictTimeline.resizeImg();
-			}, 100);
+            this.loadCss();
 		}
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			SictTimeline.resizeImg();
+            if ($(x_currentPageXML).children().length > 0) {
+                SictTimeline.resizeTimeline();
+            }
 		}
 
-		this.loadJS = function () {
-			if(numLoaded == 0){
-				$('<link/>', {
-					rel: 'stylesheet',
-					type: 'text/css',
-					href:  x_templateLocation + 'common_html5/js/timeline/timeline3.css'
-				}).appendTo('head');
+        this.leavePage = function() {
+            $(".spinnerHolder").remove();
+            $("head #SictTimelineCss").remove();
+        }
+
+        this.loadCss = function() {
+            $('<link/>', {
+                id: 'SictTimelineCss',
+                rel: 'stylesheet',
+                type: 'text/css',
+                href:  x_templateLocation + 'common_html5/js/timeline/timeline3.css'
+            }).appendTo('head');
+        }
+
+		this.loadJS = function() {
+			if (numLoaded == 0) {
+                this.loadCss();
 			}
-			var popLocation = "common_html5/js/popcorn/"
-			var scriptsToLoad = ["common_html5/js/timeline/timeline3.js", popLocation + "popcorn-complete.js", popLocation + "plugins/popcorn.mediaconstructor.js"];
-			if (xot_offline)
-			{
+
+			const popLocation = "common_html5/js/popcorn/"
+            const scriptsToLoad = ["common_html5/js/timeline/timeline3.js", popLocation + "popcorn-complete.js", popLocation + "plugins/popcorn.mediaconstructor.js"];
+			if (xot_offline) {
 				numLoaded = scriptsToLoad.length;
 			}
+
 			if (numLoaded < scriptsToLoad.length) {
-				var fileToLoad = x_templateLocation + scriptsToLoad[numLoaded];
+				const fileToLoad = x_templateLocation + scriptsToLoad[numLoaded];
 				$.getScript(fileToLoad)
-						.done(function(script, textStatus) {
+						.done(function() {
 							numLoaded++;
 							SictTimeline.loadJS();
 						})
-						.fail(function( jqxhr, settings, exception ) {
-							console.log('Failed to load chart scripts');
+						.fail(function() {
+							console.log('Failed to load scripts');
 						});
 
 			} else {
@@ -68,95 +74,60 @@
 		}
 
 		this.init = function() {
-			numLoaded = 0;
-			this.loadJS();
-			$('#x_pageHolder').append('<div class="spinnerHolder"></div>')
-			$('.spinnerHolder').append('<div class="spinner"></div>')
+			if ($(x_currentPageXML).children().length > 0) {
+				$("#pageContents").append('<div id="timeline-embed"></div>');
 
-			var imgMaxW = Math.round($x_pageHolder.width());
-			var imgMaxH = Math.round($x_pageHolder.height());
+				numLoaded = 0;
+				this.loadJS();
 
-			$('.spinnerHolder').css({
-				'background-color' : 'grey',
-				'position' : 'absolute',
-				'width': imgMaxW,
-				'height': imgMaxH,
-				'top' : 0,
-				'z-index': 100,
-				'opacity': 0.5
+                // set up the loading spinner until everything is ready
+				$('#x_pageHolder').append('<div class="spinnerHolder"><div class="spinner"></div></div>')
 
-			})
-			setTimeout(function (){
+			} else {
+                // no timeline items added - add error message
+                $("#pageContents").html("<p>" + x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + ": " + x_getLangInfo(x_languageData.find("noData")[0], "label", "No page data") + "</p>");
+			}
 
-				var str = x_currentPageXML.getAttribute("error")
-				$('.tl-message-content').html(str)
-
-			}, 100);
-			$('.tl-slidenav-next').attr("title","next")
-
-			$(document).on('keydown', e => {
-
-				var keyCode;
-				var amountOfItems = items.length-1
-				keyCode = e.originalEvent.keyCode;
-
-				if(keyCode == 9 && e.ctrlKey == false && counter<amountOfItems){
-					$('.tl-slidenav-next').click()
-					e.preventDefault();
-				}else if(e.ctrlKey && keyCode == 9 && counter>0) {
-					$('.tl-slidenav-previous').click()
-					e.preventDefault();
-				};
-			});
 			// call this function in every model once everything's loaded
 			x_pageLoaded();
 		}
 
 		this.setUp = function () {
-			var make_the_json = {
-				title: {
-					media: {
-						url: x_currentPageXML.getAttribute("url"),
-						caption: x_currentPageXML.getAttribute("tip"),
-					},
-					text: {
-						headline: x_currentPageXML.getAttribute("name"),
-						text: '<p>' + x_currentPageXML.getAttribute("text") +'</p>'
-					}
-				},
+			let make_the_json = {
 				events: $(x_currentPageXML).children().map(function (index, element) {
-					var startDate = element.getAttribute("date");
-					var endDate = element.getAttribute("endDate");
+                    // get start & end date & time
+					let startDate = element.getAttribute("date");
+					let endDate = element.getAttribute("endDate");
 
-					if(startDate === "Choose Date" || startDate === null || startDate === undefined){
-						var now     = new Date();
-						var year    = now.getFullYear();
-						var month   = now.getMonth()+1;
-						var day     = now.getDate();
+                    // use today's date if no date is set
+					if (startDate === "Choose Date" || startDate === null || startDate === undefined) {
+                        const now = new Date();
+                        const year = now.getFullYear();
+                        let month = now.getMonth()+1;
+                        let day = now.getDate();
 
-						if(month.toString().length === 1) {
+						if (month.toString().length === 1) {
 							month = '0'+month;
 						}
-						if(day.toString().length === 1) {
+						if (day.toString().length === 1) {
 							day = '0'+day;
 						}
-						var dateTime = year+'/'+month+'/'+day;
-						startDate = dateTime
+                        startDate = year+'/'+month+'/'+day;
 					}
 
-					var startTime = element.getAttribute("time");
-					var endTime = element.getAttribute("endTime")
+                    // use start date as end date if no end date set
+                    if (endDate === null || endDate === undefined) {
+                        endDate = startDate
+                    }
 
-					var validStart = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(startTime)
-					var validEnd = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(endTime)
+					const startTime = element.getAttribute("time");
+                    let endTime = element.getAttribute("endTime");
 
-					if(endTime === null || !validEnd){
-						endTime = "00:00"
-					}
-					if(endDate === null || endDate === undefined){
-						endDate = startDate
-					}
-					if(startTime === null || !validStart){
+					const validStart = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(startTime)
+					const validEnd = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(endTime)
+
+                    // no time set - just use dates
+					if ((startTime === null || !validStart) && (endTime === null || !validEnd)) {
 						return {
 							media: {
 								url: element.getAttribute("url"),
@@ -167,7 +138,7 @@
 								day: startDate.substring(8, 10),
 								year: startDate.substring(0, 4),
 							},
-							end_date:{
+							end_date: {
 								month: endDate.substring(5, 7),
 								day: endDate.substring(8, 10),
 								year: endDate.substring(0, 4),
@@ -177,26 +148,46 @@
 								text: element.getAttribute("text")
 							}
 						}
-					}else{
+
+                    // time set for at start, end or both - use dates & times
+					} else {
+                        const start_date = {
+                            month: startDate.substring(5, 7),
+                            day: startDate.substring(8, 10),
+                            year: startDate.substring(0, 4)
+                        };
+
+                        if (startTime != null && validStart) {
+                            start_date.hour = startTime.substring(0, 2);
+                            start_date.minute = startTime.substring(3, 5);
+                        }
+
+                        let end_date = {
+                            month: endDate.substring(5, 7),
+                            day: endDate.substring(8, 10),
+                            year: endDate.substring(0, 4)
+                        };
+
+                        // only use end date / time if they are different to start date / time
+                        if (endDate == startDate && (endTime === null || !validEnd)) {
+                            endTime = startTime;
+                        }
+
+                        if (endDate == startDate && endTime == startTime) {
+                            end_date = undefined;
+
+                        } else if (endTime != null && validEnd) {
+                            end_date.hour = endTime.substring(0, 2);
+                            end_date.minute = endTime.substring(3, 5);
+                        }
+
 						return {
 							media: {
 								url: element.getAttribute("url"),
 								caption: element.getAttribute("tip"),
 							},
-							start_date: {
-								month: startDate.substring(5, 7),
-								day: startDate.substring(8, 10),
-								year: startDate.substring(0, 4),
-								hour: startTime.substring(0, 2),
-								minute: startTime.substring(3,5)
-							},
-							end_date:{
-								month: endDate.substring(5, 7),
-								day: endDate.substring(8, 10),
-								year: endDate.substring(0, 4),
-								hour: endTime.substring(0, 2),
-								minute: endTime.substring(3, 5)
-							},
+							start_date: start_date,
+							end_date: end_date,
 							text: {
 								headline: element.getAttribute("name"),
 								text: element.getAttribute("text")
@@ -206,361 +197,176 @@
 
 				}).get()
 			};
-			var timeline_json = make_the_json; // replace make_the_json() with the JSON object you created
-			// two arguments: the id of the Timeline container (no '#')
-			// and the JSON object or an instance of TL.TimelineConfig created from
-			// a suitable JSON object
-			// var languages = ["af","ar","hy","eu","be","bg","ca","zh-cn","hr","cz","da","nl","en","en-24hr","eo","et","fo","fa","fi","fr","fy","gl","ka","de","el"
-			// 	,"he","hi","hu","is","id","ga","it","ja","ko","lv","lt","lb","ms","ne","no","pl","pt","pt-br","ro","rm","ru","sr-cy","sr","si","sk","sl","es","sv"
-			// 	,"tl","ta","zh-tw","te","th","tr","uk"]
-			//var language =  x_currentPageXML.getAttribute("language");
-			var language = x_params.language;
-			// var listitem = ""
-			// for(var i= 0; i < languages; i++){
-			// 	if(i === language){
-			// 		listitem = i
-			// 	}
-			// }
-			if(language === null || language === ""){
+
+            // add intro info (this is info shown before the first timeline item is shown - consisting of page title, page text & sometimes an image)
+            if ((x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") || (x_currentPageXML.getAttribute("url") != undefined && x_currentPageXML.getAttribute("url") != "")) {
+                make_the_json.title = {
+                    media: {
+                        url: x_currentPageXML.getAttribute("url"),
+                        caption: x_currentPageXML.getAttribute("tip"),
+                    },
+                    text: {
+                        headline: x_currentPageXML.getAttribute("name"),
+                        text: x_currentPageXML.getAttribute("text")
+                    }
+                };
+            }
+
+			const timeline_json = make_the_json; // replace make_the_json() with the JSON object you created
+
+			let language = x_params.language;
+			if (language === null || language === "") {
 				language = "en-GB"
 			}
-			var lan = language.substr(0,2);
-			var additionalOptions = {
-				font:null,
-				language:lan
+			const additionalOptions = {
+				font: null,
+				language: language.substr(0,2)
 			}
 
-			var pageHeight = $('#x_pageHolder').height();
-			$('#timeline-embed').css('height', pageHeight-70);
+            // set height available for timeline - always has scrollbars without the -1 for some reason
+            const pageHeight = x_getAvailableHeight([], [], true) - 1;
+            $('#timeline-embed').css({
+                width: "100%",
+                height: pageHeight
+            });
 
-			window.timeline = new TL.Timeline('timeline-embed', timeline_json, additionalOptions);
+            // id of the timeline container (with no '#') & the JSON object
+			new TL.Timeline('timeline-embed', timeline_json, additionalOptions)
+                .on("loaded", function() {
+                    // do some custom set up stuff once the timeline has finished loading
 
-			setTimeout(function (){
+                    // changes the heading levels of the date & title for each event
+                    // h2 is only used for page title on header bar so start with h3
+                    $('.tl-headline-date, h2.tl-headline').each(function() {
+                        if ($(this).html() == '') {
+                            // hide if no content to avoid having an empty heading tag
+                            $(this).hide();
+                        } else {
+                            let attrs = {};
+                            $.each(this.attributes, function(i, attr) {
+                                attrs[attr.nodeName] = attr.nodeValue;
+                            });
 
-				$('.tl-slidenav-next').click(function (){
+                            const newType = $(this).hasClass("tl-headline-date") ? "h4" : $(this).parents(".tl-slider-item-container").length > 0 ? "h3" : "p";
+                            const $newElement = $("<" + newType + "/>", attrs).append($(this).contents());
+                            $(this).replaceWith($newElement);
+                        }
+                    });
 
-					counter++
-					var imgPath = items.eq(counter).find('img')[0]
-					if(imgPath !== undefined){
-						imgPath = imgPath.src
-					}
-					var youtube = false
-					if(imgPath!== undefined && imgPath!== null){
-						youtube = imgPath.includes("youtube")
-					}
-					$('.tl-media-content').find('.lightboxWrapper').unwrap();
-					if(imgPath !== "" && imgPath !== undefined && !youtube){
-						$('.tl-media-content').wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">');
-					}
+                    SictTimeline.resizeTimeline();
+                })
+                .on("change", function() {
+                    // timeline item changed
+                    const currentId = this.current_id;
+                    $("#pageContents").data("currentId", currentId);
 
-					SictTimeline.resizeImg();
+                    // current timeline item contains media - after it has loaded, check it is set up correctly (size etc.)
+                    if ($("#" + currentId + " .tl-media").length > 0) {
+                        $("#" + currentId + " .tl-message-content").html(x_currentPageXML.getAttribute("error") != undefined ? x_currentPageXML.getAttribute("error") : "Loading");
+                        SictTimeline.checkMediaLoaded(currentId, SictTimeline.setUpMedia);
 
-				})
-
-				$('.tl-slidenav-previous').click(function (){
-
-					counter--
-					var imgPath = items.eq(counter).find('img')[0]
-					if(imgPath !== undefined){
-						imgPath = imgPath.src
-					}
-					var youtube = false
-					if(imgPath!== undefined && imgPath!== null){
-						youtube = imgPath.includes("youtube")
-					}
-					$('.tl-media-content').find('.lightboxWrapper').unwrap();
-					if(imgPath !== "" && imgPath !== undefined && !youtube){
-						$('.tl-media-content').wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">');
-					}
-					SictTimeline.resizeImg();
-
-				})
-				$('.tl-timemarker-content').mouseup(function (){
-					setTimeout(function() {
-						var itemBlocks = $('.tl-timemarker')
-						for (var i = 0; i < itemBlocks.length; i++) {
-							var className = itemBlocks.eq(i).attr('class')
-							if (className.includes('tl-timemarker-active')) {
-								i++
-								counter = i
-								break
-							} else {
-								counter = 0
-							}
-						}
-						var imgPath = items.eq(counter).find('img')[0]
-						if(imgPath !== undefined){
-							imgPath = imgPath.src
-						}
-						var youtube = false
-						if(imgPath!== undefined && imgPath!== null){
-							youtube = imgPath.includes("youtube")
-						}
-						$('.tl-media-content').find('.lightboxWrapper').unwrap();
-						if(imgPath !== "" && imgPath !== undefined && !youtube){
-							$('.tl-media-content').wrap('<a data-featherlight="image" href="' + imgPath + '" class="lightboxWrapper">');
-						}
-
-						SictTimeline.resizeImg();
-					},500)
-				})
-				 SictTimeline.resizeImg();
-				$('.spinnerHolder').remove();
-				$('.tl-media-content').wrap('<a data-featherlight="image" href="' + img[0].src + '" class="lightboxWrapper">');
-				$('.tl-text-content')[0].innerHTML = x_currentPageXML.getAttribute("text");
-			}, 3000);
-
+                    } else {
+                        x_pageContentsUpdated();
+                    }
+                })
 		}
 
-		this.leavePage = function() {
-			$('.spinnerHolder').remove();
-		}
+		this.resizeTimeline = function() {
+			if (x_browserInfo.mobile !== true) {
+                // ensure everything is correct size & in correct place
+                const $timelineHolder = $("#timeline-embed");
+                const $storyslider = $(".tl-storyslider");
+                const $timeline = $(".tl-timenav");
 
-		this.resizeImg = function() {
-			if(x_browserInfo.mobile === true){
-				// TODO mobile implementation
-			}else{
+                // reset the timeline height
+                const pageHeight = x_getAvailableHeight([], [], true) - 1;
+                $timelineHolder.css({
+                    width: "100%",
+                    height: pageHeight
+                });
 
-				var pageHeight = $('#x_pageHolder').height();
-				$('#timeline-embed').css('height', pageHeight-70);
+                // force height of content area to be correct as it doesn't always automatically change
+                $storyslider.height(pageHeight - $timeline.height());
 
-				var storyslider = pageHeight*0.60
-				$(".tl-storyslider").css({
-					"max-height":storyslider+"px"
-				})
+                // force timeline controls to be in correct position as this doesn't always automatically change
+                $('.tl-menubar').css("top", $timeline.position().top + "px");
 
-				var $pageContents = $('#timeline-embed');
-				var $slideContent = $('.tl-slide-content');
-
-				var imgMaxW, imgMaxH;
-				var pageHeight = $pageContents.height();
-				var pageWidth = $pageContents.width();
-				var pageMarginRight = $x_mainHolder.css("margin-right");
-				pageMarginRight = parseInt( pageMarginRight.slice(0,  pageMarginRight.length - 2));
-				var pageMarginLeft = $x_mainHolder.css("marginLeft");
-				pageMarginLeft = parseInt( pageMarginLeft.slice(0,  pageMarginLeft.length - 2));
-				var header = $x_headerBlock.height();
-				var footer = $x_footerBlock.height();
-
-
-				var totalPageWidth = pageWidth + pageMarginLeft + pageMarginRight
-
-				if( pageMarginRight !== 0 && pageMarginLeft !==0 && footer !== 0){
-					var footerHeight = $x_footerBlock.height();
-					var footerMarginHeight = $('#x_footerBlock').css('marginBottom')
-					footerMarginHeight = parseInt( footerMarginHeight.slice(0,  footerMarginHeight.length - 2));
-
-					footerHeight+= footerMarginHeight
-					if(header === 0){
-						footerHeight+= 96
-					}
-
-					var top = pageHeight -  footerHeight
-					//$(".tl-timenav").css("top", top)
-				}else{
-					//$(".tl-timenav").css("top", "auto")
-				}
-
-				imgMaxW = Math.round($slideContent.width() * 0.50 - 20);
-				imgMaxH = Math.round($pageContents.height() - 50);
-
-				var big;
-				var normal;
-				var small;
-				var arrow;
-				var imgH;
-
-				//img = document.getElementsByClassName("tl-media-item")
-				img = $('.tl-media-item');
-				items = $('.tl-slide');
-
-				big = imgMaxH*0.7
-				normal = imgMaxH*0.6
-				small = imgMaxH*0.4
-				arrow = small*0.5
-				imgH = normal*1.6
-
-				big = big.toString()
-				normal = normal.toString()
-				small = small.toString()
-				arrow = arrow.toString()
-				imgH = imgH.toString()
-
-				var className = items.eq(counter).attr('class')
-
-				var imgPath = items.eq(counter).find('img')[0]
-				if(imgPath !== undefined){
-					imgPath = imgPath.src
-				}
-
-				if(imgPath !== "" && imgPath !== undefined){
-					//$("#timeline-embed").css("height", "unset")
-					$(".tl-storyslider").css("height", big+"px");
-					$(".tl-media-content-container").css("height", small+"px");
-					$(".tl-media").css("height", small+"px");
-					$(".tl-media-content").css("height", normal+"px");
-					$(".tl-media-item").css("max-width", imgMaxW + "px");
-
-					items.eq(counter).find('img').css({
-						"max-height": normal +"px",
-						"max-width": imgMaxW +"px"
-					});
-
-					var margT = items.eq(counter).find('img').css('margin-left')
-					var margB = items.eq(counter).find('img').css('marginBottom')
-					margB = parseInt( margB.slice(0,  margB.length - 2));
-					margB *= 0.66
-					margB.toString()
-					$('.tl-caption').css("marginLeft", margT)
-					//$('.tl-caption').css("width", "100px")
-					$('.tl-caption').css("margin-top", "-" + margB+"px")
-				}
-
-				if(className === "tl-slide tl-slide-media-only"){
-					$('.tl-slide-content').css({
-						"display": "flex",
-						"flex-direction" : 'row-reverse'
-					})
-
-					items.eq(counter).find('iframe').css({
-						"max-height": normal +"px"
-					})
-
-					$(".tl-media").css("height", normal+"px")
-					$(".tl-media-item").css("max-height", normal+"px")
-					$(".tl-text").css({
-						"display": "flex",
-						"align-items": "center",
-						"padding-left": "4%"
-					})
-				} else {
-					$('.tl-slide-content').css({
-						"display": "",
-						"flex-direction" : ''
-					})
-
-					items.eq(counter).find('iframe').css({
-						"max-height": ""
-					})
-
-					$(".tl-text").css({
-						"display": "",
-						"align-items": "",
-						"padding-left": "4%"
-					})
-				}
-				var pos = $('.tl-timenav').position();
-				$('.tl-menubar').css("top", pos.top+40+"px");
-
-				$('.tl-headline-date').css({
-					"padding-left" : 0+"px",
-					"padding-top" : 20+"px",
-					"padding-bottom" : 10+"px"
-				})
-				
-				$('.tl-headline-date, h2.tl-headline').each(function() {
-					if ($(this).html() == '') {
-						$(this).hide();
-					}
-				});
-
-				$(".tl-slidenav-title").html("")
-				$(".tl-slidenav-description").html("")
-
-
-				var panel = $('.tl-storyslider').css('height');
-				panel = parseInt( panel.slice(0,  panel.length - 2))/2;
-				$('.tl-slidenav-next').css('top', panel+"px");
-				$('.tl-slidenav-previous').css('top', panel+"px");
+                // reposition the next / previous buttons so they are in the (vertical) middle of the content area
+                $('.tl-slidenav-next, .tl-slidenav-previous').css("top", $storyslider.height() / 2);
 			}
+
+            if ($("#" + $("#pageContents").data("currentId") + " .tl-media .tl-media-item").length > 0) {
+                this.setUpMedia($("#pageContents").data("currentId"));
+            }
+
+            // ensure loading spinner is removed
+            $('.spinnerHolder').remove();
 		}
 
-		var isoCountries = {
+        this.checkMediaLoaded = function(currentId, callback) {
+            if ($("#" + currentId + " .tl-media .tl-media-item").length == 0) {
+                setTimeout(function() {
+                    SictTimeline.checkMediaLoaded(currentId, callback);
+                }, 100);
+            } else {
+                callback(currentId);
+            }
+        }
 
-			'Afrikaans' : 'af',
-			'Afrikaans' : 'ar',
-			'Armenian' : 'hy',
-			'Basque' : 'eu',
-			'Belarusian' : 'be',
-			'Bulgarian' : 'bg',
-			'Catalan' : 'ca',
-			'Chinese' : 'zh-cn',
-			'Croatian/Hrvatski' : 'hr',
-			'Czech' : 'cz',
-			'Danish' : 'da',
-			'Dutch' : 'nl',
-			'English' : 'en',
-			'Esperanto' : 'eo',
-			'Estonian' : 'et',
-			'Faroese' : 'fo',
-			'Farsi' : 'fa',
-			'Finnish' : 'fi',
-			'French' : 'fr',
-			'Frisian' : 'fy',
-			'Galician' : 'gl',
-			'Georgian' : 'ka',
-			'German' : 'de',
-			'Greek' : 'el',
-			'Hebrew' : 'he',
-			'Hindi' : 'hi',
-			'Hungarian' : 'hu',
-			'Icelandic' : 'is',
-			'Indonesian' : 'id',
-			'Irish' : 'ga',
-			'Italian' : 'it',
-			'Japanese' : 'ja',
-			'Korean' : 'ko',
-			'Latvian' : 'lv',
-			'Lithuanian' : 'lt',
-			'Luxembourgish' : 'lb',
-			'Malay' : 'ms',
-			'Nepali' : 'ne',
-			'Norwegian' : 'no',
-			'Polish' : 'pl',
-			'Portuguese' : 'pt',
-			'Portuguese (Brazilian)' : 'pt-br',
-			'Romanian' : 'ro',
-			'Romansh' : 'rm',
-			'Russian' : 'ru',
-			'Serbian - Cyrillic' : 'sr-cy',
-			'Serbian - Latin' : 'sr',
-			'Sinhalese' : 'si',
-			'Slovak' : 'sk',
-			'Slovenian' : 'sl',
-			'Spanish' : 'es',
-			'Swedish' : 'sv',
-			'Tagalog' : 'tl',
-			'Tamil' : 'ta',
-			'Taiwanese' : 'zh-tw',
-			'Telugu' : 'te',
-			'Thai' : 'th',
-			'Turkish' : 'tr',
-			'Ukrainian' : 'uk'
-		};
+        this.setUpMedia = function(currentId) {
 
-		function getCountrycode (countryName) {
+            x_pageContentsUpdated();
 
-			if (isoCountries.hasOwnProperty(countryName)) {
-				return isoCountries[countryName];
-			} else {
-				return countryName;
-			}
-		}
+            const $thisSlide = $("#" + currentId);
+            const $thisMedia = $thisSlide.find(".tl-media .tl-media-item");
+            const mediaType = $thisMedia.hasClass("tl-media-image") ? "image" :
+                              $thisMedia.hasClass("tl-media-audio") ? "audio" :
+                              $thisMedia.hasClass("tl-media-video") ? "video" :
+                              $thisMedia.hasClass("tl-media-youtube") ? "youtube" :
+                              $thisMedia.hasClass("tl-media-vimeo") ? "vimeo" :
+                              $thisMedia.hasClass("tl-media-iframe") ? "iframe" :
+                              undefined;
 
+            if (mediaType != undefined) {
+                if (!$(".tl-timeline").hasClass("tl-skinny")) {
+                    // larger screen layout
+                    // sometimes the automatic media resizing doesn't work quite right so some adjustments are done here
+                    let maxH = $thisSlide.height();
+                    if ($thisSlide.hasClass("tl-slide-media-only")) {
+                        // media only - one column with title above
+                        maxH -= $thisSlide.find(".tl-text").outerHeight(true) + 5;
+                    }
+                    if ($thisSlide.find(".tl-caption").length > 0) {
+                        maxH -= $thisSlide.find(".tl-caption").outerHeight(true);
+                    }
+
+                    $thisSlide.find(".tl-media-video, .tl-media-image, .tl-media-youtube, .tl-media-vimeo, .tl-media-iframe").css("max-height", maxH);
+
+                    if ($thisSlide.find(".tl-caption").length > 0) {
+                        $thisSlide.find(".tl-caption").width($thisSlide.find(".tl-media-video, .tl-media-image, .tl-media-youtube, .tl-media-vimeo, .tl-media-iframe").width());
+                    }
+
+                    if (mediaType == "iframe") {
+                        $thisSlide.find(".tl-media iframe").css("max-height", maxH);
+                    }
+
+                } else {
+                    // the 'skinny' layout media sizing seems to work without any tweaks being done
+                }
+
+                // slide contents should be centered vertically on slide
+                // unless the text is too tall for slide - in which case vertically align media to top of slide (to prevent haven't to scroll down to view)
+                if ($thisSlide[0].scrollHeight > $("#" + currentId)[0].clientHeight) {
+                    $thisSlide.find(".tl-slide-content").addClass("tl-align-top");
+                } else {
+                    $thisSlide.find(".tl-slide-content").removeClass("tl-align-top");
+                }
+            }
+        }
 	}
-
-
 
 	SictTimeline.init();
 
 </script>
 
-
-<style type="text/css">
-
-</style>
-
-
-<div id="pageContents">
-	<div id='timeline-embed' style="width: 100%;"></div>
-</div>
+<div id="pageContents"></div>

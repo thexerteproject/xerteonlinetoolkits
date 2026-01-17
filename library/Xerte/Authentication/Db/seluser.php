@@ -13,30 +13,54 @@ _load_language_file("/library/Xerte/Authentication/Db/adduser.inc");
 
 require(dirname(__FILE__) . "/../../../../website_code/php/user_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("useradmin")){
 
     global $authmech, $xerte_toolkits_site;
 
-    if (!isset($authmech))
-    {
+    if (!isset($authmech)) {
         $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
     }
-    if ($xerte_toolkits_site->altauthentication != "" && isset($_SESSION['altauth']))
+    if ($authmech->check() && $authmech->canManageUser($jsscript))
     {
-        $xerte_toolkits_site->authentication_method = $xerte_toolkits_site->altauthentication;
-        $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+        $authmech_can_manage_users = true;
+    }
+    else
+    {
+        $authmech_can_manage_users = false;
+    }
+
+    if ($xerte_toolkits_site->altauthentication != "")
+    {
+        $altauthmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->altauthentication);
+        if ($altauthmech->check() && $altauthmech->canManageUser($jsscript))
+        {
+            $altauthmech_can_manage_users = true;
+        }
+        else
+        {
+            $altauthmech_can_manage_users = false;
+        }
     }
 
     // Easy checks first
     $mesg = "";
     if (!isset($_POST['username']) || strlen($_POST['username']) == 0)
     {
-        $authmech->getUserList(false, "");
+        if ($authmech_can_manage_users) {
+            $authmech->getUserList(false, "");
+        }
+        else if ($altauthmech_can_manage_users) {
+            $altauthmech->getUserList(false, "");
+        }
     }
     else
     {
-        $authmech->changeUserSelection($_POST['username']);
+        if ($authmech_can_manage_users) {
+            $authmech->changeUserSelection(x_clean_input($_POST['username']));
+        } else if ($altauthmech_can_manage_users) {
+            $altauthmech->changeUserSelection(x_clean_input($_POST['username']));
+        }
     }
 }
 
-?>
+

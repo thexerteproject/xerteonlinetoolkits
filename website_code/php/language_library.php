@@ -32,18 +32,36 @@ function languageInstalled($langcode)
     return (is_dir(dirname(__FILE__) . "/../../languages/" . $langcode) || is_dir(dirname(__FILE__) . "/../../modules/xerte/parent_templates/Nottingham/wizards/" . $langcode));
 }
 
+function versionLanguageInstalled($langcode){
+    $filePath = dirname(__FILE__) . "/../../languages/" . $langcode . "/version";
+    $content = "";
+
+    if(is_file($filePath)) {
+        $fp = fopen($filePath, "r");
+        
+		//read the entire file
+        $content = fread($fp, filesize($filePath));
+        
+        fclose($fp);
+    }
+
+    return $content;
+}
+
 function getLanguages()
 {
     libxml_use_internal_errors(true);
     $xml = simplexml_load_file(dirname(__FILE__) . "/../../languages/language-config.xml");
     $langs = array();
-
     $xml_langs = $xml->xpath('/*/language');
     foreach ($xml_langs as $xml_lang)
     {
         if (languageInstalled((string)$xml_lang['code']))
         {
-            $langs[(string)$xml_lang['code']] = (string)$xml_lang['name'];
+            $langs[(string)$xml_lang['code']] = (object)array(
+                "name"  => (string)$xml_lang['name'],
+                "version" => versionLanguageInstalled((string)$xml_lang['code'])
+            );
         }
     }
     return $langs;
@@ -52,7 +70,9 @@ function getLanguages()
 function getWizardfile($langcode)
 {
     libxml_use_internal_errors(true);
-    $xml = simplexml_load_file(dirname(__FILE__) . "/../../languages/language-config.xml");
+    $xml = file_get_contents(dirname(__FILE__) . '/../../languages/language-config.xml');
+    $xml = simplexml_load_string($xml);
+
     $xml_langs = $xml->xpath('/*/language');
     $wizardFile="";
     foreach ($xml_langs as $xml_lang)
@@ -101,7 +121,7 @@ function display_language_selectionform($formclass, $showLabel)
               if (isset($_SESSION['toolkits_language']) && $_SESSION['toolkits_language'] == $key) {
                   $selected = " selected=selected ";
               }
-              echo "<option value='{$key}' $selected>{$value}</option>\n";
+              echo "<option value='{$key}' $selected>{$value->name}</option>\n";
           }
           ?>
         </select>

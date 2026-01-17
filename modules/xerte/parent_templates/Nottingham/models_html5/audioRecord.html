@@ -35,9 +35,11 @@
 		}
 
 		// function called every time the size of the LO is changed
-		this.sizeChanged = function(pageChg) {
+		this.sizeChanged = function() {
 			const $panel = $pageContents.find(".panel");
-			$panel.height($x_pageHolder.height() - ($x_pageDiv.outerHeight(true)-$x_pageDiv.height()) - ($panel.outerHeight(true) - $panel.height()) - 1);
+			$panel.height(x_getAvailableHeight([$panel]));
+
+			audioRecord.reloadAudio();
 		}
 		
 		this.init = function() {
@@ -52,6 +54,7 @@
 					text: $this.attr("text"),
 					audio: $this.attr("audio"),
 					showAudio: $this.attr("showAudio"),
+					clipName: $this.attr("clipName"),
 					feedback: $this.attr("feedback"),
 					feedbackAfter: Number($this.attr("feedbackAfter")),
 					recordings: [],
@@ -148,11 +151,16 @@
 				}
 
 				// download button allows download of all user recordings, as well as example audio files
-				if (x_currentPageXML.getAttribute("download") || x_currentPageXML.getAttribute("downloadExamples")) {
+				if (x_currentPageXML.getAttribute("download") === "true" || x_currentPageXML.getAttribute("downloadExamples") === "true") {
+					const btnTxt =
+							x_currentPageXML.getAttribute("download") === "true" && x_currentPageXML.getAttribute("downloadExamples") === "true" ? (x_currentPageXML.getAttribute("downloadText") != undefined && x_currentPageXML.getAttribute("downloadText") != "" ? x_currentPageXML.getAttribute("downloadText") : "Download") :
+							x_currentPageXML.getAttribute("downloadExamples") === "true" ? (x_currentPageXML.getAttribute("downloadText2") != undefined && x_currentPageXML.getAttribute("downloadText2") != "" ? x_currentPageXML.getAttribute("downloadText2") : "Download") :
+							x_currentPageXML.getAttribute("download") === "true" ? (x_currentPageXML.getAttribute("downloadText3") != undefined && x_currentPageXML.getAttribute("downloadText3") != "" ? x_currentPageXML.getAttribute("downloadText3") : "Download") : "Download";
+
 					$("#downloadBtn")
 							.button({
 								icons: { primary: "fa fa-x-download" },
-								label:	x_currentPageXML.getAttribute("downloadText") != undefined && x_currentPageXML.getAttribute("downloadText") != "" ? x_currentPageXML.getAttribute("downloadText") : "Download"
+								label:	btnTxt
 							})
 							.click(function() {
 								// download the example audio file
@@ -175,9 +183,15 @@
 								if (x_currentPageXML.getAttribute("download") == "true") {
 									for (let i = 0; i < currentClip.blobs.length; i++) {
 										// get file name for download audio file - don't include recording number
-										let fileName = currentClip.recordings[i].find(".clipTitle").clone();
-										fileName.find(".recNum").remove();
-										fileName = fileName.text() + ".webm";
+										let fileName;
+										if (currentClip.recordings[i].find(".clipTitle").length > 0) {
+											fileName = currentClip.recordings[i].find(".clipTitle").clone();
+											fileName.find(".recNum").remove();
+											fileName = fileName.text() + ".webm";
+										} else {
+											fileName = x_currentPageXML.getAttribute("defaultClipName") !== undefined && x_currentPageXML.getAttribute("defaultClipName") !== "" ? x_currentPageXML.getAttribute("defaultClipName") : "Unnamed clip";
+											fileName += ".webm";
+										}
 
 										// download file
 										const url = URL.createObjectURL(currentClip.blobs[i]);
@@ -336,13 +350,19 @@
 					// triggered after recording has stopped
 					mediaRecorder.onstop = function(e) {
 						// prompt user for title for most recently recorded audio
-						const clipName = prompt(x_currentPageXML.getAttribute("clipNameLabel") + ":", x_currentPageXML.getAttribute("defaultClipName"));
+						const clipName = currentClip.clipName != "false" ? prompt(x_currentPageXML.getAttribute("clipNameLabel") + ":", x_currentPageXML.getAttribute("defaultClipName")) : "";
 						const $clipContainer = $("<div class='clip'><button class='deleteClipBtn delete'></button><p class='clipTitle'></p><div class='clipPlayer' controls='true'></div></div>");
 
 						// don't show audio on screen if prompt 'cancel' button is clicked
 						if (clipName != null) {
 							// show audio player for recording
-							$clipContainer.find(".clipTitle").html("<span class='recNum'>" + (currentClip.recordings.length+1) + ": </span>" + clipName);
+							if (clipName.trim() != "") {
+								$clipContainer.find(".clipTitle").html("<span class='recNum'>" + (currentClip.recordings.length+1) + ": </span>" + clipName);
+							} else {
+								$clipContainer
+										.addClass("noTitle")
+										.find(".clipTitle").remove();
+							}
 							$("#recordedClips").append($clipContainer);
 							currentClip.recordings.push($clipContainer);
 
@@ -500,7 +520,7 @@
 		<div id="textHolder" class="left"></div>
 		
 		<div class="right">
-			<div class="panel">
+			<div class="panel" tabindex="0">
 				<div id="panelTop">
 					<p id="count" aria-live="polite"></p>
 					<div id="btnHolder">

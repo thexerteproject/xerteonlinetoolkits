@@ -11,12 +11,14 @@
 	 */
 	 
 
-	define("MY_PROPERTIES_DETAILS", "My Details");
+	define("MY_PROPERTIES_DETAILS", "My details");
 	
-	define("MY_PROPERTIES_NAME_DETAILS", "My name on the system is");
+	define("MY_PROPERTIES_NAME_DETAILS", "Name");
 
-	define("MY_PROPERTIES_LOGIN_DETAILS", "My last login was on");
+	define("MY_PROPERTIES_LOGIN_DETAILS", "Last login");
 
-	define("MY_PROPERTIES_USERNAME_DETAILS", "My username is");
+	define("MY_PROPERTIES_USERNAME_DETAILS", "Username");
+	
+	define("MY_PROPERTIES_ERROR", "You do not have rights to this workspace");
 
 

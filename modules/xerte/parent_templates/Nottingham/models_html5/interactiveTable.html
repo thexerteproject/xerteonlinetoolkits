@@ -1,0 +1,819 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var interactiveTable = new function() {
+
+		let $textHolder,
+			$tableHolder,
+			tableData,
+			tableDataQ = [],
+			tableDataI = [],
+			revealStep,
+			attempts;
+
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			$tableHolder = $("#tableHolder");
+			revealStep = $("#pageContents").data("revealStep");
+			attempts = x_currentPageXML.getAttribute("attempts") === undefined ? 2 : Number(x_currentPageXML.getAttribute("attempts"));
+		}
+
+		// function called when navigated away from this page
+		this.leavePage = function() {
+			interactiveTable.sendScore();
+		}
+
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			// cells containing extra info have fixed widths/heights so that they don't change size after info is shown - make sure this is still appropriate after the page size has changed
+			$(".infoTxt").each(function() {
+				const $this = $(this);
+				const visible = $this.css("visibility") == "visible" && $this.html() != "";
+				$this.html($this.data("txt")).css("visibility", "hidden");
+				$this.parent(".infoCell").css({
+					"min-width": "auto",
+					"min-height": "auto"
+				});
+
+				if ($this.parent(".infoCell").find(".replace").length > 0) {
+					$this.parent(".infoCell").css({
+						"min-width": Math.ceil($this.width()),
+						"min-height": Math.ceil($this.height())
+					});
+				} else {
+					$this.parent(".infoCell").css({
+						"min-width": Math.ceil($this.width() + $this.parent(".infoCell").find(".initTxt").width()),
+						"min-height": Math.ceil($this.height())
+					});
+				}
+
+				if (!visible) {
+					$this.data("txt", $this.html()).html("")
+				}
+				$this.css("visibility", "visible");
+			});
+
+			// feedback has a fixed width so that it doesn't force the table panel to be wider than it needs to be - make sure this is still correct after the page size has changed
+			const fbVisible = [$("#mainFb").length > 0, $tableHolder.find(".incompletePrompt").length > 0];
+			if (fbVisible.indexOf(true) !== -1) {
+				if (fbVisible[0]) { $("#mainFb").hide(); }
+				if (fbVisible[1]) { $tableHolder.find(".incompletePrompt").hide(); }
+				if (fbVisible[0]) { $("#mainFb").width(Math.floor($tableHolder.width())).show(); }
+				if (fbVisible[1]) { $tableHolder.find(".incompletePrompt").width(Math.floor($tableHolder.width())).show(); }
+			}
+		}
+
+		this.init = function() {
+			// add main text to the page
+			$textHolder = $("#textHolder");
+			if (x_currentPageXML.getAttribute("text") != "") {
+				$textHolder.html(x_currentPageXML.getAttribute("text"));
+			} else {
+				$textHolder.remove();
+			}
+
+			// table alignment & size (max table width will be overridden if the table needs more space to display its contents)
+			$tableHolder = $("#tableHolder");
+			if (x_currentPageXML.getAttribute("panelWidth") != "full") {
+				if (x_currentPageXML.getAttribute("align") == "Left") {
+					$tableHolder.addClass("x_floatRight");
+				} else {
+					$tableHolder.addClass("x_floatLeft");
+				}
+			} else if (x_currentPageXML.getAttribute("text") != "") {
+				$tableHolder.insertAfter($textHolder);
+			}
+
+			if (x_currentPageXML.getAttribute("panelWidth") != "auto") {
+				$tableHolder.addClass(x_currentPageXML.getAttribute("panelWidth"));
+			}
+
+			// create the table and set up the interactive cells
+			this.createTable();
+			this.getInteractiveCellData();
+
+			if (tableDataQ.length > 0) {
+				this.createQuestionCells();
+			}
+			if (tableDataI.length > 0) {
+				this.createInfoCells();
+			}
+
+			// create the elements that will display any feedback later
+			if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback").trim() != "") {
+				$("<div id='mainFb' aria-live='polite'></div>").insertAfter($tableHolder.find("table"));
+			}
+
+			if (x_currentPageXML.getAttribute("incomplete").trim() != "") {
+				$('<div class="incompletePrompt" aria-live="assertive"></div>').appendTo($tableHolder);
+			}
+
+			revealStep = -1;
+			$("#pageContents").data("revealStep", revealStep);
+
+			// default is to have all interactive cells available on page load, but it can be set to show gradually
+			if (x_currentPageXML.getAttribute("reveal") !== "all") {
+				this.revealNext();
+			}
+
+			interactiveTable.sizeChanged();
+			x_pageLoaded();
+		}
+
+		this.createTable = function() {
+			// create the table from datagrid data - each row is separated by || & each cell's data is separated by |
+			tableData = x_currentPageXML.getAttribute("data").split("||");
+
+			const separator = "|";
+			let tableString = "<table>";
+			let tbodySetUp = false;
+
+			// [header row, header column]
+			const header = [x_currentPageXML.getAttribute("header") == "row" || x_currentPageXML.getAttribute("header") == "both", x_currentPageXML.getAttribute("header") == "col" || x_currentPageXML.getAttribute("header") == "both"];
+			const footer = x_currentPageXML.getAttribute("footer") != undefined && x_currentPageXML.getAttribute("footer") != "false";
+
+			for (let i=0; i<tableData.length; i++) {
+				let dataTag = "td";
+				if (header[0] == true && i==0) {
+					tableString += "<thead>";
+					dataTag = "th";
+				} else if (footer && i==tableData.length-1) {
+					tableString += "<tfoot>";
+				} else if (tbodySetUp == false) {
+					tableString += "<tbody>";
+					tbodySetUp = true;
+				}
+
+				tableString += "<tr>";
+				const rowData = tableData[i].split(separator);
+				for (let j=0; j<rowData.length; j++) {
+					const tag = j==0 && header[1] == true ? "th" : dataTag;
+					tableString += "<" + tag + " id=" + (j+1) + "_" + (i+1) + ">" + rowData[j] + "</" + tag + ">";
+				}
+				tableString += "</tr>";
+
+				if (header[0] == true && i==0) {
+					tableString += "</thead>";
+				} else if (footer && i==tableData.length-1) {
+					tableString += "</tfoot>";
+				} else if (i==tableData.length-1 || (footer && i==tableData.length-2)) {
+					tableString += "</tbody>";
+				}
+			}
+
+			tableString += '</table>';
+			$tableHolder.html(tableString);
+
+			const $table = $tableHolder.find("table");
+
+			// table styling:
+			// shade alternate rows - not including header & footer which will automatically be styled
+			if (x_currentPageXML.getAttribute("shade") == "true") {
+				const footer = x_currentPageXML.getAttribute("footer");
+				$table.find("tbody").children().each(function(i) {
+					const $this = $(this);
+					if (footer != true || i != $table.find('tbody').children().length-1) {
+						if (i%2 != 0) { // shade odd no. rows
+							$this.addClass("shaded");
+						}
+					}
+				});
+			}
+
+			// header/footer styling:
+			if (footer == true) { $table.addClass("footer"); }
+			if (header.indexOf(true) != -1) { $table.addClass("header"); }
+			if (x_currentPageXML.getAttribute("shadeHeader") != "false") {
+				$table.addClass("shaded");
+			}
+
+			// table caption
+			if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
+				$table.prepend("<caption>" + x_currentPageXML.getAttribute("caption") + "</caption>");
+			}
+
+			// table borders
+			if (x_currentPageXML.getAttribute("borders") != undefined) {
+				$table.addClass(x_currentPageXML.getAttribute("borders"));
+			} else {
+				$table.addClass("full");
+			}
+		}
+
+		this.getInteractiveCellData = function() {
+
+			const numRows = $tableHolder.find("table tr").length;
+			const numCols = $tableHolder.find("table tr:eq(0) td,table tr:eq(0) th").length;
+
+			// get all the info from the interactive cells - they can contain questions or extra info to show
+			const allFieldPos = [];
+			$(x_currentPageXML).children().each(function () {
+				// check the cell position (in format column,row e.g. 1,1) is valid - i.e. both values are numeric and are within the table size
+				// also, only one interaction can be added per cell so check that the position hasn't already been used
+				if (this.getAttribute("fieldPos") != undefined) {
+					const fieldPos = this.getAttribute("fieldPos").split(",");
+					if (fieldPos.length === 2 && $.isNumeric(fieldPos[0]) && $.isNumeric(fieldPos[1]) && fieldPos[0] <= numCols && fieldPos[1] <= numRows && allFieldPos.indexOf(fieldPos[0] + "_" + fieldPos[1]) === -1) {
+						const data = {
+							name: this.getAttribute("name"),
+							fieldPos: fieldPos[0] + "_" + fieldPos[1] // replace , with _ so it matches the cell's id
+						};
+
+						// the cell will contain a question
+						if (this.getAttribute("cellType") == "question") {
+							if (this.getAttribute("answer").trim() !== "") {
+								const extraData = {
+									name: this.getAttribute("name") != "" ? this.getAttribute("name") : fieldPos,
+									answer: this.getAttribute("answer"),
+									type: this.getAttribute("type"),
+									showIn: this.getAttribute("qShowIn"),
+									text: this.getAttribute("qText"),
+									feedback: this.getAttribute("feedback")
+								};
+								Object.assign(data, extraData);
+								if (data.answer != "") {
+									tableDataQ.push(data);
+								}
+
+								allFieldPos.push(data.fieldPos);
+							}
+
+							// the cell will contain extra info
+						} else {
+							if (this.getAttribute("text").trim() !== "") {
+								const extraData = {
+									text: this.getAttribute("text"),
+									showIn: this.getAttribute("showIn"),
+									replace: this.getAttribute("replace"),
+									required: this.getAttribute("required")
+								};
+								Object.assign(data, extraData);
+								if (data.text != "") {
+									tableDataI.push(data);
+								}
+
+								allFieldPos.push(data.fieldPos);
+							}
+						}
+					}
+				}
+			});
+		}
+
+		this.createQuestionCells = function() {
+			// add submit buttons to the table - either a single submit button below table will submit all answers or individual submit buttons in each question cell / lightbox
+			let cellBtns = true;
+			if (x_currentPageXML.getAttribute("reveal") != "one") {
+				// a single submit button
+				$('<button id="tableSubmit" class="qSubmit">').insertAfter($tableHolder.find("table")).button({ label: x_currentPageXML.getAttribute("submitLabel")  });
+				cellBtns = false;
+			}
+
+			$(tableDataQ).each(function(i) {
+				const cellInfo = this;
+				const $cell = $("#" + cellInfo.fieldPos);
+				const col = cellInfo.fieldPos.split("_")[0];
+				const row = cellInfo.fieldPos.split("_")[1];
+
+				let qHtml = "";
+				let iconInfo;
+				if (cellInfo.showIn == "lightbox") {
+					qHtml += '<div id="lbForm">';
+					qHtml += cellInfo.text;
+					iconInfo = { label: x_currentPageXML.getAttribute("qIconLabel") != undefined ? x_currentPageXML.getAttribute("qIconLabel") : x_getLangInfo(x_languageData.find("interactions").find("question")[0], "name", "Question"), icon: x_currentPageXML.getAttribute("qCustomIcon") == "true" ? x_currentPageXML.getAttribute("qIcon") + " fa-fw" : "fas fa-question fa-fw"};
+				} else {
+					// placeholder for the info that appears in cell after a question has been completed
+					qHtml += '<span class="afterSubmit" aria-live="assertive"></span>';
+				}
+
+				interactiveTable.setUpCellBtn($cell, "question", iconInfo);
+
+				let correctAnswers = [];
+				let allAnswers = [];
+				const answerDelimiter = x_currentPageXML.getAttribute("answerDelimiter") != undefined && x_currentPageXML.getAttribute("answerDelimiter") != "" ?  x_currentPageXML.getAttribute("answerDelimiter") : ",";
+				const dropDownDelimiter = x_currentPageXML.getAttribute("dropDownDelimiter") != undefined && x_currentPageXML.getAttribute("dropDownDelimiter") != "" ?  x_currentPageXML.getAttribute("dropDownDelimiter") : "/";
+
+				if (cellInfo.type == "text") {
+					// text input - there may be more than 1 correct answer
+					correctAnswers = cellInfo.answer.split(answerDelimiter);
+					XTEnterInteraction(x_currentPage,  i , 'fill-in', cellInfo.name, [], correctAnswers, "Correct", x_currentPageXML.getAttribute("grouping"));
+				} else {
+					// drop down menu - there may be more than 1 correct answer as well as incorrect answers
+					correctAnswers = cellInfo.answer.split(dropDownDelimiter)[0].split(answerDelimiter);
+					allAnswers = cellInfo.answer.split(dropDownDelimiter).slice(1).concat(correctAnswers).sort();
+				}
+
+				$cell.data({
+					"correctAnswers": correctAnswers,
+					"attempts": 0,
+					"qIndex": i
+				});
+
+				const fieldLabel = cellInfo.showIn == "lightbox" ? x_getLangInfo(x_languageData.find("interactions").find("answer")[0], "name", "Answer") : x_getLangInfo(x_languageData.find("tableInfo")[0], "table", "Table") + ' ' + x_getLangInfo(x_languageData.find("interactions").find("question")[0], "name", "question") + ' ' + ($tableHolder.find(".questionCell input, .questionCell select").length + 1);
+
+				if (cellInfo.type == "text") {
+					// text field
+					let fieldSize = Math.max(...(correctAnswers.map(el => el.length)));
+					fieldSize = Math.max(fieldSize, 3);
+
+					// a hidden label for the text field 'Table question X' (in cell) or 'Answer' (in lightbox) for screen readers only
+					qHtml += '<label for="' + $cell.attr("id") + 'Q' + '" class="sr-only">' + fieldLabel + '</label>';
+					qHtml += '<input id="' + $cell.attr("id") + 'Q' + '" type="text" size="' + (fieldSize > 10 ? 10 : fieldSize) + '">';
+
+				} else {
+					// drop down menu
+					// a hidden label for the drop down menu 'Table question X' for screen readers only
+					qHtml += '<label for="' + $cell.attr("id") + 'Q' + '" class="sr-only">' + fieldLabel + '</label>';
+					qHtml += '<select id="' + $cell.attr("id") + 'Q' + '" ><option value=" "> </option>';
+
+					const correctOptions = [];
+					for (let i=0; i<allAnswers.length; i++) {
+						qHtml += '<option value="' + allAnswers[i] + '">' + allAnswers[i] + '</option>';
+
+						let correctAnswer = correctAnswers.indexOf(allAnswers[i]) > -1 ? true : false;
+						correctOptions.push({
+							id: String(i + 1),
+							answer: allAnswers[i],
+							result: correctAnswer
+						});
+					}
+					qHtml += '</select>';
+
+					XTEnterInteraction(x_currentPage,  i , 'multiplechoice', cellInfo.name, correctOptions, correctAnswers, "Correct", x_currentPageXML.getAttribute("grouping"));
+				}
+
+				// placeholder for the tick / cross
+				qHtml += '<span class="tickCross"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") + '</span><span class="fa fa-fw fa-x-tick"></span></span>';
+
+				if (cellInfo.showIn != "lightbox") {
+					// placeholder for the feedback text that appears when you get a question wrong but still have more attempts to make (screen reader only)
+					qHtml += '<span class="cellFb sr-only" aria-live="polite"></span>';
+
+					if (cellBtns == true) {
+						qHtml += '<button class="qSubmit"><span class="ui-helper-hidden-accessible">' + x_currentPageXML.getAttribute("submitLabel") + '</span><span class="fa fa-arrow-right fa-fw"></span></button>';
+					}
+					$cell.html(qHtml);
+
+				} else {
+					qHtml += '<button class="qSubmit">' + x_currentPageXML.getAttribute("submitLabel") + '</button>';
+					if (x_currentPageXML.getAttribute("incomplete").trim() != "") {
+						qHtml += '<div class="incompletePrompt" aria-live="assertive"></div>';
+					}
+					if (cellInfo.feedback != undefined && cellInfo.feedback != "") {
+						$cell.data("feedback", cellInfo.feedback);
+					}
+					qHtml += '<div class="qFb" aria-live="polite"></div>';
+					qHtml += "</div>";
+					$cell.data("lbHtml", $(qHtml));
+					$cell.data("lbHtml").find(".tickCross").css("visibility", "hidden");
+					$cell.find(".questionIcon").click(function () {
+						$tableHolder.data("currentCell", $cell);
+						$.featherlight($cell.data("lbHtml"), {
+							persist: true,
+							beforeClose: interactiveTable.checkRevealNext,
+							afterOpen: interactiveTable.lbOpen
+						});
+					});
+				}
+			});
+
+			XTSetPageType(x_currentPage, 'numeric', $(".questionCell").length, x_currentPageXML.getAttribute("trackingWeight") != undefined ? x_currentPageXML.getAttribute("trackingWeight") : 1.0);
+
+			// remove button below the table if no questions are in cells (they might be in lightboxes instead so will have their own submit buttons)
+			if ($("#tableHolder select, #tableHolder input").length == 0) {
+				$("#tableSubmit").remove();
+
+			} else {
+				$(".qSubmit").click(function () {
+					// it's a submit button below the table - check answers in all visible question fields
+					if ($(this).attr("id") == "tableSubmit") {
+						$("#tableHolder .incompletePrompt").html("");
+						// find all visible question fields
+						$tableHolder.find(".questionCell").each(function () {
+							const $cell = $(this);
+							if ($cell.find("select, input").length > 0 && $cell.find("select, input").css("visibility") != "hidden") {
+								// check question field answers...
+								interactiveTable.checkAnswer($cell, $cell);
+							}
+						});
+
+						interactiveTable.checkRevealNext();
+
+					// it's a submit button in a single question cell - just check this answer
+					} else {
+						$("#tableHolder .incompletePrompt").html("");
+						const $cell = $(this).parents("td");
+						interactiveTable.checkAnswer($cell, $cell);
+						interactiveTable.checkRevealNext();
+					}
+				});
+			}
+
+			// removes unanswered highlights and crosses when the drop down or value of text field is changed
+			$(".questionCell select, .questionCell input").on("change", function() {
+				if ($(this).val().trim() != "") {
+					$(this).parent(".questionCell").removeClass("unanswered");
+				}
+				$(this).parent(".questionCell").find(".tickCross").css("visibility", "hidden");
+			});
+
+			attempts = x_currentPageXML.getAttribute("attempts") == undefined ? 2 : Number(x_currentPageXML.getAttribute("attempts"));
+		}
+
+		this.createInfoCells = function() {
+			$(tableDataI).each(function() {
+				const cellInfo = this;
+				const $cell = $("#" + cellInfo.fieldPos);
+
+				// placeholder for the info
+				if (cellInfo.showIn != "lightbox") {
+					// when info is shown in a cell it can replace initial content or be placed after the initial content
+					if ($cell.html().length > 0) {
+						if (cellInfo.replace == "end") {
+							// if shown after the initial content, it will be forced into a single line (replace p tags with spaces)
+							cellInfo.text = cellInfo.text.replace(/<p[^>]*>/g, ' ').replace(/<\/p>/g, '');
+							$cell.wrapInner('<span class="initTxt"></span>');
+						} else {
+							// if replacing initial content, wrap the initial txt in a span so it's easier to hide later
+							$cell.wrapInner('<span class="replace"></span>');
+						}
+					}
+					$("<span class='infoTxt' aria-live='assertive'>" + cellInfo.text + "</span>").appendTo($cell).css("visibility", "hidden");
+				}
+
+				// the info icon has different label for accessibility depending on whether it reveals info in the cell or in a lightbox
+				const infoIconLabel = cellInfo.showIn != "lightbox" ? "infoIconLabel" : "infoIconLabel2";
+				const fallBack = cellInfo.showIn != "lightbox" ? x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "reveal", "Reveal information") : x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "name", "Learn more");
+				iconInfo = { label: x_currentPageXML.getAttribute(infoIconLabel) != undefined ? x_currentPageXML.getAttribute(infoIconLabel) : fallBack, icon: x_currentPageXML.getAttribute("infoCustomIcon") == "true" ? x_currentPageXML.getAttribute("infoIcon") + " fa-fw" : "fas fa-fw fa-info"};
+				interactiveTable.setUpCellBtn($cell, "info", iconInfo);
+
+				// info cells may not need to be interacted with in order to move on / receive main feedback
+				if (cellInfo.required !== "true") {
+					$cell.addClass("notRequired");
+				}
+
+				$cell.find(".infoIcon").click(function () {
+					if (cellInfo.showIn == 'lightbox') {
+						$tableHolder.data("currentCell", $cell);
+						$.featherlight(cellInfo.text, {
+							beforeClose: interactiveTable.infoLbClosed
+						});
+					} else {
+						// remove the initial content
+						if (cellInfo.replace == "replace") {
+							$cell.find(".replace").hide();
+						}
+
+						// show the info text and remove the button
+						$cell.find(".infoTxt").html($cell.find(".infoTxt").data("txt"));
+						$cell.addClass("completed");
+						$(this).remove();
+						interactiveTable.checkRevealNext();
+					}
+				});
+			});
+		}
+
+		// add the info/question buttons and/or question fields to the interactive cells
+		this.setUpCellBtn = function($cell, cellType, icon) {
+			$cell.addClass(cellType + "Cell");
+
+			if (icon != undefined) {
+				const extraClass = $cell.html() != "" ? " marginLeft" : "";
+				const label = cellType == "question" ? x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") :x_getLangInfo(x_languageData.find("viewed")[0], "label", "Viewed");
+				$cell.append('<button class="' + cellType + 'Icon' + extraClass + '"><span class="ui-helper-hidden-accessible">' + icon.label + '</span><span class="btnIcon fa ' + icon.icon + '"></span></button>');
+
+				if (cellType == "question" || x_currentPageXML.getAttribute("infoIconTick") != "false") {
+					$cell.find("button").append('<span class="tickCross"><span class="ui-helper-hidden-accessible">' + label + '</span><span class="fa fa-fw fa-x-tick"></span></span>');
+					$cell.find(".tickCross").css("visibility", "hidden");
+				}
+			}
+		}
+
+		// lightbox containing info text has been viewed and closed
+		this.infoLbClosed = function() {
+			// mark as viewed in the cell
+			if (x_currentPageXML.getAttribute("infoIconTick") != "false") {
+				$tableHolder.data("currentCell").find(".tickCross").css("visibility", "visible");
+				$tableHolder.data("currentCell").find(".btnIcon").css("visibility", "hidden");
+			}
+
+			$tableHolder.data("currentCell").addClass("completed");
+			interactiveTable.checkRevealNext();
+		}
+
+		// decide whether ready to show next lot of question/info cells (have previous ones been completed/viewed?)
+		this.checkRevealNext = function() {
+			const qs = $(".questionCell select,.questionCell input,.questionCell .questionIcon,.infoCell .infoIcon");
+			let readyForReveal = true;
+			qs.each(function() {
+				if ($(this).css("visibility") != "hidden" && !$(this).parent(".questionCell, .infoCell").hasClass("completed") && !$(this).parent(".questionCell, .infoCell").hasClass("notRequired")) {
+					readyForReveal = false;
+					return false;
+				}
+			});
+
+			interactiveTable.revealHideSubmitBtn();
+
+			if (readyForReveal) {
+				interactiveTable.revealNext();
+			}
+		}
+
+		this.revealNext = function() {
+			revealStep++;
+			$("#pageContents").data("revealStep", revealStep);
+
+			// by default, all interactive cells will be available to answer/view immediately
+			// it can be set up so that they show one at a time (or one row / column at a time) instead
+			// this means that each cell/row/column must be answered/viewed before you can move on to the next cell/row/column
+
+			// all interactive cells have been answered/viewed - show feedback
+			if ($(".questionCell.completed,.infoCell.completed,.infoCell.notRequired:not(.completed)").length === $(".questionCell,.infoCell").length) {
+				$(".qSubmit#tableSubmit").hide();
+				$("#mainFb").html(x_currentPageXML.getAttribute("feedback"));
+
+			// not all answered/viewed - reveal the next interactive cells
+			} else {
+				// one cell at a time
+				if (x_currentPageXML.getAttribute("reveal") == "one") {
+					$(".questionCell,.infoCell").each(function (i) {
+						if (i > revealStep) {
+							$(this).children().not(".infoTxt,.initTxt").css("visibility", "hidden");
+						} else if (i == revealStep) {
+							if ($(this).hasClass("infoCell")) {
+								// it's an info cell that hasn't been viewed yet - show the info button
+								$(this).find("button.infoIcon").css("visibility", "visible").focus();
+							} else {
+								// it's a question cell that hasn't been answered yet - show everything except for the tick/cross
+								$(this).children().not(".tickCross").css("visibility", "visible").focus();
+							}
+						}
+					});
+
+				// one row at a time
+				} else if (x_currentPageXML.getAttribute("reveal") == "row") {
+					let rowCount = -1;
+					$tableHolder.find("table tr").each(function () {
+						if ($(this).find(".questionCell,.infoCell").length > 0) {
+							rowCount++;
+							if (rowCount > revealStep) {
+								$(this).find(".questionCell,.infoCell").children().not(".infoTxt,.initTxt").css("visibility", "hidden");
+							} else if (rowCount == revealStep) {
+								let focus = false;
+								$(this).find("td.infoCell,td.questionCell,th.infoCell,th.questionCell").each(function() {
+									if ($(this).hasClass("infoCell")) {
+										// it's an info cell that hasn't been viewed yet - show the info button
+										$(this).find("button.infoIcon").css("visibility", "visible");
+										if (focus == false) {
+											focus = true;
+											$(this).find("button.infoIcon").focus();
+										}
+									} else {
+										// it's a question cell that hasn't been answered yet - show everything except for the tick/cross
+										$(this).children().not(".tickCross").css("visibility", "visible");
+										if (focus == false) {
+											focus = true;
+											$(this).find("button.questionIcon, select, input").focus();
+										}
+									}
+								});
+							}
+						}
+					});
+
+					interactiveTable.revealHideSubmitBtn();
+
+				// one column at a time
+				} else if (x_currentPageXML.getAttribute("reveal") == "col") {
+					let colCount = -1;
+					$tableHolder.find("table tr").eq(0).find("td,th").each(function (i) {
+						const $colCells = $tableHolder.find("table td:nth-child(" + (i + 1) + ").questionCell,table td:nth-child(" + (i + 1) + ").infoCell,table th:nth-child(" + (i + 1) + ").questionCell,table th:nth-child(" + (i + 1) + ").infoCell");
+						if ($colCells.length > 0) {
+							colCount++;
+							if (colCount > revealStep) {
+								$colCells.children().not(".infoTxt,.initTxt").css("visibility", "hidden");
+							} else if (colCount == revealStep) {
+								let focus = false;
+								$colCells.each(function() {
+									if ($(this).hasClass("infoCell")) {
+										// it's an info cell that hasn't been viewed yet - show the info button
+										$(this).find("button.infoIcon").css("visibility", "visible");
+										if (focus == false) {
+											focus = true;
+											$(this).find("button.infoIcon").focus();
+										}
+									} else {
+										// it's a question cell that hasn't been answered yet - show everything except for the tick/cross
+										$(this).children().not(".tickCross").css("visibility", "visible");
+										if (focus == false) {
+											focus = true;
+											$(this).find("button.questionIcon, select, input").focus();
+										}
+									}
+								});
+							}
+						}
+					});
+
+					interactiveTable.revealHideSubmitBtn();
+				}
+			}
+		}
+
+		// the submit button below the table should only be shown when there are visible in-cell questions that haven't been answered yet
+		this.revealHideSubmitBtn = function() {
+			if ($(".qSubmit#tableSubmit").length > 0) {
+				let hideTableSubmitBtn = false;
+				$tableHolder.find("td.questionCell:not(.completed) input,th.questionCell:not(.completed) input, td.questionCell:not(.completed) select,th.questionCell:not(.completed) select").each(function() {
+					if ($(this).css("visibility") != "hidden") {
+						hideTableSubmitBtn = true;
+						return false;
+					}
+				});
+				if (hideTableSubmitBtn) {
+					$(".qSubmit#tableSubmit").show();
+				} else {
+					$(".qSubmit#tableSubmit").hide();
+				}
+			}
+		}
+
+		// question lightbox has opened - do any setup that's needed
+		this.lbOpen = function() {
+			$(".featherlight-content .qSubmit").button().off("click").click(function() {
+				const $form = $("#lbForm");
+				$form.find(".incompletePrompt").html("");
+				$form.find(".qFb").html("");
+				interactiveTable.checkAnswer($tableHolder.data("currentCell"), $form);
+			});
+		}
+
+		// check whether the submitted answer is correct - if not, check whether we can show the correct answer (have max. no. attempts been reached?)
+		// questions shown in table cell - $cell & $parent are both the table cell
+		// questions shown in lightboxes - $cell is table cell and $parent is the form in the lightbox
+		this.checkAnswer = function($cell, $parent) {
+			const showIn = $cell === $parent ? "cell" : "lightbox"; // is question shown in a cell or lb
+			$parent.removeClass("unanswered");
+
+			const correctAnswers = $cell.data("correctAnswers");
+			const submittedAnswer = $parent.find("input").length > 0 ? $parent.find("input").val().trim() : $parent.find("select").val().trim();
+			const correct = submittedAnswer == "" ? undefined : correctAnswers.indexOf(submittedAnswer) >= 0 ? true : false;
+
+			if (correct === undefined) {
+				// unanswered - prompt to attempt the question
+				$parent.addClass("unanswered");
+				$parent.find(".tickCross").css("visibility", "hidden");
+
+				if (showIn == "cell" && $("#tableHolder .incompletePrompt").html() == "") {
+					$("#tableHolder .incompletePrompt").html('<p>' + x_currentPageXML.getAttribute("incomplete") + '</p>');
+				} else if (showIn == "lightbox" && $parent.find(".incompletePrompt").html() == "") {
+					$parent.find(".incompletePrompt").html('<p>' + x_currentPageXML.getAttribute("incomplete") + '</p>');
+				}
+
+			} else {
+				// answered - show tick/cross
+				$cell.data("attempts", $cell.data("attempts") + 1);
+				const $tickCross = $parent.find(".tickCross");
+				$tickCross.find(".ui-helper-hidden-accessible").html(correct == true ? x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") : x_getLangInfo(x_languageData.find("cross")[0], "label", "Cross"));
+				$tickCross.find(".fa").removeClass("fa-x-" + (correct == true ? "cross" : "tick")).addClass("fa-x-" + (correct == true ? "tick" : "cross"));
+				$tickCross.css("visibility", "visible");
+
+				let lbComplete = false;
+				let lbFeedback = "";
+
+				if (correct == true) {
+					$cell.addClass("completed").addClass("correct");
+
+					if (showIn == "cell") {
+						$cell.find("select, input").prop("disabled", "disabled").css("visibility", "hidden");
+						// screen reader only text: Your answer is correct: [submittedAnswer]
+						$cell.find(".afterSubmit").html('<span class="sr-only">' + x_currentPageXML.getAttribute("correctTxt") + ': </span>' + submittedAnswer);
+						$cell.find(".qSubmit").blur().css("visibility", "hidden");
+
+					} else {
+						lbComplete = true;
+						lbFeedback += "<p>" + x_currentPageXML.getAttribute("correctTxt") + "</p>";
+					}
+
+					// if answer is incorrect, has max no. attempts been reached? If so, show the correct answer
+					// if max no. attempts has been set as zero, the correct answer will never automatically be shown
+				} else if (attempts > 0 && $cell.data("attempts") >= attempts) {
+					$cell.addClass("completed");
+
+					if (showIn == "cell") {
+						$cell.find("select, input").prop("disabled", "disabled").css("visibility", "hidden");
+						// screen reader only text: Your answer is incorrect. Incorrect submitted answer: [submittedAnswer] Correct answer: [correctAnswer]
+						$cell.find(".afterSubmit").html('<span class="sr-only">' + x_currentPageXML.getAttribute("incorrectTxt") + '. ' + x_currentPageXML.getAttribute("srCorrectTxt") + ': </span><s>' + submittedAnswer + '</s> <span class="sr-only">' + x_currentPageXML.getAttribute("srIncorrectTxt") + ': </span>' + correctAnswers[0]);
+						$cell.find(".qSubmit").blur().css("visibility", "hidden");
+						$cell.find(".tickCross").css("visibility", "hidden");
+
+					} else {
+						lbComplete = true;
+						lbFeedback += "<p>" + x_currentPageXML.getAttribute("incorrectTxt") + "</p><p>" + x_currentPageXML.getAttribute("correctFbTxt") + " " + correctAnswers[0] + "</p>";
+					}
+
+				} else if (correct == false) {
+					if (showIn == "cell") {
+						// screen reader only text: Your answer is incorrect: [submittedAnswer]
+						$cell.find(".cellFb").html(x_currentPageXML.getAttribute("incorrectTxt") + ": " + submittedAnswer);
+
+					} else {
+						lbFeedback += "<p>" + x_currentPageXML.getAttribute("incorrectTxt") + "</p>";
+					}
+				}
+
+				// a question in a lightbox has been completed
+				if (lbComplete == true) {
+					// mark answer and show feedback in the lightbox
+					$parent.find("select, input").prop("disabled", "disabled");
+					$parent.find(".qSubmit").css("visibility", "hidden");
+
+					if ($tableHolder.data("currentCell").data("feedback") != undefined) {
+						lbFeedback += $tableHolder.data("currentCell").data("feedback");
+					}
+
+					// mark answer in the cell
+					const $tickCross = $cell.find(".tickCross");
+					$tickCross.find(".ui-helper-hidden-accessible").html(correct == true ? x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick") : x_getLangInfo(x_languageData.find("cross")[0], "label", "Cross"));
+					$tickCross.find(".fa").removeClass("fa-x-" + (correct == true ? "cross" : "tick")).addClass("fa-x-" + (correct == true ? "tick" : "cross"));
+					$tickCross.css("visibility", "visible");
+					$cell.find(".btnIcon").css("visibility", "hidden");
+
+					// add a continue button in the lightbox that closes it when clicked
+					$('<button type="button"></button>').appendTo($parent)
+						.button({ label: x_currentPageXML.getAttribute("continueLabel") })
+						.click(function() {
+							$.featherlight.current().close();
+						});
+				}
+
+				if (showIn == "lightbox") {
+					$parent.find(".qFb").html(lbFeedback);
+				}
+
+				const result = {
+					success: correct,
+					score: (correct ? 100.0 : 0.0)
+				};
+				const qIndex = $cell.data("qIndex");
+
+				// text box
+				if ($parent.find("input").length > 0) {
+					XTExitInteraction(x_currentPage, qIndex, result, [], submittedAnswer, (correct ? "Correct" : "Incorrect"), x_currentPageXML.getAttribute("trackinglabel"));
+
+				// drop down menu
+				} else {
+					const options = [];
+					$cell.find("select").find(":selected").each(function() {
+						const $this = $(this);
+						options.push({
+							id: String($this.index()),
+							answer: $this.val(),
+							result: correct
+						});
+					});
+
+					XTExitInteraction(x_currentPage, qIndex, result, options, [submittedAnswer], [], x_currentPageXML.getAttribute("trackinglabel"));
+				}
+			}
+
+			// all questions on the page have been completed (either answered correctly or max. no. attempts made)
+			if ($tableHolder.find(".questionCell").length > 0 && $tableHolder.find(".questionCell:not(.completed)").length == 0) {
+				interactiveTable.sendScore();
+			}
+		}
+
+		// track total score - either because all complete or user has moved to a new page
+		this.sendScore = function() {
+			XTSetPageScore(x_currentPage,  ($tableHolder.find(".questionCell.correct").length/$tableHolder.find(".questionCell").length*100), x_currentPageXML.getAttribute("trackinglabel"));
+		}
+	}
+	
+	interactiveTable.init();
+	
+</script>
+
+
+<div id="pageContents">
+	<div id="tableHolder" class="panel"></div>
+	<div id="textHolder"></div>
+</div>

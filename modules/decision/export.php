@@ -100,9 +100,13 @@ copy_extra_files();
  * Theme support
  */
 $theme = $xml->getTheme();
+// To please static code inspection tools, make sure it matches pattern of a theme (all characters and numbers, no special characters)
+if (!ctype_alnum($theme)) {
+    die("Illegal theme name detected!");
+}
 if ($theme != "" && $theme != "default")
 {
-    export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['template_name'] . '/' . $theme . '/');
+    export_folder_loop($xerte_toolkits_site->root_file_path . 'themes/' . $row['parent_template'] . '/' . $theme . '/');
     copy_extra_files();
 }
 
@@ -134,7 +138,7 @@ if ($fullArchive)
 else
 	$export_type = "_deployment";
 
-$row['zipname'] .= $export_type;
+$row['zipname'] .=  '_' . $_GET['template_id'] . $export_type;
 
 
 /*

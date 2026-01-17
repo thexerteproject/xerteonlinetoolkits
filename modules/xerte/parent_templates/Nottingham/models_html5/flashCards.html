@@ -17,7 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var flashCards = new function () {
@@ -55,18 +54,39 @@
 			var btnsShown = false;
 			
 			if ($pageContents.hasClass('horiz')) {
-				
+				const cardMargin = parseInt($cards.find('.card').css('margin-left')) + parseInt($cards.find('.card').css('margin-right'));
+
 				$('.btnHolder').hide();
 				
 				// size these cards manually as the % won't work in the scrolling div
-				if ($cards.hasClass('small')) {
-					$cards.find('.card').width(Math.floor($pageContents.width() * 0.2));
-				} else if ($cards.hasClass('medium')) {
-					$cards.find('.card').width(Math.floor($pageContents.width() * 0.3));
-				} else if ($cards.hasClass('large')) {
-					$cards.find('.card').width(Math.floor($pageContents.width() * 0.4));
+				if ($pageContents.hasClass('displayMultiple')) {
+					// get margins of cards
+					const letfBtnWidth = $('#leftBtn').width();
+					const rightBtnWidth = $('#rightBtn').width();
+					const availableWidth = $cards.width() - letfBtnWidth - rightBtnWidth;
+					if ($cards.hasClass('small')) {
+						// Fit 4 cards in view
+						$cards.find('.card').width((Math.floor(availableWidth - 4*cardMargin) * 0.25));
+					} else if ($cards.hasClass('medium')) {
+						// Fit 3 cards in view
+						$cards.find('.card').width((Math.floor(availableWidth - 3*cardMargin) * 0.333333));
+					} else if ($cards.hasClass('large')) {
+						// Fit 2 cards in view
+						$cards.find('.card').width((Math.floor(availableWidth - 2*cardMargin) * 0.5));
+					}
 				}
-				
+				else {
+					if ($cards.hasClass('small')) {
+						$cards.find('.card').width(Math.floor($pageContents.width() * 0.2));
+					} else if ($cards.hasClass('medium')) {
+						$cards.find('.card').width(Math.floor($pageContents.width() * 0.3));
+					} else if ($cards.hasClass('large')) {
+						$cards.find('.card').width(Math.floor($pageContents.width() * 0.4));
+					}
+				}
+				const scrollingWidth = $cards.find('.card').length * ($cards.find('.card').width() + cardMargin);
+				$cards.data('scrollingWidth', scrollingWidth);
+
 				// are scroll buttons required?
 				if ($cards[0].scrollWidth > $cards[0].clientWidth) {
 					
@@ -93,13 +113,7 @@
 			}
 			
 			if (cardHeight == 'default') {
-				
-				var totalSpace = $x_pageHolder.height() - (parseInt($x_pageDiv.css('padding-top')) * 2);
-				
-				if (x_browserInfo.mobile == true) {
-					totalSpace = $x_mobileScroll.height() - $x_headerBlock.height() - $x_footerBlock.height() - (parseInt($x_pageDiv.css("padding-top")) * 2) - 3;
-				}
-				
+				const totalSpace = x_getAvailableHeight([], [], true);
 				var spaceTaken = (x_browserInfo.mobile == true ? 0 : $('#textHolder').outerHeight(true)) + $('#cardNoHolder').height() + parseInt($cards.find('div.card').css('margin-top')) + parseInt($cards.find('div.card').css('margin-bottom')) + 10;
 				var maxH = Math.floor(totalSpace - spaceTaken);
 				
@@ -281,21 +295,19 @@
 			
 			// Empty cards collection first
 			$cards.empty();
-			
+
+			const cardTxt = x_currentPageXML.getAttribute('cardTxt') != undefined ? x_currentPageXML.getAttribute('cardTxt') : 'Card';
+			const sideTxt = x_currentPageXML.getAttribute('sideTxt') != undefined ? x_currentPageXML.getAttribute('sideTxt') : 'Side';
+
 			// Now loop through new cards array and rebuild
 			$(cardArray).each(function(i){
 				var thisInfo = this;
-
+				
 				$thisCard = $('<div>')
 								.addClass('card')
-								.append(
-									$('<div>')
-										.addClass('front panel')
-								)
-								.append(
-									$('<div>')
-										.addClass('back panel')
-								)
+								.append('<div class="front panel" role="region" aria-labelledby="card' + i + '_0Title"/>')
+								.append('<div class="back panel" role="region" aria-labelledby="card' + i + '_1Title"/>');
+
 				$thisCard.appendTo($cards);
 
 				$thisCard.attr('id', 'card' + i);
@@ -304,14 +316,53 @@
 				
 				$thisFront.add($thisBack).each(function(j) {
 					var $this = $(this),
-						index = j + 1;
+						$thisInner = $('<div class="cardInner"></div>'),
+						index = j + 1,
+						$contentHolder = $('<div class="text-content">');
 					
+					$this.append($thisInner)
 					if (thisInfo.getAttribute('name') != '') {
-						$this.append('<h3>' + thisInfo.getAttribute('name') + '</h3>');
+						$thisInner.append('<h3 id="card' + i + '_' + j + 'Title">' + thisInfo.getAttribute('name') + '<span class="sr-only"> ' + sideTxt + index + '</span></h3>');
+					} else {
+						$thisInner.append('<span id="card' + i + '_' + j + 'Title" class="sr-only">' + cardTxt + (i+1) + ' - ' + sideTxt + index + '</span>');
+					}
+					$thisInner.append($contentHolder);
+			
+					$contentToAlign = $contentHolder
+					if(x_currentPageXML.getAttribute('alignTitle') != undefined && x_currentPageXML.getAttribute('alignTitle') == 'true'){
+						$contentToAlign = $thisInner;
+					}
+					if(thisInfo.getAttribute('alignTitle') != undefined){
+						if(thisInfo.getAttribute('alignTitle') == 'true'){
+							$contentToAlign = $thisInner;
+						}else{
+							$contentToAlign = $contentHolder
+						}
+					}
+
+					//global alignment
+					if(x_currentPageXML.getAttribute('textAlign') != undefined && x_currentPageXML.getAttribute('textAlign') != ''){
+						$contentToAlign.css('text-align', x_currentPageXML.getAttribute('textAlign'));
 					}
 					
+					if(x_currentPageXML.getAttribute('contentAlign') != undefined && x_currentPageXML.getAttribute('contentAlign') != ''){
+						$contentToAlign.addClass("flex");
+						$contentToAlign.css('justify-content', x_currentPageXML.getAttribute('contentAlign'));
+					}
+	
+					//card specific alignment
+					if(thisInfo.getAttribute('textAlign') != undefined && thisInfo.getAttribute('textAlign') != ''){
+						$contentToAlign.css('text-align', thisInfo.getAttribute('textAlign'));
+					}
+					
+					if(thisInfo.getAttribute('contentAlign') != undefined && thisInfo.getAttribute('contentAlign') != ''){
+						$contentToAlign.addClass("flex");
+						$contentToAlign.css('justify-content', thisInfo.getAttribute('contentAlign'));
+					}
+					
+					
 					if (thisInfo.getAttribute('side' + index) != '') {
-						$this.append(thisInfo.getAttribute('side' + index));
+						$contentHolder.append(thisInfo.getAttribute('side' + index));
 					}
 					
 					// add media to card
@@ -367,13 +418,9 @@
 							$mediaHolder.addClass('mediaHolder');
 							
 							if (thisInfo.getAttribute('align' + index) == 'Top') {
-								if (thisInfo.getAttribute('name') != '') {
-									$mediaHolder.insertAfter($this.find('h3')[0]);
-								} else {
-									$this.prepend($mediaHolder);
-								}
+								$contentHolder.prepend($mediaHolder);
 							} else {
-								$this.append($mediaHolder);
+								$contentHolder.append($mediaHolder);
 							}
 							
 							if ($mediaHolder.hasClass('cardVideo')) {
@@ -405,7 +452,6 @@
 						}
 					}
 					
-					$this.wrapInner('<div class="cardInner"></div>');
 					$this.append('<div class="flipBtnHolder"><button class="flipBtn circleBtn"></button></div><div class="emptyDiv"></div>');
 				});
 				
@@ -439,7 +485,6 @@
 						text: false
 					})
 					.click(function() {
-						
 						$('.cardVideo video, .cardAudio audio').each(function() {
 							this.pause();
 						});
@@ -493,13 +538,13 @@
 					$('.cardVideo video, .cardAudio audio').each(function() {
 						this.pause();
 					});
-					
-					// scroll to top the side that's about to come into view
-					var hiddenSide = $(this).closest('.card').data("flip-model").isFlipped == true ? 0 : 1;
-					$(this).closest('.card').find('.panel:eq(' + hiddenSide + ') .cardInner').scrollTop(0);
-					
+
+					const $card = $(this).closest('.card');
+
+					flashCards.activateCard($card, $card.data("flip-model").isFlipped, true);
+
 					// then flip
-					$(this).closest('.card').flip('toggle');
+					$card.flip('toggle');
 				})
 			
 			if (displayStyle != 'horizontal' && displayStyle != 'vertical') {
@@ -527,6 +572,10 @@
 				
 			if ($('#pageContents').data('displayStyle') != 'horizontal' && $('#pageContents').data('displayStyle') != 'vertical' && $('.card').length > 1) {	
 				flashCards.dealCard();
+			} else {
+				$(".card").each(function() {
+					flashCards.activateCard($(this), true);
+				});
 			}
 		}
 		
@@ -553,9 +602,8 @@
 		
 		// function slides in a new card
 		this.dealCard = function(next) {
-			
-			var $thisCard = $('#card' + $pageContents.data('currentCard'));
-			
+			const $thisCard = $('#card' + $pageContents.data('currentCard'));
+			flashCards.activateCard($thisCard, true, true);
 			$thisCard.flip(false);
 			$('#cards').addClass('hideOverflow');
 			
@@ -564,6 +612,27 @@
 			if ($thisCard.find('.mediaHolder video, .mediaHolder audio').length > 0) {
 				this.resizeMedia();
 			}
+		}
+
+		this.activateCard = function($card, isFlipped, focus) {
+			const currentSide = isFlipped == true ? 1 : 0;
+			const $currentSide = $card.find('.panel:eq(' + currentSide + ')');
+			const hiddenSide = isFlipped == true ? 0 : 1;
+			const $hiddenSide = $card.find('.panel:eq(' + hiddenSide + ')');
+
+			// force tabindex to be on for elements on visible side & off for elements on hidden side
+			// otherwise you can tab to elements that aren't shown
+			$hiddenSide
+					.removeClass("hideOverflow")
+					.attr("aria-hidden", "false");
+			$hiddenSide.find('a, button').attr("tabindex", "0");
+			$hiddenSide.find('.cardInner').scrollTop(0);
+			if (focus) {
+				$hiddenSide.find('.flipBtn').focus();
+			}
+
+			$currentSide.addClass("hideOverflow").attr("aria-hidden", "true");
+			$currentSide.find('a, button').attr("tabindex", "-1");
 		}
 		
 		// function called after card slide has finished
@@ -577,13 +646,13 @@
 					
 					flashCards.dealCard($pageContents.data('next'));
 					
-				// show the card no. when new card has been dealed
+				// show the card no. when new card has been dealt
 				} else {
 					$('#cardNoTxt')
 						.html('<p>' + x_currentPageXML.getAttribute('cardNoTxt').replace('{i}', $pageContents.data('currentCard') + 1).replace('{n}', $('#cards .card').length) + '</p>')
 						.fadeIn();
 					
-					// reenable required buttons
+					// re-enable required buttons
 					if (next == true) {
 						
 						flashCards.toggleBtn($('#prevBtn'), 'enable');
@@ -626,26 +695,29 @@
 			
 			if (fwd == false) {
 				scrollL = 0;
-				
-				$(".card").each(function(i) {
-					if ($(this).position().left + parseInt($(this).css('marginLeft')) - $cards.position().left >= 0) {
-						scrollL = $cards.scrollLeft() - ($cards.width() - ($(this).position().left - $cards.position().left));
-						return false;
-					}
-				});
+				if (!$pageContents.hasClass('displayMultiple')) {
+					$(".card").each(function (i) {
+						if ($(this).position().left + parseInt($(this).css('marginLeft')) - $cards.position().left >= 0) {
+							scrollL = $cards.scrollLeft() - ($cards.width() - ($(this).position().left - $cards.position().left));
+							return false;
+						}
+					});
+				}
 				
 			} else {
 				scrollL = $cards.scrollLeft() + $cards.width()
-				
-				$(".card").each(function(i) {
-					if ($(this).offset().left - $cards.offset().left + $(this).width() > $cards.width()) {
-						scrollL = $(this).position().left + $cards.scrollLeft() - $cards.position().left;
-						return false;
-					}
-				});
+
+				if (!$pageContents.hasClass('displayMultiple')) {
+					$(".card").each(function (i) {
+						if ($(this).offset().left - $cards.offset().left + $(this).width() > $cards.width()) {
+							scrollL = $(this).position().left + $cards.scrollLeft() - $cards.position().left;
+							return false;
+						}
+					});
+				}
 			}
 			
-			if ($cards[0].scrollWidth - $cards.width() <= Math.floor(scrollL)) {
+			if ($cards.data('scrollingWidth') - $cards.scrollLeft() <= Math.floor(scrollL)) {
 				this.toggleBtn($('#nextBtn'), 'disable');
 			} else {
 				this.toggleBtn($('#nextBtn'), 'enable');
@@ -687,9 +759,9 @@
 	
 	<div id="textHolder"></div>
 	
-	<div id="cardHolder">
+	<div id="cardHolder" role="presentation">
 		
-		<div id="cardCtrls">
+		<div id="cardCtrls" role="presentation">
 		
 			<div id="leftBtn" class="btnHolder">
 				<button id="prevBtn"></button>
@@ -705,7 +777,7 @@
 		</div>
 		
 		<div id="cardNoHolder">
-			<span id="cardNoTxt"><p>&nbsp;</p></span>
+			<span id="cardNoTxt" aria-live="polite"><p>&nbsp;</p></span>
 		</div>
 		
 	</div>

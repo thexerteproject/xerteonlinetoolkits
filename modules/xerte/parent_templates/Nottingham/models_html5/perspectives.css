@@ -1,7 +1,6 @@
 /* perspectives.html */
 	
 	#thumbBar {
-		display: inline-block;
 		width: 100%;
 		height: 8em;
 	}
@@ -107,11 +106,14 @@
 		margin: 4px;
 	}
 	
-	#thumbHolder .thumbBox h3 {
+	#thumbHolder .thumbBox .thumbTitle {
 		font-size: 0.8em;
 		text-align: center;
 		overflow: hidden;
 		margin-bottom: 5px;
+		font-weight: bold;
+		padding-top: 0;
+		padding-bottom: 0;
 	}
 	
 	#thumbHolder .thumbBox:link, #thumbHolder .thumbBox:hover, #thumbHolder .thumbBox:active, #thumbHolder .thumbBox:visited {
@@ -122,87 +124,105 @@
 		overflow: hidden;
 		position: relative;
 	}
-	
-	#thumbHolder .playAll h3 {
+
+	#thumbHolder .playAll .thumbTitle {
 		font-size: 2em;
-		margin-top: 0.3em;
 		white-space: normal;
+		display: grid;
+		align-content: center;
+		height: 100%;
+		box-sizing: border-box;
+		margin: 0;
 	}
-	
-	#thumbBar.small #thumbHolder .playAll h3 { font-size: 1.2em; margin-top: 0.18em; }
-	#thumbBar.large #thumbHolder .playAll h3 { font-size: 2.8em; margin-top: 0.48em; }
-	
+
+	.thumbMedia i.fa {
+		font-size: 2em;
+	}
+
+	.thumbMedia.faIcon {
+		display: grid;
+		align-content: center;
+		height: 100%;
+	}
+
+	.thumbTitle:not(.sr-only) + .thumbMedia.faIcon {
+		margin-top: -1em;
+	}
+
+	#thumbBar.small #thumbHolder .playAll .thumbTitle, #thumbBar.small #thumbHolder .thumbMedia i.fa { font-size: 1.2em; }
+	#thumbBar.large #thumbHolder .playAll .thumbTitle, #thumbBar.large #thumbHolder .thumbMedia i.fa { font-size: 2.8em; }
+
 	/* removes controls from thumbnail version of video player */
 	#thumbHolder .thumbMedia .mejs-container .mejs-controls, #thumbHolder .thumbMedia .mejs-container .mejs-layers {
 		display: none !important;
 	}
-	
+
 	#thumbHolder .thumbMedia img {
 		border-width: 0px; /* IE8 fix */
 	}
-	
+
 	#mainInfoHolder {
 		overflow: auto;
 		visibility:	hidden;
 	}
-	
+
 	#mainInfoHolder:not(.noThumbs) {
 		margin-top: 0;
 		margin-bottom: 1em;
 	}
-	
+
 	#thumbBar + #mainInfoHolder:not(.noThumbs) {
 		margin-top:	1em;
 		margin-bottom: 0;
 	}
-	
+
 	#thumbBar.grid + #mainInfoHolder:not(.noThumbs) {
 		margin-top: 0;
 		margin-bottom: 0;
 	}
-	
+
 	#thumbHolder .thumbCover {
 		position: absolute;
 		top: 0;
 		left: 0;
 	}
-	
+
 	#thumbHolder .thumbCover {
 		position: absolute;
 		top: 0;
 		left: 0;
 	}
-	
+
 	#mainInfoHolder.centerAlign #mainTxt {
 		text-align: left;
 	}
-	
+
 	#mainInfoHolder #gridBack {
 		float: right;
 		padding-bottom: 0.5em;
 		font-weight: bold;
 	}
-	
+
 	#mainInfoHolder #gridBack .fa {
 		font-size: 2em;
 		vertical-align: middle;
 		padding-left: 0.3em;
 	}
-	
+
 	#mainTxt + #mediaPanel {
 		margin-top: 20px;
 		margin-bottom: 0;
   	}
-	
+
 	#mediaPanel:not(.x_floatLeft) {
 		clear: right;
 	}
-	
+
 	#mediaPanel.full {
 		margin-bottom: 0;
 	}
-	
-	
+
+
 	/* RESPONSIVE STYLES */
 	/* font-size stuff is in responsivetext.css */
 
@@ -214,7 +234,7 @@
 	.x_responsive #thumbHolder .thumbBox { width: 18.0vmin !important; height: 18.0vmin !important; }
 	.x_responsive #thumbBar.small #thumbHolder .thumbBox { width: 9.7vmin !important; height: 9.7vmin !important; }
 	.x_responsive #thumbBar.large #thumbHolder .thumbBox { width: 26.3vmin !important; height: 26.3vmin !important; }
-	
+
 	#thumbBar:not(.small) button { width: 5em; height: 5em; margin-top: -2.5em; }
 	#thumbBar:not(.small) button .ui-icon { font-size: 5em; }
 }

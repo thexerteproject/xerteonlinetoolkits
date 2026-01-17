@@ -28,6 +28,9 @@
  * @package
  */
 
+require_once(dirname(__FILE__) . "/Html2Text.php");
+require_once(dirname(__FILE__) . "/url_library.php");
+
 function get_template_type($template_id){
 
     global $xerte_toolkits_site;
@@ -62,6 +65,13 @@ function  get_template_pagelist($template_id)
     else {
         $sub_pages_str = $row['template_sub_pages'];
         if ($sub_pages_str != null && $sub_pages_str != "") {
+            $disable_advanced = false;
+            $pos = strpos($sub_pages_str, "disable_advanced");
+            if ($pos !== false)
+            {
+                $sub_pages_str = substr($sub_pages_str, 17); // Get rid of 'disable_advanced,'
+                $disable_advanced = true;
+            }
             $simple_lo_page = false;
             $pos = strpos($sub_pages_str, "simple_lo_page");
             if ($pos !== false)
@@ -77,6 +87,32 @@ function  get_template_pagelist($template_id)
         return $sub_pages;
     }
 }
+
+function get_template_disable_advanced($template_id)
+{
+    global $xerte_toolkits_site;
+
+    $row = db_query_one("SELECT otd.* FROM {$xerte_toolkits_site->database_table_prefix}templatedetails td, {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails otd WHERE td.template_type_id = otd.template_type_id and td.template_id = ?", array($template_id));
+
+    if($row == false) {
+        receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "CRITICAL", "Failed to get template type", "Failed to get the template type");
+        return array();
+    }
+    else {
+        $sub_pages_str = $row['template_sub_pages'];
+        $disable_advanced = false;
+        if ($sub_pages_str != null && $sub_pages_str != "") {
+            $pos = strpos($sub_pages_str, "disable_advanced");
+            if ($pos !== false)
+            {
+                $disable_advanced = true;
+            }
+        }
+        return $disable_advanced;
+    }
+}
+
+
 
 function get_template_simple_lo_page($template_id)
 {
@@ -196,10 +232,243 @@ function get_template_data_as_xml($template_id, $creator_user_name="", $template
 
 function change_copied_xml($xmlfile)
 {
-    $xml = simplexml_load_file($xmlfile);
+    $xml = file_get_contents($xmlfile);
+    $xml = simplexml_load_string($xml);
     if ((string)$xml['oaiPmhAgree'] === 'true')
     {
         $xml['oaiPmhAgree'] = 'false';
     }
     $xml->asXML($xmlfile);
 }
+
+function get_meta_data($template_id, $template_name, $creator_user_name="", $template_type_name="", $template_owner="")
+{
+    global $config;
+    global $xerte_toolkits_site;
+
+    $xml = get_template_data_as_xml($template_id, $creator_user_name, $template_type_name);
+    if (gettype($xml) !== "object")
+    {
+        return false;
+    }
+    $xerteMetaObj = new stdClass();
+
+    $html = new \Html2Text\Html2Text((string)$xml['name']);
+    $xerteMetaObj->name = $html->getText();
+    if (trim($xerteMetaObj->name) == "")
+    {
+        $xerteMetaObj->name = str_replace("_", " ", $template_name);
+    }
+
+    if (isset($xml['educode']))
+    {
+        $xerteMetaObj->educode = (string)$xml['educode'];
+    }
+    else{
+        $xerteMetaObj->educode = "";
+    }
+    //if (isset($xml['metaLevel']))
+    //{
+    //    $xerteMetaObj->level = "HBO";// (string)$xml['metaLevel'];
+    //    $xerteMetaObj->levelId = "be140797-803f-4b9e-81cc-5572c711e09c"; // (string)$xml['metaLevelId'];
+    //}
+    //else
+    //{
+    //    $xerteMetaObj->level = 12;
+    //}
+    if (isset($xml['metaThumbnail']))
+    {
+        $xerteMetaObj->thumbnail = (string)$xml['metaThumbnail'];
+        if (strpos($xerteMetaObj->thumbnail, "FileLocation") >= 0)
+        {
+            // Construct file name
+            $template_dir = $xerte_toolkits_site->site_url . $xerte_toolkits_site->users_file_area_short . $template_id . "-" . $creator_user_name . "-" . $template_type_name . "/";
+            $xerteMetaObj->thumbnail = str_replace("FileLocation + ", $template_dir, $xerteMetaObj->thumbnail);
+            $xerteMetaObj->thumbnail = str_replace("'", "", $xerteMetaObj->thumbnail);
+        }
+        if (strpos($xerteMetaObj->thumbnail, "http") === false)
+        {
+            // No URL, invalid
+            // Kludge, because this code was moved from oai_pmh
+            if (isset($config['thumbnail']))
+            {
+                $xerteMetaObj->thumbnail = $config['thumbnail'];
+            }
+        }
+    }
+    else
+    {
+        // Kludge, because this code was moved from oai_pmh
+        if (isset($config['thumbnail']))
+        {
+            $xerteMetaObj->thumbnail = $config['thumbnail'];
+        }
+    }
+    if (isset($xml['course']))
+        $xerteMetaObj->course = (string)$xml['course'];
+    else
+        $xerteMetaObj->course = 'unknown';
+
+    if (isset($xml['module']))
+        $xerteMetaObj->module = (string)$xml['module'];
+    else
+        $xerteMetaObj->module = '';
+    if (isset($xml['metaDescription']))
+        $xerteMetaObj->description = (string)$xml['metaDescription'];
+    else
+        $xerteMetaObj->description = '';
+    if (isset($xml['oaiPmhAgree']))
+        if ((string)$xml['oaiPmhAgree'] == 'true' )
+            $xerteMetaObj->oaiPmhAgree = true;
+        else
+            $xerteMetaObj->oaiPmhAgree = false;
+    else
+        $xerteMetaObj->oaiPmhAgree = false;
+    if (isset($xml['metaKeywords']))
+        $xerteMetaObj->keywords = (string)$xml['metaKeywords'];
+    else
+        $xerteMetaObj->keywords = '';
+    if (isset($xml['metaAuthor']) && ((isset($xml['metaAuthorInclude']) && $xml['metaAuthorInclude'] == 'true') || !isset($xml['metaAuthorInclude']))) {
+        if ((string)$xml['metaAuthor'] == "") {
+            $xerteMetaObj->author = $template_owner;
+        } else {
+            $xerteMetaObj->author = (string)$xml['metaAuthor'];
+        }
+    }
+    else {
+        // Kludge, because this code was moved from oai_pmh
+        if (isset($config['institute'])) {
+            $xerteMetaObj->author = $config['institute'];
+        }
+    }
+    //TODO check domain ^ level make sure they return "unknown"
+    if (isset($xml['category']) || isset($xml['metaCategory'])) {
+        if (isset($xml['metaCategory'])) {
+            $cat = (string)$xml['metaCategory'];
+        } else {
+            $cat = (string)$xml['category'];
+        }
+        $cat = explode("|", $cat);
+        $response = array();
+        $xerteMetaObj->domain = array();
+        $xerteMetaObj->domainId = array();
+        $xerteMetaObj->domainSource = array();
+        $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_categories where label=?";
+        // query oai_categories
+        foreach ($cat as $value){
+            $params = array($value);
+            $response[] = db_query_one($q, $params);
+        }
+        $parents = array();
+        foreach ($response as $data){
+            if ($data !== false and $data !== null) {
+                $xerteMetaObj->domain[] = $data["label"];
+                $xerteMetaObj->domainId[] = $data["taxon"];
+                $xerteMetaObj->domainSource[] = $data["source_url"];
+                while ($data["parent_id"] !== null and !in_array($data["parent_id"], $parents)){
+                    $parents[] = $data["parent_id"];
+                    $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_categories where category_id=?";
+                    $params = array($data["parent_id"]);
+                    $data = db_query_one($q, $params);
+                }
+            }
+        }
+        if (!empty($parents)){
+            $parents_str = implode(",", $parents);
+            $q = "select taxon, label, source_url from {$xerte_toolkits_site->database_table_prefix}oai_categories where category_id in ($parents_str) ORDER BY FIND_IN_SET(category_id,'{$parents_str}') ";
+            $response = db_query($q);
+            foreach ($response as $data){
+                $xerteMetaObj->domain[] = $data["label"];
+                $xerteMetaObj->domainId[] = $data["taxon"];
+                $xerteMetaObj->domainSource[] = $data["source_url"];
+            }
+        }
+
+        //only "unknown if there are no valid entries"
+        if (empty($xerteMetaObj->domain)){
+            $xerteMetaObj->domain = 'unknown';
+        }
+    }
+    else
+        $xerteMetaObj->domain = 'unknown';
+
+    if (isset($xml['metaEducation'])) {
+        // query oai-education
+        $edu = explode("|", (string)$xml["metaEducation"]);
+        $response = array();
+        $xerteMetaObj->level = array();
+        $xerteMetaObj->levelId = array();
+        $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_education where label=?";
+
+        foreach ($edu as $value){
+            $params = array($value);
+            $response[] = db_query_one($q, $params);
+        }
+        $parents = array();
+        foreach ($response as $data){
+            if ($data !== false and $data !== null) {
+                $xerteMetaObj->level[] = $data["label"];
+                $xerteMetaObj->levelId[] = $data["term_id"];
+                while ($data["parent_id"] !== null and !in_array($data["parent_id"], $parents)){
+                    $parents[] = $data["parent_id"];
+                    $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_education where education_id=?";
+                    $params = array($data["parent_id"]);
+                    $data = db_query_one($q, $params);
+                }
+            }
+        }
+        if (!empty($parents)){
+            $parents_str = implode(",", $parents);
+            $q = "select term_id, label from {$xerte_toolkits_site->database_table_prefix}oai_education where education_id in ($parents_str) ORDER BY FIND_IN_SET(education_id,'{$parents_str}') ";
+            $response = db_query($q);
+            foreach ($response as $data){
+                $xerteMetaObj->level[] = $data["label"];
+                $xerteMetaObj->levelId[] = $data["term_id"];
+            }
+        }
+
+        //only "unknown if there are no valid entries"
+        if (empty($xerteMetaObj->level)){
+            $xerteMetaObj->level = 'unknown';
+        }
+    }
+    else
+        $xerteMetaObj->level = 'unknown';
+
+    $xerteMetaObj->language = (string)$xml['language'];
+    // Kludge, because this code was moved from oai_pmh
+    if (isset($config['institute'])) {
+        $xerteMetaObj->publisher = $config['institute'];
+    }
+
+    // Check syndication
+    $q = "select * from {$xerte_toolkits_site->database_table_prefix}templatesyndication where template_id=?";
+    $params = array($template_id);
+    $syndication = db_query_one($q, $params);
+    if ($syndication !== false && $syndication!= null)
+    {
+        $xerteMetaObj->rights = $syndication['license'];
+        $xerteMetaObj->download = ($syndication['export'] == 'true' ? true : false);
+        if ($xerteMetaObj->download)
+        {
+            $xerteMetaObj->downloadUrl = $xerte_toolkits_site->site_url . url_return("export", $template_id);
+        }
+        $q = "select * from {$xerte_toolkits_site->database_table_prefix}oai_rights where label=?";
+        $params = array( $syndication['license']);
+        $rights = db_query_one($q, $params);
+        if ($rights !== false && $rights !== null) {
+            $xerteMetaObj->rightsId = $rights['term_id'];
+        }
+        else{
+            $xerteMetaObj->rightsId = 'yes';
+        }
+    }
+    else
+    {
+        $xerteMetaObj->rights = "";
+        $xerteMetaObj->rightsId = "";
+        $xerteMetaObj->download = false;
+    }
+    return $xerteMetaObj;
+}
+

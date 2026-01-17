@@ -6,6 +6,7 @@
 	
 	#flickrHolder {
 		width:		100%;
+		box-sizing: border-box;
 	}
 
 	#headerHolder {

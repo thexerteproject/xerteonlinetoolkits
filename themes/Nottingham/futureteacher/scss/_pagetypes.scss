@@ -1,10 +1,4 @@
-//***********************************Text*************************************
-//*****title page******
-.titlePageTxt {
-  //*without reducing the width here horizontal scroll bars show when the theme selected isn't 100% width*/
-  width:96% !important;
-  overflow: hidden;
-}
+
 //***********************************Media*************************************
 //default highlight if not overriden
 .highlight {
@@ -40,7 +34,8 @@
   background: $contrastcolor;
   color:#ffffff;
 }
-.ui-accordion .ui-accordion-header a {
+.ui-accordion .ui-accordion-header a,
+.chapterItem.ui-state-active a, .chapterItem.ui-state-active a:link, .chapterItem.ui-state-active a:visited {
   border-radius: $smallroundedcorners;
   color: $whiteorlightest !important; //doesn't work without important
   background: darken($lightestcolor, 40%);
@@ -50,6 +45,9 @@
   background: darken($lightestcolor, 70%) !important;
   border-radius: $smallroundedcorners;
   color: $blackordarkest;
+}
+.ui-accordion.chapterHolder .ui-state-active a, .ui-accordion.chapterHolder .ui-state-active a:link, .ui-accordion.chapterHolder .ui-state-active a:visited {
+  background: darken($lightestcolor, 40%) !important;
 }
 
 .ui-tabs-panel a:visited, .ui-accordion-content a:visited {
@@ -304,11 +302,10 @@ a.hotspot, a.hotspot.selected {
   border-color:darken($lightestcolor, 70%);
   color:$whiteorlightest;
 }
-
-//*****model answer*****/
-.x_modelAnswer_page #answerTxt {
-  border-radius: $mediumroundedcorners;
-  width: 98%;
+//*****mcq*****/
+.x_mcq_page #pageContents .optionGroup.answerBtn.selected,
+.x_quiz_page #pageContents .optionGroup.answerBtn.selected {
+  background: $blackordarkest;
 }
 //*****opinion********/
 .x_opinion_page #pageContents input {
@@ -430,6 +427,20 @@ div#shorturltodisplay a{
 .x_results_page #general_summary th {
   background: #ffffff;//hide otherwise black line at to of summary table
 }
+//*****audio record page*****/
+.x_audioRecord_page .deleteClipBtn {
+  color: $blackordarkest;
+}
+.x_audioRecord_page .deleteClipBtn:hover, .x_audioRecord_page .deleteClipBtn:focus, .x_audioRecord_page .deleteClipBtn:active {
+  color: lighten($blackordarkest,10%);
+}
+.x_audioRecord_page .clip.highlight {
+  background-color: darken($lightestcolor,10%);
+}
+.x_audioRecord_page #recBtn.recording .ui-icon, .x_audioRecord_page #recBtn.recording .ui-button-text {
+  color: $whiteorlightest;
+}
+
 //***********************************Media query/responsive changes*************************************/
 //*****change tick/cross size on all pages where used******/
 .tick, img.result{

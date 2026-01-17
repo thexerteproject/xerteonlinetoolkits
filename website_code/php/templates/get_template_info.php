@@ -35,19 +35,24 @@ require_once("../properties/properties_library.php");
 if(empty($_SESSION['toolkits_logon_id'])) {
             die("Please login");
 }
-if(has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id']) || is_user_admin()) {
+if (!isset($_POST['template_id'])) {
+    die("No template id");
+}
+
+$template_id = x_clean_input($_POST['template_id'], 'numeric');
+if(has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) || is_user_permitted("projectadmin")) {
     $info = new stdClass();
-    $info->template_id = $_POST['template_id'];
-    $_SESSION["XAPI_PROXY"] = $_POST['template_id'];
-    $info->properties = project_info($_POST['template_id']);
-    $info->properties .= media_quota_info($_POST['template_id']);
-    $info->properties .= access_info($_POST['template_id']);
-    $info->properties .= sharing_info($_POST['template_id']);
-    $info->properties .= rss_syndication($_POST['template_id']);
-    $info->properties .= oai_shared($_POST['template_id']);
+    $info->template_id = $template_id;
+    $_SESSION["XAPI_PROXY"] = $template_id;
+    $info->properties = project_info($template_id);
+    $info->properties .= media_quota_info($template_id);
+    $info->properties .= access_info($template_id);
+    $info->properties .= sharing_info($template_id);
+    $info->properties .= rss_syndication($template_id);
+    $info->properties .= oai_shared($template_id);
 
 
-    $statistics_available = statistics_prepare($_POST['template_id']);
+    $statistics_available = statistics_prepare($template_id);
 
     if ($statistics_available->published) {
         $info->properties .= $statistics_available->linkinfo;
@@ -70,17 +75,7 @@ if(has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_
         $info->dashnoard = "";
     }
 
-//    $sql = "SELECT template_id, user_id, firstname, surname, role FROM " .
-//        " {$xerte_toolkits_site->database_table_prefix}templaterights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .
-//        " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}templaterights.user_id and template_id= ? and user_id = ?";
-//
-//    $row = db_query_one($sql, array($_POST['template_id'], $_SESSION['toolkits_logon_id']));
-
-    $info->role = get_user_access_rights($_POST['template_id']);
-
+    $info->role = get_user_access_rights($template_id);
 
     echo json_encode($info);
-
-//$info = get_project_info($_POST['template_id']);
-//echo $info;
 }

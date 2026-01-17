@@ -58,9 +58,9 @@ function get_group_members($group_id){
         }else{
             echo "<p>" . str_replace("{n}", $membercount, USER_GROUPS_MANAGEMENT_MEMBERS_COUNT) . "</p>";
         }
-		
+
 		echo "<div class=\"indented\">";
-		
+
         foreach($query_response as $row) {
 
             echo "<div class=\"template\" id=\"" . $row['username'] . "\" savevalue=\"" . $row['login_id'] .  "\"><p>" . $row['firstname'] . " " . $row['surname'] . " <button type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:templates_display('" . $row['username'] . "')\">" . USERS_TOGGLE . "</button> <button type=\"button\" class=\"xerte_button\" id=\"" . $row['username'] . "_btn\" onclick=\"javascript:delete_member('" . $row['login_id'] . "', 'group')\"><i class=\"fa fa-minus-circle\"></i> " . USER_GROUPS_MANAGEMENT_REMOVE_MEMBER . "</button></p></div><div class=\"template_details\" id=\"" . $row['username']  . "_child\">";
@@ -72,12 +72,12 @@ function get_group_members($group_id){
             echo "</div>";
 
         }
-		
+
 		echo "</div>";
     }
 }
 
-if(is_user_admin()){
+if(is_user_permitted("useradmin")){
 
     $group_id = $_POST['group_id'];
     get_group_members($group_id);

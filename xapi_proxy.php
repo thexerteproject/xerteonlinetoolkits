@@ -155,32 +155,23 @@
 //     ensure that it is valid. This setting only needs to be used if either
 //     $enable_jsonp or $enable_native are enabled. Defaults to '/.*/' which
 //     validates all URLs.
-//
-
-if (isset($_GET['tsugisession']))
-{
+// Check whether $_GET['tsuggisession'] starts with "1"
+if (isset($_GET['tsugisession']) && substr($_GET['tsugisession'], 0, 1)  == 1) {
     $tsugi_disable_xerte_session = true;
     require_once("config.php");
-    if ($_GET['tsugisession'] == "1") {
-        $contents = "";
 
-        _debug("TSUGI session");
-        if (file_exists($xerte_toolkits_site->tsugi_dir)) {
-            require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
-        }
-        session_start();
+    $contents = "";
+
+    // _debug("xapi_proxy: TSUGI session");
+    if (file_exists($xerte_toolkits_site->tsugi_dir)) {
+        require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
     }
-    else
-    {
-        ini_set('session.use_cookies', 0);
-        ini_set('session.use_only_cookies', 0);
-        ini_set('session.use_trans_sid', 1);
-        session_start();
-    }
+    session_start();
 }
 else
 {
     require_once ("config.php");
+    // _debug("xapi_proxy: setting xerte session");
 }
 require_once("website_code/php/xAPI/xAPI_library.php");
 
@@ -211,12 +202,12 @@ if (!function_exists('getallheaders')) {
         }
         if (!isset($headers['Authorization'])) {
             if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
-                $headers['Authorization'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+                $headers['Authorization'] = x_clean_input($_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
             } elseif (isset($_SERVER['PHP_AUTH_USER'])) {
-                $basic_pass = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '';
-                $headers['Authorization'] = 'Basic ' . base64_encode($_SERVER['PHP_AUTH_USER'] . ':' . $basic_pass);
+                $basic_pass = isset($_SERVER['PHP_AUTH_PW']) ? x_clean_input($_SERVER['PHP_AUTH_PW']) : '';
+                $headers['Authorization'] = 'Basic ' . base64_encode(x_clean_input($_SERVER['PHP_AUTH_USER']) . ':' . $basic_pass);
             } elseif (isset($_SERVER['PHP_AUTH_DIGEST'])) {
-                $headers['Authorization'] = $_SERVER['PHP_AUTH_DIGEST'];
+                $headers['Authorization'] = x_clean_input($_SERVER['PHP_AUTH_DIGEST']);
             }
         }
         return $headers;
@@ -246,7 +237,7 @@ if (!isset($_SESSION['XAPI_PROXY']))
         $lrs = $_SESSION['XAPI_PROXY'];
         if (!isset($lrs['aggregate']))
         {
-            $lrs = CheckLearningLocker($lrs);
+            $lrs = CheckLearningLocker($lrs, true);
             $_SESSION['XAPI_PROXY'] = $lrs;
         }
     }
@@ -273,7 +264,7 @@ if (!isset($_SESSION['XAPI_PROXY']))
                 $lrs['lrskey'] = $row['tsugi_xapi_key'];
                 $lrs['lrssecret'] = $row['tsugi_xapi_secret'];
             }
-            $lrs = CheckLearningLocker($lrs);
+            $lrs = CheckLearningLocker($lrs, true);
             $_SESSION['XAPI_PROXY'] = $lrs;
         }
         else
@@ -288,17 +279,24 @@ if (!isset($_SESSION['XAPI_PROXY']))
 
     } else {
         $headers = getallheaders();
-        if (isset($headers['X-XERTE-USEDB']) && $lrs['db']) {
+        // Create a copy of headers with all lowercase keys
+        $lcheaders = array_change_key_case($headers);
+	    _debug("xapi_proxy: headers" . print_r($headers, true));
+	    _debug("xapi_proxy: lcheaders" . print_r($lcheaders, true));
+        if (isset($lcheaders['x-xerte-usedb']) && $lrs['db']) {
             $usedb = true;
         }
         else {
             $usedb = false;
         }
-        _debug("xapi_proxy: Request uri:  " . $_SERVER["REQUEST_URI"]);
+	    _debug("xapi_proxy: Use lrsdb = " . ($usedb?'true':'false') . " (defined by x-xerte-usedb=" . (isset($lcheaders['x-xerte-usedb'])?'true':'false') . " and lrs[db]=" . ($lrs['db']?'true':'false') . ")");
 
-        $pos = strpos($_SERVER["REQUEST_URI"], "xapi_proxy.php");
+        $request_uri = x_clean_input($_SERVER["REQUEST_URI"]);
+        _debug("xapi_proxy: Request uri:  " . $request_uri);
+
+        $pos = strpos($request_uri, "xapi_proxy.php");
 	    // Skip the possible php session paramaters
-        $slashpos = strpos($_SERVER["REQUEST_URI"], "tsugisession=");
+        $slashpos = strpos($request_uri, "tsugisession=");
 
         if ($slashpos !== false)
         {
@@ -309,8 +307,9 @@ if (!isset($_SESSION['XAPI_PROXY']))
             $pos += 14;
         }
         if ($pos !== false) {
-            $proxy_url = substr($_SERVER['REQUEST_URI'], 0, $pos);
-            $api_call = substr($_SERVER["REQUEST_URI"], $pos);
+            $proxy_url = substr($request_uri, 0, $pos);
+            $api_call = substr($request_uri, $pos);
+            $api_call = htmlspecialchars_decode($api_call);
             $pos = strpos($api_call, '?');
             if ($pos !== false) {
                 $api_call_path = substr($api_call, 0, $pos+1);
@@ -358,20 +357,22 @@ if (!isset($_SESSION['XAPI_PROXY']))
         } else {
             $cHeader = convertToCurl($headers);
 
-            _debug("Headers: " . print_r($headers, true));
+            //_debug("Headers: " . print_r($headers, true));
 
             $sendHeaders = array();
 
             $ch = curl_init($url);
 
-            if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
+            if (strtolower(x_clean_input($_SERVER['REQUEST_METHOD'])) == 'post') {
 
                 if (count($_POST) > 0) {
+                    $post = $_POST;
                     curl_setopt($ch, CURLOPT_POST, true);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $_POST);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
                 }
                 else{
                     $data = file_get_contents('php://input');
+                    //$data = x_clean_input($data);
                     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
                     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
@@ -381,10 +382,10 @@ if (!isset($_SESSION['XAPI_PROXY']))
 
             }
 
-            if (isset($_GET['send_cookies']) && $_GET['send_cookies']) {
+            if (isset($_GET['send_cookies']) && x_clean_input($_GET['send_cookies'])) {
                 $cookie = array();
                 foreach ($_COOKIE as $key => $value) {
-                    $cookie[] = $key . '=' . $value;
+                    $cookie[] = x_clean_input($key) . '=' . x_clean_input($value);
                 }
                 if ($_GET['send_session']) {
                     $cookie[] = SID;
@@ -398,11 +399,9 @@ if (!isset($_SESSION['XAPI_PROXY']))
             curl_setopt($ch, CURLOPT_HEADER, false);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-            curl_setopt($ch, CURLOPT_USERAGENT, isset($_GET['user_agent']) && $_GET['user_agent'] ? $_GET['user_agent'] : $_SERVER['HTTP_USER_AGENT']);
+            curl_setopt($ch, CURLOPT_USERAGENT, isset($_GET['user_agent']) && $_GET['user_agent'] ? x_clean_input($_GET['user_agent']) : x_clean_input($_SERVER['HTTP_USER_AGENT']));
             curl_setopt($ch, CURLINFO_HEADER_OUT, true);
             //curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            // Create a copy of headers with all lowercase keys
-            $lcheaders = array_change_key_case($headers);
 
             if (isset($lcheaders['x-experience-api-version']))
             {
@@ -446,6 +445,10 @@ if (!isset($_SESSION['XAPI_PROXY']))
             //_debug("xapi_proxy: header=" . print_r($header, true));
             //_debug("xapi_proxy: contents=" . print_r($contents, true));
 
+            if(isset($status['http_code'])){
+                http_response_code($status['http_code']);
+            }
+
             // Rebuild xapi_proxy.php path in "more", if "more" is present
             $pos = strpos($contents, "\"more\"");
             if ($pos !== false)
@@ -481,6 +484,14 @@ if ( (isset($_GET['mode'] ) && $_GET['mode'] == 'native') || (isset($force_nativ
         }
     }
 
+    // TOR 2025-02-03: There is a bug in the javascript JSON.parse function that does not handle escaped " characters
+    // inside a nested escaped string (as can happen with the trackingstate field in xAPI statements).
+    // So, replace \\\" with ' in the JSON string
+    // This is a workaround until the bug is fixed in the JSON.parse function.
+    // We could also consider to base64 encode the trackingstate in the xAPI statement
+
+    // This workaround can FAIL if the string contains a ' character
+    $contents = str_replace("\\\\\\\"", "'", $contents);
     print $contents;
 
 } else {
@@ -520,7 +531,7 @@ if ( (isset($_GET['mode'] ) && $_GET['mode'] == 'native') || (isset($force_nativ
     header( 'Content-type: application/' . ( $is_xhr ? 'json' : 'x-javascript' ) );
 
     // Get JSONP callback.
-    $jsonp_callback = isset($enable_jsonp) && $enable_jsonp && isset($_GET['callback']) ? $_GET['callback'] : null;
+    $jsonp_callback = isset($enable_jsonp) && $enable_jsonp && isset($_GET['callback']) ? x_clean_input($_GET['callback']) : null;
 
     // Generate JSON/JSONP string
     $json = json_encode( $data );

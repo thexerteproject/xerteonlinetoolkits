@@ -40,18 +40,50 @@ $database_id=database_connect("Sharing status template database connect success"
  * show a different view if you are the file creator
  */ 
 
-if(is_user_creator_or_coauthor($_POST['template_id']) || is_user_admin()){
+if(!is_numeric($_POST['template_id'])){
+	echo "<h2 class=\"header\">" . PROPERTIES_TAB_SHARED . "</h2>";
+	echo "<div id=\"mainContent\">";
+    echo "<p>" . GIFT_ERROR . "</p>";
+	echo "</div>";
+    exit(0);
+}
 
-    echo "<div>";
-		echo "<p class=\"header\"><span>" . PROPERTIES_TAB_GIVE . "</span></p>";
-		echo "<p <span>" . GIFT_INSTRUCTIONS . "</span></p>";
-		echo "<form id=\"share_form\"><input name=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form>";
-		echo "<div id=\"area2\"><p>" . GIFT_NAMES . "</p></div><p id=\"area3\">";
-		echo "</div>";	
+
+if(!has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
+    echo "<h2 class=\"header\">" . PROPERTIES_TAB_SHARED . "</h2>";
+	echo "<div id=\"mainContent\">";
+    echo "<p>" . GIFT_ERROR . "</p>";
+	echo "</div>";
+    exit(0);
+}
+
+if(is_user_creator_or_coauthor($_POST['template_id']) || is_user_permitted("projectadmin")){
+		
+	echo "<h2 class=\"header\">" . PROPERTIES_TAB_GIVE . "</h2>";
+
+	echo "<div id=\"mainContent\">";
+	
+	echo "<p>" . GIFT_INSTRUCTIONS . "</p>";
+	
+	echo "<form id=\"share_form\">";
+	
+	echo "<label id=\"searchareaLabel\" class=\"block\" for=\"searcharea\">" . GIFT_SEARCH_LABEL . ":</label>";
+	
+	echo "<input name=\"searcharea\" id=\"searcharea\" onkeyup=\"javascript:name_select_gift_template()\" type=\"text\" size=\"20\" /></form>";
+	
+	echo "<div id=\"area2\"><p><span class=\"placeholderTxt\">" . GIFT_NAMES . "</span></p></div><p id=\"area3\">";
+	
+	echo "</div>";	
 
 }else{
 
-    echo "<p>" . GIFT_FAIL . "</p>";
+	echo "<h2 class=\"header\">" . PROPERTIES_TAB_GIVE . "</h2>";
+	
+	echo "<div id=\"mainContent\">";
+	
+	echo "<p>" . GIFT_FAIL . "</p>";
+	
+	echo "</div>";
 
 }
 

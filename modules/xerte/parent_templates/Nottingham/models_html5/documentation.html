@@ -24,37 +24,75 @@
 				'filename': 'documentation',
 				'pages':[]
 			}
+
+
 			notAnsweredDefault = '',
 			required = [];
 		
 		this.pageChanged = function() {
-			
+			currentPage = $("#pageContents").data("currentPage");
+		}
+
+		this.leavePage = function() {
+			$("#pageContents").data("currentPage", currentPage);
 		}
 		
 		this.sizeChanged = function() {
+			const $panel = $("#pageContents .panel");
+			$panel.height(x_getAvailableHeight([$panel]));
+			$("#pages").height(x_getAvailableHeight([$panel], [$("#btnHolder")]));
+
 			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel"),
-					$btnHolder = $("#btnHolder"),
-					$slideTxt = $("#slideTxt");
-				
-				var btnHolderH = $btnHolder.length > 0 ? $btnHolder.height() + parseInt($btnHolder.css("margin-top")) : 0,
-					slideTxtH = $slideTxt.length > 0 ? $slideTxt.height() + parseInt($slideTxt.css("margin-top")) + (parseInt($slideTxt.css("padding-top")) * 2) : 0;
-				var footerH = Math.max(btnHolderH, slideTxtH);
-				
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				$("#pages").height($panel.height() - footerH);
+				$("#pages .itemImg").each(function () {
+					$(this).css("max-height", $("#pages").height() - $(this).parents("figure").find("figcaption").outerHeight(true));
+				});
 			}
 		}
-		
+
+		this.startTracking = function(data) {
+
+			let itemCount = 0;
+			let items = [];
+
+			for(let page of data.pages) {
+				let pageName = page.pageName;
+				for(let section of page.sections){
+					let prefix = pageName + " - "
+					if(section.sectionName != null){
+						prefix += section.sectionName + " - ";
+					}
+					for(let item of section.items){
+						if(item.itemName == null | item.itemValue == "")
+							continue;
+						items.push(prefix + item.itemName);
+						itemCount += 1;
+					}
+				}
+			}
+            XTSetPageType(x_currentPage, 'numeric', itemCount, this.weighting);
+			for(i = 0; i < items.length; i++){
+				let name = items[i];
+				XTEnterInteraction(x_currentPage, i, 'fill-in', name, ["-"], ["-"], null /* never used*/, x_currentPageXML.getAttribute("grouping"));
+			}
+		}
+
 		this.init = function() {
 			// styles used in downloaded word doc
 			var styles = '';
 			styles += 'body, .ui-widget { font-family: Arial, sans-serif; -webkit-font-smoothing: antialiased; color: black; font-size: 12pt; } ';
 			styles += 'table.tableDoc { font-size: 1em; margin: 0.2em; padding: 0.2em; width: 100%; border-collapse: collapse; } ';
 			$('#pageContents').data('downloadStyles', styles);
+
+			let hLevel = 1;
 		
 			var pageIndex = 0;
-			
+
+			this.weighting = 0.0;
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+            }
+
 			// Set up main layout structure & add in all non-subpage text
 			$("#textHolder").append(x_currentPageXML.getAttribute("text"));
 			
@@ -97,7 +135,7 @@
 			}
 			
 			// Process document details
-			docData.documentName = x_currentPageXML.getAttribute('name');
+			docData.documentName = '<h' + hLevel + '>' + x_currentPageXML.getAttribute('name') + '</h' + hLevel + '>';
 			docData.documentText = x_currentPageXML.getAttribute('text');
 			docData.documentIntro = x_currentPageXML.getAttribute('intro');
 			
@@ -113,6 +151,7 @@
 
 			// Loop through all pages
 			for (var page=0; page < $(x_currentPageXML).children().length; page++) {
+				hLevel = 2;
 				var pageXML = $(x_currentPageXML).children()[page];
 				
 				if ($(pageXML).children().length != 0 || pageXML.getAttribute('name') != "" || pageXML.getAttribute('text') != "") {
@@ -126,14 +165,16 @@
 					if (pageIndex > 1)
 						$page.attr('class', 'page hidepage');
 
-					docData.pages[page].pageName = pageXML.getAttribute('name');
+					docData.pages[page].pageName = '<h' + hLevel + '>' + pageXML.getAttribute('name') + '</h' + hLevel + '>';
 					docData.pages[page].pageText = pageXML.getAttribute('text');
 					
 					var $intro = $('<div class="intro">').appendTo($page);
-					if (docData.pages[page].pageName.length > 0) {
+					if (pageXML.getAttribute('name').length > 0) {
 						$('<h3>')
-							.html(docData.pages[page].pageName)
+							.html(pageXML.getAttribute('name'))
 							.appendTo($intro);
+
+						hLevel++;
 					}
 					if (docData.pages[page].pageText.length > 0) {
 						$('<div>')
@@ -148,14 +189,16 @@
 					if ($(pageXML).children().length > 0) {
 						docData.pages[page].sections = [];
 						for (var section=0, noSections=$(pageXML).children().length; section<noSections; section++) {
+							let newLevel = hLevel;
 							var sectionXML = $(pageXML).children()[section];
 							docData.pages[page].sections[section] = {'items':[]};
 							
 							// Create the sections
 							if (sectionXML.nodeName == 'section') {
 								if (sectionXML.getAttribute('exclude') != 'doc') {
-									docData.pages[page].sections[section].sectionName = sectionXML.getAttribute('name');
+									docData.pages[page].sections[section].sectionName = '<h' + newLevel + '>' + sectionXML.getAttribute('name') + '</h' + newLevel + '>';
 									docData.pages[page].sections[section].sectionText = sectionXML.getAttribute('text');
+									newLevel++;
 								}
 								
 								var $section = $('<fieldset>').attr('class', 'section'),
@@ -200,7 +243,7 @@
 								// Create each item
 								for (var item=0, noItems=$(sectionXML).children().length; item<noItems; item++) {
 									var itemXML = $(sectionXML).children()[item],
-										$newItem = documentation.processItem(page, section, item, itemXML);
+										$newItem = documentation.processItem(page, section, item, itemXML, newLevel);
 
 									if ($newItem !== null) $newItem.appendTo($section);
 								}
@@ -211,7 +254,7 @@
 							}
 							else {
 								docData.pages[page].sections[section].items[0] = {};
-								var $newItem = documentation.processItem(page, section, 0, sectionXML);
+								var $newItem = documentation.processItem(page, section, 0, sectionXML, newLevel);
 								if ($newItem !== null) $newItem.appendTo($page);
 							}
 						}
@@ -220,38 +263,62 @@
 					$('#pages').append($page);
 				}
 			}
-			
+			if(x_currentPageXML.getAttribute("track") == "true"){
+				this.startTracking(docData);
+			}
+
 			// Add download button
 			var $downloadBtn = $('<button id="downloadBtn">');
-			var $downloadSection = $('<div class="item"/>');
-			$downloadBtn.appendTo($downloadSection);
+			var $submitBtn = $('<button id="submitBtn">');
+			var $finishSection = $('<div class="item"></div>');
+			if(x_currentPageXML.getAttribute("showDownload") != "false"){
+				$downloadBtn.appendTo($finishSection);
+			}
+			if(x_currentPageXML.getAttribute("track") == "true"){
+				$submitBtn.appendTo($finishSection);
+			}
 			if (x_currentPageXML.getAttribute('download') && x_currentPageXML.getAttribute('download') == 'extra') {
 				$page = $('<div>')
 					.attr('id', 'page' + pageIndex)
 					.attr('class', 'page hidepage');
 				
-				$downloadSection.appendTo($page);
+				$finishSection.appendTo($page);
 				$('#pages').append($page);
 			}
 			else {
-				$downloadSection.insertAfter($('#pages').children().last().children().last());
+				$finishSection.insertAfter($('#pages').children().last().children().last());
 			}
 			
 			if (x_currentPageXML.getAttribute('instructions') && x_currentPageXML.getAttribute('instructions') != "") {
-				$('<div>'+ x_currentPageXML.getAttribute('instructions') + '</div>').insertBefore($downloadBtn);
+				$('<p>'+ x_currentPageXML.getAttribute('instructions') + '</p>').insertBefore($downloadBtn);
+			}
+
+			if (x_currentPageXML.getAttribute('submittedTxt') && x_currentPageXML.getAttribute('submittedTxt') != "") {
+				$('<p class="submitted">'+ x_currentPageXML.getAttribute('submittedTxt') + '</p>').insertAfter($submitBtn).hide();
+			}else { // TODO: should remove
+				$('<p class="submitted">Your answers have been submitted</p>').insertAfter($submitBtn).hide();
 			}
 			
 			$("#pageContents").data("numPages", $("#pages").children(".page").length);
-			
-			$downloadBtn.button({
-				icons: {
-					primary: "fa fa-x-download"
-				},
-				label:	x_currentPageXML.getAttribute('downloadTxt') != undefined ? x_currentPageXML.getAttribute('downloadTxt') : "Download"
-			})
-			.click(function() {
-				documentation.download();
-			})
+
+
+			if(x_currentPageXML.getAttribute("track") == "true"){
+				$submitBtn.button({
+					label: x_currentPageXML.getAttribute('submitTxt') != undefined ? x_currentPageXML.getAttribute('submitTxt') : "Submit"
+				}).click(function () {
+					documentation.track();
+				});
+			}
+			if(x_currentPageXML.getAttribute("showDownload") != "false"){
+				$downloadBtn.button({
+					icons: {
+						primary: "fa fa-x-download"
+					},
+					label: x_currentPageXML.getAttribute('downloadTxt') != undefined ? x_currentPageXML.getAttribute('downloadTxt') : "Download"
+				}).click(function () {
+					documentation.download();
+				});
+			}
 			
 
 			// Wire up navigation buttons or hide them
@@ -297,7 +364,7 @@
 			x_pageLoaded();
 		};
 		
-		this.processItem = function (page, section, item, xml) {
+		this.processItem = function (page, section, item, xml, hLevel) {
 			// Item to be excluded?
 			var exclude = '';
 			if (xml.getAttribute('exclude')) {
@@ -306,7 +373,9 @@
 			
 			if (exclude != 'doc') {
 				docData.pages[page].sections[section].items[item] = {};
-				docData.pages[page].sections[section].items[item].itemName = xml.getAttribute('name');
+				if (xml.getAttribute('name') != undefined && xml.getAttribute('name') != '') {
+					docData.pages[page].sections[section].items[item].itemName = '<h' + hLevel + '>' + xml.getAttribute('name') + '</h' + hLevel + '>';
+				}
 				docData.pages[page].sections[section].items[item].itemText = xml.getAttribute('text');
 				
 				if (xml.nodeName != 'tableDoc') {
@@ -320,13 +389,16 @@
 				var $item = $('<div>')
 					.attr('class', 'item');
 
-				if (exclude != 'lo' &&
-					xml.getAttribute('name') &&
+				// aria-labels for textarea & inputs
+				let answerFieldLabel = xml.getAttribute("answerFieldLabel") === undefined || xml.getAttribute("answerFieldLabel") === null ? "Answer" : xml.getAttribute("answerFieldLabel");
+
+				if (xml.getAttribute('name') &&
 					xml.getAttribute('name').length > 0
 				) {
 					$('<h3>')
 						.html(xml.getAttribute('name'))
 						.appendTo($item);
+					answerFieldLabel = xml.getAttribute('name') + ": " + answerFieldLabel;
 				}
 
 				// Required?
@@ -335,12 +407,15 @@
 					xml.getAttribute('required') &&
 					xml.getAttribute('required') == 'true'
 				) {
+
 					$("<span>")
-						.html("* Required")
+						.html("* " + x_getLangInfo(x_languageData.find("interactions")[0], "required", "required"))
 						.addClass("required")
 						.appendTo($item);
 					requiredKey = 'idP' + page + 'S' + section + 'I' + item;
 					required.push({'page' : page, 'section' : section, 'item': item, 'key': requiredKey});
+
+					answerFieldLabel += " (" + x_getLangInfo(x_languageData.find("interactions")[0], "required", "required") + ")";
 				}
 
 				if (
@@ -363,6 +438,9 @@
 						if (xml.getAttribute('rows')) rows = parseInt(xml.getAttribute('rows'));
 						
 						switch(xml.getAttribute("width")) {
+							case "Full":
+							        width = "full-textarea";
+							        break;
 							case "Small":
 								width = "width40";
 								break;
@@ -377,12 +455,7 @@
 						
 						$textarea = $('<textarea class="' + width + '">')
 							.attr('rows', rows);
-							
-						//Add aria-label to answer box
-						var answerFieldLabel = xml.getAttribute("answerFieldLabel");
-						if (answerFieldLabel === undefined | answerFieldLabel === null) {
-							answerFieldLabel = "Answer";
-						}
+
 						$textarea.attr({"aria-label" : answerFieldLabel});
 						
 						if (xml.getAttribute('defaultTxt')) $textarea.attr('placeholder', xml.getAttribute('defaultTxt'));
@@ -436,8 +509,13 @@
 							if (exclude != 'doc') {
 								docData.pages[page].sections[section].items[item].itemText = '<img class="itemImg" src="' + xml.getAttribute('url') + '">';
 							}
-							$element = $('<img class="itemImg">')
-								.attr('src', xml.getAttribute('url'));
+
+							var altTxt = xml.getAttribute('tip') != undefined && xml.getAttribute('tip') != '' ? ' alt="' + xml.getAttribute('tip') + '"' : "";
+							if (xml.getAttribute('caption') != undefined && xml.getAttribute('caption') != '') {
+								$element = $('<figure><img class="itemImg" src="' + xml.getAttribute('url') + '"' + altTxt + '><figCaption>' + xml.getAttribute('caption') + '</figCaption></figure>');
+							} else {
+								$element = $('<img class="itemImg" src="' + xml.getAttribute('url') + '"' + altTxt + '>');
+							}
 						}
 						else {
 							$element = $('<div>')
@@ -464,6 +542,11 @@
 						}
 						
 						$element = this.createTable(xml, classes);
+
+						$element.find("textarea").each(function(i) {
+							const index = $element.find("textarea").length > 1 ? " " + (i+1) : "";
+							$(this).attr("aria-label", answerFieldLabel + index);
+						});
 						
 						if (xml.getAttribute("shade") == "true") {
 							var $tr = $element.find('tr');
@@ -526,7 +609,7 @@
 														$("input[name='" + ('idP' + page + 'S' + section + 'I' + item) + "']:checked").map(function(_, el) {
 															checkbox.push($(el).val());
 														}).get();
-														documentation.updateData(p, s, i, (checkbox.length >0 ) ? checkbox.join(', ') : notAnsweredText);
+														documentation.updateData(p, s, i, checkbox.length > 0 ? checkbox.join('') : notAnsweredText);
 													})
 												})(page, section, item, display);
 												break;
@@ -559,7 +642,7 @@
 					default:
 						$input = $('<input>')
 							.attr('type', 'text')
-							.attr('aria-label', 'Answer')
+							.attr('aria-label', answerFieldLabel)
 							.attr('value', '');
 						
 						if (xml.getAttribute('defaultTxt')) $input.attr('placeholder', xml.getAttribute('defaultTxt'));
@@ -575,7 +658,11 @@
 							case "Large":
 								width = "width80";
 								break;
-								
+
+							case "Full":
+							        width = "full-textbox";
+							        break;
+
 							default:
 								width = "width60";
 						}
@@ -747,10 +834,65 @@
     		}
 		};
 		
+		this.track = function() {
+			if (documentation.checkRequired(currentPage)) {
+				documentation.sendToXAPI($("#pageContents").data("docData"));
+				$(".submitted").show();
+    		}
+		}
+
 		this.showPage = function (page) {
 			$('#pagenumber').html(page + " / " + $('#pages').children().length);
 		};
-		
+
+		this.sendToXAPI = function(data){
+			let itemCount = 0;
+			let items = [];
+
+			for(let page of data.pages) {
+				let pageName = page.pageName;
+				for(let section of page.sections){
+					let prefix = pageName + " - "
+					if(section.sectionName != null){
+						prefix += section.sectionName + " - ";
+					}
+					for(let item of section.items){
+						if(!(item.itemName == null | item.itemValue == "")){
+						let result = {
+							success: true,
+							score: 100,
+							judge: false
+						}
+						if (item.itemValue.indexOf("<table") == -1) {
+							XTExitInteraction(x_currentPage, itemCount, result, null/* ignored for fill-in*/, item.itemValue, null/*not used*/);
+						} else {
+							let tableCSV = "";
+							let columnCount = 0;
+							$(item.itemValue).find("table thead tr th").each(function(index){
+								columnCount++;
+								if(index === 0){
+									tableCSV += $(this).text();
+								} else {
+									tableCSV += "," + $(this).text();
+								}
+							});
+							$(item.itemValue).find("table tbody tr td").each(function(index){
+								if(index%columnCount == 0){
+									tableCSV += "\n" + $(this).text();
+								} else {
+									tableCSV += "," + $(this).text();
+								}
+							});
+							XTExitInteraction(x_currentPage, itemCount, result, null/* ignored for fill-in*/, tableCSV, null/*not used*/);
+						}
+						itemCount += 1;
+						}
+					}
+				}
+			}
+			XTSetPageScore(x_currentPage, 100, x_currentPageXML.getAttribute("trackinglabel"));
+		}
+
 		this.postData = function (data) {
 			// remove anything that's excluded from document
 			var temp = jQuery.extend(true, {}, data),
@@ -813,7 +955,7 @@
 		
 		<div class="right">
 			<div class="panel">
-				<div id="pages">
+				<div id="pages" tabindex="0">
 					<div class="mainIntro intro"></div>
 				</div>
 				<div id="btnHolder">

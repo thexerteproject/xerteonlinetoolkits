@@ -351,6 +351,21 @@ a:-webkit-any-link {
   background-color: #A40000;
 }
 
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: white;
+  background-color: rgb(0, 92, 202);
+}
+
+#x_headerProgress .progressMarker.complete {
+  border-color: #A40000;
+}
+
+/* page resources */
+.resourceDownloadBtn, .resourceDownloadBtn:-webkit-any-link, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: #555 !important;
+}
+
 #x_pageHolder h1 {
   font-size: 1em;
   margin: 0px;
@@ -393,6 +408,8 @@ a:-webkit-any-link {
   padding: 10px;
   background-color: #ffffff;
   border: 1px solid #cfcfcf;
+  -moz-box-shadow: 2px 2px 5px #888888;
+  -webkit-box-shadow: 2px 2px 5px #888888;
   box-shadow: 2px 2px 5px #888888;
   /*-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=135, Color='#888888')";  for IE 8
   filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=135, Color='#888888');  for IE 5.5-7 */
@@ -555,6 +572,15 @@ body #x_pageNo {
   height: 100%;
 }
 
+/* progress bar */
+.pbContainer {
+  background-color: white;
+}
+
+.pbBar {
+  background-color: #A40000;
+}
+
 /*Copyright(c) 2017 - Erasmus Medical School, Rotterdam
 
 >>>MIT-License<<<
@@ -563,4 +589,6 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*//*# sourceMappingURL=django.css.map */
+*/
+
+/*# sourceMappingURL=django.css.map */

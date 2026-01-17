@@ -57,11 +57,11 @@
             if (numLoaded < 2) {
                 var fileToLoad;
                 if (numLoaded == 0) {
-                    fileToLoad = "common_html5/js/jspdf.min.js";
+                    fileToLoad = "common_html5/js/jsPDF/jspdf.umd.min.js";
                 }
                 else
                 {
-                    fileToLoad = "common_html5/js/jspdf.plugin.autotable.min.js";
+                    fileToLoad = "common_html5/js/jsPDF/jspdf.plugin.autotable.min.js";
                 }
 
                 $.getScript(x_templateLocation + fileToLoad)
@@ -178,15 +178,25 @@
                     altnormalrow = !altnormalrow;
                     altfullrow = false;
                     if (x.subinteractions.length > 0 && x.type != 'page') {
-                        detailstable.append("<tr><th class='correct'></th><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "</th><th class='correctanswer'>"+ correctAnswerTxt +"</th></tr>");
-                        var detailstablecolumns = ["", x_GetTrackingTextFromHTML(x.title, ""), yourAnswerTxt, correctAnswerTxt];
+                        if(x.judge){
+														detailstable.append("<tr><th class='correct'></th><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "</th><th class='correctanswer'>"+ correctAnswerTxt +"</th></tr>");
+														var detailstablecolumns = ["", x_GetTrackingTextFromHTML(x.title, ""), yourAnswerTxt, correctAnswerTxt];
+												}else{
+														detailstable.append("<tr><th class='correct'></th><th class='question'>" + x.title + "</th><th class='answer'>" + yourAnswerTxt + "</th></tr>");
+														var detailstablecolumns = ["", x_GetTrackingTextFromHTML(x.title, ""), yourAnswerTxt, ""];
+												}
                         var detailstablerows = [];
                         altfullrow = false;
                         x.subinteractions.forEach(function (y) {
                             var question = y.question;
                             var learnerAnswer = y.learnerAnswer;
                             var correctAnswer = y.correctAnswer;
-                            if (learnerAnswer == correctAnswer || y.correct) {
+														let judge = y.judge ?? true;
+														if(!judge){
+																detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fa fa-x-tick' style='opacity:0'></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td></tr>");
+                                var detailstablerow = ["",  x_GetTrackingTextFromHTML(question, ""), x_GetTrackingTextFromHTML(learnerAnswer, ""), x_GetTrackingTextFromHTML(correctAnswer, "")];
+                                detailstablerows.push(detailstablerow);
+														}else if (learnerAnswer == correctAnswer || y.correct) {
                                 detailstable.append("<tr " + (altfullrow ? "class='alt'" : "") + "><td class='correct'>" + "<i class='fa fa-x-tick' title='" + correctTooltip + "'><span class='ui-helper-hidden-accessible'>" + correctTooltip + "</span></td><td class='question'>" + question + "</td><td class='answer'>" + results.replaceArrow(learnerAnswer) + "</td><td class='correctanswer'>" + results.replaceArrow(correctAnswer) + "</td></tr>");
                                 var detailstablerow = ["correct",  x_GetTrackingTextFromHTML(question, ""), x_GetTrackingTextFromHTML(learnerAnswer, ""), x_GetTrackingTextFromHTML(correctAnswer, "")];
                                 detailstablerows.push(detailstablerow);
@@ -574,6 +584,7 @@ function XTResults(fullcompletion, trackingState) {
         }
         else if (results.mode == "full-results") {
             var subinteraction = {};
+						let judge = true;
 
             var learnerAnswer, correctAnswer;
             switch (trackingState.interactions[i].ia_type) {
@@ -625,6 +636,8 @@ function XTResults(fullcompletion, trackingState) {
                         matchSub.correct = (learnerAnswer === correctAnswer);
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
+                        matchSub.judge = (trackingState.interactions[i].result != undefined && trackingState.interactions[i].result.judge != undefined ? trackingState.interactions[i].result.judge : true);
+                        judge &= matchSub.judge;
                         results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
                     break;
@@ -661,6 +674,8 @@ function XTResults(fullcompletion, trackingState) {
                 subinteraction.question = trackingState.interactions[i].ia_name;
                 if (trackingState.interactions[i].result != undefined && trackingState.interactions[i].result.success != undefined) {
                     subinteraction.correct = trackingState.interactions[i].result.success;
+										subinteraction.judge = trackingState.interactions[i].result.judge ?? true;
+										judge &= subinteraction.judge;
                 }
                 else
                 {
@@ -670,6 +685,7 @@ function XTResults(fullcompletion, trackingState) {
                 subinteraction.correctAnswer = correctAnswer;
                 results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
             }
+						results.interactions[nrofquestions - 1].judge = judge;
         }
     }
     results.completion = completion;

@@ -52,7 +52,7 @@ function require_auth() {
         header('WWW-Authenticate: Basic realm="Access denied"');
         header('WWW-Authenticate: Basic realm="Catalog of ' . $xerte_toolkits_site->site_name . '"');
         header('HTTP/1.0 401 Unauthorized');
-        echo '{"error" : "You do not have permission to retrieve this information"}';
+        echo '{"error" : "You do not have permission to retrieve this information"}'; //, "debug": "' . print_r($_SERVER, true) . '"}';
         exit;
     }
     return true;
@@ -115,7 +115,7 @@ if ($full_access && isset($_REQUEST['list']))
           from {$prefix}templatedetails as td, 
           {$prefix}originaltemplatesdetails otd,
           {$prefix}logindetails ld 
-          where td.template_type_id=otd.template_type_id and td.creator_id=ld.login_id";
+          where td.template_type_id=otd.template_type_id and td.creator_id=ld.login_id and ld.disabled=0";
 
     if ($_REQUEST['list'] == 'Public')
     {
@@ -204,7 +204,7 @@ else if (isset($_GET['template_id']) && is_numeric($_GET['template_id']) && ($fu
           from {$prefix}templatedetails as td, 
           {$prefix}originaltemplatesdetails otd,
           {$prefix}logindetails ld 
-          where td.template_type_id=otd.template_type_id and td.creator_id=ld.login_id and td.template_id=?";
+          where td.template_type_id=otd.template_type_id and td.creator_id=ld.login_id and ld.displabled=0 and td.template_id=?";
     $params = array($_GET['template_id']);
 
     $templates = db_query($q, $params);

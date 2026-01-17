@@ -3,6 +3,9 @@ require_once("../../config.php");
 require_once("../../website_code/php/display_library.php");
 require_once("../../website_code/php/user_library.php");
 require_once("../../website_code/php/xmlInspector.php");
+
+$version = getVersion();
+
 ?>
 
 <script type="text/javascript" src="editor/js/vendor/jquery.ui-1.10.4.js"></script>
@@ -19,7 +22,13 @@ if(empty($_SESSION['toolkits_logon_id'])) {
 }
 
 $version = getVersion();
-$template = $_GET["template"];
+if (!isset($_GET["id"]) || !isset($_GET["template"]))
+{
+    die("Invalid paramaters");
+}
+
+$template = x_clean_input($_GET["template"]);
+$id = x_clean_input($_GET["id"], 'numeric');
 
 $workspace = json_decode(get_users_projects("date_down", true));
 
@@ -48,7 +57,7 @@ $_SESSION['pageIcons'] = json_encode($pageIcons);
 for($i=count($workspace->items) - 1; $i>=0; $i--)
 {
     $item = $workspace->items[$i];
-    if ($item->xot_id == $_GET["id"] && $item->xot_type == 'file')
+    if ($item->xot_id == $id && $item->xot_type == 'file')
     {
         unset($workspace->nodes->{$item->id});
         array_splice($workspace->items, $i, 1);
@@ -56,6 +65,7 @@ for($i=count($workspace->items) - 1; $i>=0; $i--)
     }
     $temptype = str_replace("_group", "", $item->type);
     $temptype = str_replace("_shared", "", $temptype);
+    $temptype = str_replace("sub_", "", $temptype);
     if ((($template == "xerte" && $temptype != "nottingham") || ($template == "site" && $temptype != "site")) && $temptype != "workspace" && $temptype != "folder" && $temptype != "group")
     {
         unset($workspace->nodes->{$item->id});
@@ -152,7 +162,7 @@ foreach($workspace->items as $item)
 
                 </div>
                 <div id="merge_button_container">
-                    <button id="merge" class="xerte_button_dark"><img id="merge_button_icon" class=xerte_icon" src="editor/img/mergeIcon.svg"><?php echo MERGE;?></button>
+                    <button id="merge" class="xerte_button_dark"><i class="fa fa-file-import xerte-icon"></i><?php echo MERGE;?></button>
                 </div>
         </div>
     </div>

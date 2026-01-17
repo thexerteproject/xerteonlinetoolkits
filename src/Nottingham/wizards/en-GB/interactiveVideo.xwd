@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-	  <interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" introTitle="Introduction" introClose="close" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="Select Media" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Enter Panel Title"/></interactiveVideo>]]></interactiveVideo>
+	  <interactiveVideo><![CDATA[<interactiveVideo name="Enter Page Title" supportStart="start" supportEnd="end" supportSkip="skip" supportPage="page"><ivMediaPanel name="Enter Panel Title" media="" tip="" autoplay="false" transcriptBtnTxt="Transcript"/><ivOverlayPanel name="Overlay"/></interactiveVideo>]]></interactiveVideo>
     </newNodes>
   </pageWizard>
 
@@ -15,8 +15,8 @@
 		<introTitle label="Introduction Title" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 		<introClose label="Introduction Close" type="TextInput" wysiwyg="true" language="true"/>
 
-		<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
-		<trackVideo label="Track video progress" optional="true" type="ComboBox" data="no_mcqs,only_video,no,yes" options="Only if no MCQ's,Only video,No (only track MCQ's),Yes" defaultValue="no_mcqs"  tooltip="Track video progress as part of the score. By default the video view percentage is only taken into account if there are no Multiple Choice Questions (MCQ's) present. Here you can choose to include the video progress (or not) in the score (when tracking)." />
+		<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
+		<trackVideo label="Track Video Progress" optional="true" type="ComboBox" data="no_mcqs,only_video,no,yes" options="Only if no MCQ's,Only video,No (only track MCQ's),Yes" defaultValue="no_mcqs"  tooltip="Track video progress as part of the score. By default the video view percentage is only taken into account if there are no Multiple Choice Questions (MCQ's) present. Here you can choose to include the video progress (or not) in the score (when tracking)." />
 
 	</interactiveVideo>
 	
@@ -25,7 +25,7 @@
 		<name label="Media Panel Title" type="TextInput" wysiwyg="true"/>
 		
 		<mediaGroup type="group" label="Video" tooltip="Add video (file or url)">
-			<media label="File" type="media"/>
+			<media label="File" type="media" placeholder="Select a video file or enter a YouTube/Vimeo URL"/>
 			<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
 		</mediaGroup>
@@ -37,12 +37,35 @@
 
 	<ivOverlayPanel menuItem="Overlay Panel" icon="icApplication" remove="false" duplicate="false">
 
-		<name label="Overlay Panel Title" type="TextInput"/>
+		<name label="Overlay" type="TextInput"/>
+
+		<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
+            <subject verification="^.+$"  label="Subject" tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'. Multiple subjects from the video may be chosen. Selecting a subject which is not talked about or directly referenced in the video may lead to content and timestamp inaccuracies." type="TextInput" defaultValue="" placeholder="Enter a subject here..." optional="true"/>
+			<additionalInstructions label="Additional Instructions" type="text" tooltip="You can leave this blank or provide additional instructions or requests on how the generated result should look. Please note that certain instructions may break the structure of the generated response. If this occurs, change the wording and attempt to generate again." wysiwyg="true" height="50" placeholder="Write your instructions here..." optional="true"/>
+            <subtype label="Object Type" tooltip="Pick which kind of content to generate!" options="Generate Text Object,Generate Multiple Choice Question" type="comboBox" data="text_object,mcq" defaultValue="text_object" optional="true" conditionTrigger="true"/>
+            <nrq label="Number of Multiple Choice Questions" type="TextInput" defaultValue="3" optional="true" condition="subtype=='mcq'" verification="^\d+$"/>
+            <nra label="Answers per Question" type="TextInput" tooltip="Amount of answers generated respective to each question. For example, '5' will generate five answers per question." defaultValue="4" optional="true" condition="subtype=='mcq'"/>
+            <nrt label="Text Object Details" verification="^\d+$" type="TextInput" tooltip = "Specify the number of text objects to generate, alongside any additional requests. A text object is a general, blank canvas which can be used to highlight or supplement information from the uploaded video. This means that the content inside is flexible and can be made according to request. For example: '3 text objects, one of which is a start card, one a reminder of something in the video, and one a fun fact giving new information about something mentioned in the video' should give an introductory card, a reminder after an important fact and a fun fact to learn something extra." wysiwyg="true" defaultValue="3" optional="true" condition="subtype=='text_object'"/>
+            <infoGenSettings advanced="true" label="For this page, the following settings will be used instead of those assigned on the learning-object level:" type="info" optional="true"/>
+            <aiSelector advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" overrideField="baseAiSettings" conditionTrigger="true" optional="true"/>
+			<range advanced="true" label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the complexity of the language. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." defaultValuePH="Intermediate English B2" overrideField="baseRange" placeholder="Enter reading level. Defaults to 'Intermediate English, B2'" optional="true"/>
+            <file label="Video" type="mediaCorpus" defaultValue="Upload a file or enter a video link here..." tooltip = "Select a video to be used for generating the content, or paste a video link from youtube, vimeo or peertube directly." optional="true"/>
+            <aiButton type="aibutton" optional="true"/>
+        </AIGroup>
+
+        <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
+            <qfIvSynchTextPlus label="Number of Text Objects" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfIvSynchMCQ label="Number of Multiple Choice Questions" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+            <qfIvSynchMCQOption label="Number of Answers per MCQ" type="TextInput" wysiwyg="true" defaultValue = "4" optional="true"/>
+            <qfIvSynchXot label="Number of Embeded XOT Projects" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
+            <qfIvSynchXotChange label="Number of Pages per Embeded XOT Project" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfButton type="quickfillbutton" optional="true"/>
+        </QFGroup>
 
 		<newNodes>
-			<ivSynchXot><![CDATA[<ivSynchXot name="Enter Title" url="Enter XOT Project URL" page="Enter Page Number" hide="none" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchXot>
-			<ivSynchMCQ><![CDATA[<ivSynchMCQ name="Enter Title" text="Enter a Prompt" type="radio" answerType="single" synchStart="0" clearpanel="true" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></ivSynchMCQ>
-			<ivSynchTextPlus><![CDATA[<ivSynchTextPlus name="Enter Title" text="Enter Panel Contents" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchTextPlus>
+			<ivSynchXot><![CDATA[<ivSynchXot name="Enter Title" url="" page="" hide="none" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchXot>
+			<ivSynchMCQ><![CDATA[<ivSynchMCQ name="Enter Title" text="" type="radio" answerType="single" synchStart="0" clearpanel="true" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></ivSynchMCQ>
+			<ivSynchTextPlus><![CDATA[<ivSynchTextPlus name="Enter Title" text="" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchTextPlus>
 		</newNodes>
 
 	</ivOverlayPanel>
@@ -50,7 +73,7 @@
 	<ivSynchTextPlus menuItem="Text Content" icon="icPageWhiteText" remove="true">
 		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR" />
 		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<text label="Text" type="TextArea" height="250"/>
+		<text label="Text" type="TextArea" height="250" placeholder="Enter text for the panel here"/>
 
 		<synchStart label="Synch Point" type="TextInput"/>
 		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
@@ -110,13 +133,13 @@
 		</captionOptions>
 
 	</ivSynchSlide>
-	
-	
+
 	<ivSynchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
 
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
-		<text label="Question" type="TextArea" height="100"/>
+		<text label="Question" type="TextArea" height="100" placeholder="Enter question text here"/>
+		<judge label="Mark Answer" type="CheckBox" defaultvalue="true" optional="true" conditionTrigger="true" />
 		<!--<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>-->
 		<!--<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>-->
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
@@ -136,8 +159,6 @@
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
 
-		
-
 		<feedback type="TextArea" height="40" label="Feedback" optional="true"/>
 
 		<feedbackLabel label="Feedback Label" type="textInput" wysiwyg="true" divider="true" language="true"/>
@@ -149,19 +170,21 @@
 		<continueBtnTxt label="Continue Button Label" type="TextInput" wysiwyg="true" language="true"/>
 		<topOption label="Drop Down Menu Option 1" type="TextInput" wysiwyg="true" language="true"/>
 
+    	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
+
 		<newNodes>
-			<ivSynchMCQOption><![CDATA[<synchMCQOption name="Answer" text="Option text" correct="false"/>]]></ivSynchMCQOption>
+			<ivSynchMCQOption><![CDATA[<ivSynchMCQOption name="Answer" text="Option text" correct="false"/>]]></ivSynchMCQOption>
 		</newNodes>
 
 	</ivSynchMCQ>
 	
 	<ivSynchMCQOption menuItem="Answer" icon="icBullet" remove="true">
 
-		<text label="Answer" type="TextArea" wysiwyg="true"/>
-	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
-	    <correct label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
+		<text label="Answer" type="TextArea" wysiwyg="true" placeholder="Enter an answer option here"/>
+	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
+	    <correct condition="parent.judge!='false'" label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
 
-		<feedback label="Feedback" type="TextArea" height="100" defaultValue="Feedback for this option" optional="true"/>
+		<feedback label="Feedback" type="TextArea" height="100" defaultValue="" optional="true"/>
 		<page label="Go to Page" type="PageList" optional="true"/>
 		<synch label="Go to Synch Point" type="TextInput" optional="true"/>
 		<play label="Play Media" type="CheckBox" defaultValue="false" optional="true"/>
@@ -172,8 +195,8 @@
 	<ivSynchXot menuItem="Embed XOT Project" icon="icPageWhiteCodeRed" remove="true">
 
 		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<url label="URL" type="TextInput"/>
-		<page label="Page" type="TextInput" wysiwyg="true" defaultValue="Enter Page Number"/>
+		<url label="URL" type="TextInput" placeholder="Enter a XOT project URL"/>
+		<page label="Page" type="TextInput" wysiwyg="false" defaultValue="" placeholder="e.g. 5" tooltip="By default, the XOT project will be shown from page 1. Use this option to automatically show a later page instead"/>
 		<hide label="Hide" type="ComboBox" options="None,Header,Footer,Both" data="none,top,bottom,both" defaultValue="none" width="100"/>
 
 		<synchStart label="Synch Point" type="TextInput"/>
@@ -191,7 +214,7 @@
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
 
 		<newNodes>
-			<ivSynchXotChange><![CDATA[<synchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></ivSynchXotChange>
+			<ivSynchXotChange><![CDATA[<ivSynchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></ivSynchXotChange>
 		</newNodes>
 
 	</ivSynchXot>
@@ -204,6 +227,4 @@
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
 
 	</ivSynchXotChange>
-	
-
 </wizard>

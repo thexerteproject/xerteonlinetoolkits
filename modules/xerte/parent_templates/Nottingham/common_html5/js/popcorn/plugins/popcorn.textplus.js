@@ -49,7 +49,7 @@ optional: end position* line
 					$target.parent().hide();
 					$target.hide();
 					if(options.optional === "true") {
-						var $showHolder  = $('<div id="showHolder" />').appendTo($target);
+						var $showHolder  = $('<div id="showHolder"/>').appendTo($target);
 						var size = options.attrib.hsSize;
 						$showHs = $('<div class="Hs x_noLightBox showHotspot"/>').addClass(options.attrib.icon).appendTo($showHolder);
 						$showHs.css({
@@ -88,13 +88,21 @@ optional: end position* line
 							});
 						}
 						$showHolder
-                    	    .click(function () { // Open the textbox.
+                    	    .click(function (e) { // Open the textbox.
+								e.stopPropagation();
 								showHsActive = true;
                         	    $showHolder.hide();
 								$target.prepend(txt);
 								$target.parent().addClass("qWindow").addClass("panel");
 								$target.parent().css({"padding": 5, "overflow-x": "hidden"});
-                        	});
+                        	})
+							.keypress(function(e) {
+								var charCode = e.charCode || e.keyCode;
+								if (charCode == 32) {
+									e.stopPropagation();
+									$(this).trigger("click");
+								}
+							});
 					// If not optional
                		} else {
 						$target.parent().css({"padding": 5});
@@ -188,6 +196,7 @@ optional: end position* line
 					}).show();
 				}
 				$target.show();
+				x_pageContentsUpdated();
 			},
 			
 			end: function(event, options) {

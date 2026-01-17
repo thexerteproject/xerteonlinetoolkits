@@ -22,12 +22,11 @@
 	// other functions for model should also be in here to avoid conflicts
 	var dialog = new function() {
 		var casesensitive,
-			tick;
+		tick = x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct"),
+		correctAnswers = 0;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			tick = x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick");
-			
 			// reset questions
 			$("#pageContents").data("currentQ", 0);
 			$("#submitBtn")
@@ -52,15 +51,22 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			}
+			const $panel = $("#pageContents .panel");
+			$panel.height(x_getAvailableHeight([$panel]));
 		}
 
 		this.init = function() {
-			tick = x_getLangInfo(x_languageData.find("tick")[0], "label", "Tick");
+
+			this.weighting = 1.0;
+            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
+            {
+                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
+            }
+			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+				this.weighting= 0.0;
+			}
 			
+            XTSetPageType(x_currentPage, 'numeric', $(x_currentPageXML).children().length, this.weighting);
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
 			if (panelWidth == "Full") {
 				$("#pageContents .right div:first").appendTo($("#pageContents"));
@@ -92,10 +98,6 @@
 			if (correctTxt == undefined) {
 				correctTxt = "The correct answer is shown.";
 			}
-			var moveOnTxt = x_currentPageXML.getAttribute("moveOnTxt");
-			if (moveOnTxt == undefined) {
-				moveOnTxt = "Press enter to move on.";
-			}
 			var submitTxt = x_currentPageXML.getAttribute("submitBtnTxt");
 			if (submitTxt == undefined) {
 				submitTxt = "Submit";
@@ -109,7 +111,6 @@
 				"currentQ"	:0,
 				"tryTxt"	:tryTxt,
 				"correctTxt":correctTxt,
-				"moveOnTxt"	:moveOnTxt,
 				"submitTxt"	:submitTxt,
 				"nextTxt"	:nextTxt
 			});
@@ -127,17 +128,21 @@
 						$thisQ.hide();
 					} else {
 						$thisQ = $question;
+						let answers = this.getAttribute("answer").split(answerDelimeter)
+						XTEnterInteraction(x_currentPage, 0, 'fill-in', this.getAttribute("question"), answers, answers, null /* never used*/, x_currentPageXML.getAttribute("grouping"));
 					}
 
-					$thisQ.find("div")
-						.html(x_addLineBreaks(this.getAttribute("question")));
+					$thisQ.find("label")
+						.html(x_addLineBreaks(this.getAttribute("question")))
+						.attr("for", "answer" + i);
 						
-					//Add aria-label to answer box
 					var answerFieldLabel = this.getAttribute("answerFieldLabel");
 					if (answerFieldLabel === undefined | answerFieldLabel === null) {
 						answerFieldLabel = "Answer";
 					}
-					$thisQ.find("input").attr({"aria-label" : answerFieldLabel});
+					//Add aria-label to answer box
+					//$thisQ.find("input").attr({"aria-label" : answerFieldLabel});
+					$thisQ.find("input").attr("id", "answer" + i);
 				});
 
 			$("#submitBtn")
@@ -191,15 +196,17 @@
 										}
 									}
 							}
-
-							if (isCorrect == true) { // correct
+							let userAnswer = $thisInput.val();
+							let judge = x_currentPageXML.getAttribute("judge") == "false"? false: true;
+							if (isCorrect == true || !judge) { // correct
 								$thisInput
 									.val($.trim($thisInput.val()))
 									.prop("readonly", true);
-								
-								$thisInput.parent().find(".result")
-									.removeClass("hidden")
-									.parent().find(".tickTxt").html(tick);
+								if(judge) {
+									$thisInput.parent().find(".result")
+										.removeClass("hidden")
+										.parent().find(".tickTxt").html(tick);
+								}
 								
 								$feedback.html("");
 								$this.focus();
@@ -210,7 +217,34 @@
 								} else {
 									$this.hide();
 								}
-								
+								let result = {
+									success: true,
+									score: 100,
+									judge: judge
+								}
+								XTExitInteraction(x_currentPage, qNo, result, null/* ignored for fill-in*/, userAnswer, null/*not used*/);
+								correctAnswers += 1;
+								if($pageContents.data("currentQ")+1 == $(x_currentPageXML).children().length){
+									XTSetPageScore(x_currentPage, 100 * (correctAnswers / $(x_currentPageXML).children().length), x_currentPageXML.getAttribute("trackinglabel"));
+								}
+								if(!judge){
+									$feedback.html("");
+							$("#pageContents .question:eq(" + ($pageContents.data("currentQ") + 1) + ")").fadeIn();
+									$this
+										.data({
+											"attempt": 0,
+											"state": 0
+										})
+										.button({ label: $("#pageContents").data("submitTxt") });
+
+									var qNo = $pageContents.data("currentQ");
+
+									$("#pageContents .question:eq(" + (qNo + 1) + ") input").focus();
+									let question = $(x_currentPageXML).children()[qNo + 1];
+									let answers = question.getAttribute("answer").split(answerDelimeter);
+									XTEnterInteraction(x_currentPage, qNo + 1, 'fill-in', question.getAttribute("question"), answers, answers, null /* never used*/, x_currentPageXML.getAttribute("grouping"));
+									$pageContents.data("currentQ", qNo + 1);
+								}
 							} else { // incorrect
 								$this.data("attempt", $this.data("attempt") + 1);
 								var currentAttempt = $this.data("attempt"),
@@ -221,10 +255,8 @@
 								}
 								if (currentAttempt == allowedAttempts) { // show hint
 									$feedback.html($(x_currentPageXML).children()[qNo].getAttribute("hint"));
-									$thisInput.focus();
-								} else if (currentAttempt > allowedAttempts) { // show correct answer
+								} else if (currentAttempt > allowedAttempts || !judge) { // show correct answer
 									$feedback.html($pageContents.data("correctTxt"));
-									$this.focus();
 									var correctAnswer = $('<div/>').html($(x_currentPageXML).children()[qNo].getAttribute("answer")).text();
 									if (correctAnswer.indexOf(answerDelimeter) != -1) {
 										correctAnswer = $.trim(correctAnswer.split(answerDelimeter)[0]);
@@ -236,13 +268,21 @@
 										$this
 											.button({label:	$pageContents.data("nextTxt")})
 											.data("state", 1);
-										$feedback.html($feedback.html() + "</br>" + $pageContents.data("moveOnTxt"));
+										$feedback.html($feedback.html());
 									} else {
 										$this.hide();
 									}
+									let result = {
+										success: false,
+										score: 0,
+										judge: judge
+									};
+									XTExitInteraction(x_currentPage, qNo, result, null/* ignored for fill-in*/, userAnswer, null/*not used*/);
+									if($pageContents.data("currentQ")+1 == $(x_currentPageXML).children().length){
+										XTSetPageScore(x_currentPage, 100 * (correctAnswers / $(x_currentPageXML).children().length), x_currentPageXML.getAttribute("trackinglabel"));
+									}
 								} else { // another attempt allowed
 									$feedback.html($pageContents.data("tryTxt"));
-									$thisInput.focus();
 								}
 							}
 						} else { // move to next question
@@ -256,11 +296,14 @@
 								.button({label:	$("#pageContents").data("submitTxt")});
 							
 							var qNo = $pageContents.data("currentQ");
-							$("#pageContents .question:eq(" + qNo + ") .result")
+							/*$("#pageContents .question:eq(" + qNo + ") .result")
 								.removeClass("hidden")
-								.parent().find(".tickTxt").html(tick);
+								.parent().find(".tickTxt").html(tick);*/
 							
 							$("#pageContents .question:eq(" + (qNo + 1) + ") input").focus();
+							let question = $(x_currentPageXML).children()[qNo+1];
+							let answers = question.getAttribute("answer").split(answerDelimeter);
+							XTEnterInteraction(x_currentPage, qNo+1, 'fill-in', question.getAttribute("question"), answers, answers, null /* never used*/, x_currentPageXML.getAttribute("grouping"));
 							$pageContents.data("currentQ", qNo + 1);
 						}
 					}
@@ -301,20 +344,20 @@
 
 	<div class="splitScreen">
 
-		<div id="textHolder" class="left" tabindex="1"></div>
+		<div id="textHolder" class="left"></div>
 
 		<div id="infoHolder" class="right">
-			<div class="panel">
+			<div class="panel" tabindex="0">
 				<div id="questionGroup">
 					<div class="question">
-						<div></div>
-						<span class="tickTxt ui-helper-hidden-accessible"></span><span class="result fa fa-fw fa-x-tick"></span>
+						<label></label>
+						<span class="tickTxt ui-helper-hidden-accessible" aria-live="polite"></span><span class="result fa fa-fw fa-x-tick"></span>
 						<input/>
 					</div>
 
 				</div>
 				<button id="submitBtn"></button>
-				<p id="feedback"></p>
+				<p id="feedback" aria-live="polite"></p>
 			</div>
 		</div>
 

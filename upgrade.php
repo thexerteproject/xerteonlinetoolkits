@@ -185,6 +185,12 @@ function _upgrade_db_query($sql, $params = array()) {
     return $result;
 }
 
+function _table_exists($table) {
+    $sql = "select 1 from $table limit 1";
+    $r = db_query($sql);
+    return $r!==false;
+}
+
 function _do_cleanup()
 {
     // Cleanup files that are really in the way of functionality, i.e. the responsivetext.css files in some of the themes prior to v3.6
@@ -210,6 +216,21 @@ function _do_cleanup()
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/generateData/',
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/src/',
         'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/wizard/',
+        'drawing.php',
+        'drawingjs.php',
+        'modules/xerte/engine/*',
+        'modules/site/engine/*',
+        'modules/decision/engine/*',
+        'LTI/*',
+        'play_html5.php',
+        'play_site.php',
+        'setup/xampp.php',
+        'setup/xampp.txt',
+        'setup/xampp_database.txt',
+        'rloObject.js',
+        'package.json',
+        'package-lock.json',
+        'modules/xerte/parent_templates/Nottingham/common_html5/js/jsPDF/jspdf.min.js',
     );
 
     foreach ($filelist as $file)
@@ -1319,11 +1340,17 @@ function upgrade_35(){
 
 function upgrade_36(){
     $table = table_by_key('oai_education');
-    $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
-    $message = "Adding parent_id column to oai_education - ok ? " . ($ok ? 'true' : 'false') . "<br>";
-    $table = table_by_key('oai_categories');
-    $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
-    $message .= "Adding parent_id column to oai_categories - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    $exists = _table_exists($table);
+    if ($exists) {
+        $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
+        $message = "Adding parent_id column to oai_education - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    }
+    $exists = _table_exists($table);
+    if ($exists) {
+        $table = table_by_key('oai_categories');
+        $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
+        $message .= "Adding parent_id column to oai_categories - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    }
     $table = table_by_key('educationlevel');
     $ok = _upgrade_db_query("alter table $table add column parent_id int(11)");
     $message .= "Adding parent_id column to educationlevel - ok ? " . ($ok ? 'true' : 'false') . "<br>";
@@ -1396,6 +1423,348 @@ function upgrade_41()
     // Add xapi_force_anonymous_lrs columns to sitedetails
     $error = _db_add_field('sitedetails', 'xapi_force_anonymous_lrs', 'char(255)', 'false', 'dashboard_nonanonymous');
     $message = "Adding xapi_force_anonymous_lrs column to sitedetails - ok ? " . ($error ? 'true' : 'false') . "<br>";
+
+    return $message;
+}
+
+function upgrade_42()
+{
+    global $xerte_toolkits_site;
+
+    // Create an index for templaterights
+    $table = table_by_key('templaterights');
+
+    // First check if index already exists
+    $sql = "SELECT COUNT(1) as count FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '$xerte_toolkits_site->database_name' AND TABLE_NAME='$table' AND INDEX_NAME='index2'";
+    $result = db_query_one($sql);
+    if ($result !== false && $result['count'] == '0') {
+        $ok = _upgrade_db_query("ALTER TABLE `$table` ADD INDEX `index2` (`folder` ASC);");
+        $message = "Creating index2 on table templaterights - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        return $message;
+    }
+    $message = 'Index on templaterights table is already present';
+    return $message;
+}
+
+function upgrade_43()
+{
+    global $xerte_toolkits_site;
+
+    // Create an index for folderrights.folder_parent
+    $table = table_by_key('folderrights');
+
+    // First check if index already exists
+    $sql = "SELECT COUNT(1) as count FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '$xerte_toolkits_site->database_name' AND TABLE_NAME='$table' AND INDEX_NAME='index2'";
+    $result = db_query_one($sql);
+    if ($result !== false && $result['count'] == '0') {
+        $ok = _upgrade_db_query("ALTER TABLE `$table` ADD INDEX `index2` (`folder_parent` ASC);");
+        $message = "Creating index2 on table folderrights - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        return $message;
+    }
+    $message = 'Index on folderrights table is already present';
+    return $message;
+}
+
+function upgrade_44()
+{
+	if (! _db_field_exists('sitedetails', 'default_theme_xerte')) {
+        $error1 = _db_add_field('sitedetails', 'default_theme_xerte', 'char(255)', 'default', null);
+
+        if ($error1) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET default_theme_xerte = ?";
+            $error2 = db_query($sql, array('default'));
+        }
+        else {
+            $error2 = false;
+        }
+        $error3 = _db_add_field('sitedetails', 'default_theme_site', 'char(255)', 'default', null);
+
+        if ($error3) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET default_theme_site = ?";
+            $error4 = db_query($sql, array('default'));
+        }
+        else {
+            $error4 = false;
+        }
+
+        return "Creating default theme xerte and site fields - ok ? " . ($error1 && $error2 && $error3 && $error4 ? 'true' : 'false');
+    }
+    else
+    {
+        return "Default theme xerte and site fields already present - ok ? true";
+    }
+}
+
+function upgrade_45()
+{
+    $roleTable = table_by_key("role");
+    $loginDetailsRoleTable = table_by_key("logindetailsrole");
+
+    $message = '';
+    if (!_table_exists($roleTable))
+    {
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$roleTable` (
+        `roleid` int NOT NULL AUTO_INCREMENT,
+        `name` varchar(45) NOT NULL UNIQUE,
+        PRIMARY KEY (`roleid`)
+      )"
+        );
+
+        $message .= "Creating role table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        $ok = db_query("insert into $roleTable(`roleid`, `name`) values
+          (1, 'super'),
+          (2, 'system'),
+          (3, 'templateadmin'),
+          (4, 'metaadmin'),
+          (5, 'useradmin'),
+          (6, 'projectadmin'),
+          (7, 'harvestadmin');"
+        );
+        $message .= "Creating default roles - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    }
+    else{
+        $message .= "Table roles already exists - ok ? true". "<br>";
+    }
+
+    if (!_table_exists($loginDetailsRoleTable)) {
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$loginDetailsRoleTable` (
+        `roleid` int NOT NULL,
+        `userid` bigint(20) NOT NULL,
+        PRIMARY KEY (`roleid`, `userid`)
+      )"
+        );
+
+        $message .= "Creating logindetailsrole table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    }
+    else{
+        $message .= "Table logindetailsrole already exists - ok ? true". "<br>";
+    }
+
+	return $message;
+}
+
+function upgrade_46()
+{
+    // Add users_file_area_path to sitedetails
+    if (! _db_field_exists('sitedetails', 'users_file_area_path')) {
+        $error1 = _db_add_field('sitedetails', 'users_file_area_path', 'text', null, 'users_file_area_short');
+
+        return "Creating users_file_area_path field - ok ? " . ($error1 ? 'true' : 'false');
+    }
+    else
+    {
+        return "Users file area path field already present - ok ? true";
+    }
+}
+
+function upgrade_47()
+{
+    // Add fields to determin whther to publish projects in TSUGI's store
+    if (! _db_field_exists('templatedetails', 'tsugi_publish_in_store')) {
+        $error1 = _db_add_field('templatedetails', 'tsugi_publish_in_store', 'int', '1', 'tsugi_xapi_student_id_mode');
+        $error2 = _db_add_field('templatedetails', 'tsugi_publish_dashboard_in_store', 'int', '0', 'tsugi_publish_in_store');
+        return "Creating publish in store fields - ok ? " . ($error1 && $error2  ? 'true' : 'false');
+    }
+    else
+    {
+        return "Publish in store fields already present - ok ? true";
+    }
+}
+
+function upgrade_48()
+{
+    // Correct the length of the user table password field
+    $table = table_by_key('user');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `password` `password` varchar(100);");
+    return "Changing password column of user to varchar(100) - ok ? " . ($ok !== false ? 'true' : 'false') . "<br>";
+}
+
+function upgrade_49()
+{
+    if (! _db_field_exists('sitedetails', 'default_theme_decision')) {
+        $error1 = _db_add_field('sitedetails', 'default_theme_decision', 'char(255)', 'default', null);
+
+        if ($error1) {
+            $table = table_by_key('sitedetails');
+            $sql = "UPDATE $table SET default_theme_decision = ?";
+            $error2 = db_query($sql, array('default'));
+        }
+        else {
+            $error2 = false;
+        }
+
+        return "Creating default theme decision field - ok ? " . ($error1 && $error2 ? 'true' : 'false');
+    }
+    else
+    {
+        return "Default theme decision field already present - ok ? true";
+    }
+}
+
+function upgrade_50()
+{
+    //Extend notes fields in database (make it text fields)
+    $table = table_by_key('templaterights');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `notes` `notes` TEXT;");
+    $message = "Changing notes column of templaterights to text - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    // Extend description and keywords field in database (make it text fields)
+    $table = table_by_key('templatesyndication');
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `description` `description` TEXT;");
+    $message .= "Changing description column of templatesyndication to text - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    $ok = _upgrade_db_query("ALTER TABLE $table CHANGE COLUMN `keywords` `keywords` TEXT;");
+    $message .= "Changing keywords column of templatesyndication to text - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+}
+
+function upgrade_51()
+{
+    // Add disabled flag to logindetails
+    if (! _db_field_exists('logindetails', 'disabled')) {
+        $error1 = _db_add_field('logindetails', 'disabled', 'tinyint(1)', '0', 'surname');
+
+        return "Creating disabled field in logindetails - ok ? " . ($error1 ? 'true' : 'false');
+    }
+    else
+    {
+        return "Disabled field in logindetails already present - ok ? true";
+    }
+}
+
+function upgrade_52()
+{
+    // Add the following extensions to the blacklisted extensions:
+    //php1,php2,php3,php4,php5,php6,php7,php8,phar,phtml,inc,py,bat,cmd,ps,htaccess
+    global $xerte_toolkits_site;
+    $table = table_by_key('sitedetails');
+    $res = db_query_one("SELECT file_extensions FROM $table");
+    if (isset($res['file_extensions']) && strlen($res['file_extensions']) > 0) {
+        $extensions = explode(',', $res['file_extensions']);
+        $extensions = array_map('trim', $extensions);
+        $extensions = array_unique($extensions);
+        $newExtensions = array_merge($extensions, ['php1', 'php2', 'php3', 'php4', 'php5', 'php6', 'php7', 'php8', 'phar', 'phtml', 'inc', 'py', 'bat', 'cmd', 'ps', 'htaccess']);
+        $newExtensions = array_unique($newExtensions);
+        $newExtensions = implode(',', $newExtensions);
+        $ok = db_query("UPDATE $table SET file_extensions = ?", array($newExtensions));
+        if ($ok !== false) {
+            return "Adding new extensions to the blacklisted extensions - ok ? true";
+        } else {
+            return "Adding new extensions to the blacklisted extensions - ok ? false";
+        }
+    }
+}
+
+function upgrade_53()
+{
+    $roleTable = table_by_key("role");
+
+    $ok = db_query("insert into $roleTable(`roleid`, `name`) values (8, 'aiuser')");
+    $message = "Creating extra role aiuser - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+}
+
+function upgrade_54()
+{
+    $message = "";
+    if (!_table_exists("management_helper")) {
+        $table = table_by_key('management_helper');
+
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS $table (
+        `interaction_id` int(11) NOT NULL AUTO_INCREMENT,
+        `vendor` VARCHAR(16) NOT NULL,
+        `label` VARCHAR(34) NOT NULL,
+        `type` VARCHAR(16) NOT NULL,
+        `needs_key` BOOLEAN NOT NULL,
+        `enabled` BOOLEAN NOT NULL ,
+        `sub_options` TEXT,
+        `preferred_model` TEXT,
+        PRIMARY KEY (`interaction_id`)
+      )"
+        );
+
+        $message .= "Creating management helper table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        if ($ok) {
+            $ok = db_query("INSERT INTO $table VALUES 
+                                    (1, 'openai', 'GPT (Openai)', 'ai', 1, 0, '{}', ''),
+                                    (2, 'anthropic', 'Claude (Anthropic)', 'ai', 1, 0, '{}', ''),
+                                    (3, 'mistral', 'Mistral AI', 'ai', 1, 0, '{}', ''),
+                                    (4, 'pexels', 'Pexels', 'image', 1, 0, '{}', ''),
+                                    (5, 'pixabay', 'Pixabay', 'image', 1, 0, '{}', ''),
+                                    (6, 'unsplash', 'Unsplash', 'image', 1, 0, '{}', ''),
+                                    (7, 'wikimedia', 'Wikimedia Foundation', 'image', 0, 0, '{}', ''),
+                                    (8, 'dalle2', 'DallE2 (Generative)', 'imagegen', 1, 0, '{}', ''),
+                                    (9, 'dalle3', 'DallE3 (Generative)', 'imagegen', 1, 0, '{}', ''),
+                                    (10, 'gpt1', 'GPT Image 1', 'imagegen', 1, 0, '{}', ''),
+                                    (11, 'gladia', 'Gladia (Transcription)', 'transcription', 1, 0, '{}', ''),
+                                    (12, 'openai', 'Open AI (Transcription)', 'transcription', 1, 0, '{}', ''),
+                                    (13, 'mistralenc', 'Mistral (Encoding)', 'encoding', 1, 0, '{}', ''),
+                                    (14, 'openaienc', 'OpenAI (Encoding)', 'encoding', 1, 0, '{}', '')
+                                    ");
+            $message .= "Populating management helper table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+        }
+
+
+    }
+    else{
+        $message .= "Table management_helper already exists - ok ? true". "<br>";
+    }
+
+    return $message;
+}
+
+function upgrade_55()
+{
+    $message = "";
+    if (!_table_exists("ai_request_logs")) {
+        $table = table_by_key('ai_request_logs');
+
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS $table (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `schema_version` VARCHAR(16) NOT NULL DEFAULT '1.0',
+
+  `occurred_at` DATETIME NOT NULL,
+  `ingested_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  `category` VARCHAR(32) NOT NULL,
+  `service` VARCHAR(32) NOT NULL,
+  `model` VARCHAR(128) DEFAULT NULL,
+  `request_id` VARCHAR(128) DEFAULT NULL,
+  `status` ENUM('ok','error') NOT NULL DEFAULT 'ok',
+  `error_message` TEXT,
+
+  `actor_user_id` VARCHAR(64) DEFAULT NULL,
+  `actor_workspace_id` VARCHAR(64) DEFAULT NULL,
+
+  `input_tokens` BIGINT UNSIGNED DEFAULT NULL,
+  `output_tokens` BIGINT UNSIGNED DEFAULT NULL,
+  `total_tokens` BIGINT UNSIGNED DEFAULT NULL,
+  `audio_ms` BIGINT UNSIGNED DEFAULT NULL,
+  `audio_seconds` DECIMAL(12,3) DEFAULT NULL,
+  `images_requested` BIGINT UNSIGNED DEFAULT NULL,
+  `images_received` BIGINT UNSIGNED DEFAULT NULL,
+  `image_dimensions` VARCHAR(64) DEFAULT NULL,
+  `image_width` INT UNSIGNED DEFAULT NULL,
+  `image_height` INT UNSIGNED DEFAULT NULL,
+
+  `cost_currency` VARCHAR(12) DEFAULT NULL,
+  `cost_pricing_version` VARCHAR(32) DEFAULT NULL,
+  `cost_total` DECIMAL(18,6) DEFAULT NULL,
+
+  PRIMARY KEY (`id`)
+);");
+
+        $message .= "Creating ai_request_logs table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    } else {
+        $message .= "Table ai_request_logs already exists - ok ? true<br>";
+    }
 
     return $message;
 }

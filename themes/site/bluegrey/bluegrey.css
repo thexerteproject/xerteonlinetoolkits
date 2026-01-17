@@ -64,6 +64,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #007899;
 }
@@ -77,6 +78,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #4e9794;
 }
@@ -90,6 +92,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #005172;
 }
@@ -103,6 +106,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #00A1A3;
 }
@@ -116,6 +120,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #3C3C3C;
 }
@@ -129,6 +134,7 @@
   margin-top: 5px;
   padding: 10px;
   border-left: 5px solid;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-color: #D13759;
 }
@@ -378,11 +384,13 @@ cite {
 ::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.8);
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 10px;
   border-radius: 10px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.8);
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
@@ -417,7 +425,7 @@ body {
 }
 
 /*--Heading and other text changes---------------------------------------*/
-h1 {
+h1, h2.sectionTitle {
   color: #007899;
 }
 
@@ -436,7 +444,8 @@ a:hover {
 /* --JUMBOTRON-------------------------------------------------------------------- */
 .jumbotron {
   color: #ffffff;
-  background: #005172; /* Old browsers */
+  background: #005172;
+  /* Old browsers */
   background-color: #005172;
   background-image: linear-gradient(3deg, #005172 0%, #005172 100%);
 }
@@ -447,6 +456,10 @@ a:hover {
 
 .navbar-inverse .navbar-inner {
   background-color: #007899;
+  background-image: -moz-linear-gradient(top, #007899, #007899);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#007899), to(#007899));
+  background-image: -webkit-linear-gradient(top, #007899, #007899);
+  background-image: -o-linear-gradient(top, #007899, #007899);
   background-image: linear-gradient(to bottom, #007899, #007899);
   background-repeat: repeat-x;
   border-color: #007899;
@@ -486,6 +499,8 @@ a:hover {
 /* --TABLE OF CONTENTS-------------------------------------------------------------- */
 .bs-docs-sidenav {
   background-color: #F4F4F4;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
   border-radius: 6px;
 }
 
@@ -498,15 +513,21 @@ a:hover {
 }
 
 .bs-docs-sidenav > li:first-child > a {
+  -webkit-border-radius: 6px 6px 0 0;
+  -moz-border-radius: 6px 6px 0 0;
   border-radius: 6px 6px 0 0;
 }
 
 .bs-docs-sidenav > li:last-child > a {
+  -webkit-border-radius: 0 0 6px 6px;
+  -moz-border-radius: 0 0 6px 6px;
   border-radius: 0 0 6px 6px;
 }
 
 .bs-docs-sidenav > .active > a {
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.1), inset -1px 0 0 rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.1), inset -1px 0 0 rgba(0, 0, 0, 0.1);
   box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.1), inset -1px 0 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -561,6 +582,8 @@ a:hover {
 .panel {
   background-color: #007899;
   border: 1px solid #007899;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
   border-radius: 4px;
   color: #ffffff;
 }
@@ -572,6 +595,8 @@ a:hover {
   background-color: #007899;
   border: 1px solid #007899;
   color: #ffffff;
+  -webkit-border-radius: 4px 0 4px 0;
+  -moz-border-radius: 4px 0 4px 0;
   border-radius: 4px 0 4px 0;
 }
 
@@ -589,6 +614,10 @@ a:hover {
 }
 
 .footer p {
+  color: #ffffff;
+}
+
+.footer a {
   color: #ffffff;
 }
 
@@ -629,4 +658,6 @@ a.glossary:link, a.glossary:visited, a.glossary:hover, a.glossary:active {
 
 .oddSection {
   background: #e9e9e9;
-}/*# sourceMappingURL=bluegrey.css.map */
+}
+
+/*# sourceMappingURL=bluegrey.css.map */

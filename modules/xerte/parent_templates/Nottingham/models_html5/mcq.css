@@ -26,6 +26,41 @@
 		display:		block;
 	}
 
+	#pageContents #optionHolder.answerBtn {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 1em;
+	}
+
+	#pageContents .optionGroup.answerBtn,
+	#pageContents .optionGroup.answerBtn .ui-button-text {
+		padding: 0;
+		margin: 0;
+	}
+
+	#pageContents .optionGroup.answerBtn input {
+		width: 0 !important;
+		height: 0 !important;
+	}
+
+	#pageContents .optionGroup.answerBtn .optionTxt {
+		padding: .5em 1em;
+		margin: 0;
+	}
+
+	#pageContents .optionGroup.answerBtn .optionTxt p {
+		padding: 0;
+		margin: 0;
+		color: unset;
+		background: unset;
+	}
+
+	#pageContents .optionGroup.answerBtn.selected {
+		background-color: white;
+		background-image: none;
+	}
+
 	#pageContents #checkBtn {
 		margin:		10px;
 		float:		right;
@@ -50,5 +85,13 @@
 	
 	legend#question {
 		width: 100%;
+		font-weight: bold;
+		padding-left: 0.3em;
+		padding-right: 0.3em;
+		box-sizing: border-box;
 	}
 
+	legend#question p {
+		padding-left: 0;
+		padding-right: 0;
+	}

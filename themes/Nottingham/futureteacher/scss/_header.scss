@@ -30,3 +30,36 @@
 	color: white;
 	background-color: #C4551F;
 }
+
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: #BFBFBF;
+  background-color: white;
+}
+#x_headerProgress .progressMarker.complete {
+  border-color: $progressBarColor;
+}
+
+/* page resources */
+
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+  color: darken($lightestcolor, 40%);
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: $contrastcolor;
+  color: $whiteorlightest;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover, #x_pageResourcesBtn.ui-button-icon-only:active, #x_pageResourcesBtn.ui-button-icon-only:focus {
+  color: $blackordarkest;
+}
+
+.resourceLink, .resourceLink:visited, .resourceLink:focus {
+  color: $mainfontcolour;
+}
+
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: $whiteorlightest;
+}

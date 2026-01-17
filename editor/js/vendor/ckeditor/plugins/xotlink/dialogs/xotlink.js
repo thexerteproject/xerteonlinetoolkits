@@ -83,7 +83,11 @@ CKEDITOR.dialog.add('xotlinkDialog', function(editor) {
 						// Called by the main commitContent method call on dialog confirmation.
 						commit: function( element ) {
 							element.setAttribute('href', '#');
-							element.setAttribute('onclick', 'x_navigateToPage(false,{type:\'linkID\',ID:\'' + this.getValue() + '\'}); return false;');
+							if(element.getAttribute('onclick')){
+									element.setAttribute('onclick', 'x_navigateToPage(false,{type:\'linkID\',ID:\'' + this.getValue() + '\'}); return false;');
+							}else {
+									element.setAttribute('data-cke-pa-onclick', 'x_navigateToPage(false,{type:\'linkID\',ID:\'' + this.getValue() + '\'}); return false;');
+							}
 						}
 					},
 				]

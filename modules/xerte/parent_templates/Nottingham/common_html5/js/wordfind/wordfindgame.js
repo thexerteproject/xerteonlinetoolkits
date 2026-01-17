@@ -67,7 +67,7 @@
       var output = '<ul>';
       for (var i = 0, len = words.length; i < len; i++) {
         var word = words[i];
-        output += '<li class="word ' + word + '">' + word;
+        output += '<li class="wrd ' + word + '">' + word;
       }
       output += '</ul>';
 
@@ -194,7 +194,6 @@
     * @param {el} square: The jQuery element that was played
     */
     var playTurn = function (square) {
-
       // make sure we are still forming a valid word
       for (var i = 0, len = wordList.length; i < len; i++) {
         if (wordList[i].indexOf(curWord + $(square).text()) === 0) {

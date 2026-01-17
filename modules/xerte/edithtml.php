@@ -25,20 +25,36 @@
  * Time: 12:24
  */
 
+require_once (__DIR__ . "/../../website_code/php/xmlInspector.php");
+require_once (__DIR__ . "/../../website_code/php/themes_library.php");
+require_once (__DIR__ . "/../../website_code/php/editor_support_library.php");
 
-function get_children ($parent_id, $lookup, $column, $type) {
-    // children
-    $children = array();
-    //we are at a leaf level
-    if (empty($lookup[$parent_id]['children'])){
-        return $children;
-    }
-    foreach ($lookup[$parent_id]['children'] as $node) {
-        $children[] = array(name => $node[$column], value => $node[$column], children => get_children($node[$type], $lookup, $column, $type));
-    }
-    return $children;
+
+function addSessionData($url) {
+    if ( ini_get('session.use_cookies') != '0' ) return $url;
+    if ( stripos($url, '&'.session_name().'=') > 0 ||
+            stripos($url, '?'.session_name().'=') > 0 ) return $url;
+    $session_id = session_id();
+
+    // Don't add more than once...
+    $parameter = session_name().'=';
+    if ( strpos($url, $parameter) !== false ) return $url;
+
+    $url = add_url_parms($url, session_name(), $session_id);
+    return $url;
 }
 
+function getSessionData() {
+    if ( ini_get('session.use_cookies') != '0' ) return "";
+    $session_id = session_id();
+    return session_name().'=' . $session_id;
+}
+
+function add_url_parms($url, $key, $val) {
+    $url .= strpos($url,'?') === false ? '?' : '&';
+    $url .= urlencode($key) . '=' . urlencode($val);
+    return $url;
+}
 
 /**
  *
@@ -56,6 +72,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     require_once("config.php");
     require_once("website_code/php/language_library.php");
+    require_once("website_code/php/user_library.php");
 
     _load_language_file("/modules/xerte/edit.inc");
 
@@ -83,10 +100,13 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         chmod($preview, 0777);
     }
 
-    $preview_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/" . $preview_filename;
+    $previewxmlurl = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/" . $preview_filename;
     $data_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml";
     $rlo_url = $xerte_toolkits_site->site_url .  $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
 
+    $xml = new XerteXMLInspector();
+    $xml->loadTemplateXML($preview);
+    $theme = x_clean_input($xml->getTheme());
 
     // Derived templates
     $xwd_url = "modules/" . $row_edit['template_framework'] . "/templates/" . $row_edit['template_name'] . "/";
@@ -139,59 +159,12 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $template_sub_pages = get_template_pagelist($row_edit['template_id']);
     $simple_mode = count($template_sub_pages) != 0;
     $simple_lo_page = get_template_simple_lo_page($row_edit['template_id']);
-
-
+    $disable_advanced = get_template_disable_advanced($row_edit['template_id']);
 
     /**
      * build an array of available themes for this template
      */
-    $theme_folder = $xerte_toolkits_site->root_file_path . "themes/" . $row_edit['parent_template'] . "/";
-    $ThemeList = array();
-    if (file_exists($theme_folder))
-    {
-        $d = opendir($theme_folder);
-        while($f = readdir($d)){
-            if(is_dir($theme_folder . $f)){
-                if (file_exists($theme_folder . $f . "/" . $f . ".info") && !file_exists($theme_folder . $f . "/hidden.info"))
-                {
-                    $info = file($theme_folder . $f . "/" . $f . ".info", FILE_SKIP_EMPTY_LINES);
-                    $themeProperties = new StdClass();
-                    $themeProperties->imgbtns = false;
-                    foreach ($info as $line) {
-                        $attr_data = explode(":", $line, 2);
-                        if (empty($attr_data) || sizeof($attr_data) != 2) {
-                            continue;
-                        }
-                        switch (trim(strtolower($attr_data[0]))) {
-                            case "name" : $themeProperties->name = trim($attr_data[1]);
-                                break;
-                            case "display name" : $themeProperties->display_name = trim($attr_data[1]);
-                                break;
-                            case "description" : $themeProperties->description = trim($attr_data[1]);
-                                break;
-                            case "enabled" : $themeProperties->enabled = strtolower(trim($attr_data[1]));
-                                break;
-                            case "preview" : $themeProperties->preview = $xerte_toolkits_site->site_url . "themes/" . $row_edit['parent_template'] . "/" . $f . "/" . trim($attr_data[1]);
-                                break;
-							case "imgbtns" : $themeProperties->imgbtns = trim($attr_data[1]);
-                                break;
-                        }
-                    }
-                    if (substr($themeProperties->enabled, 0, 1) == "y") {
-                        $ThemeList[] = array('name' => $themeProperties->name, 'display_name' => $themeProperties->display_name, 'description' => $themeProperties->description,  'preview' => $themeProperties->preview, 'imgbtns' => $themeProperties->imgbtns);
-                    }
-                }
-            }
-        }
-		// sort into alphabetical order
-		$display_name = array();
-		foreach ($ThemeList as $key => $row) {
-			$display_name[$key] = $row['display_name'];
-		}
-		array_multisort($display_name, SORT_ASC, $ThemeList);
-		// Add default theme to beginning
-		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Xerte Online Toolkits", 'description' => "Xerte Online Toolkits", 'preview' => $xerte_toolkits_site->site_url . "modules/xerte/parent_templates/Nottingham/common_html5/default.jpg", 'imgbtns' => "true"));
-    }
+    $ThemeList = get_themes_list($row_edit['parent_template']);
 
     /**
      * Build CategoryList with hierarchy
@@ -204,7 +177,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         $lookup = $lookup + array($node['category_id'] => $node);
     }
     foreach ($lookup as $node){
-        if ($node['parent_id'] != null){
+        if ($node['parent_id'] != null && $node['parent_id'] != 0){
             $lookup[$node['parent_id']]['children'][] = $node;
         }
     }
@@ -212,7 +185,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $parsed_categories = array();
     foreach ($lookup as $value){
         //find all tree origins
-        if ($value['parent_id'] == null) {
+        if ($value['parent_id'] == null || $value['parent_id'] == 0) {
             //add node and all its children recursively
             $node = array('name' => $value['category_name'], 'value' => $value['category_name'], 'children' => get_children($value['category_id'], $lookup, 'category_name', 'category_id'));
             $parsed_categories[] = $node;
@@ -231,7 +204,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         $lookup = $lookup + [$node['educationlevel_id'] => $node];
     }
     foreach ($lookup as $node){
-        if ($node['parent_id'] != null){
+        if ($node['parent_id'] != null && $node['parent_id'] != 0){
             $lookup[$node['parent_id']]['children'][] = $node;
         }
     }
@@ -239,7 +212,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $parsed_educationlevels = array();
     foreach ($lookup as $value){
         //find all tree origins
-        if ($value['parent_id'] == null) {
+        if ($value['parent_id'] == null || $value['parent_id'] == 0) {
             //add node and all its children recursively
             $node = ['name' => $value['educationlevel_name'], 'value' => $value['educationlevel_name'], 'children' => get_children($value['educationlevel_id'], $lookup, 'educationlevel_name', 'educationlevel_id')];
             $parsed_educationlevels[] = $node;
@@ -269,16 +242,50 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     $version = getVersion();
 
-    //$edit_site_logo = $xerte_toolkits_site->site_logo;
-    //$pos = strrpos($edit_site_logo, '/') + 1;
-    //$edit_site_logo = substr($edit_site_logo,0,$pos) . "edit_" . substr($edit_site_logo,$pos);
-
-    //$edit_organisational_logo = $xerte_toolkits_site->organisational_logo;
-    //$pos = strrpos($edit_organisational_logo, '/') + 1;
-    //$edit_organisational_logo = substr($edit_organisational_logo,0,$pos) . "edit_" . substr($edit_organisational_logo,$pos);
-
     /* Set flag of whether oai-pmh harvesting is configured and available */
     $oai_pmh = file_exists($xerte_toolkits_site->root_file_path . "oai-pmh/oai_config.php");
+    $user_roles = getRolesFromUser($_SESSION['toolkits_logon_id']);
+    if ($_SESSION['toolkits_logon_id'] === "site_administrator")
+    {
+        $user_roles = array("super");
+    }
+
+    $body_class = "";
+    if ($xerte_toolkits_site->rights == 'elevated')
+    {
+        $body_class = ' class="elevated"';
+    }
+
+    $upload_url = $xerte_toolkits_site->site_url .
+            (isset($_SESSION['lti_enabled']) && $_SESSION['lti_enabled'] && function_exists('addSessionData')
+                    ? addSessionData("editor/upload.php") . "&tsugisession=0" : "editor/upload.php");
+    $preview_url = $xerte_toolkits_site->site_url .
+            (
+            isset($_SESSION['lti_enabled']) && $_SESSION['lti_enabled'] && function_exists('addSessionData')
+                    ? addSessionData("preview.php") . "&tsugisession=0&"
+                    : "preview.php?"
+            ) .
+            "template_id=";
+    if (isset($_SESSION['lti_enabled']) && $_SESSION['lti_enabled']) {
+        $lti_session = getSessionData() . "&tsugisession=0";
+    } else {
+        $lti_session = "";
+    }
+
+    $vendors = get_vendor_settings();
+    $corpus_upload_types = array();
+    if (array_key_exists('ai', $vendors )){
+        foreach ($vendors['ai'] as $vendor){
+            foreach ($vendor->sub_options as $option_name=>$value){
+                if ($value) {
+                    $option_exploded = explode(" ", $option_name);
+                    if ($option_exploded[1] == 'uploads' && !in_array($option_exploded[0], $corpus_upload_types)) {
+                        $corpus_upload_types[] = $option_exploded[0];
+                    }
+                }
+            }
+        }
+    }
 
     _debug("Starting editor page");
 ?>
@@ -325,7 +332,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <![endif]-->
 
 </head>
-<body>
+<body <?php echo $body_class; ?> >
 <img id="loader" src="editor/img/loading16.gif" />
 <div class="hide ui-layout-west">
 
@@ -433,56 +440,70 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/beautify.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.addons.search.min.js?version=<?php echo $version;?>"></script>
 
+<!-- load js ai master file -->
+<script type="text/javascript" src="modules/xerte/parent_templates/Nottingham/common_html5/js/ai-master.js"></script>
 <!-- Load latest font awesome after ckeditor, other wise the latest fontawesome is overruled by the fontawsome plugin of ckeditor -->
-<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css">
-<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/v4-shims.min.css" />
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css">
 
 <script>
     <?php
-    echo "previewxmlurl=\"" . $preview_url . "\";\n";
-    echo "dataxmlurl=\"" . $data_url . "\";\n";
-    echo "mediavariable=\"" . $media_path . "\";\n";
-    echo "rlourlvariable=\"" . $rlo_url . "/\";\n";
-    echo "rlopathvariable=\"" . $rlo_path . "/\";\n";
-    echo "languagecodevariable=\""  . $_SESSION['toolkits_language'] . "\";\n";
-    echo "editorlanguagefile=\"" . getWizardfile($_SESSION['toolkits_language']) . "\";\n";
-    echo "originalpathvariable=\"" . $xwd_url . "\";\n";
-    echo "xwd_file_url=\"" . $xwd_file_url . "\";\n";
-    echo "moduleurlvariable=\"" . $module_url . "\";\n";
-    echo "template_id=\"" . $row_edit['template_id'] . "\";\n";
-    echo "template_height=\"" . $temp[1] . "\";\n";
-    echo "template_width=\"" . $temp[0] . "\";\n";
-    echo "read_and_write=\"" . $read_status . "\";\n";
-    echo "savepath=\"" . $xerte_toolkits_site->flash_save_path . "\";\n";
-    echo "upload_path=\"" . $xerte_toolkits_site->flash_upload_path . "\";\n";
-    echo "preview_path=\"" . $xerte_toolkits_site->flash_preview_check_path . "\";\n";
-    echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
-    echo "simple_mode=" . ($simple_mode ? "true" : "false") . ";\n";
-    echo "template_sub_pages=" . json_encode($template_sub_pages) . ";\n";
-    echo "simple_lo_page=" . ($simple_lo_page ? "true" : "false") . ";\n";
-    echo "theme_list=" . json_encode($ThemeList) . ";\n";
-    echo "category_list=" . json_encode($parsed_categories) . ";\n";
-    echo "educationlevel_list=" . json_encode($parsed_educationlevels) . ";\n";
-    echo "grouping_list=" . json_encode($grouping) . ";\n";
-    echo "course_list=" . json_encode($course) . ";\n";
+    echo "var previewxmlurl=\"" . $previewxmlurl . "\";\n";
+    echo "var dataxmlurl=\"" . $data_url . "\";\n";
+    echo "var mediavariable=\"" . $media_path . "\";\n";
+    echo "var rlourlvariable=\"" . $rlo_url . "/\";\n";
+    echo "var rlopathvariable=\"" . $rlo_path . "/\";\n";
+    echo "var languagecodevariable=\""  . $_SESSION['toolkits_language'] . "\";\n";
+    echo "var editorlanguagefile=\"" . getWizardfile($_SESSION['toolkits_language']) . "\";\n";
+    echo "var originalpathvariable=\"" . $xwd_url . "\";\n";
+    echo "var xwd_file_url=\"" . $xwd_file_url . "\";\n";
+    echo "var moduleurlvariable=\"" . $module_url . "\";\n";
+    echo "var template_id=\"" . $row_edit['template_id'] . "\";\n";
+    echo "var template_height=\"" . $temp[1] . "\";\n";
+    echo "var template_width=\"" . $temp[0] . "\";\n";
+    echo "var read_and_write=\"" . $read_status . "\";\n";
+    echo "var savepath=\"" . $xerte_toolkits_site->flash_save_path . "\";\n";
+    echo "var upload_path=\"" . $xerte_toolkits_site->flash_upload_path . "\";\n";
+    echo "var preview_path=\"" . $xerte_toolkits_site->flash_preview_check_path . "\";\n";
+    echo "var site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
+    echo "var simple_mode=" . ($simple_mode ? "true" : "false") . ";\n";
+    echo "var template_sub_pages=" . json_encode($template_sub_pages) . ";\n";
+    echo "var simple_lo_page=" . ($simple_lo_page ? "true" : "false") . ";\n";
+    echo "var disable_advanced=" . ($disable_advanced ? "true" : "false") . ";\n";
+    echo "var category_list=" . json_encode($parsed_categories) . ";\n";
+    echo "var educationlevel_list=" . json_encode($parsed_educationlevels) . ";\n";
+    echo "var grouping_list=" . json_encode($grouping) . ";\n";
+    echo "var course_list=" . json_encode($course) . ";\n";
     // Some upgrade.php in teh past prevented the course_freetext_enabled column to be set correctly in the sitedetails table
     // If not present, set to true
     if (!isset($xerte_toolkits_site->course_freetext_enabled))
     {
-        echo "course_freetext_enabled=true;\n";
+        echo "var course_freetext_enabled=true;\n";
     }
     else {
-        echo "course_freetext_enabled=" . ($xerte_toolkits_site->course_freetext_enabled == 'true' ? 'true' : 'false') . ";\n";
+        echo "var course_freetext_enabled=" . ($xerte_toolkits_site->course_freetext_enabled == 'true' ? 'true' : 'false') . ";\n";
     }
-    echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
-    echo "oai_pmh_available=" . ($oai_pmh ? "true" : "false") . ";\n";
+    echo "var templateframework=\"" . $row_edit['template_framework'] . "\";\n";
+    echo "var oai_pmh_available=" . ($oai_pmh ? "true" : "false") . ";\n";
+    echo "var roles=" . json_encode($user_roles) . ";\n";
+    echo "var theme=\"" . $theme . "\";\n";
+    echo "var theme_list_encoded='" . base64_encode(json_encode($ThemeList)) . "';\n";
+    echo "var theme_list=btoa(theme_list_encoded);\n";
+    echo "var upload_url=\"" . $upload_url . "\";\n";
+    echo "var preview_url=\"" . $preview_url . "\";\n";
+    echo "var lti_session=\"" . $lti_session . "\";\n";
+    echo "var vendor_options=" . json_encode($vendors) . ";\n";
+    echo "var corpus_upload_types=" . json_encode($corpus_upload_types) . ";\n";
+    echo "var management_helper_table=" . json_encode($xerte_toolkits_site->management_helper_table) . ";\n";
     ?>
 
     function bunload(){
-
         path = "<?PHP echo $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/";?>";
 
-        if(typeof window_reference==="undefined"){
+        if (lti_session !== ""){
+            edit_window_close_lti(path);
+        }else if(typeof window_reference==="undefined"){
 
             window.opener.edit_window_close(path);
 

@@ -34,10 +34,8 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (x_browserInfo.mobile == false) {
-				var $panel = $("#infoHolder .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-			}
+			const $panel = $("#infoHolder .panel");
+			$panel.height(x_getAvailableHeight([$panel]));
 		}
 		
 		this.init = function() {
@@ -45,8 +43,9 @@
 			
 			// set fixed text fields and page layout
 			$("#mainTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
-			$("#feedbackTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
-			$("#chartTitle").html(x_currentPageXML.getAttribute("chartTitle"));
+			if (x_currentPageXML.getAttribute("chartHide") != "true") {
+				$("#chartTitle").html(x_currentPageXML.getAttribute("chartTitle"));
+			}
 			
 			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
 			var align = x_currentPageXML.getAttribute("align") == "right" ? "Right" : "Left";
@@ -94,7 +93,7 @@
 				$("#optionHolder input").attr("disabled", "disabled");
 				
 				// add question weighted score to class score
-				var	currentQuestion = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]];
+				var	currentQuestion = $(x_currentPageXML).children('invQuestion')[$pageContents.data("questions")[$pageContents.data("currentQ")]];
 				
 				$("#optionHolder input:checked").each(function() {
 					// calculate and store new score for this option's class based on it's previous score and this option's weight
@@ -114,7 +113,7 @@
 				.attr("disabled", "disabled")
 				.click(function() {
 					// get feedback for selected options
-					var	currentQuestion = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]],
+					var	currentQuestion = $(x_currentPageXML).children('invQuestion')[$pageContents.data("questions")[$pageContents.data("currentQ")]],
 						feedbackTxt = "";
 					
 					$("#optionHolder input:checked").each(function() {
@@ -125,7 +124,7 @@
 							feedbackTxt += x_addLineBreaks(selectedOptionData.getAttribute("feedback")) + '<br/>';
 						}
 					});
-					
+
 					if (currentQuestion.getAttribute("questionFeedback") == "yes") {
 						$("#qFeedbackTxt").html(feedbackTxt);
 						$("#qFeedback").show();
@@ -142,7 +141,7 @@
 					})
 				.attr("disabled", "disabled")
 				.click(function() {
-					var	currentQuestion = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]];
+					var	currentQuestion = $(x_currentPageXML).children('invQuestion')[$pageContents.data("questions")[$pageContents.data("currentQ")]];
 					if (currentQuestion.getAttribute("questionFeedback") != "yes") {
 						scoreQ($(this));
 					} else {
@@ -166,7 +165,7 @@
 					inventory.startQs();
 				});
 			
-			if ($(x_currentPageXML).children().length == 0) {
+			if ($(x_currentPageXML).children('invQuestion').length == 0) {
 				$("#infoHolder .panel").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noQ", "No questions have been added") + '</span>');
 			} else {
 				// store data needed later - class info and string to base qNoTxt on
@@ -199,15 +198,16 @@
 		
 		this.startQs = function() {
 			$("#pageContents .quiz").show();
+			$("#feedbackTxt").empty();
 			$("#pageContents .chart").hide();
 			$("#nextBtn, #checkBtn").attr("disabled", "disabled");
 			
 			var questions = [],
 				scores = [],
 				totals = [],
-				numQs = $(x_currentPageXML).children().length,
+				numQs = $(x_currentPageXML).children('invQuestion').length,
 				i;
-			
+
 			// get list of the order questions will be shown
 			if (x_currentPageXML.getAttribute("order") == "random") {
 				var qNums = [];
@@ -244,7 +244,7 @@
 		
 		
 		this.loadQ = function() {
-			var thisQ = $(x_currentPageXML).children()[$pageContents.data("questions")[$pageContents.data("currentQ")]];
+			var thisQ = $(x_currentPageXML).children('invQuestion')[$pageContents.data("questions")[$pageContents.data("currentQ")]];
 			
 			// set up question text, image, feedback text
 			$("#qNo").html($pageContents.data("qNoTxt").replace("{i}", $pageContents.data("currentQ") + 1).replace("{n}", $pageContents.data("questions").length));
@@ -253,11 +253,21 @@
 				url = thisQ.getAttribute("image");
 			if (url != undefined && url != "") {
 				var newString = "";
+				if (thisQ.getAttribute("caption") != undefined && thisQ.getAttribute("caption") != "") {
+					newString += '<figure class="quizImgHolder">';
+				} else {
+					newString += '<div class="quizImgHolder">'
+				}
 				newString += '<img src="' + x_evalURL(url) + '" class="quizImg"';
 				if (thisQ.getAttribute("tip") != undefined && thisQ.getAttribute("tip") != "") {
 					newString += 'alt="' + thisQ.getAttribute("tip") + '"';
 				}
 				newString += ' />';
+				if (thisQ.getAttribute("caption") != undefined && thisQ.getAttribute("caption") != "") {
+					newString += '<figcaption>' + thisQ.getAttribute("caption") + '</figcaption></figure>';
+				} else {
+					newString += '</div>';
+				}
 				infoString = newString + infoString;
 			}
 			$("#qTxt").html(x_addLineBreaks(infoString));
@@ -332,7 +342,7 @@
 						}
 					});
 			}
-			
+
 			if (thisQ.getAttribute("questionFeedback") != "yes") {
 				$("#checkBtn").hide();
 			} else {
@@ -345,7 +355,13 @@
 		
 		this.drawChart = function() {
 			$("#pageContents .quiz").hide();
-			$("#pageContents .chart").show();
+			$("#pageContents .chart, #feedbackTxt").show();
+
+			if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != "") {
+				$("#feedbackTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+			} else {
+				$("#feedbackTxt").html("");
+			}
 			
 			var	scores = $pageContents.data("scores"),
 				maxScore = 0, // max value to show on bar / line graph
@@ -380,83 +396,101 @@
 				for (i=0; i<scores.length; i++) {
 					maxScore = Math.max(maxScore, scores[i]);
 				}
-				
 			}
-			
-			// draw everything on canvas - predominately John Smith's code from chart page model
-            var	chartHolder = document.getElementById("chartHolder");
-            if (chartHolder.getContext) {
-				var	$panel = $("#pageContents .panel"),
-					availW = Math.min(550, Math.max(300, $panel.width())),
-					availH = Math.min(550, Math.max(300, $x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 15 - $("#restartBtn").height() - $("#chartTitle").height()));
-				
-				chartHolder.width = availW;
-				chartHolder.height = availH;
-				
-				var	chartHolderContext = chartHolder.getContext("2d");
-				if (x_currentPageXML.getAttribute("chartType") == "pie") {
-					chartHolderContext.translate(60, 0); // space on left for legend
-				} else {
-					chartHolderContext.translate(30, 0); // space on left for y axis text
-				}
-				
-				var	colour = x_getColour(x_currentPageXML.getAttribute("chartColour")),
-					txtColour = $("#mainTxt").css("color");
-				
-				if (colour.substring(0, 2) == "0x") { // hex value
-					colour = '#' + Array(9-colour.length).join('0') + colour.substring(2);
-				}
-				chartHolderContext.strokeStyle = colour;
-				chartHolderContext.fillStyle = colour;
-				chartHolderContext.lineWidth = 2;
-				
-				
-				switch (x_currentPageXML.getAttribute("chartType")) {
-					case "pie":
-						this.doPie(chartHolderContext, scores, colour, availW, availH, txtColour);
-						break;
-					case "bar":
-						this.doBar(chartHolderContext, scores, maxScore, availW, availH);
-						break;
-					case "line":
-						this.doLine(chartHolderContext, scores, maxScore, availW, availH);
-				}
-				
-				if (x_currentPageXML.getAttribute("chartType") != "pie") {
-					this.doAxesAndLabels(chartHolderContext, scores, maxScore, availW, availH, txtColour);
-				}
-				
-				// give canvas a description including data so it's accessible
-				var chartDescr = x_currentPageXML.getAttribute("chartTitle") + ":";
-				for (i=0; i<scores.length; i++) {
-					chartDescr += " " + $pageContents.data("classes")[i] + " = " + scores[i];
-					if (x_currentPageXML.getAttribute("scoreType") == "relative percent" || x_currentPageXML.getAttribute("scoreType") == "individual percent") {
-						chartDescr += "%";
-					}
-					if (i != scores.length - 1) {
-						chartDescr += ",";
+
+			// add relevant tailored class feedback
+			for (let i=0; i<$(x_currentPageXML).children('invClassFeedback').length; i++) {
+				const thisFb = $(x_currentPageXML).children('invClassFeedback')[i];
+				const classScore = scores[thisFb.getAttribute('class')];
+
+				if ((($.isNumeric(thisFb.getAttribute('minScore')) && classScore >= Number(thisFb.getAttribute('minScore'))) || !$.isNumeric(thisFb.getAttribute('minScore'))) && (($.isNumeric(thisFb.getAttribute('maxScore')) && classScore <= Number(thisFb.getAttribute('maxScore'))) || !$.isNumeric(thisFb.getAttribute('maxScore')))) {
+					if (x_currentPageXML.getAttribute("chartHide") !== "true") {
+						$('#feedbackTxt').append('<div class="fbBlock">' + (thisFb.getAttribute('name') != '' ? '<h3>' + thisFb.getAttribute('name') + '</h3>' : '') + x_addLineBreaks(thisFb.getAttribute('feedbackTxt')) + '</div>');
+					} else {
+						$('#chartTitle').after('<div class="fbBlock">' + (thisFb.getAttribute('name') != '' ? '<h3>' + thisFb.getAttribute('name') + '</h3>' : '') + x_addLineBreaks(thisFb.getAttribute('feedbackTxt')) + '</div>');
+						$('#chartHolder').hide();
 					}
 				}
-				$("#chartHolder").attr("title", chartDescr);
-				
-			} else { // canvas tag not supported - display error message and data in a table
-				var	errorTxt = x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type"),
-					tableHolder = $("#infoHolder .chart"),
-					table = '<table class="full">';
-				
-				tableHolder.find("#chartTitle, #chartHolder").hide();
-				tableHolder.find("table, p").remove();
-				
-				for (var i=0; i<scores.length; i++) {
-					table += '<tr><td>' + $pageContents.data("classes")[i] + '</td><td>' + scores[i]; 
-					if (x_currentPageXML.getAttribute("scoreType") == "relative percent" || x_currentPageXML.getAttribute("scoreType") == "individual percent") {
-						table += "%";
+			}
+
+			if (x_currentPageXML.getAttribute("chartHide") !== "true") {
+				// draw everything on canvas - predominately John Smith's code from chart page model
+				var chartHolder = document.getElementById("chartHolder");
+				if (chartHolder.getContext) {
+					var $panel = $("#pageContents .panel"),
+							availW = Math.min(550, Math.max(300, $("#pageContents .panel").width() - ($("#pageContents .panel").outerWidth() - $("#pageContents .panel").width()) - ($("#pageContents .panel .chart .qContent").outerWidth() - $("#pageContents .panel .chart .qContent").width()))),
+							availH = Math.min(550, Math.max(300, x_getAvailableHeight([$panel, $("#pageContents .panel .chart .qContent")], [$("#restartBtn"), $("#chartTitle")], true)));
+
+					chartHolder.width = availW;
+					chartHolder.height = availH;
+
+					var chartHolderContext = chartHolder.getContext("2d");
+					if (x_currentPageXML.getAttribute("chartType") == "pie") {
+						chartHolderContext.translate(60, 0); // space on left for legend
+					} else {
+						chartHolderContext.translate(30, 0); // space on left for y axis text
 					}
-					table += '</td></tr>';
+
+					var colour = x_getColour(x_currentPageXML.getAttribute("chartColour")),
+							txtColour = $("#mainTxt").css("color");
+
+					if (colour.substring(0, 2) == "0x") { // hex value
+						colour = '#' + Array(9 - colour.length).join('0') + colour.substring(2);
+					}
+					chartHolderContext.strokeStyle = colour;
+					chartHolderContext.fillStyle = colour;
+					chartHolderContext.lineWidth = 2;
+
+
+					switch (x_currentPageXML.getAttribute("chartType")) {
+						case "pie":
+							this.doPie(chartHolderContext, scores, colour, availW, availH, txtColour);
+							break;
+						case "bar":
+							this.doBar(chartHolderContext, scores, maxScore, availW, availH);
+							break;
+						case "line":
+							this.doLine(chartHolderContext, scores, maxScore, availW, availH);
+					}
+
+					if (x_currentPageXML.getAttribute("chartType") != "pie") {
+						this.doAxesAndLabels(chartHolderContext, scores, maxScore, availW, availH, txtColour);
+					}
+
+					// give canvas a description including data so it's accessible
+					var chartDescr = x_currentPageXML.getAttribute("chartTitle") + ":";
+					for (i = 0; i < scores.length; i++) {
+						chartDescr += " " + $pageContents.data("classes")[i] + " = " + scores[i];
+						if (x_currentPageXML.getAttribute("scoreType") == "relative percent" || x_currentPageXML.getAttribute("scoreType") == "individual percent") {
+							chartDescr += "%";
+						}
+						if (i != scores.length - 1) {
+							chartDescr += ",";
+						}
+					}
+					$("#chartHolder").attr("title", chartDescr);
+
+				} else { // canvas tag not supported - display error message and data in a table
+					var errorTxt = x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type"),
+							tableHolder = $("#infoHolder .chart"),
+							table = '<table class="full">';
+
+					tableHolder.find("#chartTitle, #chartHolder").hide();
+					tableHolder.find("table, p").remove();
+
+					for (var i = 0; i < scores.length; i++) {
+						table += '<tr><td>' + $pageContents.data("classes")[i] + '</td><td>' + scores[i];
+						if (x_currentPageXML.getAttribute("scoreType") == "relative percent" || x_currentPageXML.getAttribute("scoreType") == "individual percent") {
+							table += "%";
+						}
+						table += '</td></tr>';
+					}
+					table += '</table>';
+
+					tableHolder.append('<p class="alert">' + errorTxt + '</p>' + table);
 				}
-				table += '</table>';
-				
-				tableHolder.append('<p class="alert">' + errorTxt + '</p>' + table);
+			} else {
+				$('#chartTitle').hide();
 			}
 		}
 		
@@ -611,32 +645,40 @@
 
 	<div class="splitScreen">
 
-		<div id="textHolder" class="left" tabindex="1">
+		<div id="textHolder" class="left">
 			<div id="mainTxt" class="quiz"></div>
-			<div id="feedbackTxt" class="chart"></div>
+			<div id="feedbackTxt" aria-live="polite"></div>
 		</div>
 
 		<div id="infoHolder" class="right">
-			<div class="panel">
-				
-				<div class="quiz">
-					<h3 id="qNo"></h3>
-					<div id="qTxt"></div>
-					<div id="optionHolder"></div>
-					<div id="buttonHolder">
-						<button id="checkBtn"></button>
-						<button id="nextBtn"></button>
+			<div class="panel" tabindex="0">
+
+				<fieldset class="quiz noStyle">
+
+					<p id="qNo" aria-live="polite"></p>
+
+					<div class="qContent">
+						<span><legend id="qTxt"></legend></span>
+						<div id="optionHolder"></div>
+						<div id="buttonHolder">
+							<button id="checkBtn"></button>
+							<button id="nextBtn"></button>
+						</div>
+						<div id="qFeedback" aria-live="polite">
+							<h3 id="qFeedbackTitle"></h3>
+							<p id="qFeedbackTxt"></p>
+						</div>
 					</div>
-					<div id="qFeedback">
-						<h3 id="qFeedbackTitle"></h3>
-						<p id="qFeedbackTxt"></p>
-					</div>
-				</div>
+
+
+				</fieldset>
 				
 				<div class="chart">
 					<h3 id="chartTitle"></h3>
-					<canvas id="chartHolder"></canvas>
-					<button id="restartBtn"></button>
+					<div class="qContent">
+						<canvas id="chartHolder"></canvas>
+						<button id="restartBtn"></button>
+					</div>
 				</div>
 			</div>
 		</div>

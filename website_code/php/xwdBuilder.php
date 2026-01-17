@@ -137,7 +137,7 @@ class XerteXWDBuilder
 			print("The file is not a proper model .xwd file. Root node of the XML should be 'wizard'\n");
 			return -1;
 		}
-		if (strlen($xwd['menus']) == 0)
+		if (!isset($xwd['menus']) || strlen($xwd['menus']) == 0)
 		{
 			if ($verbose == 'true')
 			{
@@ -170,7 +170,7 @@ class XerteXWDBuilder
 		}
         // loop over the newnodes in wizard xwd, and make sure that 1 node has the same name as the model/xwd file or the 'modelFile' attribute
         $found = 'false';
-        if (strlen($xwd['modelFile']) == 0)
+		if (!isset($xwd['modelFile']) || strlen($xwd['modelFile']) == 0)
         {
             $pos = strrpos($fname, '.');
             $nodeName = substr($fname, 0, $pos);
@@ -231,20 +231,22 @@ class XerteXWDBuilder
 				printf("    Model " . $node->getName() . " is added.\n");
 				
 				// add nodes from basicPages.xwd to all pages
-				if ($page == true) {
 					global $basicPageXML;
 					$node = dom_import_simplexml($node);
 					
 					foreach ($basicPageXML->children() as $child) {
 						$child  = dom_import_simplexml($child);
+						$scope = $child->getAttribute('scope');
+
+						//For the first page, each common node will be added while for all subpages we add only those whose scope has been set to 'all'
+						if ($scope=='all' || $page === true){
 						$child  = $node->ownerDocument->importNode($child, TRUE);
 						$node->appendChild($child);
+						}
 					}
 					$node = simplexml_import_dom($node);
-					
 					$page = false;
 					printf("    Common nodes added.\n");
-				}
 				$this->addChildNode($this->xml, $node);
 			}
 		}

@@ -22,10 +22,10 @@ CKEDITOR.editorConfig = function( config ) {
         { name: 'others' }
     ];
 
-    config.extraPlugins = 'dialog,widget,extmathjax,image3,codemirror,oembed,xotlink,xotmarkword,fontawesome,uploadimage,html5audio,xotrecorder,xotcolumns,rubytext,wrapstyle,link,emoji,xotlightbox,numericinput,lineheight,codesnippet,a11ychecker,find,editorplaceholder';
+    config.extraPlugins = 'dialog,widget,extmathjax,image3,codemirror,oembed,xotlink,xotmarkword,fontawesome,uploadimage,html5audio,xotrecorder,xotcolumns,rubytext,wrapstyle,link,emoji,xotlightbox,numericinput,lineheight,codesnippet,a11ychecker,find,editorplaceholder,markTag';
     // The default plugins included in the basic setup define some buttons that
     // we don't want too have in a basic editor. We remove them here.
-    config.removeButtons = 'Cut,Copy,Paste,Save,NewPage,Preview,Print,PageBreak,CreateDiv,Anchor,Smiley';
+    config.removeButtons = 'Cut,Copy,Paste,Save,NewPage,Preview,Print,PageBreak,CreateDiv,Anchor,Smiley,Flash';
     
     config.format_tags = 'p;h3;h4;h5;h6;pre;address;div';
     config.line_height="1rem;1.1rem;1.2rem;1.3rem;1.4rem;1.5rem;1.6rem;1.7rem;1.8rem;1.9rem;2rem;2.5rem;3rem;3.5rem;4rem" ;
@@ -41,8 +41,9 @@ CKEDITOR.editorConfig = function( config ) {
     config.contentsCss = ['modules/xerte/parent_templates/Nottingham/common_html5/css/smoothness/jquery-ui-1.8.18.custom.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/css/editorstyles.css',
         'modules/xerte/parent_templates/Nottingham/common_html5/css/mainStyles.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/v4-shims.min.css',
+        'modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css',
+        'modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css',
+        'modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css',
 		'modules/xerte/parent_templates/Nottingham/common_html5/css/fonts.css'
     ];
 

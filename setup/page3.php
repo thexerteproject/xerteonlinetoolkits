@@ -27,7 +27,7 @@ require_once('page_header.php'); ?>
 
 <?php echo "<h3>Site formatting settings - Customising the first login page</h3><p>Please see <a href=\"page1.gif\" target=\"new\">this screen shot</a> for guidance.";
 
-echo "<p>The site url is (This is the URL of the site - changing this will not change the URL)<textarea name=\"site_url\">" . $xot_setup->getProtocol() . $_SERVER['HTTP_HOST'] . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "</textarea><p><b>WARNING:</b> If you are installing this via localhost on a server, but wish to provide this service from a URL hosted on this server, please remove localhost from the above textarea and replace it with a url</p>";
+echo "<p>The site url is (This is the URL of the site - changing this will not change the URL)<textarea name=\"site_url\">" . $xot_setup->getProtocol() . x_clean_input($_SERVER['HTTP_HOST']) . substr($_SERVER['PHP_SELF'],0,strlen($_SERVER['PHP_SELF'])-15) . "</textarea><p><b>WARNING:</b> If you are installing this via localhost on a server, but wish to provide this service from a URL hosted on this server, please remove localhost from the above textarea and replace it with a url</p>";
 
 echo "<p>The site title is (This is the HTML title tag content) <textarea name=\"site_title\">Welcome to Xerte Online Toolkits</textarea></p>";
 
@@ -66,9 +66,9 @@ echo "<p>The PHP session name (you do not need to change this unless integrating
     </p>";
 echo "<p>The integration config path (for use if integrating with other systems is)<textarea name=\"integration_config_path\"></textarea></p>";
 
-echo "<p>The admin username is <textarea name=\"admin_username\">" . $_POST['account'] . "</textarea></p>";
+echo "<p>The admin username is <textarea name=\"admin_username\">" . x_clean_input($_POST['account']) . "</textarea></p>";
 
-echo "<p>The admin password is <textarea name=\"admin_password\">" . $_POST['password'] . "</textarea></p>";
+echo "<p>The admin password is <textarea name=\"admin_password\">" . x_clean_input($_POST['password']) . "</textarea></p>";
 
 if (function_exists('mime_content_type')) {
     echo "<p>Whether the file MIME type check should be enabled for imported files<textarea name=\"enable_mime_check\">false</textarea></p>";
@@ -87,7 +87,7 @@ else {
     echo "<p>Whether the file extension check should be enabled for imported files <textarea name=\"enable_file_ext_check\" disabled=\"true\">False. The file extension check requires the PHP 'pathinfo' function.</textarea></p>";
 }
 
-echo "<p>The blacklisted file extensions for imported files are <textarea name=\"file_extensions\">php,php5,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm</textarea>
+echo "<p>The blacklisted file extensions for imported files are <textarea name=\"file_extensions\">php,php1,php2,php3,php4,php5,php6,php7,php8,phar,phtml,inc,py,bat,cmd,ps,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm</textarea>
     </p>";
 
 echo "<p>Whether the antivirus check should be enabled for imported files<textarea name=\"enable_clamav_check\">false</textarea></p>";

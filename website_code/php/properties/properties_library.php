@@ -31,97 +31,113 @@ _load_language_file("/website_code/php/properties/properties_library.inc");
 _load_language_file("/website_code/php/properties/sharing_status_template.inc");
 _load_language_file("/properties.inc");
 
-function xml_template_display($xerte_toolkits_site,$change){
+function xml_template_display($xerte_toolkits_site, $template_id, $change){
 
     $prefix = $xerte_toolkits_site->database_table_prefix;
+	
+	echo "<h2 class=\"header\">" . PROPERTIES_LIBRARY_XML_TITLE . "</h2>";
+	echo "<div id=\"mainContent\">";
 
-    echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_XML_TITLE . "</span></p>";
-
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_XML_DESCRIPTION . "</p>";
+    echo "<p>" . PROPERTIES_LIBRARY_XML_DESCRIPTION . "</p>";
 
     $query = "select * from {$prefix}additional_sharing where sharing_type= ? AND template_id = ?";
-    $params = array("xml", $_POST['template_id']);
+    $params = array("xml", $template_id);
 
     $row = db_query_one($query, $params);
+	
+	echo "<form id=\"xmlshare\" action=\"javascript:xml_change_template()\">";
+	
+	echo "<div><input type=\"checkbox\" id=\"xmlon\" " . (!empty($row) ? "checked" : "") . " /><label for=\"xmlon\">" . PROPERTIES_LIBRARY_XML_SHARING . "</label></div>";
+	
+	echo "<label id=\"sitenameLabel\" class=\"block\" for=\"sitename\">" . PROPERTIES_LIBRARY_XML_RESTRICT . ":</label>";
+	
+	echo "<input id=\"sitename\" type=\"text\" value=\"" . (isset($row['extra']) ? $row['extra'] : "") . "\" name=\"sitename\" style=\"width:90%;\" />";
+	
+	echo "<button type=\"submit\" class=\"xerte_button\" style=\"padding-left:5px;\" align=\"top\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button>";
+	
+	if($change){
 
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_XML_SHARING . " </p>";
+		echo "<span class='alert_msg' aria-live='polite'><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . PROPERTIES_LIBRARY_XML_SAVE . "</span>";
 
-    if(!empty($row)) {
-        echo "<p class=\"share_status_paragraph\"><img id=\"xmlon\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:xml_tick_toggle('xmlon')\" /> " . PROPERTIES_LIBRARY_ON . "</p>";
-        echo "<p class=\"share_status_paragraph\"><img id=\"xmloff\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:xml_tick_toggle('xmloff')\" /> " . PROPERTIES_LIBRARY_OFF . "</p>";
-        echo "<p class=\"share_status_paragraph\">The link for xml sharing is " . $xerte_toolkits_site->site_url . url_return("xml",$_POST['template_id']) . "</p>";
-
-    }else{
-
-        echo "<p class=\"share_status_paragraph\"><img id=\"xmlon\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:xml_tick_toggle('xmlon')\" /> " . PROPERTIES_LIBRARY_ON . "</p>";
-        echo "<p class=\"share_status_paragraph\"><img id=\"xmloff\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:xml_tick_toggle('xmloff')\" /> " . PROPERTIES_LIBRARY_OFF . "</p>";
-
-    }
-
-    echo "<p class=\"share_status_paragraph\"><form action=\"javascript:xml_change_template()\" name=\"xmlshare\">" . PROPERTIES_LIBRARY_XML_RESTRICT . " <br><br><input type=\"text\" size=\"30\" name=\"sitename\" style=\"margin:0px; padding:0px\" value=\"" . (isset($row['extra']) ? $row['extra'] : "") . "\" /><br><br><button type=\"submit\" class=\"xerte_button\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button></p></form>";
-
-    if($change){
-
-        echo "<p>" . PROPERTIES_LIBRARY_XML_SAVE . "</p>";
-
-    }
+	}
+	
+	echo "</form>";
+	
+	echo "</div>";
 
 }
 
-function xml_template_display_fail(){
+function xml_template_display_fail($editor){
 
-    echo "<p>" . PROPERTIES_LIBRARY_XML_ERROR . "</p>";
+	echo "<h2 class=\"header\">" . PROPERTIES_LIBRARY_XML_TITLE . "</h2>";
+	
+    echo "<div id=\"mainContent\">";
+	
+	if ($editor) { // not creator / co-author
+		
+		echo "<p>" . PROPERTIES_LIBRARY_XML_ERROR . "</p>";
+		
+	} else {
+		
+		echo "<p>" . PROPERTIES_LIBRARY_PROJECT_FAIL . "</p>";
+		
+	}
+	
+	echo "</div>";
 
 }
 
-function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
+function properties_display($xerte_toolkits_site, $template_id, $change, $msgtype){
 
-    echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_PROJECT . "</span></p>";
+    echo "<h2 class=\"header\">" . PROPERTIES_LIBRARY_PROJECT . "</h2>";
+	echo "<div id=\"mainContent\">";
+	
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
     $query_for_names = "select {$prefix}templatedetails.template_name, template_framework, date_created, date_modified, extra_flags from "
     . "{$prefix}templatedetails, {$prefix}originaltemplatesdetails where template_id= ? and {$prefix}originaltemplatesdetails.template_type_id =  {$prefix}templatedetails.template_type_id ";
 
-    $params = array($tutorial_id);
+    $params = array($template_id);
     $row = db_query_one($query_for_names, $params);
 
-    $_POST['template_id'] = (int) $_POST['template_id'];
+	$query_for_template_name = "select template_name from {$prefix}templatedetails where template_id= ?";
+	$params = array($template_id);
 
-    if(is_user_creator_or_coauthor($_POST['template_id']) || is_user_admin()){
+	$row_template_name = db_query_one($query_for_template_name, $params);
 
-        $query_for_template_name = "select template_name from {$prefix}templatedetails where template_id= ?";
-        $params = array($_POST['template_id']);
+    if(is_user_creator_or_coauthor($template_id) || is_user_permitted("projectadmin")){
 
-        $row_template_name = db_query_one($query_for_template_name, $params);
-
-        echo "<p>" . PROPERTIES_LIBRARY_PROJECT_NAME . "</p>";
-
-        echo "<form id=\"rename_form\" action=\"javascript:rename_template('" . $_POST['template_id'] ."', 'rename_form')\"><input type=\"text\" value=\"" . str_replace("_", " ", $row_template_name['template_name']) . "\" name=\"newfilename\" /><button type=\"submit\" class=\"xerte_button\" style=\"padding-left:5px;\" align=\"top\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_RENAME . "</button></form>";
+        echo "<form id=\"rename_form\" action=\"javascript:rename_template('" . $template_id ."', 'rename_form')\"><label class=\"block\" for=\"newfilename\">" . PROPERTIES_LIBRARY_PROJECT_NAME . ":</label><input type=\"text\" value=\"" . str_replace("_", " ", $row_template_name['template_name']) . "\" name=\"newfilename\" id=\"newfilename\" /><button type=\"submit\" class=\"xerte_button\" style=\"padding-left:5px;\" align=\"top\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_RENAME . "</button>";
 
         if($change && $msgtype=="name"){
 
-            echo "<p>" . PROPERTIES_LIBRARY_PROJECT_CHANGED . "</p>";
+            echo "<p class='alert_msg' aria-live='polite'><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . PROPERTIES_LIBRARY_PROJECT_CHANGED . "</p>";
 
         }
+		
+		echo "</form>";
 
-    }
+    } else {
+		
+		echo "<p>" . PROPERTIES_LIBRARY_PROJECT_NAME . ": " . str_replace("_", " ", $row_template_name['template_name']) . "</p>";
+		
+	}
 
-    echo "<br><br><br><p>" . PROPERTIES_LIBRARY_PROJECT_CREATE . " " . $row['date_created'] . "</p>";
+    echo "<p>" . PROPERTIES_LIBRARY_PROJECT_CREATE . " " . $row['date_created'] . "</p>";
 
     echo "<p>" . PROPERTIES_LIBRARY_PROJECT_MODIFY . " " . $row['date_modified'] . "</p>";
 
 	include "../../../modules/" . $row['template_framework'] . "/module_functions.php";
 
-    if(template_access_settings($_POST['template_id'])!='Private'){
+    if(template_access_settings($template_id)!='Private'){
 
-        echo "<p>" . PROPERTIES_LIBRARY_PROJECT_LINK . "</p>";
+        echo "<p>" . PROPERTIES_LIBRARY_PROJECT_LINK;
 
-        echo "<p><a target=\"new\" href='" . $xerte_toolkits_site->site_url .
-                url_return("play", $_POST['template_id']) . "'>" .
-                $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "</a></p>";
+        echo "<br/><a target=\"new\" href='" . $xerte_toolkits_site->site_url .
+                url_return("play", $template_id) . "'>" .
+                $xerte_toolkits_site->site_url . url_return("play", $template_id) . "</a>" .  PROPERTIES_LIBRARY_PROJECT_LINKS . "</p>";
 
-		$template = explode("_", get_template_type($_POST['template_id']));
-
+		$template = explode("_", get_template_type($template_id));
 
         if(file_exists($xerte_toolkits_site->root_file_path . "/modules/" . $template[0] . "/play_links.php")){
 
@@ -138,10 +154,9 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
         . "{$prefix}originaltemplatesdetails, {$prefix}templatedetails where"
         . " {$prefix}templatedetails.template_type_id = {$prefix}originaltemplatesdetails.template_type_id AND template_id = ?";
 
-        $params = array($tutorial_id);
+        $params = array($template_id);
 
         $row_name = db_query_one($query_for_template_name, $params);
-
 
 		if(isset($xerte_toolkits_site->learning_objects->{$row_name['template_framework'] . "_" . $row_name['template_name']}->preview_size)){
 
@@ -163,24 +178,36 @@ function properties_display($xerte_toolkits_site,$tutorial_id,$change,$msgtype){
 
         $temp_array = explode(",",$temp_string);
 
-        echo "<br><br><p>" . PROPERTIES_LIBRARY_PROJECT_IFRAME . "</p><form><textarea rows='3' cols='40' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form>";
+        echo "<label id=\"embedCodeLabel\" class=\"block indent\" for=\"embedCode\">" . PROPERTIES_LIBRARY_PROJECT_IFRAME . ":</label><textarea name=\"embedCode\" id=\"embedCode\" readonly rows='3' cols='40' onfocus='this.select()' class='indent'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $template_id) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea>";
 
     }
 	
-	if(function_exists("display_property_engines")){
+	if(is_user_creator_or_coauthor($template_id) || is_user_permitted("projectadmin")){
 		
-		echo "<br><br>";
-		
-		display_property_engines($change,$msgtype);
+		if(function_exists("display_property_engines")){
+			
+			echo "<br/>";
+			
+			display_property_engines($change,$msgtype);
 
+		}
+		
 	}
+	
+	echo "</div>";
 
 }
 
 function properties_display_fail(){
 
-    echo "<p>" . PROPERTIES_LIBRARY_PROJECT_FAIL . "</p>";
+	echo "<h2 class=\"header\">" . PROPERTIES_LIBRARY_PROJECT . "</h2>";
+	
+    echo "<div id=\"mainContent\">";
 
+    echo "<p>" . PROPERTIES_LIBRARY_PROJECT_FAIL . "</p>";
+	
+	echo "</div>";
+	
 }
 
 function publish_display($template_id)
@@ -191,93 +218,108 @@ function publish_display($template_id)
     $database_id=database_connect("Properties template database connect success","Properties template database connect failed");
 
     // User has to have some rights to do this
+    if( has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) || is_user_permitted("projectadmin") ){
+		
+		echo "<h2 class=\"header\">" . PUBLISH_TITLE . "</h2>";
 
-    if( has_rights_to_this_template($_POST['template_id'], $_SESSION['toolkits_logon_id']) || is_user_admin() ){
-
-        echo "<p class=\"header\"><span>" . PUBLISH_TITLE . "</span></p>";
+		echo "<div id=\"mainContent\">";
 
         $query_for_names = "select td.template_name, td.date_created, td.date_modified, otd.template_framework from {$prefix}templatedetails td, "
         . "{$prefix}originaltemplatesdetails otd where td.template_id= ? and td.template_type_id = otd.template_type_id";
 
         $params = array($template_id);
 
-
-
         $row = db_query_one($query_for_names, $params);
+		
+		include "../../../modules/" . $row['template_framework'] . "/module_functions.php";
+		
+		$template_access = template_access_settings($template_id);
 
-        echo "<p>" . PUBLISH_DESCRIPTION . "</p>";
+		$query_for_template_name = "select template_name from {$prefix}templatedetails where template_id= ?";
+		$params = array($template_id);
 
-        $template_access = template_access_settings($template_id);
+		$row_template_name = db_query_one($query_for_template_name, $params);
 
-        echo "<p><b>" . PUBLISH_ACCESS . "</b><br>" . PUBLISH_ACCESS_DESCRIPTION . "</p>";
+        echo "<p>" . PUBLISH_NAME . ": " . str_replace('_', ' ', $row_template_name['template_name']) . "</p>";
+		
+		display_publish_engine();
 
-        if($template_access=="Private"){
+        echo "<p>" . PUBLISH_ACCESS . ": " . $template_access . "</p>";
+		
+		if($template_access!="Private"){
+		
+			echo "<p>" . PUBLISH_WEB_ADDRESS . ": <a target='_blank' href='" . $xerte_toolkits_site->site_url . url_return("play",$template_id) . "'>" . $xerte_toolkits_site->site_url . url_return("play",$template_id) . "</a>" . PUBLISH_LINKS . "</p>";
+		
+			if(!is_template_rss($template_id)){
 
-            echo "<p><img src=\"website_code/images/bullet_error.gif\" align=\"absmiddle\" /><b>" . PUBLISH_ACCESS_STATUS . "</b></p>";
+				echo "<p>" . PUBLISH_RSS . ": " . PUBLISH_RSS_NOT_INCLUDE . "</p>";
 
-        }else{
+			}else{
 
-            echo "<p>" . PUBLISH_ACCESS_IS . " " . $template_access . ".</p>";
+				echo "<p>" . PUBLISH_RSS . ": " . PUBLISH_RSS_INCLUDE . "</p>";
 
-        }
+			}
+			
+			if(!is_template_syndicated($template_id)){
 
-        echo "<p><b>" . PUBLISH_RSS . "</b><br>" . PUBLISH_RSS_DESCRIPTION . "</p>";
+				echo "<p>" . PUBLISH_SYNDICATION . ": " .  PUBLISH_SYNDICATION_STATUS_OFF . "</p>";
 
-        if(!is_template_rss($_POST['template_id'])){
+			}else{
 
-            echo "<p><b>" . PUBLISH_RSS_NOT_INCLUDE . "</b></p>";
+				echo "<p>" . PUBLISH_SYNDICATION . ": " .  PUBLISH_SYNDICATION_STATUS_ON . "</p>";
 
-        }else{
-
-            echo "<p>" . PUBLISH_RSS_INCLUDE . "</p>";
-
-        }
-
-        include "../../../modules/" . $row['template_framework'] . "/module_functions.php";
-
-        display_publish_engine();
-
-        echo "<p><b>" . PUBLISH_SYNDICATION . "</b><br>" . PUBLISH_SYNDICATION_DESCRIPTION . "</p>";
-
-        if(!is_template_syndicated($template_id)){
-
-            echo "<p><b>" . PUBLISH_SYNDICATION_STATUS_OFF . "</b></p>";
-
-        }else{
-
-            echo "<p>" . PUBLISH_SYNDICATION_STATUS_ON . "</p>";
+			}
+		
+		} else {
+			
+            echo "<p><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . PUBLISH_ACCESS_STATUS . "</p>";
 
         }
 
         if($template_access!=""){
 
-            /**
-             *
-             * This section using $_SESSION['webct'] is for people using the integration option for webct. If you integration option has the ability to post back a URL then you would modify this code to allow for your systems working methods.
-             *
-             **/
-
-            echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"publish_project(window.name);\">" . PUBLISH_BUTTON_LABEL . "</button></p>";
-
-            echo "<p>" . PUBLISH_WEB_ADDRESS . " <a target='_blank' href='" . $xerte_toolkits_site->site_url . url_return("play",$template_id) . "'>" . $xerte_toolkits_site->site_url . url_return("play",$template_id) . "</a></p>";
-
+            echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"publish_project(window.name);\"><i class=\"fa fa-share xerte-icon\"></i> " . PUBLISH_BUTTON_LABEL . "</button></p>";
 
         }
+		
+		echo "</div>";
 
     }else{
-
-        echo "<p><img src=\"website_code/images/Bttn_PublishDis.gif\" /></p>";
+		
+		publish_display_fail();
 
     }
+	
+}
 
+function publish_display_fail(){
+
+	echo "<h2 class=\"header\">" . PUBLISH_TITLE . "</h2>";
+	
+    echo "<div id=\"mainContent\">";
+
+    echo "<p>" . PUBLISH_FAIL . "</p>";
+	
+	echo "</div>";
+	
 }
 
 function notes_display($notes, $change, $template_id){
     $template_id = (int) $template_id;
     $notes = htmlentities($notes, ENT_QUOTES, 'UTF-8', false);
-    echo "<p class=\"header\"><span>" . PROPERTIES_TAB_NOTES . "</span></p>";
+	
+	echo "<h2 class=\"header\">" . PROPERTIES_TAB_NOTES . "</h2>";
+	echo "<div id=\"mainContent\">";
 
-    echo "<p>" . PROPERTIES_LIBRARY_NOTES_EXPLAINED . "<br/><form id=\"notes_form\" action=\"javascript:change_notes('" . $template_id ."', 'notes_form')\"><textarea id=\"notes\" style=\"width:90%; height:330px\">" . $notes . "</textarea><button type=\"submit\" class=\"xerte_button\"><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . " </button></form></p>";
+    echo "<form id=\"notes_form\" action=\"javascript:change_notes('" . $template_id ."', 'notes_form')\"><label class=\"block\" for=\"notes\">" . PROPERTIES_LIBRARY_NOTES_EXPLAINED . ":</label><textarea id=\"notes\" name=\"notes\" style=\"width:90%; height:330px\">" . $notes . "</textarea><button type=\"submit\" class=\"xerte_button\"><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . " </button>";
+	
+	if($change){
+
+        echo "<span class='alert_msg' aria-live='polite'><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . PROPERTIES_LIBRARY_NOTES_SAVED . "</span>";
+
+    }
+	
+	echo "</form>";
     echo "<script type=\"text/javascript\">
         function makeeditor() {
         ckeditor = CKEDITOR.replace(\"notes\", {
@@ -287,49 +329,57 @@ function notes_display($notes, $change, $template_id){
             });
         }
         </script>";
-
-    if($change){
-
-        echo "<p>" . PROPERTIES_LIBRARY_NOTES_SAVED . "</p>";
-
-    }
-
+	
+	echo "</div>";
 }
 
-function notes_display_fail(){
+function notes_display_fail($editor){
 
-    echo "<p>" . PROPERTIES_LIBRARY_NOTES_FAIL . "</p>";
+	echo "<h2 class=\"header\">" . PROPERTIES_TAB_NOTES . "</h2>";
+	
+    echo "<div id=\"mainContent\">";
+	
+	if ($editor) { // not creator / co-author
+		
+		echo "<p>" . PROPERTIES_LIBRARY_NOTES_FAIL . "</p>";
+		
+	} else {
+		
+		echo "<p>" . PROPERTIES_LIBRARY_PROJECT_FAIL . "</p>";
+		
+	}
+	
+	echo "</div>";
 
 }
 
 function peer_display($xerte_toolkits_site,$change, $template_id){
     $prefix = $xerte_toolkits_site->database_table_prefix;
     $template_id = (int) $template_id;
+	
+	echo "<h2 class=\"header\">" . PROPERTIES_LIBRARY_PEER . "</h2>";
+	
+	echo "<div id=\"mainContent\">";
 
-    echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_PEER . "</span></p>";
-
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_PEER_EXPLAINED . "</p>";
-
-    $query = "select * from {$prefix}additional_sharing where sharing_type=? AND template_id = ?";
+    echo "<p>" . PROPERTIES_LIBRARY_PEER_EXPLAINED . "</p>";
+	
+	$query = "select * from {$prefix}additional_sharing where sharing_type=? AND template_id = ?";
 
     $params = array('peer', $template_id);
 
     $row = db_query_one($query, $params);
-
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_PEER_STATUS . " </p>";
-
-    if(!empty($row)) {
-        echo "<p class=\"share_status_paragraph\"><img id=\"peeron\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:peer_tick_toggle('peeron')\" /> " . PROPERTIES_LIBRARY_ON . "</p>";
-        echo "<p class=\"share_status_paragraph\"><img id=\"peeroff\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:peer_tick_toggle('peeroff')\" /> " . PROPERTIES_LIBRARY_OFF . "</p>";
-        echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_PEER_LINK . "<a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("peerreview", $template_id) . "\">" .  $xerte_toolkits_site->site_url . url_return("peerreview", $template_id)  . "</a></p>";
-
-    }else{
-
-        echo "<p class=\"share_status_paragraph\"><img id=\"peeron\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:peer_tick_toggle('peeron')\" /> " . PROPERTIES_LIBRARY_ON . "</p>";
-        echo "<p class=\"share_status_paragraph\"><img id=\"peeroff\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:peer_tick_toggle('peeroff')\" />  " . PROPERTIES_LIBRARY_OFF . "</p>";
-
-    }
-    $extra = array();
+	
+	if(!empty($row)) {
+		
+		echo "<p>" . PROPERTIES_LIBRARY_PEER_LINK . ":<br/><a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("peerreview", $template_id) . "\">" .  $xerte_toolkits_site->site_url . url_return("peerreview", $template_id)  . "</a>" . PROPERTIES_LIBRARY_PEER_LINKS . "</p>";
+		
+	}
+	
+	echo "<form id=\"peer\" action=\"javascript:peer_change_template()\" name=\"peer\" >";
+	
+	echo "<div><input type=\"checkbox\" id=\"peeron\" " . (!empty($row) ? "checked" : "") . " /><label for=\"peeron\">" . PROPERTIES_LIBRARY_PEER_STATUS . "</label></div>";
+	
+	$extra = array();
     $passwd = "";
     if(!empty($row)) {
         $extra = explode("," , $row['extra'],2);
@@ -349,55 +399,70 @@ function peer_display($xerte_toolkits_site,$change, $template_id){
         }
 
     }
-    echo "<p class=\"share_status_paragraph\">";
-    echo "<form action=\"javascript:peer_change_template()\" name=\"peer\" >";
-    echo PROPERTIES_LIBRARY_PEER_PASSWORD_PROMPT . " <input type=\"text\" size=\"15\" name=\"password\" style=\"margin:0px; padding:0px\" value=\"" . $passwd . "\" /><br /><br />";
-    echo PROPERTIES_LIBRARY_PEER_RETOUREMAIL_PROMPT . "<br /> <input type=\"text\" size=\"50\" name=\"retouremail\" style=\"margin:0px; padding:0px\" value=\"" . $retouremail . "\" />";
-    echo "<br><br><button type=\"submit\" class=\"xerte_button\"><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button>";
-    echo "</p>";
-    echo "</form>";
-
-    if($change){
-        echo "<p>" . PROPERTIES_LIBRARY_PEER_SAVED . "</p>";
+	
+	echo "<label id=\"passwordLabel\" class=\"block\" for=\"password\">" . PROPERTIES_LIBRARY_PEER_PASSWORD_PROMPT . ":</label>";
+	
+	echo "<input id=\"password\" type=\"text\" value=\"" . $passwd . "\" name=\"password\" style=\"width:90%;\" />";
+	
+	echo "<label id=\"retouremailLabel\" class=\"block\" for=\"retouremail\">" . PROPERTIES_LIBRARY_PEER_RETOUREMAIL_PROMPT . ":</label>";
+	
+	echo "<input id=\"retouremail\" type=\"text\" value=\"" . $retouremail . "\" name=\"retouremail\" style=\"width:90%;\" />";
+	
+	echo "<button type=\"submit\" class=\"xerte_button\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button>";
+	
+	if($change){
+		
+        echo "<span class='alert_msg' aria-live='polite'><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . PROPERTIES_LIBRARY_PEER_SAVED . "</span>";
 
     }
+	
+	echo "</form>";
+	
+	echo "</div>";
 
 }
 
-function peer_display_fail(){
+function peer_display_fail($editor){
+	
+	echo "<h2 class=\"header\">" . PROPERTIES_LIBRARY_PEER . "</h2>";
+	
+	echo "<div id=\"mainContent\">";
 
-    echo "<p>" . PROPERTIES_LIBRARY_PEER_FAIL . "</p>";
+	if ($editor) { // not creator / co-author
+		
+		echo "<p>" . PROPERTIES_LIBRARY_PEER_FAIL . "</p>";
+		
+	} else {
+		
+		echo "<p>" . PROPERTIES_LIBRARY_PROJECT_FAIL . "</p>";
+		
+	}
+	
+	echo "</div>";
 
 }
 
-function syndication_display($xerte_toolkits_site, $change){
+function syndication_display($xerte_toolkits_site, $template_id, $change){
+	
+	echo "<h2 class=\"header\">" . PROPERTIES_LIBRARY_SYNDICATION . "</h2>";
+    
+	echo "<div id=\"mainContent\">";
 
-    echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_SYNDICATION . "</span></p>";
-
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_SYNDICATION_EXPLAINED . " <a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_syndicate",null) . "\">" . $xerte_toolkits_site->site_url . url_return("RSS_syndicate",null) . "</a></p>";
+    echo "<p>" . PROPERTIES_LIBRARY_SYNDICATION_EXPLAINED . ": <a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_syndicate",null) . "\">" . $xerte_toolkits_site->site_url . url_return("RSS_syndicate",null) . "</a>" .  PROPERTIES_LIBRARY_SYNDICATION_LINKS . "</p>";
 
     $prefix =  $xerte_toolkits_site->database_table_prefix;
 
     $query_for_syndication = "select syndication,description,keywords,category,license from {$prefix}templatesyndication where template_id=?";
 
-    $params = array($_POST['tutorial_id']);
+    $params = array($template_id);
 
     $row_syndication = db_query_one($query_for_syndication, $params);
-
-
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_SYNDICATION_PROMPT . " ";
-
-    if($row_syndication !== false && $row_syndication != null && $row_syndication['syndication']=="true"){
-
-        echo "<img id=\"syndon\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:rss_tick_toggle('syndon')\" /> " . PROPERTIES_LIBRARY_YES . "  <img id=\"syndoff\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:rss_tick_toggle('syndoff')\" /> " . PROPERTIES_LIBRARY_NO . " </p>";
-
-    }else{
-
-        echo "<img id=\"syndon\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:rss_tick_toggle('syndon')\" /> " . PROPERTIES_LIBRARY_YES . " <img id=\"syndoff\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:rss_tick_toggle('syndoff')\" /> " . PROPERTIES_LIBRARY_NO . " </p>";
-
-    }
-
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_SYNDICATION_CATEGORY . "<br><select SelectedItem=\"" . ($row_syndication !== false && $row_syndication != null ? $row_syndication['category'] : "") . "\" name=\"type\" id=\"category_list\" style=\"margin:5px 0 0 0; padding:0px;\">";
+	
+	echo "<form id=\"xmlshare\" action=\"javascript:syndication_change_template()\" name=\"xmlshare\" >";
+	
+	echo "<div><input type=\"checkbox\" id=\"syndon\" " . ($row_syndication !== false && $row_syndication != null && $row_syndication['syndication']=="true" ? "checked" : "") . " /><label for=\"syndon\">" . PROPERTIES_LIBRARY_SYNDICATION_PROMPT . "</label></div>";
+	
+	echo "<label id=\"category_listLabel\" class=\"block\" for=\"category_list\">" . PROPERTIES_LIBRARY_SYNDICATION_CATEGORY . ":</label><select SelectedItem=\"" . ($row_syndication !== false && $row_syndication != null ? $row_syndication['category'] : "") . "\" name=\"type\" id=\"category_list\">";
 
     $query_for_categories = "select category_name from {$prefix}syndicationcategories";
 
@@ -417,9 +482,9 @@ function syndication_display($xerte_toolkits_site, $change){
 
     }
 
-    echo "</select></p>";
+    echo "</select>";
 
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_SYNDICATION_LICENCE . "<br><select ";
+    echo "<label id=\"license_listLabel\" for=\"license_list\" class=\"block\">" . PROPERTIES_LIBRARY_SYNDICATION_LICENCE . ":</label><select ";
 
     if(isset($row_syndication['license_name'])){
 
@@ -427,7 +492,7 @@ function syndication_display($xerte_toolkits_site, $change){
 
     }
 
-    echo " name=\"type\" id=\"license_list\" style=\"margin:5px 0 0 0; padding:0px;\">";
+    echo " name=\"type\" id=\"license_list\">";
 
     $query_for_licenses = "select license_name from {$prefix}syndicationlicenses";
 
@@ -447,30 +512,56 @@ function syndication_display($xerte_toolkits_site, $change){
 
     }
 
-    echo "</select></p>";
-
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_SYNDICATION_DESCRIPTION . "<form action=\"javascript:syndication_change_template()\" name=\"syndshare\" ><textarea id=\"description\" style=\"width:95%; height:100px\">" . ($row_syndication !== false && $row_syndication != null ? $row_syndication['description'] : "") . "</textarea>";
-    echo PROPERTIES_LIBRARY_SYNDICATION_KEYWORDS . "<textarea id=\"keywords\" style=\"width:95%; height:40px\">" . ($row_syndication !== false && $row_syndication != null ? $row_syndication['keywords'] : "") . "</textarea><button type=\"submit\" class=\"xerte_button\" style=\"padding-top:5px\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button></p></form>";
-
-    if($change){
-
-        echo "<p>" . PROPERTIES_LIBRARY_SYNDICATION_SAVED . "</p>";
+    echo "</select>";
+	
+	echo "<label id=\"descriptionLabel\" class=\"block\" for=\"description\">" . PROPERTIES_LIBRARY_SYNDICATION_DESCRIPTION . ":</label><textarea id=\"description\" style=\"width:90%; height:120px;\">" . ($row_syndication !== false && $row_syndication != null ? $row_syndication['description'] : "") . "</textarea>";
+	
+	echo "<label id=\"keywordsLabel\" class=\"block\" for=\"keywords\">" . PROPERTIES_LIBRARY_SYNDICATION_KEYWORDS . ":</label><textarea id=\"keywords\" style=\"width:90%; height:40px;\">" . ($row_syndication !== false && $row_syndication != null ? $row_syndication['keywords'] : "") . "</textarea>";	
+	
+	echo "<button type=\"submit\" class=\"xerte_button\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button>";
+	
+	if($change){
+		
+        echo "<span class='alert_msg' aria-live='polite'><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . PROPERTIES_LIBRARY_SYNDICATION_SAVED . "</span>";
 
     }
+	
+	echo "</form>";
+	
+	echo "</div>";
 
 }
 
 function syndication_not_public($xerte_toolkits_site){
+	
+	echo "<h2 class=\"header\">" . PROPERTIES_LIBRARY_SYNDICATION . "</h2>";
+    echo "<div id=\"mainContent\">";
 
     echo "<p>" . PROPERTIES_LIBRARY_SYNDICATION_PUBLIC . "</p>";
 
     echo "<p>" . PROPERTIES_LIBRARY_SYNDICATION_URL . " <a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_syndicate",null) . "\">" . $xerte_toolkits_site->site_url . url_return("RSS_syndicate",null) . "</a></p>";
 
+	echo "</div>";
+
 }
 
-function syndication_display_fail(){
+function syndication_display_fail($editor){
 
-    echo "<p>" . PROPERTIES_LIBRARY_SYNDICATION_FAIL . "</p>";
+	echo "<h2 class=\"header\">" . PROPERTIES_LIBRARY_SYNDICATION . "</h2>";
+	
+    echo "<div id=\"mainContent\">";
+
+	if ($editor) { // not creator / co-author
+		
+		echo "<p>" . PROPERTIES_LIBRARY_SYNDICATION_FAIL . "</p>";
+		
+	} else {
+		
+		echo "<p>" . PROPERTIES_LIBRARY_PROJECT_FAIL . "</p>";
+		
+	}
+	
+	echo "</div>";
 
 }
 
@@ -480,7 +571,7 @@ function project_info($template_id){
 
 	$prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $query_for_names = "select {$prefix}td.template_name as project_name, td.template_id, otd.template_framework, otd.template_name, otd.display_name, otd.parent_template, otd2.display_name as parent_display_name, td.date_created, td.date_modified, td.extra_flags from "
+    $query_for_names = "select td.template_name as project_name, td.template_id, otd.template_framework, otd.template_name, otd.display_name, otd.parent_template, otd2.display_name as parent_display_name, td.date_created, td.date_modified, td.extra_flags from "
         . "{$prefix}templatedetails td, {$prefix}originaltemplatesdetails otd, {$prefix}originaltemplatesdetails otd2 where td.template_id= ? and otd.template_type_id = td.template_type_id and otd.parent_template = otd2.template_name";
 
     $params = array($template_id);
@@ -525,11 +616,13 @@ function project_info($template_id){
 
         $info .= '<br/>' . PROJECT_INFO_URL . ": ";
 
-        $info .=  "<a target=\"new\" href='" . $xerte_toolkits_site->site_url .
-            url_return("play", $_POST['template_id']) . "'>" .
-            $xerte_toolkits_site->site_url . url_return("play", $_POST['template_id']) . "</a><br/>";
+        $play_page = "play";
 
-        $template = explode("_", get_template_type($_POST['template_id']));
+        $info .=  "<a target=\"new\" href='" . $xerte_toolkits_site->site_url .
+            url_return("play", $template_id) . "'>" .
+            $xerte_toolkits_site->site_url . url_return("play", $template_id) . "</a><br/>";
+
+        $template = explode("_", get_template_type($template_id));
 
 
         if(file_exists($xerte_toolkits_site->root_file_path . "/modules/" . $template[0] . "/play_links.php")){
@@ -572,8 +665,7 @@ function project_info($template_id){
 
         $temp_array = explode(",",$temp_string);
 
-        $info .=  '<br/><form><label for="embed_text_area">' . PROJECT_INFO_EMBEDCODE . ":</label><br/><textarea readonly id='embed_text_area' rows='3' cols='30' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return("play", $_POST['template_id']) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form><br/>";
-
+        $info .=  '<br/><form><label class=\"block\" for="embed_text_area">' . PROJECT_INFO_EMBEDCODE . ":</label><br/><textarea readonly id='embed_text_area' rows='3' cols='30' onfocus='this.select()'><iframe src=\""  . $xerte_toolkits_site->site_url .  url_return($play_page, $template_id) .  "\" width=\"" . $temp_array[0] . "\" height=\"" . $temp_array[1] . "\" frameborder=\"0\" style=\"position:relative; top:0px; left:0px; z-index:0;\"></iframe></textarea></form><br/>";
     }
     return $info;
 
@@ -665,7 +757,6 @@ function statistics_prepare($template_id, $force=false)
 
             $prefix = $xerte_toolkits_site->database_table_prefix;
 
-
             $query_for_names = "select td.tsugi_published, td.tsugi_xapi_enabled, td.tsugi_xapi_useglobal, td.tsugi_xapi_endpoint, td.tsugi_xapi_key, td.tsugi_xapi_secret, td.tsugi_xapi_student_id_mode, td.dashboard_allowed_links, td.dashboard_display_options from {$prefix}templatedetails td where template_id=?";
 
             $params = array($template_id);
@@ -681,7 +772,7 @@ function statistics_prepare($template_id, $force=false)
             {
                 $info->published = false;
             }
-            if ($row['tsugi_xapi_enabled'] && ($row['tsugi_xapi_useglobal'] || ($row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != ""))) {
+            if ($row['tsugi_xapi_enabled'] && ($row['tsugi_xapi_useglobal'] || ($row['tsugi_xapi_endpoint'] != "" && $row['tsugi_xapi_key'] != "" && $row['tsugi_xapi_secret'] != "")) && (template_access_settings($template_id)!='Private' || $row['tsugi_published'])) {
                 $info->info = $html;
                 $info->xapi_linkinfo = PROJECT_INFO_XAPI_PUBLISHED;
                 $info->xapi_url = $xerte_toolkits_site->site_url . "xapi_launch.php?template_id=" . $template_id . "&group=groupname";
@@ -694,10 +785,11 @@ function statistics_prepare($template_id, $force=false)
                 {
                     $lrsendpoint['lrsendpoint'] = $row['tsugi_xapi_endpoint'];
                 }
-                $lrsendpoint = CheckLearningLocker($lrsendpoint);
+                $lrsendpoint = CheckLearningLocker($lrsendpoint, true);
                 $lrs = new stdClass();
                 $lrs->lrsendpoint = $xerte_toolkits_site->site_url . "xapi_proxy.php";
                 $lrs->aggregate = $lrsendpoint['aggregate'];
+                $lrs->db = $lrsendpoint['db'];
 
                 $lrs->lrskey = "";
                 $lrs->lrssecret = "";
@@ -764,7 +856,7 @@ function media_quota_info($template_id)
     global $xerte_toolkits_site;
     $quota=0;
 
-    if (has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) || is_user_admin()) {
+    if (has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) || is_user_permitted("projectadmin")) {
 
         $prefix = $xerte_toolkits_site->database_table_prefix;
         $sql = "select {$prefix}originaltemplatesdetails.template_name, {$prefix}templaterights.folder, {$prefix}logindetails.username FROM " .
@@ -774,9 +866,9 @@ function media_quota_info($template_id)
             "{$prefix}templatedetails.creator_id = {$prefix}logindetails.login_id AND " .
             "{$prefix}templatedetails.template_id = ? AND (role = ? OR role = ?)";
 
-        $row_path = db_query_one($sql, array($_POST['template_id'], 'creator', 'co-author'));
+        $row_path = db_query_one($sql, array($template_id, 'creator', 'co-author'));
 
-        $end_of_path = $_POST['template_id'] . "-" . $row_path['username'] . "-" . $row_path['template_name'];
+        $end_of_path = $template_id . "-" . $row_path['username'] . "-" . $row_path['template_name'];
 
         /**
          * Set the paths
@@ -834,26 +926,32 @@ function sharing_info($template_id)
 {
     global $xerte_toolkits_site;
 
-    if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+    $prefix = $xerte_toolkits_site->database_table_prefix;
+
+    if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
         return "";
     }
 
     $sql = "SELECT template_id, user_id, firstname, surname, username, role, folder FROM " .
-        " {$xerte_toolkits_site->database_table_prefix}templaterights tr, {$xerte_toolkits_site->database_table_prefix}logindetails ld WHERE " .
+        " {$prefix}templaterights tr, {$prefix}logindetails ld WHERE " .
         " ld.login_id = tr.user_id and template_id= ?";
 
     $query_sharing_rows = db_query($sql, array($template_id));
 
-    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}template_group_rights tgr, " .
-        "{$xerte_toolkits_site->database_table_prefix}user_groups ug WHERE template_id = ? AND tgr.group_id = ug.group_id";
+    $sql = "SELECT group_name, role FROM {$prefix}template_group_rights tgr, " .
+        "{$prefix}user_groups ug WHERE template_id = ? AND tgr.group_id = ug.group_id";
 
     $query_group_sharing_rows = db_query($sql, array($template_id));
 
-    $sql = "SELECT folder FROM {$xerte_toolkits_site->database_table_prefix}templaterights where template_id = ? and role =?";
-    $query_folder_id = db_query($sql, array($template_id, "creator"));
+    $sql = "SELECT folder FROM {$prefix}templaterights where template_id = ?";
+    $query_folder_ids = db_query($sql, array($template_id));
 
-    $sql = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id = ?";
-    $query_folders = db_query($sql, array($query_folder_id[0]["folder"]));
+    $folder_ids_string = implode(",", array_map(function($item) {
+        return $item['folder'];
+    }, $query_folder_ids));
+
+    $sql = "SELECT * FROM {$prefix}folderrights where folder_id in ({$folder_ids_string})";
+    $query_folders = db_query($sql);
 
     $related_folders = array();
     $params = array();
@@ -862,7 +960,7 @@ function sharing_info($template_id)
     if(!empty($related_folders)){
         for($i =0;  $i < count($related_folders) ; $i++){
             if($related_folders[$i]["folder_id"] != 0){
-                $sql = "SELECT * FROM {$xerte_toolkits_site->database_table_prefix}folderrights where folder_id = ? and folder_parent != 0";
+                $sql = "SELECT * FROM {$prefix}folderrights where folder_id = ? and folder_parent != 0";
                 $query_folders = db_query($sql, array($related_folders[$i]["folder_parent"]));
                 foreach ($query_folders as $folder){
                     if($folder["role"] == "creator"){
@@ -876,8 +974,8 @@ function sharing_info($template_id)
         }
     }
 
-    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role, folder_id, folder_parent FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
-    $sql_grouped = "SELECT ld.login_id as user_id, firstname, surname, username FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
+    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role, folder_id, folder_parent FROM {$prefix}folderrights fr join {$prefix}logindetails ld on fr.login_id = ld.login_id";
+    $sql_grouped = "SELECT ld.login_id as user_id, firstname, surname, username FROM {$prefix}folderrights fr join {$prefix}logindetails ld on fr.login_id = ld.login_id";
     foreach ($params as $index=>$param){
         if($index != 0){
             $sql .= " or ld.login_id = ?";
@@ -936,8 +1034,8 @@ function sharing_info($template_id)
     }
 
     $params = array();
-    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}folder_group_rights fgr, " .
-        "{$xerte_toolkits_site->database_table_prefix}user_groups ug WHERE fgr.group_id = ug.group_id and ";
+    $sql = "SELECT group_name, role FROM {$prefix}folder_group_rights fgr, " .
+        "{$prefix}user_groups ug WHERE fgr.group_id = ug.group_id and ";
 
     foreach ($related_folders as $index =>$rf){
         if($index != 0){
@@ -981,7 +1079,6 @@ function sharing_info($template_id)
         if (!$found)
         {
             // Add $row to $query_shared_folder_users
-            $index = count($query_shared_folder_users);
             $query_shared_folder_users[] = $row;
             if ($row['role'] == "creator") {
                 // Change the role of the user to co-author
@@ -1177,18 +1274,18 @@ function folder_sharing_info($folder_id)
 {
     global $xerte_toolkits_site;
 
-    if (!has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+    if (!has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
         return "";
     }
 
-    $sql = "SELECT folder_id, logindetails.login_id, firstname, surname, username, role FROM " .
-        " {$xerte_toolkits_site->database_table_prefix}folderrights, {$xerte_toolkits_site->database_table_prefix}logindetails WHERE " .
-        " {$xerte_toolkits_site->database_table_prefix}logindetails.login_id = {$xerte_toolkits_site->database_table_prefix}folderrights.login_id and folder_id= ?";
+    $sql = "SELECT folder_id, ld.login_id, firstname, surname, username, role FROM " .
+        " {$xerte_toolkits_site->database_table_prefix}folderrights fr, {$xerte_toolkits_site->database_table_prefix}logindetails ld WHERE " .
+        " ld.login_id = fr.login_id and folder_id= ?";
 
     $query_sharing_rows = db_query($sql, array($folder_id));
 
-    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}folder_group_rights, " .
-        "{$xerte_toolkits_site->database_table_prefix}user_groups WHERE folder_id = ? AND folder_group_rights.group_id = user_groups.group_id";
+    $sql = "SELECT group_name, role FROM {$xerte_toolkits_site->database_table_prefix}folder_group_rights fgr, " .
+        "{$xerte_toolkits_site->database_table_prefix}user_groups ug WHERE folder_id = ? AND fgr.group_id = ug.group_id";
 
     $query_group_sharing_rows = db_query($sql, array($folder_id));
 
@@ -1219,8 +1316,8 @@ function folder_sharing_info($folder_id)
         }
     }
 
-    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role, folder_id, folder_parent FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
-    $sql_grouped = "SELECT ld.login_id as user_id, firstname, surname, username FROM folderrights fr join logindetails ld on fr.login_id = ld.login_id";
+    $sql = "SELECT ld.login_id as user_id, firstname, surname, username, role, folder_id, folder_parent FROM {$xerte_toolkits_site->database_table_prefix}folderrights fr join {$xerte_toolkits_site->database_table_prefix}logindetails ld on fr.login_id = ld.login_id";
+    $sql_grouped = "SELECT ld.login_id as user_id, firstname, surname, username FROM {$xerte_toolkits_site->database_table_prefix}folderrights fr join {$xerte_toolkits_site->database_table_prefix}logindetails ld on fr.login_id = ld.login_id";
     foreach ($params as $index=>$param){
         if($index != 0){
             $sql .= " or ld.login_id = ?";
@@ -1311,11 +1408,11 @@ function folder_sharing_info($folder_id)
                         $query_shared_folder_users[$indexUser]["role"] = $role['role'];
                         //$query_shared_folder_users[$indexUser]["role_source"] = 'folder';
 
-                        if ($row["user_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] == "creator") {
+                        if ($row["login_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] == "creator") {
                             $query_shared_folder_users[$indexUser]["role"] = "creator";
                             // Change the role of the user to co-author
                             foreach ($query_shared_folder_users as $indexUser2 => $user2) {
-                                if ($user2['user_id'] != $row['user_id'] && $user2['role'] == "creator") {
+                                if ($user2['user_id'] != $row['login_id'] && $user2['role'] == "creator") {
                                     $query_shared_folder_users[$indexUser2]["role"] = "co-author";
                                     break;
                                 }
@@ -1323,7 +1420,7 @@ function folder_sharing_info($folder_id)
                         }
                     }
                 }
-                if ($row["user_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] != "creator" && $roles[$role["role"]] < $roles[$row["role"]]) {
+                if ($row["login_id"] == $query_shared_folder_users[$indexUser]["user_id"] && $row["role"] != "creator" && $roles[$role["role"]] < $roles[$row["role"]]) {
                     $query_shared_folder_users[$indexUser]["role"] = $row["role"];
                     $query_shared_folder_users[$indexUser]["role_source"] = 'template';
                     if ($row['role'] == "creator") {
@@ -1534,7 +1631,7 @@ function rss_syndication($template_id)
 {
     global $xerte_toolkits_site;
 
-    if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_admin()) {
+    if(!has_rights_to_this_template($template_id, $_SESSION['toolkits_logon_id']) && !is_user_permitted("projectadmin")) {
         return "";
     }
 
@@ -1581,7 +1678,7 @@ function access_info($template_id){
 
     $info = PROJECT_INFO_ACCESS . ": ";
 
-    $accessStr = template_access_settings($_POST['template_id']);
+    $accessStr = template_access_settings($template_id);
     switch ($accessStr)
     {
         case "Public":
@@ -1603,7 +1700,13 @@ function access_info($template_id){
                 $accessStr = "Other";
                 $nrViews = $row_access["number_of_uses"];
             }
-            else
+            else if (substr($accessStr,0,12) == "PasswordPlay")
+		    {
+				$accessTranslation = PROJECT_INFO_PASSWORD_PLAY;
+                $accessStr = "PasswordPlay";
+                $nrViews = $row_access["number_of_uses"];
+			}
+		    else
             {
                 $accessTranslation = "'" . $accessStr . "'";
                 $nrViews = $row_access["number_of_uses"];
@@ -1628,7 +1731,7 @@ function oai_shared($template_id){
     }
 
     $sql = "select status from {$xerte_toolkits_site->database_table_prefix}oai_publish where template_id=? ORDER BY audith_id DESC LIMIT 1";
-    $params = array($_POST['template_id']);
+    $params = array($template_id);
     $status = db_query_one($sql, $params);
     $info = PROJECT_INFO_OAI . ": ";
     if ($status == null)
@@ -1655,121 +1758,153 @@ function str_replace_1st($pattern, $replacement, $subject)
     }
 }
 
-function access_display($xerte_toolkits_site, $change){
+function access_display($xerte_toolkits_site, $template_id, $change){
 
     global $row_access;
 
     $prefix =  $xerte_toolkits_site->database_table_prefix ;
     $query_for_template_access = "select access_to_whom from {$prefix}templatedetails where template_id= ? ";
-    $params = array($_POST['template_id']);
+    $params = array($template_id);
 
     $row_access = db_query_one($query_for_template_access, $params);
+	
+    echo "<h2 class=\"header\">" . PROPERTIES_TAB_ACCESS . "</h2>";
+    echo "<div id=\"mainContent\">";
+	
+	echo "<fieldset id=\"security_list\" class=\"plainFS\">";
+	echo "<legend>" . PROPERTIES_LIBRARY_ACCESS . ":</legend>";
 
-    echo "<p class=\"header\"><span>" . PROPERTIES_TAB_ACCESS . " " . str_replace_1st("-", " - ", $row_access['access_to_whom'], 1) . "</span></p>";
-    echo "<p><span>" . PROPERTIES_LIBRARY_ACCESS . " " . str_replace_1st("-", " - ", $row_access['access_to_whom']) . "</span></p>";
+	echo "<div><input ";
+	if(template_access_settings($template_id) == "Public"){
+		echo "checked ";
+	}
+	echo "type=\"radio\" id=\"Public\" name=\"share_status\" value=\"Public\" ><label for=\"Public\">" . PROPERTIES_LIBRARY_ACCESS_PUBLIC . "</label></div>";
+    echo "<p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PUBLIC_EXPLAINED . "</p>";
 
-    echo "<div id=\"security_list\">";
+	echo "<div><input ";
+	if(template_access_settings($template_id) == "Password"){
+		echo "checked ";
+	}
+	echo "type=\"radio\" id=\"Password\" name=\"share_status\" value=\"Password\"><label for=\"Password\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD . "</label></div>";
+    echo "<p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_EXPLAINED . "</p>";
 
-    if(template_access_settings($_POST['template_id']) == "Public"){
+	echo "<div><input ";
+	if(substr(template_access_settings($_POST['template_id']), 0, 12) == "PasswordPlay"){
+		echo "checked ";
+	}
+	echo "type=\"radio\" id=\"PasswordPlay\" name=\"share_status\" value=\"PasswordPlay\"><label for=\"PasswordPlay\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_PLAY . "</label></div>";
+    echo "<p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_PLAY_EXPLAINED . "</p><form id=\"PWPlay_pwd\"><textarea id=\"pwd\" style=\"width:90%; height:20px;\">";
 
-        echo "<p id=\"Public\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:access_tick_toggle(this)\" />";
+	if(isset($_POST['password'])){
+
+        echo $_POST['password'];
 
     }else{
+		if(substr(template_access_settings($_POST['template_id']), 0, 12) == "PasswordPlay"){
 
-        echo "<p id=\"Public\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
+			$pos = strpos($row_access['access_to_whom'], "-");
+
+			if($pos !== false){
+
+				echo substr($row_access['access_to_whom'], $pos+1);
+
+			}
+		}
 
     }
 
-    echo " " . PROPERTIES_LIBRARY_ACCESS_PUBLIC . "</p><p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PUBLIC_EXPLAINED . "</p>";
+	echo "</textarea></form>";
 
-    if(template_access_settings($_POST['template_id']) == "Password"){
+	echo "<div><input ";
+	if(substr(template_access_settings($template_id),0,5) == "Other"){
+		echo "checked ";
+	}
+	echo "type=\"radio\" id=\"Other\" name=\"share_status\" value=\"Other\"><label for=\"Other\">" . PROPERTIES_LIBRARY_ACCESS_OTHER;
+	
+	if(isset($_POST['server_string'])){
 
-        echo "<p id=\"Password\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOn.gif\"  onclick=\"javascript:access_tick_toggle(this)\" />";
-
-    }else{
-
-        echo "<p id=\"Password\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
-
-    }
-
-    echo " " . PROPERTIES_LIBRARY_ACCESS_PASSWORD . "</p><p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PASSWORD_EXPLAINED . "</p>";
-
-    if(substr(template_access_settings($_POST['template_id']),0,5) == "Other"){
-
-        echo "<p id=\"Other\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
+        echo " - " . x_clean_input($_POST['server_string']);
 
     }else{
+		if(substr(template_access_settings($_POST['template_id']),0,5) == "Other"){
+			$pos = strpos($row_access['access_to_whom'], "-");
 
-        echo "<p id=\"Other\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
-
-    }
-
-    echo " " . PROPERTIES_LIBRARY_ACCESS_OTHER . "</p><p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_OTHER_EXPLAINED . "<form id=\"other_site_address\"><textarea id=\"url\" style=\"width:90%; height:20px;\">";
-
-    if(isset($_POST['server_string'])){
-
-        echo $_POST['server_string'];
-
-    }else{
-
-        $pos = strpos($row_access['access_to_whom'], "-");
-
-        if($pos !== false){
-
-            echo substr($row_access['access_to_whom'], $pos+1);
-
-        }
+			if($pos !== false){
+				echo " - " . substr($row_access['access_to_whom'], $pos+1);
+			}
+		}
 
     }
+	
+	echo "</label></div>";
+    echo "<p id=\"other_explain\" class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_OTHER_EXPLAINED . "</p><form id=\"other_site_address\"><textarea id=\"url\" style=\"width:90%; height:20px;\"></textarea></form>";
 
-    echo "</textarea></form></p>";
-
-    if(template_access_settings($_POST['template_id']) == "Private"){
-
-        echo "<p id=\"Private\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
-
-    }else{
-
-        echo "<p id=\"Private\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
-    }
-
-    echo " " . PROPERTIES_LIBRARY_ACCESS_PRIVATE . "</p><p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PRIVATE_EXPLAINED . "</p>";
+	echo "<div><input ";
+	if(template_access_settings($template_id) == "Private"){
+		echo "checked ";
+	}
+	echo "type=\"radio\" id=\"Private\" name=\"share_status\" value=\"Private\"><label for=\"Private\">" . PROPERTIES_LIBRARY_ACCESS_PRIVATE . "</label></div>";
+    echo "<p class=\"share_explain_paragraph\">" . PROPERTIES_LIBRARY_ACCESS_PRIVATE_EXPLAINED . "</p>";
+	
 
     $query_for_security_content = "select * from {$prefix}play_security_details";
 
     $rows = db_query($query_for_security_content);
 
     foreach($rows as $row_security) {
+		
+		if(template_share_status($row_security['security_setting'])){
+			
+			echo "<div><input ";
+			if(template_access_settings($template_id) == $row_security['security_setting']){
+				echo "checked ";
+			}
+			echo "type=\"radio\" id=\"" . $row_security['security_setting'] . "\" name=\"share_status\" value=\"" . $row_security['security_setting'] . "\"><label for=\"" . $row_security['security_setting'] . "\">" . $row_security['security_setting'] . "</label></div>";
+			echo "<p class=\"share_explain_paragraph\">" . $row_security['security_info'] . "</p>";
 
-            if(template_share_status($row_security['security_setting'])){
+		}else{
 
-                echo "<p id=\"" . $row_security['security_setting'] . "\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
+			echo "<div><input ";
+			if(template_access_settings($template_id) == $row_security['security_setting']){
+				echo "checked ";
+			}
+			echo "type=\"radio\" id=\"" . $row_security['security_setting'] . "\" name=\"share_status\" value=\"" . $row_security['security_setting'] . "\"><label for=\"" . $row_security['security_setting'] . "\">" . $row_security['security_setting'] . "</label></div>";
+			echo "<p class=\"share_explain_paragraph\">" . $row_security['security_info'] . "</p>";
 
-            }else{
+		}
+    }
+	
+	echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:access_change_template(" . $template_id . ")\"><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_ACCESS_BUTTON_CHANGE . "</button>";
+	
+	if($change){
 
-                echo "<p id=\"" . $row_security['security_setting'] . "\" class=\"share_status_paragraph\"><img src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:access_tick_toggle(this)\"  />";
-
-            }
-
-            echo " " . $row_security['security_setting'] . "</p><p class=\"share_explain_paragraph\">" . $row_security['security_info'] . "</p>";
-
+		echo "<span class='alert_msg' aria-live='polite'><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . PROPERTIES_LIBRARY_ACCESS_CHANGED . "</span>";
 
     }
+	
+	echo "</p>";
+	echo "</fieldset>";
+	echo "</div>";
 
-    echo "</div>";
-
-    echo "<p><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:access_change_template(" . $_POST['template_id'] . ")\"><i class=\"fa fa-floppy-o\"></i>&nbsp;&nbsp;" . PROPERTIES_LIBRARY_ACCESS_BUTTON_CHANGE . "</button> </p>";
-
-    if($change){
-
-        echo "<p>" . PROPERTIES_LIBRARY_ACCESS_CHANGED . "</p>";
-
-    }
 }
 
-function access_display_fail(){
+function access_display_fail($editor){
 
-    echo "<p>" . PROPERTIES_LIBRARY_ACCESS_FAIL . "</p>";
+	echo "<h2 class=\"header\">" . PROPERTIES_TAB_ACCESS . "</h2>";
+	
+    echo "<div id=\"mainContent\">";
+
+	if ($editor) { // not creator / co-author
+		
+		echo "<p>" . PROPERTIES_LIBRARY_ACCESS_FAIL . "</p>";
+		
+	} else {
+		
+		echo "<p>" . PROPERTIES_LIBRARY_PROJECT_FAIL . "</p>";
+		
+	}
+	
+	echo "</div>";
 
 }
 
@@ -1780,176 +1915,263 @@ function rss_display($xerte_toolkits_site,$tutorial_id,$change){
     $query_for_name = "select firstname,surname from {$prefix}logindetails where login_id= ?";
     $row_name = db_query_one($query_for_name, array($_SESSION['toolkits_logon_id']));
 
-
     $query_for_rss = "select rss,export,description from {$prefix}templatesyndication where template_id=?";
     $row_rss = db_query_one($query_for_rss, array($tutorial_id));
+	
+	echo "<h2 class=\"header\">" . PROPERTIES_LIBRARY_RSS . "</h2>";
+    
+	echo "<div id=\"mainContent\">";
+	
+	echo "<p>" . PROPERTIES_LIBRARY_RSS_SITE . "</p>";
+	
+	echo "<form action=\"javascript:rss_change_template()\" name=\"xmlshare\" >";
+	
+	echo "<div><input type=\"checkbox\" id=\"rsson\" " . ($row_rss !== false && $row_rss != null && $row_rss['rss']=="true" ? "checked" : "") . " /><label for=\"rsson\">" . PROPERTIES_LIBRARY_RSS_INCLUDE . "</label></div><br/>";
+	
+	echo "<div><input type=\"checkbox\" id=\"exporton\" " . ($row_rss !== false && $row_rss != null && $row_rss['export']=="true" ? "checked" : "") . " /><label for=\"exporton\">" . PROPERTIES_LIBRARY_RSS_EXPORT . "</label>";
+	
+	echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_EXPORT_DESCRIPTION . "</p></div>";
 
-    echo "<p class=\"header\"><span>" . PROPERTIES_LIBRARY_RSS . "</span></p>";
-
-    if($row_rss !== false && $row_rss != null && $row_rss['rss']=="true"){
-
-        echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_INCLUDE . " <img id=\"rsson\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:rss_tick_toggle('rsson')\" /> " . PROPERTIES_LIBRARY_YES . "  <img id=\"rssoff\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:rss_tick_toggle('rssoff')\" /> " . PROPERTIES_LIBRARY_NO . " </p>";
-
-    }else{
-
-        echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_INCLUDE . " <img id=\"rsson\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:rss_tick_toggle('rsson')\" /> " . PROPERTIES_LIBRARY_YES . "  <img id=\"rssoff\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:rss_tick_toggle('rssoff')\" /> " . PROPERTIES_LIBRARY_NO . " </p>";
-
-    }
-
-    if($row_rss !== false && $row_rss != null && $row_rss['export']=="true"){
-
-        echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_EXPORT . "<img id=\"exporton\" src=\"website_code/images/TickBoxOn.gif\"  onclick=\"javascript:rss_tick_toggle('exporton')\" /> " . PROPERTIES_LIBRARY_YES . "  <img id=\"exportoff\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:rss_tick_toggle('exportoff')\" /> " . PROPERTIES_LIBRARY_NO . " </p>";
-
-    }else{
-
-        echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_EXPORT . "<img id=\"exporton\" src=\"website_code/images/TickBoxOff.gif\" onclick=\"javascript:rss_tick_toggle('exporton')\" /> " . PROPERTIES_LIBRARY_YES . "  <img id=\"exportoff\" src=\"website_code/images/TickBoxOn.gif\" onclick=\"javascript:rss_tick_toggle('exportoff')\"  /> " . PROPERTIES_LIBRARY_NO . " </p>";
-
-    }
-
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_DESCRIPTION . "<form action=\"javascript:rss_change_template()\" name=\"xmlshare\" ><textarea id=\"desc\" style=\"width:90%; height:120px;\">" . ($row_rss !== false && $row_rss != null ? $row_rss['description'] : "") . "</textarea><br><br><button type=\"submit\" class=\"xerte_button\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button></form></p>";
-
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_SITE . "</p>";
-
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_SITE_LINK . " <a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS",null)  . "\">" . $xerte_toolkits_site->site_url . url_return("RSS",null) . "</a>. " . PROPERTIES_LIBRARY_RSS_PERSONAL . "<a target=\"new\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_user", ($row_name['firstname'] . "_" . $row_name['surname'])) . "\">" . $xerte_toolkits_site->site_url . url_return("RSS_user", $row_name['firstname'] . "_" . $row_name['surname']) . "</a>. " . PROPERTIES_LIBRARY_RSS_MINE . "</p>";
-
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_FOLDER . "</p>";
-
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_EXPORT . "</p>";
-
-    if($change){
-
-        echo "<p>" . PROPERTIES_LIBRARY_RSS_SAVED . "</p>";
+	echo "<label id=\"descLabel\" class=\"block\" for=\"desc\">" . PROPERTIES_LIBRARY_RSS_DESCRIPTION . ":</label><textarea id=\"desc\" style=\"width:90%; height:120px;\">" . ($row_rss !== false && $row_rss != null ? $row_rss['description'] : "") . "</textarea>";
+	
+	echo "<button type=\"submit\" class=\"xerte_button\" ><i class=\"fa fa-floppy-o\"></i>&nbsp;" . PROPERTIES_LIBRARY_SAVE . "</button>";
+	
+	if($change){
+		
+        echo "<span class='alert_msg' aria-live='polite'><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . PROPERTIES_LIBRARY_RSS_SAVED . "</span>";
 
     }
+	
+	echo "</form>";
+	
+	echo "<h3>" . PROPERTIES_LIBRARY_RSS_FEEDS . ":</h3>";
+
+    echo "<p>" . PROPERTIES_LIBRARY_RSS_SITE_LINK . ": <a target=\"_blank\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS",null)  . "\">" . $xerte_toolkits_site->site_url . url_return("RSS",null) . "</a>" . PROPERTIES_LIBRARY_RSS_LINKS;
+	
+	echo "<br/>" . PROPERTIES_LIBRARY_RSS_SITE_DESCRIPTION . "</p>";
+	
+	echo "<p>" . PROPERTIES_LIBRARY_RSS_PERSONAL . ": <a target=\"_blank\" href=\"" . $xerte_toolkits_site->site_url . url_return("RSS_user", ($row_name['firstname'] . "_" . $row_name['surname'])) . "\">" . $xerte_toolkits_site->site_url . url_return("RSS_user", $row_name['firstname'] . "_" . $row_name['surname']) . "</a>" . PROPERTIES_LIBRARY_RSS_LINKS . ".";
+	
+	echo "<br/>" . PROPERTIES_LIBRARY_RSS_MINE . "</p>";
+
+    echo "<p>" . PROPERTIES_LIBRARY_RSS_FOLDER . ":";
+
+	echo "<br/>" . PROPERTIES_LIBRARY_RSS_FOLDER_DESCRIPTION . "</p>";
+	
+	echo "<div>";
 
 }
 
 function rss_display_public(){
-
-    echo "<p class=\"share_status_paragraph\">" . PROPERTIES_LIBRARY_RSS_PUBLIC . "</p>";
+	
+	echo "<h2 class=\"header\">" . PROPERTIES_LIBRARY_RSS . "</h2>";
+	
+    echo "<div id=\"mainContent\">";
+	
+    echo "<p>" . PROPERTIES_LIBRARY_RSS_PUBLIC . "</p>";
+	
+	echo "</div>";
 
 }
 
-function rss_display_fail(){
-
-    echo "<p>" . PROPERTIES_LIBRARY_RSS_FAIL . "</p>";
+function rss_display_fail($editor){
+	
+	echo "<h2 class=\"header\">" . PROPERTIES_LIBRARY_RSS . "</h2>";
+	
+    echo "<div id=\"mainContent\">";
+	
+	if ($editor) { // not creator / co-author
+		
+		echo "<p>" . PROPERTIES_LIBRARY_RSS_FAIL . "</p>";
+		
+	} else {
+		
+		echo "<p>" . PROPERTIES_LIBRARY_PROJECT_FAIL . "</p>";
+		
+	}
+	
+	echo "</div>";
 
 }
 
 function tsugi_display($id, $lti_def, $mesg = "")
 {
     global $xerte_toolkits_site;
-
-
-
+	
+	?>
+	
+	<h2 class="header"><?php echo PROPERTIES_LIBRARY_TSUGI; ?></h2>
+	<div id="mainContent">
+	
+	<?php
     if ($lti_def->tsugi_installed)
     {
-    ?>
-    <p class="header"><span><?php echo PROPERTIES_LIBRARY_TSUGI; ?></span></p>
-    <p><?php echo PROPERTIES_LIBRARY_TSUGI_DESCRIPTION; ?></p>
-
-    <p>
-    <label for="tsugi_published"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH; ?></label><input id="pubChk" type="checkbox" onchange="javascript:tsugi_toggle_tsugi_publish('<?php echo htmlspecialchars(json_encode($lti_def));?>')" name="tsugi_published" <?php echo ($lti_def->published ? "checked" : ""); ?>>
-    </p>
-    <div id="publish" class="publish <?php echo($lti_def->published ? "" : "disabled"); ?>">
-        <label for="tsugi_useglobal"><?php echo PROPERTIES_LIBRARY_TSUGI_USEGLOBAL; ?></label><input type="checkbox" onchange="javascript:tsugi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_useglobal" id="tsugi_useglobal" <?php echo ($lti_def->tsugi_useglobal ? "checked" : "");?>><br>
-        <label for="tsugi_useprivateonly"><?php echo PROPERTIES_LIBRARY_TSUGI_USEPRIVATEONLY; ?></label><input type="checkbox" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_useprivateonly" id="tsugi_useprivateonly" <?php echo ($lti_def->tsugi_privateonly ? "checked" : "");?>><br>
-        <table>
-            <tr><td><label for="tsugi_key"><?php echo PROPERTIES_LIBRARY_TSUGI_KEY; ?></label></td><td><input id="tsugi_key" name="tsugi_key" type="text" <?php echo ($lti_def->tsugi_useglobal || !$lti_def->published ? "disabled value=\"\"" : "value=\"" .  $lti_def->key . "\"");?>></td></tr>
-            <tr><td><label for="tsugi_secret"><?php echo PROPERTIES_LIBRARY_TSUGI_SECRET; ?></label></td><td><input id="tsugi_secret" name="tsugi_secret" type="text" <?php echo ($lti_def->tsugi_useglobal || !$lti_def->published ? "disabled value=\"\"" : "value=\"" .  $lti_def->secret . "\"");?>></td></tr>
-        </table>
-    </div>
-        <?php
-
+		echo PROPERTIES_LIBRARY_TSUGI_DESCRIPTION; ?>
+		
+		<form action="javascript:lti_update(<?php echo $id;?>)">
+		<fieldset class="plainFS"><legend>LTI</legend>
+		<div>
+			<input id="pubChk" type="checkbox" onchange="javascript:tsugi_toggle_tsugi_publish('<?php echo htmlspecialchars(json_encode($lti_def));?>')" name="tsugi_published" <?php echo ($lti_def->published ? "checked" : ""); ?>>
+			<label for="pubChk"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH; ?></label>
+		</div>
+		<div id="publish" class="publish <?php echo($lti_def->published ? "" : "disabled"); ?>">
+            <input type="checkbox" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_publish_in_store" id="tsugi_publish_in_store" <?php echo ($lti_def->tsugi_publish_in_store ? "checked" : "");?>>
+            <label for="tsugi_publish_in_store"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH_IN_STORE; ?></label><br>
+			<input type="checkbox" onchange="javascript:tsugi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_useglobal" id="tsugi_useglobal" <?php echo ($lti_def->tsugi_useglobal ? "checked" : "");?>>
+			<label for="tsugi_useglobal"><?php echo PROPERTIES_LIBRARY_TSUGI_USEGLOBAL; ?></label><br>
+			<input type="checkbox" <?php echo($lti_def->published ? "" : "disabled"); ?> name="tsugi_useprivateonly" id="tsugi_useprivateonly" <?php echo ($lti_def->tsugi_privateonly ? "checked" : "");?>>
+			<label for="tsugi_useprivateonly"><?php echo PROPERTIES_LIBRARY_TSUGI_USEPRIVATEONLY; ?></label><br>
+			<div class="textBoxes">
+				<div class="textBoxGroup"><label for="tsugi_key"><?php echo PROPERTIES_LIBRARY_TSUGI_KEY; ?></label>
+				<input id="tsugi_key" name="tsugi_key" type="text" <?php echo ($lti_def->tsugi_useglobal || !$lti_def->published ? "disabled value=\"\"" : "value=\"" .  $lti_def->key . "\"");?>></div>
+				<div class="textBoxGroup"><label for="tsugi_secret"><?php echo PROPERTIES_LIBRARY_TSUGI_SECRET; ?></label>
+				<input id="tsugi_secret" name="tsugi_secret" type="text" <?php echo ($lti_def->tsugi_useglobal || !$lti_def->published ? "disabled value=\"\"" : "value=\"" .  $lti_def->secret . "\"");?>></div>
+			</div>
+		</div>
+		</fieldset>
+		
+	<?php
     }
     else
     {
-        ?>
-    <p class="header"><span><?php echo PROPERTIES_LIBRARY_TSUGI; ?></span></p>
-    <p><?php echo PROPERTIES_LIBRARY_TSUGI_NOTAVAILABLE_DESCRIPTION; ?></p>
+		echo PROPERTIES_LIBRARY_TSUGI_NOTAVAILABLE_DESCRIPTION;
+		?>
+		<form action="javascript:lti_update(<?php echo $id; ?>)">
+	<?php }	?>
+		
+		<fieldset class="plainFS"><legend>xAPI</legend>
+		<div>
+			<input id="xChk" type="checkbox" onchange="javascript:tsugi_toggle_usexapi('<?php echo htmlspecialchars(json_encode($lti_def));?>')" name="tsugi_xapi" <?php echo ($lti_def->xapi_enabled ? "checked" : "");?>>
+			<label for="xChk"><?php echo PROPERTIES_LIBRARY_TSUGI_ENABLE_XAPI; ?></label>
+		</div>
+		
+		<div id="xAPI_enabled" class="publish <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?>">
 
-
-    <?php
-    }
-    ?>
-    <p>
-        <label for="xChk"><?php echo PROPERTIES_LIBRARY_TSUGI_ENABLE_XAPI; ?></label><input id="xChk" type="checkbox" onchange="javascript:tsugi_toggle_usexapi('<?php echo htmlspecialchars(json_encode($lti_def));?>')" name="tsugi_xapi" <?php echo ($lti_def->xapi_enabled ? "checked" : "");?>>
-    </p>
-        <div id="xApi" class="publish <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?>">
-            <label for="tsugi_xapi_useglobal"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USEGLOBAL; ?></label><input type="checkbox" <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?> onchange="javascript:xapi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" name="tsugi_xapi_useglobal" id="tsugi_xapi_useglobal" <?php echo ($lti_def->xapi_useglobal ? "checked" : "");?>><br>
-            <table>
-                <tr><td><label for="tsugi_xapi_endpoint"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_ENDPOINT; ?></label></td><td><input type="text" name="tsugi_xapi_endpoint" id="tsugi_xapi_endpoint" <?php echo ($lti_def->xapi_useglobal || !$lti_def->xapi_enabled ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_endpoint . "\""); ?>"></td></tr>
-                <tr><td><label for="tsugi_xapi_username"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USERNAME; ?></label></td><td><input type="text" name="tsugi_xapi_username" id="tsugi_xapi_username" <?php echo ($lti_def->xapi_useglobal || !$lti_def->xapi_enabled ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_username . "\""); ?>"></td></tr>
-                <tr><td><label for="tsugi_xapi_password"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_PASSWORD; ?></label></td><td><input type="text" name="tsugi_xapi_password" id="tsugi_xapi_password" <?php echo ($lti_def->xapi_useglobal || !$lti_def->xapi_enabled ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_password . "\""); ?>"></td></tr>
-                <tr><td><label for="tsugi_xapi_student_id_mode"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE; ?></label></td><td><select name="tsugi_xapi_student_id_mode" id="tsugi_xapi_student_id_mode" <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?> >
-                <?php
-                for ($i=0; $i<4; $i++)
-                {
-                    if (! $lti_def->tsugi_installed && $i<3)
-                    {
-                        continue;
-                    }
-                    if (true_or_false($xerte_toolkits_site->xapi_force_anonymous_lrs) && ($i==0 || $i==2))
-                    {
-                        // Skip email and name + email
-                        continue;
-                    }
-                    echo "<option value=\"" . $i . "\" " . ($i == $lti_def->xapi_student_id_mode ? "selected>" : ">");
-                    switch($i)
-                    {
-                        case 0:
-                            echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_0;
-                            break;
-                        case 1:
-                            echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_1;
-                            break;
-                        case 2:
-                            echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_2;
-                            break;
-                        case 3:
-                            echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_3;
-                            break;
-                    }
-                    echo "</option>\n";
-                }
-                ?>
-            </select></td></tr>
-            <tr><td colspan="2"><label for="dashboard_urls"><?php echo PROPERTIES_LIBRARY_TSUGI_DASHBOARD_URLS; ?></label></td></tr>
-            <tr><td colspan="2"><input name="dashboard_urls" type="text" <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?> value="<?php echo $lti_def->dashboard_urls ?>"></td></tr>
-            </table>
-        </div>
-        <input type="button" value="<?php echo PROPERTIES_LIBRARY_TSUGI_UPDATE_BUTTON_LABEL; ?>" class="xerte_button" onclick="javascript:lti_update(<?php echo $id;?>)">
+            <div id="xApi_dashboard" class="<?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?>">
+                <input type="checkbox" <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?> name="tsugi_publish_dashboard_in_store" id="tsugi_publish_dashboard_in_store" <?php echo ($lti_def->tsugi_publish_dashboard_in_store ? "checked" : "");?>>
+                <label for="tsugi_publish_dashboard_in_store"><?php echo PROPERTIES_LIBRARY_TSUGI_PUBLISH_DASHBOARD_IN_STORE; ?></label><br>
+            </div>
+			<div id="xApi" class="<?php echo($lti_def->published && $lti_def->xapi_enabled ? "" : "disabled"); ?>">
+				<input type="checkbox" <?php echo($lti_def->published && $lti_def->xapi_enabled ? "" : "disabled"); ?> onchange="javascript:xapi_toggle_useglobal('<?php echo htmlspecialchars(json_encode($lti_def));?>')" name="tsugi_xapi_useglobal" id="tsugi_xapi_useglobal" <?php echo ($lti_def->xapi_useglobal ? "checked" : "");?>>
+				<label for="tsugi_xapi_useglobal"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USEGLOBAL; ?></label>
+			</div>
+			
+			<div class="textBoxes">
+				
+				<div id="endpoint" class="textBoxGroup <?php echo($lti_def->xapi_useglobal || !$lti_def->xapi_enabled ?  "disabled" : ""); ?>">
+					<label for="tsugi_xapi_endpoint"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_ENDPOINT; ?></label>
+					<input type="text" name="tsugi_xapi_endpoint" id="tsugi_xapi_endpoint" <?php echo ($lti_def->xapi_useglobal || !$lti_def->xapi_enabled ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_endpoint . "\""); ?>>
+				</div>
+				
+				<div id="username" class="textBoxGroup <?php echo($lti_def->xapi_useglobal || !$lti_def->xapi_enabled ?  "disabled" : ""); ?>">
+					<label for="tsugi_xapi_username"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_USERNAME; ?></label>
+					<input type="text" name="tsugi_xapi_username" id="tsugi_xapi_username" <?php echo ($lti_def->xapi_useglobal || !$lti_def->xapi_enabled ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_username . "\""); ?>>
+				</div>
+				
+				<div id="password" class="textBoxGroup <?php echo($lti_def->xapi_useglobal || !$lti_def->xapi_enabled ?  "disabled" : ""); ?>">
+					<label for="tsugi_xapi_password"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_PASSWORD; ?></label>
+					<input type="text" name="tsugi_xapi_password" id="tsugi_xapi_password" <?php echo ($lti_def->xapi_useglobal || !$lti_def->xapi_enabled ?  "disabled value=\"\"" : "value=\"" .  $lti_def->xapi_password . "\""); ?>>
+				</div>
+				
+				<div id="studentid" class="textBoxGroup <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?>">
+					<label for="tsugi_xapi_student_id_mode"><?php echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE; ?></label>
+					<select name="tsugi_xapi_student_id_mode" id="tsugi_xapi_student_id_mode" <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?> >
+				
+					<?php
+					for ($i=0; $i<4; $i++)
+					{
+						if (! $lti_def->tsugi_installed && $i<3)
+						{
+							continue;
+						}
+						if (true_or_false($xerte_toolkits_site->xapi_force_anonymous_lrs) && ($i==0 || $i==2))
+						{
+							// Skip email and name + email
+							continue;
+						}
+						echo "<option value=\"" . $i . "\" " . ($i == $lti_def->xapi_student_id_mode ? "selected>" : ">");
+						switch($i)
+						{
+							case 0:
+								echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_0;
+								break;
+							case 1:
+								echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_1;
+								break;
+							case 2:
+								echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_2;
+								break;
+							case 3:
+								echo PROPERTIES_LIBRARY_TSUGI_XAPI_STUDENT_ID_MODE_3;
+								break;
+						}
+						echo "</option>";
+					}
+					?>
+					</select>
+				</div>
+				
+				<div class="textBoxGroup">
+					<label for="dashboard_urls"><?php echo PROPERTIES_LIBRARY_TSUGI_DASHBOARD_URLS; ?></label>
+					<input name="dashboard_urls" type="text" <?php echo($lti_def->xapi_enabled ? "" : "disabled"); ?> value="<?php echo $lti_def->dashboard_urls ?>">
+				</div>
+			
+			</div>
+		
+		</div>
+		
+		</fieldset>
+		
+        <button type="submit" class="xerte_button"><i class="fa fa-floppy-o"></i> <?php echo PROPERTIES_LIBRARY_TSUGI_UPDATE_BUTTON_LABEL; ?></button>
+		
+	</form>
+	
     <?php
     if (strlen($mesg)>0) { ?>
-        <p id="result_message"><?php echo $mesg; ?></p>
+		<p class="alert_msg" aria-live="polite"><i class="fa fa-exclamation-circle" style="height: 14px; color:#f86718;"></i> <?php echo $mesg; ?></p>
     <?php
     }
-    ?>
-    <p class="lti_launch_url">
-    <?php
-
+    
     if($lti_def->published)
     {
-        echo PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br><span class='lti_launch_url'>" . $lti_def->url . "</span>";
-        echo "</p><p>" . PROPERTIES_LIBRARY_TSUGI_LTI13_LAUNCH_URL . "<br><span class='lti_launch_url'>" . $lti_def->url13 . "</span>";
+        echo "<p class='lti_launch_url'>" . PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br>";
+		echo "<a class='lti_launch_url' href='" . $lti_def->url . "' target='_blank'>" . $lti_def->url . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
+        echo "</p>";
+		echo "<p>" . PROPERTIES_LIBRARY_TSUGI_LTI13_LAUNCH_URL . "<br>";
+		echo "<a class='lti_launch_url' href='" . $lti_def->url13 . "' target='_blank'>" . $lti_def->url13 . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
+		echo "</p>";
     }
-    else
+    else if ($lti_def->xapi_enabled)
     {
-        if ($lti_def->xapi_enabled)
-        {
-            // Show xapionly url
-            echo PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br><span class='lti_launch_url'>" . $lti_def->xapionly_url . "</span>";
-        }
+		// Show xapionly url
+		echo "<p class='lti_launch_url'>";
+		echo PROPERTIES_LIBRARY_TSUGI_LTI_LAUNCH_URL . "<br>";
+		echo "<a class='lti_launch_url' href='" . $lti_def->xapionly_url . "' target='_blank'>" . $lti_def->xapionly_url . "</a>" . PROPERTIES_LIBRARY_PROJECT_LINKS;
+		echo "</p>";
     }
     ?>
-    </p>
+	
+	</div>
 
     <?php
-
 }
 
-function tsugi_display_fail(){
+function tsugi_display_fail($editor){
 
-    echo "<p>" . PROPERTIES_LIBRARY_TSUGI_FAIL . "</p>";
+	echo "<h2 class=\"header\">" . PROPERTIES_LIBRARY_TSUGI . "</h2>";
+	
+    echo "<div id=\"mainContent\">";
+
+	if ($editor) { // not creator / co-author
+		
+		echo "<p>" . PROPERTIES_LIBRARY_TSUGI_FAIL . "</p>";
+		
+	} else {
+		
+		echo "<p>" . PROPERTIES_LIBRARY_PROJECT_FAIL . "</p>";
+		
+	}
+	
+	echo "</div>";
 
 }

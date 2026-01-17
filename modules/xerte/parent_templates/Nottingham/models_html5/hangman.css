@@ -22,11 +22,11 @@
 		margin:		5px;
 		display:	inline-block;
 		vertical-align:	top;
+		font-weight:	bold;
+		font-size:		1.25em;
 	}
 
 	#clue .dash {
-		font-weight:	bold;
-		font-size:		1.25em;
 		border-bottom:	1px solid gray;
 	}
 

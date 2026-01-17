@@ -30,6 +30,10 @@ var EDITOR = (function ($, parent) {
 
     // replace all line breaks in attributes with ascii code - otherwise these are replaced with spaces when parsed to xml
     FixLineBreaks = function (text) {
+        // Fix annoying characters that can cause issues
+        // At this time the ascii character STX (soft hyphen) -> replace with '-'
+        text = text.replace(/\u0002/g, "-");
+
         var split_up = text.split(/<\!\[CDATA\[|\]\]>/),
             temp, i, j, len, len2;
 

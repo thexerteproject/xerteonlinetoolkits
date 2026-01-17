@@ -24,16 +24,23 @@ require("../user_library.php");
 if(is_user_admin()){
 
 	_load_language_file("/extend.inc");
+
+    if (!isset($_POST['name']))
+    {
+        die("No module name");
+    }
+    $module = x_clean_input($_POST['name'], 'string');
+    $dirpath = $xerte_toolkits_site->root_file_path . "modules/" . $module . "/templates/";
+    x_check_path_traversal($dirpath, $xerte_toolkits_site->root_file_path . 'modules', "Invalid module name", 'folder');
+	if(file_exists($dirpath)){
 	
-	if(file_exists($xerte_toolkits_site->root_file_path . "modules/" . $_POST['name'] . "/templates/")){
-	
-		$dir = opendir($xerte_toolkits_site->root_file_path . "modules/" . $_POST['name'] . "/templates/");
+		$dir = opendir($dirpath);
 		
 		while($template = readdir($dir)){
 		
 			if($template!="."&&$template!=".."){
 					
-				$data = file_get_contents($xerte_toolkits_site->root_file_path . "modules/" . $_POST['name'] . "/templates/" . $template . "/" . $template . ".info");	
+				$data = file_get_contents($dirpath . $template . "/" . $template . ".info");
 				
 				$info = explode("\n",$data);
 				
@@ -79,27 +86,27 @@ if(is_user_admin()){
 				
 				if($continue){
 				
-					$row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_framework=? and template_name=?", array($_POST['name'], $template));
+					$row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_framework=? and template_name=?", array($module, $template));
 					
 					if(isset($row)){
 					
 						if(is_array($row)){
 					
 							db_query("update {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails set display_name=?, description=?, access_rights=?, active=? where template_type_id=?", array($template_object['display_name'],$template_object['description'], $row['template_type_id'], "*", 1));
-							echo "<p>" . $_POST['name'] . "/" . $template . " " . EXTEND_MODULE_UPDATE . "</p>";
+							echo "<p>" . $module . "/" . $template . " " . EXTEND_MODULE_UPDATE . "</p>";
 						
 						}
 					
 					}else{
 						
-						db_query("insert into {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails (template_framework,template_name,display_name,description,date_uploaded,access_rights,active)values(?,?,?,?,?,?,?)", array($_POST['name'], $template,$template_object['display_name'],$template_object['description'],date("Y-m-d",time()),"*",1));
-						echo "<p>" . $_POST['name'] . "/" . $template . " " . EXTEND_MODULE_INSTALL . "</p>";
+						db_query("insert into {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails (template_framework,template_name,display_name,description,date_uploaded,access_rights,active)values(?,?,?,?,?,?,?)", array($module, $template,$template_object['display_name'],$template_object['description'],date("Y-m-d",time()),"*",1));
+						echo "<p>" . $module . "/" . $template . " " . EXTEND_MODULE_INSTALL . "</p>";
 					
 					}
 					
 				}else{
 				
-					echo "<p>" . $_POST['name'] . "/" . $template . " <span style='color:#f00'>" . EXTEND_MODULE_REQUIRES . "</span> <strong>" . $template_object['requires'] . "</strong></p>";
+					echo "<p>" . $module . "/" . $template . " <span style='color:#f00'>" . EXTEND_MODULE_REQUIRES . "</span> <strong>" . $template_object['requires'] . "</strong></p>";
 				
 				}
 				
@@ -109,8 +116,7 @@ if(is_user_admin()){
 	
 	}
 	
-	echo "<p><a onclick='list_modules(\"" . str_replace("XOT-","",$_POST['name']) . "\")'>" . EXTEND_LIST . "</a></p>";
+	echo "<p><a onclick='list_modules(\"" . str_replace("XOT-","",$module) . "\")'>" . EXTEND_LIST . "</a></p>";
 	
 }
 
-?>

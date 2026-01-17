@@ -853,3 +853,37 @@ div.ui-layout-center {
 	background-color: white;
 	color: black;
 }
+
+.lockFileContent {
+	background: white;
+	min-height: 100vh;
+	margin: 0;
+	display: grid;
+	grid-template-rows: auto 1fr auto;
+}
+
+.lockFileContent header, .lockFileContent main, .lockFileContent footer {
+	width: 100%;
+}
+
+.lockFileContent header {
+	min-height: 50px;
+}
+
+.lockFileContent main > div {
+	padding: 1em;
+}
+
+.lockFileContent p:first-of-type {
+	margin-top: 0;
+}
+
+.lockFileContent footer > div {
+	margin-top: 1em;
+	padding-top: 1em;
+	border-top: 1px solid #ccc;
+}
+
+.lockFileContent footer {
+	min-height: 50px;
+}

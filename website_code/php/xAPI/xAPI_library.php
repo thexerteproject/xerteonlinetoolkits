@@ -1,16 +1,45 @@
 <?php
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+require_once(dirname(__FILE__) . "/../config/popcorn.php");
 
 
 function CheckLearningLocker($lrs, $allowdb=false)
 {
     global $xerte_toolkits_site;
 
+    _debug("Checking LRS (allowdb=" . $allowdb ? 'true' : 'false' . "): " . $lrs['lrsendpoint']);
     if ($allowdb && isset($xerte_toolkits_site->LRSDbs) && isset($xerte_toolkits_site->LRSDbs[$lrs['lrsendpoint']]))
     {
         $lrsendpoint = $lrs['lrsendpoint'];
         $lrs['dblrsendpoint'] = $xerte_toolkits_site->LRSDbs[$lrsendpoint]['endpoint'];
         $lrs['dblrskey'] = $xerte_toolkits_site->LRSDbs[$lrsendpoint]['key'];
         $lrs['dblrssecret'] = $xerte_toolkits_site->LRSDbs[$lrsendpoint]['secret'];
+        if (isset($xerte_toolkits_site->LRSDbs[$lrsendpoint]['extra_install']))
+        {
+            $lrs['extra_install'] = $xerte_toolkits_site->LRSDbs[$lrsendpoint]['extra_install'];
+        }
+        else
+        {
+            $lrs['extra_install'] = '';
+        }
         $lrs['db'] = true;
     }
     else
@@ -36,6 +65,14 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
 
 	$version = file_get_contents(dirname(__FILE__) . "/../../../version.txt");
     $language_ISO639_1code = substr($language, 0, 2);
+    if ($parent_name == "Nottingham")
+    {
+        $common_folder = "common_html5/";
+    }
+    else
+    {
+        $common_folder = "common/";
+    }
 
     $template_path = $xerte_toolkits_site->basic_template_path . $type . '/parent_templates/' . $parent_name . "/";
 
@@ -65,17 +102,7 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
     $xapi_html_page_content = str_replace("%PLUGINS%", 'var plugins=' . json_encode($plugins), $xapi_html_page_content);
 
     // Check popcorn mediasite and peertube config files
-    $popcorn_config = "";
-    $mediasite_config_js = $template_path . "common_html5/js/popcorn/config/mediasite_urls.js";
-    if (file_exists($mediasite_config_js))
-    {
-        $popcorn_config .= "<script type=\"text/javascript\" src=\"$mediasite_config_js?version=" . $version . "\"></script>\n";
-    }
-    $peertube_config_js = $template_path . "common_html5/js/popcorn/config/peertube_urls.js";
-    if (file_exists($peertube_config_js))
-    {
-        $popcorn_config .= "<script type=\"text/javascript\" src=\"$peertube_config_js?version=" . $version . "\"></script>\n";
-    }
+    $popcorn_config = popcorn_config($template_path . $common_folder, $version, $common_folder);
     $xapi_html_page_content = str_replace("%POPCORN_CONFIG%", $popcorn_config, $xapi_html_page_content);
 
     $endpoint = $xerte_toolkits_site->LRS_Endpoint;

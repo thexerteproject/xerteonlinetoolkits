@@ -36,16 +36,19 @@
 	}
 	
 	#categoryHolder .category {
-		padding:			1%;
-		float:				left;
+		padding: 1%;
+		float: left;
+		cursor: pointer;
 	}
 	
 	#categoryHolder .category .label {
 		margin-top:		10px;
 	}
 	
-	#categoryHolder h3 {
+	#categoryHolder .categoryTitle {
 		text-align:		center;
+		font-weight: bold;
+		padding: 0;
 	}
 	
 	#button {

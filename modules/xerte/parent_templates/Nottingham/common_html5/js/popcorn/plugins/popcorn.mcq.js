@@ -52,17 +52,19 @@ optional: feedback page synch play enable
 		    for (var i = 0; i < options.childNodes.length; i++) {
 			    var curValid = false;
 			    for (var j = 0; j < selected.length; j++) {
-				    if (i == selected[j] && options.childNodes[i].getAttribute("correct") == "false") {
-					    allValid = false;
-				    }
-				    if (i == selected[j] && options.childNodes[i].getAttribute("correct") == "true") {
+				    if ((i == selected[j] && options.childNodes[i].getAttribute("correct") == "true") || !judge) {
 					    curValid = true;
+				    }
+				    if ((i == selected[j] && options.childNodes[i].getAttribute("correct") == "false") && judge) {
+					    allValid = false;
 				    }
 			    }
 			    if (!curValid && options.childNodes[i].getAttribute("correct") == "true") {
 				    allValid = false;
 			    }
 		    }
+
+				
 
 		    // Xerte Tracking setup
 		    var l_options = [];
@@ -92,14 +94,15 @@ optional: feedback page synch play enable
 			var result =
 			{
 				success: allValid,
-				score: (allValid ? 100.0 : 0.0)
+				score: (allValid ? 100.0 : 0.0),
+				judge: judge
 			};
 
 			//Push results
 			XTSetPageScore(x_currentPage, scormScore);
 			XTExitInteraction(x_currentPage, ia_nr, result, l_options, l_answers, l_feedback);
             $learningObjectParent.enableControls(media.media, true);
-        }
+    };
 
 		// Feedback Manager
 		var answerSelected = function() {
@@ -125,19 +128,19 @@ optional: feedback page synch play enable
 			}
 			
 			// feedback if question has true/false answers
-			if (judge == true) {
+			if (judge) {
 				var fb;
 				finishTracking(options);
 				if (options.answerType == "multiple" && options.type == "radio") {
 					fb = "multiRight";
 					for (var i=0; i<options.childNodes.length; i++) {
 						if ($.inArray(i, selected) >= 0) {
-							if (options.childNodes[i].getAttribute("correct") == "false") {
+							if (options.childNodes[i].getAttribute("correct") == "false" && judge) {
 								fb = "multiWrong";
 								break;
 							}
 						} else {
-							if (options.childNodes[i].getAttribute("correct") == "true") {
+							if (options.childNodes[i].getAttribute("correct") == "true" && judge) {
 								fb = "multiWrong";
 								break;
 							}
@@ -150,7 +153,7 @@ optional: feedback page synch play enable
 				} else {
 					fb = "singleRight";
 					for (var i=0; i<selected.length; i++) {
-						if (options.childNodes[selected[i]].getAttribute("correct") == "false") {
+						if (options.childNodes[selected[i]].getAttribute("correct") == "false" && judge) {
 							fb = "singleWrong";
 							break;
 						}
@@ -162,6 +165,8 @@ optional: feedback page synch play enable
 				
 			
 				feedbackTxt += options[fb] != "" ? '<div class="feedback"><p>' + options[fb] + '</p></div>' : "";
+			}else {
+				finishTracking(options);
 			}
 			
 			if (options.childNodes[index].getAttribute("enable") == "true" || (enable == true && ((options.childNodes[index].getAttribute("page") == undefined || options.childNodes[index].getAttribute("page") == "") && (options.childNodes[index].getAttribute("synch") == undefined || options.childNodes[index].getAttribute("synch") == "")))) {
@@ -178,10 +183,9 @@ optional: feedback page synch play enable
 			if (feedbackTxt != "") {
 				var feedbackLabel = options.feedbackLabel != "" ? '<h5>' + options.feedbackLabel + '</h5>' : "";
 				
-				$feedbackDiv
-					.html(feedbackLabel + feedbackTxt)
-					.show();
+				$feedbackDiv.html(feedbackLabel + feedbackTxt);
 				$continueBtn.show();
+				x_pageContentsUpdated();
 
 				//#Warning: unused by Xerte at the current time.
 				if (action >= 0) {
@@ -197,6 +201,8 @@ optional: feedback page synch play enable
 			// no feedback needed so do change page / play / change media current time immediately
 			} else if (action >= 0) {
 				doAction(action);
+			} else {
+				$continueBtn.show();
 			}
 		}
 		
@@ -230,6 +236,7 @@ optional: feedback page synch play enable
 		return {
 			_setup: function(options) {
 				media = this;
+				let judgeOverride = options.judge?? "true";
 				judge = false;
 				autoEnable = true;
 				var tempEnable = false;
@@ -237,36 +244,67 @@ optional: feedback page synch play enable
 				$target = $("#" + options.target);
 				var $optionText = options.name !== "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text);
 				$target.hide();
+				debugger;
+				// Store the answers in a temporary array
+				var elements = [];
+				(options.childNodes).each(function(i) {
+					elements.push(
+						{
+							label:		this.getAttribute("name"),
+							text:		this.getAttribute("text"),
+							correct:	this.getAttribute("correct"),
+							feedback:	this.getAttribute("feedback"),
+							audioFB:	this.getAttribute("audioFB"),
+							transcript:	this.getAttribute("audioTranscript") != undefined && this.getAttribute("audioTranscript") != '' ? this.getAttribute("audioTranscript") : false,
+							page:		this.getAttribute("page"),
+							synch:		this.getAttribute("synch"),
+							play:		this.getAttribute("play"),
+							enable:		this.getAttribute("enable")
+						}
+					);
+				});
 
+				// Randomise the answers, if required
+				if (options.answerOrder != undefined && options.answerOrder == 'random') {
+					for (var tmp, j, k, i = elements.length; i--;) {
+						j = Math.floor(Math.random() * elements.length);
+						k = Math.floor(Math.random() * elements.length);
+						tmp = elements[j];
+						elements[j] = elements[k];
+						elements[k] = tmp;
+					}
+				}
+
+				$target.data('optionElements', elements);
 				$optHolder = $('<div class="optionHolder"/>').appendTo($target);
 
-				if ($(options.childNodes).length == 0) {
+				if (elements.length == 0) {
 					$optHolder.html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
 				} else {
 					// create answer options (could be buttons, radio list or drop down menu)
-					$(options.childNodes).each(function(i) {
-						if (judge == false && this.getAttribute("correct") == "true") {
+					$(elements).each(function(i) {
+						if (judge == false && (this.correct == "true" && judgeOverride == "true")) {
 							judge = true;
 							autoEnable = false;
 						}
 						
-						if (tempEnable == false && ((this.getAttribute("page") != undefined && this.getAttribute("page") != "") || (this.getAttribute("synch") == undefined && this.getAttribute("synch") == "") || this.getAttribute("play") == "true" || this.getAttribute("enable") == "true")) {
+						if (tempEnable == false && ((this.page != undefined && this.page != "") || (this.synch == undefined && this.synch == "") || this.play == "true" || this.enable == "true")) {
 							tempEnable = true;
 						}
 						
 						var authorSupport = "";
 						if (x_params.authorSupport == "true") {
-							if (this.getAttribute("synch") != undefined && this.getAttribute("synch") != "") {
+							if (this.synch != undefined && this.synch != "") {
 								var skipTxt = x_currentPageXML.getAttribute("supportSkip") != undefined ? x_currentPageXML.getAttribute("supportSkip") : "skip";
-								authorSupport += ' <span class="alert">[' + skipTxt + ":" + this.getAttribute("synch") + ']</span>';
+								authorSupport += ' <span class="alert">[' + skipTxt + ":" + this.synch + ']</span>';
 							}
-							if (this.getAttribute("page") != undefined && this.getAttribute("page") != "") {
-								var pageNum = x_lookupPage("linkID", this.getAttribute("page")),
+							if (this.page != undefined && this.page != "") {
+								var pageNum = x_lookupPage("linkID", this.page),
 									skipTxt = x_currentPageXML.getAttribute("supportPage") != undefined ? x_currentPageXML.getAttribute("supportPage") : "page";
 								if (pageNum != null) {
 									authorSupport += ' <span class="alert">[' + skipTxt + ":" + x_pages[pageNum].getAttribute("name") + ']</span>';
-								} else if ($.isNumeric(this.getAttribute("page"))) {
-									authorSupport += ' <span class="alert">[' + skipTxt + ":" + this.getAttribute("page") + ']</span>';
+								} else if ($.isNumeric(this.page)) {
+									authorSupport += ' <span class="alert">[' + skipTxt + ":" + this.page + ']</span>';
 								}
 							}
 						}
@@ -274,7 +312,7 @@ optional: feedback page synch play enable
 						if (options.type == "button") {
 							$('<button/>')
 								.appendTo($optHolder)
-								.button({"label": this.getAttribute("text") + authorSupport})
+								.button({"label": this.text + authorSupport})
 								.click(function() {
 									$feedbackDiv.html("");
 									selected = [i];
@@ -298,7 +336,7 @@ optional: feedback page synch play enable
 								$option
 									.attr({
 										"id": options.target + "_option" + i,
-										"value": this.getAttribute("text")
+										"value": this.text
 									})
 									.data("index", i)
 									.change(function() {
@@ -329,7 +367,7 @@ optional: feedback page synch play enable
 									});
 								
 								$optionTxt
-									.html(x_addLineBreaks(this.getAttribute("text")) + authorSupport)
+									.html(x_addLineBreaks(this.text) + authorSupport)
 									.attr("for", options.target + "_option" + i)
 									.data("option", $option);
 								
@@ -366,12 +404,11 @@ optional: feedback page synch play enable
 								var $option = $('<option/>').appendTo($optGroup);
 								
 								$option
-									.attr("value", this.getAttribute("text"))
-									.html(this.getAttribute("text") + authorSupport);
+									.attr("value", this.text)
+									.html(this.text + authorSupport);
 							}
 						}
 					});
-					
 					if (tempEnable == true && autoEnable == true) { // prevent automatic enabling of controls if an answer has an action that will enable anyway
 						autoEnable = false;
 					}
@@ -390,9 +427,7 @@ optional: feedback page synch play enable
                             });
                     }
 					
-					$feedbackDiv = $('<div class="mcqFeedback"></div>')
-						.appendTo($target)
-						.hide();
+					$feedbackDiv = $('<div class="mcqFeedback" aria-live="polite"></div>').appendTo($target)
 
 					$continueBtn = $('<button class="mcqContinueBtn"></button>').appendTo($target).hide();
 					$continueBtn
@@ -424,7 +459,7 @@ optional: feedback page synch play enable
 					$target.hide();
 					
                 	if(options.optional == "true") {
-						var $showHolder  = $('<div id="showHolder" />').appendTo($target);
+						var $showHolder  = $('<div id="showHolder"/>').appendTo($target);
 						$showHs = $('<div class="Hs x_noLightBox showHotspot"/>').addClass(options.attrib.icon).appendTo($showHolder);
 						$showHs.css({
 							"background-color": options.attrib.colour1,
@@ -465,7 +500,8 @@ optional: feedback page synch play enable
 							});
 						}
 						$showHolder
-							.click(function () {
+							.click(function (e) {
+								e.stopPropagation();
 								$target.parent().css({"padding": 5, "width": options._w + "%", "height": "auto", "overflow-x": "hidden"});
                                 $("#overlay").show();
 								$showHsActive = true;
@@ -474,6 +510,13 @@ optional: feedback page synch play enable
 								$showHolder.hide();
 								$optHolder.show();
 								$target.prepend($optionText);
+							})
+							.keypress(function(e) {
+								var charCode = e.charCode || e.keyCode;
+								if (charCode == 32) {
+									e.stopPropagation();
+									$(this).trigger("click");
+								}
 							});
 
 					} else {
@@ -526,7 +569,6 @@ optional: feedback page synch play enable
 					
 					$feedbackDiv
 						.html("")
-						.hide()
 						.find("button").remove();
 					if ($showHs) {
 						$optHolder.hide();
@@ -633,6 +675,7 @@ optional: feedback page synch play enable
 					}).show();
 				}
 				$target.show();
+				x_pageContentsUpdated();
 			},
 			
 			end: function(event, options) {

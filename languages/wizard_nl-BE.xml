@@ -1,14 +1,15 @@
-<language name="Vlaams" code="nl-BE">
-	<layout closetooltip="Sluit dit paneel" opentooltip="Open dit paneel" resizetooltip="Verander grootte van dit paneel" pin="Vast maken" unpin="Los maken"  />
-	<edit label="Wijzig ..." tooltip="Wijzig deze optie" description="Wijzig knop" />
-	<insertDialog label="Voeg {i} toe" preview="Voorbeeld" example="Bekijk voorbeeld">
-		<insertBefore label="Voeg toe voor" tooltip="Niewe pagine voor geselecteerde pagina"/>
-		<insertAfter label="Voeg toe na" tooltip="Nieuwe pagina na geselecteerde pagina"/>
-		<insertAtEnd label="Voeg toe aan einde" tooltip="Niewe pagina als laatste toevoegen "/>
+<language name="Nederlands" code="nl-NL">
+    <layout closetooltip="Sluit dit paneel" opentooltip="Open dit paneel" resizetooltip="Verander grootte van dit paneel" pin="Vast maken" unpin="Los maken"  />
+    <edit label="Wijzig ..." tooltip="Wijzig deze optie" description="Wijzig knop" />
+    <insertDialog label="Voeg {i} toe" preview="Voorbeeld" example="Bekijk voorbeeld">
+        <insertBefore label="Voeg toe voor" tooltip="Niewe pagine voor geselecteerde pagina"/>
+        <insertAfter label="Voeg toe na" tooltip="Nieuwe pagina na geselecteerde pagina"/>
+        <insertAtEnd label="Voeg toe aan einde" tooltip="Niewe pagina als laatste toevoegen "/>
 		<insertMerge label="Import pagina's" tooltip="Import pagina na laatste pagina"/>
-	</insertDialog>
+    </insertDialog>
 	<btnSaveXerte label="Opslaan" tooltip="Project opslaan" description="Opslaan knop"/>
-	<btnPublishXot label="Publiceer" tooltip="Publiceer project" description="Publiceer knop"/>
+	<btnPublishXot label="Publiceer/opslaan" tooltip="Publiceer/opslaan project" description="Publiceer/opslaan knop"/>
+	<wikiLink tooltip="Open wiki pagina {x} (nieuw venster)"/>
 	<popupFileUpload title="Bestand kiezen" cancelLabel="Annuleren"/>
 	<browseImportFile title="Selecteer bestand om te importeren...">
 		<dialogFilter>Alle Bestanden|*.*|JPG|*.jpg|PNG|*.png|SWF Bestanden|*.swf|Geluidsbestanden|*.mp3|Video|*.flv</dialogFilter>
@@ -24,15 +25,17 @@
 	</kblanguage>
 	<newLink label="{i} toevoegen" />
 	<helpLink tooltip="Klik voor help"/>
-	<btnAddColumn label="Kolom toevoegen" tooltip="Kolom rechts toevoegen"/>
-	<btnDelColumn label="Kolom verwijderen" tooltip="Verwijder de geselecteerde tabel"/>
+    <btnAddColumn label="Kolom toevoegen" tooltip="Kolom rechts toevoegen"/>
+    <btnDelColumn label="Kolom verwijderen" tooltip="Verwijder de geselecteerde tabel"/>
 	<btnInsert label="Voeg toe" tooltip="Invoegen"/>
 	<btnMerge label="Import pagina's" tooltip="Import pagina's"/>
 	<btnAddChild tooltip="voeg kinderen toe"/>
 	<btnDuplicate label="Kopieer" tooltip="Kloon"/>
 	<btnDelete label="Wis" tooltip="Verwijder het geselecteerde item"/>
+	<btnAdvanced label_on="Geavanceerde modus aan" tooltip_on="Zet geavanceerde modus aan" label_off="Geavanceerde modus uit" tooltip_off="Zet geavanceerde modus uit"/>
 	<btnMoveUp tooltip="Verplaats naar boven"/>
 	<btnMoveDown tooltip="Verplaats naar beneden"/>
+	<chkExpandTree label="Pagina's uitvouwen" tooltip="Alle pagina's uitvouwen"/>
 	<btnNext tooltip="Volgende item"/>
 	<btnPreview label="Toon" tooltip="Voorvertoning"/>
 	<btnPrev tooltip="Vorige item"/>
@@ -40,13 +43,22 @@
 	<addProp label="Voeg in" tooltip="Toevoegen" />
 	<optionalProp label="Extra eigenschappen:"/>
 	<optionalPropHTML general="Algemeen" label="Extra eigenschappen"/>
+	<optionalAssistantPropHTML label="Ai functies en hulpmiddelen" general="Assistenten"/>
 	<chkShowLanguage label="Toon taal opties" tooltip="Laat de taal opties zien als die er zijn."/>
 	<chkShowAdvanced label="Toon geavanceerde opties" tooltip="Laat de geavanceerde opties zien, als die er zijn."/>
-	<chkShowToolbar label="Toon knoppenbalk" tooltip="Zet standaard de knoppen balk aan."/>
+    <chkShowToolbar label="Toon knoppenbalk" tooltip="Zet standaard de knoppen balk aan."/>
+	<chkShowGroups label="Groepen uitvouwen" tooltip="Alle groepen uitvouwen."/>
 	<compMedia tooltip="Importeer media"/>
 	<compPreview error="Voorvertoning niet beschikbaar" tooltip="Voorvertoning"/>
+	<calendar tooltip="Selecteer Datum"/>
+	<chapter title="HOOFDSTUK"/>
 	<hidePage tooltip="Deze pagina is verborgen"/>
+	<hideContent tooltip="Deze content is verborgen"/>
+	<standalonePage tooltip="Dit is een stand-alone pagina"/>
+	<milestonePage tooltip="Dit is een mijlpaal pagina"/>
+	<passwordPage tooltip="Een toegangscode moet worden ingevoerd om deze pagina/sectie te kunnen bekijken"/>
 	<unmarkForCompletion tooltip="Deze pagina telt niet mee bij bepaling van voltooiing"/>
+	<advancedPage title="Geavanceerd" tooltip="Dzez pagina is geen onderdeel van dit (sub-)template en kan alleen worden toegevoegd in geavanceerde modus."/>
 	<filemenu title="Bestand">
 		<menuNew>Nieuw project...</menuNew>
 		<menuOpen>Open...</menuOpen>
@@ -61,8 +73,8 @@
 	<viewmenu title="Beeld">
 		<menuPreview>Voorvertoning</menuPreview>
 	</viewmenu>
-	<publishmenu title="Publiceer">
-		<menuPublish>Publiceer</menuPublish>
+	<publishmenu title="Publiceer/opslaan">
+		<menuPublish>Publiceer/opslaan</menuPublish>
 		<menuPackage>Maak pakket</menuPackage>
 	</publishmenu>
 	<menuPackage title="Opslaan als SCORM 1.2 Pakket">
@@ -76,7 +88,7 @@
 	<menuHelp>
 		<prompt>Help bestand komt er aan.</prompt>
 	</menuHelp>
-	<importMedia>
+		<importMedia>
 		<filters>
 			<allfiles>Alle bestanden (*.*)</allfiles>
 			<images>Afbeeldingen (*.jpg, *.jpeg, *.png)</images>
@@ -94,6 +106,7 @@
 		</fileexists>
 	</importMedia>
 	<Alert>
+		<sessionError>Fout: De sessie is verlopen - Log opnieuw in!\nGa terug naar de Xerte werkruimte en ververs de pagina om opnieuw in te loggen.\nAls de editor geslotene wordt zonder opneiuw in te loggen gaan er mogelijk gegevens verloren.</sessionError>
 		<oklabel>Ok</oklabel>
 		<cancellabel>Annuleer</cancellabel>
 		<nolabel>Nee</nolabel>
@@ -131,6 +144,7 @@
 		<deletenode>
 			<confirm>
 				<prompt>Weet u zeker dat u dit item wilt verwijderen?</prompt>
+				<chapterPrompt>QWeet u zeker dat u dit hoofdstuk wilt verwijderen? Alle pagina's in het hoofdstuk worden ook verwijderd!.</chapterPrompt>
 				<title>Bevestiging</title>
 			</confirm>
 			<error>
@@ -141,18 +155,18 @@
 		<savefile>
 			<prompt>Het genereren van de XML is mislukt. Wijzigingen zijn niet opgeslagen. Controleer uw laatste wijzigingen.</prompt>
 		</savefile>
-		<exitwizard>
-			<prompt>Je staat op het punt om de editor te verlaten</prompt>
-		</exitwizard>
-		<upload>
-			<successful>Importeren is geslaagd!</successful>
-			<failed>
-				<permissions>Importeren is mislukt: Controleer de permissies</permissions>
-				<HTTPError>Importeren is mislukt: HTTP fout</HTTPError>
-				<IOError>Importeren is mislukt: Input/Ouput fout</IOError>
-				<security>Importeren is mislukt: Beveiligigs fout</security>
-			</failed>
-		</upload>
+        <exitwizard>
+            <prompt>Je staat op het punt om de editor te verlaten</prompt>
+        </exitwizard>
+        <upload>
+            <successful>Importeren is geslaagd!</successful>
+            <failed>
+                <permissions>Importeren is mislukt: Controleer de permissies</permissions>
+                <HTTPError>Importeren is mislukt: HTTP fout</HTTPError>
+                <IOError>Importeren is mislukt: Input/Ouput fout</IOError>
+                <security>Importeren is mislukt: Beveiligings fout</security>
+            </failed>
+        </upload>
 		<changeLanguage>
 			<prompt>Wilt u al de taalopties aanpassen aan de standaard taalopties? </prompt>
 		</changeLanguage>
@@ -168,14 +182,16 @@
 		<Buttons>
 			<Rectangle>Rechthoek modus</Rectangle>
 			<Polygon>Polygon modus</Polygon>
+			<Icon>Icon modus</Icon>
 			<Reset>Herstart</Reset>
 		</Buttons>
 		<Instructions>
 			<header>Hotspot instructies:</header>
 			<rectangle>Teken een rechthoek door op de linker muisknop te drukken en de muis te slepen</rectangle>
 			<polygon>Klik om punten aan het polygon toe te voegen. Klik op het eerste (rode) punt om te stoppen</polygon>
+			<icon>Klik om een icoon te plaatsen.</icon>>
 			<reset>Klik op de &#8634; herstart knop om opnieuw te beginnen</reset>
-			<edit>De hotspot kan verlaatst en vrandert worden door er op te klikken</edit>
+			<edit>De hotspot kan verplaatst en veranderd worden door erop te klikken</edit>
 			<save>Klik op &#9745; Ok om je selectie op te slaan. Op &#9746; annuleren om de selectie en wijzigen te negeren.</save>
 			<forceRectangle>Alleen rechthoeken kunnen worden gemaakt. Flexibele hotspot is niet beschikbaar</forceRectangle>
 		</Instructions>
@@ -183,6 +199,44 @@
 			<selectFile>Selecteer eerst een afbeelding!</selectFile>
 		</Error>
 	</editHotspot>
+	<edit360Hotspot>
+		<Buttons>
+			<Reset>Herstart</Reset>
+		</Buttons>
+		<Instructions>
+			<header>Instructies:</header>
+			<line1>Plaats een hotspot door op de afbeelding te klikken.</line1>
+			<line2>Klik en sleep om de afbeelding te draaien.</line2>
+			<reset>Druk op de &#8634; herstart knop om opneiuw te beginnen.</reset>
+			<save>Klik op de &#9745; Ok knop om de view op te slaan. Om de nieuwe view te verlaten zonder op te slaan, klik de &#9746; Annuleren knop.</save>
+		</Instructions>
+		<Error>
+			<selectFile>Selecteer eerst een afbeelding!</selectFile>
+		</Error>
+	</edit360Hotspot>
+	<edit360View>
+		<Buttons>
+			<Edit>Klik om een view te selecteren</Edit>
+			<Reset>Herstart</Reset>
+		</Buttons>
+		<Instructions>
+			<header>Instructies:</header>
+			<line1>Klik de afbeelding om op een bepaald punt te focessuen of klik en sleep om de afbeelding te draaien.</line1>
+			<reset>Klik de &#8634; herstart knop om opnieuw te beginnen.</reset>
+			<save>Om de view op te slaan, klik op de &#9745; Ok knop. Om terug te gaan zonder op te slaan, klik op de &#9746; Annuleren knop.</save>
+		</Instructions>
+		<Error>
+			<selectFile>Selecteer eerst een scene!</selectFile>
+		</Error>
+	</edit360View>
+	<fontawesome>
+		<preview>Icon voorvertoning</preview>
+		<select>Selecteer Icon</select>
+		<search>Zoek Icon</search>
+		<showAll>Laat alles zien</showAll>
+		<cancel>Annuleren</cancel>
+		<noResult>geen resultaten gevonden</noResult>
+	</fontawesome>
 	<grouping deprecated="Verouderd - de rode waarde staat niet meer in de lijst in management.php"></grouping>
 	<category deprecated="Verouderd - de rode waarde staat niet meer in de lijst in management.php"></category>
 	<course deprecated="Verouderd - de rode waarde staat niet meer in de lijst in management.php">
@@ -196,6 +250,9 @@
 		<UploadCSVBtn label = "Upload csv"/>
 		<Info label = "Let op: dit overschrijft de huidige tabel"> </Info>
 		<Info2 label = "Let op: de nieuwe tabel wordt aan de oude tabel toegevoegd. Wilt u doorgaan? NB na het toevoegen kunnen er dubbele rijen na de merge."> </Info2>
-		<mergeOld label = "Voeg nieuwe tebel toe aan huidige inhoud:"/>
-	</UploadCSV>>
+		<mergeOld label = "Voeg nieuwe tabel toe aan huidige inhoud:"/>
+	</UploadCSV>
+	<lightbox>
+		<settingsButton>Open Instellingen</settingsButton>
+	</lightbox>
 </language>

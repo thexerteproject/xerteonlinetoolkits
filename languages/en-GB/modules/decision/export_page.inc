@@ -9,22 +9,17 @@
 	 * @copyright Pat Lockley
 	 * @package
 	 */
-
-    define("XERTE_EXPORT_HTML5", "Export with Javascript (a.k.a. HTML5) Engine");
-    define("XERTE_EXPORT_FLASH", "Export with Flash Engine");
-	define("XERTE_EXPORT_DESCRIPTION","There are several ways to export a project. An exported project is packaged, but not deleted, into a zip file for you to share with another user, to deploy on the web, or to import into an LMS or VLE. You can choose whether to export all of the project's files, or just those files used by the project.");
-
-  define("XERTE_EXPORT_ZIP_ARCHIVE", "Archive export. Complete export only really needed for troubleshooting xml or other issues : ");
-  define("XERTE_EXPORT_ZIP_ARCHIVE_LINK","Get Archive Zip.");
-
-  define("XERTE_EXPORT_ZIP", "Export for deployment. Contains only the files required for importing into a VLE/LMS (without SCORM tracking), deploying onto a web server, or for importing into another Xerte installation: ");
-	define("XERTE_EXPORT_ZIP_LINK","Get Deployment Zip.");
-
-	define("XERTE_EXPORT_SCORM", "Export for SCORM deployment: self contained, SCORM 1.2 or SCORM 2004 enables tracking of Quiz scores e.g. into Moodle gradebook: ");
-
-	define("XERTE_EXPORT_SCORM_12_LINK","Get SCORM 1.2 package");
-
-	define("XERTE_EXPORT_SCORM_2004_LINK","Get SCORM 2004 3rd Ed package");
-
-
-
+	 
+	define("XERTE_EXPORT_DESCRIPTION", "Exported projects are downloaded to your computer in a zip file. The original project is not deleted and will remain in Xerte. There are several ways to export a project.");
+	
+    define("XERTE_EXPORT_INTERFACE", "Export interface:");
+    define("XERTE_EXPORT_HTML5", "HTML5");
+    define("XERTE_EXPORT_FLASH", "Flash (please note that Flash is no longer supported)");
+	
+	define("XERTE_EXPORT_ZIP_TITLE", "Deployment export");
+	define("XERTE_EXPORT_ZIP", "Contains only the files required for importing into a VLE/LMS (without SCORM tracking), deploying onto a web server, or for importing into another Xerte installation.");
+	define("XERTE_EXPORT_ZIP_LINK","Get deployment zip");
+	
+	define("XERTE_EXPORT_ZIP_ARCHIVE_TITLE", "Archive export");
+    define("XERTE_EXPORT_ZIP_ARCHIVE", "Complete export only really needed for troubleshooting xml or other issues.");
+    define("XERTE_EXPORT_ZIP_ARCHIVE_LINK","Get archive zip");

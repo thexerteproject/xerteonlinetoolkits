@@ -1,21 +1,21 @@
 <wizard menus="Media">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <youtube><![CDATA[<youtube name="Enter Page Title" text="Enter text for the page here" >Enter Embed Code Here</youtube>]]></youtube>
+      <youtube><![CDATA[<youtube name="Enter Page Title" text="">Enter Embed Code Here</youtube>]]></youtube>
     </newNodes>
   </pageWizard>
 
   <youtube type="script" height="100" label="Embed Code" menuItem="YouTube Video" menu="Media" remove="true" thumb="thumbs/youtube.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#youtubevideo" wiki="https://xerte.org.uk/wiki/doku.php?id=media_youtube_video_page" hint="Include video content from YouTube in your project." icon="icYoutube">>
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
-    <text type="textArea" label="Instructions" height="300"/>
+    <text type="textArea" label="Page Text" height="300" placeholder="Enter text for the page here"/>
 
     <autoplay type="Checkbox" label="Auto-Play" optional="true" deprecated="This property is deprecated"/>
 	<toggle type="Checkbox" label="Toggle Full Screen" optional="true" deprecated="This property is no longer required"/>
-    <videoSize type="TextInput" label="Video Size" optional="true" defaultValue="420,315"/>
+    <videoSize type="TextInput" label="Video Size" optional="true" defaultValue="" placeholder="e.g. 420,315" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
 
-    <launchvideo label="Launch Video Link" type="textInput" divider="true" language="true" deprecated="This property is no longer required"/> 
-	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
+    <launchvideo label="Launch Video Link" type="textInput" divider="true" language="true" deprecated="This property is no longer required"/>
+	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
 
   </youtube>
 

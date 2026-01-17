@@ -32,8 +32,9 @@ require_once("../user_library.php");
 _load_language_file("/website_code/php/language/delete_language.inc");
 
 
-if(!is_user_admin()){
+if(!is_user_permitted("system")){
     management_fail();
+    die("Access denied!");
 }
 
 function folder_delete($path){
@@ -65,46 +66,64 @@ function folder_delete($path){
     return "";
 }
 
-if(isset($_POST['code']) && file_exists($xerte_toolkits_site->root_file_path . "languages/" . $_POST['code'])){
+if (isset($_POST['code'])) {
+    $code = x_clean_input($_POST['code'], 'string');
+    $langdir = $xerte_toolkits_site->root_file_path . "languages/" . $code;
+    // Check for path traversal
+    x_check_path_traversal($langdir, $xerte_toolkits_site->root_file_path, DELETE_LANGUAGE_FAILED . DELETE_LANGUAGE_INVALIDCODE, 'folder');
 
-    $code = $_POST['code'];
+    if (file_exists($langdir)) {
 
-    if(!_is_writable($xerte_toolkits_site->root_file_path . "languages/" . $code)) {
-        _debug("{$xerte_toolkits_site->root_file_path}languages/{$code} needs to be writeable. Cannot perform import");
-        echo DELETE_LANGUAGE_FAILED . $lang_dir . $xerte_toolkits_site->root_file_path . "languages/" . $code . DELETE_LANGUAGE_WRITABLE;
-        exit(0);
-    }
+        if (!_is_writable($langdir)) {
+            _debug("{$xerte_toolkits_site->root_file_path}languages/{$code} needs to be writeable. Cannot perform deletion");
+            echo DELETE_LANGUAGE_FAILED . $xerte_toolkits_site->root_file_path . "languages/" . $code . DELETE_LANGUAGE_WRITABLE;
+            exit(0);
+        }
 
-    $abort = false;
-    if (file_exists($xerte_toolkits_site->root_file_path . "languages/" . $code))
-    {
-        $p = folder_delete($xerte_toolkits_site->root_file_path . "languages/" . $code . "/");
-        if ($p != "")
-        {
-            echo DELETE_LANGUAGE_FAILED . $lang_dir . DELETE_LANGUAGE_UNABLE_TO_DELETE . $p;
-            $abort = true;
+        $abort = false;
+        if (file_exists($langdir)) {
+            $p = folder_delete($langdir . "/");
+            if ($p != "") {
+                echo DELETE_LANGUAGE_FAILED . DELETE_LANGUAGE_UNABLE_TO_DELETE . $p;
+                $abort = true;
 
+            }
+        }
+        $xot_wizard_path = $xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . $code;
+        x_check_path_traversal_newpath($xot_wizard_path, $xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/", DELETE_LANGUAGE_FAILED . DELETE_LANGUAGE_INVALIDCODE);
+        if (file_exists($xot_wizard_path)) {
+            $p = folder_delete($xot_wizard_path . "/");
+            if ($p != "") {
+                echo DELETE_LANGUAGE_FAILED . DELETE_LANGUAGE_UNABLE_TO_DELETE . $p;
+                $abort = true;
+            }
+        }
+        if (!$abort) {
+            echo DELETE_LANGUAGE_SUCCEEDED . $code;
+            echo "****";
+            language_details(true);
+        }
+        $site_wizard_path = $xerte_toolkits_site->root_file_path . "modules/site/parent_templates/site/wizards/" . $code;
+        x_check_path_traversal_newpath($site_wizard_path, $xerte_toolkits_site->root_file_path . "modules/site/parent_templates/site/wizards/", DELETE_LANGUAGE_FAILED . DELETE_LANGUAGE_INVALIDCODE);
+        if (file_exists($site_wizard_path)) {
+            $p = folder_delete($site_wizard_path . "/");
+            if ($p != "") {
+                echo DELETE_LANGUAGE_FAILED . DELETE_LANGUAGE_UNABLE_TO_DELETE . $p;
+                $abort = true;
+            }
+        }
+        if (!$abort) {
+            echo DELETE_LANGUAGE_SUCCEEDED . $code;
+            echo "****";
+            language_details(true);
         }
     }
-    if (file_exists($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . $code))
+    else
     {
-    $p = folder_delete($xerte_toolkits_site->root_file_path . "modules/xerte/parent_templates/Nottingham/wizards/" . $code . "/");
-        if ($p != "")
-        {
-            echo DELETE_LANGUAGE_FAILED . $lang_dir . DELETE_LANGUAGE_UNABLE_TO_DELETE . $p;
-            $abort=true;
-        }
+        echo DELETE_LANGUAGE_FAILED . DELETE_LANGUAGE_INVALIDCODE;
     }
-    if (!$abort)
-    {
-        echo DELETE_LANGUAGE_SUCCEEDED . $code;
-        echo "****";
-        language_details(true);
-    }
-
 }
 else
 {
     echo DELETE_LANGUAGE_FAILED . DELETE_LANGUAGE_INVALIDCODE;
 }
-?>

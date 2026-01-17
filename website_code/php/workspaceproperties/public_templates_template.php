@@ -38,25 +38,42 @@ include "workspace_library.php";
  * connect to the database
  */
 
-workspace_templates_menu();
-
 $prefix = $xerte_toolkits_site->database_table_prefix;
 
 $database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
 
 $query_for_public_templates = "select * from {$prefix}templatedetails, {$prefix}templaterights where "
-. "access_to_whom = ? AND "
+. "(access_to_whom = ? or access_to_whom = ? or access_to_whom like ?) AND "
 . "user_id = ? and "
 . " {$prefix}templaterights.template_id = {$prefix}templatedetails.template_id ORDER BY template_name DESC";
-$params = array('public', $_SESSION['toolkits_logon_id']);
 
+$params = array('public', 'password', 'other%', $_SESSION['toolkits_logon_id']);
 $query_public_response = db_query($query_for_public_templates, $params);
 
-workspace_menu_create(100);
+usort($query_public_response, function($first, $second){
+    return $first['template_id'] > $second['template_id'];
+});
+
+echo "<table class=\"workspaceProjectsTable\">";
+
+echo "<caption>" . WORKSPACE_LIBRARY_PUBLIC_PROJECTS_INTRO . "</caption>";
+
+echo "<tr><th class=\"narrow\">" . WORKSPACE_LIBRARY_TEMPLATE_ID . "</th><th>" . WORKSPACE_LIBRARY_TEMPLATE_NAME . "</th><th>" . WORKSPACE_LIBRARY_ACCESS . "</th></tr>";
 
 foreach($query_public_response as $row_template_name) {
-    echo "<div style=\"float:left; width:100%;\">" . str_replace("_","",$row_template_name['template_name']) . "</div>";
+	
+	$path = $xerte_toolkits_site->site_url . "play.php?template_id=";
 
+    echo "<tr><td>" . $row_template_name['template_id'] . "</td>";
+	
+	echo "<td><a href=\"" . $path . $row_template_name['template_id'] . "\" target=\"_blank\">";
+	
+	echo str_replace("_"," ",$row_template_name['template_name']);
+	
+	echo "<span class=\"sr-only\">(" . WORKSPACE_LIBRARY_LINK_WINDOW . ")</span></a></td>";
+	
+	echo "<td>" . $row_template_name['access_to_whom'] . "</td></tr>";
+	
 }
 
-echo "</div>";
+echo "</table>";

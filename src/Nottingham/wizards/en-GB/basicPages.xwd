@@ -1,52 +1,86 @@
 <commonNodes>
+
+	<resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content"/>
+
 	<narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page">
-		<narration label="Audio File" type="media" defaultValue="Select an Audio File" optional="true"/>
-		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true"/>    
+		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
+		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
 		<narrationNavigate label="Navigate at End" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically move to the next page when the audio is played to the end"/>
 	</narrate>
 	
     <navSetting label="Navigation Buttons" options="All,Back and Next,Back Only,Next Only,None" type="ComboBox" width="120" data="all,backnext,backonly,nextonly,none" defaultValue="all" optional="true" deprecated="This property is deprecated. Use the new Navigation Buttons optional property group to specify which buttons are enabled."/>
 	
-	<navBtns type="group" label="Navigation Buttons" optional="true" tooltip="Disable individual navigation buttons on this pages" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here.">
+	<navBtns type="group" label="Navigation Buttons" optional="true" tooltip="Disable individual navigation buttons on this page" info="By default the navigation buttons available on every page will depend on the project's navigation setting. Deactivate buttons on individual pages by deselecting them here.">
 		<home label="Home / Table of Contents Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<back label="Back / Previous Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<next label="Next Button" type="CheckBox" defaultValue="true" optional="true"/>
 		<save label="Save Session Button" type="CheckBox" defaultValue="true" optional="true"/>
 	</navBtns>
 	
-	<hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
-		<hidePage label="Hide Page" type="CheckBox" defaultValue="false" optional="true"/>
-		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
-		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
-		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
-		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true"/>
+	<hideShow type="group" label="Hide/Show Page" optional="true" tooltip="Hide the page completely or hide/show the page between specified dates" info="Hide this page from view at all times by leaving the 'From' &amp; 'Until' fields empty or specify a date (and optional time) in the 'From' &amp; 'Until' fields to specify when it should be available.">
+		<hidePage label="Hide Page" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
+		<hideOnDate label="From" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="hidePage=='true'" conditionTrigger="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideOnTime label="From (hh:mm)" type="TextInput" defaultValue="00:00" optional="true" condition="hidePage=='true'&amp;&amp;hideOnDate!=''&amp;&amp;hideOnDate!=undefined"/>
+		<hideUntilDate label="Until" type="DateField" defaultValue="" optional="true" allowBlank="true" condition="hidePage=='true'" conditionTrigger="true" preventPrev="true" tooltip="Use the calendar to select a date (format YYYY-MM-DD)"/>
+		<hideUntilTime label="Until (hh:mm)" type="TextInput" defaultValue="00:00" optional="true" condition="hidePage=='true'&amp;&amp;hideUntilDate!=''&amp;&amp;hideUntilDate!=undefined"/>
 	</hideShow>
 	
-	<linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu so it can only be accessed via Xerte page links">
-		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" optional="true"/>
-		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" optional="true" tooltip="Determines how links to this page are opened"/>
-		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true"/>
-		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" optional="true"/>
-		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
+	<linkGroup type="group" label="Stand-Alone Page" optional="true" tooltip="Remove page from page menu / table of contents so it can only be accessed via Xerte page links">
+		<linkPage label="Stand-Alone" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
+		<linkTarget label="Open in" type="ComboBox" data="same,new,lightbox" options="Same Window,New Window,Lightbox" defaultValue="lightbox" condition="linkPage=='true'" optional="true" tooltip="Determines how links to this page are opened"/>
+		<headerHide label="Hide Header" type="Checkbox" defaultValue="false" condition="linkPage=='true'" optional="true" tooltip="When checked, the header bar will be hidden when viewing this page. This may be desirable when viewing the page in a lightbox."/>
+		<footerHide label="Hide Footer" type="CheckBox" defaultValue="true" condition="linkPage=='true'" optional="true" tooltip="When checked, the footer bar containing the navigation buttons will be hidden when viewing this page. This is likely to be desirable when viewing the page in a lightbox."/>
+		<reqProgress label="Include in Project Progress" type="CheckBox" defaultValue="false" condition="linkPage=='true'&amp;&amp;(treeroot.progressBar!=undefined||treeroot.progressBarType=='true'||((treeroot.progressBarType=='header1'||treeroot.progressBarType=='header2'||treeroot.progressBarType=='header3')&amp;&amp;treeroot.progressSub=='false'))" optional="true" tooltip="By default stand-alone pages are excluded from contributing to the completed percentage on progress bars. Check this option to include this page in project progress calculations."/>
 	</linkGroup>
-	
+
+	<imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all">
+		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
+		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
+		<imgGenApi label="Service" type="comboBox_imagegen" defaultValue="dalle3" width="120" optional="true" conditionTrigger="true" tooltip="Dalle2: Attempt to generate the specified number of images based on the given descriptions using an AI model; Dalle3: Attempt to generate a single image based on the given description using an AI model." condition="serviceType=='generate' &amp;&amp; hasrole('aiuser')"/>
+		<nri label="Quantity" options="1, 2, 3, 4, 5, 6, 7, 8, 9, 10" type="comboBox" data="1,2,3,4,5,6,7,8,9,10" defaultValue="1" tooltip="The number of images to retrieve or generate." condition="(serviceType=='retrieve') &amp;&amp; imgApi!='null' || (serviceType=='generate' &amp;&amp; (imgGenApi!='dalle3' &amp;&amp; imgGenApi!='gpt1'))" optional="true" />
+		<imgQuery verification="^.+$" label="Query" type="TextArea" placeholder="Write your query here..." tooltip="Provide a brief description for the desired image here." height="50" wysiwyg="true" defaultValue="" condition="(imgApi != 'NaN' &amp;&amp; imgApi != 'null' &amp;&amp; imgApi != null) || (imgGenApi != 'NaN' &amp;&amp; imgGenApi != 'null' &amp;&amp; imgGenApi != null)" optional="true"/>
+		<advancedSettingsPrompt label="The following search parameters are available for your selected service:" type="info" optional="true" condition="overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'"/>
+		<wikimediaWidth label="Width" tooltip = "Input a number in pixels to filter images with that specific width, for example: 640" type="TextInput" defaultValue="" placeholder="Input the numeric value in pixels, for example 500" optional="true" condition="imgApi=='wikimedia' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
+		<wikimediaHeight label="Height" tooltip = "Input a number in pixels to filter images with that specific height, for example: 640" type="TextInput" defaultValue="" placeholder="Input the numeric value in pixels, for example 500" optional="true" condition="imgApi=='wikimedia' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
+		<pexelsColor label="Color" tooltip = "Input a single color or a hexadecimal value, representative of the average color desired in the image." type="TextInput" defaultValue="" placeholder="A single colour (red) or hex value (#F54927)" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
+		<pexelsSize label="Size" tooltip="Select the size of the retrieved images." options="small, medium, large, any" type="comboBox" data="small,medium,large,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
+		<pexelsOrientation label="Orientation" options="landscape, portrait, square, any" type="comboBox" data="landscape,portrait,square,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
+		<pixabayColors label="Color" tooltip="Input one or more colours, separated by a comma, from the following list: grayscale, transparent, red, orange, yellow, green, turquoise, blue, lilac, pink, white, gray, black, brown." type="TextInput" defaultValue="" optional="true" placeholder="grayscale, transparent, red, orange, yellow, green..." condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
+		<pixabayType label="Type" tooltip="Select which type of image to retrieve." options="all,photo,illustration,vector" type="comboBox" data="all,photo,illustration,vector" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
+		<pixabayOrientation label="Orientation" options="horizontal, vertical, all" type="comboBox" data="horizontal,vertical,all" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
+		<color label="Colors" options="black_and_white, black, white, yellow, orange, red, purple, magenta, green, teal, blue, any" type="comboBox" data="black_and_white,black,white,yellow,orange,red,purple,magenta,green,teal,blue,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='unsplash' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
+		<orientation label="Orientation" options="landscape, portrait, squarish, any" type="comboBox" data="landscape,portrait,squarish,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='unsplash' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
+		<aiSettingsPrompt label="The following AI-settings are available for your selected service:" type="info" optional="true" condition="hasrole('aiuser') &amp;&amp; (imgApi!='NaN' || imgGenApi!='NaN')"/>
+		<useAiInterpret label="Enable AI Query Interpretation" tooltip="This option results in your chosen AI model rewriting your request to better match the selected service." type="Checkbox" conditionTrigger="true" condition="hasrole('aiuser')" defaultValue="false" optional="true"/>
+		<!--<overrideAiSettings label="Enable AI settings override." tooltip="Allows the user to manually set parameters specific to the service, regardless of the input in the query." type="Checkbox" conditionTrigger="true" condition="imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia'" defaultValue="false" optional="true"/>-->
+		<overrideAiSettings label="Enable AI-Autofill for Settings" tooltip="Let the AI model determine which settings to fill in, based on your request." type="Checkbox" conditionTrigger="true" condition="(hasrole('aiuser') &amp;&amp; serviceType=='retrieve') &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia')" defaultValue="false" optional="true"/>
+		<ishButton type="imgsearchandhelpbutton" optional="true"/>
+		<aiContentWarningPrompt label="AI query interpretation is enabled. The image search and help tool will interpret the entered query using an Artifical Intelligence model before using the selected service." type="info" condition="useAiInterpret=='true' &amp;&amp; hasrole('aiuser')" optional="true"/>
+		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
+		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
+		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
+		<textApi advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
+	</imgSearchAndHelpGroup>
+
 	<passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
+		<passwordType label="Type" type="ComboBox" data="standard,centered,vault,vaultnumeric" options="Standard,Standard (centred),Vault,Keypad" optional="true" defaultValue="standard" tooltip="Customise the appearance of the access code information on the page. The access code must be numeric when 'keypad' is used." />
 		<passwordInfo label="Instructions" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Enter an access code below to view the page:&lt;/p&gt;" tooltip="The instructions which appear in the access code block"/>
 		<passwordError label="Error Message" type="TextArea" height="50" optional="true" defaultValue="&lt;p&gt;Invalid access code&lt;/p&gt;" tooltip="The error message which appears when an incorrect access code is entered"/>
-		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit button"/>
+		<passwordSubmit label="Button Label" type="TextInput" optional="true" defaultValue="Submit" tooltip="The label on the submit access code button"/>
 	</passwordGroup>
 	
 	<introGroup type="group" label="Introduction" optional="true" tooltip="Add a Page Introduction button to the footer tools, which opens information in a lightbox when clicked. This introduction can be set to open automatically when the page first loads.">
 		<introType type="ComboBox" label="Content Type" defaultValue="text" options="Text,Image,Video,URL,File" data="text,image,video,url,file" conditionTrigger="true" optional="true" tooltip="The type of content used as an introduction for this page"/>
 		<pageIntro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
-		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true"/>
-		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true"/>
+		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
+		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
-		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true"/>
-		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true"/>
+		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
+		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
+		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the page title above the introduction"/>
 		<introBtn type="CheckBox" label="Start Button" defaultValue="true" conditionTrigger="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include a 'start' button below the introduction that closes the lightbox when clicked"/>
 		<introBtnTxt label="Start Button Text" type="TextInput" defaultValue="Start" condition="introBtn=='true'&amp;&amp;(introType=='text'||introType==undefined||introType=='image')" wysiwyg="true" optional="true"/>
@@ -58,12 +92,12 @@
 		<pageID label="Page ID" type="TextInput" optional="true"/>
 	</customLinkGroup>
 		
-	<unmarkForCompletion label="Completion Not Required" type ="CheckBox" defaultValue="false" optional="true"/>
-	<disableGlossary label="Disable Glossary" defaultValue="false" type="CheckBox" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page"/>
+	<unmarkForCompletion label="Completion Not Required" type ="CheckBox" defaultValue="true" tooltip="When the project is being tracked (e.g. using SCORM or xAPI), remove the requirement for this page to be completed in order for the project to be marked as complete" optional="true"/>
+	<disableGlossary label="Disable Glossary" defaultValue="true" type="CheckBox" condition="treeroot.glossary!=undefined" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page"/>
 	<styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page"/>
 
-	<tracking type="group" label="Tracking" optional="true">
-        <trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use instead of page number as tracking identifier (SCORM and xAPI)"/>
+	<tracking type="group" label="Tracking" optional="true" tooltip="Properties relating to tracked projects (e.g. using SCORM or xAPI)">
+        <trackinglabel label="Tracking Label" type="TextInput" wysiwyg="false" optional="true" tooltip="Label to use (instead of page number) as tracking identifier"/>
         <grouping label="Tracking Grouping" type="Grouping" optional="true" tooltip="Label to use for grouping of xAPI events, to be used for grouping in xAPI reports"/>
 	</tracking>
 
@@ -72,36 +106,38 @@
 		<run label="Execute" options="First time page is viewed,Every time page is viewed" type="ComboBox" width="120" data="first,all" defaultValue="first" optional="true"/>
 	</scripts>
 
-	<background type="group" label="Background" optional="true" tooltip="Add a background image to this page">
-		<bgImage label="Image" type="media" optional="true" defaultValue="Select an Image"/>
-		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="fill" label="Image-scale" tooltip="Choose Crop to fit to have the background image fill the page but crop rather than stretch the image. Note: this will have no effect in Internet Explorer."/>
-		<bgImageAlpha label="Opacity" type="NumericStepper" min="10" max="100" step="10" defaultValue="30" optional="true"/>
-		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness"/>
-		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false"/>
+	<background type="group" label="Background" optional="true" tooltip="Add a background image to this page. This will override any background image added at project level.">
+		<bgImage label="Image" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
+		<backgroundFit optional="true" type="ComboBox" options="Stretch to fit,Crop to fit (cover),Show whole image (contain)" data="fill,cover,contain" defaultValue="cover" label="Scaling" tooltip="How the background image fills the available space. 'Stretch to fit' will stretch the image vertically or horizontally to fill the space, 'Crop to fit' will crop the image to fit without distorting it and 'Show whole image' will display the complete scaled image without distorting it. Note: this will have no effect in Internet Explorer."/>
+		<bgImageAlpha label="Opacity" type="NumericStepper" min="0" max="100" step="10" defaultValue="30" optional="true" tooltip="The opacity of the image, where 0 is completely transparent and 100 is not transparent at all"/>
+		<bgImageDark optional="true" type="NumericStepper" min="0" max="100" step="1" defaultValue="0" label="Darkness" tooltip="Add a filter to darken the image, where 0 is not darkened at all and 100 is completely darkened (black)"/>
+		<bgImageGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" tooltip="Add a filter to change the image from colour to greyscale" />
 	</background>
 	
 	<pageTimer type="group" label="Page Timer" optional="true" tooltip="Add a timer to the bottom of the page, counting down to zero">
-		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true"/>
-		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" optional="true" />
-		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up"/>
-		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining"/>
+		<showTimer label="Show Timer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true"/>
+		<timer label="Time Limit (seconds)" defaultValue="60" type="NumericStepper" min="0" step="1" width="100" condition="showTimer=='true'" optional="true" />
+		<timerLabel label="Time's Up Text" type="TextInput" optional="true" defaultValue="Time up" condition="showTimer=='true'"/>
+		<timerText label="Timer Label" type="TextInput" optional="true" defaultValue="Time remaining" condition="showTimer=='true'"/>
 	</pageTimer>
 	
 	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project."/>
 	
-	<variables type="group" label="Variables" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property">
-		<varConfirm label="Submit Message" type="TextInput" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
-		<varUpdate label="Update Variables" type="CheckBox" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
+	<variables type="group" label="Variables" condition="treeroot.variables!=undefined" optional="true" tooltip="Use in conjunction with the project level 'Variables' optional property">
+		<varConfirm label="Submit Message" type="TextInput" condition="treeroot.variables!=undefined" defaultValue="Thank you for submitting your answers" optional="true" tooltip="Message shown after new variable values are submitted by end user"/>
+		<varUpdate label="Update Variables" type="CheckBox" condition="treeroot.variables!=undefined" defaultValue="true" optional="true" tooltip="Update any instances of variables on this page after new variable values are submitted by end user"/>
 	</variables>
 	
 	<lightboxGroup type="group" label="Lightbox" optional="true" tooltip="By default, clicked images will open in a lightbox. Use these properties to turn the lightbox functionality on/off for this page only">
-		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" optional="true"/>
-		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
+		<lightbox type="CheckBox" label="Lightbox Images" defaultValue="true" conditionTrigger="true" optional="true"/>
+		<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" condition="lightbox=='true'" optional="true" options="None,Below Image,Above Image" data="false,below,above" tooltip="Add a caption to lightbox images on this page. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 	</lightboxGroup>
 
 	<pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page.">
-    <headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="This will change the header background colour for this page only. If necessary remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
-    <headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Note this will not overide a colour applied to the titles directly."/>
+		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
+		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup>
+
+	<milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar"/>
 	
 </commonNodes>

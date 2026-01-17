@@ -103,22 +103,22 @@ function duplicate_template_decision($folder_name_id,$id_to_copy,$tutorial_id_fr
      */
     $username = get_template_creator_username($id_to_copy);
     $dir_path = $xerte_toolkits_site->users_file_area_full . $id_to_copy. "-" . $username . "-" . $tutorial_id_from_post . "/";
-
+    x_check_path_traversal($dir_path, $xerte_toolkits_site->users_file_area_full, "Failed to check path traversal on folder " . $dir_path, "folder");
     /*
      * Get the id of the folder we are looking to copy into
      */
 
     $new_path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $tutorial_id_from_post . "/";
-
+    x_check_path_traversal_newpath($new_path, $xerte_toolkits_site->users_file_area_full, "Failed to check path traversal on folder " . $new_path);
     if(mkdir($new_path)){
 
         if(@chmod($new_path,0777)){
 
             if(create_folder_loop_decision($dir_path, $new_path)){
 
-                if(file_exists($new_path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $tutorial_id_from_post . "/lockfile.txt")){
+                if(file_exists($new_path  . "lockfile.txt")){
 
-                    unlink($new_path = $xerte_toolkits_site->users_file_area_full . $folder_name_id . "-" . $_SESSION['toolkits_logon_username'] . "-" . $tutorial_id_from_post . "/lockfile.txt");
+                    unlink($new_path  . "lockfile.txt");
 
                 }
 

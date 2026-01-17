@@ -26,12 +26,14 @@ DROP TABLE IF EXISTS `$template_group_rights` ;
 DROP TABLE IF EXISTS `$folderrights` ;
 DROP TABLE IF EXISTS `$folder_group_rights` ;
 DROP TABLE IF EXISTS `$oai_publish` ;
+DROP TABLE If EXISTS `$management_helper` ;
 
 DROP TABLE IF EXISTS `$lti_context` ;
 DROP TABLE IF EXISTS `$lti_keys` ;
 DROP TABLE IF EXISTS `$lti_resource` ;
 DROP TABLE IF EXISTS `$lti_user` ;
-
+DROP TABLE IF EXISTS `$lti_resource` ;
+DROP TABLE IF EXISTS `$lti_user` ;
 
 CREATE TABLE `$additional_sharing` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -70,6 +72,7 @@ CREATE TABLE `$logindetails` (
   `lastlogin` datetime DEFAULT NULL,
   `firstname` char(255) DEFAULT NULL,
   `surname` char(255) DEFAULT NULL,
+  `disabled` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`login_id`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -88,7 +91,7 @@ CREATE TABLE `$originaltemplatesdetails` (
   PRIMARY KEY (`template_type_id`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-insert  into `$originaltemplatesdetails`(`template_type_id`,`template_framework`,`template_name`,`parent_template`,`description`,`date_uploaded`,`display_name`,`display_id`,`access_rights`,`active`) values (5,'xerte','Nottingham','Nottingham','A flexible template for creating interactive learning objects.','2009-09-02','Xerte Online Toolkit',0,'*',1),(8,'xerte','Rss','Rss','Easily create and maintain an RSS Feed.','2008-04-02','RSS Feed',0,'*',0),(14,'xerte','multipersp','multipersp','A template for creating learning objects to present multiple perspectives on a topic','2009-07-08','Multiple Perspectives',0,'*',0),(15,'xerte','mediaInteractions','mediaInteractions','A  template for presenting a piece of media and creating a series of interactions','2009-09-01','Media Interactions',0,'*',0),(16,'site','site','site','A responsive template for delivering content to all devices.','2009-04-02','Bootstrap Template',0,'*',1),(17,'decision','decision','decision','A template for presenting a series of questions to reach a solution to a problem.','2009-01-01','Decision Tree Template',0,'*',1);;
+insert  into `$originaltemplatesdetails`(`template_type_id`,`template_framework`,`template_name`,`parent_template`,`description`,`date_uploaded`,`display_name`,`display_id`,`access_rights`,`active`) values (5,'xerte','Nottingham','Nottingham','A flexible template for creating interactive learning objects.','2009-09-02','Xerte Online Toolkit',0,'*',1),(8,'xerte','Rss','Rss','Easily create and maintain an RSS Feed.','2008-04-02','RSS Feed',0,'*',0),(14,'xerte','multipersp','multipersp','A template for creating learning objects to present multiple perspectives on a topic','2009-07-08','Multiple Perspectives',0,'*',0),(15,'xerte','mediaInteractions','mediaInteractions','A  template for presenting a piece of media and creating a series of interactions','2009-09-01','Media Interactions',0,'*',0),(16,'site','site','site','A responsive template for delivering content to all devices.','2009-04-02','Bootstrap Template',0,'*',1),(17,'decision','decision','decision','A template for presenting a series of questions to reach a solution to a problem.','2009-01-01','Decision Tree Template',0,'*',0);;
 
 CREATE TABLE `$play_security_details` (
   `security_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -136,6 +139,7 @@ CREATE TABLE `$sitedetails` (
   `module_path` char(255) DEFAULT NULL,
   `website_code_path` char(255) DEFAULT NULL,
   `users_file_area_short` char(255) DEFAULT NULL,
+  `users_file_area_path` text,
   `php_library_path` char(255) DEFAULT NULL,
   `import_path` char(255) DEFAULT NULL,
   `root_file_path` char(255) DEFAULT NULL,
@@ -173,6 +177,9 @@ CREATE TABLE `$sitedetails` (
   `tsugi_dir` text,
   `globalhidesocial` char(255) DEFAULT 'false',
   `globalsocialauth` char(255) DEFAULT 'true',
+  `default_theme_xerte` char(255) DEFAULT 'xot1',
+  `default_theme_site` char(255) DEFAULT 'default',
+  `default_theme_decision` char(255) DEFAULT 'default',
   PRIMARY KEY (`site_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -237,6 +244,8 @@ CREATE TABLE `$templatedetails` (
   `tsugi_xapi_key` text,
   `tsugi_xapi_secret` text,
   `tsugi_xapi_student_id_mode` int DEFAULT 0,
+  `tsugi_publish_in_store` int DEFAULT 1,
+  `tsugi_publish_dashboard_in_store` int DEFAULT 0,
   `dashboard_allowed_links` text,
   `dashboard_display_options` text,
   PRIMARY KEY (`template_id`)
@@ -247,14 +256,15 @@ CREATE TABLE `$templaterights` (
   `user_id` bigint(20) DEFAULT NULL,
   `role` char(255) DEFAULT NULL,
   `folder` bigint(20) DEFAULT NULL,
-  `notes` char(255) DEFAULT NULL,
-   KEY `index1` (`template_id`,`user_id`,`role`(10))
+  `notes` text DEFAULT NULL,
+   KEY `index1` (`template_id`,`user_id`,`role`(10)),
+   KEY `index2` (`folder`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$templatesyndication` (
   `template_id` bigint(20) NOT NULL,
-  `description` char(255) DEFAULT NULL,
-  `keywords` char(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `keywords` text DEFAULT NULL,
   `rss` text,
   `export` text,
   `syndication` text,
@@ -272,7 +282,7 @@ CREATE TABLE `$user_sessions` (
 CREATE TABLE `$user` (
   `iduser` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(45) DEFAULT NULL,
-  `password` varchar(45) DEFAULT NULL,
+  `password` varchar(100) DEFAULT NULL,
   `firstname` varchar(45) DEFAULT NULL,
   `surname` varchar(45) DEFAULT NULL,
   `email` varchar(45) DEFAULT NULL,
@@ -307,7 +317,8 @@ CREATE TABLE `$folderrights` (
   `folder_parent` int(11) NOT NULL,
   `role` char(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `index1` (`folder_id`,`login_id`,`role`(10))
+  KEY `index1` (`folder_id`,`login_id`,`role`(10)),
+  KEY `index2` (`folder_parent`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `$folder_group_rights` (
@@ -365,3 +376,89 @@ CREATE TABLE IF NOT EXISTS `$lti_user` (
   PRIMARY KEY (`lti_user_key`),
   KEY `lti_user_equ` (`lti_user_equ`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `$role` (	
+  `roleid` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL UNIQUE,
+  PRIMARY KEY (`roleid`)
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `$logindetailsrole` (
+  `roleid` int NOT NULL,
+  `userid` bigint(20) NOT NULL,
+  PRIMARY KEY (`roleid`, `userid`)
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+insert into `$role`(`roleid`, `name`) values
+  (1, 'super'),
+  (2, 'system'),
+  (3, 'templateadmin'),
+  (4, 'metaadmin'),
+  (5, 'useradmin'),
+  (6, 'projectadmin'),
+  (7, 'harvestadmin'),
+  (8, 'aiuser');
+
+CREATE TABLE IF NOT EXISTS `$management_helper` (
+    `interaction_id` int(11) NOT NULL AUTO_INCREMENT,
+    `vendor` VARCHAR(10) NOT NULL,
+    `label` VARCHAR(34) NOT NULL,
+    `type` VARCHAR(10) NOT NULL,
+    `needs_key` BOOLEAN NOT NULL,
+    `enabled` BOOLEAN NOT NULL ,
+    `sub_options` TEXT,
+    `preferred_model` TEXT,
+    PRIMARY KEY (`interaction_id`)
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `management_helper` VALUES
+                                    (1, 'openai', 'GPT (Openai)', 'ai', 1, 0, '{}', ''),
+                                    (2, 'anthropic', 'Claude (Anthropic)', 'ai', 1, 0, '{}', ''),
+                                    (3, 'mistral', 'Mistral AI', 'ai', 1, 0, '{}', ''),
+                                    (4, 'pexels', 'Pexels', 'image', 1, 0, '{}', ''),
+                                    (5, 'pixabay', 'Pixabay', 'image', 1, 0, '{}', ''),
+                                    (6, 'unsplash', 'Unsplash', 'image', 1, 0, '{}', ''),
+                                    (7, 'wikimedia', 'Wikimedia Foundation', 'image', 0, 0, '{}', ''),
+                                    (8, 'dalle2', 'DallE2 (Generative)', 'imagegen', 1, 0, '{}', ''),
+                                    (9, 'dalle3', 'DallE3 (Generative)', 'imagegen', 1, 0, '{}', ''),
+                                    (10, 'gpt1', 'GPT Image 1', 'imagegen', 1, 0, '{}', ''),
+                                    (11, 'gladia', 'Gladia (Transcription)', 'transcription', 1, 0, '{}', ''),
+                                    (12, 'openai', 'Open AI (Transcription)', 'transcription', 1, 0, '{}', ''),
+                                    (13, 'mistralenc', 'Mistral (Encoding)', 'encoding', 1, 0, '{}', ''),
+                                    (14, 'openaienc', 'OpenAI (Encoding)', 'encoding', 1, 0, '{}', '');
+
+
+CREATE TABLE IF NOT EXISTS `ai_request_logs` (
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `schema_version` VARCHAR(16) NOT NULL DEFAULT '1.0',
+
+    `occurred_at` DATETIME NOT NULL,
+    `ingested_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    `category` VARCHAR(32) NOT NULL,
+    `service` VARCHAR(32) NOT NULL,
+    `model` VARCHAR(128) DEFAULT NULL,
+    `request_id` VARCHAR(128) DEFAULT NULL,
+    `status` ENUM('ok','error') NOT NULL DEFAULT 'ok',
+    `error_message` TEXT,
+
+    `actor_user_id` VARCHAR(64) DEFAULT NULL,
+    `actor_workspace_id` VARCHAR(64) DEFAULT NULL,
+
+    `input_tokens` BIGINT UNSIGNED DEFAULT NULL,
+    `output_tokens` BIGINT UNSIGNED DEFAULT NULL,
+    `total_tokens` BIGINT UNSIGNED DEFAULT NULL,
+    `audio_ms` BIGINT UNSIGNED DEFAULT NULL,
+    `audio_seconds` DECIMAL(12,3) DEFAULT NULL,
+    `images_requested` BIGINT UNSIGNED DEFAULT NULL,
+    `images_received` BIGINT UNSIGNED DEFAULT NULL,
+    `image_dimensions` VARCHAR(64) DEFAULT NULL,
+    `image_width` INT UNSIGNED DEFAULT NULL,
+    `image_height` INT UNSIGNED DEFAULT NULL,
+
+    `cost_currency` VARCHAR(12) DEFAULT NULL,
+    `cost_pricing_version` VARCHAR(32) DEFAULT NULL,
+    `cost_total` DECIMAL(18,6) DEFAULT NULL,
+
+    PRIMARY KEY (`id`),
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;;

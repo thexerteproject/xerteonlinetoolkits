@@ -3210,6 +3210,27 @@
     };
   };
 
+  Popcorn.getVimeoHashFromURL = function getHash(vimeoUrl) {
+    // Get hash from query string
+    let paramString = vimeoUrl.split('?')[1];
+    if (paramString != undefined) {
+      let params_arr = paramString.split('&');
+      for (let i = 0; i < params_arr.length; i++) {
+        let pair = params_arr[i].split('=');
+        if (pair[0] === 'h') {
+          return pair[1];
+        }
+      }
+    }
+
+    // Search URL segments for hash
+    let result = vimeoUrl.match(/^https?:\/\/(www\.)?(player\.)?vimeo.com\/(channels\/[a-zA-Z0-9]*\/)?(?<id>[0-9]*)(\/(?<hash>[a-zA-Z0-9]+)).*$/);
+    if (result != undefined && result['groups'] != undefined) {
+      return result['groups'].hash;
+    }
+
+    return false;
+  }
   // Based somewhat on these regexps for YouTube and Vimeo (check there for updates)
   //   https://stackoverflow.com/questions/19377262/regex-for-youtube-url
   //   https://stackoverflow.com/questions/5008609/vimeo-video-link-regex
@@ -3218,7 +3239,15 @@
     let result = url.match(/(^|<iframe.+?src=["'])((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?.*?(<\/iframe>|$)$/);
     if (result) return "https://www.youtube.com/watch?v=" + result[7] + (result[8] !== undefined ? result[8] : "");
     result = url.match(/(^|<iframe.+?src=["'])(?:http|https)?:?\/?\/?(?:www\.)?(?:player\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|video\/|)(\d+)(?:|\/\?).*?(<\/iframe>|$)/);
-    if (result) return "https://vimeo.com/" + result[2];
+    if (result)
+    {
+      let hash = this.getVimeoHashFromURL(url);
+      if (hash)
+      {
+        return "https://player.vimeo.com/video/" + result[2] + '?h=' + hash;
+      }
+      return "https://vimeo.com/" + result[2];
+    }
     return url;
   }
 
@@ -4745,10 +4774,11 @@
 
         function monitorCurrentTime(videoState) {
             var playerTime = videoState.position;
+            const prev_duration = impl.duration;
             if (impl.duration != videoState.duration) {
               impl.duration = videoState.duration;
               self.dispatchEvent( "durationchange" );
-              if (impl.duration > 0) {
+              if (prev_duration == 0 && impl.duration > 0) {
                 self.dispatchEvent( "loadedmetadata" );
                 self.dispatchEvent( "loadeddata" );
               }
@@ -4762,7 +4792,12 @@
             var isPaused = !(videoState.playbackState == 'playing');
             if (isPaused != impl.playerPaused) {
               if (isPaused) {
-                onPause();
+                if (videoState.playbackState == 'ended') {
+                  onEnded();
+                }
+                else {
+                  onPause();
+                }
               }
               else {
                 onPlay();
@@ -4960,6 +4995,7 @@
       if ( !yujaIFrame.contentWindow ) {
         return;
       }
+      console.log("Posting " + JSON.stringify(data) + " to " + childOrigin);
       yujaIFrame.contentWindow.postMessage( data, childOrigin);
     }
 
@@ -4967,12 +5003,11 @@
         return childOrigin;
     }
 
-    var methods = ( "Play Pause SeekTo AdjustVolume SeekBack10 SeekAhead10 ToggleCaptions" ).split(" ");
+    var methods = ( "Play Pause SeekTo AdjustVolume SeekBack10 SeekAhead10 ToggleCaptions getDuration getCurrentPlayTime" ).split(" ");
 
     methods.forEach( function( method ) {
       // All current methods take 0 or 1 args, always send arg0
       self[ method ] = function( arg0 ) {
-        debugger
         sendMessage( method, arg0 );
       };
     });
@@ -5008,7 +5043,8 @@
         playerPaused = true,
         playerReadyCallbacks = [],
         timeUpdateInterval,
-        currentTimeInterval;
+        currentTimeInterval,
+        firstPlay = true;
 
     // Namespace all events we'll produce
     self._eventNamespace = Popcorn.guid( "HTMLYujaVideoElement::" );
@@ -5053,19 +5089,20 @@
     }
 
     function onStateChange( event ) {
-
       if( event.origin !== impl.origin ) {
         return;
       }
 
       // Events
       var data = event.data;
+
       if ( typeof data.name !== 'undefined') {
+        //console.log("Received event: " + data.name);
         switch (data.name) {
           case "ready":
             onReady();
             break;
-          case "playbackPlayed":
+          case "playbackPlaying":
             onPlay();
             break;
           case "playbackPaused":
@@ -5075,14 +5112,30 @@
             onEnded();
             break;
           case "playbackSeeked":
-            onCurrentTime(parseFloat(data.data.seconds));
+            onTimeUpdate(data.value);
             onSeeked();
+            break;
+          case "currentPlayTimeInterval":
+          case "currentPlayTime":
+            onTimeUpdate(data.value);
+            if (data.name === "currentPlayTime") {
+                onGetTimeUpdates();
+            }
+            break;
+          case "videoDuration":
+            let prevduration = impl.duration;
+            impl.duration = parseFloat(data.value);
+            if (impl.duration > 0 && prevduration != impl.duration) {
+              self.dispatchEvent("durationchange");
+              self.dispatchEvent("loadedmetadata");
+            }
             break;
         }
       }
       else
       {
-        console.log("Unknown event: " + event.data);
+        //console.log("Unknown event: ");
+        //console.log(event);
       }
     }
 
@@ -5090,6 +5143,8 @@
     function onReady()
     {
       player = new YujaPlayer(elem);
+
+      player.getDuration();
 
       impl.readyState = self.HAVE_FUTURE_DATA;
       self.dispatchEvent( "canplay" );
@@ -5100,6 +5155,20 @@
       setVolume(1);
 
       playerReady = true;
+
+    }
+
+    function onTimeUpdate(time) {
+      impl.currentTime = time;
+      self.dispatchEvent("timeupdate");
+    }
+
+    function onGetTimeUpdates(){
+      if (playerReady && !impl.playerPaused) {
+        setTimeout(function(){
+            player.getCurrentPlayTime();
+        }, 250);
+      }
     }
 
 
@@ -5142,12 +5211,17 @@
     }
 
     function changeCurrentTime( aTime ) {
+       if (firstPlay)
+       {
+         // Ignore if not already played at least once
+         return;
+       }
       if (aTime === impl.currentTime) {
         return;
       }
       impl.currentTime = aTime;
       onSeeking();
-      player.Seek(aTime);
+      player.SeekTo(aTime);
     }
 
     function onPlay() {
@@ -5155,17 +5229,18 @@
         changeCurrentTime( 0 );
         impl.ended = false;
       }
+      player.getDuration();
       self.dispatchEvent( "durationchange" );
       impl.paused = false;
       if( playerPaused ) {
         playerPaused = false;
         self.dispatchEvent( "play" );
         self.dispatchEvent( "playing" );
+        player.getCurrentPlayTime();
       }
     }
 
     self.play = function() {
-      debugger;
       impl.paused = false;
       if( !playerReady ) {
         addPlayerReadyCallback( function() { self.play(); } );
@@ -5253,6 +5328,7 @@
 
     function onEnded() {
       impl.ended = true;
+      player.Pause();
       onPause();
       self.dispatchEvent("timeupdate");
       self.dispatchEvent("ended");

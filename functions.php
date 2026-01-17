@@ -92,22 +92,28 @@ function _load_language_file($file_path) {
                 $language = $lang[0];
             }
         }
-        // xerte seems to use en-GB instead of the more standard en_GB. Assume this convention will persist....
-        $language_name = str_replace('_', '-', $language);
-        // Check that Xerte supports the required language.
-        if (!is_dir($languages . $language_name)) {
+        if (isset($language)) {
+            // xerte seems to use en-GB instead of the more standard en_GB. Assume this convention will persist....
+            $language_name = str_replace('_', '-', $language);
+            // Check that Xerte supports the required language.
+            if (!is_dir($languages . $language_name)) {
 
-            // try and catch e.g. getting back 'en' as our locale - so choose any english language pack
-            $found = false;
-            foreach (glob($languages . substr($language, 0, 2) . '*') as $dir) {
-                $found = true;
-                $language_name = basename($dir);
-                break;
+                // try and catch e.g. getting back 'en' as our locale - so choose any english language pack
+                $found = false;
+                foreach (glob($languages . substr($language, 0, 2) . '*') as $dir) {
+                    $found = true;
+                    $language_name = basename($dir);
+                    break;
+                }
+                if (!$found)
+                    $language_name = "en-GB";
             }
-            if (!$found)
-                $language_name = "en-GB";
+            $language = $language_name;
         }
-        $language = $language_name;
+        else
+        {
+            $language = "en-GB";
+        }
         $_SESSION['toolkits_language'] = $language;
     }
 
@@ -151,14 +157,19 @@ function _include_javascript_file($file_path) {
     $parpos = strpos($file_path, "?");
     if ($parpos !== false)
     {
+        $url_param=substr($file_path, $parpos);
         $file_path = substr($file_path, 0, $parpos);
     }
-    if (isset($_GET['language']) && is_dir($languages . $_GET['language'])) {
-        $_SESSION['toolkits_language'] = $_GET['language'];
+    else
+    {
+        $url_param = "";
+    }
+    if (isset($_GET['language']) && is_dir($languages . x_clean_input($_GET['language']))) {
+        $_SESSION['toolkits_language'] = x_clean_input($_GET['language']);
     }
 
     if (isset($_SESSION['toolkits_language'])) {
-        $language = $_SESSION['toolkits_language'];
+        $language = x_clean_input($_SESSION['toolkits_language']);
     } else {
         // this does some magic interrogation of $_SERVER['HTTP_ACCEPT_LANGUAGE'];
         $language = new Zend_Locale();
@@ -186,7 +197,7 @@ function _include_javascript_file($file_path) {
     _debug($real_file_path);
     _debug($en_gb_file_path);
     if (file_exists(dirname(__FILE__) . "/" . $en_gb_file_path)) {
-        echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $en_gb_file_path . "\"></script>";
+        echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $en_gb_file_path . $url_param . "\"></script>";
     } else {
         // stuff will break at this point.
         //die("Where was $real_file_path?");
@@ -196,7 +207,7 @@ function _include_javascript_file($file_path) {
 
     if ($language != "en-GB") {
         if (file_exists(dirname(__FILE__) . "/" . $real_file_path)) {
-            echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $real_file_path . "\"></script>";
+            echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $real_file_path . $url_param . "\"></script>";
         } else {
             // stuff will break at this point.
             //die("Where was $real_file_path?");
@@ -205,7 +216,7 @@ function _include_javascript_file($file_path) {
             }
         }
     }
-    echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $file_path . "\"></script>";
+    echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $file_path . $url_param . "\"></script>";
     return true;
 }
 
@@ -280,4 +291,349 @@ function true_or_false($var)
     }
 
     return false;
+}
+
+// Function to prevent XSS vulnarabilities in arrays
+// Do NOT use x_clean_input in the implementation, as Snyk does not understand that
+function x_clean_input_array($input, $expected_type = null, $specialcharsflags = ENT_QUOTES|ENT_SUBSTITUTE)
+{
+    $array_type = null;
+    if ($expected_type == 'array_numeric') {
+        $array_type = 'numeric';
+    } else if ($expected_type == 'array_string') {
+        $array_type = 'string';
+    }
+    $sanitized = array();
+    foreach ($input as $key => $value) {
+        $sanitized[$key] = trim($input[$key]);
+        $sanitized[$key] = stripslashes($sanitized[$key]);
+        $sanitized[$key] = htmlentities($sanitized[$key], $specialcharsflags);
+        if ($array_type != null) {
+            if ($array_type == 'string') {
+                if (!is_string($sanitized[$key])) {
+                    die("Expected string, got " . htmlentities($sanitized[$key], $specialcharsflags));
+                }
+            } else if ($array_type == 'numeric') {
+                if (!is_numeric($sanitized[$key])) {
+                    die("Expected numeric value, got ". htmlentities($sanitized[$key],$specialcharsflags));
+                }
+            }
+        }
+    }
+    if ($expected_type != null) {
+        if ($expected_type == 'array_numeric') {
+            if (!is_array($sanitized)) {
+                die("Expected numeric array, got " . htmlentities($sanitized,$specialcharsflags));
+            }
+        } else if ($expected_type == 'array_string') {
+            if (!is_array($sanitized)) {
+                die("Expected string array, got " . htmlentities($sanitized,$specialcharsflags));
+            }
+        }
+    }
+    return $sanitized;
+}
+
+
+// Function to prevent XSS vulnarabilities
+function x_clean_input($input, $expected_type = null, $specialcharsflags = ENT_QUOTES|ENT_SUBSTITUTE)
+{
+    if (is_array($input)) {
+        $sanitized =  x_clean_input_array($input, $expected_type, $specialcharsflags);
+        return $sanitized;
+    }
+    $sanitized = trim($input);
+    $sanitized = stripslashes($sanitized);
+    $sanitized = htmlentities($sanitized, $specialcharsflags);
+    if ($expected_type != null) {
+        if ($expected_type == 'string') {
+            if (!is_string($sanitized)) {
+                die("Expected string, got " . htmlentities($sanitized, $specialcharsflags));
+            }
+        }
+        else if ($expected_type == 'numeric') {
+            if (!is_numeric($sanitized)) {
+                die("Expected numeric value, got " . htmlentities($sanitized, $specialcharsflags));
+            }
+        }
+        else if ($expected_type == 'bool') {
+            if (!is_bool($input)) {
+                die("Expected boolean, got " . htmlentities($sanitized, $specialcharsflags));
+            }
+            return $input; // do not modify booleans
+        }
+    }
+    return $sanitized;
+}
+
+function x_clean_input_json($input)
+{
+    $sanitized = trim($input);
+    $sanitized = stripslashes($sanitized);
+    $sanitized = htmlentities($sanitized,  ENT_NOQUOTES);
+    if (!is_string($sanitized)) {
+        die("Expected string, got " . htmlentities($sanitized,  ENT_NOQUOTES));
+    }
+    return $sanitized;
+}
+
+function x_check_blacklisted_extensions($filename)
+{
+    global $xerte_toolkits_site;
+    $ext = pathinfo($filename, PATHINFO_EXTENSION);
+    // Do not allow .php,.php[0-9],.phar,.inc and all other blacklisted extensions
+    if (in_array(strtolower($ext), array('php', 'php1', 'php2', 'php3', 'php4', 'php5', 'php6', 'php7', 'php8', 'phar', 'inc'))) {
+        die("File has invalid file extension: " . x_clean_input($filename));
+    }
+    if (in_array(strtolower($ext), $xerte_toolkits_site->file_extensions))
+    {
+        die("File has invalid file extension specified on management page: " . x_clean_input($filename));
+    }
+    // Take special care with .htaccess
+    if (strtolower($ext) == 'htaccess') {
+        die("File is .htaccess, which is not allowed: " . x_clean_input($filename));
+    }
+}
+
+function x_check_zip($zip, $type="")
+{
+    // Iterate over files in ZipArchive object to check for any files that are not allowed
+    for ($i = 0; $i < $zip->numFiles; $i++) {
+        $filename = $zip->getNameIndex($i);
+        if (strpos($filename, '..') !== false) {
+            die("Zip archive contains path names with path traversal: " .  x_clean_input($filename));
+        }
+        if (strpos($filename, '/') === 0) {
+            die("Zip archive contains files with absolute paths: " . x_clean_input($filename));
+        }
+        if ($type == "language_pack")
+        {
+            // Check whether the file is a valid language pack file
+            if (strpos($filename, 'languages/') !== 0
+                && strpos($filename, 'Nottingham/') !== 0
+                && strpos($filename, 'site/') !== 0
+                && strpos($filename, 'wizards/') !== 0)
+            {
+                die("Zip archive contains files that are not in one of the expected language pack folders or an invalid folder is encountered: " . x_clean_input($filename));
+            }
+            // If it is one of those folders, continue
+            if ($filename === 'languages/' || $filename === 'Nottingham/' || $filename === 'site/' || $filename === 'wizards/') {
+                continue;
+            }
+            // Only allow .js or .inc files
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+            if ($ext != 'js' && $ext != 'inc' && $ext != 'xwd' && $ext != 'xml') {
+                die("Zip archive contains files with invalid file extension: " . x_clean_input($filename));
+            }
+        }
+        else if ($type == "template" || $type == "theme_package")
+        {
+            global $xerte_toolkits_site;
+            // Check whether the file is a valid template file
+            //Do not allow .php,.php[0-9],.phar,.inc and all other blacklisted extensions
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+            if (in_array(strtolower($ext), array('php', 'php1', 'php2', 'php3', 'php4', 'php5', 'php6', 'php7', 'php8', 'phar', 'inc'))) {
+                die("Zip archive contains files with invalid file extension: " . x_clean_input($filename));
+            }
+            if (in_array(strtolower($ext), $xerte_toolkits_site->file_extensions))
+            {
+                die("Zip archive contains files with invalid file extension specified on management page: " . x_clean_input($filename));
+            }
+            // Take special care with .htaccess
+            if (strtolower($ext) == 'htaccess') {
+                die("Zip archive contains .htaccess file, which is not allowed: " . x_clean_input($filename));
+            }
+        }
+        else
+        {
+            global $xerte_toolkits_site;
+            // Check whether the file is a valid theme file
+            //Do not allow .php,.php[0-9],.phar,.inc and all other blacklisted extensions
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+            if (in_array(strtolower($ext), array('php', 'php1', 'php2', 'php3', 'php4', 'php5', 'php6', 'php7', 'php8', 'phar', 'inc'))) {
+                die("Zip archive contains files with invalid file extension: " . x_clean_input($filename));
+            }
+            if (in_array(strtolower($ext), $xerte_toolkits_site->file_extensions))
+            {
+                die("Zip archive contains files with invalid file extension specified on management page: " . x_clean_input($filename));
+            }
+            // Take special care with .htaccess
+            if (strtolower($ext) == 'htaccess') {
+                die("Zip archive contains .htaccess file, which is not allowed: " . x_clean_input($filename));
+            }
+        }
+    }
+}
+
+function x_check_zip_file($file){
+    $zip = new ZipArchive();
+    $x = $zip->open($file);
+
+    x_check_zip($zip);
+}
+
+function x_check_path_traversal($path, $expected_path=null, $message=null, $type='file')
+{
+    global $xerte_toolkits_site;
+    $mesg = ($message != null ? $message : "Path traversal detected!");
+    // Account for Windows, because realpath changes / to \
+    if(DIRECTORY_SEPARATOR !== '/') {
+        $rpath = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        if (strpos($rpath, DIRECTORY_SEPARATOR) !== 0 && strpos($rpath, ':') !== 1){
+            // Relative path, so convert to absolute path
+            $rpath = str_replace('/',  DIRECTORY_SEPARATOR, $xerte_toolkits_site->root_file_path . $rpath);
+        }
+
+        if ($expected_path != null) {
+            $rexpected_path = str_replace('/', DIRECTORY_SEPARATOR, $expected_path);
+        }
+    }
+    else
+    {
+        $rpath = $path;
+        if (strpos($rpath, '/') !== 0){
+            // Relative path, so convert to absolute path
+            $rpath = $xerte_toolkits_site->root_file_path . $rpath;
+        }
+        $rexpected_path = $expected_path;
+    }
+    if ($type === 'folder') {
+        // Ensure that folder exists for realpath to work
+        if (!is_dir($rpath)) {
+            die($mesg);
+        }
+    }
+    // Trim dangling DIRECTORY_SEPARATOR
+    $rpath = rtrim($rpath, '/\\');
+    // Check path and check for path traversal
+    $realpath = realpath($rpath);
+    if ($realpath === false || $realpath !== $rpath)
+    {
+        _debug($mesg);
+        die($mesg);
+    }
+    if ($expected_path != null) {
+        // Check whether path is as expected
+        if (strpos($rpath, $rexpected_path) !== 0) {
+            _debug($mesg);
+            die($mesg);
+        }
+        if ($expected_path == $xerte_toolkits_site->users_file_area_full) {
+            // Check whether the path is inside a folder of the users_file_area_full
+            // First determine whether rpath is a folder
+            if (is_dir($rpath))
+            {
+                // It must be different from the users_file_area_full
+                if ($rpath === $xerte_toolkits_site->users_file_area_full) {
+                    _debug($mesg);
+                    die($mesg);
+                }
+            }
+            else
+            {
+                // Remove the users_file_area_full from the path
+                $rpath = substr($rpath, strlen($rexpected_path));
+                if (strpos($rpath, DIRECTORY_SEPARATOR) === false) {
+                    _debug($mesg);
+                    die($mesg);
+                }
+            }
+        }
+    }
+}
+
+function x_check_path_traversal_newpath($path, $expected_path=null, $message=null)
+{
+    $mesg = ($message != null ? $message : "Path traversal detected!");
+    // Account for Windows, because realpath changes / to \
+    if(DIRECTORY_SEPARATOR !== '/') {
+        $rpath = str_replace('/', DIRECTORY_SEPARATOR, $path);
+        if ($expected_path != null) {
+            $expected_path = str_replace('/', DIRECTORY_SEPARATOR, $expected_path);
+        }
+    }
+    else
+    {
+        $rpath = $path;
+    }
+    // Trim dangling DIRECTORY_SEPARATOR
+    $rpath = rtrim($rpath, '/\\');
+    // path is new, so realpath does not work, check for ../ and encoded variations
+    if (strpos($rpath, '..') !== false || stripos($rpath, '%2e%2e') !== false)
+    {
+        _debug($mesg);
+        die($mesg);
+    }
+    if ($expected_path != null) {
+        // Check whether path is as expected
+        if (strpos($rpath, $expected_path) !== 0) {
+            _debug($mesg);
+            die($mesg);
+        }
+    }
+}
+
+
+function x_convert_user_area_url_to_path($url)
+{
+    global $xerte_toolkits_site;
+    $path = $url;
+    // Check whether this is an absolute path, strip the root path and convert to a relative path
+    if (stripos($path, 'http') === 0)
+    {
+        // Check whether the path is actually an url starting with site_url
+        if (stripos($path, $xerte_toolkits_site->site_url) === 0)
+        {
+            $path = substr($path, strlen($xerte_toolkits_site->site_url));
+        }
+        else
+        {
+            _debug("URL to user area to convert to path is not a valid url: " . x_clean_input($url));
+            die("URL to user area to convert to path is not a valid url: " . x_clean_input($url));
+        }
+    }
+    // Check whether the path is a relative path that starts with users_file_area_short, if so strip the users_file_area_short
+    if (stripos($path, $xerte_toolkits_site->users_file_area_short) === 0)
+    {
+        $path = substr($path, strlen($xerte_toolkits_site->users_file_area_short));
+    }
+    else
+    {
+        _debug("URL to user area to convert to path is not a valid url: " . x_clean_input($url));
+        die("URL to user area to convert to path is not a valid url: " . x_clean_input($url));
+    }
+    // Prepend with users_file_area_full
+    $path = $xerte_toolkits_site->users_file_area_full . $path;
+
+    return $path;
+}
+
+function set_token()
+{
+    if (!isset($_SESSION['token'])) {
+        $_SESSION['token'] = uid();
+    }
+}
+
+function x_set_session_name()
+{
+    global $xerte_toolkits_site;
+    $hash = hash('sha256', $xerte_toolkits_site->site_url);
+    $hash = substr($hash, -6);
+    $hash = str_replace('=', '', $hash);
+    $current_session_name = session_name();
+    session_name($current_session_name . "_" . $hash);
+}
+
+//
+//Function that ensures a folder exists in the learning object
+function verify_LO_folder($LO, $folder)
+{
+    global $xerte_toolkits_site;
+
+    $user_files_dir = $xerte_toolkits_site->users_file_area_full . $LO . $folder;
+
+    if (!is_dir($user_files_dir)) {
+        mkdir($user_files_dir, 0777, true);
+    }
 }

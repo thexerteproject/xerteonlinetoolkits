@@ -65,7 +65,7 @@ if(is_numeric($_POST['template_id'])){
 
     $row_publish = db_query_one($query_for_edit_content);
 
-    if(is_user_an_editor($safe_template_id,$_SESSION['toolkits_logon_id'])||is_user_admin()){
+    if(is_user_an_editor($safe_template_id,$_SESSION['toolkits_logon_id'])||is_user_permitted("projectadmin")){
 
         // XXX What is temp_array[2] here? Looks broken. TODO: Fix it.
         require("../../../modules/" . $temp_array[2] . "/publish.php");

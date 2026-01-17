@@ -21,7 +21,7 @@ require(dirname(__FILE__) . "/module_functions.php");
 
 // Set up the preview window for a xerte piece
 
-require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
+require_once(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
 function show_template($row_play, $xapi_enabled=false)
 {
     global $xerte_toolkits_site;
@@ -32,6 +32,8 @@ function show_template($row_play, $xapi_enabled=false)
 
     $xmlFixer = new XerteXMLInspector();
     $xmlFixer->loadTemplateXML($xmlfile, true);
+
+    _load_language_file("/modules/decision/preview.inc");
 
     if (strlen($xmlFixer->getName()) > 0) {
         $title = $xmlFixer->getName();
@@ -45,7 +47,6 @@ function show_template($row_play, $xapi_enabled=false)
 
     list($x, $y) = explode("~", get_template_screen_size($row_play['template_name'], $row_play['template_framework']));
 
-    _load_language_file("/modules/decision/preview.inc");
 
     $version = getVersion();
     $language_ISO639_1code = substr($xmlFixer->getLanguage(), 0, 2);

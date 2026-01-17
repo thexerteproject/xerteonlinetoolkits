@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <gapFill><![CDATA[<gapFill name="Enter Page Title" text="Enter text for the page here" passage="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." interactivity="Drag Drop" feedback="Enter feedback here" panelWidth="Medium" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer"/>]]></gapFill>
+      <gapFill><![CDATA[<gapFill name="Enter Page Title" text="" passage="" interactivity="Drag Drop" feedback="" panelWidth="Medium" gapLook="bg" gapLookFilled="true" gapSize="max" gapBespokeSize="20" gapSizeFilled="true" checkBtn="Check" showBtn="Show Answers" gapFillWrong="You have not filled in any answers correctly. Please try again." gapFillWrongTracking="You have not filled in any answers correctly." gapFillIncomplete="Please complete the exercise." gapFillPartWrongTracking="Your correct answers are shown in green." gapFillPartWrong="Your correct answers are shown in green. Try again with those you have got wrong." answerFieldLabel="Answer" tryAgain="Try again"/>]]></gapFill>
     </newNodes>
   </pageWizard>
 
@@ -9,22 +9,34 @@
   <gapFill menu="Interactivity" menuItem="Gap Fill" hint="An interaction for creating gap fill exercises. Gaps can be filled by drag and drop labels, editable text boxes or by drop down menus." icon="icTextEntry" thumb="thumbs/gapFill.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#gapfilldraganddrop" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_gap_fill_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Introductory Text" type="TextArea" height="100"/>
-    <passage label="Gap Fill Text" type="TextArea" height="150"/>
+    <text label="Introductory Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
+    <passage label="Gap Fill Text" type="TextArea" height="150" placeholder="Enter interactive text here. To mark words for the exercise select the word using the mouse and right-click, choosing 'mark word' from the menu." source="true"/>
     <interactivity label="Interactivity" options="Drag Drop,Fill in Blank,Drop Down Menu" type="ComboBox" data="Drag Drop,Fill in Blank,Drop Down Menu" defaultValue="Drag Drop" width="100" conditionTrigger="true"/>
-    <feedback label="Feedback" type="TextArea" height="50"/>
+    <feedback label="Feedback" type="TextArea" height="50" placeholder="Enter feedback here"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
-	
+
+    <gapOptions type="group" label="Gap Options" condition="interactivity=='Drag Drop'" tooltip="Customise the appearance of the gaps where labels can be dropped" mandatory="true">
+        <gapLookGroup label="Gap Appearance" type="group" mandatory="true" condition="interactivity=='Drag Drop'" tooltip="Customise how the gaps look before labels are dropped and whether this appearance is kept after the gap has been filled">
+            <gapLook label="Appearance" type="ComboBox" defaultValue="bg" data="bg,outline,underline" options="Background Colour,Outline,Underline" mandatory="true" condition="interactivity=='Drag Drop'"/>
+            <gapLookFilled label="Keep When Filled" type="CheckBox" defaultValue="false" mandatory="true" condition="interactivity=='Drag Drop'"/>
+        </gapLookGroup>
+        <gapSizeGroup label="Gap Width" type="group" mandatory="true" condition="interactivity=='Drag Drop'" tooltip="By default, the gaps where labels can be dropped will all be as wide as the widest label's text. Use these options to customise the width of the gap, e.g. make the gap as wide as the correct text or have the gap compressed until a label is placed in the gap.">
+            <gapSize label="Width" type="ComboBox" data="max,correct,min,bespoke" options="Longest Text,Correct Text,Compressed,Bespoke" defaultValue="max" condition="interactivity=='Drag Drop'" conditionTrigger="true" mandatory="true"/>
+            <gapBespokeSize label="Width (in pixels)" defaultValue="20" type="NumericStepper" min="5" max="200" step="1" mandatory="true" condition="interactivity=='Drag Drop'&amp;&amp;gapSize=='bespoke'"/>
+            <gapSizeFilled label="Compress When Filled" type="CheckBox" defaultValue="false" mandatory="true" condition="interactivity=='Drag Drop'&amp;&amp;gapSize!='correct'&amp;&amp;gapSize!='min'&amp;&amp;gapSize!='bespoke'"/>
+        </gapSizeGroup>
+    </gapOptions>
+
 	<checkBtn label="Check Button Text" type="TextInput" wysiwyg="true" language="true"/>
 	<showBtn label="Show Button Text" type="TextInput" wysiwyg="true" language="true"/>
 	<gapFillWrong label="Gap Fill All Wrong" type="TextInput" wysiwyg="true" language="true" />
 	<gapFillPartWrong label="Gap Fill Part Wrong" type="TextInput" wysiwyg="true" language="true"/>
 	<gapFillIncomplete label= "Gap Fill Incomplete" type="TextInput" wysiwyg="true" language="true"/>
 	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that the text field where they should respond is labelled and the label is spoken to the screenreader user. e.g. Answer."/>
-	
 	<gapFillWrongTracking label="Gap Fill All Wrong (Tracking)" type="TextInput" wysiwyg="true" language="true"/>
 	<gapFillPartWrongTracking label="Gap Fill Part Wrong (Tracking)" type="TextInput" wysiwyg="true" language="true"/>
-	
+	<tryAgain label="Try Again" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue=""/>
+
 	<delimiters type="group" label="Delimiters" optional="true">
 		<mainDelimiter label="Marked Word" type="textInput" defaultValue="|" optional="true" tooltip="The character used to mark words for the exercise"/>
 		<answerDelimiter label="Correct Answer" type="textInput" defaultValue="," optional="true" tooltip="The character separating each correct answer, where there is more than one correct answer for a gap, e.g. |Doctor,Dr|"/>
@@ -34,15 +46,34 @@
 
 	<dropDownSort label="Drop Down Menu Option Sort" options="Alphabetic,Random" type="ComboBox" data="alphabetic,random" defaultValue="alphabetic" condition="interactivity=='Drop Down Menu'" width="100" optional="true" />
 
-    <trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
-    <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="Add list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
+    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
+	<judge label="Mark Answer" optional="true" condition="interactivity=='Fill in Blank'" conditionTrigger="true" type="CheckBox" defaultValue="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity."/>
+    <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="" placeholder="Enter a list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
 	<markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="interactivity!='Drop Down Menu'" tooltip="Allow incorrect answers to be entered or dragged before marking when the check button is clicked"/>
-	
+
+    <AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
+	    <tasknr label="Task Type" options="Generate a sentence,Mark words as blanks" type="comboBox" data="task1,task2" defaultValue="task1" tooltip="Choose which action the AI should undertake. Generating a sentence will instruct the model to create a brand new sentence based on a subject. Marking words as blanks will take the existing sentence and mark all words of a specific group as blanks automatically." wysiwyg="true" conditionTrigger="true" optional="true"/>
+        <subject verification="^.+$"  label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip = "This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." conditionTrigger="true" condition="tasknr=='task1'" optional="true"/>
+        <additionalInstructions label="Additional Instructions" type="text" tooltip="You can leave this blank or provide additional instructions or requests on how the generated result should look. Please note that certain instructions may break the structure of the generated response. If this occurs, change the wording and attempt to generate again." wysiwyg="true" height="50" placeholder="Write your instructions here..." optional="true"/>
+        <uploadPrompt label="Information Source" options="None (uses model base knowledge), Use Context Resources, Use Learning Object, Upload File" type="comboBox" data="false,context,lo,true" defaultValue="false" tooltip="Select 'Submit Snippet' when you wish for the model to use the provided text as a source, 'Upload File' when you wish to upload a file or when using a video or audio link as the only source, 'Use Context Resources' when you wish to use all of the sources in the context resources table as a source, and 'Use Learning Object' when you wish to use the latest preview of the learning object as the only source for generating this content. Please ensure the uploaded file or provided snippet corresponds to the requested subject. If relevant information is not found in the snippet or files, the AI will attempt to supplement with its own knowledge." conditionTrigger="true" condition="tasknr=='task1'" optional="true"/>
+        <textSnippet label="Text Snippet" type="text" tooltip="Provide the text snippet you wish the model to use as a source for generating the interactivity." placeholder="''" condition="uploadPrompt=='trueText'&amp;&amp;tasknr=='task1'" optional="true"/>
+        <file label="File" type="mediaCorpus" defaultValue="Upload a file or enter a video link here..." tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation." condition="uploadPrompt=='true'&amp;&amp;tasknr=='task1'" optional="true"/>
+        <length label="Sentence Length" verification="^\d+$" type="TextInput" defaultValue = "20" condition="tasknr=='task1'" optional="true"/>
+        <target label="Word Group" type="TextInput" tooltip="Which group of words of the passage to leave blank. For example: verbs, nouns, animals, buildings, engineering terms, etc. Name only one group!" defaultValue="" placeholder="Specify which groups to mark. Defaults to 'nouns.'" condition="tasknr=='task2'" optional="true"/>
+        <sentence label = "Passage" type="text" tooltip="Paste the passage you wish to mark here." defaultValue="" placeholder = "Enter passage here..." condition="tasknr=='task2'" inheritField="passage" wysiwyg = 'true' optional="true"/>
+        <infoGenSettings advanced="true" label="For this page, the following settings will be used instead of those assigned on the learning-object level:" type="info" optional="true"/>
+        <aiSelector advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" overrideField="baseAiSettings" conditionTrigger="true" optional="true"/>
+        <range advanced="true" label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the complexity of the language. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." defaultValuePH="Intermediate English B2" placeholder="Enter reading level. Defaults to 'Intermediate English, B2'" overrideField="baseRange" condition="tasknr=='task1'" optional="true"/>
+        <eduLevel advanced="true" label="Education Level" type="TextInput" tooltip="The education level for which the content is intended. Examples: University students, HBO students in the Netherlands, Middle school students who already have learned the basics, etc." condition="tasknr=='task1'" defaultValue="" placeholder="Enter educational level. Defaults to 'University.'" overrideField="baseEduLevel" optional="true"/>
+        <tone advanced="true" label="Tone and Style" type="TextInput" tooltip = "Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." defaultValue="" placeholder="Enter an indicator of tone. Defaults to 'Semi-formal.'" condition="tasknr=='task1'" overrideField="baseTone" optional="true"/>
+        <aiButton type="aibutton" optional="true"/>
+        <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
+    </AIGroup>
 	<audioGroup type="group" label="Audio Feedback" optional="true" tooltip="Include an audio player below the written feedback">
-		<audioFeedback label="File" type="media" optional="true"/>
+		<audioFeedback label="File" type="media" optional="true" placeholder="Select an audio file"/>
 		<audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</audioGroup>
-	
+
 	<spaceLines label="Space Lines Evenly" type="CheckBox" defaultValue="true" optional="true"/>
 
     <hints type="group" label="Hints" optional="true" tooltip="Show a hint tooltip (fill in blank) or show answers button (drag drop/drop down menu) if answered incorrectly">

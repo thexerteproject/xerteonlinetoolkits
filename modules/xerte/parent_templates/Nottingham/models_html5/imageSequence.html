@@ -193,9 +193,9 @@
 				// more than one series so set up & show the thumbnail bar - image viewer will load when thumbnail is clicked
 				} else {
 					for (var i=0; i<allCases[currentCase].children.length; i++) {
-						$('#seriesHolderInner').append('<button class="thumbs"><img class="thumbImg ' + allCases[currentCase].children[i].type + 'Thumb x_noLightBox" src="' + allCases[currentCase].children[i].src + '" width="50px" alt="' + allCases[currentCase].children[i].tooltip + '"></button>');
+						$('#seriesHolderInner').append('<button class="thumbs"><span class="sr-only">' + allCases[currentCase].children[i].tooltip + '<span class="srSelectTxt"></span></span><img class="thumbImg ' + allCases[currentCase].children[i].type + 'Thumb x_noLightBox" src="' + allCases[currentCase].children[i].src + '" width="50px" alt="' + allCases[currentCase].children[i].tooltip + '" aria-hidden="true"></button>');
 					}
-					
+
 					currentView = 1;
 					
 					imageSequence.setUpViewMenu();
@@ -212,17 +212,23 @@
 							
 							// show a new series
 							if (currentSeries[imgNum] !== $(this).index() || currentView > 1) {
-								$('#seriesHolderInner .thumbs:eq(' + currentSeries[imgNum] + ').selected').removeClass('selected');
+								$('#seriesHolderInner .thumbs:eq(' + currentSeries[imgNum] + ').selected')
+										.removeClass('selected')
+										.find('.srSelectTxt').html('');
 								currentSeries.splice(imgNum, 1, $(this).index());
-								
-								$(this).addClass('selected');
+
+								$(this)
+									.addClass('selected')
+									.find('.srSelectTxt').html(" (" + (x_getLangInfo(x_languageData.find("interactions").find("checkBox")[0], "selected") != undefined ? x_getLangInfo(x_languageData.find("interactions").find("checkBox")[0], "selected") : "selected") + ")");
 								imageSequence.loadSeries(currentCase, currentSeries, imgNum);
 								
 								$("#viewHolder").show();
 								
 							// if current series is clicked (when only 1 series in view), remove series from view & show case text again (if there is some)
 							} else if (currentView == 1 && allCases[currentCase].text != undefined && allCases[currentCase].text != '') {
-								$('#seriesHolderInner .thumbs.selected').removeClass('selected');
+								$('#seriesHolderInner .thumbs.selected')
+										.removeClass('selected')
+										.find('.srSelectTxt').html('');
 								currentSeries.splice(imgNum, 1, false);
 								
 								$('#imgHolders, .imgCtrl').hide();
@@ -527,7 +533,7 @@
 			} else {
 				// get max space available (exclude panel border and series controls)
 				var imgHoldersW = $('#infoHolder').width(),
-					imgHoldersH = $x_pageHolder.height() - $('#controlBar').outerHeight(true) - ($('#x_pageDiv').outerHeight(true) - $('#x_pageDiv').height());
+					imgHoldersH = x_getAvailableHeight([], [$('#controlBar')], true);
 				
 				// make sure available space accounts for more than 1 being shown on the screen
 				// work out the best layout that maximises size of images - three possibilities: single row, single column or 2x2 grid
@@ -580,10 +586,11 @@
 		this.setUpSlider = function($imgHolder) {
 			if ($imgHolder.find('.imgs img').height() > 0) {
 				var index = $imgHolder.data('index');
+				const sliderHint = x_getLangInfo(x_languageData.find("screenReaderInfo").find("imageCompare")[0], "slideHint") != undefined ? x_getLangInfo(x_languageData.find("screenReaderInfo").find("imageCompare")[0], "slideHint") : "Image slider";
 				
 				// change image on slider control change
 				$imgHolder.find('.imgSlider').empty();
-				$('<div class="sliderBar"></div>')
+				const $sliderBar = $('<div class="sliderBar"></div>')
 					.appendTo($imgHolder.find('.imgSlider'))
 					.height($imgHolder.find('.imgs img').height())
 					.slider({
@@ -600,12 +607,26 @@
 							if ($imgHolder.find('.playBtn').data('state') == 'pause') {
 								$imgHolder.find('.playBtn').click();
 							}
+
+							const $toggle = $(this).find(".ui-slider-handle");
+							$toggle.attr({
+								"aria-valuenow": ui.value,
+								"aria-valuetext": (sliderHint != undefined ? sliderHint + ": " : "") + (100-Math.round((ui.value/Number($toggle.attr("aria-valuemax")))*100)) + "%"
+							});
 							
 							currentImg.splice(imgNum, 1, imgs[imgNum].length-ui.value-1);
 							$imgHolder.find('.imgs .viewerImg').attr('src', imgs[imgNum][imgs[imgNum].length-ui.value-1]);
 							imageSequence.scaleImg($imgHolder.find('.imgs .viewerImg'));
 						}
+					})
+					.find(".ui-slider-handle").attr({
+						"role": "slider",
+						"aria-valuemin": 0,
+						"aria-valuenow": numImgs[index] - currentImg[index] - 1,
+						"aria-valuemax": numImgs[index] - 1,
+						"aria-valuetext": (sliderHint != undefined ? sliderHint + ": " : "") + (100-Math.round(((numImgs[index] - currentImg[index] - 1)/(numImgs[index] - 1))*100)) + "%"
 					});
+
 			} else {
 				setTimeout(function() { imageSequence.setUpSlider(); }, 100);
 			}
@@ -735,12 +756,22 @@
 						$img.imageLens(imageLensInfo);
 					}
 				}
-				
+
+				$(document).off(".pageEvent");
+				// escape key will close any open magnifiers
+				$(document).on("keydown.pageEvent", function (e) {
+					// has .pageEvent namespace so it can be removed on page change from xenith.js
+					var charCode = e.charCode || e.keyCode;
+					if (charCode == 27 && $(".magnifier").is(":visible")) {
+						$('.magnifyBtn input').click();
+					}
+				});
+
 			} else {
 				$imgHolder.find(".magnifier").remove();
 				$imgHolder.find(".magnifiedImg").remove();
-				
 				$imgHolder.find('.magnifyBtn input').attr('aria-checked', false);
+				$(document).off(".pageEvent");
 			}
 		}
 		
@@ -776,15 +807,12 @@
 				// set up view menu
 				// if it's used then imgHolder is cloned as there can be more than one series shown at a time
 				if (x_currentPageXML.getAttribute('view') == 'true' && x_currentPageXML.getAttribute('viewNum') > 1 && x_browserInfo.mobile != true) {
-					
-					var menuHtml = '<label for="cases">' + x_currentPageXML.getAttribute('viewLabel') + ':</label><span id="viewOption">';
+					var menuHtml = '<fieldset><legend>' + x_currentPageXML.getAttribute('viewLabel') + ':</legend><span id="viewOption">';
 					for (var i=0; i<x_currentPageXML.getAttribute('viewNum'); i++) {
-						menuHtml += '<button><img class="x_noLightBox" src="' + x_templateLocation + 'common_html5/view_' + (i+1) + '.png" alt="' + (i+1) + '"></button>';
+						menuHtml += '<span class="viewBtn"><input type="radio" id="view' + (i+1) + '" name="view" value="' + (i+1) + '" ' + (i===0 ? 'checked' : '') + '/><label for="view' + (i+1) + '"><span class="sr-only">' + (i+1) + '</span><img class="x_noLightBox" src="' + x_templateLocation + 'common_html5/view_' + (i+1) + '.png" alt="' + (i+1) + '" aria-hidden="true"/></label></span>';
 					}
-					menuHtml += '</span>';
-					
-					//var defaultValue = x_currentPageXML.getAttribute('viewDefault') > x_currentPageXML.getAttribute('viewNum') ? x_currentPageXML.getAttribute('viewNum') : x_currentPageXML.getAttribute('viewDefault');
-					
+					menuHtml += '</span></fieldset>';
+
 					$("#viewHolder")
 						.append(menuHtml)
 						.data({
@@ -801,21 +829,20 @@
 						imgs.push([]);
 					}
 					
-					$("#viewHolder").find("#viewOption button")
-						.click(function() {
+					$("#viewHolder").find("#viewOption .viewBtn input")
+						.change(function(){
 							// currentView is the current no. series being shown
-							if (currentView - 1 != $(this).index()) {
+							if (currentView != this.value) {
 								
 								// how many series are already shown?
 								var numShown = currentView;
-								currentView = $(this).index() + 1;
+								currentView = Number(this.value);
 								
 								$("#viewHolder .selected").removeClass("selected");
 								$(this).addClass("selected");
 								
 								// show more imgHolders on screen
 								if (numShown < currentView) {
-									
 									if (numShown == 1) {
 										// add info button to existing series if needed
 										var $imgHolder = $('#imgHolders .imgHolder:eq(' + 0 + ')'),
@@ -841,9 +868,10 @@
 												currentSeries.splice(i+numShown, 1, j);
 												imgNum = i+numShown;
 												imageSequence.loadSeries(currentCase, currentSeries, imgNum);
-												
-												$('#seriesHolderInner .thumbs:eq(' + j + ')').addClass('selected');
-												
+
+												$('#seriesHolderInner .thumbs:eq(' + j + ')')
+														.addClass('selected')
+														.find('.srSelectTxt').html(" (" + (x_getLangInfo(x_languageData.find("interactions").find("checkBox")[0], "selected") != undefined ? x_getLangInfo(x_languageData.find("interactions").find("checkBox")[0], "selected") : "selected") + ")");
 												break;
 											}
 										}
@@ -877,11 +905,16 @@
 										
 										$('#imgHolders .imgHolder:eq(' + (i+currentView) + ')').hide();
 									}
-									
-									$('#seriesHolderInner .thumbs.selected').removeClass('selected');
+
+									$('#seriesHolderInner .thumbs.selected')
+											.removeClass('selected')
+											.find('.srSelectTxt').html('');
+
 									for (var i=0; i<currentSeries.length; i++) {
 										if (currentSeries !== false) {
-											$('#seriesHolderInner .thumbs:eq(' + currentSeries[i] + ')').addClass('selected');
+											$('#seriesHolderInner .thumbs:eq(' + currentSeries[i] + ')')
+													.addClass('selected')
+													.find('.srSelectTxt').html(" (" + (x_getLangInfo(x_languageData.find("interactions").find("checkBox")[0], "selected") != undefined ? x_getLangInfo(x_languageData.find("interactions").find("checkBox")[0], "selected") : "selected") + ")");
 										}
 									}
 									
@@ -889,12 +922,6 @@
 								}
 								imgNum = 0;
 							}
-						})
-						.focusin(function() {
-							$(this).addClass('highlighted');
-						})
-						.focusout(function() {
-							$(this).removeClass('highlighted');
 						});
 					
 					// duplicate the imgHolder so max in view are available for later
@@ -960,6 +987,13 @@
 								currentImg.splice(imgNum, 1, thisSeries.initImg != undefined ? thisSeries.initImg : 0);
 								$imgHolder.find('.sliderBar').slider('value', numImgs[imgNum] - currentImg[imgNum] - 1);
 								$imgHolder.find('.imgs .viewerImg').attr('src', imgs[imgNum][currentImg[imgNum]]);
+
+								const sliderHint = x_getLangInfo(x_languageData.find("screenReaderInfo").find("imageCompare")[0], "slideHint") != undefined ? x_getLangInfo(x_languageData.find("screenReaderInfo").find("imageCompare")[0], "slideHint") : "Image slider";
+								$imgHolder.find('.sliderBar a').attr({
+									"aria-valuenow": numImgs[imgNum] - currentImg[imgNum] - 1,
+									"aria-valuetext": (sliderHint != undefined ? sliderHint + ": " : "") + (100-Math.round(((numImgs[imgNum] - currentImg[imgNum] - 1)/Number($imgHolder.find('.sliderBar a').attr("aria-valuemax")))*100)) + "%"
+								});
+
 								imageSequence.setUpMagnifier($imgHolder);
 							}
 						});
@@ -1005,11 +1039,13 @@
 					
 				} else {
 					$('.magnifyLabel')
-						.append('<i class="fas fa-search"></i><span class="sr-only">' + x_currentPageXML.getAttribute('magnifyLabel') + '</span>')
+						.append('<i class="fas fa-search"></i>')
 						.click(function() {
 							$(this).parents('.imgHolder').find('.magnifyBtn input').click();
 						});
 					
+					$('.magnifyBtn').append('<span class="sr-only">' + x_currentPageXML.getAttribute('magnifyLabel') + '</span>');
+
 					$('.magnifyBtn input')
 						.click(function(e,i) {
 							// make sure we're targeting the correct imgHolder
@@ -1252,7 +1288,7 @@
 					
 				// more than one case so set up & show the case drop down menu
 				} else {
-					var selectHtml = '<label for="cases">' + x_currentPageXML.getAttribute('caseLabel') + ':</label><select id="caseSelect"><option></option>';
+					var selectHtml = '<label for="caseSelect">' + x_currentPageXML.getAttribute('caseLabel') + ':</label><select id="caseSelect"><option></option>';
 					for (var i=0; i<allCases.length; i++) {
 						selectHtml += '<option value="case' + i + '">' + allCases[i].name + '</option>';
 					}
@@ -1288,7 +1324,7 @@
 			currentImg.splice(0, currentImg.length);
 			numImgs.splice(0, numImgs.length);
 			imgs.splice(0, imgs.length);
-			
+
 			
 			$('#caseHolder, #viewHolder, #seriesHolderInner, #loadMsg, #mainTxt').empty();
 			$('#imgHolders .imgHolder:not(:first)').remove();
@@ -1303,27 +1339,24 @@
 		this.setUpViewMenu = function() {
 			if ($("#viewHolder").length > 0 && currentCase != undefined) {
 				
-				var numViews = $("#viewHolder button").length;
-				
+				var numViews = $("#viewHolder .viewBtn").length;
 				for (var i=0; i<numViews; i++) {
-					var $thisImg = $("#viewHolder button:eq(" + i + ")");
-					
+					var $thisBtn = $("#viewHolder .viewBtn:eq(" + i + ")");
+
 					if (i+1 > allCases[currentCase].children.length) {
-						$thisImg.hide();
+						$thisBtn.hide();
 					} else {
-						$thisImg.show();
+						$thisBtn.show();
 					}
 				}
 				
 				// if no button selected or selected is now hidden, select the default button from view menu
-				if ($("#viewHolder button.selected").length == 0 || $("#viewHolder button.selected").is(":hidden") || currentView != $("#viewHolder button.selected").index()+1) {
-					$("#viewHolder .selected").removeClass("selected");
+				if ($("#viewHolder input:checked").length == 0 || $("#viewHolder input:checked").is(":hidden") || currentView != $("#viewHolder input:checked").index()+1) {
+					$("#viewHolder .viewBtn input:checked").removeAttr("checked");
 					
 					var defaultValue = allCases[currentCase].children.length < $("#viewHolder").data('default') ? allCases[currentCase].children.length : $("#viewHolder").data('default');
-					
-					$("#viewHolder button:eq(" + (defaultValue-1) + ")")
-						.addClass("selected")
-						.click();
+
+					$("#viewHolder .viewBtn:eq(" + (defaultValue-1) + ") input").click();
 				}
 			}
 		}

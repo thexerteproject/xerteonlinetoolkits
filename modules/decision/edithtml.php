@@ -17,13 +17,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
+require_once (__DIR__ . "/../../website_code/php/themes_library.php");
+
 /**
  * Created by PhpStorm.
  * User: tom
  * Date: 10-5-14
  * Time: 12:24
  */
+
+
+function addSessionData($url) {
+    if ( ini_get('session.use_cookies') != '0' ) return $url;
+    if ( stripos($url, '&'.session_name().'=') > 0 ||
+            stripos($url, '?'.session_name().'=') > 0 ) return $url;
+    $session_id = session_id();
+
+    // Don't add more than once...
+    $parameter = session_name().'=';
+    if ( strpos($url, $parameter) !== false ) return $url;
+
+    $url = add_url_parms($url, session_name(), $session_id);
+    return $url;
+}
+
+function add_url_parms($url, $key, $val) {
+    $url .= strpos($url,'?') === false ? '?' : '&';
+    $url .= urlencode($key) . '=' . urlencode($val);
+    return $url;
+}
+
+function getSessionData() {
+    if ( ini_get('session.use_cookies') != '0' ) return "";
+    $session_id = session_id();
+    return session_name().'=' . $session_id;
+}
 
 
 /**
@@ -42,6 +71,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
     require_once("config.php");
     require_once("website_code/php/language_library.php");
+    require_once("website_code/php/user_library.php");
 
     _load_language_file("/modules/decision/edit.inc");
 
@@ -67,7 +97,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         chmod($preview, 0777);
     }
 
-    $preview_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/" . $preview_filename;
+    $previewxmlurl = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/" . $preview_filename;
     $data_url = $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'] . "/data.xml";
     $rlo_url = $xerte_toolkits_site->site_url .  $xerte_toolkits_site->users_file_area_short . $row_edit['template_id'] . "-" . $row_username['username'] . "-" . $row_edit['template_name'];
     $xwd_url = "modules/" . $row_edit['template_framework'] . "/parent_templates/" . $row_edit['parent_template'] . "/";
@@ -107,70 +137,43 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     /**
      * build an array of available themes for this template
      */
-    $theme_folder = $xerte_toolkits_site->root_file_path . "themes/" . $row_edit['parent_template'] . "/";
-    $ThemeList = array();
-    if (file_exists($theme_folder))
-    {
-        $d = opendir($theme_folder);
-        while($f = readdir($d)){
-            if(is_dir($theme_folder . $f)){
-                if (file_exists($theme_folder . $f . "/" . $f . ".info") && !file_exists($theme_folder . $f . "/hidden.info"))
-                {
-                    $info = file($theme_folder . $f . "/" . $f . ".info", FILE_SKIP_EMPTY_LINES);
-                    $themeProperties = new StdClass();
+    $ThemeList = get_themes_list($row_edit['parent_template']);
 
-                    foreach ($info as $line) {
-                        $attr_data = explode(":", $line, 2);
-                        if (empty($attr_data) || sizeof($attr_data) != 2) {
-                            continue;
-                        }
-                        switch (trim(strtolower($attr_data[0]))) {
-                            case "name" : $themeProperties->name = trim($attr_data[1]);
-                                break;
-                            case "display name" : $themeProperties->display_name = trim($attr_data[1]);
-                                break;
-                            case "description" : $themeProperties->description = trim($attr_data[1]);
-                                break;
-                            case "enabled" : $themeProperties->enabled = strtolower(trim($attr_data[1]));
-                                break;
-                            case "preview" : $themeProperties->preview = $xerte_toolkits_site->site_url . "themes/" . $row_edit['parent_template'] . "/" . $f . "/" . trim($attr_data[1]);
-                                break;
-                        }
-                    }
-                    if (substr($themeProperties->enabled, 0, 1) == "y") {
-                        $ThemeList[] = array('name' => $themeProperties->name, 'display_name' => $themeProperties->display_name, 'description' => $themeProperties->description,  'preview' => $themeProperties->preview);
-                    }
-                }
-            }
-        }
-		// sort into alphabetical order
-		$display_name = array();
-		foreach ($ThemeList as $key => $row) {
-			$display_name[$key] = $row['display_name'];
-		}
-		array_multisort($display_name, SORT_ASC, $ThemeList);
-		// Add default theme to beginning
-		array_unshift($ThemeList, array('name' => "default", 'display_name' => "Default", 'description' => "Default", 'preview' => $xerte_toolkits_site->site_url . "modules/decision/parent_templates/decision/common/img/default.jpg"));
-    }
 	/**
-     * sort of the screen sies required for the preview window
+     * sort of the screen sizes required for the preview window
      */
 
     $temp = explode("~",get_template_screen_size($row_edit['template_name'],$row_edit['template_framework']));
 
     $version = getVersion();
 
-    //$edit_site_logo = $xerte_toolkits_site->site_logo;
-    //$pos = strrpos($edit_site_logo, '/') + 1;
-    //$edit_site_logo = substr($edit_site_logo,0,$pos) . "edit_" . substr($edit_site_logo,$pos);
+    $user_roles = getRolesFromUser($_SESSION['toolkits_logon_id']);
+    if ($_SESSION['toolkits_logon_id'] === "site_administrator")
+    {
+        $user_roles = array("super");
+    }
 
-    //$edit_organisational_logo = $xerte_toolkits_site->organisational_logo;
-    //$pos = strrpos($edit_organisational_logo, '/') + 1;
-    //$edit_organisational_logo = substr($edit_organisational_logo,0,$pos) . "edit_" . substr($edit_organisational_logo,$pos);
+    $body_class = "";
+    if ($xerte_toolkits_site->rights == 'elevated')
+    {
+        $body_class = ' class="elevated"';
+    }
 
-    /**
-     * set up the onunload function used in version control
-     */
+    $upload_url = $xerte_toolkits_site->site_url .
+            (isset($_SESSION['lti_enabled']) && $_SESSION['lti_enabled'] && function_exists('addSessionData')
+                    ? addSessionData("editor/upload.php") . "&tsugisession=0" : "editor/upload.php");
+    $preview_url = $xerte_toolkits_site->site_url .
+            (
+            isset($_SESSION['lti_enabled']) && $_SESSION['lti_enabled'] && function_exists('addSessionData')
+                    ? addSessionData("preview.php") . "&tsugisession=0&"
+                    : "preview.php?"
+            ) .
+            "template_id=";
+    if (isset($_SESSION['lti_enabled']) && $_SESSION['lti_enabled']) {
+        $lti_session = getSessionData() . "&tsugisession=0";
+    } else {
+        $lti_session = "";
+    }
 
 ?>
 <!DOCTYPE html>
@@ -213,7 +216,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <![endif]-->
 
 </head>
-<body>
+<body <?php echo $body_class; ?> >
 <img id="loader" src="editor/img/loading16.gif" />
 <div class="hide ui-layout-west">
 
@@ -309,7 +312,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/jsep.min.js?version=<?php echo $version;?>"></script>
 
 <!-- Load latest font awesome after ckeditor, other wise the latest fontawesome is overruled by the fontawsome plugin of ckeditor -->
-<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-5.6.3/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
+<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css">
 
 <!-- load exactly the same codemirror scripts as needed by ckeditor -->
 <script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.min.js?version=<?php echo $version;?>"></script>
@@ -321,7 +326,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 <script>
     <?php
-    echo "previewxmlurl=\"" . $preview_url . "\";\n";
+    echo "previewxmlurl=\"" . $previewxmlurl . "\";\n";
     echo "dataxmlurl=\"" . $data_url . "\";\n";
     echo "mediavariable=\"" . $media_path . "\";\n";
     echo "rlourlvariable=\"" . $rlo_url . "/\";\n";
@@ -339,8 +344,14 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "upload_path=\"" . $xerte_toolkits_site->flash_upload_path . "\";\n";
     echo "preview_path=\"" . $xerte_toolkits_site->flash_preview_check_path . "\";\n";
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
-    echo "theme_list=" . json_encode($ThemeList) . ";\n";
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
+    echo "roles=" . json_encode($user_roles) . ";\n";
+    echo "var theme_list_encoded='" . base64_encode(json_encode($ThemeList)) . "';\n";
+    echo "var theme_list=btoa(theme_list_encoded);\n";
+    echo "var upload_url=\"" . $upload_url . "\";\n";
+    echo "var preview_url=\"" . $preview_url . "\";\n";
+    echo "var lti_session=\"" . $lti_session . "\";\n";
+
     ?>
 
     function bunload(){
@@ -349,7 +360,9 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
         template = "<?PHP  echo $row_edit['template_id']; ?>";
 
-        if(typeof window_reference==="undefined"){
+        if (lti_session !== ""){
+            edit_window_close_lti(path);
+        }else if(typeof window_reference==="undefined"){
 
             window.opener.edit_window_close(path,template);
 

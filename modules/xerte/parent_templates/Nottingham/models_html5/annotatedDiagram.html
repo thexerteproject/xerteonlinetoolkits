@@ -65,6 +65,7 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+			const $selected = $(".listItem.highlight");
 			this.deselect();
 			
 			$img.css({
@@ -73,6 +74,11 @@
 			});
 			
 			this.setUp();
+
+			// ensure the selected item is still selected
+			if ($selected.length > 0) {
+				$selected.click();
+			}
 		}
 		
 		this.init = function() {
@@ -81,7 +87,6 @@
 			$hsHolder = $("#hsHolder");
 			$infoHolder = $("#infoHolder");
 			$panel = $("#panel");
-			debugger
 			
 			if (x_browserInfo.mobile != true) {
 				if (x_currentPageXML.getAttribute("align") == "Right") {
@@ -98,7 +103,9 @@
 			// when shape is outline (previously called rectangle), mapster is used - even if the hotspot is just a simple rectangle
 			$pageContents.data("hsType",
 				x_currentPageXML.getAttribute("shape") == "Oval" ? "oval" :
-				x_currentPageXML.getAttribute("shape") == "None" || x_currentPageXML.getAttribute("shape") == "Arrow" ? "centre" : "flex"
+				x_currentPageXML.getAttribute("link") == "true" ? "flex" : // if list is hidden then default to outline as line & arrow will have no where to point to
+				x_currentPageXML.getAttribute("shape") == "None" || x_currentPageXML.getAttribute("shape") == "Arrow" ? "centre" :
+				"flex"
 			);
 			
 			if ($pageContents.data("hsType") == "centre") {
@@ -121,7 +128,9 @@
 			
 			// create links
 			$(x_currentPageXML).children().each(function(i) {
-				var $listItem = $('<a class="listItem" href="#"></a>').appendTo("#listHolder");
+				// deally this should be a button not a link as it's not opening a new page
+				// using role="button" as changing to button tag may cause theme issues with css selectors
+				var $listItem = $('<a class="listItem" href="#" role="button"></a>').appendTo("#listHolder");
 				
 				// create list of links to each hs / hs group
 				$listItem
@@ -267,7 +276,7 @@
 				});
 			
 			if ($pageContents.data("hsType") == "centre" && align == "Left") {
-				$(".listItem").css("minWidth", $x_pageDiv.width() - $panel.outerWidth(true) - 50);
+				$(".listItem").css("minWidth", $x_pageDiv.width() - $panel.outerWidth(true) - parseInt($(".listItem").css('padding-left')) - parseInt($(".listItem").css('padding-right')) - 20);
 			}
 			
 			// now get info about hotspots & create them
@@ -371,7 +380,7 @@
 					coords = [],
 					coords_string = "";
 				
-				$hotspot = $('<area class="hotspot" shape="poly" href="#" tabindex="0" />');
+				$hotspot = $('<area class="hotspot" shape="poly" href="#" />');
 				
 				if (hsInfo.getAttribute("mode") == undefined && hsInfo.getAttribute("x") != undefined && hsInfo.getAttribute("y") != undefined && hsInfo.getAttribute("w") != undefined && hsInfo.getAttribute("h") != undefined) {
 					// old way of specifying hotspot: x,y,w,h
@@ -548,7 +557,6 @@
 		}
 		
 		this.drawLine = function($hs, $listItem, shape) {
-			debugger
 			var align = x_browserInfo.mobile == true ? "Top" : x_currentPageXML.getAttribute("align");
 			
 			// startX/Y = centre of hotspot
@@ -572,7 +580,6 @@
 		}
 
 		this.drawLineToText = function ($hs, shape){
-			debugger
 			var align = x_browserInfo.mobile == true ? "Top" : x_currentPageXML.getAttribute("align");
 			var $panel = $("#panel");
 			var startX = $hs.offset().left - $(context.canvas).offset().left + ($hs.width() / 2);

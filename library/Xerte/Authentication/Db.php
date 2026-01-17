@@ -76,7 +76,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
         $x = db_query("select 1 from {$xerte_toolkits_site->database_table_prefix}user");
         if ($x === false) {
             // Create the user table
-            $x = db_query("create table {$xerte_toolkits_site->database_table_prefix}user  ( `iduser` INT NOT NULL AUTO_INCREMENT, `username` VARCHAR(45) NULL ,  `password` VARCHAR(45) NULL ,  `firstname` VARCHAR(45) NULL ,  `surname` VARCHAR(45) NULL ,  `email` VARCHAR(45) NULL, PRIMARY KEY (`iduser`) )");
+            $x = db_query("create table {$xerte_toolkits_site->database_table_prefix}user  ( `iduser` INT NOT NULL AUTO_INCREMENT, `username` VARCHAR(45) NULL ,  `password` VARCHAR(100) NULL ,  `firstname` VARCHAR(45) NULL ,  `surname` VARCHAR(45) NULL ,  `email` VARCHAR(45) NULL, PRIMARY KEY (`iduser`) )");
             if (empty($x))
             {
                 _debug("Failed: Does the user table exist?");
@@ -96,9 +96,9 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
     public function login($username, $password)
     {
         global $xerte_toolkits_site;
-        $spassword = $this->_hashAndSalt($username, $password);
-        $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}user WHERE username = ? AND password = ?", array($username, $spassword));
-        if (!empty($row)) {
+        $row = db_query_one("SELECT * FROM {$xerte_toolkits_site->database_table_prefix}user WHERE username = ?", array($username));
+        $password_ok = $this->_checkPassword($username, $password, $row['password']);
+        if ($password_ok) {
             $this->_record = $row;
             return true;
         }
@@ -109,12 +109,52 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
      * Return salted value of the user's password - this is what we'll store in the DB.
      * @param type $username (you might change this to store a unique salt against each user!).
      * @param type $password
+     * @param type $salt if null, create a new ed password with password_hash, if $salt is the old salt value ('stablehorseboltapple')
+     *
      * @return type string sha1'ed password.
      */
     private function _hashAndSalt($username, $password)
     {
-        // well, it's better than no salt!
-        return sha1("stablehorseboltapple" . $username . $password);
+        // New way of storing password
+        return password_hash($username . $password, PASSWORD_BCRYPT);
+    }
+
+    private function _checkPassword($username, $password, $hash)
+    {
+        if (password_verify($username . $password, $hash)) {
+            return true;
+        }
+        else
+        {
+            // Check for old password
+            if ($hash == sha1("stablehorseboltapple" . $username . $password))
+            {
+                // Check length of password field in database
+                $sql = "show columns from {$xerte_toolkits_site->database_table_prefix}user where field='password'";
+                $res = db_query_one($sql);
+
+                if ($res['Type'] != 'varchar(100)')
+                {
+                    // Update password field to new length
+                    $sql = "alter table {$xerte_toolkits_site->database_table_prefix}user modify password varchar(100)";
+                    $res = db_query($sql);
+                    if ($res === false)
+                    {
+                        return false;
+                    }
+                }
+
+                // Update password to new hash
+                $newhash = $this->_hashAndSalt($username, $password);
+                global $xerte_toolkits_site;
+                $query="update {$xerte_toolkits_site->database_table_prefix}user set password=? where username=?";
+                $params = array($newhash, $username);
+                $res = db_query($query, $params);
+                if ($res !== false)
+                    return true;
+            }
+        }
+        return false;
     }
 
     public function canManageUser(&$jsscript)
@@ -148,21 +188,11 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
 	$email = '';
 
 	if ($result) {
-            echo "<select onchange=\"changeUserSelection_authDb_user()\" id=\"authDb_list_user\">";
+            echo "<select onchange=\"changeUserSelection_authDb_user()\" id=\"authDb_list_user\" class=\"selectize\">";
+            echo "<option selected=\"selected\" value=\"\">" . AUTH_DB_SELECT_USER . "</option>";
 
-            $first = true;
             foreach($result as $row_users){
-                if ($first) {
-                    echo "<p><option selected=\"selected\" value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
-                    $username = $row_users['username'];
-                    $firstname = $row_users['firstname'];
-                    $surname = $row_users['surname'];
-                    $email = $row_users['email'];
-                    $first = false;
-            	}
-                else {
-                    echo "<p><option value=\"" . $row_users['username'] . "\">" . $row_users['firstname'] . " " . $row_users['surname'] . " (" . $row_users['username'] . ")</option>";
-                }
+                echo "<option value=\"" . $row_users['username'] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
             }
 
             echo "</select>";
@@ -272,7 +302,7 @@ class Xerte_Authentication_Db extends Xerte_Authentication_Abstract
         }
         if (strlen($passwd) > 0)
         {
-            $spassword = $this->_hashAndSalt($username, $passwd);
+            $password = $this->_hashAndSalt($username, $passwd);
             if (strlen($set) > 0)
                 $set .= ", ";
             $set .= "password=?";

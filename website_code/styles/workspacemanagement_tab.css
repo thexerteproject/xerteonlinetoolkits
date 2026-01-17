@@ -18,13 +18,47 @@
  */
 
 .menu_holder{
-	margin:20px 20px;
-	width:80%;
+	margin:0 10px 0 10px;
 	height:auto;
 }
 
 .menu_button{
-	float:left;
-	width:49%; 
-	padding:5px 0px;
+	border: none;
+	margin: 0 5px 5px 0;
+	padding:10px;
+	background-color: #a4b6bf;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.menu_button:not(.tabSelected):active, .menu_button:not(.tabSelected):hover, .menu_button:not(.tabSelected):focus {
+	background-color: #b6c5cc;
+}
+
+.menu_button.tabSelected {
+	background-color: #ededed;
+}
+
+.workspaceProjectsTable caption {
+	text-align: left;
+	margin-bottom: 10px;
+}
+
+.workspaceProjectsTable td.iconCell {
+	text-align: center;
+}
+
+.workspaceProjectsTable button.copyBtn {
+	cursor: pointer;
+	border: none;
+	background: none;
+	border-radius: 0;
+	height: 1.5em;
+	text-align: center;
+	float: right;
+}
+
+.workspaceProjectsTable button.copyBtn:hover, .workspaceProjectsTable button.copyBtn:active, .workspaceProjectsTable button.copyBtn:focus {
+	background: #a4b6bf;
+	color: black;
 }

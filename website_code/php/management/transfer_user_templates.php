@@ -33,7 +33,7 @@ require("../user_library.php");
 require("../url_library.php");
 require("management_library.php");
 
-if(is_user_admin()) {
+if(is_user_permitted("projectadmin", "system")) {
 
     $database_id = database_connect("templates list connected", "template list failed");
 
@@ -41,7 +41,7 @@ if(is_user_admin()) {
     if (!isset($_REQUEST['user_id'])) {
         exit;
     }
-    $login_id = $_REQUEST['user_id'];
+    $login_id = x_clean_input($_REQUEST['user_id']);
 
     // Get all users
     $query = "SELECT * FROM " . $xerte_toolkits_site->database_table_prefix . "logindetails order by surname,firstname,username";

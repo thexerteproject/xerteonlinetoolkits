@@ -32,7 +32,7 @@ require_once(dirname(__FILE__) . "/config.php");
 require $xerte_toolkits_site->php_library_path . "screen_size_library.php";
 require $xerte_toolkits_site->php_library_path . "template_status.php";
 require $xerte_toolkits_site->php_library_path . "display_library.php";
-require $xerte_toolkits_site->php_library_path . "user_library.php";
+require_once $xerte_toolkits_site->php_library_path . "user_library.php";
 require $xerte_toolkits_site->php_library_path . "template_library.php";
 
 /**
@@ -193,7 +193,7 @@ if(isset($_SESSION['toolkits_logon_id'])){
 			die("Access denied, you have no editing rights to this object.");
 		}
 	}
-	else if(is_user_admin()) {
+	else if(is_user_permitted("projectadmin")) {
 		// Is the current user an administrator - If so access here.
 		require $xerte_toolkits_site->root_file_path . "modules/" . $row_edit['template_framework'] . "/edithtml.php";
 		output_editor_code($row_edit, $xerte_toolkits_site, "false", false);

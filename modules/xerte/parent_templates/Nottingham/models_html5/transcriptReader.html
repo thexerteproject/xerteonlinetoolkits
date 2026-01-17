@@ -30,17 +30,18 @@
 			$infoHolder		= $("#infoHolder");
 			
 			$infoHolder.scrollTop(0);
-			$infoHolder.find(".highlight").removeClass("highlight");
+			$infoHolder.find(".highlight")
+				.removeClass("highlight")
+				.removeAttr("aria-label");
+
 			this.loadAudio();
 		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(pageChg) {
-			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel");
-				$panel.height($x_pageHolder.height() - parseInt($x_pageDiv.css("padding-top")) * 2 - parseInt($panel.css("padding-top")) * 2 - 5);
-				$infoHolder.height($panel.height() - x_audioBarH);
-			}
+			const $panel = $("#pageContents .panel");
+			$panel.height(x_getAvailableHeight([$panel]));
+			$infoHolder.height(x_getAvailableHeight([$panel], [x_audioBarH]));
 			
 			if ($pageContents.data("mediaElement") != undefined) {
 				$pageContents.data("mediaElement").setCurrentTime(0);
@@ -51,7 +52,8 @@
 				var $caption = $(this);
 				$caption
 					.data("scrollPos", $caption.position().top)
-					.removeClass("highlight");
+					.removeClass("highlight")
+					.removeAttr("aria-label");
 			});
 			this.loadAudio();
 		}
@@ -116,28 +118,30 @@
 		}
 		
 		this.createCaptions = function(captionInfo) {
-			var	captions = new Array(),
-				tabIndex = 1;
+			var	captions = new Array();
 			
 			$(captionInfo).each(function() {
 				var	$this = $(this);
 				
-				var $caption = $('<div tabindex="' + tabIndex + '" class="noFocus">' + x_addLineBreaks($this.attr("text")) + '</div>')
+				var $caption = $('<div tabindex="0" class="noFocus">' + x_addLineBreaks($this.attr("text")) + '</div>')
 					.data("synch", $this.attr("synch"));
 				
 				$infoHolder.append($caption);
 				captions.push($caption[0]);
-				tabIndex++;
 			});
 			
 			$pageContents.data("captions", captions);
 			
 			$(captions)
 				.click(function() {
-					$infoHolder.find(".highlight").removeClass("highlight");
+					$infoHolder.find(".highlight")
+						.removeClass("highlight")
+						.removeAttr("aria-label");
 					
 					var $this = $(this);
-					$this.addClass("highlight");
+					$this
+						.addClass("highlight")
+						.attr("aria-label", x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "selected", "Selected"));
 					$infoHolder.scrollTop($this.data("scrollPos") - parseInt($("#pageContents .panel").css("padding-top")) - 1);
 					$pageContents.data("mediaElement").setCurrentTime($this.data("synch") + 0.1);
 				})
@@ -189,11 +193,18 @@
 				$captions.each(function(){
 					var $thisCaption = $(this);
 					if (currentTime > $thisCaption.data("synch")) {
-						$("#infoHolder .highlight").removeClass("highlight");
-						$thisCaption.addClass("highlight");
+						$("#infoHolder .highlight")
+							.removeClass("highlight")
+							.removeAttr("aria-label");
+
+						$thisCaption
+							.addClass("highlight")
+							.attr("aria-label", x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "selected", "Selected"));
 						$infoHolder.scrollTop($thisCaption.data("scrollPos") - parseInt($("#pageContents .panel").css("padding-top")) - 1);
 					} else {
-						$thisCaption.removeClass("highlight");
+						$thisCaption
+							.removeClass("highlight")
+							.removeAttr("aria-label");
 					}
 				});
 			});
@@ -215,7 +226,7 @@
 		
 		<div class="right">
 			<div class="panel">
-				<div id="infoHolder">
+				<div id="infoHolder" tabindex="0">
 				</div>
 				<div id="pageAudio"></div>
 			</div>

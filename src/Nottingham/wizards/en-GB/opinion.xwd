@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="Enter Instruction" showfeedback="true" feedback="Provide feedback here"
+      <opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="" feedback=""
 	  quesCount="Question {i} of {n}"
 	  onCompletion="You have completed the questionnaire" score="You answered {i} / {n}"
 	  submitBtnText="Submit"
@@ -15,25 +15,27 @@
   <!-- OPINION=============================== -->
     <opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#opinion" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_opinion_page" hint="Create an opinion with questions that can be slider or radio button interactions or a mix of both.">
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-	<instructions label="Instructions" type="textArea"  height="120"/>
+	<instructions label="Page Text" type="textArea"  height="120" placeholder="Enter text for the page here"/>
     <align label="Align Text" options="Left,Right" type="comboBox"  data="left,right" defaultValue="left" width="120"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
 	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
-    <showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" conditionTrigger="true" />
-    <feedback label="Feedback" type="textArea" height="120" condition="showfeedback!='false'"/>
+    <showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true" deprecated="This optional property is now deprecated"/>
+    <feedback label="Feedback" type="textArea" height="120" optional="true" defaultValue="" placeholder="Enter feedback here"/>
 
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true" />
     <submitBtnText label="Submit Button Label" type="TextInput" wysiwyg="true" language="true" />
     <resetBtnText label="Reset Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Reset" language="true" />
     <backBtnText label="Back Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Back" language="true" />
+    <noFeedBacckNoGraph label="No Feedback No Graph" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="&lt;p&gt;You have completed all the questions.&lt;/p&gt;" tooltip="Text to display on last page if there is not feedback and no graph to show at the end of the questionnaire."/>
 	<downloadBtnText label="Download Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Download" language="true" />
 
-	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="1.0" />
+	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
 
 	<imgGroup type="group" label="Image" optional="true">
-		<img label="File" type="media" defaultValue="Select an Image" optional="true"/>
+		<img label="File" type="media" defaultValue="" placeholder="Select an image" optional="true"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
+		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgGroup>
 
 	<graph label="Graph" type="group" optional="true">
@@ -42,7 +44,7 @@
 		<key label="Show Key" type="CheckBox" defaultValue="true" optional="true" condition="diagram!='true'" tooltip="Show a key listing page names and colours"/>
 	</graph>
 
-    <disableprinting label="Disable Download" type="CheckBox" optional="true" defaultValue="false" tooltip="Remove the button to download a PDF of the graph that appears once all answers have been submitted" condition="diagram!='true'" />
+    <disableprinting label="Disable PDF Export" type="CheckBox" optional="true" defaultValue="false" tooltip="Remove the button to download a PDF of the graph that appears once all answers have been submitted" condition="diagram!='true'" />
 
     <layout label="Layout" type="group" optional="true">
       <list label="Question Layout" type="ComboBox" options="One Per Page,List in Pages,List All" data="false,true,all" optional="true" defaultValue="false" conditionTrigger="true"/>
@@ -50,48 +52,86 @@
 	  <pagesize label="Questions Per Page" type="NumericStepper" min="1" max="100" step="1" optional="true" defaultValue="10" condition="list=='true'" tooltip="Maximum number of questions per page (when list in pages layout)"/>
     </layout>
 
+    <AIGroup type="group" label="AI" optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
+        <subject verification="^.+$"  label="Subject Description" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip = "Define the subject here, and specify the purpose. Optionally, define which areas the questions should focus on. This can also be done in the categories page. For example: 'Office stationary survey' will yield a survey-like opinion question. 'Office stationary survey focusing on ergonomics, quality and feel of the material' will ensure the generated questions include these elements in some capacity." optional="true"/>
+        <additionalInstructions label="Additional Instructions" type="text" tooltip="You can leave this blank or provide additional instructions or requests on how the generated result should look. Please note that certain instructions may break the structure of the generated response. If this occurs, change the wording and attempt to generate again." wysiwyg="true" height="50" placeholder="Write your instructions here..." optional="true"/>
+        <uploadPrompt label="Information Source" options="None (uses model base knowledge), All Context Resources,Learning Object (Limited Scope), Single File (Limited Scope)" type="comboBox" data="false,context,lo,true" defaultValue="false" tooltip="Select ‘All Context Resources’ when you wish to use all of the sources in the context resources table.  Select  'Learning Object (limited Scope)’' when you wish to use the latest preview of the learning object as the single source for generating this content. Select ‘Single File (Limited Scope)’ when you wish to use one uploaded file, video or audio link, as the only source (you will be prompted to upload it if it has not already been added). Please ensure the source content corresponds to the requested subject. If relevant information is not found in the sources the AI will attempt to supplement with its own knowledge." conditionTrigger="true" optional="true"/>
+        <textSnippet label="Text Snippet" type="text" tooltip="Provide the text snippet you wish the model to use as a source for generating the interactivity." placeholder="''" condition="uploadPrompt=='trueText'" optional="true"/>
+        <file label="File / Video Link" type="mediaCorpus" defaultValue="Select a file or enter a video link here..." tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation. If you've selected a file or used a video link which has not yet been processed, you may have to wait up to a few minutes for processing to finish, especially for larger videos." condition="uploadPrompt=='true'" optional="true"/>
+        <categories label="Categories" verification="^(\s*[^,]+\s*,\s*)+[^,]+\s*$" type="TextInput" defaultValue = "" placeholder="Enter categories here. E.g. Category 1, Category 2..." tooltip = "Define the categories divided by a comma. For example, 'monitors, keyboards, chairs, desks' will create four different groups for each of the categories, each of which will have a certain amount of questions." optional="true"/>
+        <numberOfQuestions label="Number of Questions" verification="^\d+$" tooltip ="Define the number of questions to be generated for each category listed. For example, '5' will generate five questions per category. 5(category 1), 2 (category 2) and 6 (category 3) will generate questions in amounts respective to the categories in the order in which they were listed. You may also reference the category directly: '5(ergonomics), 2(accessibility)' will generate five questions for the 'ergonomics' category and two questions for the 'accessibility' category." type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+        <targetDemographic label="Demographic" defaultValue="" placeholder="Enter demographic. Defaults to 'choose based on subject.'" tooltip = "Specify the target demographic of these opinion questions. It is advisable to be specific here. For example 'Office workers between the ages of 20-60' or 'Middle school students in the Netherlands with special needs'. The model will then attempt to curate the questions in a way which is aimed at the specified demographic." type="TextInput" optional="true"/>
+        <scale label = "Scale" type = "TextInput" wysiwyg="true" defaultValue="likert" optional="true"/>
+        <infoGenSettings advanced="true" label="For this page, the following settings will be used instead of those assigned on the learning-object level:" type="info" optional="true"/>
+        <aiSelector advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" overrideField="baseAiSettings" conditionTrigger="true" optional="true"/>
+        <range advanced="true" label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education or other qualifier for which the AI will attempt to curate the complexity of the language. Examples: students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, A2 level Dutch speakers, etc." defaultValuePH="Intermediate English B2" placeholder="Enter reading level. Defaults to 'Intermediate English, B2'" overrideField="baseRange" optional="true"/>
+        <eduLevel advanced="true" label="Education Level" type="TextInput" tooltip="The education level for which the content is intended. Examples: University students, HBO students in the Netherlands, Middle school students who already have learned the basics, etc." defaultValuePH="University" placeholder="Enter educational level. Defaults to 'University.'" overrideField="baseEduLevel" optional="true"/>
+        <tone advanced="true" label="Tone and Style" type="TextInput" defaultValuePH="Semi-formal" placeholder="Enter an indicator of tone. Defaults to 'Semi-formal.'" tooltip = "Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive as well as combinations. Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." overrideField="baseTone" optional="true"/>
+        <aiButton type="aibutton" optional="true"/>
+        <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
+    </AIGroup>
+
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
+        <qfOpinionClass label="Number of Classes" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+        <qfOpinionQuestion label="Number of Questions per Class" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+        <qfOpinionOption label="Number of Options per Question" type="TextInput" wysiwyg="true" defaultValue = "4" optional="true"/>
+        <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
       <newNodes>
-        <opinionClass><![CDATA[<opinionClass title="Title used on graph" name="Class"/>]]></opinionClass>
+        <opinionClass><![CDATA[<opinionClass title="Class title" name="Class"/>]]></opinionClass>
       </newNodes>
 
   </opinion>
 
   <opinionClass menuItem="Class">
-      <title label="Title" type="TextInput" mandatory="true" defaultValue="Title used on graph" wysiwyg="true" />
-	  <name label="Label" type="TextInput" mandatory="true" defaultValue="Class" wysiwyg="false"/>
+      <title label="Title" type="TextInput" mandatory="true" defaultValue="Class title" wysiwyg="true" tooltip="The title that will appear on the graph for this class"/>
+	  <name label="Label" type="TextInput" mandatory="true" defaultValue="Class" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make classes easier to locate for editing at a later date."/>
 
     <newNodes>
-      <opinionQuestion><![CDATA[<opinionQuestion  name="Question" prompt="Enter a Prompt" scale="false" classWeight="1" interactivity="slider" />]]></opinionQuestion>
+      <opinionQuestion><![CDATA[<opinionQuestion  name="Question" prompt="" scale="false" classWeight="1" interactivity="slider" />]]></opinionQuestion>
+      <classFeedback><![CDATA[<classFeedback name="Enter Feedback Title" minScore="0" maxScore="50" feedbackTxt="" />]]></classFeedback>
     </newNodes>
+
   </opinionClass>
 
-  <opinionQuestion menuItem="Question">
-    <prompt label="Question" type="TextArea"  height="100"/>
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false"/>
+  <opinionQuestion menuItem="Question" icon="icComment">
+    <prompt label="Question" type="TextArea"  height="100" placeholder="Enter question text here"/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" wysiwyg="false" tooltip="The label is used to identify this question on the results page and when tracking results, e.g. via SCORM/LTI/xAPI"/>
     <classWeight label="Weighting" type="TextInput" wysiwyg="false" />
-	<interactivity label="Interactivity" options="Radio Buttons, Slider" mandatory="true" type="ComboBox" data="radio-buttons,slider" defaultValue="slider" width="120"/>
-	
+	<interactivity label="Interactivity" options="Radio Buttons, Slider" conditionTrigger="true" mandatory="true" type="ComboBox" data="radio-buttons,slider" defaultValue="slider" width="120"/>
+	<defaultSliderValue label="Default Slider Value" type="NumericStepper" min="0" max="100" step="1" optional="true" defaultValue="50" condition="interactivity=='slider'" tooltip="The default value for the slider"/>
 	<imgGroup type="group" label="Image" optional="true">
-		<image label="File" type="media" defaultValue="Select an Image" optional="true"/>
+		<image label="File" type="media" defaultValue="" placeholder="Select an image" optional="true"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
+		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
 	</imgGroup>
 	
     <scale label="Reverse scale" type="CheckBox" />  
 	
 	<soundGroup type="group" label="Audio" optional="true" tooltip="Add an audio player below the question text">
-		<sound label="File" type="Media" optional="true"/>
+		<sound label="File" type="Media" optional="true" placeholder="Select an audio file"/>
 		<soundTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
 	</soundGroup>
-		
+
     <newNodes>
-      <opinionOption><![CDATA[<opinionOption name="Answer" text="Here is an option" />]]></opinionOption>
+      <opinionOption><![CDATA[<opinionOption name="Answer" text="" />]]></opinionOption>
     </newNodes>
 
   </opinionQuestion>
 
   <opinionOption menuItem="Answer" icon="icBullet">
-    <text label="Text" type="TextArea" manadtory="true" defaultValue="Here is an option" wysiwyg="true" />
-	<name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false"/>
+    <text label="Text" type="TextArea" mandatory="true" defaultValue="" placeholder="Enter an answer option here" wysiwyg="true" />
+	<name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
   </opinionOption>
-  
+
+  <classFeedback menuItem="Tailored feedback" icon="icTranscript2" remove="true">
+      <name label="Title" type="TextInput" wysiwyg="true"/>
+      <feedbackTxt label="Text" type="TextArea" height="200" placeholder="Enter tailored feedback here" tooltip="The feedback text and title will be shown when the parameters below are met for this class"/>
+      <score type="group" label="Score" tooltip="The maximum and minimum (rounded down) score % values for this class used to determine whether the feedback will be shown">
+          <minScore label="Minimum value" defaultValue="0" type="TextInput"/>
+          <maxScore label="Maximum value" defaultValue="50" type="TextInput"/>
+      </score>
+  </classFeedback>
+
 </wizard>

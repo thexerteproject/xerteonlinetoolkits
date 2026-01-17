@@ -639,7 +639,7 @@ class XerteProjectDecoder extends XerteXMLInspector
         {
             $project->xapi = false;
         }
-        if (isset($project->db_record->lti_enabled)) {
+        if (isset($project->db_record['lti_enabled'])) {
             $project->lti = ($project->db_record['lti_enabled'] == '1' ? true : false);
         }
         else{

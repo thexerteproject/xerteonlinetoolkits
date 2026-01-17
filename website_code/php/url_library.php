@@ -143,6 +143,13 @@
 					}
 					break;
 
+			case "passwordplay":	if($xerte_toolkits_site->apache=="true"){
+						return $string . "_" . $template_number;
+					}else{
+						return "pwplay.php?template_id=" . $template_number;
+					}
+					break;
+
 			case "xml":	if($xerte_toolkits_site->apache=="true"){
 						return $string . "_" . $template_number;
 					}else{

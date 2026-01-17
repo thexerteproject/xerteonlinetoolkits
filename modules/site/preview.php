@@ -20,6 +20,7 @@
 
 
 require(dirname(__FILE__) .  '/../../website_code/php/xmlInspector.php');
+require_once(dirname(__FILE__) .  '/../../website_code/php/config/popcorn.php');
 
 function process_logos($LO_logo, $theme_path, $template_path, $page_content) {
     $base_path = dirname(__FILE__) . '/../../' . $template_path . 'common/img/';
@@ -57,7 +58,7 @@ function get_logo_path($suffix, $LO_logo, $theme_path, $template_path) {
 
     // Lastly check the default location
     foreach($extensions as $ext) {
-        if (file_exists($template_path . 'common/img/logo'. $suffix[1] . '.' . $ext)) { 
+        if (file_exists($template_path . 'common/img/logo'. $suffix[1] . '.' . $ext)) {
             return $template_path . 'common/img/logo' . $suffix[1] . '.'. $ext;
         }
     }
@@ -85,6 +86,8 @@ function show_preview_code($row)
     $xmlFixer = new XerteXMLInspector();
     $xmlFixer->loadTemplateXML($xmlfile, true);
 
+    _load_language_file("/modules/site/preview.inc");
+
     if (strlen($xmlFixer->getName()) > 0)
     {
         $title = $xmlFixer->getName();
@@ -101,8 +104,6 @@ function show_preview_code($row)
     $template_path_string = "modules/site/parent_templates/" . $row['parent_template'] . "/";
 
     require_once("config.php");
-
-    _load_language_file("/modules/site/preview.inc");
 
     $version = getVersion();
     $language_ISO639_1code = substr($xmlFixer->getLanguage(), 0, 2);
@@ -162,6 +163,9 @@ function show_preview_code($row)
     }else{
         $page_content = str_replace("%TWITTERCARD%", "", $page_content);
     }
+    // Check popcorn mediasite and peertube config files
+    $popcorn_config = popcorn_config($template_path_string . "common/", $version);
+    $page_content = str_replace("%POPCORN_CONFIG%", $popcorn_config, $page_content);
 
     echo $page_content;
 }

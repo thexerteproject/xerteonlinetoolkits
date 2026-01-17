@@ -1,0 +1,30 @@
+<?php
+
+namespace rag;
+require_once (str_replace('\\', '/', __DIR__) . "/BaseRAG.php");
+require_once (str_replace('\\', '/', __DIR__) . "/MistralRAG.php");
+require_once (str_replace('\\', '/', __DIR__) . "/OpenAIRAG.php");
+require_once (str_replace('\\', '/', __DIR__) . "/TfidfRAG.php");
+
+if (!isset($_SESSION['toolkits_logon_username']) && php_sapi_name() !== 'cli') {
+    die('Sesison id is not set');
+}
+
+function makeRag(array $cfg)
+{
+    $provider = isset($cfg['provider']) ? $cfg['provider'] : 'none';
+    $adminEnabled = (bool)(isset($cfg['enabled']) ? $cfg['enabled'] : true);
+
+
+    if ($adminEnabled && $provider === 'openaienc' && !empty($cfg['api_key'])) {
+        return new OpenAIRAG($cfg['api_key'], $cfg['encoding_directory']);
+    }
+
+    if ($adminEnabled && $provider === 'mistralenc' && !empty($cfg['api_key'])) {
+        return new MistralRAG($cfg['api_key'], $cfg['encoding_directory']);
+    }
+
+    //If no provider (either not recognised or null/empty) default to TfidfRAG
+    //an encoding directory must still be provided; it serves as the base 'RAG' directory where all AI-related content is found
+    return new TfidfRAG('null', $cfg['encoding_directory']);
+}

@@ -54,6 +54,10 @@
 
 	define("TEMPLATE_REPLACE", "Upload a new version of this template");
 
+    define("TEMPLATE_SUB_PAGES_DISABLE_ADVANCED", "Disable the possibility to switch between normal and simple mode in the wizard.");
+
+    define("TEMPLATE_SUB_PAGES_SELECT_DISABLE_ADVANCED", "Disable switch to normal mode.");
+
 	define("TEMPLATE_SUB_PAGES_TITLEONLY", "Only show the title of the Learning Object on the main node in 'Simple' mode of the wizard.");
 
 	define("TEMPLATE_SUB_PAGES_SELECT_TITLEONLY", "Show title only");
@@ -64,6 +68,8 @@
 
 	define("TEMPLATE_ADD_EXPLANATION", "<h3>Sub-templates</h3><p>Import an exported learning object as a new sub-template. If the sub-template already exists it will be replaced. The 'Template name' field identifies the sub-template. The 'Template display name' is the name shown to the user.</p><p>Do not use spaces or any other special characters in the template name, as this name is used as a foldername. If you do use special characters or spaces, these will be replaced by  a '_' character.</p>");
 
+    define("TEMPLATE_UPLOAD_WAIT", "<p>Important: Upload and import of a sub-template can take a while and without indication of progress - only click the upload button once and then wait for a confirmation pop-up message.</p>");
+
     define("TEMPLATE_ADD", "Add template");
 
     define("TEMPLATE_UPLOAD_FILE", "Upload file");
@@ -73,4 +79,3 @@
     define("TEMPLATE_UPLOAD_TEMPLATEDISPLAYNAME", "Enter the template display name");
 
     define("TEMPLATE_UPLOAD_TEMPLATEDESCRIPTION", "Enter the template description");
-

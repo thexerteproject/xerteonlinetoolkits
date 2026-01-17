@@ -101,7 +101,7 @@ class elFinderConnector {
 	 * @author Dmitry (dio) Levashov
 	 **/
 	protected function output(array $data) {
-		$header = isset($data['header']) ? $data['header'] : $this->header;
+		$header = isset($data['header']) ? x_clean_input($data['header'], "array_string", ENT_NOQUOTES|ENT_SUBSTITUTE) : $this->header;
 		unset($data['header']);
 		if ($header) {
 			if (is_array($header)) {
@@ -122,7 +122,7 @@ class elFinderConnector {
 			exit();
 		} else {
 			if (!empty($data['raw']) && !empty($data['error'])) {
-				exit($data['error']);
+				exit(x_clean_input($data['error']));
 			} else {
 				exit(json_encode($data));
 			}

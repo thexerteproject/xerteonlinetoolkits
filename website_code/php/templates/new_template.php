@@ -48,18 +48,32 @@ $root_folder_id = get_user_root_folder();
 
 if (isset($_POST["folder_id"]) && strlen($_POST["folder_id"]) > 0)
 {
-    $folder_id = $_POST["folder_id"];
+    $folder_id = x_clean_input($_POST["folder_id"], 'numeric');
 }
 else
 {
     $folder_id = $root_folder_id;
 }
 
+$templatename = x_clean_input($_POST['templatename']);
+$tutorialname = x_clean_input($_POST['tutorialname']);
+
+// Make sure template name and tutorial name just consists of letters, numbers, and underscores
+if (!preg_match('/^[a-zA-Z0-9_]+$/', $templatename))
+{
+    die("Invalid template name");
+}
+if (!preg_match('/^[a-zA-Z0-9_ ]+$/', $tutorialname))
+{
+    die("Invalid project name");
+}
+
+
 /*
  * get the maximum id number from templates, as the id for this template
  */
 
-$row_template_type = db_query_one("select template_type_id, template_name, parent_template, template_framework from {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_name = ?", array($_POST['templatename']));
+$row_template_type = db_query_one("select template_type_id, template_name, parent_template, template_framework from {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails where template_name = ?", array($templatename));
 
 
 /*
@@ -80,9 +94,14 @@ if ($row_template_type['template_framework'] == 'xerte')
     }
 }
 
+$access = "Private";
+if (isset($_SESSION['lti_enabled']) and $_SESSION['lti_enabled']){
+    $access = "Public";
+}
+
 $query_for_new_template = "INSERT INTO {$xerte_toolkits_site->database_table_prefix}templatedetails (creator_id, template_type_id, date_created, date_modified, number_of_uses, access_to_whom, template_name, extra_flags)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-$lastid = db_query($query_for_new_template, array($_SESSION['toolkits_logon_id'] , $row_template_type['template_type_id'] , date('Y-m-d H:i:s'), date('Y-m-d H:m:i'), 0, "Private", htmlspecialchars(str_replace(" ","_", $_POST['tutorialname'])), $extraflags));
+$lastid = db_query($query_for_new_template, array($_SESSION['toolkits_logon_id'] , $row_template_type['template_type_id'] , date('Y-m-d H:i:s'), date('Y-m-d H:m:i'), 0, $access, htmlspecialchars(str_replace(" ","_", $tutorialname)), $extraflags));
 
 if($lastid !== false) {
     _debug("Created new template entry in db");
@@ -93,7 +112,7 @@ if($lastid !== false) {
         _debug("Setup template rights ok");
         receive_message($_SESSION['toolkits_logon_username'], "ADMIN", "SUCCESS", "Created new template record for the database", $query_for_new_template . " " . $query_for_template_rights);
         include $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->module_path . $row_template_type['template_framework']  . "/new_template.php";
-        create_new_template($lastid, $_POST['templatename'], $row_template_type['parent_template']);
+        create_new_template($lastid, $templatename, $row_template_type['parent_template']);
         echo trim($lastid);
 		echo "," . $xerte_toolkits_site->learning_objects->{$row_template_type['template_framework'] . "_" . $row_template_type['template_name']}->editor_size;
     }else{

@@ -31,3 +31,31 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
 	color: black;
 	background-color: #117BAD;
 }
+
+/* progress bar */
+#x_headerProgress .progressMarker {
+  border-color: $bodybackgroundcolor;
+  background-color: $blackordarkest;
+}
+#x_headerProgress .progressMarker.complete {
+  border-color: $contrastcolor;
+}
+
+/* page resources */
+#x_pageResourcesBtn.ui-button-icon-only {
+  background: none;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+  background: $contrastcolor;
+  color: $whiteorlightest;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only:hover .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:active .resourceNumber, #x_pageResourcesBtn.ui-button-icon-only:focus .resourceNumber {
+  background: $lightestcolor;
+  color: $whiteorlightest;
+}
+
+.resourceDownloadBtn, .resourceDownloadBtn:hover, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+  color: $whiteorlightest;
+}

@@ -33,7 +33,7 @@ require("../user_library.php");
 require("../url_library.php");
 require("management_library.php");
 
-if(is_user_admin()){
+if(is_user_permitted("projectadmin")){
 
     $database_id = database_connect("templates list connected","template list failed");
 
@@ -63,7 +63,7 @@ if(is_user_admin()){
             . "{$prefix}logindetails ld," 
             . "{$prefix}logindetails od "
             . "where tr.user_id = ld.login_id "
-            . "and od.login_id = td.creator_id and tr.template_id = td.template_id "
+            . "and od.login_id = td.creator_id and tr.template_id = td.template_id and tr.role = 'creator' "
             . "and (od.username like ? "
             . "     or od.firstname like ? "
             . "     or od.surname like ? "

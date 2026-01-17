@@ -10,7 +10,7 @@ $perspectivesmedium:5.2vmin;
 $perspectivessmall:3.1vmin;
 
 // --@media TABLETS and above--------------------------------------------------------------
-@media (min-width: 768px) {
+@media (min-width: 768px) and (min-height: 550px) {
 //--start of text size changes-----------------------------------------
 p {
   font-size: $pagecontentslarge;
@@ -117,8 +117,7 @@ input#x_pagePswd {
 }
 #targetHolder .target {
     font-size: $pagecontentsmedium;
-    //*remove padding in gap fill targets*/
-    padding: 0.6vmin !important;
+    /*padding: 0.6vmin !important;*/
 }
 #targetHolder p {
     font-size: $pagecontentsmedium;
@@ -127,7 +126,7 @@ input#x_pagePswd {
     font-size:$pagecontentsmedium;
 }
 
-.featherlight input, .featherlight label {
+.featherlight input, .featherlight label, .featherlight select {
 	font-size: $pagecontentslarge;
 }
 
@@ -146,13 +145,20 @@ input#x_pagePswd {
 #x_headerBlock h1 {
   font-size:$pagecontentsmedium;
 }
+.pbTxt {
+  font-size: max(8pt, $pagecontentssmall);
+}
+#x_headerProgress .pbTxt {
+  font-size: max(8pt, $pagecontentssmall);
+}
 h1#x_introH1 {
   font-size:$pagecontentslarge;
 }
 .ui-accordion .ui-accordion-header a {
     font-size: $pagecontentslarge;
 }
-.ui-button-text-only .ui-button-text {
+.ui-button-text-only .ui-button-text,
+#menuItems .chapterHolder.ui-accordion .ui-accordion-header a {
 //reduce padding inside buttons e.g. zoom, submit, check etc
     padding: .1em 1em;
 }
@@ -167,7 +173,7 @@ h1#x_introH1 {
 }
 .ui-tabs .ui-tabs-nav li a {
     font-size: $pagecontentslarge;
-    //*reduce padding in tabnave buttons*/
+    //*reduce padding in tab nav buttons*/
     padding: .4em .4em;
 }
 .ui-button-text-only .ui-button-text, .ui-button-text-icon-secondary .ui-button-text {
@@ -204,8 +210,8 @@ figcaption {
 table {
 	font-size: $pagecontentslarge;
 }
-#pageContents.titlePageTxt,  #pageContents.titlePageTxt p {
-	font-size: $pagecontentstitlesize;
+.titlePageTxt,  .titlePageTxt p {
+	//font-size: $pagecontentstitlesize;
 }
 .paneList a, .paneList {
 	font-size: $pagecontentsmedium !important;
@@ -216,28 +222,51 @@ table {
 #hint {
 	font-size: $pagecontentsmedium;
 }
-#thumbBar #thumbHolder .thumbBox h3 {
+#thumbBar #thumbHolder .thumbBox h3, #thumbBar #thumbHolder .thumbBox .thumbTitle {
 	font-size: $pagecontentsmedium;
 }
-#thumbBar.large #thumbHolder .thumbBox h3 {
+#thumbBar.large #thumbHolder .thumbBox h3, #thumbBar.large #thumbHolder .thumbBox .thumbTitle {
 	font-size: $pagecontentslarge;
 }
 #gridBack {
 	font-size: $pagecontentslarge;
 }
-#thumbHolder .playAll h3 {
+#thumbHolder .playAll .thumbTitle {
 	font-size: $perspectivesmedium !important;
 }
-#thumbBar.small #thumbHolder .playAll h3 {
+#thumbBar.small #thumbHolder .playAll .thumbTitle {
 	font-size: $perspectivessmall !important;
 }
-#thumbBar.large #thumbHolder .playAll h3 {
+#thumbBar.large #thumbHolder .playAll .thumbTitle {
 	font-size: $perspectiveslarge !important;
 }
 #x_glossaryHover, .splitScreen .tip {
 	font-size: $pagecontentsmedium;
 }
-//--end of text size changes-----------------------------------------
+.fa.fa-x-tick, .fa.fa-x-cross {
+  font-size: $pagecontentslarge;
+}
+
+#x_sideBar .ui-button-text, #x_sideBar .ui-accordion .ui-accordion-header a,
+#x_sideBar #x_sideBarBtnHolder button span.ui-button-text {
+  font-size: $pagecontentsmedium;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button, #x_sideBar.sideBarSmall #x_sideBarTocHolder button {
+  font-size: $pagecontentsmedium;
+}
+
+#x_resources .resourceLink,
+#x_resources h1#x_resourceHeader {
+  font-size: $pagecontentslarge;
+}
+
+#x_resources input {
+  width: $pagecontentslarge;
+  height: $pagecontentslarge;
+}
+
+  //--end of text size changes-----------------------------------------
 }
 //--end of TABLETS and above-----------------------------------------
 
@@ -279,4 +308,8 @@ and (max-width :500px) {
 		margin-top:10px;
 		width:80px;
 	}
+  #x_footerBlock button{
+    font-size: 1.4rem;
+    margin-left: 5px;
+  }
 }

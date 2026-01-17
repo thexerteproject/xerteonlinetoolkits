@@ -1,5 +1,9 @@
 /* thumbnailViewer.html */
-	
+
+	#x_pageDiv {
+		position: relative;
+	}
+
 	#thumbBar {
 		position:	absolute;
 		top:		10px;
@@ -160,5 +164,14 @@
 	
 	#panelTxt .x_glossary {
 		color: #ffffff;
+	}
+
+	.featherlight-inner #panelImg {
+		max-width: 100%;
+	}
+
+	.featherlight-inner #panelTxt, .featherlight-inner #panelTxt div {
+		position: relative;
+		top: auto;
 	}
 	

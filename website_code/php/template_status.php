@@ -417,23 +417,31 @@ function get_implicit_role($template_id, $login_id){
     global $xerte_toolkits_site;
     //find out in what folder this template is:
     $query = "SELECT folder FROM {$xerte_toolkits_site->database_table_prefix}templaterights where template_id =?";
-    $row = db_query_one($query, array($template_id));
+    $rows = db_query($query, array($template_id));
 
-    if (!is_null($row['folder'])){
-        require_once("folder_status.php");
+    $current_known_roles = array();
 
-        $folder_id = $row['folder'];
-        return get_implicit_folder_role($login_id, $folder_id);
-    }else{
-        return "";
+    foreach($rows as $row) {
+        if (!is_null($row['folder'])) {
+            require_once("folder_status.php");
+
+            $folder_id = $row['folder'];
+            $role =  get_implicit_folder_role($login_id, $folder_id);
+            array_push($current_known_roles, $role);
+        }
     }
+    if (!empty($current_known_roles)){
+        usort($current_known_roles, "compare_roles");
+        return $current_known_roles[0];
+    }
+    return "";
 }
 
 function get_implicit_group_role($template_id, $login_id)
 {
     global $xerte_toolkits_site;
     //find out in what folder this template is:
-    $query = "SELECT folder FROM {$xerte_toolkits_site->database_table_prefix}templaterights where template_id =?";
+    $query = "SELECT folder FROM {$xerte_toolkits_site->database_table_prefix}templaterights where template_id =? and role='creator'";
     $row = db_query_one($query, array($template_id));
     if (!is_null($row['folder'])) {
         return get_implicit_folder_group_role($login_id, $row['folder']);

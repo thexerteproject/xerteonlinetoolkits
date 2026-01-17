@@ -28,36 +28,50 @@ require_once("../../../config.php");
 
 include "../display_library.php";
 
+_load_language_file("/website_code/php/workspaceproperties/api_template.inc");
+
 /**
  * connect to the database
  */
 
-echo "<p class=\"header\"><span>API</span></p>";
+echo "<h2 class=\"header\">" . API_HEADER . "</h2>";
 
-$database_connect_id = database_connect("api_template.php connect success","api_template.php connect failed");
-$prefix = $xerte_toolkits_site->database_table_prefix;
-$query = "select * from {$prefix}api_keys where user_id= ? ORDER BY created DESC";
-$params = array($_SESSION['toolkits_logon_id']);
+echo "<div id=\"mainContent\">";
 
-$response = db_query($query, $params);
-if ($response) {
-	$count = 0;
-	foreach($response as $row) {
-		echo "<p><strong>" . $row['description'] . "</strong><br />";
-		echo "Key: " . $row['consumer_key'] . "<br />";
-		echo "Secret: " . $row['consumer_secret'] . "<br />";
-		echo "Status: " . ($row['active'] ? "ENABLED" : "DISABLED") . "<br />";
-		echo "Created on " . $row['created'] . "<br />";
-		echo "Last modified on " . $row['last_modified'] . "<br />";
-		echo (is_null($row['last_used']) ? "Has never been used." : "Last used on " . $row['last_used']) . "<br />";
-		echo ($row['uses_count']>0 ? "Has been used " . $row['uses_count'] . " times." : "Has never been used.") . "</p>";
+if($_SESSION['toolkits_logon_id']) {
 
-		$count++;
+	$database_connect_id = database_connect("api_template.php connect success","api_template.php connect failed");
+	$prefix = $xerte_toolkits_site->database_table_prefix;
+	$query = "select * from {$prefix}api_keys where user_id= ? ORDER BY created DESC";
+	$params = array($_SESSION['toolkits_logon_id']);
+
+	$response = db_query($query, $params);
+	if ($response) {
+		$count = 0;
+		foreach($response as $row) {
+			echo "<p><strong>" . $row['description'] . "</strong><br />";
+			echo API_KEY . ": " . $row['consumer_key'] . "<br />";
+			echo API_SECRET . ": " . $row['consumer_secret'] . "<br />";
+			echo API_STATUS . ": " . ($row['active'] ? "ENABLED" : "DISABLED") . "<br />";
+			echo API_CREATED . " " . $row['created'] . "<br />";
+			echo API_MODIFIED . " " . $row['last_modified'] . "<br />";
+			echo (is_null($row['last_used']) ? API_NEVER_USED : API_LAST_USED . " " . $row['last_used']) . "<br />";
+			echo ($row['uses_count']>0 ? str_replace("{x}", $row['uses_count'], API_USED) : API_NEVER_USED) . "</p>";
+			
+			$count++;
+		}
+		if ($count == 0) {
+			echo "<p>" . API_NO_APPLICATIONS . "</p>";
+		}
 	}
-	if ($count == 0) {
-		echo "<p>No applications registered.</p>";
+	else {
+		echo "<p>" . API_NOT_INSTALLED . "</p>";
 	}
+	
+} else {
+	
+	echo "<p>" . API_ERROR . "</p>";
+	
 }
-else {
-	echo "<p>API not yet installed.</p>";
-}
+
+echo "</div>";

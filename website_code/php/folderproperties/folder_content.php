@@ -37,25 +37,42 @@ _load_language_file("/website_code/php/folderproperties/folder_content.inc");
 
 include "../display_library.php";
 
+echo "<h2 class=\"header\">" . FOLDER_CONTENT_TEMPLATE_CONTENTS . "</h2>";
+
+echo "<div id=\"mainContent\">";
+
 if (!isset($_SESSION['toolkits_logon_username']))
 {
     _debug("Session is invalid or expired");
-    die("Session is invalid or expired");
+	
+	echo "<p>" . FOLDER_CONTENT_FAIL . "</p>";
+	echo "</div>";
+	
+    die();
 }
 
 /**
  * connect to the database
  */
 
-if(is_numeric($_POST['folder_id']) && (has_rights_to_this_folder($_POST['folder_id'], $_SESSION['toolkits_logon_id']) || is_user_admin())){
-
-    $database_connect_id = database_connect("Folder_content_template.php connect success","Folder_content_template.php connect failed");
-
-    echo "<p class=\"header\"><span>" . FOLDER_CONTENT_TEMPLATE_CONTENTS . "</span></p>";			
-    list_folder_contents_event_free($_POST['folder_id']);
-    
-}else{
-    echo "<p>" . FOLDER_PROPERTIES_FAIL . "</p>";
+if (!isset($_POST['folder_id']))
+{
+    echo "<p>" . FOLDER_CONTENT_FAIL . "</p>";
+    echo "</div>";
+    exit(0);
 }
 
-?>
+$folder_id = x_clean_input($_POST['folder_id'], 'numeric');
+
+if(has_rights_to_this_folder($folder_id, $_SESSION['toolkits_logon_id']) || is_user_permitted("project")){
+	echo "<ul class=\"dynamic_area_folder\">";
+	
+    list_folder_contents_event_free($folder_id);
+	
+    echo "</ul>";
+    
+}else{
+    echo "<p>" . FOLDER_CONTENT_FAIL . "</p>";
+}
+
+echo "</div>";

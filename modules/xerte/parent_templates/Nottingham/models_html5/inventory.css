@@ -39,15 +39,31 @@
 		margin-left:	10px;
 		float:			right;
 	}
-	
-	#infoHolder .quizImg {
+
+	#infoHolder .quizImgHolder {
 		padding:	5px;
 		float:		right;
 		max-width:	50%;
+	}
+	
+	#infoHolder .quizImg {
+		max-width:	100%;
 		height:		auto;
 	}
 	
 	#chartTitle {
 		text-align:	center;
 	}
-	
+
+	.fbBlock h3 {
+		padding-top: .5em;
+	}
+
+	#qNo {
+		font-weight: bold;
+		padding-top: 0;
+	}
+
+	#qTxt {
+		padding: 0;
+	}

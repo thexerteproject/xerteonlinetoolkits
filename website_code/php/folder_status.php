@@ -266,8 +266,8 @@ function get_implicit_folder_role($login_id, $folder_id, $group_id=-1){
         $result = null;
         if ($group_id == -1){
             //selects original parent and this user's role (if it exists) of this folder
-            $query = "select fr.folder_parent, fr2.role from folderrights fr " .
-                "LEFT JOIN folderrights fr2 ON fr2.folder_id=fr.folder_id and fr2.login_id = ? " .
+            $query = "select fr.folder_parent, fr2.role from {$pre}folderrights fr " .
+                "LEFT JOIN {$pre}folderrights fr2 ON fr2.folder_id=fr.folder_id and fr2.login_id = ? " .
                 "where fr.folder_id=? and fr.role='creator'";
             $result = db_query_one($query, array($login_id, $folder_id));
         }else{ // check in group rights

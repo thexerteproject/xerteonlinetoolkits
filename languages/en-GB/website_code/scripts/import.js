@@ -16,7 +16,7 @@
 
 	var NEW_PROJECT_NAME = "New project name";
 
-	var NAME_FAIL_IMPORT = "Sorry that is not a valid name";
+	var NAME_FAIL_IMPORT = "This is not a valid name. Please use only letters and numbers";
 	
 	var ONE_TEMPLATE_ERROR = "Please select only the 1 template you'd like to update - or select no templates if you'd like to import a new version";
 

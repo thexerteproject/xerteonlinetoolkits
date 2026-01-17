@@ -36,7 +36,7 @@ require("get_group_members.php");
  *
  */
 
-if(is_user_admin()){
+if (is_user_permitted("useradmin")) {
 
     $database_id = database_connect("user groups list connected","user groups list failed");
 
