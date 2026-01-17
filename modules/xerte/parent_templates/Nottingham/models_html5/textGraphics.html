@@ -39,35 +39,27 @@
 				}
 				
 				var offset = textGraphics.calculateOffset();
-				if (x_currentPageXML.getAttribute("imagesize") != "Full screen") {
-					$("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "60%");
-					$("#pageImg").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
-					$("#pageImg").css("max-height", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
 
-				}
-				
 				if (x_currentPageXML.getAttribute("imagesize") == "small") {
 	                $("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "40%");
 					$("#pageImg").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
 					$("#pageImg").css("max-height", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
-
 				}
-	
 				if (x_currentPageXML.getAttribute("imagesize") == "auto") {
 	                $("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "60%");
 					$("#pageImg").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
 					$("#pageImg").css("max-height", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
-
-					
 				}
-
 				if (x_currentPageXML.getAttribute("imagesize") == "big") {
 	                $("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "80%");
 					$("#pageImg").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
 					$("#pageImg").css("max-height", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
-
 				}
-
+				if (x_currentPageXML.getAttribute("imagesize") == "Full screen") {
+					$("#imgInnerDiv").css("max-width", $x_pageHolder.width() - offset[0]);
+					$("#pageImg").css("max-width", $x_pageHolder.width() - offset[0]);
+					$("#pageImg").css("max-height", $x_pageHolder.width() - offset[0]);
+				}
 
 				if ($("#imgCaption").length > 0) {
 					$("#imgCaption").width($pageImg.width());
@@ -182,26 +174,6 @@
 					var $this = $(this);
 					$this.data("origSize", [$this.width(), $this.height()]);
 					
-					var offset = textGraphics.calculateOffset();
-					if (imageSize == "actual size") {
-						// no scaling
-					} else {
-						$this.css({
-							"max-width": "100%",
-							"max-height": x_browserInfo.mobile == true ? $x_mobileScroll.height() - $x_footerBlock.height() - offset[1] : $x_pageHolder.height() - offset[1]
-						});
-						
-						if (imageSize == "full screen") {
-							$imgInnerDiv.css({
-								"max-width": "100%"
-							});
-						} else { // auto
-							$imgInnerDiv.css({
-								"max-width": textAlign == "Top" || textAlign == "Bottom" ? $x_pageHolder.width() - offset[0] : "60%"
-							});
-						}
-					}
-					
 					$this.css("visibility", "visible");
 					
 					if ($("#transcriptHolder").length > 0) {
@@ -212,6 +184,7 @@
 					}
 					textGraphics.setUpMagnifier();
 					textGraphics.loadAudio();
+					textGraphics.sizeChanged();
 					x_pageLoaded(); // call this function in every model once everything's loaded
 				})
 				.attr({
