@@ -1770,16 +1770,6 @@ function x_continueSetUp1() {
 				}
 			}
 		}
-		XENITH.RESOURCES.init();
-		XENITH.PROGRESSBAR.init();
-
-		// hide page counter
-		if (x_params.pageCounter == "true") {
-			$x_pageNo.remove();
-		}
-
-		XENITH.ACCESSIBILITY.buildBtn();
-
 
 		XENITH.RESOURCES.init();
 		XENITH.PROGRESSBAR.init();

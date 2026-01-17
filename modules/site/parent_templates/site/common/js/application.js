@@ -1309,6 +1309,13 @@ function setup() {
 				function() { $(this).css('color', navBarText); }
 			);
 		}
+
+
+   var itemCount = $('#nav li').length;
+
+  if (itemCount > 10) {
+  	$(".bs-docs-sidenav.affix").css("top", "65px");
+  }
 	}
 
 	// --------------- Optional Footer properties --------------------
@@ -1777,7 +1784,7 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 					pageIndex = $pageIndex;
 					found = true;
 					if (sectionNum == undefined) {
-						sectionNum = index + 1;
+						sectionNum = index + 0;
 					}
 					pageLinkType = false;
 					pageRefType = 'id';
