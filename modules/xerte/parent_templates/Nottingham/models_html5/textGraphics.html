@@ -32,34 +32,34 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			var $pageImg = $("#pageImg");
+			const offset = textGraphics.calculateOffset();
 			if (x_currentPageXML.getAttribute("imagesize") != "actual size") {
 				if ($("#transcriptHolder").length > 0 && $("#transcriptBtn").attr("aria-expanded") == "true") {
 					$("#transcriptBtn").click();
 					$("#transcript").css("display", "none");
 				}
-				
-				var offset = textGraphics.calculateOffset();
+				let maxW = $x_pageHolder.width() - offset[0];
+				let maxH = $x_pageHolder.height() - offset[1];
+
+				$pageImg.css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
+				$pageImg.css("max-height", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.height() - offset[1] : "100%");
 
 				if (x_currentPageXML.getAttribute("imagesize") == "small") {
-	                $("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "40%");
-					$("#pageImg").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
-					$("#pageImg").css("max-height", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
+	                maxW = x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : maxW*0.4;
 				}
 				if (x_currentPageXML.getAttribute("imagesize") == "auto") {
-	                $("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "60%");
-					$("#pageImg").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
-					$("#pageImg").css("max-height", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
+					maxW = x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : maxW*0.6;
 				}
 				if (x_currentPageXML.getAttribute("imagesize") == "big") {
-	                $("#imgInnerDiv").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "80%");
-					$("#pageImg").css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
-					$("#pageImg").css("max-height", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
+					maxW = x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : maxW*0.8;
 				}
 				if (x_currentPageXML.getAttribute("imagesize") == "Full screen") {
-					$("#imgInnerDiv").css("max-width", $x_pageHolder.width() - offset[0]);
-					$("#pageImg").css("max-width", $x_pageHolder.width() - offset[0]);
-					$("#pageImg").css("max-height", $x_pageHolder.width() - offset[0]);
+					$pageImg.css("max-width", $x_pageHolder.width() - offset[0]);
+					$pageImg.css("max-height", $x_pageHolder.height() - offset[1]);
 				}
+
+				// resize image to fit
+				x_scaleImg($pageImg, maxW, maxH, true, false, true);
 
 				if ($("#imgCaption").length > 0) {
 					$("#imgCaption").width($pageImg.width());
@@ -69,7 +69,15 @@
 					$("#transcript").width($pageImg.width());
 				}
 			}
-			
+			else
+			{
+				// Make visible
+				$("#imgInnerDiv").css("width", $x_pageHolder.width() - offset[0]);
+				$("#imgInnerDiv").css("height", $x_pageHolder.height() - offset[1]);
+				$("#imgInnerDiv").css("overflow", "auto");
+				$("#pageImg").css("visibility", "visible");
+			}
+
 			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
 				if ($("#pageAudio .mejs-audio").width() != $pageImg.width()) {
 					this.loadAudio();
@@ -172,29 +180,10 @@
 			$("#pageImg")
 				.one("load", function() {
 					var $this = $(this);
+					// Make it work nice with x_ScaleImg function used in sizeChanged
 					$this.data("origSize", [$this.width(), $this.height()]);
 					
-					var offset = textGraphics.calculateOffset();
-					if (imageSize == "actual size") {
-						// no scaling
-					} else {
-						$this.css({
-							"max-width": "100%",
-							"max-height": x_browserInfo.mobile == true ? $x_mobileScroll.height() - $x_footerBlock.height() - offset[1] : $x_pageHolder.height() - offset[1]
-						});
-						
-						if (imageSize == "full screen") {
-							$imgInnerDiv.css({
-								"max-width": "100%"
-							});
-						} else { // auto
-							$imgInnerDiv.css({
-								"max-width": textAlign == "Top" || textAlign == "Bottom" ? $x_pageHolder.width() - offset[0] : "60%"
-							});
-						}
-					}
-					
-					$this.css("visibility", "visible");
+					$this.css("visibility", "hidden");
 					
 					if ($("#transcriptHolder").length > 0) {
 						$transcript.width($this.width());
