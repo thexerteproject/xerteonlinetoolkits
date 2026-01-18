@@ -217,7 +217,7 @@
 	<synchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<text label="Question" type="TextArea" height="100"/>
-		<judge label="Mark Answer" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity." />
+		<judge label="Mark Answer" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result." />
 		<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
 		<overlay label="Overlay Media" type="CheckBox" defaultValue="false" deprecated="This property is deprecated. The interactive video page offers an alternative way of having content overlaying a video."/>

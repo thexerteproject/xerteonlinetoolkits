@@ -139,7 +139,7 @@
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
 		<text label="Question" type="TextArea" height="100" placeholder="Enter question text here"/>
-		<judge label="Mark Answer" type="CheckBox" defaultvalue="true" optional="true" conditionTrigger="true" />
+		<judge label="Mark Answer" type="CheckBox" defaultvalue="true" optional="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result."/>
 		<!--<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>-->
 		<!--<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>-->
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>

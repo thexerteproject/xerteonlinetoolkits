@@ -21,7 +21,7 @@
     <align label="Align Text" options="Left,Right" type="comboBox"  data="left,right" defaultValue="left" width="120"/>
     <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
     <instructions label="Page Text" type="textArea"  height="120" placeholder="Enter text for the page here"/>
-    <judge label="Judge Questions" type="CheckBox" defaultValue="true" />
+    <judge label="Judge Questions" type="CheckBox" defaultValue="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result."/>
 	<showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" />
     <feedback label="Feedback" type="textArea"  height="120" placeholder="Enter feedback here" tooltip="The feedback that appears once all questions in the quiz have been answered"/>
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
