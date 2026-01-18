@@ -49,6 +49,7 @@
     <chkShowToolbar label="Toon knoppenbalk" tooltip="Zet standaard de knoppen balk aan."/>
 	<chkShowGroups label="Groepen uitvouwen" tooltip="Alle groepen uitvouwen."/>
 	<compMedia tooltip="Importeer media"/>
+	<compai tooltip="Afbeelding assistent"/>
 	<compPreview error="Voorvertoning niet beschikbaar" tooltip="Voorvertoning"/>
 	<calendar tooltip="Selecteer Datum"/>
 	<chapter title="HOOFDSTUK"/>
