@@ -12,7 +12,7 @@
     <text  label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
     <attempts label="Attempts Before Hint" options="0,1,2,3,4" type="ComboBox" width="100" data="0,1,2,3,4"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Large" width="100" mandatory="true"/>
-	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity." />
+	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result." />
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" condition="judge!='false'" defaultValue="1.0" /> 
 
     <tryTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
