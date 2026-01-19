@@ -33,7 +33,7 @@
       <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
-    <judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity." />
+    <judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result." />
 	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" condition="judge!='false'" defaultValue="1.0" /> 
 
     <tryTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>

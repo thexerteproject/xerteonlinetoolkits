@@ -395,11 +395,13 @@
 
         this.loadPlugins = function() {
 			var i = 0;
+            // First load css files
+            css.forEach(function (plugin) {
+                var fileLocation = "common_html5/js/popcorn/plugins/popcorn." + plugin;
+                x_insertCSS(x_templateLocation + fileLocation + ".css");
+            });
 			plugins.forEach(function (plugin) {
 				var fileLocation = "common_html5/js/popcorn/plugins/popcorn." + plugin;
-				if (jQuery.inArray(plugin, css) != -1) {
-					x_insertCSS(x_templateLocation + fileLocation + ".css");
-				}
 				$.getScript(x_templateLocation + fileLocation + ".js")
 					.done(function(setttings, textStatus){
 						if (++i >= plugins.length) {
@@ -1015,7 +1017,7 @@
             // add pause points for mainMedia/mediaPlus
             for (var j=0; j<synchData.length; j++) {
                 if (synchData[j].nodeName == "synchCue") {
-                    interactiveVideo.setUpPopcornCue(popcornInstance, synchData[j]);
+                    interactiveVideo.setUpPopcornSynchCue(popcornInstance, synchData[j]);
                 }
             }
             // add all other synch events
@@ -1150,32 +1152,7 @@
                         // plugin is being called from popcorn-complete.min.js - need to call this too (gets holder in correct state with titles & visibility)
                         popcornInstance["sortholder"](pluginAttributes);
                     }
-
-                    popcornInstance.cue(thisContent.start, function() {
-                        // pauses media at synch point if needed
-                        if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
-                            this.pause();
-                            // Gray out the background and fix z-index if the media is paused on an overlay panel
-                            if (thisContent.allInfo.getAttribute("overlayPan") == "true" && thisContent.type == "ivSynchXot")
-                            {
-                                $("#overlayGray").show();
-                            }
-                            if (thisContent.allInfo.getAttribute("overlay") != "true") {
-                                interactiveVideo.exitFullScreen();
-                            }
-                        }
-
-                        // try to get screen readers to notify user of panel contents change
-                        if (thisContent.start != 0) {
-                            const contentChgTxt = x_getLangInfo(x_languageData.find("screenReaderInfo").find("interactiveVideo")[0], "prompt") != undefined ? x_getLangInfo(x_languageData.find("screenReaderInfo").find("interactiveVideo")[0], "prompt") : (x_params.language === "en-GB" ? "Content added" : undefined);
-                            if (contentChgTxt !== undefined) {
-                                $("#srInfo").html(contentChgTxt);
-                                setTimeout(function() { $("#srInfo").html(''); }, 50);
-                            }
-
-                            $(".contentBlock:visible").parents(".overlay").focus();
-                        }
-                    });
+                    interactiveVideo.setUpPopcornCue(popcornInstance, thisContent);
                 }
             }
 
@@ -1184,7 +1161,7 @@
 
         // function sets up the popcorn sync events for pausing and skipping the media
         // Also shows or hide streams for the mediasite API.
-        this.setUpPopcornCue = function(popcornInstance, synchData) {
+        this.setUpPopcornSynchCue = function(popcornInstance, synchData) {
             popcornInstance.cue(Number(synchData.getAttribute("synch")), function() {
                 // pause / play media
                 if (synchData.getAttribute("pauseMedia") == "true") { //TODO not here
@@ -1215,6 +1192,34 @@
                 // skip media
                 if (synchData.getAttribute("destination") != undefined && $.isNumeric(synchData.getAttribute("destination"))) {
                     this.currentTime(synchData.getAttribute("destination"));
+                }
+            });
+        }
+
+        this.setUpPopcornCue = function(popcornInstance, thisContent) {
+            popcornInstance.cue(thisContent.start, function() {
+                // pauses media at synch point if needed
+                if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
+                    this.pause();
+                    // Gray out the background and fix z-index if the media is paused on an overlay panel
+                    if (thisContent.allInfo.getAttribute("overlayPan") == "true" && thisContent.type == "ivSynchXot")
+                    {
+                        $("#overlayGray").show();
+                    }
+                    if (thisContent.allInfo.getAttribute("overlay") != "true") {
+                        interactiveVideo.exitFullScreen();
+                    }
+                }
+
+                // try to get screen readers to notify user of panel contents change
+                if (thisContent.start != 0) {
+                    const contentChgTxt = x_getLangInfo(x_languageData.find("screenReaderInfo").find("interactiveVideo")[0], "prompt") != undefined ? x_getLangInfo(x_languageData.find("screenReaderInfo").find("interactiveVideo")[0], "prompt") : (x_params.language === "en-GB" ? "Content added" : undefined);
+                    if (contentChgTxt !== undefined) {
+                        $("#srInfo").html(contentChgTxt);
+                        setTimeout(function() { $("#srInfo").html(''); }, 50);
+                    }
+
+                    $(".contentBlock:visible").parents(".overlay").focus();
                 }
             });
         }

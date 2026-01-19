@@ -489,7 +489,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "var roles=" . json_encode($user_roles) . ";\n";
     echo "var theme=\"" . $theme . "\";\n";
     echo "var theme_list_encoded='" . base64_encode(json_encode($ThemeList)) . "';\n";
-    echo "var theme_list=btoa(theme_list_encoded);\n";
+    echo "var theme_list=JSON.parse(atob(theme_list_encoded));\n";
     echo "var upload_url=\"" . $upload_url . "\";\n";
     echo "var preview_url=\"" . $preview_url . "\";\n";
     echo "var lti_session=\"" . $lti_session . "\";\n";

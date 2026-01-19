@@ -30,13 +30,15 @@ optional: end position* line
 	Popcorn.plugin("textplus", function(options) {
 		
 		// define plugin wide variables / functions here
-		var $target, $showHs, $showLbl, showHsActive;
+		var $target, $showHs, $showLbl, showHsActive, media;
 		
 		return {
 			_setup: function(options) {
+				debugger;
 				// setup code, fire on initialisation
-				var txt = options.name != "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text);
-				
+				const closeBtn = '<button class="close-icon" aria-label="Close">✕</button>';
+				const txt = options.name != "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text);
+
 				if (options.line == "true") {
 					if (options.position == "top") {
 						txt = txt + "<hr/>";
@@ -45,11 +47,12 @@ optional: end position* line
 					}
 				}
 				$target = $("#" + options.target).hide();
-				if(options.overlayPan == "true"){
+				media = this;
+				if (options.overlayPan == "true") {
 					$target.parent().hide();
 					$target.hide();
-					if(options.optional === "true") {
-						var $showHolder  = $('<div id="showHolder"/>').appendTo($target);
+					if (options.optional === "true") {
+						var $showHolder = $('<div id="showHolder"/>').appendTo($target);
 						var size = options.attrib.hsSize;
 						$showHs = $('<div class="Hs x_noLightBox showHotspot"/>').addClass(options.attrib.icon).appendTo($showHolder);
 						$showHs.css({
@@ -58,65 +61,74 @@ optional: end position* line
 						}).data({
 							size: options.attrib.hsSize,
 							colour2: options.attrib.colour1
-						}).hover(function(){
-							var $this = $(this);
-							$this.css({
-								'box-shadow': '0px 0px ' + ($this.data('size')/2) + 'px ' + $this.data('colour2'),
-								'cursor': 'pointer',
-								'z-index': 1000
+						}).hover(function () {
+								var $this = $(this);
+								$this.css({
+									'box-shadow': '0px 0px ' + ($this.data('size') / 2) + 'px ' + $this.data('colour2'),
+									'cursor': 'pointer',
+									'z-index': 1000
+								});
+							},
+							function () { // On end hover, remove glow effect
+								$(this)
+									.css({
+										'box-shadow': 'none',
+										'z-index': 1
+									})
 							});
-						},
-						function() { // On end hover, remove glow effect
-							$(this)
-								.css({
-									'box-shadow': 'none',
-									'z-index': 1
-								})
-						});
-							
+
 						$showLbl = $("<div class='showLabel panel'>" + options.name + "</div>");
-						if(options.attrib.tooltip == "label") {
+						if (options.attrib.tooltip == "label") {
 							$showLbl.appendTo($showHolder);
-						}
-						else if(options.attrib.tooltip == "tooltip"){
+						} else if (options.attrib.tooltip == "tooltip") {
 							$showLbl.removeClass("showLabel").addClass("tooltip").appendTo($showHolder).hide();
 							$('<div class="tipArrow arrowDown"/>').appendTo($showLbl);
-							$showHs.hover(function(){
+							$showHs.hover(function () {
 								$showLbl.show();
-							}, function() {
+							}, function () {
 								$showLbl.hide();
 							});
 						}
 						$showHolder
-                    	    .click(function (e) { // Open the textbox.
+							.click(function (e) { // Open the textbox.
 								e.stopPropagation();
 								showHsActive = true;
-                        	    $showHolder.hide();
+								$showHolder.hide();
 								$target.prepend(txt);
+								$target.prepend(closeBtn);
 								$target.parent().addClass("qWindow").addClass("panel");
 								$target.parent().css({"padding": 5, "overflow-x": "hidden"});
-                        	})
-							.keypress(function(e) {
+							})
+							.keypress(function (e) {
 								var charCode = e.charCode || e.keyCode;
 								if (charCode == 32) {
 									e.stopPropagation();
 									$(this).trigger("click");
 								}
 							});
-					// If not optional
-               		} else {
+						// If not optional
+					} else {
 						$target.parent().css({"padding": 5});
 						showHsActive = true;
 						$target.prepend(txt);
+						$target.prepend(closeBtn);
 					}
+					// Close button event
+					$target.on("click", ".close-icon", function (e) {
+						e.stopPropagation();
+						$target.hide();
+						if (options.overlayPan)
+							$target.parent().hide();
+						media.play();
+					});
 				}
 				// Else if not on overlay panel
 				else {
 					$target.prepend(txt);
 				}
 			},
-			
-			start: function(event, options) {
+
+			start: function (event, options) {
 				// fire on options.start
 				if (options.overlayPan) {
 					if (showHsActive == true)

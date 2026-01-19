@@ -49,6 +49,7 @@
     <chkShowToolbar label="Toon knoppenbalk" tooltip="Zet standaard de knoppen balk aan."/>
 	<chkShowGroups label="Groepen uitvouwen" tooltip="Alle groepen uitvouwen."/>
 	<compMedia tooltip="Importeer media"/>
+	<compai tooltip="Afbeelding assistent"/>
 	<compPreview error="Voorvertoning niet beschikbaar" tooltip="Voorvertoning"/>
 	<calendar tooltip="Selecteer Datum"/>
 	<chapter title="HOOFDSTUK"/>
@@ -252,6 +253,51 @@
 		<Info2 label = "Let op: de nieuwe tabel wordt aan de oude tabel toegevoegd. Wilt u doorgaan? NB na het toevoegen kunnen er dubbele rijen na de merge."> </Info2>
 		<mergeOld label = "Voeg nieuwe tabel toe aan huidige inhoud:"/>
 	</UploadCSV>
+	<imageSelection>
+		<title>Selecteer elke afbeelding die je wilt bewaren en druk op 'bewaar'.</title>
+		<keepButtonText>Bewaar</keepButtonText>
+		<closeWindowWithSelectionsMsg1>Je hebt het volgende aantal afbeeldingen gekozen: </closeWindowWithSelectionsMsg1>
+		<closeWindowWithSelectionsMsg2>OK = bewaar gekozen afbeeldingen en verwijder de rest.</closeWindowWithSelectionsMsg2>
+		<closeWindowWithSelectionsMsg3>Annuleer = bewaar geen afbeeldingen.</closeWindowWithSelectionsMsg3>
+		<imageSavedSuccessMsg>Geselecteerde afbeeldingen succesvol opgeslagen in de mediamap.</imageSavedSuccessMsg>
+		<deletionError>Er is een fout opgetreden. Controleer de mediamap om de status van je bewaarde afbeeldingen te checken.</deletionError>
+		<noImagesReturnedMsg>Geen resultaten voor deze zoekopdracht. Controleer de spelling of probeer het opnieuw met andere zoektermen.</noImagesReturnedMsg>
+	</imageSelection>
+	<vendorApi>
+		<missingKey>De gekozen leverancier heeft geen API-key. Neem contact op met je systeembeheerder.</missingKey>
+		<genericAiAPiError>Er is iets misgegaan. Probeer een nieuw AI verzoek.</genericAiAPiError>
+		<overideSuggestionMsg>Nieuwe suggesties overschrijven de oude. Toch doorgaan?</overideSuggestionMsg>
+		<useSuggestionMsg>De gekozen suggestie wordt gebruikt om de pagina aan te passen of een nieuwe pagina te maken. Doorgaan?</useSuggestionMsg>
+		<overideContentMsg>Gegenereerde AI inhoud kan bestaande inhoud overschrijven. Toch genereren?</overideContentMsg>
+		<contextAlerts>
+			<malformedContextUrlMsg> is een onjuiste URL. Controleer en probeer opnieuw.</malformedContextUrlMsg>
+			<missingHttpMsg> is geen geldige URL. Voeg http:// of https:// toe als het een link is.</missingHttpMsg>
+			<unrecognisedContextPathMsg> is geen correct pad. Het moet een volledige web-URL zijn of "RAG/corpus/" bevatten.</unrecognisedContextPathMsg>
+			<syncErrorGenericMsg>Er ging iets fout bij het synchroniseren. Je wijzigingen zijn misschien niet opgeslagen; probeer opnieuw.</syncErrorGenericMsg>
+			<noContextReturnedSubmitMsg>De context kon niet worden opgehaald. De laatste wijziging zijn misschien niet opgeslagen, controleer en probeer opnieuw.</noContextReturnedSubmitMsg>
+			<contextUpdatePreviewMsg>Bezig met updaten naar de nieuwste preview. Dit kan enkele minuten duren bij grote objecten.</contextUpdatePreviewMsg>
+			<contextFileFoundProceedMsg>Bestand gevonden in de context. AI verzoek wordt uitgevoerd met alleen dit bestand als context.</contextFileFoundProceedMsg>
+			<contextInPageProcessPromptMsg>Het gekozen bestand is nog niet verwerkt. Wil je het nu toevoegen aan de context? Dit kan even duren, vooral bij video’s of grote bestanden.</contextInPageProcessPromptMsg>
+			<contextFileUploadMissingInput>Je koos 'bestand uploaden' maar hebt geen bestand geselecteerd of geldige link opgegeven. Selecteer een bestand, upload een nieuw bestand, of gebruik een youtube-, vimeo- of peertube-link.</contextFileUploadMissingInput>
+			<contextSnippetMissingInput>Je koos 'Fragment gebruiken' maar gaf geen tekst door.</contextSnippetMissingInput>
+		</contextAlerts>
+		<inputValidations>
+			<fieldFilledIncorrectlyMsg>Vul het volgende veld correct in: </fieldFilledIncorrectlyMsg>
+			<mandatoryFieldMissingMsg> is verplicht! Vul het veld in.</mandatoryFieldMissingMsg>
+			<fieldInvalidNumeralMsg>Voer een geldig getal in bij: </fieldInvalidNumeralMsg>
+			<fieldInvalidNumeralExampleMsg>Bijvoorbeeld: '60', niet 'zestig'.</fieldInvalidNumeralExampleMsg>
+			<fieldInvalidCommaListMsg>Voer minstens twee geldige items in, gescheiden door een komma, bij: </fieldInvalidCommaListMsg>
+			<fieldInvalidCommaListExampleMsg>Bijvoorbeeld: 'Appels, Sinaasappels, Bessen'.</fieldInvalidCommaListExampleMsg>
+		</inputValidations>
+		<generationComplete>De inhoud is klaar. AI kan fouten maken of dingen vergeten. Controleer alles goed!</generationComplete>
+	</vendorApi>
+	<assistents>
+		<ImgSearchBtn label="Zoek"/>
+		<QuickFillBtn label="Quick Fill"/>
+		<GenerateSuggestion btnlabel="Geef suggestie" intructionprompt="Voor de soorten suggesties, zie: "/>
+		<AutoTranslateBtn label="Vertaal"/>
+		<AIBtn label="Genereer"/>
+	</assistents>
 	<lightbox>
 		<settingsButton>Open Instellingen</settingsButton>
 	</lightbox>

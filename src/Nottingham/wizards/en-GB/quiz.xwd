@@ -21,7 +21,7 @@
 	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
     <instructions label="Page Text" type="TextArea" height="120" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
-    <judge label="Judge Questions" type="CheckBox" defaultValue="true" />
+    <judge label="Judge Questions" type="CheckBox" defaultValue="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result."/>
 	<showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" />
     <feedback label="Feedback" type="textArea"  height="120" placeholder="Enter feedback here" tooltip="The feedback that appears once all questions in the quiz have been answered"/>
 

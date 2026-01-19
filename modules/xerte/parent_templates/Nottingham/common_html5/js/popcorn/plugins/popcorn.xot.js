@@ -35,12 +35,14 @@ optional: pauseMedia*
 	Popcorn.plugin("xot", function(options) {
 		
 		// define plugin wide variables here
-		var $target, $iframe, $showHs, $showLbl, $showHsActive, $panelHeight, $panelWidth;
+		var $target, media, $iframe, $showHs, $showLbl, $showHsActive, $panelHeight, $panelWidth;
 		
 		return {
 			_setup: function(options) {
 				// setup code, fire on initialisation
+				const closeBtn = '<button class="close-icon" aria-label="Close">✕</button>';
 				$target = $("#" + options.target);
+				media = this;
 				if(options.overlayPan == "true"){
 					$target.parent().hide()
 					$target.hide();
@@ -92,6 +94,7 @@ optional: pauseMedia*
 								if (options.name != "") {
 									$target.prepend('<h4>' + options.name + '</h4>');
 								}
+								$target.prepend(closeBtn);
 								$target.parent().addClass("qWindow").addClass("panel");
 								//$target.parent().css({"padding": 5});
 								$panelHeight = (($target.parent().parent().height() - 15) / $target.parent().parent().height()) * 100 + "%";
@@ -117,7 +120,16 @@ optional: pauseMedia*
 						if (options.name != "") {
 							$target.prepend('<h4>' + options.name + '</h4>');
 						}
+						$target.prepend(closeBtn);
 					}
+					// Close button event
+					$target.on("click", ".close-icon", function (e) {
+						e.stopPropagation();
+						$target.hide();
+						if (options.overlayPan)
+							$target.parent().hide();
+						media.play();
+					});
 				}
 
 

@@ -122,3 +122,21 @@ div.hotspotIcon span.iconHolder {
     /*background-color: #FE00FE*/
 }
 
+.popcornMedia .contentBlock button.close-icon {
+    position: absolute;
+    z-index: 9999;
+    top: 0;
+    right: 0;
+    line-height: 25px;
+    width: 25px;
+    cursor: pointer;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background: #fff;
+    background: rgba(255, 255, 255, .3);
+    color: #000;
+    border: 0;
+    padding: 0;
+    margin: 1px !important;
+}
+
