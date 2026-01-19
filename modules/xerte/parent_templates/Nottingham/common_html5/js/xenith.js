@@ -3178,7 +3178,10 @@ function x_changePageStep3() {
         var prevSize = builtPage.data("size");
         if (prevSize[0] != $x_mainHolder.width() || prevSize[1] != $x_mainHolder.height()) {
 			x_sizeChanged();
-        }
+        } else {
+			// even if size hasn't changed, check if page now requires scrolling & add / remove the x_verticalCentrePanel class used in centring content vertically
+			x_checkForScrolling();
+		}
 
 		// any custom header styles will be disabled if a custom theme (via accessibility options) is in use
 		XENITH.ACCESSIBILITY.disableBespokeCSS();
