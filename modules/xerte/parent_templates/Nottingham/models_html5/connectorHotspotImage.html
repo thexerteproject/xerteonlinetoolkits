@@ -260,22 +260,24 @@
 					}
 					// if more than one action has been added then priority is:
 					// video > audio > image > text > iframe > new window (html) > new window (url) > external destination > destination
-
+					
 					// open dialog popup / lightbox
 					if (this.getAttribute("hotspotMovie") != undefined && this.getAttribute("hotspotMovie") != "") {
 						//hsType = windowType; // ** video in lightbox not working yet - needs some work on video scaling
 						hsType = 'dialog';
 						hsInfo = "video";
+
 					} else if (this.getAttribute("hotspotSound") != undefined && this.getAttribute("hotspotSound") != "") {
 						hsInfo = "sound";
 						
 						if (this.getAttribute("playerType") != 'auto') {
 							// audio uses a different window type setting that excludes the bubble option
-							hsType = this.getAttribute("windowSoundType") != undefined ? this.getAttribute("windowSoundType") : this.getAttribute("windowType") !== 'bubble' ? this.getAttribute("windowType") : 'dialog';
+							hsType = this.getAttribute("windowSoundType") != undefined ? this.getAttribute("windowSoundType") : this.getAttribute("windowType") != undefined && this.getAttribute("windowType") !== 'bubble' ? this.getAttribute("windowType") : 'dialog';
 						} else {
 							// auto play audio without showing player in dialog / lightbox
 							hsType = "autoPlay";
 						}
+
 					} else if (this.getAttribute("imageFile") != undefined && this.getAttribute("imageFile") != "") {
 						hsType = windowType;
 						hsInfo = "image";
@@ -542,8 +544,6 @@
 												if (_this.getAttribute('soundTranscript') != undefined && _this.getAttribute('soundTranscript') != '') {
 													x_addAudioTranscript($('#pageAudio'), _this.getAttribute('soundTranscript'));
 												}
-											} else {
-
 											}
 
 										} else if (hsInfo == "image") {
@@ -639,6 +639,7 @@
 											popupWindow.focus();
 										}
 									}
+
 									// Keep highlighted/selected
 									if (x_currentPageXML.getAttribute("highlight") == "true") {
 
