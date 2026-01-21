@@ -4,7 +4,6 @@ require_once __DIR__ . '/../Ai/AiChat.php';
 use Ai\AiChat;
 class wikimediaApi extends BaseApi
 {
-//TODO: with the current headers, the api returns an error/warning; as such I haven't been able to test every functionality
     private function GET_Wikimedia($query, $aiParams, $perPage = 5, $page = 1)
     {
         $query = urlencode($this->clean($query));
@@ -33,8 +32,11 @@ class wikimediaApi extends BaseApi
                 $url .= "&iiurlheight=" . urlencode($aiParams->wikimediaHeight);
             }
 
+            $headers = [
+                'User-Agent: Xerte Online Toolkits, Image Search and Help Tool Request (https://github.com/torinfo/xerteonlinetoolkits; https://github.com/thexerteproject/xerteonlinetoolkits/wiki)',
+            ];
 
-            $res = $this->httpGet($url);
+            $res = $this->httpGet($url, $headers);
             if (!$res->ok) {
                 return [
                     'status'  => 'error',
@@ -43,7 +45,7 @@ class wikimediaApi extends BaseApi
             }
 
 
-            $resultDecoded = json_decode($res->raw, true); // assoc arrays like the original
+            $resultDecoded = json_decode($res->raw, true);
             if (isset($resultDecoded['error'])) {
                 return ["status" => "error", "message" => "Error on API call: " . $resultDecoded['error']['info']];
             }
@@ -110,7 +112,7 @@ class wikimediaApi extends BaseApi
         }
 
 
-        $conversation[] = ["role" => "user", "content" => "Great, now do the same for the following sentence: {$query}"];
+        $conversation[] = ["role" => "user", "content" => "Great, now do the same for the following sentence, keeping in mind that you should return only the final query itself and NO text before or after: {$query}"];
 
 
         $resp = $chat->complete($conversation, $this->aiProvider, [
@@ -195,8 +197,8 @@ class wikimediaApi extends BaseApi
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_TIMEOUT => 120, //TODO: user agent must be more specific; stil unsure how exactly to call this
-            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36',
+            CURLOPT_TIMEOUT => 120,
+            CURLOPT_USERAGENT => 'Xerte Online Toolkits, Image Search and Help Tool Request (https://github.com/torinfo/xerteonlinetoolkits; https://github.com/thexerteproject/xerteonlinetoolkits/wiki)',
         ]);
 
 
@@ -238,12 +240,11 @@ class wikimediaApi extends BaseApi
             ? $this->rewritePrompt($query)['prompt']
             : $query;
 
-        if ($overrideSettings === "true" || $overrideSettings === true) {
-            //todo again
-            $aiParams = json_decode(json_encode($settings));
+        if ($overrideSettings === "false" || $overrideSettings === false) {
+            $aiParams = $settings;
         } else {
             $tmp = $this->extractParameters($query);
-            $aiParams = json_decode($tmp['prompt']);
+            $aiParams = $this->extractAndDecodeJson($tmp['prompt']);
         }
 
         $perPage = isset($settings['nri']) ? (int)$settings['nri'] : 5;

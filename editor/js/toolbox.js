@@ -4785,14 +4785,21 @@ var EDITOR = (function ($, parent) {
         return true;
     }
     vendorHasApiKey = function (vendorGroup, vendor) {
-        return (
-            vendor_options[vendorGroup] !== undefined &&
-            vendor_options[vendorGroup][vendor] !== undefined &&
-            (
-                vendor_options[vendorGroup][vendor].has_key === true ||
-                vendor_options[vendorGroup][vendor].needs_key === false
-            )
-        );
+        function toBool(v) {
+            if (typeof v === 'boolean') return v;
+            if (typeof v === 'number') return v !== 0;
+            if (typeof v === 'string') return v === '1' || v.toLowerCase() === 'true';
+            return Boolean(v);
+        }
+
+        const v = vendor_options?.[vendorGroup]?.[vendor];
+        if (!v) return false;
+
+        const hasKey = toBool(v.has_key);
+        const needsKey = toBool(v.needs_key);
+
+        // If it doesn't need a key, it's always OK. If it needs a key, must have one.
+        return !needsKey || hasKey;
     };
 
     //verifies if an API key is needed and if it exists.

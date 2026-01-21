@@ -1862,7 +1862,7 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
 				input_type = "radio";
 		}
 
-        let image_preview = $("<div class=\"img_search_preview\"><div class=\"img_search_loading\">loading...</div></div>");
+        let image_preview = $(`<div class=\"img_search_preview\"><div class=\"img_search_loading\">${language.imageSelection.imgLoadingText}</div></div>`);
         let keepClicked = false;
         let selection_window = $.featherlight(image_preview, {
             closeOnClick: false,
@@ -1874,6 +1874,10 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
                     let keptIndices = $.makeArray($boxes)
                         .filter(cb => cb.checked)
                         .map(cb => +cb.name);
+
+                    if (allIndices.length==1){
+                        keptIndices = allIndices;
+                    }
 
                     // if they’d checked something, ask whether to keep them
                     let toDelete;
@@ -1979,13 +1983,13 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
                                     container.append(select_input).append(label);
                                     // Enlarge button. Prevent the label/checkbox from toggling on click
                                     let enlarge_button = $(
-                                        '<button title="Enlarge" type="button" class="enlarge_button">' +
+                                        '<button title="' + language.imageSelection.imgEnlargeCornerBtn + '" type="button" class="enlarge_button">' +
                                         '<i class="fa fa-lg fa-search xerte-icon"></i>' +
                                         '</button>'
                                     ).on("click", function (e) {
                                         e.preventDefault();
                                         e.stopPropagation();
-                                        $.featherlight(image_url);
+                                        $.featherlight({image:image_url});
                                     });
 
                                     frame.append(enlarge_button);

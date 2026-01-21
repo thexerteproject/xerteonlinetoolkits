@@ -32,6 +32,8 @@ $imgshApi = new $api_type($textApi);
 
 $result = $imgshApi->sh_request($query, $url, $interpretPrompt, $overrideSettings, $settings); // original
 
+$no_credits_vendors = ['dalle2', 'dalle3', 'gpt1'];
+$hotlink_vendors = ['unsplash'];
 
 $_SESSION["paths_img_search"] = array();
 $result->credits = array();
@@ -41,13 +43,20 @@ for($i = 0; $i < count($result->paths); $i++){
     $full_path = $result->paths[$i];
 
     $web_path = str_replace($xerte_toolkits_site->root_file_path, $xerte_toolkits_site->site_url, $full_path);
-    $ext = pathinfo($full_path, PATHINFO_EXTENSION);
-    $credits = str_replace($ext, "txt", $full_path);
-
-    $_SESSION["paths_img_search"][] = $full_path;
     $result->paths[$i] = $web_path;
-    //TODO: Fix for non-credit vendors (Dalle2, Dalle3)
-    $result->credits[] = file_get_contents($credits);
+
+    if (!in_array($api, $no_credits_vendors)) {
+        if (!in_array($api, $hotlink_vendors)){
+            $ext = pathinfo($full_path, PATHINFO_EXTENSION);
+            $credits = str_replace($ext, "txt", $full_path);
+        } else {
+            $credits = $result->creditPaths[$i];
+        }
+
+        $_SESSION["paths_img_search"][] = $full_path;
+
+        $result->credits[] = file_get_contents($credits);
+    }
 }
 ob_end_clean();
 echo json_encode($result);
