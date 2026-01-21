@@ -4694,6 +4694,12 @@ var EDITOR = (function ($, parent) {
     }
 
     triggerRedrawForm = function (group, key, groupChildren="", mode, alternative_button = "") {
+        let currentNodeType = lo_data[key]['attributes'].nodeName;
+        const fallbackChildren =
+            wizard_data[currentNodeType].node_options.all
+                .find(option => option.name === group).value.children;
+
+        groupChildren = (groupChildren === "" ? fallbackChildren : groupChildren);
         //store current form state for rebuild
         let formState = {};
         let formInputValues = $('#lightbox_' + group + ' :input').add($('#lightbox_' + group + ' .inlinewysiwyg'));
@@ -4757,7 +4763,6 @@ var EDITOR = (function ($, parent) {
         //remove current form and button handler
         $('#lightbox_' + group).remove();
         $('#lightboxbutton_' + group).off("click");
-        let currentNodeType = lo_data[key]['attributes'].nodeName;
         let groupId = wizard_data[currentNodeType].node_options.all.find((option) => option.name == group);
         $.featherlight.close();
         lightboxSetUp(groupId, "", "", key, formState);
@@ -5851,7 +5856,7 @@ var EDITOR = (function ($, parent) {
                         .attr('type', 'button')
                         .addClass("xerte_button")
                         .click({id:id, key:key, name:name, group: options.group}, function(event)
-                        {
+                        {   debugger
                             triggerRedrawForm("imgSearchAndHelpGroup", key, "", "initialize", event.data.name);
                         })
                         .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-wand-magic').addClass('xerte-icon')));

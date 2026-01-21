@@ -281,7 +281,7 @@
 		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
+		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup><passwordGroup type="group" label="Access Code" optional="true" tooltip="Access to this page will be restricted until an access code is entered. Please note, to securely protect your project you should password protect via the access tab in the project properties rather than using this optional property" common="true">
 		<password label="Access Code(s)" type="TextInput" optional="true" defaultValue="" tooltip="A comma separated list of codes which give access to this page"/>
 		<passwordCase label="Case Sensitive" type="CheckBox" optional="true" defaultValue="true" tooltip="Access codes are case sensitive when this option is checked"/>
@@ -367,7 +367,7 @@
 		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
+		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></section><link icon="icLink" menuItem="Link" remove="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
@@ -418,7 +418,7 @@
 		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
+		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></link><markup icon="icTag" type="html" height="300" menuItem="HTML Code" label="HTML Code" remove="true" advanced="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
@@ -460,7 +460,7 @@
 		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
+		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></markup><text icon="icFont" type="text" height="300" menuItem="Text" label="Text" remove="true" placeholder="Enter text here">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
@@ -503,7 +503,7 @@
 		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
+		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></text><pdf icon="icPDF" menuItem="PDF File" remove="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
@@ -546,7 +546,7 @@
 		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
+		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></pdf><canvas icon="icPallette" menuItem="Canvas" remove="true" advanced="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
@@ -592,7 +592,7 @@
 		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
+		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></canvas><script icon="icCog" type="script" height="400" menuItem="Script" label="Script" remove="true" divider="true" advanced="true">
 
 		<name type="TextInput" label="Title"/>
@@ -623,7 +623,7 @@
 		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
+		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></script><image icon="icImage" height="250" menuItem="Image" remove="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
@@ -669,7 +669,7 @@
 		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
+		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></image><audio icon="icSound" height="250" menuItem="Audio" remove="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
@@ -712,7 +712,7 @@
 		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
+		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></audio><video icon="icFilm" height="250" menuItem="Video" remove="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
@@ -756,7 +756,7 @@
 		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
+		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></video><navigator icon="icPages" menuItem="Navigator" remove="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
@@ -809,7 +809,7 @@
 		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
+		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></navigator><pane icon="icPageWhite" remove="true" duplicate="true" menuItem="Pane">
 
 		<name type="TextInput" label="Pane Title" wysiwyg="true"/>
@@ -855,7 +855,7 @@
 		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
+		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></pane><xot icon="icXot" menuItem="XOT Project" remove="true">
 
 		<name type="TextInput" label="Title" wysiwyg="true"/>
@@ -912,5 +912,5 @@
 		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
+		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></xot></wizard>
