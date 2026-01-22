@@ -92,8 +92,50 @@
 				}
 			});
 
-			// set a minimum width for the columns - columns will wrap onto a new row rather than be shown smaller than this
-			$("#columnHolder").css("grid-template-columns", "repeat(auto-fit, minmax(" + (x_currentPageXML.getAttribute("minWidth") != undefined ? x_currentPageXML.getAttribute("minWidth") : "75") + "px, 1fr))");
+			// get the minimum width for the columns - columns will wrap onto a new row rather than be shown smaller than this
+			const minWidth = x_currentPageXML.getAttribute("minWidth") != undefined ? x_currentPageXML.getAttribute("minWidth") : "75";
+
+			// now work out if columns are equal width or whether width % have been set
+			let equal = true;
+			if (x_currentPageXML.getAttribute("columnWidth") != undefined && x_currentPageXML.getAttribute("columnWidth").trim() != "") {
+				const columnWidths = x_currentPageXML.getAttribute("columnWidth").split("/");
+
+				// check all widths are valid & they add up to 100% & they match the no. of columns
+				let count = 0;
+				let cssString = "";
+				for (let i=0; i<columnWidths.length; i++) {
+					if (columnWidths[i].trim() === "" || !$.isNumeric(columnWidths[i])) {
+						columnWidths.splice(i,1);
+						i--;
+					} else {
+						count += Number(columnWidths[i].trim());
+						cssString += "minmax(" + minWidth + "px, " + columnWidths[i].trim() + "fr) ";
+					}
+				}
+
+				// unequal widths
+				if (count === 100 && columnWidths.length === $(".column").length) {
+					equal = false;
+					// without the media query, the columns will not wrap onto new lines when too narrow
+					// unequal width percentages work until columns reach minimum width
+					$("#pageContents").prepend(`<style>
+						#columnHolder {
+							grid-template-columns: ${cssString};
+						}
+
+						@media (max-width: ${Number(minWidth)*columnWidths.length + (Math.ceil(parseFloat($("#columnHolder").css("gap"))) * columnWidths.length-1)}px) {
+							#columnHolder {
+								grid-template-columns: repeat(auto-fit, minmax(${minWidth}px, 1fr));
+							}
+						}
+						</style>`);
+				}
+			}
+
+			// equal widths - this is simpler, it will wrap to new lines when a column reaches minimum width
+			if (equal === true) {
+				$("#columnHolder").css("grid-template-columns", "repeat(auto-fit, minmax(" + minWidth + "px, 1fr))");
+			}
 
 			// add a panel style if needed
 			if (x_currentPageXML.getAttribute("panelStyle") === "single") {
