@@ -1,7 +1,7 @@
 <wizard menus="Text">
   <pageWizard remove="true" duplicate="false">
     <newNodes>  
-      <bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showPanel="0" showBullets="0" panelWidth="Full"></bullets>]]></bullets>
+      <bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showPanel="0" showBullets="0" panelWidth="Full" backBtn="Back" nextBtn="Next" pauseBtn="Pause" playBtn="Play"></bullets>]]></bullets>
 	</newNodes>
   </pageWizard>
   
@@ -29,9 +29,14 @@
     </AIGroup>
 
 	<panel type="group" label="Panel">
-		<showPanel label="Display Panel" options="Yes,No" type="ComboBox" defaultValue="0" data="1,0" width="100" />
+		<showPanel label="Display Panel" options="Yes,No" type="ComboBox" defaultValue="1" data="1,0" width="100" mandatory="true" />
 		<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Full" width="100"/>
 	</panel>
-	
+
+    <backBtn label="Previous Button Label" type="TextInput" wysiwyg="true" language="true" defaultValue="Back" mandatory="true"/>
+    <nextBtn label="Next Button Label" type="TextInput" wysiwyg="true" language="true" defaultValue="Next" mandatory="true"/>
+    <pauseBtn label="Play Button Label" type="TextInput" wysiwyg="true" language="true" defaultValue="Pause" mandatory="true"/>
+    <playBtn label="Pause Button Label" type="TextInput" wysiwyg="true" language="true" defaultValue="Play" mandatory="true"/>
+
   </bullets>  
 </wizard>

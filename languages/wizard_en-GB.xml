@@ -50,7 +50,7 @@
     <chkShowGroups label="Expand Groups" tooltip="Expand all optional property groups by default."/>
 	<compMedia tooltip="Import Media"/>
 	<compPreview tooltip="Preview" error="Preview unavailable"/>
-	<compai tooltip="AI Image"/>
+	<compai tooltip="Image Search and Help Tool"/>
 	<calendar tooltip="Select Date"/>
 	<chapter title="CHAPTER"/>
 	<hidePage title="HIDDEN" tooltip="This page is hidden"/>
@@ -294,6 +294,13 @@
 		</inputValidations>
 		<generationComplete>The content generation has finished. When using AI, models may hallucinate, forget or ignore provided context, or otherwise make mistakes. Please double-check the generated results!</generationComplete>
 	</vendorApi>
+	<assistents>
+		<ImgSearchBtn label="Query"/>
+		<QuickFillBtn label="Quick Fill"/>
+		<GenerateSuggestion btnlabel="Suggest" intructionprompt="Regarding what kind of suggestions I'm looking for, see: "/>
+		<AutoTranslateBtn label="Translate"/>
+		<AIBtn label="Generate"/>
+	</assistents>
 	<lightbox>
 		<settingsButton>Open Settings</settingsButton>
 	</lightbox>

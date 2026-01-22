@@ -1625,16 +1625,6 @@ function upgrade_50()
 
 function upgrade_51()
 {
-    $roleTable = table_by_key("role");
-
-    $ok = db_query("insert into $roleTable(`roleid`, `name`) values (8, 'aiuser')");
-    $message = "Creating extra role aiuser - ok ? " . ($ok ? 'true' : 'false') . "<br>";
-
-    return $message;
-}
-
-function upgrade_52()
-{
     // Add disabled flag to logindetails
     if (! _db_field_exists('logindetails', 'disabled')) {
         $error1 = _db_add_field('logindetails', 'disabled', 'tinyint(1)', '0', 'surname');
@@ -1647,7 +1637,7 @@ function upgrade_52()
     }
 }
 
-function upgrade_53()
+function upgrade_52()
 {
     // Add the following extensions to the blacklisted extensions:
     //php1,php2,php3,php4,php5,php6,php7,php8,phar,phtml,inc,py,bat,cmd,ps,htaccess
@@ -1669,11 +1659,24 @@ function upgrade_53()
         }
     }
 }
+
+function upgrade_53()
+{
+    $roleTable = table_by_key("role");
+
+    $ok = db_query("insert into $roleTable(`roleid`, `name`) values (8, 'aiuser')");
+    $message = "Creating extra role aiuser - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+    return $message;
+}
+
 function upgrade_54()
 {
     $message = "";
     if (!_table_exists("management_helper")) {
-        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `management_helper` (
+        $table = table_by_key('management_helper');
+
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS $table (
         `interaction_id` int(11) NOT NULL AUTO_INCREMENT,
         `vendor` VARCHAR(16) NOT NULL,
         `label` VARCHAR(34) NOT NULL,
@@ -1689,21 +1692,21 @@ function upgrade_54()
         $message .= "Creating management helper table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
 
         if ($ok) {
-            $ok = db_query("INSERT INTO `management_helper` VALUES 
-                                    (1, 'openai', 'GPT (Openai)', 'ai', 1, 0, '{}'),
-                                    (2, 'anthropic', 'Claude (Anthropic)', 'ai', 1, 0, '{}'),
-                                    (3, 'mistral', 'Mistral AI', 'ai', 1, 0, '{}'),
-                                    (4, 'pexels', 'Pexels', 'image', 1, 0, '{}'),
-                                    (5, 'pixabay', 'Pixabay', 'image', 1, 0, '{}'),
-                                    (6, 'unsplash', 'Unsplash', 'image', 1, 0, '{}'),
-                                    (7, 'wikimedia', 'Wikimedia Foundation', 'image', 0, 0, '{}'),
-                                    (8, 'dalle2', 'DallE2 (Generative)', 'imagegen', 1, 0, '{}'),
-                                    (9, 'dalle3', 'DallE3 (Generative)', 'imagegen', 1, 0, '{}'),
-                                    (10, 'gpt1', 'GPT Image 1', 'imagegen', 1, 0, '{}'),
-                                    (11, 'gladia', 'Gladia (Transcription)', 'transcription', 1, 0, '{}'),
-                                    (12, 'openai', 'Open AI (Transcription)', 'transcription', 1, 0, '{}'),
-                                    (13, 'mistralenc', 'Mistral (Encoding)', 'encoding', 1, 0, '{}'),
-                                    (14, 'openaienc', 'OpenAI (Encoding)', 'encoding', 1, 0, '{}')
+            $ok = db_query("INSERT INTO $table VALUES 
+                                    (1, 'openai', 'GPT (Openai)', 'ai', 1, 0, '{}', ''),
+                                    (2, 'anthropic', 'Claude (Anthropic)', 'ai', 1, 0, '{}', ''),
+                                    (3, 'mistral', 'Mistral AI', 'ai', 1, 0, '{}', ''),
+                                    (4, 'pexels', 'Pexels', 'image', 1, 0, '{}', ''),
+                                    (5, 'pixabay', 'Pixabay', 'image', 1, 0, '{}', ''),
+                                    (6, 'unsplash', 'Unsplash', 'image', 1, 0, '{}', ''),
+                                    (7, 'wikimedia', 'Wikimedia Foundation', 'image', 0, 0, '{}', ''),
+                                    (8, 'dalle2', 'DallE2 (Generative)', 'imagegen', 1, 0, '{}', ''),
+                                    (9, 'dalle3', 'DallE3 (Generative)', 'imagegen', 1, 0, '{}', ''),
+                                    (10, 'gpt1', 'GPT Image 1', 'imagegen', 1, 0, '{}', ''),
+                                    (11, 'gladia', 'Gladia (Transcription)', 'transcription', 1, 0, '{}', ''),
+                                    (12, 'openai', 'Open AI (Transcription)', 'transcription', 1, 0, '{}', ''),
+                                    (13, 'mistralenc', 'Mistral (Encoding)', 'encoding', 1, 0, '{}', ''),
+                                    (14, 'openaienc', 'OpenAI (Encoding)', 'encoding', 1, 0, '{}', '')
                                     ");
             $message .= "Populating management helper table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
         }
@@ -1721,7 +1724,9 @@ function upgrade_55()
 {
     $message = "";
     if (!_table_exists("ai_request_logs")) {
-        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `ai_request_logs` (
+        $table = table_by_key('ai_request_logs');
+
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS $table (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `schema_version` VARCHAR(16) NOT NULL DEFAULT '1.0',
 
@@ -1753,7 +1758,7 @@ function upgrade_55()
   `cost_pricing_version` VARCHAR(32) DEFAULT NULL,
   `cost_total` DECIMAL(18,6) DEFAULT NULL,
 
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 );");
 
         $message .= "Creating ai_request_logs table - ok ? " . ($ok ? 'true' : 'false') . "<br>";

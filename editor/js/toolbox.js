@@ -6081,8 +6081,8 @@ var EDITOR = (function ($, parent) {
                 form_id_offset++;
                 html = $('<button>')
                     .attr('id', qf_button_id)
-                    .attr('class', 'quickfill_button')
-                    .text('Quick Fill')
+                    .attr('class', 'quickfill_button xerte_button_c')
+                    .html('<i class="fa fa-arrows-rotate"></i> ' + language.assistents.QuickFillBtn.$label)
                     .click({key: key}, async function(event) {
                         $(this).prop('disabled', true);
                         // Build the parameters object based on type. The nodes must match the actual node names of the xml in question.
@@ -6375,8 +6375,8 @@ var EDITOR = (function ($, parent) {
                 form_id_offset++;
                 html = $('<button>')
                     .attr('id', atr_button_id)
-                    .attr('class', 'autotranslate_button')
-                    .text('translate')
+                    .attr('class', 'autotranslate_button xerte_button_c')
+                    .html('<i class="fa fa-language"></i> ' + language.assistents.AutoTranslateBtn.$label)
                     .click({key: key}, async function(event) {
                         $(this).prop('disabled', true);
                         var api = lo_data[key].attributes['translateApi'] || 'openai';
@@ -6407,10 +6407,10 @@ var EDITOR = (function ($, parent) {
                 form_id_offset++;
                 html = $('<button>')
                     .attr('id', ish_id)
-                    .attr('class', 'imgsh_button')
+                    .attr('class', 'imgsh_button xerte_button_c')
                     .attr('value', value)
                     .attr('name', name)
-                    .text('Query')
+                    .html('<i class="fa fa-arrows-rotate"></i> ' + language.assistents.ImgSearchBtn.$label)
                     .click({key: key, group: options.group, value: value}, function(event) {
                         html.prop('disabled', true);
                         event.preventDefault();
@@ -6524,8 +6524,8 @@ var EDITOR = (function ($, parent) {
                 form_id_offset++;
                 html = $('<button>')
                     .attr('id', id)
-                    .attr('class', 'generate_suggestion_button')
-                    .text('Suggest')
+                    .attr('class', 'generate_suggestion_button xerte_button_c')
+                    .html('<i class="fa fa-arrows-rotate"></i> ' + language.assistents.GenerateSuggestion.$btnlabel)
                     .click({key: key}, async function(event) {
                         // Disable the button to prevent multiple clicks
                         html.prop('disabled', true);
@@ -6537,7 +6537,8 @@ var EDITOR = (function ($, parent) {
                             (moduleurlvariable === "modules/xerte/") ? "standard" : "standard";
                         // Build the constructor object based on the type
                         var constructorObject = {
-                            "additionalInstructions": "Regarding what kind of suggestions I'm looking for, see: " + lo_data[key].attributes["additionalInstructions"],
+                            // "additionalInstructions": "Regarding what kind of suggestions I'm looking for, see: " + lo_data[key].attributes["additionalInstructions"],
+                            "additionalInstructions": language.assistents.GenerateSuggestion.$instructionprompt + lo_data[key].attributes["additionalInstructions"],
                         };
                         if (confirm(language.vendorApi.overideSuggestionMsg)){
                             try {
@@ -6605,8 +6606,8 @@ var EDITOR = (function ($, parent) {
                 form_id_offset++;
                 html = $('<button>')
                     .attr('id', id)
-                    .attr('class', 'ai_button')
-                    .text('Generate')
+                    .attr('class', 'ai_button xerte_button_c')
+                    .html('<i class="fa fa-wand-magic"></i> ' + language.assistents.AIBtn.$label)
                     .click({key: key, group: options.group}, async function(event) {
                         // Disable the button to prevent multiple clicks
                         html.prop('disabled', true);
