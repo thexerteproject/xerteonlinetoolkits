@@ -18,7 +18,7 @@
         <panelStyle label="Panel" type="ComboBox" options="None,Single panel,Each column" data="none,single,each" defaultValue="none" mandatory="true"/>
     </layoutGroup>
 
-    <columnWidth label="Column Width" type="TextInput" optional="true" placeholder="e.g. 25/25/50" tooltip="Use this option when you do not want columns to have equal widths. Specify a width (%) for each column, separated by /"/>
+    <columnWidth label="Column Widths" type="TextInput" optional="true" placeholder="e.g. 25/25/50" tooltip="Use this option when you do not want columns to have equal widths. Specify a width (%) for each column, separated by /"/>
     <header label="Text Above Columns" type="TextArea" height="100" optional="true"/>
     <textBottom label="Text Below Columns" type="TextArea" height="100" optional="true"/>
 
