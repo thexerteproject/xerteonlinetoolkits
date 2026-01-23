@@ -21,29 +21,66 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var bullets = new function() {
-		
+		let $pageContents;
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$(".bullet").hide();
-
-			if (x_currentPageXML.getAttribute("delaySecs") == "0" || x_currentPageXML.getAttribute("delaySecs") == undefined ) {
-				$(".bullet").fadeIn();
-			}
-			else {
+			$pageContents = $("#pageContents");
+			if (x_currentPageXML.getAttribute("delaySecs") != "0" && x_currentPageXML.getAttribute("delaySecs") != undefined && $(".bullet").length > 1) {
+				$(".bullet").hide();
 				$(".bullet:eq(0)").show();
+				$pageContents.data("currentBullet", 1);
+
+				// reset button states if needed
+				if ($("#btnHolder").length > 0) {
+					$pageContents.data("playing", true);
+					$("#playPauseBulletBtn").button({
+						icons: {primary: "fa fa-fw fa-x-pause"},
+						label: x_currentPageXML.getAttribute("pauseBtn") && x_currentPageXML.getAttribute("pauseBtn") != "" ? x_currentPageXML.getAttribute("pauseBtn") : "Pause",
+					});
+					$("#backBulletBtn").button("disable");
+					$("#nextBulletBtn").button("enable");
+				}
+
 				bullets.timer();
 			}
 		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			$(".bullet").show();
-			const $holder = $("#holder");
-			$holder.height("");
-			$holder.height($holder.height());
+			// ensure panel is correct height even if some bullets aren't shown yet
+			if ($(".bullet").length > 1 && x_currentPageXML.getAttribute("showPanel") != "0") {
+				$(".bullet").each(function () {
+					if ($(this).is(":visible")) {
+						$(this).data("hidden", false);
+					} else {
+						$(this).data("hidden", true);
+					}
+				});
+
+				const $holder = $("#holder");
+				$(".bullet").show();
+
+				// ensure panel is not too tall & therefore buttons are always visible
+				const $panel = $("#pageContents.panel");
+				$holder.css({"min-height": "", "max-height": ""});
+				$panel.css("max-height", "");
+				$panel.css("max-height", x_getAvailableHeight([$("#pageContents.panel")], [], true));
+				$holder.css("max-height", x_getAvailableHeight([$("#pageContents.panel"), $holder], [$("#btnHolderInner")], true));
+				$holder.css("min-height", $holder.height());
+
+				$(".bullet").each(function () {
+					if ($(this).data("hidden")) {
+						$(this).hide();
+					}
+				});
+			}
 		}
 		
 		this.init = function() {
+			$pageContents = $("#pageContents");
+			const $holder = $("#holder")
+
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
 			// send amended data to split screen function
@@ -75,11 +112,11 @@
 
             if (text.indexOf("</ol>") >= 0 || text.indexOf("</ul>") >= 0) { // created by new editor and containing 1 or multiple lists
                 // We are not going to mess with this too much, just add 'bullet' class to all <li> tags and to any <p> blocks that don't contain bullets
-				$("#holder").hide().append(text);
+				$holder.hide().append(text);
 
-				$("#holder").find("li, p").addClass("bullet");
+				$holder.find("li, p").addClass("bullet");
 
-				$("#holder").show();
+				$holder.show();
             }
             else {
 				if (text.indexOf("<p>") >= 0) {
@@ -93,7 +130,7 @@
 					bulletArray = text.split("<br />")
 				}
 
-				if (x_currentPageXML.getAttribute("showBullets") != 0) {
+				if (x_currentPageXML.getAttribute("showBullets") != "0") {
 					contentsStr += "<ul>";
 					startTag = '<li class="bullet">';
 					endTag = "</li>";
@@ -105,40 +142,171 @@
 					}
 				}
 
-				if (x_currentPageXML.getAttribute("showBullets") != 0) {
+				if (x_currentPageXML.getAttribute("showBullets") != "0") {
 					contentsStr += "</ul>";
 				}
 
-				$("#holder").append(contentsStr);
+				$holder.append(contentsStr);
 			}
 			
 			if (x_currentPageXML.getAttribute("showPanel") === "1" || (x_currentPageXML.getAttribute("showPanel") == undefined || x_currentPageXML.getAttribute("panelStyle") !== "false")) {
-				// timed content is in a panel - force height otherwise panel shrinks when bullets are hidden
-				$("#holder").height($("#holder").height());
+				$holder.css("min-height", $holder.height()); // force height otherwise panel shrinks when bullets are hidden
 			}
 
-			$(".bullet").hide();
-			if (x_currentPageXML.getAttribute("delaySecs") == "0" || x_currentPageXML.getAttribute("delaySecs") == undefined) {
-				$(".bullet").fadeIn();
-			}
-			else {
+			// the bullets are gradually shown, one item at a time
+			if (x_currentPageXML.getAttribute("delaySecs") != "0" && x_currentPageXML.getAttribute("delaySecs") != undefined && $(".bullet").length > 1) {
+				// add buttons to allow the user to control the fade in animations
+				$pageContents.append('<div id="btnHolder"><div id="btnHolderInner"></div></div>');
+				const $btnHolderInner = $("#btnHolderInner");
+
+				// button hides the last shown bullet point
+				const $prevBtn = $('<button id="backBulletBtn"></button>')
+						.appendTo($btnHolderInner)
+						.button({
+							icons: { primary: "fa fa-fw fa-x-prev" },
+							label: x_currentPageXML.getAttribute("backBtn") && x_currentPageXML.getAttribute("backBtn") != "" ? x_currentPageXML.getAttribute("backBtn") : "Back",
+							text: false,
+							disabled: true
+						})
+						.click(function() {
+							// hide the previously shown bullet
+							$pageContents.data("currentBullet", $pageContents.data("currentBullet") - 1);
+							$(".bullet:eq(" + $pageContents.data("currentBullet") + ")").hide();
+
+							if ($pageContents.data("currentBullet") == 1) {
+								$(this).button("disable");
+							}
+
+							$nextBtn.button("enable");
+							$playPauseBtn.button("enable");
+
+							// if playing, reset the timer from this point
+							if ($pageContents.data("playing") === true) {
+								bullets.timer();
+							}
+						});
+
+				// button turns fade in animations of bullet points on / off
+				const $playPauseBtn = $('<button id="playPauseBulletBtn"></button>')
+						.appendTo($btnHolderInner)
+						.button({
+							icons: { primary: "fa fa-fw fa-x-pause" },
+							label: x_currentPageXML.getAttribute("pauseBtn") && x_currentPageXML.getAttribute("pauseBtn") != "" ? x_currentPageXML.getAttribute("pauseBtn") : "Pause",
+							text: false
+						})
+						.click(function() {
+							if ($pageContents.data("playing") === false) {
+								// play
+								// show the next bullet immediately
+								$(".bullet:eq(" + $pageContents.data("currentBullet") + ")").fadeIn();
+								$pageContents.data("currentBullet", $pageContents.data("currentBullet") + 1);
+
+								if ($pageContents.data("currentBullet") < $(".bullet").length) {
+									// then set timer to reveal other bullets (if not all now shown)
+									$pageContents.data("playing", true);
+									bullets.timer();
+									$(this).button({
+										icons: {primary: "fa fa-fw fa-x-pause"},
+										label: x_currentPageXML.getAttribute("pauseBtn") && x_currentPageXML.getAttribute("pauseBtn") != "" ? x_currentPageXML.getAttribute("pauseBtn") : "Pause",
+									});
+								} else {
+									$("#nextBulletBtn").button("disable");
+									$(this).button("disable");
+								}
+							} else {
+								// pause
+								$pageContents.data("playing", false);
+								clearInterval(x_timer);
+								$(this).button({
+									icons: {primary: "fa fa-fw fa-x-play"},
+									label: x_currentPageXML.getAttribute("playBtn") && x_currentPageXML.getAttribute("playBtn") != "" ? x_currentPageXML.getAttribute("playBtn") : "Play",
+								});
+							}
+						});
+
+				// escape key will also pause animation
+				$(document).keyup(function(e) {
+					if (e.key === "Escape" && $pageContents.data("playing") === true) {
+						$playPauseBtn.click();
+					}
+				});
+
+				// button immediately shows the next bullet point
+				const $nextBtn = $('<button id="nextBulletBtn"></button>')
+						.appendTo($btnHolderInner)
+						.button({
+							icons: { primary: "fa fa-fw fa-x-next" },
+							label: x_currentPageXML.getAttribute("nextBtn") && x_currentPageXML.getAttribute("nextBtn") != "" ? x_currentPageXML.getAttribute("nextBtn") : "Next",
+							text: false
+						})
+						.click(function() {
+							// show the next bullet immediately
+							$(".bullet:eq(" + $pageContents.data("currentBullet") + ")").fadeIn();
+							$pageContents.data("currentBullet", $pageContents.data("currentBullet") + 1);
+
+							if ($pageContents.data("currentBullet") >= $(".bullet").length) {
+								// cancel timer as all bullets are shown
+								if ($pageContents.data("playing") === true) {
+									$("#playPauseBulletBtn").button({
+										icons: {primary: "fa fa-fw fa-x-play"},
+										label: x_currentPageXML.getAttribute("playBtn") && x_currentPageXML.getAttribute("playBtn") != "" ? x_currentPageXML.getAttribute("playBtn") : "Play",
+									});
+
+									$pageContents.data("playing", false);
+									clearInterval(x_timer);
+								}
+
+								$(this).button("disable");
+								$playPauseBtn.button("disable");
+
+							} else {
+								// if playing, reset the timer from this point
+								if ($pageContents.data("playing") === true) {
+									bullets.timer();
+								}
+							}
+
+							$prevBtn.button("enable");
+						});
+
+				// only the 1st bullet will be shown initially
+				$(".bullet").hide();
 				$(".bullet:eq(0)").show();
+
+				// start the timer that will add bullets gradually
+				$pageContents.data({
+					"currentBullet": 1,
+					"playing": true
+				});
 				bullets.timer();
 			}
 			
 			// call this function in every model once everything's loaded
+			this.sizeChanged();
 			x_pageLoaded();
 		}
 		
 		this.timer = function() {
-			var currentBullet = 1;
 			clearInterval(x_timer); // cancels timers from other bullets pages that might still be running
-
 			x_timer =  setInterval(function() {
-				$(".bullet:eq(" + currentBullet + ")").fadeIn();
-				currentBullet++;
-				if (currentBullet >= $(".bullet").length) {
-					clearInterval(x_timer);
+				$(".bullet:eq(" + $pageContents.data("currentBullet") + ")").fadeIn();
+				$pageContents.data("currentBullet", $pageContents.data("currentBullet") + 1);
+
+				// cancel timer as all bullets are shown
+				if ($pageContents.data("currentBullet") >= $(".bullet").length) {
+					$("#nextBulletBtn").button("disable");
+
+					if ($pageContents.data("playing") === true) {
+						$pageContents.data("playing", false);
+						$("#playPauseBulletBtn").button({
+							icons: {primary: "fa fa-fw fa-x-play"},
+							label: x_currentPageXML.getAttribute("playBtn") && x_currentPageXML.getAttribute("playBtn") != "" ? x_currentPageXML.getAttribute("playBtn") : "Play",
+							disabled: true
+						});
+						clearInterval(x_timer);
+					}
+				} else {
+					$("#backBulletBtn").button("enable");
 				}
 			}, x_currentPageXML.getAttribute("delaySecs") * 1000);
 		}

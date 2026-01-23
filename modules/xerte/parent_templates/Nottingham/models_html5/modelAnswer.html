@@ -31,6 +31,7 @@
 		this.sizeChanged = function() {
 			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
 			const panelH = XENITH.SPLITSCREEN.resizePanel();
+            const $panel = $("#pageContents .panel");
 
 			// this will be used later when showing feedback - it is done differently depending on whether content is centred vertically on the page & whether panel is full height
 			$("#pageContents").data("slideIn", x_checkVerticalCentre() && panelH === false);
@@ -38,11 +39,11 @@
 			if (x_browserInfo.mobile == false && $(".panelImg img").length > 0) {
 				// makes sure image doesn't take up too much vertical space & will try to fit text, image, answer box on screen without scrolling if possible
 				let totalHeight = 0;
-				$("#panel").children().each(function() {
+                $panel.children().each(function() {
 					totalHeight = totalHeight + $(this).outerHeight(true);
 				});
 				totalHeight -= $(".panelImg img").height();
-				$(".panelImg img").css("max-height", Math.max($("#panel").innerHeight() - totalHeight, 100));
+				$(".panelImg img").css("max-height", Math.max($panel.innerHeight() - totalHeight, 100));
 			}
 		};
 
@@ -328,6 +329,7 @@
 								});
 							}
 
+                            $("#button").button("disable");
 							$("#copyBtn, #downloadBtn").show();
 
 							x_pageContentsUpdated();
@@ -338,7 +340,7 @@
 
 				// if answer is required, only show submit button when something has been typed in every text area
 				if (x_currentPageXML.getAttribute("required") == 'true') {
-					$("#button").prop("disabled", true);
+					$("#button").button("disable");
 
 					$(".answerTxt").on('input', function() {
 						let complete = true;
@@ -349,10 +351,16 @@
 						});
 
 						if (complete) {
-							$("#button").prop("disabled", false);
+							$("#button").button("enable");
 						} else {
-							$("#button").prop("disabled", true);
+							$("#button").button("disable");
 						}
+					});
+
+				// button will be disabled after submit, re-enable it if text changes again
+				} else {
+					$(".answerTxt").on('input', function() {
+						$("#button").button("enable");
 					});
 				}
 
