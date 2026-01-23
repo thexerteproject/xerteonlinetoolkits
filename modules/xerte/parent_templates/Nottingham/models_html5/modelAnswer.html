@@ -340,6 +340,7 @@
 								$(this).html($(this).data("feedback"));
 							});
 
+							$("#button").button("disable");
 							$("#copyBtn, #downloadBtn").show();
 
 							x_pageContentsUpdated();
@@ -350,7 +351,7 @@
 
 				// if answer is required, only show submit button when something has been typed in every text area
 				if (x_currentPageXML.getAttribute("required") == 'true') {
-					$("#button").prop("disabled", true);
+					$("#button").button("disable");
 
 					$(".answerTxt").on('input', function() {
 						let complete = true;
@@ -361,10 +362,16 @@
 						});
 
 						if (complete) {
-							$("#button").prop("disabled", false);
+							$("#button").button("enable");
 						} else {
-							$("#button").prop("disabled", true);
+							$("#button").button("disable");
 						}
+					});
+
+				// button will be disabled after submit, re-enable it if text changes again
+				} else {
+					$(".answerTxt").on('input', function() {
+						$("#button").button("enable");
 					});
 				}
 
