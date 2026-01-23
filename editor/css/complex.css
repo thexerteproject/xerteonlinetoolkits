@@ -1658,6 +1658,11 @@ html.with-featherlight .featherlight {
 	background: rgba(0, 0, 0, 0.8);
 }
 
+.ai_button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
 /* start of xertecss.css
 
 body {background: #b3b3b5; padding-bottom: 30px;}

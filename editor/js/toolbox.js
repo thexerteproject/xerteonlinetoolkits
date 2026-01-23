@@ -4914,7 +4914,7 @@ var EDITOR = (function ($, parent) {
 
         //if form validation failed do not make request
         if (!formValidation) {
-            html.prop('disabled', false);
+            $(this).prop('disabled', false);
             return false;
         }
         return constructorObject;
@@ -6072,6 +6072,7 @@ var EDITOR = (function ($, parent) {
                     .attr('class', 'quickfill_button xerte_button_c')
                     .html('<i class="fa fa-arrows-rotate"></i> ' + language.assistents.QuickFillBtn.$label)
                     .click({key: key}, async function(event) {
+                        const $btn = $(this);          // the button that was clicked
                         $(this).prop('disabled', true);
                         // Build the parameters object based on type. The nodes must match the actual node names of the xml in question.
                         var parameters;
@@ -6345,15 +6346,15 @@ var EDITOR = (function ($, parent) {
                             } catch (error) {
                                 console.log('Error occurred:', error);
                                 alert("Something went wrong. Please try using the quick fill feature again.");
-                                html.prop('disabled', false);
+                                $btn.prop('disabled', false);
                             } finally {
                                 // Re-enable the button after the function completes (success or failure)
-                                html.prop('disabled', false);
+                                $btn.prop('disabled', false);
                             }
                         } else {
                             // User clicked "Cancel"
                             console.log("Quick fill canceled by the user.");
-                            html.prop('disabled', false);
+                            $btn.prop('disabled', false);
                         }
 
                     });
@@ -6366,7 +6367,8 @@ var EDITOR = (function ($, parent) {
                     .attr('class', 'autotranslate_button xerte_button_c')
                     .html('<i class="fa fa-language"></i> ' + language.assistents.AutoTranslateBtn.$label)
                     .click({key: key}, async function(event) {
-                        $(this).prop('disabled', true);
+                        const $btn = $(this);          // the button that was clicked
+                        $btn.prop('disabled', true);
                         var api = lo_data[key].attributes['translateApi'] || 'openai';
                         var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
                         var targetLanguage = lo_data[key].attributes["targetLanguage"];
@@ -6380,12 +6382,12 @@ var EDITOR = (function ($, parent) {
                                 alert("Something went wrong. Please try using the translate feature again.");
                             } finally {
                                 // Re-enable the button after the function completes (success or failure)
-                                html.prop('disabled', false);
+                                $btn.prop('disabled', false);
                             }
                         } else {
                             // User clicked "Cancel"
                             console.log("Translation canceled by the user.");
-                            html.prop('disabled', false);
+                            $btn.prop('disabled', false);
                         }
 
                     });
@@ -6400,7 +6402,8 @@ var EDITOR = (function ($, parent) {
                     .attr('name', name)
                     .html('<i class="fa fa-arrows-rotate"></i> ' + language.assistents.ImgSearchBtn.$label)
                     .click({key: key, group: options.group, value: value}, function(event) {
-                        html.prop('disabled', true);
+                        const $btn = $(this);          // the button that was clicked
+                        $btn.prop('disabled', true);
                         event.preventDefault();
 
                         triggerRedrawForm(options.group, key, "", "redraw");
@@ -6485,18 +6488,18 @@ var EDITOR = (function ($, parent) {
 
                         if (serviceType==='generate'){
                             if(!hasApiKeyInstalled('imagegen', api)){
-                                html.prop('disabled', false);
+                                $btn.prop('disabled', false);
                                 return;
                             }
                         } else if (serviceType==='retrieve'){
                             if(!hasApiKeyInstalled('image', api)){
-                                html.prop('disabled', false);
+                                $btn.prop('disabled', false);
                                 return;
                             }
 
                         } else {
                             if ((!hasApiKeyInstalled('image', api))&&(!hasApiKeyInstalled('imagegen', api))) {
-                                html.prop('disabled', false);
+                                $btn.prop('disabled', false);
                                 return;
                             }
                         }
@@ -6504,7 +6507,7 @@ var EDITOR = (function ($, parent) {
                         query = cleanTextField(query);
 
                         img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject, event.data.key, event.data.value);
-                        html.prop('disabled', false);
+                        $btn.prop('disabled', false);
                     });
                 break;
             case 'generatesuggestionbutton':
@@ -6515,8 +6518,9 @@ var EDITOR = (function ($, parent) {
                     .attr('class', 'generate_suggestion_button xerte_button_c')
                     .html('<i class="fa fa-arrows-rotate"></i> ' + language.assistents.GenerateSuggestion.$btnlabel)
                     .click({key: key}, async function(event) {
+                        const $btn = $(this);          // the button that was clicked
                         // Disable the button to prevent multiple clicks
-                        html.prop('disabled', true);
+                        $btn.prop('disabled', true);
                         var type = lo_data[key].attributes.nodeName; //get the node-type
                         var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
                         var contextScope = lo_data[key].attributes.linkID; //ensures suggestions are made based on the active node where suggestion request comes from
@@ -6536,10 +6540,10 @@ var EDITOR = (function ($, parent) {
                                 alert(language.vendorApi.genericAiAPiError);
                             } finally {
                                 // Re-enable the button after the function completes (success or failure)
-                                html.prop('disabled', false);
+                                $btn.prop('disabled', false);
                             }
                         } else {
-                            html.prop('disabled', false);
+                            $btn.prop('disabled', false);
                         }
 
                     });
@@ -6552,8 +6556,9 @@ var EDITOR = (function ($, parent) {
                     .attr('class', 'apply_suggestion_button')
                     .text('Apply suggestion')
                     .click({key: key}, async function(event) {
+                        const $btn = $(this);          // the button that was clicked
                         // Disable the button to prevent multiple clicks
-                        html.prop('disabled', true);
+                        $btn.prop('disabled', true);
                         var type = lo_data[key].attributes.nodeName; //get the node-type
                         var baseUrl = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
                         var contextScope = "local";
@@ -6581,10 +6586,10 @@ var EDITOR = (function ($, parent) {
                                 alert(language.vendorApi.genericAiAPiError);
                             } finally {
                                 // Re-enable the button after the function completes (success or failure)
-                                html.prop('disabled', false);
+                            $btn.prop('disabled', false);
                             }
                         } else {
-                            html.prop('disabled', false);
+                            $btn.prop('disabled', false);
                         }
 
                     });
@@ -6597,8 +6602,9 @@ var EDITOR = (function ($, parent) {
                     .attr('class', 'ai_button xerte_button_c')
                     .html('<i class="fa fa-wand-magic"></i> ' + language.assistents.AIBtn.$label)
                     .click({key: key, group: options.group}, async function(event) {
+                        const $btn = $(this);          // the button that was clicke
                         // Disable the button to prevent multiple clicks
-                        html.prop('disabled', true);
+                        $btn.prop('disabled', true);
                         event.preventDefault();
 
                         if ($("#job-ui").length === 0) {
@@ -7015,7 +7021,7 @@ var EDITOR = (function ($, parent) {
                                     let fileStatus = null;
                                     fileStatus = await doCorpusCheck(fileUrl, loSettings);
                                     if (fileStatus === false){
-                                        html.prop('disabled', false);
+                                        $btn.prop('disabled', false);
                                         return;
                                     } else if (loSettings['restrictCorpusToLo'] === true){
                                         aiSettings['fileList'] = [];
@@ -7036,10 +7042,10 @@ var EDITOR = (function ($, parent) {
                                 alert(language.vendorApi.genericAiAPiError);
                             } finally {
                                 // Re-enable the button after the function completes (success or failure)
-                                html.prop('disabled', false);
+                                $btn.prop('disabled', false);
                             }
                         } else {
-                            html.prop('disabled', false);
+                            $btn.prop('disabled', false);
                         }
 
                     });
