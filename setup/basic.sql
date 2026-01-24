@@ -401,9 +401,9 @@ insert into `$role`(`roleid`, `name`) values
 
 CREATE TABLE IF NOT EXISTS `$management_helper` (
     `interaction_id` int(11) NOT NULL AUTO_INCREMENT,
-    `vendor` VARCHAR(10) NOT NULL,
-    `label` VARCHAR(34) NOT NULL,
-    `type` VARCHAR(10) NOT NULL,
+    `vendor` VARCHAR(45) NOT NULL,
+    `label` VARCHAR(45) NOT NULL,
+    `type` VARCHAR(45) NOT NULL,
     `needs_key` BOOLEAN NOT NULL,
     `enabled` BOOLEAN NOT NULL ,
     `sub_options` TEXT,
@@ -411,7 +411,7 @@ CREATE TABLE IF NOT EXISTS `$management_helper` (
     PRIMARY KEY (`interaction_id`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `management_helper` VALUES
+INSERT INTO `$management_helper` VALUES
                                     (1, 'openai', 'GPT (Openai)', 'ai', 1, 0, '{}', ''),
                                     (2, 'anthropic', 'Claude (Anthropic)', 'ai', 1, 0, '{}', ''),
                                     (3, 'mistral', 'Mistral AI', 'ai', 1, 0, '{}', ''),
