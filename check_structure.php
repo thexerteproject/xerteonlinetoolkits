@@ -68,7 +68,7 @@ function getFolderDetails($folder)
 }
 
 $_SESSION['elevated'] = true;
-if(is_user_admin()) {
+if(is_user_permitted("projectadmin", "useradmin" )) {
     unset($_SESSION['elevated']);
 
     $fix = false;
