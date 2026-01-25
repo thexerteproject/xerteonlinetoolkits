@@ -26,7 +26,10 @@ DROP TABLE IF EXISTS `$template_group_rights` ;
 DROP TABLE IF EXISTS `$folderrights` ;
 DROP TABLE IF EXISTS `$folder_group_rights` ;
 DROP TABLE IF EXISTS `$oai_publish` ;
+DROP TABLE IF EXISTS `$role` ;
+DROP TABLE IF EXISTS `$logindetailsrole` ;
 DROP TABLE If EXISTS `$management_helper` ;
+DROP TABLE IF EXISTS `$ai_request_logs`;
 
 DROP TABLE IF EXISTS `$lti_context` ;
 DROP TABLE IF EXISTS `$lti_keys` ;
@@ -428,7 +431,7 @@ INSERT INTO `$management_helper` VALUES
                                     (14, 'openaienc', 'OpenAI (Encoding)', 'encoding', 1, 0, '{}', '');
 
 
-CREATE TABLE IF NOT EXISTS `ai_request_logs` (
+CREATE TABLE IF NOT EXISTS `$ai_request_logs` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `schema_version` VARCHAR(16) NOT NULL DEFAULT '1.0',
 
@@ -460,5 +463,5 @@ CREATE TABLE IF NOT EXISTS `ai_request_logs` (
     `cost_pricing_version` VARCHAR(32) DEFAULT NULL,
     `cost_total` DECIMAL(18,6) DEFAULT NULL,
 
-    PRIMARY KEY (`id`),
-) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;;
+    PRIMARY KEY (`id`)
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
