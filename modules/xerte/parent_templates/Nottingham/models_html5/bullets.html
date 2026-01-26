@@ -62,11 +62,11 @@
 				$(".bullet").show();
 
 				// ensure panel is not too tall & therefore buttons are always visible
-				const $panel = $("#pageContents.panel");
+				const $panel = $(".panelContent");
 				$holder.css({"min-height": "", "max-height": ""});
 				$panel.css("max-height", "");
-				$panel.css("max-height", x_getAvailableHeight([$("#pageContents.panel")], [], true));
-				$holder.css("max-height", x_getAvailableHeight([$("#pageContents.panel"), $holder], [$("#btnHolderInner")], true));
+				$panel.css("max-height", x_getAvailableHeight([$(".panelContent")], [], true));
+				$holder.css("max-height", x_getAvailableHeight([$(".panelContent"), $holder], [$("#btnHolderInner")], true));
 				$holder.css("min-height", $holder.height());
 
 				$(".bullet").each(function () {
@@ -156,7 +156,7 @@
 			// the bullets are gradually shown, one item at a time
 			if (x_currentPageXML.getAttribute("delaySecs") != "0" && x_currentPageXML.getAttribute("delaySecs") != undefined && $(".bullet").length > 1) {
 				// add buttons to allow the user to control the fade in animations
-				$pageContents.append('<div id="btnHolder"><div id="btnHolderInner"></div></div>');
+				$(".panelContent").append('<div id="btnHolder"><div id="btnHolderInner"></div></div>');
 				const $btnHolderInner = $("#btnHolderInner");
 
 				// button hides the last shown bullet point
@@ -321,7 +321,9 @@
 	<div id="textHolder" class="splitScreen_A"></div>
 
 	<div class="splitScreen_B">
-		<div id="holder" class="panelContent panel"></div>
+		<div class="panelContent panel">
+			<div id="holder"></div>
+		</div>
 	</div>
 
 </div>
