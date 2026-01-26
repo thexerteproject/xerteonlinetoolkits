@@ -38,24 +38,23 @@
 					$("#transcriptBtn").click();
 					$("#transcript").css("display", "none");
 				}
+				let maxW = $x_innerPage.width() - offset[0];
+				let maxH = $x_pageHolder.height() - offset[1];
 
-                let maxW = $x_pageHolder.width() - offset[0];
-                let maxH = $x_pageHolder.height() - offset[1];
-
-				$pageImg.css("max-height", x_browserInfo.mobile == true ? $x_mobileScroll.height() - $x_footerBlock.height() - offset[1] : x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
-                $pageImg.css("max-height", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.height() - offset[1] : "100%");
+				$pageImg.css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_innerPage.width() - offset[0] : "100%");
+				$pageImg.css("max-height", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.height() - offset[1] : "100%");
 
 				if (x_currentPageXML.getAttribute("imagesize") == "small") {
-	                maxW = x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : maxW*0.4;
+	                maxW = x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_innerPage.width() - offset[0] : maxW*0.4;
 				}
 				if (x_currentPageXML.getAttribute("imagesize") == "auto") {
-					maxW = x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : maxW*0.6;
+					maxW = x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_innerPage.width() - offset[0] : maxW*0.6;
 				}
 				if (x_currentPageXML.getAttribute("imagesize") == "big") {
-					maxW = x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : maxW*0.8;
+					maxW = x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_innerPage.width() - offset[0] : maxW*0.8;
 				}
 				if (x_currentPageXML.getAttribute("imagesize").toLowerCase() == "full screen") {
-					$pageImg.css("max-width", $x_pageHolder.width() - offset[0]);
+					$pageImg.css("max-width", $x_innerPage.width() - offset[0]);
 					$pageImg.css("max-height", $x_pageHolder.height() - offset[1]);
 				}
 
@@ -73,12 +72,12 @@
 			else
 			{
 				// Make visible
-				$("#imgInnerDiv").css("width", $x_pageHolder.width() - offset[0]);
+				$("#imgInnerDiv").css("width", $x_innerPage.width() - offset[0]);
 				$("#imgInnerDiv").css("height", $x_pageHolder.height() - offset[1]);
 				$("#imgInnerDiv").css("overflow", "auto");
 				$("#pageImg").css("visibility", "visible");
 			}
-
+			
 			if (x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "") {
 				if ($("#pageAudio .mejs-audio").width() != $pageImg.width()) {
 					this.loadAudio();
@@ -183,26 +182,6 @@
 					var $this = $(this);
 					// Make it work nice with x_ScaleImg function used in sizeChanged
 					$this.data("origSize", [$this.width(), $this.height()]);
-					
-					var offset = textGraphics.calculateOffset();
-					if (imageSize == "actual size") {
-						// no scaling
-					} else {
-						$this.css({
-							"max-width": "100%",
-							"max-height": x_browserInfo.mobile == true ? $x_mobileScroll.height() - $x_footerBlock.height() - offset[1] : $x_pageHolder.height() - offset[1]
-						});
-						
-						if (imageSize == "full screen") {
-							$imgInnerDiv.css({
-								"max-width": "100%"
-							});
-						} else { // auto
-							$imgInnerDiv.css({
-								"max-width": textAlign == "Top" || textAlign == "Bottom" ? $x_innerPage.width() - offset[0] : "60%"
-							});
-						}
-					}
 					
 					$this.css("visibility", "hidden");
 					
