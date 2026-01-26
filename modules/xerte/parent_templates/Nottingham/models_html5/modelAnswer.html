@@ -47,10 +47,6 @@
 			}
 		};
 
-        this.leavePage = function() {
-            this.finishTracking();
-        };
-
 		this.init = function() {
 			// these strings will be used by model answer results pages when showing answers entered on this page
 			const langStrings = {};
@@ -111,9 +107,15 @@
 			const feedback = [];
 			const images = [];
 
+			let label = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
+			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "") {
+				label = x_currentPageXML.getAttribute("trackinglabel");
+			}
+
 			// get info from the old format prompts that are on the page itself
 			if (x_currentPageXML.getAttribute("prompt") != undefined && (x_currentPageXML.getAttribute("prompt").trim() !== "" || $(x_currentPageXML).children().length == 0)) {
-				names.push(names.length+1);
+				// The old version uses the page label as the interaction label
+				names.push(label);
 				prompts.push(x_currentPageXML.getAttribute("prompt"));
 				rows.push(5);
 				feedback.push(x_currentPageXML.getAttribute("feedback"));
@@ -134,7 +136,8 @@
 					if (this.getAttribute("name") != undefined && this.getAttribute("name").trim() !== "") {
 						names.push(this.getAttribute("name"));
 					} else {
-						names.push(names.length+1);
+						// NB: names MUST be a string
+						names.push((string)(names.length + 1));
 					}
 					prompts.push(this.getAttribute("prompt"));
 					rows.push(Number(this.getAttribute("rows")));
@@ -153,10 +156,7 @@
 
 			const $prompt = $("#prompt");
 			if (names.length > 0) {
-				let label = $('<div>').html(x_currentPageXML.getAttribute("name")).text();
-				if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "") {
-					label = x_currentPageXML.getAttribute("trackinglabel");
-				}
+
 				let weighting = 1.0;
 				if (x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false') {
 					weighting = 0.0;
