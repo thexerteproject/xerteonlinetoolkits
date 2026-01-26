@@ -13,7 +13,7 @@
 	
 	<image type="group" label="Image">
 		<url label="File" type="media" placeholder="Select an image"/>
-		<imagesize label="Size" options="Small,Medium,Big,Actual size,Full screen" type="ComboBox"  data="small,auto,big,actual size,Full screen" defaultValue="auto" width="100"/>
+		<imagesize label="Size" options="Small,Medium,Big,Actual size,Full screen" type="ComboBox"  data="small,auto,big,actual size,full screen" defaultValue="auto" width="100"/>
 		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility" />
 	</image>
 	

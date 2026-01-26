@@ -53,7 +53,7 @@
 				if (x_currentPageXML.getAttribute("imagesize") == "big") {
 					maxW = x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : maxW*0.8;
 				}
-				if (x_currentPageXML.getAttribute("imagesize") == "Full screen") {
+				if (x_currentPageXML.getAttribute("imagesize").toLowerCase() == "full screen") {
 					$pageImg.css("max-width", $x_pageHolder.width() - offset[0]);
 					$pageImg.css("max-height", $x_pageHolder.height() - offset[1]);
 				}
@@ -106,7 +106,7 @@
 			
 			// text align
 			var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right|Top|Bottom
-			if (imageSize != "full screen") {
+			if (imageSize.toLowerCase() != "full screen") {
 				if (x_browserInfo.mobile == true && textAlign != "Top") {
 					textAlign = "Bottom";
 				}
