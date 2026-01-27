@@ -6619,8 +6619,6 @@ var EDITOR = (function ($, parent) {
                             $(this).after(jobUI);
                         }
 
-                        triggerRedrawForm(options.group, key, "", "redraw");
-
                         let constructorObject = getConstructorFromLightbox(html, event.data.group);
 
                         if (constructorObject === false) {return}
