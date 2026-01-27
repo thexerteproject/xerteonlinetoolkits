@@ -7041,6 +7041,9 @@ var EDITOR = (function ($, parent) {
                             } finally {
                                 // Re-enable the button after the function completes (success or failure)
                                 $btn.prop('disabled', false);
+
+                                // Disable the job-ui as its no longer necessary sine the job finished
+                                $("#job-ui").remove();
                             }
                         } else {
                             $btn.prop('disabled', false);
