@@ -19,7 +19,7 @@ class wikimediaApi extends BaseApi
 
         while (count($filteredPages) < $perPage && $tries < $maxTries) {
             $url = "https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&generator=search"
-                . "&iiprop=url|user|canonicaltitle"
+                . "&iiprop=url|user|canonicaltitle|descriptionurl|extmetadata"
                 . "&gsrsearch={$query}"
                 . "&gsrlimit={$perPage}"
                 . "&gsrnamespace=6"
@@ -275,21 +275,39 @@ class wikimediaApi extends BaseApi
                     if ($downloadResult->status === "success") {
                         $downloadedPaths[] = $downloadResult->path;
 
-                        $authorName = isset($page['imageinfo'][0]['user'])
-                            ? $page['imageinfo'][0]['user']
-                            : 'Unknown';
+                        $imageInfo = $page['imageinfo'][0] ?? [];
+                        $ext = $imageInfo['extmetadata'] ?? [];
 
-                        $imageTitle = isset($page['title'])
-                            ? $page['title']
-                            : '';
-                        $imageUrl   = $url;
+                        $downloadedAt = (new DateTime('now'))->format(DateTimeInterface::ATOM);
 
-                        $htmlEmbed = "<p>Image by <a href=\"https://commons.wikimedia.org/wiki/User:$authorName\" target=\"_blank\">$authorName</a> on Wikimedia Commons. <a href=\"$imageUrl\" target=\"_blank\">View Image</a>.</p>";
-                        $creditText = "Image by $authorName, https://commons.wikimedia.org/wiki/User:$authorName
-                        Image Title: $imageTitle
-                        Original Image URL: $imageUrl
-                        
-                        $htmlEmbed";
+                        // Prefer Artist from extmetadata; fallback to uploader user
+                        $authorName = isset($ext['Artist']['value'])
+                            ? trim(strip_tags($ext['Artist']['value']))
+                            : ($imageInfo['user'] ?? 'Unknown');
+
+                        $imageTitle = $page['title'] ?? '';
+                        $originalImageUrl = $imageInfo['url'] ?? '';                 // direct file URL
+                        $filePageUrl = $imageInfo['descriptionurl'] ?? $originalImageUrl; // Commons file page
+
+                        $licenseUrl = $ext['LicenseUrl']['value'] ?? $filePageUrl;
+                        $licenseName = isset($ext['LicenseShortName']['value'])
+                            ? trim(strip_tags($ext['LicenseShortName']['value']))
+                            : 'See file page';
+
+                        $htmlEmbed =
+                            "<p>Image by <a href=\"https://commons.wikimedia.org/wiki/User:$authorName\" target=\"_blank\">$authorName</a> on Wikimedia Commons. " .
+                            "<a href=\"$filePageUrl\" target=\"_blank\">View Image</a>. " .
+                            "<a href=\"$licenseUrl\" target=\"_blank\">License: $licenseName</a>.</p>";
+
+                        $creditText =
+                            "Image by $authorName, https://commons.wikimedia.org/wiki/User:$authorName\n" .
+                            "Image Title: $imageTitle\n" .
+                            "Original Image URL: $originalImageUrl\n" .
+                            "File Page: $filePageUrl\n" .
+                            "Downloaded at: $downloadedAt\n" .
+                            "License: $licenseUrl\n" .
+                            "\n" .
+                            $htmlEmbed;
                         $infoFilePath = pathinfo($downloadResult->path, PATHINFO_FILENAME) . '.txt';
                         file_put_contents($path . '/' . $infoFilePath, $creditText);
                     } else {
