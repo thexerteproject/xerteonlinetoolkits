@@ -201,10 +201,18 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
                 $authorName = $photo->user;
                 $authorProfileUrl = "https://pixabay.com/users/" . $authorName . "-" . $photo->user_id;
                 $originalPhotoUrl = $photo->pageURL;
+
+                $downloadedAt = (new DateTime('now'))->format(DateTimeInterface::ATOM);
+                $licenseUrl = 'https://pixabay.com/service/terms/';
+
                 $htmlEmbed = "<p>Photo by <a href=\"$authorProfileUrl\" target=\"_blank\">$authorName</a>. <a href=\"$originalPhotoUrl\" target=\"_blank\">View Photo</a>.</p>";
-                $creditText = "Photo by $authorName, $authorProfileUrl
-                Original Photo URL: $originalPhotoUrl
-                $htmlEmbed";
+
+                $creditText =
+                    "Photo by $authorName, $authorProfileUrl\n" .
+                    "Original Photo URL: $originalPhotoUrl\n" .
+                    "Downloaded at: $downloadedAt\n" .
+                    "License: $licenseUrl\n" .
+                    $htmlEmbed;
 
                 $infoFilePath = pathinfo($downloadResult->path, PATHINFO_FILENAME) . '.txt';
                 file_put_contents($path . '/' . $infoFilePath, $creditText);

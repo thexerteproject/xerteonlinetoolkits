@@ -167,7 +167,18 @@ class pexelsApi extends BaseApi
             $authorName = $photo->photographer;
             $authorProfileUrl = $photo->photographer_url;
             $originalPhotoUrl = $photo->url;
-            $creditText = "Photo by $authorName, $authorProfileUrl\nOriginal Photo URL: $originalPhotoUrl\n";
+
+            $downloadedAt = (new DateTime('now'))->format(DateTimeInterface::ATOM);
+
+            $licenseUrl = 'https://www.pexels.com/license/';
+
+            $creditText =
+                "Photo by $authorName, $authorProfileUrl\n" .
+                "Original Photo URL: $originalPhotoUrl\n" .
+                "Downloaded at: $downloadedAt\n" .
+                "License: $licenseUrl\n";
+
+
             $infoFilePath = pathinfo($dl->path, PATHINFO_FILENAME) . '.txt';
             file_put_contents($baseDir . '/' . $infoFilePath, $creditText);
         }
