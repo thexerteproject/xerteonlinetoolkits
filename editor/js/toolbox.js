@@ -4715,16 +4715,34 @@ var EDITOR = (function ($, parent) {
                 }
 
                 // inherit any fields.
-                const inheritField = groupChildren[input]?.value?.inheritField;
-                if (inheritField !== undefined && inheritField !== "") {
+                const inheritFieldRaw = groupChildren[input]?.value?.inheritField;
+                const inheritFieldClean = groupChildren[input]?.value?.inheritFieldClean;
+
+                // pick which key to inherit from, and remember whether we must clean
+                let inheritKey;
+                let shouldClean = false;
+
+                if (inheritFieldRaw !== undefined && inheritFieldRaw !== "") {
+                    inheritKey = inheritFieldRaw;
+                } else if (inheritFieldClean !== undefined && inheritFieldClean !== "") {
+                    inheritKey = inheritFieldClean;
+                    shouldClean = true;
+                }
+
+                if (inheritKey) {
                     const groupName = groupChildren[input]?.name;
 
                     // determine candidate value
                     let value;
-                    if (attributes[inheritField] !== undefined && attributes[inheritField] !== null) {
-                        value = attributes[inheritField];
-                    } else if (lo_attributes[inheritField] !== undefined && lo_attributes[inheritField] !== null) {
-                        value = lo_attributes[inheritField];
+                    if (attributes[inheritKey] !== undefined && attributes[inheritKey] !== null) {
+                        value = attributes[inheritKey];
+                    } else if (lo_attributes[inheritKey] !== undefined && lo_attributes[inheritKey] !== null) {
+                        value = lo_attributes[inheritKey];
+                    }
+
+                    // clean if requested by inheritFieldClean mode
+                    if (shouldClean) {
+                        value = toPlainText(value);
                     }
 
                     // assign only if the value is not empty ("", null, or undefined)
@@ -4762,6 +4780,49 @@ var EDITOR = (function ($, parent) {
         $.featherlight.close();
         lightboxSetUp(groupId, "", "", key, formState);
     };
+
+    // helper: convert rich text / html-ish strings to plain text
+    toPlainText = function (input) {
+        if (input === undefined || input === null) return input;
+
+        // Non-strings: keep as-is
+        if (typeof input !== "string") return input;
+
+        const s = input.trim();
+        if (s === "") return "";
+
+        // If it doesn't look like HTML, just normalize whitespace a bit
+        if (!/[<>]/.test(s)) {
+            return s.replace(/\s+/g, " ").trim();
+        }
+
+        // Browser env: safest plain-text extraction
+        if (typeof document !== "undefined") {
+            const el = document.createElement("div");
+            el.innerHTML = s;
+
+            // textContent drops tags and formatting; keeps readable text
+            const text = (el.textContent || "").replace(/\u00A0/g, " "); // nbsp -> space
+            return text.replace(/\s+/g, " ").trim();
+        }
+
+        // Non-browser fallback: strip tags + decode a few common entities
+        return s
+            .replace(/<\/p>\s*<p[^>]*>/gi, "\n")      // preserve paragraph breaks
+            .replace(/<br\s*\/?>/gi, "\n")            // preserve line breaks
+            .replace(/<[^>]+>/g, "")                  // strip remaining tags
+            .replace(/&nbsp;/gi, " ")
+            .replace(/&amp;/gi, "&")
+            .replace(/&lt;/gi, "<")
+            .replace(/&gt;/gi, ">")
+            .replace(/&quot;/gi, '"')
+            .replace(/&#39;/gi, "'")
+            .replace(/\u00A0/g, " ")
+            .replace(/[ \t]+\n/g, "\n")
+            .replace(/\n{3,}/g, "\n\n")
+            .replace(/[ \t]{2,}/g, " ")
+            .trim();
+    }
 
     validateFormInput = function (regexCondition, inputValue, name, fieldlabel) {
         let regex = new RegExp(regexCondition);
