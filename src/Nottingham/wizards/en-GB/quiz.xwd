@@ -142,7 +142,7 @@
       <text label="Answer" type="TextArea" height="100" placeholder="Enter an answer option here"/>
       <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label is used to identify this answer on the results page and when tracking results, e.g. via SCORM/LTI/xAPI"/>
       <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter the feedback for this option" tooltip="Feedback shown when this answer is submitted"/>
-      <correct condition="parent.judge!='false'" label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100" />
+      <correct condition="parent.judge!='false'" label="Correct Answer" type="CheckBox" defaultValue="false" />
 
   	  <audioGroup type="group" label="Audio Feedback" optional="true" tooltip="Add an audio player below the feedback text">
   		<audioFB label="File" defaultValue="" type="media" optional="true" placeholder="Select an audio file" />

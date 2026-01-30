@@ -3154,7 +3154,10 @@ var EDITOR = (function ($, parent) {
 			}
 			
 			var level = Number(thisTarget);
-			var lo_node = tree.get_node(tree.get_node(thisKey, false).parents[level], false);
+            var lo_node = tree.get_node(tree.get_node(thisKey, false).parents[level], false);
+            if (thisTarget < 0) {
+                lo_node = tree.get_node(thisKey, false);
+            }
 			
 			$.each(lo_node.children, function(i, key){
                 // list pages of specified types only if pageType set, or all page types if not specified

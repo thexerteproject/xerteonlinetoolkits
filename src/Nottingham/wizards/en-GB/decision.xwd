@@ -3,7 +3,7 @@
     <newNodes>
       <decision><![CDATA[<decision name="Enter Page Title" text=""
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
-      firstStep="" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" yourAnswerString="Your answer" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision>
+      firstStepNew="" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" yourAnswerString="Your answer" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision>
     </newNodes>
   </pageWizard>
 
@@ -12,7 +12,8 @@
 	
 	<name type="TextInput" wysiwyg="true" label="Page Title"/>
 	<text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
-	<firstStep label="First Step ID" type="TextInput" placeholder="e.g. Q1"/>
+  	<firstStepNew label="First Step ID" type="pageList" listTarget="-1" defaultValue="" mandatory="true"/>
+	<firstStep label="First Step ID" type="TextInput" placeholder="e.g. Q1" optional="true" deprecated="This property has been deprecated - use the First Step drop down menu to select the target step instead. The ID entered in this field will continue to work until the drop down menu is used"/>
 	<overview label="Show Final Overview" type="CheckBox" defaultValue="true" mandatory="true"/>
 
 	<layoutGroup label="Page Layout" type="group">

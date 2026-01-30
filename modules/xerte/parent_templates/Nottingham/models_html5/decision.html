@@ -347,7 +347,11 @@
 			$submitBtn.button("disable");
 			
 			// set up 1st step - use firstStep from xml if valid id, otherwise use first step in array
-			var firstStep = deepLink != undefined ? $pageContents.data("allSteps")[deepLink].name : this.findStep(x_currentPageXML.getAttribute("firstStep")) ? x_currentPageXML.getAttribute("firstStep") : $pageContents.data("allSteps")[0].name;
+			let firstStepID = x_currentPageXML.getAttribute("firstStep");
+			if (x_currentPageXML.getAttribute("firstStepNew") != undefined && x_currentPageXML.getAttribute("firstStepNew") != "") {
+				firstStepID = x_currentPageXML.getAttribute("firstStepNew");
+			}
+			var firstStep = deepLink != undefined ? $pageContents.data("allSteps")[deepLink].name : this.findStep(firstStepID) ? firstStepID : $pageContents.data("allSteps")[0].name;
 			this.setUpStep(firstStep, true);
 			
 			this.showHideHolders($stepHolder);

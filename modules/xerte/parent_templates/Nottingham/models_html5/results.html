@@ -192,6 +192,8 @@
       // add page text unless it's set to be removed (deal with this here rather than just in xenith as feedback text may be added even if removeTxt is true)
       if ((x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") && ((x_currentPageXML.getAttribute("panelWidth") !== "Full" && x_currentPageXML.getAttribute("panelWidth") != undefined) || x_currentPageXML.getAttribute("removeTxt") !== "true")) {
         $('#mainTxtHolder').html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+      } else {
+        $('#mainTxtHolder').remove();
       }
 
       // add tailored feedback text

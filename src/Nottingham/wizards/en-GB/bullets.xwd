@@ -1,7 +1,7 @@
 <wizard menus="Text">
   <pageWizard remove="true" duplicate="false">
     <newNodes>  
-      <bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showPanel="0" showBullets="0" panelWidth="Full"></bullets>]]></bullets>
+      <bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showBullets="0" panelWidth="Full" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="true"></bullets>]]></bullets>
 	</newNodes>
   </pageWizard>
   
