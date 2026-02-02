@@ -1,9 +1,9 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <opinion><![CDATA[<opinion name="Enter Page Title" order="sequence"
+      <opinion><![CDATA[<opinion name="Enter Page Title" instructions="" order="sequence"
       panelWidth="Medium" panelWidthCustom="50" align="left" panelStyle="false" removeTxt="false"
-      instructions="" feedback=""
+      feedback=""
 	  quesCount="Question {i} of {n}"
 	  onCompletion="You have completed the questionnaire" score="You answered {i} / {n}"
 	  submitBtnText="Submit"
@@ -28,6 +28,8 @@
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
     </layoutGroup>
 
+    <feedback label="Feedback" type="textArea" height="120" defaultValue="" placeholder="Enter feedback here"/>
+
     <textTopGroup label="Text Above Panel" type="group" optional="true">
         <textTop label="Text" type="TextArea" height="100" optional="true"/>
         <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
@@ -39,7 +41,6 @@
     </textBelowGroup>
 
     <showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true" deprecated="This optional property is now deprecated"/>
-    <feedback label="Feedback" type="textArea" height="120" optional="true" defaultValue="" placeholder="Enter feedback here"/>
 
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true" />
