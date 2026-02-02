@@ -304,6 +304,9 @@
 
 			if(x_currentPageXML.getAttribute("track") == "true"){
 				$submitBtn.button({
+					icons: {
+						primary: "fa fa-share"
+					},
 					label: x_currentPageXML.getAttribute('submitTxt') != undefined ? x_currentPageXML.getAttribute('submitTxt') : "Submit"
 				}).click(function () {
 					documentation.track();
