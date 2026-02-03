@@ -19,7 +19,7 @@ function makeTranscriber(array $cfg)
     $transcriber = new UninitializedTranscribe($cfg['api_key'], $baseDir);
 
     if ($adminEnabled && $provider === 'openai' && !empty($cfg['api_key'])) {
-        $transcriber = new OpenAITranscribe($cfg['api_key'], $baseDir);
+        $transcriber = new OpenAITranscribe($cfg['api_key'], $baseDir, $cfg['preferred_model']);
     }
 
     if ($adminEnabled && $provider === 'gladia' && !empty($cfg['api_key'])) {

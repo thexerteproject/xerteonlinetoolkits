@@ -17,11 +17,11 @@ function makeRag(array $cfg)
 
 
     if ($adminEnabled && $provider === 'openaienc' && !empty($cfg['api_key'])) {
-        return new OpenAIRAG($cfg['api_key'], $cfg['encoding_directory']);
+        return new OpenAIRAG($cfg['api_key'], $cfg['encoding_directory'], $cfg['preferred_model']);
     }
 
     if ($adminEnabled && $provider === 'mistralenc' && !empty($cfg['api_key'])) {
-        return new MistralRAG($cfg['api_key'], $cfg['encoding_directory']);
+        return new MistralRAG($cfg['api_key'], $cfg['encoding_directory'], $cfg['preferred_model']);
     }
 
     //If no provider (either not recognised or null/empty) default to TfidfRAG

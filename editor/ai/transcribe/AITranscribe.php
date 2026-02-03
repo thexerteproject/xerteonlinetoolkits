@@ -11,13 +11,16 @@ abstract class AITranscribe {
     protected $apiKey;
     protected $mediaPath;
 
+    protected $preferredModel;
+
     /**
      * Constructor accepts the API key.
      */
-    public function __construct($apiKey, $basePath) {
+    public function __construct($apiKey, $basePath, $preferredModel = null) {
         $this->apiKey = $apiKey;
         $this->mediaPath = $basePath . DIRECTORY_SEPARATOR . 'RAG' . DIRECTORY_SEPARATOR . 'transcripts';
         $this->sessionId = "token is busted";
+        $this->preferredModel = $preferredModel;
     }
 
     /**
@@ -182,7 +185,7 @@ abstract class AITranscribe {
      * temporary directory. Otherwise, returns the single original file.
      *
      * @param string $filePath        Absolute path to the source file.
-     * @param int    $maxBytes        Max allowed size in bytes before splitting. Default 25 MB.
+     * @param int    $maxBytes        Max allowed size in bytes before splitting. Default 25MB.
      * @param int    $segmentSeconds  Length in seconds of each chunk. Default 900s.
      * @return string[]               List of file paths to process.
      * @throws \RuntimeException      On failure to create temp dir or if FFmpeg returns non‐zero.
@@ -288,6 +291,12 @@ class OpenAITranscribe extends AITranscribe
         $timestampGranularities = 'segment'
     )  {
         global $xerte_toolkits_site;
+
+        $preferredModel = isset($this->preferredModel) ? trim((string)$this->preferredModel) : '';
+
+        if ($preferredModel !== '' && strtolower($preferredModel) !== 'default') {
+            $model = $preferredModel;
+        }
 
         // Check whether the file does not have path traversal
         x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');

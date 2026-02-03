@@ -5,11 +5,13 @@ namespace rag;
 class OpenAIRAG extends BaseRAG
 {
     private $apiKey;
+    private $preferredModel;
 
-    public function __construct($apiKey, $encodingDirectory, $chunkSize = 2048)
+    public function __construct($apiKey, $encodingDirectory, $preferredModel=null, $chunkSize = 2048)
     {
         parent::__construct($encodingDirectory, $chunkSize);
         $this->apiKey = $apiKey;
+        $this->preferredModel = $preferredModel;
     }
 
     protected function supportsProviderEmbeddings() { return true; }
@@ -17,9 +19,16 @@ class OpenAIRAG extends BaseRAG
     /* Retrieve an embedding for a single piece of text (OpenAI) */
     protected function getEmbedding($text)
     {
+        $model = "text-embedding-3-small";
+        $preferredModel = isset($this->preferredModel) ? trim((string)$this->preferredModel) : '';
+
+        if ($preferredModel !== '' && strtolower($preferredModel) !== 'default') {
+            $model = $preferredModel;
+        }
+
         $url = "https://api.openai.com/v1/embeddings";
         $payload = json_encode([
-            "model" => "text-embedding-3-small",
+            "model" => $model,
             "input" => $text
             // Optionally: "dimensions" => 1536, // or 512/1024 if you choose to reduce dims -- not recommended
             // "encoding_format" => "float",     // default is float, we use the same across all embedding models
@@ -67,6 +76,13 @@ class OpenAIRAG extends BaseRAG
     /* Retrieve embeddings in batches (OpenAI) */
     protected function getEmbeddings(array $texts)
     {
+        $model = "text-embedding-3-small";
+        $preferredModel = isset($this->preferredModel) ? trim((string)$this->preferredModel) : '';
+
+        if ($preferredModel !== '' && strtolower($preferredModel) !== 'default') {
+            $model = $preferredModel;
+        }
+
         // For OpenAI, the limit is per-input (~8191 tokens for embeddings).
         // We use a simple per-item safety check plus a count-based batcher.
         $approxTokens = function ($s) {
@@ -104,7 +120,7 @@ class OpenAIRAG extends BaseRAG
         $all = [];
         foreach ($batches as $batch) {
             $payload = json_encode([
-                "model" => "text-embedding-3-small",
+                "model" => $model,
                 "input" => $batch
                 // Optionally: "dimensions" => 1536,
             ]);

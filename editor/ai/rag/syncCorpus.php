@@ -163,20 +163,24 @@ try {
     $transcriptionKey = $xerte_toolkits_site->{$managementSettings['transcription']['key_name']};
 
     $provider = $managementSettings['transcription']['active_vendor'];
+    $preferredTranscriptionModel = $managementSettings['transcription']['preferred_model'];
     $cfgTranscribe = [
         'api_key' => $transcriptionKey,
         'basedir' => $baseDir,
-        'provider' => $provider
+        'provider' => $provider,
+        'preferred_model' => $preferredTranscriptionModel
     ];
 
     $transcriptMgr = makeTranscriber($cfgTranscribe);
 
     $encodingKey = $xerte_toolkits_site->{$managementSettings['encoding']['key_name']};
     $provider = $managementSettings['encoding']['active_vendor'];
+    $preferredEncodingModel = $managementSettings['encoding']['preferred_model'];
     $cfg = [
             'api_key' => $encodingKey,
             'encoding_directory' => $baseDir,
-            'provider' => $provider
+            'provider' => $provider,
+            'preferredModel' => $preferredEncodingModel
         ];
     $rag = makeRag($cfg);
 

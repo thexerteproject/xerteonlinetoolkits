@@ -47,3 +47,8 @@
 
     define("MANAGEMENT_AI_ADMIN_GUIDE_MESSAGE", "<h3>Manual & Advice</h3><p>For detailed and up-to-date instructions, including recommended vendor combinations, suggestions and advice, please refer to the Xerte Assistant & AI Admin Guide: </p>");
 
+    define("MANAGEMENT_AI_ADMIN_PREFERRED_MODEL", "Preferred Model");
+    define("MANAGEMENT_AI_ADMIN_PREFERRED_MODEL_NOT_APPLICABLE", "Preferred model selection is not applicable for this provider.");
+    define("MANAGEMENT_AI_ADMIN_PREFERRED_MODEL_TOOLTIP", "Listed models include all available models for a given vendor, even if the models are not of the corresponding type. Please make sure you choose a text completion model for the 'AI Content Generation' vendors, an encoding model for the 'Encoding' vendors, etc. For more information on model choices visit the associated vendor websites and/or the admin guide linked at the top of this page.");
+
+    define("MANAGEMENT_AI_ADMIN_ERROR_VENDOR_CONFIG", "Configuration error: vendor_config.php is missing. Please visit the official admin guide for instructions on where and how to set up this file: ");;
