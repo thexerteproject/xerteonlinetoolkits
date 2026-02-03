@@ -16,6 +16,11 @@
 	padding-top: 1em;
 	clear: both;
 }
+
+#fbBlock {
+	clear: both;
+}
+
 #mainPanel {
 	overflow: auto;
 }

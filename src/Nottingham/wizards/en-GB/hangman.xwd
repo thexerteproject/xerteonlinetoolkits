@@ -3,7 +3,7 @@
     <newNodes>
       <hangman><![CDATA[<hangman name="Enter Page Title" text="" words="" restrict="letter"
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
-	  nextBtnTxt="Next"
+	  nextBtnTxt="Next" resetBtnTxt="Reset"
 	  quesCount="Exercise {i} of {n}"
 	  />]]></hangman>
     </newNodes>
@@ -50,11 +50,12 @@
     </AIGroup>
 
     <nextBtnTxt label="Next Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
-    <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required" />		
+    <resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Reset"/>
+    <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required" />
     <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically" />
     <quesCount label="{i} of {n} words" type="TextInput" wysiwyg="true" language="true" />
 
-  </hangman>K
+  </hangman>
 
 
 </wizard>

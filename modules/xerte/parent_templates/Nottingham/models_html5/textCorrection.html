@@ -29,7 +29,7 @@
 				$pageContents = $('#pageContents');
 				$attempts = $("#attempts");
 				$answer = $("#answer");
-				$textArea = $(".answer textarea");
+				$textArea = $(".answer #text");
             };
 
             this.sizeChanged = function() {
@@ -146,10 +146,9 @@
 				}
 
                 $("#checkButton")
-                    .button({
-                        label: checkButtonTxt
-                    })
+                    .button({ label: checkButtonTxt })
                     .click(function () {
+                        $(this).button("disable");
 
                         var input = $textArea.val(),
 							attemptMade = !(input === "" || ($textArea.data('placeHolder') != undefined && $textArea.data('placeHolder') == input));
@@ -188,43 +187,58 @@
 						}
 
                         if (attemptMade && (input === $pageContents.data('answer') || triesLeft == undefined || triesLeft <= 0)) {
-							// disable check btn & text area when correct answer entered or max tries reached
+							// disable text area when correct answer entered or max tries reached
 							if ((triesLeft != undefined && triesLeft <= 0) || input == $pageContents.data('answer')) {
-                                if ($("#pageContents").data("slideIn")) {
-                                    $(this).slideUp();
-                                    $attempts.slideUp();
-                                } else {
-                                    $(this).hide();
-                                    $attempts.hide();
-                                }
 								$textArea.attr('readonly','true');
 							}
-
-                            // show the correct answer unless answer entered is correct or show answer optional property is off
-                            if (input !== $pageContents.data('answer')) {
-                                $answer.html($answer.data("fb"));
-
-                                if ($("#pageContents").data("slideIn")) {
-                                    $answer.slideDown();
-                                }
-                            }
 
 							// feedback
                             if (x_currentPageXML.getAttribute("showFurtherClarification") !== "false" && x_currentPageXML.getAttribute("FurtherClarification") != undefined && x_currentPageXML.getAttribute("FurtherClarification").trim() != '') {
                                 $('#FurtherClarification').html($('#FurtherClarification').data("fb"));
-
-                                if ($("#pageContents").data("slideIn")) {
-                                    $('#FurtherClarification').slideDown();
-                                }
                             }
+
+                            // show the correct answer unless answer entered is correct or show answer optional property is off
+                            if (input !== $pageContents.data('answer')) {
+                                $answer.html($answer.data("fb"));
+                            }
+                        }
+
+                        $("#fbBlock").children().each(function() {
+                            if ($(this).html() !== "") {
+                                $(this).show();
+                            } else {
+                                $(this).hide();
+                            }
+                        });
+
+                        if ($("#fbBlock").children().filter(function () { return $(this).css("display") !== "none"; }).length > 0) {
+                            if ($("#pageContents").data("slideIn")) {
+                                $("#fbBlock").slideDown();
+                            } else {
+                                $("#fbBlock").show();
+                            }
+                        }
+                    });
+
+                $("#checkButton").button("disable");
+
+                $textArea
+                    .on('input', function() {
+                        $("#checkButton").button("enable");
+
+                        // to avoid a sudden jump in layout, feedback should slide back up gradually if content is centred vertically & panel is full height
+                        if ($("#pageContents").data("slideIn")) {
+                            $('#fbBlock').slideUp();
+                        } else {
+                            $("#fbBlock").hide();
+                            $('#FurtherClarification, #correctOrNot, #answer').html("").hide();
                         }
                     });
 
                 this.sizeChanged();
 
-                if ($("#pageContents").data("slideIn")) {
-                    $("#answer, #FurtherClarification").hide();
-                }
+                $("#fbBlock").hide();
+                $("#fbBlock").children().hide();
 
                 x_pageLoaded();
             }
@@ -247,8 +261,8 @@
                 <div class="answer"><textarea id="text" rows="5" cols="50" spellcheck="false"></textarea></div>
             </div>
             <button id="checkButton"></button>
+            <div id="attempts"></div>
             <div id="fbBlock" aria-live="polite">
-                <div id="attempts"></div>
                 <div id="correctOrNot"></div>
                 <div id="answer"></div>
                 <div id="FurtherClarification"></div>

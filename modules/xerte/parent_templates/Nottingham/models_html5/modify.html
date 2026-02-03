@@ -35,14 +35,8 @@
 		}
 
 		this.init = function() {
-			var answerHeaderTxt = x_currentPageXML.getAttribute("answerHeaderTxt");
-			if (answerHeaderTxt == undefined) {
-				answerHeaderTxt = "Write your answer here:"
-			}
-			var feedbackBtnTxt = x_currentPageXML.getAttribute("feedbackBtnTxt");
-			if (feedbackBtnTxt == undefined) {
-				feedbackBtnTxt = "Feedback"
-			}
+			const answerHeaderTxt = x_currentPageXML.getAttribute("answerHeaderTxt") == undefined ? "Write your answer here:" : x_currentPageXML.getAttribute("answerHeaderTxt");
+			const feedbackBtnTxt = x_currentPageXML.getAttribute("feedbackBtnTxt") == undefined ? "Submit" : x_currentPageXML.getAttribute("feedbackBtnTxt");
 
             this.weighting = 1.0;
             if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
@@ -63,13 +57,16 @@
 			// set up split screen layout
 			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
-			if (x_currentPageXML.getAttribute("answerType") == "false") {
-				var $modelTxt = $('<div id="modelTxt" aria-label="Feedback" aria-live="polite"></div>').insertBefore($('#button'));
-				$modelTxt.html(x_currentPageXML.getAttribute("answer"));
-			} else {
-				var $modelTxt = $('<textarea id="modelTxt" rows="5" readonly aria-label="Feedback" aria-live="polite"></textarea>').insertBefore($('#button'));
-				$modelTxt.html($("<div>").html(x_currentPageXML.getAttribute("answer")).text());
+			if (x_currentPageXML.getAttribute("answer") != undefined && x_currentPageXML.getAttribute("answer") != "") {
+				if (x_currentPageXML.getAttribute("answerType") == "false") {
+					var $modelTxt = $('<div id="modelTxt" aria-label="Feedback" aria-live="polite"></div>').insertBefore($('#button'));
+					$modelTxt.html(x_currentPageXML.getAttribute("answer"));
+				} else {
+					var $modelTxt = $('<textarea id="modelTxt" rows="5" readonly aria-label="Feedback" aria-live="polite"></textarea>').insertBefore($('#button'));
+					$modelTxt.html($("<div>").html(x_currentPageXML.getAttribute("answer")).text());
+				}
 			}
+
 			var modelAnswerTxt = "";
 			if (x_currentPageXML.getAttribute("answer") != null && x_currentPageXML.getAttribute("answer") != "") {
 				modelAnswerTxt = x_currentPageXML.getAttribute("answer");
@@ -96,18 +93,30 @@
 			}
 			
 			$("#answer").html('<p>' + answerHeaderTxt + '</p>');
-			$("#answerTxt").html($("<div>").html(x_currentPageXML.getAttribute("prompt")).text());
+			$("#answerTxt")
+				.html($("<div>").html(x_currentPageXML.getAttribute("prompt")).text())
+				.on('input', function() {
+					$("#button").button("enable");
+
+					// to avoid a sudden jump in layout, feedback should slide back up gradually if content is centred vertically & panel is full height
+					if ($("#pageContents").data("slideIn")) {
+						$("#modelTxt, #feedbackTxt").slideUp();
+					} else {
+						$("#modelTxt, #feedbackTxt").hide();
+					}
+				});
+
 			$("#modelTxt").hide();
 
 			$("#button")
 				.button({ label: feedbackBtnTxt })
 				.click(function() {
+					$(this).button("disable");
+
 					// to avoid a sudden jump in layout, feedback should slide in gradually if content is centred vertically & panel is full height
 					if ($("#pageContents").data("slideIn")) {
-						$(this).slideUp(200);
 						$("#modelTxt, #feedbackTxt").slideDown();
 					} else {
-						$(this).hide();
 						$("#modelTxt, #feedbackTxt").show();
 					}
 					

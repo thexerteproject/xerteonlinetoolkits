@@ -26,7 +26,8 @@
 			$hsHolder,
 			$infoHolder,
 			$panel,
-			
+			$maintainSelection,
+
 			tabfocusoptions,
 			options,
 			$canvas,
@@ -57,27 +58,19 @@
 				$canvas = $("#canvas");
 				context = $canvas[0].getContext("2d");
 			}
-			
-			$infoHolder.html("");
-			
-			this.sizeChanged();
 		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $selected = $(".listItem.highlight");
-			this.deselect();
-			
-			$img.css({
-				"opacity": 0,
-				"filter": 'alpha(opacity=0)'
-			});
-			
-			this.setUp();
+			if ($img.hasClass("ready")) {
+				$maintainSelection = $(".listItem.highlight");
 
-			// ensure the selected item is still selected
-			if ($selected.length > 0) {
-				$selected.click();
+				$img.css({
+					"opacity": 0,
+					"filter": 'alpha(opacity=0)'
+				});
+
+				this.setUp();
 			}
 		}
 		
@@ -107,7 +100,7 @@
 				x_currentPageXML.getAttribute("shape") == "None" || x_currentPageXML.getAttribute("shape") == "Arrow" ? "centre" :
 				"flex"
 			);
-			
+
 			if ($pageContents.data("hsType") == "centre") {
 				$canvas = $("#canvas");
 				context = $canvas[0].getContext("2d");
@@ -128,7 +121,7 @@
 			
 			// create links
 			$(x_currentPageXML).children().each(function(i) {
-				// deally this should be a button not a link as it's not opening a new page
+				// ideally this should be a button not a link as it's not opening a new page
 				// using role="button" as changing to button tag may cause theme issues with css selectors
 				var $listItem = $('<a class="listItem" href="#" role="button"></a>').appendTo("#listHolder");
 				
@@ -141,7 +134,7 @@
 					})
 					.click(function(e) {
 						e.preventDefault();
-						
+
 						var $this = $(this);
 						
 						// not already selected - so select, show text & highlight hotspots
@@ -150,8 +143,8 @@
 							annotatedDiagram.selectLink($this);
 							
 							if ($pageContents.data("hsType") == "flex") {
-								$("area." + $this.data("group")).mapster("select");
-								
+								$("area." + $this.data("group")).mapster("set", true);
+
 							} else {
 								var shape = x_currentPageXML.getAttribute("shape");
 								if (shape == "Oval") {
@@ -201,6 +194,7 @@
 								"filter": 'alpha(opacity=0)'
 							})
 							.one("load", function () {
+								$(this).addClass("ready");
 								annotatedDiagram.setUp();
 
 								// call this function in every model once everything's loaded
@@ -310,7 +304,13 @@
 						strokeWidth: strokeWidth
 					},
 					scaleMap: true,
-					clickNavigate: true
+					clickNavigate: true,
+					onConfigured: function() {
+						if ($("img.mapster_el").length > 1) {
+							// we've somehow ended up with two images on screen - reset everything
+							annotatedDiagram.sizeChanged();
+						}
+					}
 				};
 
 				tabfocusoptions = JSON.parse(JSON.stringify(options));
@@ -318,6 +318,8 @@
 				// Make sure focus is ALWAYS visible, even if strokewidth is set to 0
 				tabfocusoptions.render_highlight.stroke = true;
 				tabfocusoptions.render_highlight.strokeWidth = (strokeWidth == 0 ? 1 : strokeWidth * 2);
+
+				$img.mapster(options);
 				
 			} else {
 				$hsHolder
@@ -364,9 +366,11 @@
 					}
 				}
 			});
-			
-			if ($pageContents.data("hsType") == "flex") {
-				$img.mapster(options);
+
+			if ($maintainSelection != undefined) {
+				$maintainSelection.each( function() {
+					$("area." + $(this).data("group")).mapster("select");
+				});
 			}
 		}
 		
@@ -410,6 +414,7 @@
 					.addClass("hsGroup" + groupIndex)
 					.data("listItem", $listItem)
 					.click(function(e) {
+						e.preventDefault();
 						var $this = $(this);
 						
 						// not already selected - so select link, show text & highlight hotspots
@@ -420,7 +425,7 @@
 							// only trigger selection on hotspots that aren't $this - otherwise $this is unselected
 							$("area." + $this.data("listItem").data("group")).each(function() {
 								if (!$this.is($(this))) {
-									$(this).mapster("select");
+									$(this).mapster("set", true);
 								}
 							});
 							
@@ -429,12 +434,11 @@
 							annotatedDiagram.deselect();
 							
 							// need this otherwise the hs that's been clicked stays highlighted
-							setTimeout(function(){ $this.mapster('deselect'); }, 1);
+							setTimeout(function(){ $this.mapster('set', false); }, 1);
 						}
 					})
 					.focusin(function() {
 						$img.mapster('set_options', tabfocusoptions);
-						
 						$(this)
 							.removeClass("transparent")
 							.addClass("highlight");
@@ -540,8 +544,7 @@
 		
 		this.deselect = function() {
 			$(".listItem.highlight").removeClass("highlight");
-			$infoHolder.html("");			
-			
+			$infoHolder.html("");
 			if ($pageContents.data("hsType") == "flex") {
 				$("area").mapster('set',false);
 				
@@ -596,9 +599,6 @@
 				endY = $("#infoHolder").offset().top;
 			}
 
-
-
-
 			context.beginPath();
 			context.moveTo(startX, startY);
 			context.lineTo(endX, endY);
@@ -609,8 +609,6 @@
 				context.arc(startX, startY, 2, 0, 2 * Math.PI, false);
 				context.fill();
 			}
-
-
 		}
 		
 		this.resizeCanvas = function() {
@@ -628,7 +626,7 @@
 	}
 	
 	annotatedDiagram.init();
-	
+
 </script>
 
 

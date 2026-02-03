@@ -26,23 +26,18 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $("#pageContents");
-			if (x_currentPageXML.getAttribute("delaySecs") != "0" && x_currentPageXML.getAttribute("delaySecs") != undefined && $(".bullet").length > 1) {
-				$(".bullet").hide();
-				$(".bullet:eq(0)").show();
-				$pageContents.data("currentBullet", 1);
 
-				// reset button states if needed
-				if ($("#btnHolder").length > 0) {
-					$pageContents.data("playing", true);
-					$("#playPauseBulletBtn").button({
-						icons: {primary: "fa fa-fw fa-x-pause"},
-						label: x_currentPageXML.getAttribute("pauseBtn") && x_currentPageXML.getAttribute("pauseBtn") != "" ? x_currentPageXML.getAttribute("pauseBtn") : "Pause",
-					});
-					$("#backBulletBtn").button("disable");
-					$("#nextBulletBtn").button("enable");
-				}
+			if ($pageContents.data("resumePlaying")) {
+				$("#playPauseBulletBtn").click();
+			}
+		}
 
-				bullets.timer();
+		this.leavePage = function() {
+			if ($pageContents.data("playing") === true) {
+				$("#playPauseBulletBtn").click();
+				$pageContents.data("resumePlaying", true);
+			} else {
+				$pageContents.data("resumePlaying", false);
 			}
 		}
 		

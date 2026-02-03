@@ -355,12 +355,26 @@
 						} else {
 							$("#button").button("disable");
 						}
+
+						// to avoid a sudden jump in layout, feedback should slide back up gradually if content is centred vertically & panel is full height
+						if ($("#pageContents").data("slideIn")) {
+							$("#fbTxt, .fbTxt").slideUp();
+						} else {
+							$("#fbTxt,.fbTxt").html("");
+						}
 					});
 
 				// button will be disabled after submit, re-enable it if text changes again
 				} else {
 					$(".answerTxt").on('input', function() {
 						$("#button").button("enable");
+
+						// to avoid a sudden jump in layout, feedback should slide back up gradually if content is centred vertically & panel is full height
+						if ($("#pageContents").data("slideIn")) {
+							$("#fbTxt, .fbTxt").slideUp();
+						} else {
+							$("#fbTxt,.fbTxt").html("");
+						}
 					});
 				}
 

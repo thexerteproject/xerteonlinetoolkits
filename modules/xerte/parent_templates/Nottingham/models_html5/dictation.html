@@ -247,7 +247,8 @@
 					var result =
 						{
 						    success: correct,
-							score: (correct ? 100.0 : 0.0)
+							score: (correct ? 100.0 : 0.0),
+							judge: x_currentPageXML.getAttribute("showCorrectness") != null && x_currentPageXML.getAttribute("showCorrectness") != "false"
 						};
 					XTExitInteraction(x_currentPage, $pageContents.data("current"), result, [], answer, feedback, x_currentPageXML.getAttribute("trackinglabel"));
 					total++;

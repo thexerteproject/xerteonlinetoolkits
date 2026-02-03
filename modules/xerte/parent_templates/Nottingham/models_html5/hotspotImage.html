@@ -26,13 +26,6 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$img = $("#image");
-			
-			$("area").mapster('set',false);
-			
-			$(".selected").removeClass("selected");
-			$("#infoHolder").html("");
-			$("#nextHS").button("enable");
-			$("#prevHS").button("disable");
 		};
 		
 		// function called every time the size of the LO is changed
@@ -247,54 +240,44 @@
 					$hotspot
 						.attr("coords", coords_string)
 						.click(function() {
-							if (x_currentPageXML.getAttribute("textNear") == "in") {
-								if (!$("#hotspot_bubble").length){
-									$(this).append('<div id="hotspot_bubble" class="hotspot_bubble">' + '</div>');
-									$hotspot_bubble = $("#hotspot_bubble");
-									//todo make pretty
-
-									$hotspot_bubble.html("<h3>" + _this.getAttribute("name") + "</h3><br/>" + x_addLineBreaks(_this.getAttribute("text")));
+							const $this = $(this);
+							if ($this.hasClass("selected") && x_currentPageXML.getAttribute("interactivity") !== "Show Me") {
+								if (x_currentPageXML.getAttribute("highlight") !== "true") {
+									$this.css("opacity", 0);
 								}
+								$this.removeClass("selected");
+								$("#infoHolder").html("");
 
-								$hotspot_bubble.css({
-									"left"	:$(this).offset().left - $hotspot_bubble.width(),
-									"top"	:$(this).offset().top - $(this).height()/2.5,
-								});
-								$hotspot_bubble.fadeIn("slow");
-							}
-							else {
+							} else {
 								$("#infoHolder").html((x_browserInfo.mobile == true ? "" : "<hr/>") + "<h3>" + _this.getAttribute("name") + "</h3>" + x_addLineBreaks(_this.getAttribute("text")));
-							}
 
-							$(".selected").removeClass("selected");
-							if (x_currentPageXML.getAttribute("highlight") !== "true") {
-								$("area").mapster('deselect');
-							}
-							var $this = $(this);
-							$this.addClass("selected");
-							if (x_currentPageXML.getAttribute("interactivity") == "Show Me") {
-								var nextHS = $("#nextHS"),
-									prevHS = $("#prevHS");
-
-								if ($this.index() + 1 == $("#pageContents .hotspot").length) {
-									nextHS.button("disable");
-									prevHS.button("enable");
-								} else if ($this.index() == 0) {
-									nextHS.button("enable");
-									prevHS.button("disable");
-								} else {
-									nextHS.button("enable");
-									prevHS.button("enable");
+								$(".selected").removeClass("selected");
+								if (x_currentPageXML.getAttribute("highlight") !== "true") {
+									$("area").mapster('deselect');
 								}
+
+								$this.addClass("selected");
+								if (x_currentPageXML.getAttribute("interactivity") == "Show Me") {
+									var nextHS = $("#nextHS"),
+										prevHS = $("#prevHS");
+
+									if ($this.index() + 1 == $("#pageContents .hotspot").length) {
+										nextHS.button("disable");
+										prevHS.button("enable");
+									} else {
+										nextHS.button("enable");
+										prevHS.button("enable");
+									}
+								}
+
+								if (x_currentPageXML.getAttribute("highlight") == "true") {
+									setTimeout(function(){
+										$("area").mapster('select');
+									}, 100);
+								}
+
+								x_pageContentsUpdated();
 							}
-							
-							if (x_currentPageXML.getAttribute("highlight") == "true") {
-								setTimeout(function(){
-									$("area").mapster('select');
-								}, 100);
-							}
-							
-							x_pageContentsUpdated();
 						})
 						.focusin(function() {
 								$img.mapster('set_options', tabfocusoptions);
@@ -366,22 +349,28 @@
 				i=i-1;
 			}
 
-			if(i > 0){
-                $("#prevHS").button("enable");
-			}else{
-                $("#prevHS").button("disable");
-			}
+			if (i > -1) {
+				// new hotspot selected
+				$("#pageContents .hotspot:eq(" + i  + ")").addClass("selected").trigger("click");
 
-			if(i < x_currentPageXML.childNodes.length-1){
-                $("#nextHS").button("enable");
-			}else{
-                $("#nextHS").button("disable");
-			}
+				if (x_currentPageXML.getAttribute("highlight") !== "true") {
+					$img.mapster('set', true, i);
+				}
+			} else {
+				// no hotspot selected
+				$("#infoHolder").html("");
 
-			$("#pageContents .hotspot:eq(" + i  + ")").addClass("selected").trigger("click");
-			
-			if (x_currentPageXML.getAttribute("highlight") !== "true") {
-				$img.mapster('set', true, i);
+				if(i > -1){
+					$("#prevHS").button("enable");
+				}else{
+					$("#prevHS").button("disable");
+				}
+
+				if(i < x_currentPageXML.childNodes.length-1){
+					$("#nextHS").button("enable");
+				}else{
+					$("#nextHS").button("disable");
+				}
 			}
 		};
 		
