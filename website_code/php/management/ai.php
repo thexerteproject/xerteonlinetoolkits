@@ -104,7 +104,8 @@ if (is_user_admin()) {
             $savedPreferredModel = $vendor->preferred_model ?? null;
 
             //vendor types with selectable models
-            $selectableModelVendorTypes = ['ai', 'transcription', 'encoding'];
+            //Note: 'transcription' is technically supported by openAI, but not practically as Xerte relies on vtt content to process transcriptions, and only the whisper-1 model provides this. Therefor the category is not included.
+            $selectableModelVendorTypes = ['ai', 'encoding'];
 
             //specific vendors which do not allow model specification on api call and/or use only a single model
             $nonModelSelectableVendors = ['gladia'];
