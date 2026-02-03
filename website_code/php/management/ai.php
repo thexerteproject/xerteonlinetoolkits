@@ -15,8 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
 require_once("../../../config.php");
-require_once("../../../vendor_config.php");
+require_once ("../../../editor/ai/ModelLister.php");
 
 _load_language_file("/website_code/php/management/ai.inc");
 _load_language_file("/ai.inc");
@@ -26,6 +28,16 @@ require("management_library.php");
 require_once("vendor_option_component.php");
 
 if (is_user_admin()) {
+    $assumedVendorConfigPath = "../../../vendor_config.php";
+    if (!is_file($assumedVendorConfigPath)) {
+        echo '<div class="admin_guide_error_ref">';
+        echo MANAGEMENT_AI_ADMIN_ERROR_VENDOR_CONFIG . ' <p><a href="' . MANAGEMENT_AI_ADMIN_GUIDE_URL . '" target="_blank" rel="noopener noreferrer">' . MANAGEMENT_AI_ADMIN_GUIDE_URL . '</a></p>';
+        echo '<div>';
+        die();
+    }
+
+    require_once $assumedVendorConfigPath;
+
     $database_id = database_connect("success", "failed");
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
@@ -65,6 +77,8 @@ if (is_user_admin()) {
     echo MANAGEMENT_AI_ADMIN_GUIDE_MESSAGE . ' <p><a href="' . MANAGEMENT_AI_ADMIN_GUIDE_URL . '" target="_blank" rel="noopener noreferrer">' . MANAGEMENT_AI_ADMIN_GUIDE_URL . '</a></p>';
     echo '<div>';
 
+    $lister = new ModelLister(20);
+
     foreach ($blocks_groups as $group) {
         $groupHeader = 'MANAGEMENT_VENDOR_GROUP_'.strtoupper($group);
         echo "<h2>" . constant($groupHeader) . MANAGEMENT_VENDOR . "</h2>";
@@ -80,9 +94,58 @@ if (is_user_admin()) {
                 continue;
             }
 
-            $id = $vendor->type . "_" . $vendor->vendor . "_enabled";
+            $compound = $vendor->type . "_" . $vendor->vendor;
+
+            $id = $compound. "_enabled";
             echo "<p>" . MANAGEMENT_ENABLE_VENDOR . constant($vendorHeader) .
                 "<form><input type=\"checkbox\" id=\"" . $id . "\" name=\"" . $id . "\" " . ($vendor->enabled ? " checked" : "") . "/></form></p>";
+
+            // Saved preferred model
+            $savedPreferredModel = $vendor->preferred_model ?? null;
+
+            //vendor types with selectable models
+            $selectableModelVendorTypes = ['ai', 'transcription', 'encoding'];
+
+            //specific vendors which do not allow model specification on api call and/or use only a single model
+            $nonModelSelectableVendors = ['gladia'];
+
+            if (
+                in_array($vendor->type, $selectableModelVendorTypes, true)
+                && !in_array($vendor->vendor, $nonModelSelectableVendors, true)
+            ) {
+
+                $models = $lister->listModels($xerte_toolkits_site, $vendor->vendor);
+                $tip = MANAGEMENT_AI_ADMIN_PREFERRED_MODEL_TOOLTIP;
+                // Preferred model label + tooltip
+                echo '<p><i class="fa fa-info-circle" title="' . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . '" aria-label="' . htmlspecialchars($tip, ENT_QUOTES, 'UTF-8') . '"></i> '
+                    . MANAGEMENT_AI_ADMIN_PREFERRED_MODEL . ': ';
+
+                // Dropdown key that ai_management.php will parse as option === "selected"
+                $selectedKey = $compound . "_selected";
+
+                // If nothing saved yet, default to "default"
+                $effectiveSelected = ($savedPreferredModel !== null && $savedPreferredModel !== '')
+                    ? $savedPreferredModel
+                    : 'default';
+
+                // Preferred model select
+                echo "<select name=\"" . htmlspecialchars($selectedKey, ENT_QUOTES) . "\"
+                id=\"" . htmlspecialchars($selectedKey, ENT_QUOTES) . "\"
+                style=\"padding: 0.4em 0.15em;\">";
+
+                // Generic default option (saved to DB as literal 'default' but backend reads it as a null)
+                $defaultSelectedAttr = ($effectiveSelected === 'default') ? " selected" : "";
+                echo "<option value=\"default\"{$defaultSelectedAttr}>(Default)</option>";
+
+                foreach ($models as $modelName) {
+                    $modelEsc = htmlspecialchars($modelName, ENT_QUOTES);
+                    $selectedAttr = ($effectiveSelected === $modelName) ? " selected" : "";
+                    echo "<option value=\"{$modelEsc}\"{$selectedAttr}>{$modelEsc}</option>";
+                }
+
+                echo "</select></p>";
+
+            }
 
             //next vendor if current has no sub options
             if ($vendor->has_no_sub_options() ) { continue; }

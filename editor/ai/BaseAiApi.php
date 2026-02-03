@@ -407,7 +407,9 @@ abstract class BaseAiApi
             //When making any prompt, the stand-in for the language must therefore be 'responseLanguage'
             $p['responseLanguage'] = $this->languageName;
 
-            $model = load_model($type, $this->api, null, $context, $subtype);
+            $model_ver = $managementSettings['ai']['preferred_model'];
+
+            $model = load_model($type, $this->api, $model_ver, $context, $subtype);
 
             $prompt = $this->generatePrompt($p, $model);
             $payload = $model->get_payload();
@@ -417,10 +419,12 @@ abstract class BaseAiApi
                 $encodingApiKey = $xerte_toolkits_site->{$managementSettings['encoding']['key_name']};
                 $encodingDirectory = $this->prepareURL($baseUrl);
                 $provider = $managementSettings['encoding']['active_vendor'];
+                $preferredEncodingModel = $managementSettings['encoding']['preferred_model'];
                 $cfg = [
                     'api_key' => $encodingApiKey,
                     'encoding_directory' => $encodingDirectory,
-                    'provider' => $provider
+                    'provider' => $provider,
+                    'preferredModel' => $preferredEncodingModel
                 ];
                 $rag = makeRag($cfg);
                 if ($rag->isCorpusValid()) {

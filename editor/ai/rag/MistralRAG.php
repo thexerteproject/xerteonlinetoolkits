@@ -5,11 +5,13 @@ namespace rag;
 class MistralRAG extends BaseRAG
 {
     private $apiKey;
+    private $preferredModel;
 
-    public function __construct($apiKey, $encodingDirectory, $chunkSize = 2048)
+    public function __construct($apiKey, $encodingDirectory, $preferredModel = null, $chunkSize = 2048)
     {
         parent::__construct($encodingDirectory, $chunkSize);
         $this->apiKey = $apiKey;
+        $this->preferredModel = $preferredModel;
     }
 
     protected function supportsProviderEmbeddings() { return true; }
@@ -17,8 +19,15 @@ class MistralRAG extends BaseRAG
     /*Retrieve an embedding for a single piece of text*/
     protected function getEmbedding($text)
     {
+        $model = "mistral-embed";
+        $preferredModel = isset($this->preferredModel) ? trim((string)$this->preferredModel) : '';
+
+        if ($preferredModel !== '' && strtolower($preferredModel) !== 'default') {
+            $model = $preferredModel;
+        }
+
         $url = "https://api.mistral.ai/v1/embeddings";
-        $data = json_encode(["model" => "mistral-embed", "input" => $text]);
+        $data = json_encode(["model" => $model, "input" => $text]);
 
         $headers = [
             "Authorization: Bearer " . $this->apiKey,
@@ -50,6 +59,13 @@ class MistralRAG extends BaseRAG
     In principle, the max token size is 16384. Since token size is only approximated, though, go with a lower number.*/
     protected function getEmbeddings(array $texts)
     {
+        $model = "mistral-embed";
+        $preferredModel = isset($this->preferredModel) ? trim((string)$this->preferredModel) : '';
+
+        if ($preferredModel !== '' && strtolower($preferredModel) !== 'default') {
+            $model = $preferredModel;
+        }
+
         $maxTokensPerBatch = 15000;
         $url = "https://api.mistral.ai/v1/embeddings";
         $headers = [
@@ -77,7 +93,7 @@ class MistralRAG extends BaseRAG
 
         $embeddings = [];
         foreach ($batches as $batch) {
-            $data = json_encode(["model" => "mistral-embed", "input" => $batch]);
+            $data = json_encode(["model" => $model, "input" => $batch]);
 
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

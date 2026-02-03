@@ -68,10 +68,12 @@ try {
 
     $encodingKey = $xerte_toolkits_site->{$managementSettings['encoding']['key_name']};
     $provider = $managementSettings['encoding']['active_vendor'];
+    $preferredEncodingModel = $managementSettings['encoding']['preferred_model'];
     $cfg = [
         'api_key' => $encodingKey,
         'encoding_directory' => $baseDir,
-        'provider' => $provider
+        'provider' => $provider,
+        'preferredModel' => $preferredEncodingModel
     ];
     $rag = makeRag($cfg);
 

@@ -26,9 +26,12 @@ if((!vendor_is_active($api, 'image'))&&(!vendor_is_active($api, 'imagegen'))){
 require_once(dirname(__FILE__) . "/" . "BaseApi.php");
 require_once(dirname(__FILE__) . "/Apis/" . $api ."Api.php");
 
+//get the user-set preferred model for text generation, if any
+$providerPreferredModel = $managementSettings['ai']['preferred_model'];
+
 //dynamically initiate correct api class
 $api_type = $api . 'Api';
-$imgshApi = new $api_type($textApi);
+$imgshApi = new $api_type($textApi, $providerPreferredModel);
 
 $result = $imgshApi->sh_request($query, $url, $interpretPrompt, $overrideSettings, $settings); // original
 
