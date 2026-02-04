@@ -306,7 +306,7 @@
       specificPDFrows = [];
       specificPDFcolumns = [];
 
-      xtresults.interactions.forEach(function(x) {
+      xtresults.interactions.forEach(function(x, index) {
         // don't show pages where weighting is zero, unless show pages with 0 tracking weight is on
         if (x.type == 'result' || ((!showzeroweight && x.judge) && x.completed == "true" && x.weighting == 0)) {
           return;
@@ -316,7 +316,7 @@
         let interactiveToken, interactiveTokenTxt;
         if (xtresults.mode == 'full-results') {
           if (x.type != 'page') {
-            interactiveToken = '<i class="fas fa-circle blue" title="' + detailsTooltip + '"><span class="ui-helper-hidden-accessible">' + detailsTooltip + '</span></i>';
+            interactiveToken = '<a href="#details' + index + '"><i class="fas fa-circle blue" title="' + detailsTooltip + '"><span class="ui-helper-hidden-accessible">' + detailsTooltip + '</span></i></a>';
             interactiveTokenTxt = "details";
           } else {
             interactiveToken = '<i class="far fa-circle blue" title="' + noDetailsTooltip + '"><span class="ui-helper-hidden-accessible">' + noDetailsTooltip + '</span></i>';
@@ -421,12 +421,12 @@
         // specific results tables
         if (xtresults.mode == 'full-results') {
           if (x.subinteractions.length > 0 && x.type != 'page') {
-            let detailstable = $("<table class='details header shaded'>");
+            let detailstable = $("<table class='details header shaded' id='details" + index + "'>");
             let specificHeaderRow = true;
             altSpecificRow = false;
             specificPDFrows.push([]);
 
-            x.subinteractions.forEach(function(y) {
+            x.subinteractions.forEach(function(y,index) {
               let judge = y.judge?? true;
               // set up the header row
               if (specificHeaderRow) {
