@@ -3,7 +3,7 @@
     <newNodes>
       <documentation><![CDATA[<documentation name="Enter Page Title" text="" intro="" display="all" download="last"
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
-      instructions="Click the download button to save a copy of your answers" submittedTxt="Your answers have been submitted" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous"
+      instructions="Click the download button to save a copy of your answers" submittedTxt="Your answers have been submitted" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous" submitTxt="Submit"
 	  />]]></documentation>      
     </newNodes>
   </pageWizard>
@@ -53,7 +53,7 @@
     <notAnswered label="Not Answered Text" type="TextInput" language="true"/>
 	<requiredTxt label="Incomplete Error Text" type="TextInput" language="true"/>
 	<downloadTxt label="Download Button Label" type="TextInput" condition="showDownload!='false'" language="true" />
-	<submitTxt label="Submit Button Label" type="TextInput" condition="track=='true'" language="true" />
+	<submitTxt label="Submit Button Label" type="TextInput" condition="track=='true'" language="true" defaultValue="Submit" mandatory="true" />
 	<nextTxt label="Next Button Label" type="TextInput" language="true" />
 	<prevTxt label="Previous Button Label" type="TextInput" language="true" />
 
