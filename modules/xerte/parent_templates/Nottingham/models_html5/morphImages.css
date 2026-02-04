@@ -23,3 +23,7 @@
 		cursor:		pointer;
 	}
 
+	#imgDiv {
+		position: relative;
+	}
+
