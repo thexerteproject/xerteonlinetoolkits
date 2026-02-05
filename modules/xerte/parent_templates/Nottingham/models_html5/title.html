@@ -17,6 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var title = new function() {
@@ -47,8 +48,7 @@
         }
 
         this.leavePage = function() {
-            $x_pageDiv.width("auto");
-            $x_pageDiv.height("auto");
+
         }
 
         // function called every time the size of the LO is changed
@@ -102,6 +102,7 @@
 
                 // make sure anything that's already calculated height assuming header is there is recalculated
                 x_updateCss2(false);
+
             } else {
                 $x_headerBlock.removeClass('hideTitleTxt hideTitleIcon');
             }
@@ -166,7 +167,6 @@
 
                 if ($mediaHolder != null) {
                     $pageContents.addClass("media");
-
                     triggerLoad = false;
 
                     if (x_browserInfo.mobile === false) {
@@ -212,6 +212,7 @@
                     }
 
                     if (!$mediaHolder.hasClass("pageImg")) {
+                        this.position();
                         x_pageLoaded();
                     }
 
@@ -260,10 +261,16 @@
         }
 
         this.position = function () {
-            $x_pageDiv
-                .removeClass("autoLayout")
-                .width($x_pageHolder.width() - ($x_pageDiv.outerWidth(true) - $x_pageDiv.width()))
-                .height(x_getAvailableHeight([], []));
+            $x_pageDiv.removeClass("autoLayout");
+
+            // adding this in a style tag in pageContents so that it won't affect other pages & we don't have to remove on leavePage (causing split second jump in content)
+            $("#pageStyle").remove();
+            $("#pageContents").before(`<style id='pageStyle'>
+                #x_pageDiv {
+                    width: ${$x_pageHolder.width() - ($x_pageDiv.outerWidth(true) - $x_pageDiv.width())}px;
+                    height: ${x_getAvailableHeight([], [])}px;
+                }
+                </style>`);
 
             if (x_browserInfo.mobile == true) {
                 // mobile view so title is always positioned at top
