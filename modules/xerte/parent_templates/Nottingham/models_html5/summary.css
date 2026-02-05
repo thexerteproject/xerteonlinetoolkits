@@ -13,6 +13,10 @@
 		margin-bottom: 1em;
 	}
 
+	#mediaHolder iframe {
+		float: none;
+	}
+
 	#x_pageDiv:not(.autoLayout) #pageContents {
 		height: 100%;
 	}
