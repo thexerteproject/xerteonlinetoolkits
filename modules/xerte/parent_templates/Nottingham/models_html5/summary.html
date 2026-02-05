@@ -42,12 +42,8 @@
                 this.loadAudio();
 
             } else if ($("#pageVideo").length > 0) {
-                if ($(".pageVideo").hasClass("iframe")) {
+                if ($(".pageVideo").hasClass("iframe") || $(".pageVideo").hasClass("youtubeVimeo")) {
                     this.scaleFrame();
-
-                } else if ($(".pageVideo").hasClass("youtubeVimeo")) {
-                    this.scaleFrame();
-
                 } else {
                     this.resizeVideo();
                 }
@@ -147,7 +143,7 @@
                             title: tip
                         });
 
-                        if ($mediaHolder.hasClass("iframe")) {
+                        if ($mediaHolder.hasClass("iframe") || $mediaHolder.hasClass("youtubeVimeo")) {
                             this.scaleFrame();
                         }
                     }

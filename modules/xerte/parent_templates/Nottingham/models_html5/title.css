@@ -73,6 +73,10 @@
 		margin-bottom: 0;
 	}
 
+	#mediaHolder iframe {
+		float: none;
+	}
+
 	#x_mainHolder.x_mobile .pageAudio,
 	#x_mainHolder.x_mobile .pageVideo {
 		width: 100%;
