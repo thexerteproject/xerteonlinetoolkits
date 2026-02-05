@@ -63,7 +63,7 @@ if(is_user_admin()) {
         $type = $options['type'];
         $vendor = $options['vendor'];
 
-        $enabled = ($options['enabled'] == 'true');
+        $enabled = (isset($options['enabled']) && $options['enabled'] === 'true') ? 1 : 0;
 
         $preferred_model = $options['preferred_model'] ?? null;
 
