@@ -11,14 +11,14 @@ class pixabayApi extends BaseApi
         $query = urlencode($this->clean($query));
         $url = "https://pixabay.com/api/?key={$apiKey}&q={$query}&per_page={$perPage}&page={$page}";
 
-        if (isset($aiParams->pixabayOrientation) && $aiParams->pixabayOrientation !== 'unmentioned') {
-            $url .= "&orientation=" . urlencode($aiParams->pixabayOrientation);
+        if (isset($aiParams['pixabayOrientation']) && $aiParams['pixabayOrientation'] !== 'unmentioned') {
+            $url .= "&orientation=" . urlencode($aiParams['pixabayOrientation']);
         }
-        if (isset($aiParams->pixabayColors) && $aiParams->pixabayColors !== 'unmentioned') {
-            $url .= "&colors=" . urlencode($aiParams->pixabayColors);
+        if (isset($aiParams['pixabayColors']) && $aiParams['pixabayColors'] !== 'unmentioned') {
+            $url .= "&colors=" . urlencode($aiParams['pixabayColors']);
         }
-        if (isset($aiParams->pixabayType) && $aiParams->pixabayType !== 'unmentioned') {
-            $url .= "&image_type=" . urlencode($aiParams->pixabayType);
+        if (isset($aiParams['pixabayType']) && $aiParams['pixabayType'] !== 'unmentioned') {
+            $url .= "&image_type=" . urlencode($aiParams['pixabayType']);
         }
         return $url;
     }

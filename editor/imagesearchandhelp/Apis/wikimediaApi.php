@@ -26,11 +26,11 @@ class wikimediaApi extends BaseApi
                 . "&gsroffset={$offset}";
 
 
-            if (isset($aiParams->wikimediaWidth) && $aiParams->wikimediaWidth !== 'unmentioned') {
-                $url .= "&iiurlwidth=" . urlencode($aiParams->wikimediaWidth);
+            if (isset($aiParams['wikimediaWidth']) && $aiParams['wikimediaWidth'] !== 'unmentioned') {
+                $url .= "&iiurlwidth=" . urlencode($aiParams['wikimediaWidth']);
             }
-            if (isset($aiParams->wikimediaHeight) && $aiParams->wikimediaHeight !== 'unmentioned') {
-                $url .= "&iiurlheight=" . urlencode($aiParams->wikimediaHeight);
+            if (isset($aiParams['wikimediaHeight']) && $aiParams['wikimediaHeight'] !== 'unmentioned') {
+                $url .= "&iiurlheight=" . urlencode($aiParams['wikimediaHeight']);
             }
 
 
