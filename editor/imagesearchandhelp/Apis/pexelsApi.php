@@ -13,17 +13,9 @@ class pexelsApi extends BaseApi
 
 
         // Accept both legacy names and normalized ones
-        $orientation = isset($aiParams->pexelsOrientation)
-            ? $aiParams->pexelsOrientation
-            : (isset($aiParams->orientation) ? $aiParams->orientation : 'unmentioned');
-
-        $color = isset($aiParams->pexelsColor)
-            ? $aiParams->pexelsColor
-            : (isset($aiParams->color) ? $aiParams->color : 'unmentioned');
-
-        $size = isset($aiParams->pexelsSize)
-            ? $aiParams->pexelsSize
-            : (isset($aiParams->size) ? $aiParams->size : 'unmentioned');
+        $orientation = $aiParams['pexelsOrientation'] ?? $aiParams['orientation'] ?? 'unmentioned';
+        $color       = $aiParams['pexelsColor']       ?? $aiParams['color']       ?? 'unmentioned';
+        $size        = $aiParams['pexelsSize']        ?? $aiParams['size']        ?? 'unmentioned';
 
 
         if (!empty($orientation) && $orientation !== 'unmentioned') {
