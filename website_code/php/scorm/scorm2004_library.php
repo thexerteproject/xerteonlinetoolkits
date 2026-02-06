@@ -60,6 +60,19 @@ function get_logo_file($LO_icon_path, $theme_path, $template_path) {
 	return;
 }
 
+function get_sidebar_logo_file($theme_path) {
+	$extensions = array('svg',  'png', 'jpg', 'gif');
+
+	// check the theme logo
+	foreach($extensions as $ext) {
+		if (file_exists('../../../' . $theme_path . '/logo_sidebar.' . $ext)) {
+			return '../../../' . $theme_path . '/logo_sidebar.'. $ext;
+		}
+	}
+
+	return;
+}
+
 function lmsmanifest_2004_create($name, $flash, $lo_name){
 
 	global $dir_path, $delete_file_array, $zipfile;
@@ -208,7 +221,7 @@ function scorm2004_html_page_create($id, $name, $type, $rlo_file, $lo_name, $lan
 
 }
 
-function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $language, $date_modified, $date_created, $need_download_url=false, $logo='', $plugins=''){
+function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $language, $date_modified, $date_created, $need_download_url=false, $logo='', $logo_sidebar='', $plugins=''){
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -233,6 +246,7 @@ function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $langua
     $scorm_html_page_content = str_replace("%VERSION_PARAM%", "" , $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TITLE%",$lo_name,$scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%LOGO%", $logo, $scorm_html_page_content);
+	$scorm_html_page_content = str_replace("%SIDEBARLOGO%", $logo_sidebar, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TEMPLATEID%", $id, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TEMPLATEPATH%","",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLPATH%","",$scorm_html_page_content);

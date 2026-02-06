@@ -468,6 +468,18 @@ if ($export_logo) {
         $export_logo = '';
     }
 }
+$export_logo_sidebar = get_sidebar_logo_file($theme_base_path);
+if ($export_logo_sidebar) {
+    copy($export_logo_sidebar, $dir_path . basename($export_logo_sidebar));
+    array_push($delete_file_array, $dir_path . basename($export_logo_sidebar));
+
+    if (file_exists($export_logo_sidebar)) {
+        $export_logo_sidebar = basename($export_logo_sidebar);
+    }
+    else {
+        $export_logo_sidebar = '';
+    }
+}
 
 /* 
  * documentation
@@ -532,7 +544,7 @@ if ($scorm == "true") {
     if ($useflash) {
         scorm_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-            scorm_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'], $lo_name, $xml->getLanguage(), $row['date_modified'], $row['date_created'], $need_download_url, $export_logo, $plugins);
+            scorm_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'], $lo_name, $xml->getLanguage(), $row['date_modified'], $row['date_created'], $need_download_url, $export_logo, $export_logo_sidebar, $plugins);
     }
 } else if ($scorm == "2004") {
     $useflash = ($export_flash && !$export_html5);
@@ -540,18 +552,18 @@ if ($scorm == "true") {
     if ($export_flash && !$export_html5) {
         scorm2004_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name, $xml->getLanguage());
     } else {
-        scorm2004_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'], $lo_name, $xml->getLanguage(), $row['date_modified'], $row['date_created'], $need_download_url, $export_logo, $plugins);
+        scorm2004_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'], $lo_name, $xml->getLanguage(), $row['date_modified'], $row['date_created'], $need_download_url, $export_logo, $export_logo_sidebar, $plugins);
     }
 } else if($xAPI)
 	{
-		xAPI_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $row['parent_template'], $lo_name, $xml->getLanguage(), $row['date_modified'], $row['date_created'], $need_download_url, $export_logo, $plugins);
+		xAPI_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $row['parent_template'], $lo_name, $xml->getLanguage(), $row['date_modified'], $row['date_created'], $need_download_url, $export_logo, $export_logo_sidebar, $plugins);
 	}
 else {
     if ($export_flash) {
         basic_html_page_create($_GET['template_id'], $row['template_name'], $row['template_framework'], $rlo_file, $lo_name);
     }
     if ($export_html5) {
-        basic_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'],$lo_name,  $row['date_modified'], $row['date_created'], $tsugi, $export_offline, $offline_includes, $need_download_url, $export_logo, '', $plugins);
+        basic_html5_page_create($_GET['template_id'], $row['template_framework'], $row['parent_template'],$lo_name,  $row['date_modified'], $row['date_created'], $tsugi, $export_offline, $offline_includes, $need_download_url, $export_logo, '', $export_logo_sidebar, $plugins);
     }
 }
 
