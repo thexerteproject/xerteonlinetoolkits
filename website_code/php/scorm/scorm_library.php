@@ -209,7 +209,7 @@ function scorm_html_page_create($id, $name, $type, $rlo_file, $lo_name, $languag
  * @version 1.0
  * @author Patrick Lockley
  */
-function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modified, $date_created, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false, $logo='', $logo_r='', $plugins='', $adds7script=false) {
+function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modified, $date_created, $tsugi=false, $offline=false, $offline_includes="", $need_download_url=false, $logo='', $logo_r='', $logo_sidebar='', $plugins='', $adds7script=false) {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile;
 
@@ -237,6 +237,7 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
     $buffer = str_replace("%LOGO%", $logo, $buffer);
     $buffer = str_replace("%LOGO_L%", $logo, $buffer);
     $buffer = str_replace("%LOGO_R%", $logo_r, $buffer);
+    $buffer = str_replace("%SIDEBARLOGO%", $logo_sidebar, $buffer);
     $buffer = str_replace("%TEMPLATEPATH%", "", $buffer);
     $buffer = str_replace("%TEMPLATEID%", $id, $buffer);
     $buffer = str_replace("%XMLPATH%", "", $buffer);
@@ -304,7 +305,7 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
  * @version 1.0
  * @author Patrick Lockley
  */
-function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, $date_modified, $date_created, $need_download_url=false, $logo='', $plugins='') {
+function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, $date_modified, $date_created, $need_download_url=false, $logo='', $logo_sidebar='', $plugins='') {
 
     global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_api_key;
 
@@ -329,6 +330,7 @@ function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, 
     $scorm_html_page_content = str_replace("%VERSION_PARAM%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TITLE%", $lo_name, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%LOGO%", $logo, $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%SIDEBARLOGO%", $logo_sidebar, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TEMPLATEPATH%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%TEMPLATEID%", $id, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLPATH%", "", $scorm_html_page_content);
