@@ -2571,26 +2571,29 @@
                     }
                 });
 
-                if (multipleAnswers) {
-                    // Create pseudo dataset with statement for each answer
-                    var answer_dataset = [];
-                    statements.forEach(function (s) {
-                        const answers = s.result.response.split('[,]');
-                        answers.forEach(function (a) {
-                            // clone statement
-                            var statement = JSON.parse(JSON.stringify(s));
-                            statement.result.response = a;
-                            answer_dataset.push(statement);
-                        });
-                    });
-                } else {
-                    answer_dataset = statements;
-                }
+                // if (multipleAnswers) {
+                //     // Create pseudo dataset with statement for each answer
+                //     var answer_dataset = [];
+                //     statements.forEach(function (s) {
+                //         const answers = s.result.response.split('[,]');
+                //         answers.forEach(function (a) {
+                //             if (a !== "") {
+                //                 // clone statement
+                //                 var statement = JSON.parse(JSON.stringify(s));
+                //                 statement.result.response = a;
+                //                 answer_dataset.push(statement);
+                //             }
+                //         });
+                //     });
+                // } else {
+                //     answer_dataset = statements;
+                // }
 
                 let ctx = escapeUrl(url, type, interactionIndex) + "-graph" + currentPeriod;
 
                 const graph = new DashboardGraphs.BarGraphGivenAnswers({
-                  statements: data,
+                  multipleAnswers: multipleAnswers,
+                  statements: statements,
                   options: {
                     barColors: [...barColors],
                     ctx: ctx,
