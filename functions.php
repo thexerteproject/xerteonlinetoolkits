@@ -76,6 +76,8 @@ function _load_language_file($file_path) {
     $languages = dirname(__FILE__) . '/languages/';
 
     if (isset($_REQUEST['language']) && is_dir($languages . $_REQUEST['language'])) {
+        // Check for path traversal
+        x_check_path_traversal($languages . $_REQUEST['language'], $languages, "Invalid language specified");
         $_SESSION['toolkits_language'] = $_REQUEST['language'];
     }
 
@@ -165,6 +167,8 @@ function _include_javascript_file($file_path) {
         $url_param = "";
     }
     if (isset($_GET['language']) && is_dir($languages . x_clean_input($_GET['language']))) {
+        // Check for path traversal
+        x_check_path_traversal($languages . x_clean_input($_GET['language']), $languages, "Invalid language specified");
         $_SESSION['toolkits_language'] = x_clean_input($_GET['language']);
     }
 
