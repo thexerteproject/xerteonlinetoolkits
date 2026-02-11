@@ -2565,7 +2565,7 @@ function x_setUpPagePosition(project) {
 	// set a maximum width and align content horizontally on the screen (centre by default)
 	if ((project && x_params.maxWidth != undefined && x_params.maxWidth != "") || (project !== true && x_currentPageXML.getAttribute("maxWidthToggle") === "true" && x_currentPageXML.getAttribute("maxWidth") != undefined && x_currentPageXML.getAttribute("maxWidth") !== "")) {
 		// these pages don't work with max width yet
-		const nonWorkingPages = ['title'];
+		const nonWorkingPages = [];
 
 		if (project) {
 			// set max width & horizontal alignment for all working pages in the project
@@ -2585,13 +2585,17 @@ function x_setUpPagePosition(project) {
 			}
 
 			const margin = x_params.horizontalAlign === "left" ? "0 auto 0 0" : x_params.horizontalAlign === "right" ? "0 0 0 auto" : "0 auto";
-			styleString += '{ max-width: '+x_params.maxWidth+'px; margin: ' + margin + '; }</style>';
+			styleString += '{ width: '+x_params.maxWidth+'px; max-width: 100%; box-sizing:border-box; margin: ' + margin + '; }</style>';
 			$('head').append(styleString);
 
 		} else {
 			// set max width & horizontal alignment just for this page
 			if (nonWorkingPages == undefined || nonWorkingPages.indexOf(x_pageInfo[x_currentPage].type) < 0) {
-				$("#x_page" + x_currentPage).css("max-width", x_currentPageXML.getAttribute("maxWidth") + "px");
+				$("#x_page" + x_currentPage).css({
+                    "width": x_currentPageXML.getAttribute("maxWidth") + "px",
+					"box-sizing": "border-box",
+					"max-width": "100%"
+				});
 
 				// turn off max width set at project-level so it uses the page-level values
 				$("#x_pageDiv").addClass("x_noMaxW");
@@ -3115,6 +3119,11 @@ function x_changePageStep3() {
         var builtPage = x_pageInfo[x_currentPage].built;
         $x_pageDiv.append(builtPage);
 		$x_innerPage = $x_pageDiv.find(".innerPage");
+
+		// if max width or centre vertically settings are set at page-level, set this up now
+		// these will override settings at project-level
+		x_setUpPagePosition();
+
         builtPage.hide();
         builtPage.fadeIn();
 
@@ -3267,10 +3276,6 @@ function x_changePageStep3() {
 		}
     }
 
-	// if max width or centre vertically settings are set at page-level, set this up now
-	// these will override settings at project-level
-	x_setUpPagePosition();
-
     // Queue reparsing of MathJax - fails if no network connection
     try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
 
@@ -3369,6 +3374,10 @@ function x_setUpLightBox() {
 
 // function called on page model load
 function x_loadPage(response, status, xhr) {
+	// if max width or centre vertically settings are set at page-level, set this up now
+	// these will override settings at project-level
+	x_setUpPagePosition();
+
     if (status == "error") {
         $("#x_pageDiv div").html(x_getLangInfo(x_languageData.find("errorPage")[0], "label", "No template is currently available for this page type") + " (" + x_pageInfo[x_currentPage].type + ")");
         x_pageLoaded();

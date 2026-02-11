@@ -35,4 +35,9 @@
 		padding-right: 1.5em;
 	}
 
+	/* ensure list is aligned to top of panel even if centre content vertically is on */
+	.splitScreen_A {
+		justify-content: flex-start !important;
+	}
+
 	

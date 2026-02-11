@@ -23,6 +23,7 @@
 	var title = new function() {
         // function called every time the page is viewed after it has initially loaded
         this.pageChanged = function () {
+            this.position_1();
             this.responsiveTitle();
 
             if (x_currentPageXML.getAttribute("hideTitleTxt") != undefined || x_currentPageXML.getAttribute("hideIcon") != undefined) {
@@ -44,7 +45,7 @@
                 $x_headerBlock.removeClass('hideTitleTxt hideTitleIcon');
             }
 
-            this.position();
+            this.position_2();
         }
 
         this.leavePage = function() {
@@ -53,6 +54,7 @@
 
         // function called every time the size of the LO is changed
         this.sizeChanged = function () {
+            this.position_1();
             this.responsiveTitle();
 
             // resize media
@@ -80,10 +82,11 @@
                 }
             }
 
-            this.position();
+            this.position_2();
         }
 
         this.init = function () {
+            this.position_1();
             const $pageContents = $("#pageContents");
             const $titlePageTxt = $(".titlePageTxt");
 
@@ -182,7 +185,7 @@
                             .one("load", function() {
                                 title.scaleImage(true);
                                 title.loadAudio();
-                                title.position();
+                                title.position_2();
                                 x_pageLoaded();
                             })
                             .attr("src", $mediaHolder.hasClass("pageAudio") ? audioImg : url)
@@ -212,7 +215,7 @@
                     }
 
                     if (!$mediaHolder.hasClass("pageImg")) {
-                        this.position();
+                        this.position_2();
                         x_pageLoaded();
                     }
 
@@ -246,7 +249,7 @@
             }
 
             if (triggerLoad == true) {
-                this.position();
+                this.position_2();
                 x_pageLoaded();
             }
         }
@@ -260,17 +263,19 @@
             }
         }
 
-        this.position = function () {
+        this.position_1 = function () {
             $x_pageDiv.removeClass("autoLayout");
 
             // adding this in a style tag in pageContents so that it won't affect other pages & we don't have to remove on leavePage (causing split second jump in content)
             $("#pageStyle").remove();
             $("#pageContents").before(`<style id='pageStyle'>
                 #x_pageDiv {
-                    width: ${$x_pageHolder.width() - ($x_pageDiv.outerWidth(true) - $x_pageDiv.width())}px;
                     height: ${x_getAvailableHeight([], [])}px;
                 }
                 </style>`);
+        }
+
+        this.position_2 = function () {
 
             if (x_browserInfo.mobile == true) {
                 // mobile view so title is always positioned at top
@@ -289,10 +294,9 @@
             const offset = $("#mediaHolder").hasClass("pageAudio") ? x_audioBarH : 0;
 
             // max width is 48% of page width or the original width of the image (whichever is smaller)
-            const maxW = ($x_pageHolder.width() - ($x_pageDiv.outerWidth(true) - $x_pageDiv.width()) - ($("#mediaHolder .mediaPanel").outerWidth(true) - $("#mediaHolder .mediaPanel").width())) * (x_browserInfo.mobile === false ? .48 : 1);
+            const maxW = ($x_innerPage.width() - ($x_pageDiv.outerWidth() - $x_pageDiv.width()) - ($("#mediaHolder .mediaPanel").outerWidth(true) - $("#mediaHolder .mediaPanel").width())) * (x_browserInfo.mobile === false ? .48 : 1);
             // max-height is 100% of page height or the original height of the image (whichever is smaller)
             const maxH = x_getAvailableHeight([$mediaHolder, $mediaHolder.find(".mediaPanel")], [offset], true);
-
             return [maxW, maxH];
         }
 
