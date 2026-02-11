@@ -21,15 +21,11 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var flickr = new function() {
-		var $pageContents,
-			$panel,
-			maxImageWidth,
-			maxImageHeight;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			this.$pageContents = $("#pageContents");
-			this.$panel = $("#pageContents .panel");
+			this.$panel = $("#pageContents .panelContent");
 			
 			this.setMaxSizes();
 		};
@@ -37,22 +33,39 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			var currentImg = $("#pictureHolder img");
-			currentImg
-				.width("0px")
-				.height("0px");
+			currentImg.css({
+				"width": "0",
+				"height": "0"
+			});
 			
 			this.setPanelSize();
 			this.setMaxSizes();
-			
+
+			currentImg.css({
+				"width": "unset",
+				"height": "unset"
+			});
+
 			x_scaleImg(currentImg[0], this.maxImageWidth, this.maxImageHeight, true, false, true);
 		};
 		
 		this.setPanelSize = function(firstLoad) {
 			var $btnHolder = $("#btnHolder");
 
-			this.$panel.height(x_getAvailableHeight([this.$panel], [], true));
-			$("#flickrHolder").height(this.$panel.height() - $btnHolder.outerHeight(true));
-			
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
+
+			$("#flickrHolder").css({
+				"max-height": x_getAvailableHeight([this.$panel], [$btnHolder.outerHeight(true)], true)
+			});
+
+			// when panel has fixed height set, keep buttons at bottom of panel by setting height of #flickrHolder above it
+			if (panelH !== false && panelH !== undefined) {
+				$("#flickrHolder").height(x_getAvailableHeight([this.$panel], [$btnHolder.outerHeight(true)], true));
+			} else {
+				$("#flickrHolder").height("unset");
+			}
+
 			if (firstLoad == 1) {
 				$btnHolder.hide();
 			}
@@ -60,28 +73,24 @@
 		
 		this.setMaxSizes = function() {
 			this.maxImageWidth = $("#flickrHolder").width();
-			this.maxImageHeight = $("#flickrHolder").height() - $("#headerHolder").outerHeight(true) - $("#licenseHolder").outerHeight(true) - 10;
+			this.maxImageHeight = parseInt($("#flickrHolder").css("max-height")) - $("#headerHolder").outerHeight(true) - $("#licenseHolder").outerHeight(true) - 10;
 		}
 		
 		
 		this.init = function() {
 			this.$pageContents = $("#pageContents");
-			this.$panel = $("#pageContents .panel");
-			
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			if (panelWidth == "Full") {
-				$("#pageContents .right div:first").appendTo($("#pageContents"));
-				$("#pageContents .splitScreen").remove();
-			} else {
-				$("#textHolder").html(x_addLineBreaks($(x_currentPageXML).text()));
-				if (panelWidth == "Small") {
-					$("#pageContents .splitScreen").addClass("large");
-				} else if (panelWidth == "Large") {
-					$("#pageContents .splitScreen").addClass("small");
-				} else {
-					$("#pageContents .splitScreen").addClass("medium");
-				}
+			this.$panel = $("#pageContents .panelContent");
+
+			$("#textHolder").html(x_addLineBreaks($(x_currentPageXML).text()));
+
+			// send amended data to split screen function
+			const attributes = {
+				pageTxt: $(x_currentPageXML).text(), // text is in cdata not text xml property that is used in most page models
+				maxFullH: true // used to ensure images are scaled correctly on smaller screens
 			}
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
 			x_pageInfo[x_currentPage].savedData = {
 				pictureFeed  : undefined,
@@ -89,13 +98,12 @@
 				pictureStore : [],
 				pictureIndex : 0
 			};
-			
-			
+
 			var prevBtnTxt = x_currentPageXML.getAttribute("prevTipTxt");
 			if (prevBtnTxt == undefined) {
 				prevBtnTxt = "Previous Image";
 			}
-			
+
 			var nextBtnTxt = x_currentPageXML.getAttribute("nextTipTxt");
 			if (nextBtnTxt == undefined) {
 				nextBtnTxt = "Next Image";
@@ -347,35 +355,29 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
-		
-		<div id="textHolder" class="left">
-			
-		</div>
-		
-		<div class="right">
-			<div class="panel">
-				
-				<div id="flickrHolder">
-					<div id="container">
-						<div id="headerHolder" aria-live="polite">
-						</div>
-						<div id="pictureHolder">
-							<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
-						</div>
-						<div id="licenseHolder"></div>
+
+	<div id="textHolder" class="splitScreen_A"></div>
+
+	<div class="splitScreen_B">
+		<div class="panelContent panel">
+
+			<div id="flickrHolder">
+				<div id="container">
+					<div id="headerHolder" aria-live="polite">
 					</div>
+					<div id="pictureHolder">
+						<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
+					</div>
+					<div id="licenseHolder"></div>
 				</div>
-				
-				<div id="btnHolder">
-					<button id="prevBtn"></button>
-					<button id="nextBtn"></button>
-				</div>
-				
 			</div>
+
+			<div id="btnHolder">
+				<button id="prevBtn"></button>
+				<button id="nextBtn"></button>
+			</div>
+
 		</div>
-		
 	</div>
 
 </div>

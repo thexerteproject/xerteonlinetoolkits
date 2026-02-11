@@ -1,8 +1,12 @@
 /* bullets.html */
-	
-li.bullet {
-	padding-top:	10px;
-	margin-left:	-10px;
+
+#holder li.bullet {
+    margin-left:	-10px;
+    padding-top:	10px;
+}
+
+.panelContent:not(.panel) li.bullet:first-of-type {
+    padding-top:	0.3em;
 }
 
 #holder {

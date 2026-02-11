@@ -405,11 +405,11 @@
 			} else {
 				imgMaxW = 0.55;
 			}
-			
-			imgMaxW = Math.round($x_pageHolder.width() * imgMaxW);
+
+			imgMaxW = Math.round($x_innerPage.width() * imgMaxW);
 			imgMaxH = Math.round(x_getAvailableHeight([$("#panel"), $("#textContents")], [$("#checkButton")]) * imgMaxH);
-			imgMaxW -= ($("#panel").outerWidth(true) - $("#panel").width()) + ($("#x_pageDiv").outerWidth(true) - $("#x_pageDiv").width());
-			
+			imgMaxW -= ($("#panel").outerWidth(true) - $("#panel").width()) + ($x_pageDiv.outerWidth() - $x_pageDiv.width());
+
 			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
 
 			$img.css({

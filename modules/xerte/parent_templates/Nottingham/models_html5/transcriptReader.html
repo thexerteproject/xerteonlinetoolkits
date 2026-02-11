@@ -38,47 +38,69 @@
 		}
 		
 		// function called every time the size of the LO is changed
-		this.sizeChanged = function(pageChg) {
-			const $panel = $("#pageContents .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
-			$infoHolder.height(x_getAvailableHeight([$panel], [x_audioBarH]));
-			
-			if ($pageContents.data("mediaElement") != undefined) {
-				$pageContents.data("mediaElement").setCurrentTime(0);
+		this.sizeChanged = function(firstLoad) {
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
+
+			const $panel = $("#pageContents .panelContent");
+			$infoHolder.css("max-height", x_getAvailableHeight([$panel], [x_audioBarH], true));
+
+			if ($("#pageAudio").children().length > 0) {
+				let audioBarW = 0;
+				$("#pageAudio").find(".mejs-inner").find(".mejs-controls").children().each(function() {
+					audioBarW += $(this).outerWidth();
+				});
+
+				if (audioBarW < $("#pageAudio").width() - 5 || audioBarW > $("#pageAudio").width() + 5 || firstLoad === true) {
+					$x_window.resize();
+
+					if (firstLoad) {
+						if ($pageContents.data("mediaElement") != undefined) {
+							$pageContents.data("mediaElement").setCurrentTime(0);
+						}
+
+						$infoHolder.scrollTop(0);
+						$infoHolder.children("div").each(function() {
+							var $caption = $(this);
+							$caption
+									.data("scrollPos", $caption.position().top - parseInt($caption.css("padding-top")) - $(".panelContent").position().top)
+									.removeClass("highlight")
+									.removeAttr("aria-label");
+						});
+
+					} else  if ($infoHolder.find(".highlight").length > 0) {
+						$infoHolder.scrollTop($infoHolder.find(".highlight").data("scrollPos") - parseInt($("#pageContents .panelContent").css("padding-top")) - 1);
+					}
+
+				} else if ($infoHolder.find(".highlight").length > 0) {
+					$infoHolder.scrollTop($infoHolder.find(".highlight").data("scrollPos") - parseInt($("#pageContents .panelContent").css("padding-top")) - 1);
+				}
 			}
-			
-			$infoHolder.scrollTop(0);
-			$infoHolder.children("div").each(function() {
-				var $caption = $(this);
-				$caption
-					.data("scrollPos", $caption.position().top)
-					.removeClass("highlight")
-					.removeAttr("aria-label");
-			});
-			this.loadAudio();
+
+			// when panel has fixed height set, keep audio player at bottom of panel by setting height of #infoHolder above it
+			if (panelH !== false && panelH !== undefined) {
+				$infoHolder.height(x_getAvailableHeight([$panel], [$("#pageAudio").outerHeight(true)]));
+			} else {
+				$infoHolder.height("unset");
+			}
 		}
 		
 		this.init = function() {
 			$pageContents = $("#pageContents");
 			$infoHolder = $("#infoHolder");
-			
-			var captionInfo = new Array(),
-				panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			
-			if (panelWidth == "Full") {
-				$("#pageContents .panel").appendTo($pageContents);
-				$("#pageContents .splitScreen").remove();
-			} else {
-				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				if (panelWidth == "Small") {
-					$("#pageContents .splitScreen").addClass("large"); // make text area on left large so panel on right is small
-				} else if (panelWidth == "Large") {
-					$("#pageContents .splitScreen").addClass("small");
-				} else {
-					$("#pageContents .splitScreen").addClass("medium");
-				} 
+
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// send amended data to split screen function
+			const attributes = {
+				maxFullH: true // on smaller screens, the panel should never be taller than screen to avoid having to scroll a lot to reach the audio player
 			}
-			
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
+
+			var captionInfo = new Array();
+
 			// uses data from timedText file if there is one - otherwise use nested page info
 			if (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined) {
 				$.ajax({
@@ -142,7 +164,7 @@
 					$this
 						.addClass("highlight")
 						.attr("aria-label", x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "selected", "Selected"));
-					$infoHolder.scrollTop($this.data("scrollPos") - parseInt($("#pageContents .panel").css("padding-top")) - 1);
+					$infoHolder.scrollTop($this.data("scrollPos") - parseInt($("#pageContents .panelContent").css("padding-top")) - 1);
 					$pageContents.data("mediaElement").setCurrentTime($this.data("synch") + 0.1);
 				})
 				.focusin(function() {
@@ -159,22 +181,25 @@
 				});
 			
 			setTimeout(function() { // audio won't load properly without a delay here
-				transcriptReader.sizeChanged();
+				transcriptReader.loadAudio(true);
 			}, 1);
 		}
 		
-		this.loadAudio = function() {
+		this.loadAudio = function(firstLoad) {
 			var soundFile = x_currentPageXML.getAttribute("sound");
 			$("#pageAudio").mediaPlayer({
-				type		:"audio",
-				source		:soundFile,
-				pageName	:"transcriptReader"
+				type: "audio",
+				source: soundFile,
+				pageName: "transcriptReader",
+				width: "100%"
 			});
-			
+
 			// move audio player to top of panel if on small screens so you don't have to scroll lots to see it
 			if (x_browserInfo.mobile != false) {
 				$('#pageAudio').insertBefore('#infoHolder');
 			}
+
+			transcriptReader.sizeChanged(firstLoad);
 			
 			if ($pageContents.data("loaded") != true) {
 				$pageContents.data("loaded", true);
@@ -200,7 +225,7 @@
 						$thisCaption
 							.addClass("highlight")
 							.attr("aria-label", x_getLangInfo(x_languageData.find("interactions").find("moreInfoItem")[0], "selected", "Selected"));
-						$infoHolder.scrollTop($thisCaption.data("scrollPos") - parseInt($("#pageContents .panel").css("padding-top")) - 1);
+						$infoHolder.scrollTop($thisCaption.data("scrollPos") - parseInt($("#pageContents .panelContent").css("padding-top")) - 1);
 					} else {
 						$thisCaption
 							.removeClass("highlight")
@@ -217,21 +242,14 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
-		
-		<div id="textHolder" class="left">
-			
+
+	<div id="textHolder" class="splitScreen_A"></div>
+
+	<div class="splitScreen_B">
+		<div class="panelContent panel">
+			<div id="infoHolder" tabindex="0"></div>
+			<div id="pageAudio"></div>
 		</div>
-		
-		<div class="right">
-			<div class="panel">
-				<div id="infoHolder" tabindex="0">
-				</div>
-				<div id="pageAudio"></div>
-			</div>
-		</div>
-		
 	</div>
-	
+
 </div>

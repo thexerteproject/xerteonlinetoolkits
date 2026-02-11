@@ -1,6 +1,6 @@
 /* modelAnswer.html */
 	
-	#pageContents .panel {
+	#pageContents #panel.panel {
 		overflow:	auto;
 	}
 	

@@ -1,5 +1,9 @@
 /* modify.html */
-	
+
+	#pageContents .panelContent.panel {
+		overflow:	auto;
+	}
+
 	#pageContents p#instruction {
 		margin-top: 0px;
 	}

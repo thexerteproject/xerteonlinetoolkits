@@ -131,7 +131,7 @@
     z-index: 3;
 }
 
-#panelHolder .panel {
+#panelHolder .videoPanel.panel {
     vertical-align:	top;
     overflow:		auto;
 }
@@ -159,19 +159,19 @@
     margin-bottom:	10px;
 }
 
-.panel h3 {
+.videoPanel.panel h3 {
     border-bottom:	1px solid #CCCCCC;
     padding-bottom:	10px;
     margin-bottom:	1em;
 }
 
-.panel h4 {
+.videoPanel.panel h4 {
     margin-top:		10px;
     margin-bottom:	5px;
     padding-left: 0.3em;
 }
 
-.panel h5 {
+.videoPanel.panel h5 {
     margin-bottom:	0.5em;
     margin-top:		0.5em;
     padding-left: 0.3em;
@@ -183,7 +183,7 @@ hr {
     height: 1px;
 }
 
-.panel .contentBlock {
+.videoPanel.panel .contentBlock {
     width:			100%;
     margin-bottom:	5px;
     z-index: 10;

@@ -56,7 +56,7 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
             $panelHolder = $("#panelHolder");
-            var panels = $panelHolder.find(".panel");
+            var panels = $panelHolder.find(".layoutPanel");
 
             if (panels.length == 2)
 			{
@@ -66,10 +66,10 @@
                     // Two panels. If in portrait mode, stack vertical, otherwise show horizontal
                     // Use mainHolder, because height of panelHolder is not set on touch/mobile devices
                     if ($mainHolder.width() >= $mainHolder.height()) {
-                        $panelHolder.find(".panel").removeClass("tileV fullW").addClass("tileH fullH");
+                        $panelHolder.find(".layoutPanel").removeClass("tileV fullW").addClass("tileH fullH");
                     }
                     else {
-                        $panelHolder.find(".panel").removeClass("tileH fullH").addClass("tileV fullW");
+                        $panelHolder.find(".layoutPanel").removeClass("tileH fullH").addClass("tileV fullW");
                     }
                 }
             }
@@ -82,34 +82,34 @@
 		    // make sure no scroll bars are on screen during panel sizing
 			var curroverflow = $x_pageHolder.css("overflow");
 			$x_pageHolder.css("overflow", "hidden");
-			var numTileH = $("#panelHolder .panel.tileH").length,
-				numTileV = $("#panelHolder .panel.tileV").length;
+			var numTileH = $("#panelHolder .layoutPanel.tileH").length,
+				numTileV = $("#panelHolder .layoutPanel.tileV").length;
 			
 			if (x_currentPageXML.getAttribute("layout") == "grid" && $("#panelHolder .top").length > 0) {
-				numTileH = $("#panelHolder .top .panel.tileH").length;
+				numTileH = $("#panelHolder .top .layoutPanel.tileH").length;
 			}
 
-			if ($panelHolder.find(".panel").length == 1) {
-				$panelHolder.find(".panel")
-						.width(Math.floor($x_pageHolder.width() - ($x_pageDiv.outerWidth(true) - $x_pageDiv.width()) - ($panelHolder.find(".panel").outerWidth(true) - $panelHolder.find(".panel").width())))
-						.height(Math.floor(x_getAvailableHeight([$panelHolder.find(".panel")])));
+			if ($panelHolder.find(".layoutPanel").length == 1) {
+				$panelHolder.find(".layoutPanel")
+						.width(Math.floor($x_innerPage.width() - ($panelHolder.find(".layoutPanel").outerWidth(true) - $panelHolder.find(".layoutPanel").width())))
+						.height(Math.floor(x_getAvailableHeight([$panelHolder.find(".layoutPanel")])));
 
 			} else {
-				$panelHolder.find(".panel.tileH")
-						.width(Math.floor(($x_pageHolder.width() - ($x_pageDiv.outerWidth(true) - $x_pageDiv.width()) - (($panelHolder.find(".panel.tileH").outerWidth(true) - $panelHolder.find(".panel.tileH").width()) * (numTileH-1)) - ($panelHolder.find(".panel.tileH").outerWidth() - $panelHolder.find(".panel.tileH").width())) / numTileH))
+				$panelHolder.find(".layoutPanel.tileH")
+						.width(Math.floor(($x_innerPage.width() - (($panelHolder.find(".layoutPanel.tileH").outerWidth(true) - $panelHolder.find(".layoutPanel.tileH").width()) * (numTileH-1)) - ($panelHolder.find(".layoutPanel.tileH").outerWidth() - $panelHolder.find(".layoutPanel.tileH").width())) / numTileH))
 						.css('height', '');
 
 				$panelHolder.css("margin-top", $("#infoHolder .accTitle").height() + parseFloat($("#infoHolder .accTitle").css("padding-top")) * 2);
 
-				$panelHolder.find(".panel.tileV")
-						.height(Math.floor((x_getAvailableHeight() - (($panelHolder.find(".panel.tileV").outerHeight(true) - $panelHolder.find(".panel.tileV").height()) * (numTileV-1)) - ($panelHolder.find(".panel.tileV").outerHeight() - $panelHolder.find(".panel.tileV").height())) / numTileV))
+				$panelHolder.find(".layoutPanel.tileV")
+						.height(Math.floor((x_getAvailableHeight() - (($panelHolder.find(".layoutPanel.tileV").outerHeight(true) - $panelHolder.find(".layoutPanel.tileV").height()) * (numTileV-1)) - ($panelHolder.find(".layoutPanel.tileV").outerHeight() - $panelHolder.find(".layoutPanel.tileV").height())) / numTileV))
 						.css('width', '');
 
-				$panelHolder.find(".panel.fullH")
-						.height(Math.floor(x_getAvailableHeight([$panelHolder.find(".panel.fullH")])));
+				$panelHolder.find(".layoutPanel.fullH")
+						.height(Math.floor(x_getAvailableHeight([$panelHolder.find(".layoutPanel.fullH")])));
 
-				$panelHolder.find(".panel.halfH")
-						.height(Math.floor(x_getAvailableHeight([$panelHolder.find(".panel.halfH")], [$panelHolder.find(".panel.halfH").outerHeight() - $panelHolder.find(".panel.halfH").height()]) / 2));
+				$panelHolder.find(".layoutPanel.halfH")
+						.height(Math.floor(x_getAvailableHeight([$panelHolder.find(".layoutPanel.halfH")], [$panelHolder.find(".layoutPanel.halfH").outerHeight() - $panelHolder.find(".layoutPanel.halfH").height()]) / 2));
 			}
 
 			$x_pageHolder.css("overflow", curroverflow);
@@ -130,14 +130,14 @@
 				
 				var tempW = $popcornMedia.data("max-width");
 				var tempH = $popcornMedia.data("max-height") - titleHeight;
-				if (tempW > $popcornMedia.closest(".panel").width()) {
-					var scale = $popcornMedia.closest(".panel").width() / tempW;
-					tempW = $popcornMedia.closest(".panel").width();
+				if (tempW > $popcornMedia.closest(".layoutPanel").width()) {
+					var scale = $popcornMedia.closest(".layoutPanel").width() / tempW;
+					tempW = $popcornMedia.closest(".layoutPanel").width();
 					tempH = Math.floor(tempH * scale);
 				}
-				if (tempH > $popcornMedia.closest(".panel").height() - titleHeight) {
-					var scale = ($popcornMedia.closest(".panel").height() - titleHeight) / tempH;
-					tempH = $popcornMedia.closest(".panel").height() - titleHeight;
+				if (tempH > $popcornMedia.closest(".layoutPanel").height() - titleHeight) {
+					var scale = ($popcornMedia.closest(".layoutPanel").height() - titleHeight) / tempH;
+					tempH = $popcornMedia.closest(".layoutPanel").height() - titleHeight;
 					tempW = Math.floor(tempW * scale);
 				}
 				
@@ -167,7 +167,7 @@
 			
 			$(".audioImg").each(function() {
 				var $this = $(this);
-				x_scaleImg($this, $this.closest(".panel").width(), $this.closest(".panel").height() - x_audioBarH, true, false);
+				x_scaleImg($this, $this.closest(".layoutPanel").width(), $this.closest(".layoutPanel").height() - x_audioBarH, true, false);
 				$this.closest(".mediaHolder").width($this.width());
 			});
 			
@@ -182,7 +182,7 @@
 				}
 			});
 			
-			$panelHolder.find(".panel .fullH").each(function() {
+			$panelHolder.find(".layoutPanel .fullH").each(function() {
 				mediaLesson.resizeContent($(this));
 			});
 		}
@@ -190,7 +190,7 @@
 		// function resizes contentBlocks that should fill available space
 		this.resizeContent = function($holder) {
 			var excludeH = $holder.data("exclude") != undefined ? $holder.data("exclude").outerHeight(true) : 0,
-				$panel = $holder.parents(".panel");
+				$panel = $holder.parents(".layoutPanel");
 			
 			// if content is overlay on media then use media for max sizes
 			if ($holder.parents(".panelContent").length == 0) {
@@ -523,23 +523,23 @@
 				}
 				// name and id all other panels
 				else{
-                    $('<div class="panel" tabindex="0">' + title + '</div>')
+                    $('<div class="layoutPanel panel" tabindex="0">' + title + '</div>')
                         .appendTo($panelHolder)
                         .attr("id", mediaLesson.panelbaseid + i);
 				}
 			}
 			// layouts where panels are roughly the same size - either in grid or stacked vertically/horizontally
 			if ((panelLayout == "tileV" && panelData.length) > 1 || x_browserInfo.mobile == true) {
-				$panelHolder.find(".panel").addClass("tileV fullW");
+				$panelHolder.find(".layoutPanel").addClass("tileV fullW");
 
 			} else if (panelLayout == "tileH" || panelData.length == 1) {
-				$panelHolder.find(".panel").addClass("tileH fullH");
+				$panelHolder.find(".layoutPanel").addClass("tileH fullH");
 				
 			} else if (panelLayout == "grid") {
 				if (panelData.length > 2) {
 					$panelHolder.append('<div class="top"></div><div class="bottom"></div>');
 					
-					var panels = $panelHolder.find(".panel");
+					var panels = $panelHolder.find(".layoutPanel");
 					
 					for (var i=0; i<panels.length; i++) {
 						if (i < 2) {
@@ -554,22 +554,22 @@
 				    // Two panels. If in portrait mode, stack vertical, otherwise show horizontal
 					// Use mainHolder, because height of panelHolder is not set on touch/mobile devices
 				    if ($mainHolder.width() >= $mainHolder.height() ) {
-                        $panelHolder.find(".panel").addClass("tileH fullH");
+                        $panelHolder.find(".layoutPanel").addClass("tileH fullH");
                     }
                     else
 					{
-                        $panelHolder.find(".panel").addClass("tileV fullW");
+                        $panelHolder.find(".layoutPanel").addClass("tileV fullW");
 					}
 					
 				} else {
-					$panelHolder.find(".panel").addClass("fullH");
+					$panelHolder.find(".layoutPanel").addClass("fullH");
 				}
 			
 			// layouts where screen is split with large panel on one side and smaller panels on other side - can be horizontally or vertically
 			} else if (panelLayout == "top" || panelLayout == "bottom") {
 				$panelHolder.append('<div class="top"></div><div class="bottom"></div>');
 				
-				var panels = $panelHolder.find(".panel");
+				var panels = $panelHolder.find(".layoutPanel");
 				
 				if (panelLayout == "top") {
 					for (var i=0; i<panels.length; i++) {
@@ -591,28 +591,41 @@
 				}
 				
 			} else {
-				$panelHolder.append('<div class="splitScreen"><div class="left"></div><div class="right"></div></div>');
+				// 'Full Left - Tile Right' or 'Tile Left - Full Right'
+				$panelHolder.append('<div class="splitScreen_A"></div><div class="splitScreen_B"></div>');
 				
-				var panels = $panelHolder.find(".panel");
+				var panels = $panelHolder.find(".layoutPanel");
 				
 				if (panelLayout == "left") {
 					for (var i=0; i<panels.length; i++) {
 						if (i == 0) {
-							$(panels[i]).appendTo($panelHolder.find(".left")).addClass("fullH");
+							$(panels[i]).appendTo($panelHolder.find(".splitScreen_A")).addClass("fullH");
 						} else {
-							$(panels[i]).appendTo($panelHolder.find(".right")).addClass("tileV");
+							$(panels[i]).appendTo($panelHolder.find(".splitScreen_B")).addClass("tileV");
 						}
 					}
 					
 				} else if (panelLayout == "right") {
 					for (var i=0; i<panels.length; i++) {
 						if (i == panels.length - 1) {
-							$(panels[i]).appendTo($panelHolder.find(".right")).addClass("fullH");
+							$(panels[i]).appendTo($panelHolder.find(".splitScreen_B")).addClass("fullH");
 						} else {
-							$(panels[i]).appendTo($panelHolder.find(".left")).addClass("tileV");
+							$(panels[i]).appendTo($panelHolder.find(".splitScreen_A")).addClass("tileV");
 						}
 					}
 				}
+
+				// data sent to the split screen function doesn't take info from xwd as it just depends on whether one or two columns are required
+				const attributes = {
+					panelWidth: "custom",
+					panelWidthCustom: "50", // panels are always equal width
+					panelPosition: "right",
+					pageTxt: "true", // prevent the left column being deleted as there will always be something in it
+					holder: $panelHolder
+				}
+
+				// set up split screen layout
+				XENITH.SPLITSCREEN.init({"attributes": attributes});
 			}
 			
 			this.resizePanels();
@@ -675,7 +688,7 @@
                 }
             }
 
-			$(".panel").each(function(i) {
+			$(".layoutPanel").each(function(i) {
 			    if (i == 0)
 					$('<div id="panelContent' + 0 + '" class="panelContent" />').appendTo($(this));
 			    else
@@ -692,7 +705,7 @@
 			}
             this.initTracking();
 
-			$('.mainMedia').parents('.panel')
+			$('.mainMedia').parents('.layoutPanel')
 				.addClass('mediaPanel')
 				.append('<div id="srInfo" class="sr-only" aria-live="assertive"></div>');
 		};

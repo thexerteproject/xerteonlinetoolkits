@@ -1,7 +1,9 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <opinion><![CDATA[<opinion name="Enter Page Title" order="sequence" align="left" panelWidth="Medium" instructions="" feedback=""
+      <opinion><![CDATA[<opinion name="Enter Page Title" instructions="" order="sequence"
+      panelWidth="Medium" panelWidthCustom="50" align="left" panelStyle="false" removeTxt="false"
+      feedback=""
 	  quesCount="Question {i} of {n}"
 	  onCompletion="You have completed the questionnaire" score="You answered {i} / {n}"
 	  submitBtnText="Submit"
@@ -15,19 +17,37 @@
   <!-- OPINION=============================== -->
     <opinion menu="Interactivity" menuItem="Opinion" icon="icOpinion" remove="true" thumb="thumbs/opinion.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#opinion" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_opinion_page" hint="Create an opinion with questions that can be slider or radio button interactions or a mix of both.">
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-	<instructions label="Page Text" type="textArea"  height="120" placeholder="Enter text for the page here"/>
-    <align label="Align Text" options="Left,Right" type="comboBox"  data="left,right" defaultValue="left" width="120"/>
-    <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="120"/>
+    <instructions label="Page Text" type="TextArea" height="120" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
 	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
+
+    <layoutGroup label="Page Layout" type="group">
+        <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
+        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="left,right" defaultValue="left" condition="panelWidth!='Full'"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
+    <feedback label="Feedback" type="textArea" height="120" defaultValue="" placeholder="Enter feedback here"/>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
+
     <showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true" deprecated="This optional property is now deprecated"/>
-    <feedback label="Feedback" type="textArea" height="120" optional="true" defaultValue="" placeholder="Enter feedback here"/>
 
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true" />
     <submitBtnText label="Submit Button Label" type="TextInput" wysiwyg="true" language="true" />
     <resetBtnText label="Reset Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Reset" language="true" />
     <backBtnText label="Back Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Back" language="true" />
-    <noFeedBacckNoGraph label="No Feedback No Graph" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="&lt;p&gt;You have completed all the questions.&lt;/p&gt;" tooltip="Text to display on last page if there is not feedback and no graph to show at the end of the questionnaire."/>
+    <noFeedBacckNoGraph label="No Feedback No Graph" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="&lt;p&gt;You have completed all the questions.&lt;/p&gt;" language="true" tooltip="Text to display on last page if there is not feedback and no graph to show at the end of the questionnaire."/>
 	<downloadBtnText label="Download Button Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Download" language="true" />
 
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />

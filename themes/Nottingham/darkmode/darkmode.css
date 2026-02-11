@@ -81,7 +81,7 @@
   color: #E0E0E0;
 }
 
-.x_columnPage_page #textHolder, .x_textGraphics_page #imgCaption.transcript, .x_imageSequence_page #controlBar, .x_mediaLesson_page .panel h3, .x_nav_page #pageContents.col #textHolder,
+.x_columnPage_page #textHolder, .x_textGraphics_page #imgCaption.transcript, .x_imageSequence_page #controlBar, .x_mediaLesson_page .layoutPanel.panel h3, .x_nav_page #pageContents.col #textHolder,
 .x_nav_page #pageContents.slide #btnHolder.top, .x_tabNavExtra_page .paneList, .x_table_page #footnote,
 .x_decision_page #overviewHolder .overviewStep,
 .x_documentation_page #pages:not(:last-child),
@@ -237,26 +237,15 @@ table.headerCol.shaded td.header {
 }
 
 .x_imageCompare_page #slider {
-  background: #4d4d4d;
+  background-color: #1e1e1e;
 }
 
 .x_imageCompare_page #slider_handle {
-  background: #4d4d4d;
-  border: 4px solid #E0E0E0;
+  background-color: #4d4d4d;
 }
 
-.x_imageCompare_page #slider:focus #slider_handle, .x_imageCompare_page #slider:hover #slider_handle {
-  border-color: #7094DB;
-}
-
-.x_imageCompare_page #slider_handle.vertical {
-  height: 10px;
-  bottom: 4px;
-}
-
-.x_imageCompare_page #slider_handle.horizontal {
-  width: 10px;
-  right: 4px;
+.x_imageCompare_page #slider_handle i {
+  color: #E0E0E0;
 }
 
 .x_thumbnailViewer_page #thumbOverlayLeft,
@@ -688,7 +677,7 @@ a.hotspot, a.hotspot.selected {
 }
 
 .hsinfo {
-  padding: 1%;
+  /*padding:1%;*/
 }
 
 .x_list_page a.listItem:link {
@@ -1871,6 +1860,11 @@ table.glossary tr.shaded td {
   box-shadow: none;
   color: #E0E0E0;
   border-color: #1e1e1e;
+}
+
+.panel .panel.editorStyle {
+  background: #121212;
+  border-color: #121212;
 }
 
 .panelPage {

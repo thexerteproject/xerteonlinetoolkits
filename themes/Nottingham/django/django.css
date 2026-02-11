@@ -366,6 +366,9 @@ a:-webkit-any-link {
   color: #555 !important;
 }
 
+#x_pageHolder {
+  /*span,*/
+}
 #x_pageHolder h1 {
   font-size: 1em;
   margin: 0px;
@@ -390,7 +393,6 @@ a:-webkit-any-link {
   color: #007cdb;
   font-size: 110%;
 }
-#x_pageHolder span,
 #x_pageHolder p,
 #x_pageHolder li,
 #x_pageHolder u,

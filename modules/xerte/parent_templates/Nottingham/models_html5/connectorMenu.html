@@ -17,9 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-	// HTML5 version currently ignores these optional properties:	itemHeight, menuOverLineCol, menuLineCol, menuOverFillCol, menuFillCol, itemSpacingX
-	// listToClip optional property doesn't do anything either (and therefore reportTitle, pageLabel, titleLabel, idLabel)
 	
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -31,19 +28,26 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
 		}
 		
 		this.init = function() {
-			
-			// add text before menu items if required
-			if (x_currentPageXML.getAttribute('text') != undefined && x_currentPageXML.getAttribute('text') != '') {
-				$('#subMenuHolder').before('<div id="pageTxt">' + x_currentPageXML.getAttribute('text') + '</div>');
+
+			$("#pageTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// send amended data to split screen function due to defaults being different for old projects
+			const attributes = {
+				panelWidth: x_currentPageXML.getAttribute("panelWidth") != undefined ? x_currentPageXML.getAttribute("panelWidth") : "Full",
+				panelStyle: x_currentPageXML.getAttribute("panelStyle") != undefined ? x_currentPageXML.getAttribute("panelStyle") : "true",
+				removeTxt: x_currentPageXML.getAttribute("removeTxt") == undefined ? "false" : x_currentPageXML.getAttribute("removeTxt")
 			}
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 			
-			var menuItems = [],
-				pageNames = [],
-				checkIfVistedItems = [];
+			const menuItems = [];
+			const pageNames = [];
+			const checkIfVistedItems = [];
 			
 			// work out which pages to include in menu item list...
 			
@@ -64,7 +68,7 @@
 				
 			} else {
 				// use pages between endPageID / startPageID
-				var allIDs = [];
+				const allIDs = [];
 				$(x_pageInfo).each(function(i) {
 					// exclude standalone pages
 					if (this.standalone != true) {
@@ -78,7 +82,7 @@
 				});
 				
 				if ((x_currentPageXML.getAttribute("startPageID") != undefined && x_currentPageXML.getAttribute("startPageID") != "") || (x_currentPageXML.getAttribute("endPageID") != undefined && x_currentPageXML.getAttribute("endPageID") != "")) {
-					var	start = jQuery.inArray(x_currentPageXML.getAttribute("startPageID"), allIDs),
+					let	start = jQuery.inArray(x_currentPageXML.getAttribute("startPageID"), allIDs),
 						end = jQuery.inArray(x_currentPageXML.getAttribute("endPageID"), allIDs);
 					if (start == -1) {
 						start = 0;
@@ -87,7 +91,7 @@
 						end = allIDs.length - 1;
 					}
 					
-					for (var i=0; i<allIDs.length; i++) {
+					for (let i=0; i<allIDs.length; i++) {
 						if (i >= start && i <= end && i != x_currentPage && (x_pageInfo[0].type != "menu" || i > 0)) {
 							menuItems.push(allIDs[i]);
 							pageNames.push(undefined);
@@ -97,7 +101,7 @@
 				
 				// use all pages
 				} else {
-					for (var i=0; i<allIDs.length; i++) {
+					for (let i=0; i<allIDs.length; i++) {
 					
 						if ((x_pageInfo[0].type != "menu" || i > 0) && i != x_currentPage) {
 							menuItems.push(allIDs[i]);
@@ -108,12 +112,12 @@
 				}
 			}
 			
-			var $menuItems = $("#subMenuItems"),
-				$menuItem = $menuItems.find(".subMenuItem:first");
+			const $menuItems = $("#subMenuItems");
+			const $menuItem = $menuItems.find(".subMenuItem:first");
 
-			for (var i=0; i<menuItems.length; i++) {
-				var $thisItem,
-					name;
+			for (let i=0; i<menuItems.length; i++) {
+				let $thisItem;
+				let name;
 				
 				if (i != 0) {
 					$thisItem = $menuItem.clone().appendTo($menuItems);
@@ -131,7 +135,7 @@
 					name = pageNames[i];
 					
 				} else {
-					
+					let tempIndex;
 					switch (menuItems[i]) {
 						case "[first]":
 							menuItems.splice(i, 1, x_pageInfo[x_normalPages[0]].linkID);
@@ -140,11 +144,11 @@
 							menuItems.splice(i, 1, x_pageInfo[x_normalPages[x_normalPages.length-1]].linkID);
 							break;
 						case "[previous]":
-							var tempIndex = x_normalPages.indexOf(x_currentPage);
+							tempIndex = x_normalPages.indexOf(x_currentPage);
 							menuItems.splice(i, 1, x_pageInfo[tempIndex > 0 ? x_normalPages[tempIndex-1] : x_normalPages[0]].linkID);
 							break;
 						case "[next]":
-							var tempIndex = x_normalPages.indexOf(x_currentPage);
+							tempIndex = x_normalPages.indexOf(x_currentPage);
 							menuItems.splice(i, 1, x_pageInfo[tempIndex != x_normalPages.length-1 && tempIndex != -1 ? x_normalPages[tempIndex+1] : x_normalPages[x_normalPages.length-1]].linkID);
 							break;
 					}
@@ -156,11 +160,11 @@
 						
 					} else {
 						if (menuItems[i].substring(0,4) == 'page') {
-							var tempIndex = x_normalPages[Number(menuItems[i].substring(4))];
+							let tempIndex = x_normalPages[Number(menuItems[i].substring(4))];
 							name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_pages[tempIndex].getAttribute("name");
 							$thisItem.data('pageNo', tempIndex);
 						} else {
-							var page = x_lookupPage("linkID", menuItems[i]);
+							const page = x_lookupPage("linkID", menuItems[i]);
 							if ($.isArray(page)) {
 								name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : this.getNestedName(page);
 								$thisItem.data('parent', x_pages[page[0]].getAttribute('linkID'));
@@ -188,7 +192,7 @@
 			$(".subMenuItem")
 				.button()
 				.click(function() {
-					var $this = $(this);
+					const $this = $(this);
 					
 					if ($this.data("url") != undefined) {
 						$this.data("visitedid", true);
@@ -220,30 +224,59 @@
 				$("#subMenuItems .subMenuItem").css("margin-bottom", Number(x_currentPageXML.getAttribute("itemSpacingY")));
 			}
 
-			var buttonWidth = x_currentPageXML.getAttribute("buttonWidth")
-			if(buttonWidth === undefined || buttonWidth === null){
-				buttonWidth = "80%"
+			// button width is deprecated and can't be added to new pages
+			// it should remain working for older projects though
+			let buttonWidth = x_currentPageXML.getAttribute("buttonWidth");
+			if (buttonWidth === undefined || buttonWidth === null) {
+				// ideally button width would always be 100%
+				// as old projects had default as 80% we will try to work out if it's likely to be an old project and if it is, keep default as 80%
+				if (x_currentPageXML.getAttribute("panelStyle") != undefined) {
+					buttonWidth = "100%"
+				} else {
+					buttonWidth = "80%";
+				}
 			}
-			if(buttonWidth.slice(-1)!=="%"){
-				buttonWidth+="%"
+			if (buttonWidth.slice(-1)!=="%") {
+				buttonWidth += "%"
 			}
+
 			$("#subMenuItems").css("width", buttonWidth)
 
-			//wrap into columns
-			var cols = x_currentPageXML.getAttribute("columns")
-			if(cols !== undefined && cols !== null){
-				$("#subMenuItems").css("column-count", cols);
+			// wrap into columns
+			// this overrides any button width set
+			const cols = x_currentPageXML.getAttribute("columns")
+			if (cols !== undefined && cols !== null) {
+				$("#subMenuItems").addClass("columns");
 				$("#subMenuItems").css("width", "100%");
+
+				// set a minimum width for the columns - columns will wrap onto a new row rather than be shown smaller than this
+				$("#subMenuItems").css("grid-template-columns", "repeat(auto-fit, minmax(" + (x_currentPageXML.getAttribute("minWidth") != undefined ? x_currentPageXML.getAttribute("minWidth") : "75") + "px, 1fr))");
+
+				// these calculations are for when page could fit more than x no. of columns - make sure the no. of columns is still used alongside the min column width
+				const minW = (x_currentPageXML.getAttribute("minWidth") != undefined ? x_currentPageXML.getAttribute("minWidth") : "75") + "px";
+				const gap = $("#subMenuItems").css("gap");
+				const numCols = cols < 1 ? 3 : cols;
+
+				$("<style>")
+						.prop("type", "text/css")
+						.html(`
+				@container page-contents (min-width: calc(${minW}*${numCols} + (${gap}*${numCols-1}))) {
+					#subMenuItems {
+						grid-template-columns: repeat(${numCols}, 1fr) !important;
+					}
+				}`)
+						.appendTo($("#pageContents"));
 			}
+
 			this.checkVisited();
-			
+			this.sizeChanged();
 			x_pageLoaded();
 		}
 		
 		this.getNestedName = function(page) {
-			var child = x_pages[page[0]];
-			var name = child.getAttribute("name");
-			for (var i=0; i<page.length-1; i++) {
+			let child = x_pages[page[0]];
+			let name = child.getAttribute("name");
+			for (let i=0; i<page.length-1; i++) {
 				child = child.childNodes[page[i+1]];
 				name += " | " + child.getAttribute("name");
 			}
@@ -254,8 +287,8 @@
 			if (x_currentPageXML.getAttribute("pageTick") != 'false') {
 				// show visited ticks
 				if (x_params.pageTick == undefined || x_params.pageTick == "true") {
-					var allBuiltPages = [], allBuiltPageNums = [];
-					for (var i=0; i<x_pageInfo.length; i++) {
+					const allBuiltPages = [], allBuiltPageNums = [];
+					for (let i=0; i<x_pageInfo.length; i++) {
 						if (x_pageInfo[i].viewed || x_pageInfo[i].viewedLightBox || x_pageInfo[i].viewedNewWindow) {
 							allBuiltPages.push(x_pageInfo[i].linkID);
 							allBuiltPageNums.push(i);
@@ -264,7 +297,7 @@
 					
 					$("#subMenuItems .subMenuItem").each(function(i) {
 						// if nested page then look to parent page to see if visited
-						var pageToCheck = $(this).data('visitedid');
+						const pageToCheck = $(this).data('visitedid');
 						if (pageToCheck != undefined && (pageToCheck === true || (pageToCheck !== false && pageToCheck.substring(0,4) == 'page'))) {
 							if ($(this).data("url") != undefined) {
 								$(this).find('i').removeClass('notvisited')
@@ -287,9 +320,16 @@
 </script>
 
 <div id="pageContents">
-	<div id="subMenuHolder">
-		<div id="subMenuItems">
-			<button class="subMenuItem width100"/>
+
+	<div id="pageTxt" class="splitScreen_A"></div>
+
+	<div id="infoHolder" class="splitScreen_B">
+		<div id="subMenuHolder" class="panelContent panel">
+			<div id="subMenuItems">
+				<button class="subMenuItem /*width100*/"/>
+			</div>
 		</div>
 	</div>
+
 </div>
+

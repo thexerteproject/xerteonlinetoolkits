@@ -2,7 +2,8 @@
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <hangman><![CDATA[<hangman name="Enter Page Title" text="" words="" restrict="letter"
-	  nextBtnTxt="Next"
+      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+	  nextBtnTxt="Next" resetBtnTxt="Reset"
 	  quesCount="Exercise {i} of {n}"
 	  />]]></hangman>
     </newNodes>
@@ -11,11 +12,29 @@
   <!-- HANGMAN============================== -->
   <hangman menu="Games" menuItem="Hangman" hint="A hangman game. Create a list of words for the user to work out." icon="icHangman" thumb="thumbs/hangman.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#hangman" wiki="https://xerte.org.uk/wiki/doku.php?id=games_hangman_page" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Instructions" type="TextArea" height="100" placeholder="Enter text for the page here"/>
+    <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
     <words label="Words" type="script" height="100" placeholder="Enter words here, placing each on a new line" tooltip="to add an other word you have to place it on a new line"/>
     <restrict label="Restrict Guesses" type="Combobox" options="Letters,Letters &amp; numbers,Allow all characters" data="letter,letterNumber,all" defaultValue="all" mandatory="true" tooltip="Use this option to restrict the characters that can be used as guesses"/>
 
-	<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
+    <layoutGroup label="Page Layout" type="group">
+      <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Large" conditionTrigger="true" mandatory="true"/>
+      <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+      <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+      <textTop label="Text" type="TextArea" height="100" optional="true"/>
+      <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+      <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+      <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
+
+    <AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
         <subject label="Subject" verification="^.+$" type="TextInput" defaultValue="" placeholder="Enter a subject here..." optional="true" tooltip="This determines which area or subject the generated content will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'."/>
         <additionalInstructions label="Additional Instructions" type="text" tooltip="You can leave this blank or provide additional instructions or requests on how the generated result should look. Please note that certain instructions may break the structure of the generated response. If this occurs, change the wording and attempt to generate again." wysiwyg="true" height="50" placeholder="Write your instructions here..." optional="true"/>
         <uploadPrompt label="Information Source" options="None (uses model base knowledge), All Context Resources,Learning Object (Limited Scope), Single File (Limited Scope)" type="comboBox" data="false,context,lo,true" defaultValue="false" tooltip="Select ‘All Context Resources’ when you wish to use all of the sources in the context resources table.  Select  'Learning Object (limited Scope)’' when you wish to use the latest preview of the learning object as the single source for generating this content. Select ‘Single File (Limited Scope)’ when you wish to use one uploaded file, video or audio link, as the only source (you will be prompted to upload it if it has not already been added). Please ensure the source content corresponds to the requested subject. If relevant information is not found in the sources the AI will attempt to supplement with its own knowledge." conditionTrigger="true" optional="true"/>
@@ -30,12 +49,13 @@
         <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 
-	<nextBtnTxt label="Next Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
-    <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required" />		
+    <nextBtnTxt label="Next Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
+    <resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Reset"/>
+    <nextBtnTip label="Next Button Tip" type="textInput" language="true" deprecated="This property is no longer required" />
     <nextBtnWidth label="Next Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically" />
     <quesCount label="{i} of {n} words" type="TextInput" wysiwyg="true" language="true" />
 
-  </hangman>K
+  </hangman>
 
 
 </wizard>

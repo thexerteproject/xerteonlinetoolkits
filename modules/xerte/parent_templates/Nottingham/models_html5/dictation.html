@@ -52,17 +52,18 @@
 			restartBtnTxt = x_currentPageXML.getAttribute("restartText") != undefined && x_currentPageXML.getAttribute("restartText") != "" ? x_currentPageXML.getAttribute("restartText") : "Restart";
 			correctText = x_currentPageXML.getAttribute("correctText") != undefined && x_currentPageXML.getAttribute("correctText") != "" ? x_currentPageXML.getAttribute("correctText") : "Correct";
 			incorrectText = x_currentPageXML.getAttribute("incorrectText") != undefined && x_currentPageXML.getAttribute("incorrectText") != "" ? x_currentPageXML.getAttribute("incorrectText") : "Incorrect";
-
-			$("#button").show();
 		}
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $("#pageContents .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
+
+			// this will be used later when showing feedback - it is done differently depending on whether content is centred vertically on the page & whether panel is full height
+			$("#pageContents").data("slideIn", x_checkVerticalCentre() && panelH === false);
 
 			var	audioBarW = 0,
-					$pageAudio = $("#pageAudio");
+				$pageAudio = $("#pageAudio");
 
 			$pageAudio.find(".mejs-inner .mejs-controls").children().each(function() {
 				audioBarW += $(this).outerWidth();
@@ -153,8 +154,6 @@
 
         this.setup =function() {
 
-            var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-
             this.initTracking();
 
 			if (XTGetMode() != "normal") {
@@ -167,20 +166,11 @@
 			restartBtnTxt = x_currentPageXML.getAttribute("restartText") != undefined && x_currentPageXML.getAttribute("restartText") != "" ? x_currentPageXML.getAttribute("restartText") : "Restart";
 			correctText = x_currentPageXML.getAttribute("correctText") != undefined && x_currentPageXML.getAttribute("correctText") != "" ? x_currentPageXML.getAttribute("correctText") : "Correct";
 			incorrectText = x_currentPageXML.getAttribute("incorrectText") != undefined && x_currentPageXML.getAttribute("incorrectText") != "" ? x_currentPageXML.getAttribute("incorrectText") : "Incorrect";
-			
-			if (panelWidth == "Full") {
-				$("#pageContents .panel").appendTo($pageContents);
-				$("#pageContents .splitScreen").remove();
-			} else {
-				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				if (panelWidth == "Small") {
-					$("#pageContents .splitScreen").addClass("large"); // make text area on left large so panel on right is small
-				} else if (panelWidth == "Large") {
-					$("#pageContents .splitScreen").addClass("small");
-				} else {
-					$("#pageContents .splitScreen").addClass("medium");
-				}
-			}
+
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init();
 
 			$("#showBtn")
 				.button({
@@ -188,7 +178,11 @@
 				})
 				.click(function() {
 					if ($pageContents.data("captionInfo").length <= 1) {
-						$(this).hide();
+						if ($("#pageContents").data("slideIn")) {
+							$(this).slideUp(200);
+						} else {
+							$(this).show();
+						}
 					}
 
 					var feedback;
@@ -200,7 +194,18 @@
 					var answer = $('#answerTxt').val();
 					var correct = false;
 
-					$("#answer").html('<div><p>' + $pageContents.data("captionInfo")[$pageContents.data("current")].answer + '</p></div>');
+					if ($("#pageContents").data("slideIn")) {
+						$("#answer")
+							.html('<div><p>' + $pageContents.data("captionInfo")[$pageContents.data("current")].answer + '</p></div>')
+							.slideDown(function() {
+								// refresh feedback so it is picked up by screen readers now not hidden
+								$("#answer").each(function() {
+									$("#answer").html($("#answer").html());
+								});
+							});
+					} else {
+						$("#answer").html('<div><p>' + $pageContents.data("captionInfo")[$pageContents.data("current")].answer + '</p></div>');
+					}
 
 					if (answer == text) {
 						correct_answers++;
@@ -208,20 +213,42 @@
 						feedback="Correct";
 						if (x_currentPageXML.getAttribute("showCorrectness") != null && x_currentPageXML.getAttribute("showCorrectness") != "false")
 						{
-							$("#correct").html('<p><span class="tick fa fa-fw fa-x-tick"><span class="ui-helper-hidden-accessible" aria-hidden="true">' + x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct") + ' </span></span>' + x_addLineBreaks(" " + correctText) + '</p>');
+							if ($("#pageContents").data("slideIn")) {
+								$("#correct")
+										.html('<p><span class="tick fa fa-fw fa-x-tick"><span class="ui-helper-hidden-accessible" aria-hidden="true">' + x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct") + ' </span></span>' + x_addLineBreaks(" " + correctText) + '</p>')
+										.slideDown(function() {
+											// refresh feedback so it is picked up by screen readers now not hidden
+											$("#correct").each(function() {
+												$("#correct").html($("#correct").html());
+											});
+										});
+							} else {
+								$("#correct").html('<p><span class="tick fa fa-fw fa-x-tick"><span class="ui-helper-hidden-accessible" aria-hidden="true">' + x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct") + ' </span></span>' + x_addLineBreaks(" " + correctText) + '</p>');
+							}
 						}
 					}
 					else {
 						feedback="Incorrect";
 						if (x_currentPageXML.getAttribute("showCorrectness") != null && x_currentPageXML.getAttribute("showCorrectness") != "false")
 						{
-							$("#incorrect").html('<p><span class="tick fa fa-fw fa-x-cross"><span class="ui-helper-hidden-accessible" aria-hidden="true">' + x_getLangInfo(x_languageData.find("cross")[0], "title", "Incorrect") + ' </span></span>' + x_addLineBreaks(" " + incorrectText) + '</p>');
+							if ($("#pageContents").data("slideIn")) {
+								$("#incorrect")
+										.html('<p><span class="tick fa fa-fw fa-x-cross"><span class="ui-helper-hidden-accessible" aria-hidden="true">' + x_getLangInfo(x_languageData.find("cross")[0], "title", "Incorrect") + ' </span></span>' + x_addLineBreaks(" " + incorrectText) + '</p>')
+										.slideDown(function() {
+											$("#incorrect").each(function() {
+												$("#incorrect").html($("#incorrect").html());
+											});
+										});
+							} else {
+								$("#incorrect").html('<p><span class="tick fa fa-fw fa-x-cross"><span class="ui-helper-hidden-accessible" aria-hidden="true">' + x_getLangInfo(x_languageData.find("cross")[0], "title", "Incorrect") + ' </span></span>' + x_addLineBreaks(" " + incorrectText) + '</p>');
+							}
 						}
 					}
 					var result =
 						{
 						    success: correct,
-							score: (correct ? 100.0 : 0.0)
+							score: (correct ? 100.0 : 0.0),
+							judge: x_currentPageXML.getAttribute("showCorrectness") != null && x_currentPageXML.getAttribute("showCorrectness") != "false"
 						};
 					XTExitInteraction(x_currentPage, $pageContents.data("current"), result, [], answer, feedback, x_currentPageXML.getAttribute("trackinglabel"));
 					total++;
@@ -270,6 +297,7 @@
 				$("#answerTxt, #btnHolder").remove();
 				x_pageLoaded();
 			} else {
+				this.sizeChanged();
 				this.sortCaptions();
 			}
 		}
@@ -284,7 +312,6 @@
 				$("#answerTxt").attr("aria-label", $pageContents.data("answerFieldLabel"));
 				$("#nextBtn, #restartBtn").remove();
 			}
-
 			this.loadQ();
 		}
 
@@ -305,7 +332,20 @@
 			}
 			$("#answerTxt").val("").focus();
 
-			$("#answer,#incorrect,#correct").empty();
+			$("#answer,#incorrect,#correct").each(function() {
+				const $this = $(this);
+				if ($("#pageContents").data("slideIn")) {
+					if ($this.html() !== "") {
+						$this.slideUp(function () {
+							$this.empty();
+						});
+					} else {
+						$this.hide();
+					}
+				} else {
+					$this.empty();
+				}
+			});
 
 			this.loadAudio($pageContents.data("captionInfo")[$pageContents.data("current")]);
 			var name = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].name).text().replace(/(\r\n|\n|\r)/gm,"");
@@ -379,31 +419,27 @@
 
 <div id="pageContents">
 
-	<div class="splitScreen">
+	<div id="textHolder" class="splitScreen_A"></div>
 
-		<div id="textHolder" class="left"></div>
-		
-		<div class="right">
-			<div class="panel" tabindex="0">
-				<p id="count" aria-live="polite"></p>
-				<div id="panelContent">
-					<div id="prompt"></div>
-					<div id="audioHolder">
-						<div id="pageAudio"></div>
-					</div>
-					<textarea id="answerTxt" rows="6"></textarea>
-					<div id="btnHolder">
-						<button id="showBtn"></button>
-						<button id="nextBtn"></button>
-						<button id="restartBtn"></button>
-					</div>
-					<div id="answer" aria-live="polite"/>
-					<div id="correct" aria-live="polite"></div>
-					<div id="incorrect" aria-live="polite"></div>
+	<div class="splitScreen_B">
+		<div class="panelContent panel" tabindex="0">
+			<p id="count" aria-live="polite"></p>
+			<div id="panelContent">
+				<div id="prompt"></div>
+				<div id="audioHolder">
+					<div id="pageAudio"></div>
 				</div>
+				<textarea id="answerTxt" rows="6"></textarea>
+				<div id="btnHolder">
+					<button id="showBtn"></button>
+					<button id="nextBtn"></button>
+					<button id="restartBtn"></button>
+				</div>
+				<div id="answer" aria-live="polite"/>
+				<div id="correct" aria-live="polite"></div>
+				<div id="incorrect" aria-live="polite"></div>
 			</div>
 		</div>
-
 	</div>
 
 </div>

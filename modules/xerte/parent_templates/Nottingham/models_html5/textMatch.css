@@ -86,3 +86,11 @@
 	margin-bottom: 10px;
 	float: right;
 }
+
+#panel {
+	overflow: auto;
+}
+
+#panel.scrollable {
+	position: relative;
+}

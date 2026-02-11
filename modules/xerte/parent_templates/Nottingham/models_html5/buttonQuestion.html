@@ -23,69 +23,46 @@
 	var buttonQuestion = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$("#button").show();
-			$("#answer").empty(); // emptied rather than hidden so it's read immediately by screenreaders when text appears
 		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $("#pageContents .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
+
+			// this will be used later when showing feedback - it is done differently depending on whether content is centred vertically on the page & whether panel is full height
+			$("#pageContents").data("slideIn", x_checkVerticalCentre() && panelH === false);
 		}
 		
 		this.init = function() {
-			// labelWidth attribute not used as button will be sized automatically
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
-				$splitScreen = $("#pageContents .splitScreen"),
-				$textHolder = $("#textHolder");
-			
-			if (panelWidth == "Full") {
-				$("#pageContents .panel").appendTo($("#pageContents"));
-				$splitScreen.remove();
-			} else {
-				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
-				var textAlign = x_currentPageXML.getAttribute("align");
-				if (textAlign != "Right") {
-					if (panelWidth == "Small") {
-						$splitScreen.addClass("large");
-					} else if (panelWidth == "Large") {
-						$splitScreen.addClass("small");
-					} else {
-						$splitScreen.addClass("medium");
-					}
-				} else {
-					$textHolder
-						.removeClass("left")
-						.addClass("right")
-						.appendTo($splitScreen);
-					$("#infoHolder")
-						.removeClass("right")
-						.addClass("left");
-					if (panelWidth == "Small") {
-						$splitScreen.addClass("medium");
-					} else if (panelWidth == "Large") {
-						$splitScreen.addClass("xlarge");
-					} else {
-						$splitScreen.addClass("large");
-					}
-				}
-			}
-			
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
 			$("#prompt").html(x_addLineBreaks(x_currentPageXML.getAttribute("prompt")));
-			var btnTxt = x_currentPageXML.getAttribute("label");
-			if (btnTxt == undefined || btnTxt == "") {
-				btnTxt = "Let's See";
+
+			// panel position data is reversed as the property used to be called 'Align text' rather than 'Panel position'
+			// send amended data to split screen function as otherwise layout will be reversed
+			const attributes = {
+				panelPosition: x_currentPageXML.getAttribute("align") !== "Right" ? "Right" : "Left",
+				pageTxt: x_currentPageXML.getAttribute("instruction")  // xml property is instruction not text that is used in most page models
 			}
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
+
 			$("#button")
 				.button({
-					label:	btnTxt
+					label: x_currentPageXML.getAttribute("label") == undefined || x_currentPageXML.getAttribute("label") == "" ? "Let's See" : x_currentPageXML.getAttribute("label")
 				})
 				.click(function() {
-					$(this).hide();
-					$("#answer").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+					// to avoid a sudden jump in layout, feedback should slide in gradually if content is centred vertically & panel is full height
+					if ($("#pageContents").data("slideIn")) {
+						$(this).parent("#btnHolder").slideUp(200);
+						$("#answer").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback"))).hide().slideDown();
+					} else {
+						$(this).parent("#btnHolder").hide();
+						$("#answer").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
+					}
 					x_pageContentsUpdated();
 				});
-			
+
 			this.sizeChanged();
 			x_pageLoaded();
 		}
@@ -97,19 +74,17 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
 		
-		<div id="textHolder" class="left"></div>
-		
-		<div id="infoHolder" class="right">
-			<div class="panel" tabindex="0">
-				<div id="prompt"></div>
+	<div id="textHolder" class="splitScreen_A"></div>
+
+	<div id="infoHolder" class="splitScreen_B">
+		<div class="panelContent panel" tabindex="0">
+			<div id="prompt"></div>
+			<div id="btnHolder">
 				<button id="button"></button>
-				<div id="answer" aria-live="polite"></div>
 			</div>
+			<div id="answer" aria-live="polite"></div>
 		</div>
-		
 	</div>
 	
 </div>

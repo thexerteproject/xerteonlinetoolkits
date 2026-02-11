@@ -1,7 +1,8 @@
 /* navigator.html */
 	
 	#pageContents.tab #paneHolder, #pageContents.button #infoHolder, #pageContents.slide #infoHolder {
-		overflow: auto;
+		overflow-y: auto;
+		overflow-x: hidden;
 	}
 	
 	#pageContents .navMedia {
@@ -12,11 +13,11 @@
 		width: 100%;
 		margin-top: 0.5em;
 		margin-bottom: 0.5em;
+		box-sizing: border-box;
 	}
 	
 	#pageContents iframe.navMedia {
 		width: 98%;
-		height: 100%;
 		margin-top: 0.5em;
 		margin-bottom: 0.5em;
 	}
@@ -69,40 +70,39 @@
 	
 	
 	/* __columns__ */
-	
-	#pageContents.col #textHolder {
-		border-bottom: 1px solid #ccc;
-		margin-bottom:	1em;
-		padding-bottom:	0.7em;
+
+	#pageContents.col #textHolder + #navHolder,
+	#pageContents.col #textHolder + .textTopHolder,
+	#pageContents.col .textTopHolder + #navHolder,
+	#pageContents.col #navHolder + .textBottomHolder {
+		margin-top: 1em;
 	}
-	
-	#pageContents.col .navChild {
-		padding: 0px;
-		height: 100%;
-		overflow-x: hidden;
-		overflow-y: hidden;
+
+	#x_mainHolder:not(.x_mobile) #pageContents.col #navHolder {
+		display: grid;
+		gap: 1em;
+		max-width: 100%;
 	}
-	
-	#pageContents.col .navChildTitle {
-		padding: 0 4px;
+
+	#x_mainHolder:not(.x_mobile) #pageContents.col #navHolder .column {
+		box-sizing: border-box;
 	}
-	
-	.x_mobile #pageContents.col .navChild:not(:first-of-type) {
-		padding-top: 10px;
-		border-top:	1px solid gray;
+
+	#x_mainHolder.x_mobile #pageContents.col #navHolder {
+		/* on mobiles always show columns as rows instead */
+		display: flex;
+		flex-direction: column;
+		gap: 1em;
 	}
-	
-	.x_mobile #pageContents.col .navChild {
-		margin-top:	10px;
+
+	#x_mainHolder.x_verticalCentrePanel:not(.x_noVerticalCentre):not(.x_noVerticalCentrePanel) #x_pageHolder:not(.x_scrolling) #navHolder .column,
+	#x_pageHolder.x_verticalCentrePanel:not(.x_scrolling) #navHolder .column {
+		display: flex;
+		justify-content: safe center;
+		flex-direction: column;
 	}
-	
-	.x_mobile #pageContents.col .navChild:first-of-type {
-		margin-top: 0;
-		padding-top: 0;
-		border-top:	0;
-	}
-	
-	
+
+
 	/* __slides__ */
 	
 	#pageContents.slide .navChildTitle {
@@ -151,15 +151,19 @@
 	#tabHolder .navChildTitle.ui-tabs-active {
 		border-bottom: 1px solid white !important;
 	}
-	
-	#pageContents.tab #paneHolder {
-		overflow: hidden;
-	}
 
 
 	/* __accordion__ */
 	#pageContents.acc .navChildTitle:focus,
 	#pageContents.acc .navChild:focus {
 		outline: auto; /* ensures the browser focus is shown - the jquery ui css removes this */
+	}
+
+	@media (max-width: 480px) {
+		#pageContents.tab #infoHolder,
+		#pageContents.tab #paneHolder,
+		#pageContents.tab #paneHolder .navChild {
+			height: auto !important;
+		}
 	}
 	

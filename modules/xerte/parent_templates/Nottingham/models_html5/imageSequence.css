@@ -236,7 +236,7 @@
 	left: 0;
 }
 
-#loadMsg .panel {
+#loadMsg .panelContent.panel {
 	display: inline-block;
 }
 

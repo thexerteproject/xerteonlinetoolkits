@@ -38,23 +38,23 @@
 					$("#transcriptBtn").click();
 					$("#transcript").css("display", "none");
 				}
-				let maxW = $x_pageHolder.width() - offset[0];
+				let maxW = $x_innerPage.width() - offset[0];
 				let maxH = $x_pageHolder.height() - offset[1];
 
-				$pageImg.css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : "100%");
+				$pageImg.css("max-width", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_innerPage.width() - offset[0] : "100%");
 				$pageImg.css("max-height", x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.height() - offset[1] : "100%");
 
 				if (x_currentPageXML.getAttribute("imagesize") == "small") {
-	                maxW = x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : maxW*0.4;
+	                maxW = x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_innerPage.width() - offset[0] : maxW*0.4;
 				}
 				if (x_currentPageXML.getAttribute("imagesize") == "auto") {
-					maxW = x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : maxW*0.6;
+					maxW = x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_innerPage.width() - offset[0] : maxW*0.6;
 				}
 				if (x_currentPageXML.getAttribute("imagesize") == "big") {
-					maxW = x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_pageHolder.width() - offset[0] : maxW*0.8;
+					maxW = x_currentPageXML.getAttribute("align") == "Top" || x_currentPageXML.getAttribute("align") == "Bottom" ? $x_innerPage.width() - offset[0] : maxW*0.8;
 				}
 				if (x_currentPageXML.getAttribute("imagesize").toLowerCase() == "full screen") {
-					$pageImg.css("max-width", $x_pageHolder.width() - offset[0]);
+					$pageImg.css("max-width", $x_innerPage.width() - offset[0]);
 					$pageImg.css("max-height", $x_pageHolder.height() - offset[1]);
 				}
 
@@ -72,7 +72,7 @@
 			else
 			{
 				// Make visible
-				$("#imgInnerDiv").css("width", $x_pageHolder.width() - offset[0]);
+				$("#imgInnerDiv").css("width", $x_innerPage.width() - offset[0]);
 				$("#imgInnerDiv").css("height", $x_pageHolder.height() - offset[1]);
 				$("#imgInnerDiv").css("overflow", "auto");
 				$("#pageImg").css("visibility", "visible");

@@ -22,7 +22,7 @@
 	// other functions for model should also be in here to avoid conflicts
 	var nav = new function() {
 		
-		// Called from xenith if tab level deeplinking is available
+		// Called from xenith if tab level deep linking is available
 		this.deepLink = function(item) {
 			if (x_currentPageXML.getAttribute("type") != "Col") {
 				if (x_currentPageXML.getAttribute("type") == "Slide") {
@@ -37,7 +37,7 @@
 						});
 					}
 				} else {
-					var $btns = x_currentPageXML.getAttribute("type") == "Button" ? $('.navChildTitle') : $('.navChildTitle a');
+					const $btns = x_currentPageXML.getAttribute("type") == "Button" ? $('.navChildTitle') : $('.navChildTitle a');
 					if ($.isNumeric(item) && $btns.eq(parseInt(item)).length > 0) {
 						$btns.eq(parseInt(item)).click();
 					} else {
@@ -54,25 +54,47 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			if (x_currentPageXML.getAttribute("type") != "Col" && x_browserInfo.mobile == false && x_currentPageXML.getAttribute("panelHeight") != "fit") {
-				if (x_currentPageXML.getAttribute("type") == "Acc") {
-					$("#infoHolder")
-						.height(x_getAvailableHeight([$("#infoHolder")]))
-						.accordion("refresh");
-				} else if (x_currentPageXML.getAttribute("type") == "Tab") {
-					var $infoHolder = $("#infoHolder"),
-						$paneHolder = $("#paneHolder");
-					
-					$infoHolder
-						.height(x_getAvailableHeight([$infoHolder]))
-						.tabs("refresh");
-					
-					$paneHolder.height(x_getAvailableHeight([$infoHolder], [$("#tabHolder")]));
-					$paneHolder.find(".navChild").height(x_getAvailableHeight([$infoHolder, $paneHolder.find(".navChild")], [$("#tabHolder")]));
-					
-				} else {
-					var $panel = $("#navHolder .panel").length > 0 ? $("#navHolder .panel") : $("#pageContents > div.panel");
-					$("#infoHolder").height(x_getAvailableHeight([$("#infoHolder"), $panel], [$("#btnHolder")]));
+			// only need to do some resizing if not column page & panel fills the available space (rather than fits content)
+			if (x_currentPageXML.getAttribute("type") != "Col") {
+				if ($("#pageContents").hasClass("fill")) {
+					if (x_currentPageXML.getAttribute("type") == "Acc") {
+						// accordion
+						if ($(".splitScreen_B").css("flex-basis") !== "100%") {
+							// navigator isn't full width so ensure the panel is full height when needed
+							$("#infoHolder").accordion({heightStyle: "fill"})
+							$("#navHolder .panelContent").height(x_getAvailableHeight([$("#navHolder"), $(".panelContent"), $("#infoHolder")], [1]));
+						} else {
+							// navigator is full width so panel height is auto (fits content)
+							$("#infoHolder").accordion({heightStyle: "content"});
+							$("#navHolder .panelContent, #infoHolder .navChild").height("unset");
+                        }
+
+						// need to refresh accordion widget to ensure size & animations are still correct
+						$("#infoHolder").accordion("refresh");
+
+					} else if (x_currentPageXML.getAttribute("type") == "Tab") {
+						// tabs
+						if ($(".splitScreen_B").css("flex-basis") !== "100%") {
+							// navigator isn't full width so ensure the panel is full height when needed
+							const $infoHolder = $("#infoHolder");
+							const $paneHolder = $("#paneHolder");
+							$infoHolder.height(x_getAvailableHeight([$infoHolder]))
+							$paneHolder.find(".navChild").height(x_getAvailableHeight([$infoHolder, $paneHolder.find(".navChild")], [$("#tabHolder")]));
+						} else {
+							// navigator is full width so panel height is auto (fits content)
+							$("#infoHolder, #paneHolder .navChild").height("unset");
+						}
+
+					} else { // slideshow & buttons
+						if ($(".splitScreen_B").css("flex-basis") !== "100%") {
+							// navigator isn't full width so ensure the panel is full height when needed
+							const $panel = $("#navHolder .panelContent").length > 0 ? $("#navHolder .panelContent") : $("#pageContents > div.panelContent");
+							$("#infoHolder").height(x_getAvailableHeight([$("#infoHolder"), $panel], [$("#btnHolder")]));
+						} else {
+							// navigator is full width so panel height is auto
+							$("#infoHolder").height("unset");
+						}
+					}
 				}
 			}
 			
@@ -81,60 +103,102 @@
 		
 		// function resizes media controls
 		this.resizeMedia = function() {
-			// resize if the media is now the wrong size for its holder
-			// this is done by manually triggering the window resize event (mediaelement.js listens to this event)
-			
-			if ($("iframe.navMedia").length > 0 && x_currentPageXML.getAttribute("type") != "Tab" && x_currentPageXML.getAttribute("type") != "Acc") {
-				// manually resize height of iframes
-				$("iframe.navMedia").height($("#infoHolder").height() - 12);
+			// work out the maximum height for a piece of media
+			function getMaxH($media) {
+				let maxH;
+				if (x_currentPageXML.getAttribute("type") !== "Col") {
+					if ($("#pageContents").hasClass("fit") || $(".splitScreen_B").css("flex-basis") === "100%") {
+						// navigator isn't a fixed height so make sure media is shown as large as possible (but not too large)
+						maxH = x_currentPageXML.getAttribute("type") == "Acc" ? x_getAvailableHeight([$("#infoHolder"), $media.parents(".navChild")], []) :
+								x_currentPageXML.getAttribute("type") == "Tab" ? x_getAvailableHeight([$("#infoHolder"), $media.parents(".navChild")], [$("#tabHolder")]) :
+								x_currentPageXML.getAttribute("type") == "Button" ? x_getAvailableHeight([$("#navHolder"), $("#panelContent"), $("#infoHolder")], [$("#btnHolder")]) :
+								x_getAvailableHeight([$("#navHolder"), $("#panelContent"), $("#infoHolder")]); // slideshow
+					} else {
+						maxH = x_currentPageXML.getAttribute("type") == "Acc" || x_currentPageXML.getAttribute("type") == "Tab" ? $media.parents(".navChild").height() :
+								$media.parents("#infoHolder").height(); // slideshow or buttons
+					}
+
+				} else { // columns
+					maxH = x_getAvailableHeight();
+				}
+				return maxH;
 			}
-			
+
+			// resize images
+			$(".paneImg").each(function() {
+				const $this = $(this);
+				$this.hide();
+				const maxW = "100%";
+				const maxH = getMaxH($this);
+
+				$this
+					.css({
+						"max-width": maxW,
+						"max-height": maxH - ($this.outerHeight(true) - $this.height()) - ($this.parents("figure").length > 0 ? $this.parents("figure").find("figcaption").outerHeight(true) : 0)
+					})
+					.show();
+			});
+
+			// resize iframes
+			$("iframe.navMedia").each(function() {
+				const $this = $(this);
+				$this.hide();
+				const maxW = "100%";
+				const maxH = getMaxH($this);
+
+				$this
+					.css({
+						"max-width": maxW,
+						"max-height": maxH
+					})
+					.show();
+			});
+
+			// resize video / audio if now the wrong size for its holder
+			// done by manually triggering the window resize event (mediaelement.js listens to this event)
 			$(".navChild:visible .navMedia.video, .navChild:visible .navMedia.audio").each(function(i) {
-				
-				var availSpace = $("#infoHolder").width() - parseInt($(this).closest(".navChild").css('padding-left')) - parseInt($(this).closest(".navChild").css('padding-right'));
-				
+				const $holder = $(this).closest(".panelPage").length > 0 ? $(this).closest(".panelPage") : $(this).closest(".navChild");
+
 				if ($(this).hasClass("audio")) {
-					var audioBarW = 0;
+					let audioBarW = 0;
 					$(this).find(".mejs-inner").find(".mejs-controls").children().each(function() {
 						audioBarW += $(this).outerWidth();
 					});
-					
-					//var availSpace = $("#infoHolder").width() - parseInt($(this).closest(".navChild").css('padding-left')) - parseInt($(this).closest(".navChild").css('padding-right'));
-					if (audioBarW > availSpace || audioBarW < availSpace - 50) {
+					$(this).hide();
+
+					if (audioBarW > $holder.width() + 1 || audioBarW < $holder.width() - 50) {
+						$(this).show();
 						$x_window.resize();
 						return false;
+					} else {
+						$(this).show();
 					}
-				} else {
-					var $video = $(this).find('video'),
-						$videoDiv = $(this).find('.mejs-video');
-					
-					if ($videoDiv.width() > availSpace || ($videoDiv.width() < availSpace - 50 && ($video.data('width') == 0 || $videoDiv.width() < $video.data('width')))) {
+
+				} else { // video
+					const $this = $(this);
+					const $video = $this.find('video');
+					const $videoDiv = $this.find('.mejs-video');
+					const videoW = $videoDiv.width();
+					$(this).hide();
+
+					if (videoW > $holder.width() - 1 || (videoW < $holder.width() - 50 && ($video.data('width') == 0 || videoW < $video.data('width')))) {
+						$this.css("max-width", $holder.width() - 10);
+						$this.show();
 						$x_window.resize();
 						return false;
+					} else {
+						$(this).show();
 					}
 				}
-			});
-
-			// ensure images aren't too tall
-			$(".paneImg").each(function() {
-				var $this = $(this);
-				var parentH = x_currentPageXML.getAttribute("type") == "Acc" || x_currentPageXML.getAttribute("type") == "Tab" ? $this.parents(".navChild").height() :
-						x_currentPageXML.getAttribute("type") == "Button" || x_currentPageXML.getAttribute("type") == "Slide" ? $this.parents("#infoHolder").height() :
-						x_getAvailableHeight(); // columns
-
-				$this.css({
-					"max-width": $this.parents(".navChild").width() - ($this.outerWidth(true) - $this.width()),
-					"max-height": parentH - ($this.outerHeight(true) - $this.height()) - ($this.parents("figure").length > 0 ? $this.parents("figure").find("figcaption").outerHeight(true) : 0)
-				});
 			});
 		}
 
 		// Loads popcorn, then calls setup.
 		this.init = function() 
 		{
-			var popLocation = "common_html5/js/popcorn/"
-			var scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
-			var i = 0;
+			const popLocation = "common_html5/js/popcorn/"
+			const scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
+			let i = 0;
 			if (!xot_offline) {
 				scriptsToLoad.forEach(function (file) {
 					$.getScript(x_templateLocation + popLocation + file + ".js")
@@ -153,71 +217,52 @@
 		}
 		
 		this.setUp = function() {
-			var $pageContents = $('#pageContents'),
-				$textHolder = $('#textHolder'),
-				$navHolder = $('#navHolder');
+			const $pageContents = $('#pageContents');
+			const $textHolder = $('#textHolder');
+			const $navHolder = $('#navHolder');
 			
 			$pageContents.addClass(x_currentPageXML.getAttribute("type").toLowerCase());
 			
 			// set up basic structure of page - different for each navigator type
 			if (x_currentPageXML.getAttribute("type") != "Col") {
-				
-				var $navHolderInner = $('<div/>');
-				if (x_currentPageXML.getAttribute("type") != "Acc" && x_currentPageXML.getAttribute("type") != "Tab") {
-					$navHolderInner.addClass('panel');
+
+				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+				$("#textHolder").addClass("splitScreen_A");
+				$("#navHolder").addClass("splitScreen_B");
+				const $navHolderInner = $('<div class="panelContent panel"/>').appendTo($navHolder);
+
+				// navigator height might fit contents of pane or fill available height
+				// this is decided by panelHeight property but if viewed on mobile or there's text above or below navigator then the property is overridden and will fit content instead
+				let panelH = x_currentPageXML.getAttribute("panelHeight") === "fit" || x_browserInfo.mobile === true ? "fit" : "fill";
+				if (panelH === "fill" && ((x_addLineBreaks(x_currentPageXML.getAttribute("textTop")) != undefined && x_addLineBreaks(x_currentPageXML.getAttribute("textTop")).trim() !== "") || (x_addLineBreaks(x_currentPageXML.getAttribute("textBottom")) != undefined && x_addLineBreaks(x_currentPageXML.getAttribute("textBottom")).trim() !== "") || (x_currentPageXML.getAttribute("panelWidth") === "Full" && x_currentPageXML.getAttribute("removeTxt") === "false"))) {
+					panelH = "fit";
 				}
-				
-				var panelWidth = x_currentPageXML.getAttribute("panelWidth") == undefined ? "Medium" : x_currentPageXML.getAttribute("panelWidth");
-				
-				// full width - get rid of everything else
-				if (panelWidth == "Full") {
-					$navHolderInner.appendTo($pageContents);
-					$textHolder.remove();
-					$navHolder.remove();
-					
-				} else {
-					$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-					
-					$navHolderInner.appendTo($navHolder);
-					
-					var $splitScreen = $('<div class="splitScreen"/>');
-					
-					$splitScreen
-						.prependTo($pageContents)
-						.append($textHolder)
-						.append($navHolder);
-					
-					// panel layout (left/right small/medium/large)
-					if (x_currentPageXML.getAttribute("panelPos") == "Left") {
-						$textHolder.addClass('right');
-						$navHolder
-							.prependTo($splitScreen)
-							.addClass('left');
-					} else {
-						$textHolder.addClass('left');
-						$navHolder.addClass('right');
-					}
-					
-					if (panelWidth == "Small") {
-						$("#pageContents .splitScreen").addClass(x_currentPageXML.getAttribute("panelPos") == "Left" ? "medium" : "large");
-					} else if (panelWidth == "Large") {
-						$("#pageContents .splitScreen").addClass(x_currentPageXML.getAttribute("panelPos") == "Left" ? "xlarge" : "small");
-					} else {
-						$("#pageContents .splitScreen").addClass(x_currentPageXML.getAttribute("panelPos") == "Left" ? "large" : "medium");
-					}
+				$pageContents.addClass(panelH);
+
+				const attributes = {
+					panelPosition: x_currentPageXML.getAttribute("panelPos"), // xml property is panelPos not align that is used in most page models
+					panelStyle: x_currentPageXML.getAttribute("type") !== "Acc" && x_currentPageXML.getAttribute("type") !== "Tab" ? x_currentPageXML.getAttribute("panelStyle") : "true" // accordion & tabs don't have panel style
 				}
+
+				if (x_currentPageXML.getAttribute("panelWidth") === "Full") {
+					attributes.fullH = true;
+				}
+
+				// set up split screen layout
+				XENITH.SPLITSCREEN.init({"attributes": attributes});
 				
 				// set up all the html elements
-				var $infoHolder = $('<div id="infoHolder"/>').appendTo($navHolderInner);
+				const $infoHolder = $('<div id="infoHolder"/>').appendTo($navHolderInner);
 				
 				if (x_currentPageXML.getAttribute("type") == "Slide") {
 					$(x_currentPageXML).children().each(function(i) {
 						$infoHolder.append('<div class="panelPage" aria-roledescription="' + x_getLangInfo(x_languageData.find("carousel")[0], "slide", "Slide") + '"><h3 class="navChildTitle" id="navChildTitle' + i + '"></h3><div id="navChild' + i + '" class="navChild"></div></div>');
 					});
 					
-					var $btnHolder = $('<div id="btnHolder"><p id="slideTxt" aria-live="polite"></p><div id="btns"><button id="prevBtn">1</button><button id="nextBtn">2</button></div><div class="clearBoth"></div></div>');
+					const $btnHolder = $('<div id="btnHolder"><p id="slideTxt" aria-live="polite"></p><div id="btns"><button id="prevBtn">1</button><button id="nextBtn">2</button></div><div class="clearBoth"></div></div>');
 					
-					if (x_currentPageXML.getAttribute("buttonPos") != "Top" && x_browserInfo.mobile != true) {
+					if (x_currentPageXML.getAttribute("buttonPos") != "Top") {
 						$btnHolder.appendTo($navHolderInner);
 					} else {
 						$btnHolder
@@ -230,8 +275,8 @@
 					// i.e. keyboard controls & info read to screen readers will be the same as those for tabbed navigator
 					$navHolderInner.attr("role", "tablist");
 					
-					var $btnHolder = $('<div id="btnHolder"></div>');
-					if (x_currentPageXML.getAttribute("buttonPos") != "Bottom" || x_browserInfo.mobile == true) {
+					const $btnHolder = $('<div id="btnHolder"></div>');
+					if (x_currentPageXML.getAttribute("buttonPos") != "Bottom") {
 						$btnHolder.prependTo($navHolderInner);
 					} else {
 						$btnHolder
@@ -250,8 +295,8 @@
 					});
 
 				} else if (x_currentPageXML.getAttribute("type") == "Tab") {
-					var $tabHolder = $('<ul id="tabHolder"/>').appendTo($infoHolder),
-						$paneHolder = $('<div id="paneHolder" />').appendTo($infoHolder);
+					const $tabHolder = $('<ul id="tabHolder"/>').appendTo($infoHolder);
+					const $paneHolder = $('<div id="paneHolder" />').appendTo($infoHolder);
 					
 					$(x_currentPageXML).children().each(function(i) {
 						$tabHolder.append('<li class="navChildTitle"><a id="navChildTitle' + i + '" href="#navChild' + i + '"></a></li>');
@@ -261,33 +306,76 @@
 				
 			// column page
 			} else {
+				// add full width text above &/or below the columns
 				if (x_currentPageXML.getAttribute("text") == "") {
 					$textHolder.remove();
 				} else {
 					$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 				}
+
+				if (x_currentPageXML.getAttribute("textTop") != undefined && x_currentPageXML.getAttribute("textTop").trim() != "") {
+					$('<div class="textTopHolder">' + x_addLineBreaks(x_currentPageXML.getAttribute("textTop")) + '</div>').insertBefore($navHolder);
+				}
+
+				if (x_currentPageXML.getAttribute("textBottom") != undefined && x_currentPageXML.getAttribute("textBottom").trim() != "") {
+					$('<div class="textBottomHolder">' + x_addLineBreaks(x_currentPageXML.getAttribute("textBottom")) + '</div>').insertAfter($navHolder);
+				}
 				
 				// set up column contents
 				$(x_currentPageXML).children().each(function(i) {
-					$navHolder.append('<div id="navChild' + i + '" class="navChild">' + (this.getAttribute("name") != "" ? '<h3 id="navChildTitle' + i + '" class="navChildTitle"></h3>' : '') + '</div>');
+					$navHolder.append('<div id="navChild' + i + '" class="navChild column">' + (this.getAttribute("name").trim() != "" && x_currentPageXML.getAttribute("showTitles") !== "false" ? '<h3 id="navChildTitle' + i + '" class="navChildTitle"></h3>' : '') + '</div>');
 				});
-				
-				if (x_browserInfo.mobile == false) {
-					var numColumns = $(x_currentPageXML).children().length,
-						spacerWidth = (numColumns - 1) * 2, // 2% gap between columns
-						columnWidth = Math.floor((100 - spacerWidth) / numColumns),
-						edgeWidth = Math.floor((100 - spacerWidth - (columnWidth * numColumns)) / 2);
-					
-					$navHolder.find(".navChild")
-						.addClass("x_floatLeft")
-						.css({
-							width : columnWidth + "%",
-							"padding-left" : "2%"
-						});
-					
-					$navHolder.find(".navChild:first").css("padding-left", edgeWidth + "%");
-					$navHolder.find(".navChild:last").css("padding-right", edgeWidth + "%");
-					
+
+				// get the minimum width for the columns - columns will wrap onto a new row rather than be shown smaller than this
+				const minWidth = x_currentPageXML.getAttribute("minWidth") != undefined ? x_currentPageXML.getAttribute("minWidth") : "75";
+
+				// now work out if columns are equal width or whether width % have been set
+				let equal = true;
+				if (x_currentPageXML.getAttribute("columnWidth") != undefined && x_currentPageXML.getAttribute("columnWidth").trim() != "") {
+					const columnWidths = x_currentPageXML.getAttribute("columnWidth").split("/");
+
+					// check all widths are valid & they add up to 100% & they match the no. of columns
+					let count = 0;
+					let cssString = "";
+					for (let i=0; i<columnWidths.length; i++) {
+						if (columnWidths[i].trim() === "" || !$.isNumeric(columnWidths[i])) {
+							columnWidths.splice(i,1);
+							i--;
+						} else {
+							count += Number(columnWidths[i].trim());
+							cssString += "minmax(" + minWidth + "px, " + columnWidths[i].trim() + "fr) ";
+						}
+					}
+
+					// unequal widths
+					if (count === 100 && columnWidths.length === $(".column").length) {
+						equal = false;
+						// without the media query, the columns will not wrap onto new lines when too narrow
+						// unequal width percentages work until columns reach minimum width
+						$("#pageContents").prepend(`<style>
+						#navHolder {
+							grid-template-columns: ${cssString};
+						}
+
+						@media (max-width: ${Number(minWidth)*columnWidths.length + (Math.ceil(parseFloat($navHolder.css("gap"))) * columnWidths.length-1)}px) {
+							#navHolder {
+								grid-template-columns: repeat(auto-fit, minmax(${minWidth}px, 1fr));
+							}
+						}
+						</style>`);
+					}
+				}
+
+				// equal widths - this is simpler, it will wrap to new lines when a column reaches minimum width
+				if (equal === true) {
+					$navHolder.css("grid-template-columns", "repeat(auto-fit, minmax(" + minWidth + "px, 1fr))");
+				}
+
+				// add a panel style if needed
+				if (x_currentPageXML.getAttribute("columnPanelStyle") === "single") {
+					$navHolder.addClass("panel");
+				} else if (x_currentPageXML.getAttribute("columnPanelStyle") === "each") {
+					$navHolder.find(".column").addClass("panel");
 				}
 			}
 			
@@ -296,16 +384,16 @@
 				
 				// column/pane text
 				$("#navChildTitle" + i).html(this.getAttribute("name"));
-				var $navChild = $("#navChild" + i).append(x_addLineBreaks(this.getAttribute("text")));
+				const $navChild = $("#navChild" + i).append(x_addLineBreaks(this.getAttribute("text")));
 				
 				// column/pane media
 				if (this.getAttribute("url") != undefined && this.getAttribute("url") != "") {
 					
-					var $media,
-						fileExt = this.getAttribute("url").split('.').pop().toLowerCase();
+					let $media;
+					const fileExt = this.getAttribute("url").split('.').pop().toLowerCase();
 					
 					// audio
-					if (fileExt == "mp3") {
+					if (fileExt === "mp3") {
 						$media = $('<div id="navAudio"+i class="navMedia audio"></div>');
 						
 						$media.data({
@@ -315,7 +403,7 @@
 						});
 						
 					// image
-					} else if (fileExt == "jpeg" || fileExt == "jpg" || fileExt == "png" || fileExt == "gif") {
+					} else if (fileExt === "jpeg" || fileExt === "jpg" || fileExt === "png" || fileExt === "gif") {
 						if (this.getAttribute("caption") != undefined && this.getAttribute("caption") != "") {
 							$media = $('<figure class="navMedia"><img class="paneImg" src="' + this.getAttribute("url") + '" ' + (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "" ? 'alt="' + this.getAttribute("tip") + '"' : '') + '/><figcaption>' + this.getAttribute("caption") + '</figcaption></figure>');
 						} else {
@@ -328,12 +416,11 @@
 							$media = $(this.getAttribute("url")).first();
 							$media
 								.removeAttr('width')
-								.removeAttr('height')
 								.addClass('navMedia');
 						}
 						
 					// uploaded video / youtube / vimeo
-					} else if (fileExt == "mp4" || x_isYouTubeVimeo(this.getAttribute("url")) != false) {
+					} else if (fileExt === "mp4" || x_isYouTubeVimeo(this.getAttribute("url")) != false) {
 						$media = $('<div id="navMedia_' + i + '" class="navMedia video"></div>');
 						
 						$media.data({
@@ -341,7 +428,7 @@
 							title: this.getAttribute("tip") != undefined && this.getAttribute("tip") != "" ? this.getAttribute("tip") : ''
 						});
 						
-						var yt = x_isYouTubeVimeo(this.getAttribute("url"));
+						const yt = x_isYouTubeVimeo(this.getAttribute("url"));
 						if (yt != false) {
 							$media.addClass(yt);
 						}
@@ -357,7 +444,7 @@
 						}
 
 						if ($media.hasClass('video')) {
-							this.popcornInstance = nav.loadMedia($media, "video", {	
+							this.popcornInstance = nav.loadMedia($media, "video", {
 								tip: $media.data('title'),
 								width: "100%",
 								height: "100%",
@@ -399,7 +486,8 @@
 
 			// set up interactions to change nested page
 			if (x_currentPageXML.getAttribute("type") == "Acc") {
-				
+				const heightStyle = $pageContents.hasClass("fit") ? "content" : "fill";
+
 				$("#infoHolder").accordion({
 					icons: {
 						header: "fa fa-x-acc-hide",
@@ -407,9 +495,8 @@
 					},
 					collapsible: x_currentPageXML.getAttribute("collapsible") == "true" ? true : false,
 					active: x_currentPageXML.getAttribute("collapsible") == "true" ? false : 0,
-					heightStyle: x_currentPageXML.getAttribute("panelHeight") != "fit" && x_browserInfo.mobile != true ? "fill" : "content",
+					heightStyle: heightStyle,
 					activate: function(e, ui) {
-						ui.newPanel.find('.navMedia.audio .mejs-inner').show();
 						nav.resizeMedia();
 
 						// if accordion is opened because of deep link, there may be more than one accordion heading that can be tabbed to - force tabindex on all other headings to be off
@@ -417,17 +504,30 @@
 							$("#infoHolder .navChildTitle[tabindex=0]").not(ui.newHeader).attr("tabindex", "-1")
 						}
 
+						// is there is a pane open?
+						const newHeader = ui.newHeader[0];
+						if (!newHeader) return;
+
+						// is header is within visible area of container?
+						const containerRect = $x_pageHolder[0].getBoundingClientRect();
+						const headerRect = newHeader.getBoundingClientRect();
+						const inView = x_browserInfo.mobile === true ? headerRect.top >= 0 && headerRect.bottom <= window.innerHeight : headerRect.top >= containerRect.top && headerRect.bottom <= containerRect.bottom;
+						if (!inView) {
+							newHeader.scrollIntoView({
+								behavior: 'smooth',
+								block: 'start',
+								inline: 'nearest'
+							});
+						}
+
+						// scroll old panel to top as it closes (this works better than scrolling new panel to top as it opens
 						ui.oldPanel
 							.data("height", ui.oldPanel.height())
 							.css({ display: "block", height: "0px;" }) // it won't do scrollTop when display is none
 							.scrollTop(0)
 							.css({ display: "none", height: ui.oldPanel.data("height") });
-					},
-					beforeActivate: function(e, ui) {
-						ui.newPanel.scrollTop(0);
-						ui.newPanel.find('.navMedia.audio .mejs-inner').hide();
 					}
-				})
+				});
 
 				$("#infoHolder .navChildTitle").keydown(function(e) {
 					const charCode = e.charCode || e.keyCode;
@@ -455,18 +555,16 @@
 					.button()
 					.attr("role", "tab")
 					.on("click", function() {
-						var $thisNavChild = $('#navChild' + $(this).index());
+						const $thisNavChild = $('#navChild' + $(this).index());
 						if ($thisNavChild.is(":hidden")) {
-							var $oldSelected = $("#btnHolder .navChildTitle:eq(" + $("#infoHolder .navChild:visible").index() + ")");
-							$oldSelected
+							$("#btnHolder .navChildTitle:eq(" + $("#infoHolder .navChild:visible").index() + ")")
 								.attr({
 									"aria-selected": "false",
 									"tabindex": "-1"
 								})
 								.removeClass("selected");
 
-							var $newSelected = $("#btnHolder .navChildTitle:eq(" + $thisNavChild.index() + ")");
-							$newSelected
+							$("#btnHolder .navChildTitle:eq(" + $thisNavChild.index() + ")")
 								.attr({
 									"aria-selected": "true",
 									"tabindex": "0"
@@ -476,7 +574,19 @@
 							$('.navChild').hide();
 							$thisNavChild.show();
 							nav.resizeMedia();
+
+							// make sure panel content & page are scrolled up (page might be scrolled down if buttons at bottom)
 							$("#infoHolder").scrollTop(0);
+							const containerRect = $x_pageHolder[0].getBoundingClientRect();
+							const panelRect = $(".panelContent")[0].getBoundingClientRect();
+							const inView = x_browserInfo.mobile === true ? panelRect.top >= 0 : panelRect.top >= containerRect.top;
+							if (!inView) {
+								$(".panelContent")[0].scrollIntoView({
+									behavior: 'smooth',
+									block: 'start',
+									inline: 'nearest'
+								});
+							}
 						}
 					})
 					.keydown(function (e) {
@@ -536,17 +646,12 @@
 				
 			} else if (x_currentPageXML.getAttribute("type") == "Tab") {
 				$("#infoHolder").tabs({
-					heightStyle: x_currentPageXML.getAttribute("panelHeight") != "fit" && x_browserInfo.mobile != true ? "fill" : "content",
 					activate: function(e, ui) {
-						ui.newPanel.find('.navMedia.audio .mejs-inner').show();
 						nav.resizeMedia();
+						$("#paneHolder").scrollTop(0);
 						ui.newPanel.scrollTop(0);
-					},
-					beforeActivate: function(e, ui) {
-						ui.newPanel.find('.navMedia.audio .mejs-inner').hide();
 					}
 				});
-				
 			}
 			
 			this.sizeChanged();
@@ -559,18 +664,28 @@
 		}
 		
 		this.slideshowChange = function(newPage) {
-			var $pageContents = $("#pageContents"),
-				$prevBtn = $("#prevBtn"),
-				$nextBtn = $("#nextBtn");
-			
-			var prevPage = $pageContents.data("currentPage");
+			const $pageContents = $("#pageContents");
+			const $prevBtn = $("#prevBtn");
+			const $nextBtn = $("#nextBtn");
+
 			$pageContents.data("currentPage", newPage);
+
+			// make sure panel content & page are scrolled up (page might be scrolled down if buttons at bottom)
 			$("#infoHolder").scrollTop(0);
+			const containerRect = $x_pageHolder[0].getBoundingClientRect();
+			const panelRect = $(".panelContent")[0].getBoundingClientRect();
+			const inView = x_browserInfo.mobile === true ? panelRect.top >= 0 : panelRect.top >= containerRect.top;
+			if (!inView) {
+				$(".panelContent")[0].scrollIntoView({
+					behavior: 'smooth',
+					block: 'start',
+					inline: 'nearest'
+				});
+			}
+
 			$("#infoHolder .panelPage:visible").hide();
 			$("#infoHolder .panelPage:eq(" + newPage + ")").show();
 			$("#slideTxt").html($pageContents.data("slideTxt").replace("{i}", newPage + 1).replace("{n}", $pageContents.data("totalPages")));
-			
-			nav.resizeMedia();
 			
 			if (newPage == 0) {
 				$prevBtn.button("disable").removeClass("ui-state-focus").removeClass("ui-state-hover");
@@ -582,6 +697,8 @@
 				$prevBtn.button("enable");
 				$nextBtn.button("enable");
 			}
+
+			nav.resizeMedia();
 		}
 		
 		this.mediaMetadata = function($video, wh) {

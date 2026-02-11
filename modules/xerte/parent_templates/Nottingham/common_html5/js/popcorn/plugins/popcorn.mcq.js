@@ -244,7 +244,7 @@ optional: feedback page synch play enable
 				$target = $("#" + options.target);
 				var $optionText = options.name !== "" ? '<h4>' + options.name + '</h4>' + x_addLineBreaks(options.text) : x_addLineBreaks(options.text);
 				$target.hide();
-				debugger;
+				//debugger;
 				// Store the answers in a temporary array
 				var elements = [];
 				(options.childNodes).each(function(i) {

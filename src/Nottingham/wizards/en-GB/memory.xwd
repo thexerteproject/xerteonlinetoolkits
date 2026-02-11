@@ -1,7 +1,9 @@
 <wizard menus="Games">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <memory><![CDATA[<memory name="Enter Page Title" resetBtnTxt="Shuffle Cards"/>]]></memory>
+      <memory><![CDATA[<memory name="Enter Page Title" text=""
+      panelWidth="Full" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
+      resetBtnTxt="Shuffle Cards"/>]]></memory>
     </newNodes>
   </pageWizard>
 
@@ -9,14 +11,35 @@
   <memory menu="Games" menuItem="Memory Game" hint="A memory card game. Create pairs of text and images for the user to match." icon="icLightbulb" thumb="thumbs/memoryGame.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#memorygame" wiki="https://xerte.org.uk/wiki/doku.php?id=games_memorygame_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-	<resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
+
+    <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here" defaultValue="" mandatory="true" condition="(panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||removeTxt!='true'"/>
+
+    <layoutGroup label="Page Layout" type="group">
+        <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Full" conditionTrigger="true" mandatory="true"/>
+        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'&amp;&amp;panelWidth!=undefined"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="true"/>
+        <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="false" conditionTrigger="true" condition="panelWidth=='Full'||panelWidth==undefined"/>
+    </layoutGroup>
+
 	<backurl label="Card Back Image" type="Media" optional="true" placeholder="Select an image"/>
-	<text label="Page Text" type="TextArea" defaultValue="" placeholder="Enter text for the page here" height="200" optional="true"/>
 	<imgFit label="Image Scaling" optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="cover" tooltip="How the images fill the cards. 'Stretch to fit' will stretch the image vertically or horizontally to fill the whole card area, while 'Crop to fit' will crop the image to fit without distorting it"/>
 
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'&amp;&amp;panelWidth!=undefined"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'&amp;&amp;panelWidth!=undefined"/>
+    </textBelowGroup>
+
+    <resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
+
     <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
-      <qfMatchItem label="Number of Items" type="TextInput" wysiwyg="true" defaultValue = "6" optional="true"/>
-      <qfButton type="quickfillbutton" optional="true"/>
+        <qfMatchItem label="Number of Items" type="TextInput" wysiwyg="true" defaultValue = "6" optional="true"/>
+        <qfButton type="quickfillbutton" optional="true"/>
     </QFGroup>
 
     <newNodes>

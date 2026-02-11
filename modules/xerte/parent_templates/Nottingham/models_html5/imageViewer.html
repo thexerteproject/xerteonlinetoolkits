@@ -44,8 +44,6 @@
 			$selectBtn		= $controlPanel.find("#selectArea");
 			$resetBtn		= $controlPanel.find("#resetImage");
 			$fullBtn		= $controlPanel.find("#toggleScreen");
-			
-			$resetBtn.trigger("click");
 		}
 		
 		// function called every time the size of the LO is changed
@@ -526,7 +524,7 @@
 				imageSize = x_currentPageXML.getAttribute("imagesize");
 			
 			if (imageSize != undefined) {
-				imgMaxW = $x_pageDiv.width();
+				imgMaxW = $x_innerPage.width();
 				imgMaxH = x_getAvailableHeight([], [$("#mainPanel").outerHeight() - $("#mainPanel").height()], true);
 
 				if (x_browserInfo.mobile === false) {

@@ -17,7 +17,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-	
+
+// ** allow top / bottom text to be copied / downloaded
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var modelAnswer = new function() {
@@ -27,13 +29,17 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $("#pageContents .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
+            const $panel = $("#pageContents .panel");
+
+			// this will be used later when showing feedback - it is done differently depending on whether content is centred vertically on the page & whether panel is full height
+			$("#pageContents").data("slideIn", x_checkVerticalCentre() && panelH === false);
 
 			if (x_browserInfo.mobile == false && $(".panelImg img").length > 0) {
 				// makes sure image doesn't take up too much vertical space & will try to fit text, image, answer box on screen without scrolling if possible
 				let totalHeight = 0;
-				$panel.children().each(function() {
+                $panel.children().each(function() {
 					totalHeight = totalHeight + $(this).outerHeight(true);
 				});
 				totalHeight -= $(".panelImg img").height();
@@ -81,43 +87,16 @@
 			langStrings.pageFeedbackTxt = x_currentPageXML.getAttribute("feedbackTxt") != undefined ? x_currentPageXML.getAttribute("feedbackTxt") : "Page feedback";
 
 			$("#pageContents").data("langStrings", langStrings);
-			
-			// set up page layout - panel size & position
-			const panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			const $splitScreen = $("#pageContents .splitScreen");
-			const $textHolder = $("#textHolder");
-			const $prompt = $("#prompt");
-			
-			if (panelWidth == "Full") {
-				$("#pageContents .panel").appendTo($("#pageContents"));
-				$splitScreen.remove();
-			} else {
-				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				if (x_currentPageXML.getAttribute("align") != "Right") {
-					if (panelWidth == "Small") {
-						$splitScreen.addClass("large");
-					} else if (panelWidth == "Large") {
-						$splitScreen.addClass("small");
-					} else {
-						$splitScreen.addClass("medium");
-					}
-				} else {
-					$textHolder
-						.removeClass("left")
-						.addClass("right")
-						.appendTo($splitScreen);
-					$("#infoHolder")
-						.removeClass("right")
-						.addClass("left");
-					if (panelWidth == "Small") {
-						$splitScreen.addClass("medium");
-					} else if (panelWidth == "Large") {
-						$splitScreen.addClass("xlarge");
-					} else {
-						$splitScreen.addClass("large");
-					}
-				}
+
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// panel position data is reversed as the property used to be called 'Align text' rather than 'Panel position'
+			// send amended data to split screen function as otherwise layout will be reversed
+			const attributes = {
+				panelPosition: x_currentPageXML.getAttribute("align") !== "Right" ? "Right" : "Left"
 			}
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
 			// original version had a single prompt & feedback at page level
 			// newer version allows you to add multiple text areas
@@ -175,6 +154,7 @@
 				}
 			});
 
+			const $prompt = $("#prompt");
 			if (names.length > 0) {
 
 				let weighting = 1.0;
@@ -340,7 +320,16 @@
 								$(this).html($(this).data("feedback"));
 							});
 
-							$("#button").button("disable");
+							if ($("#pageContents").data("slideIn")) {
+								$("#fbTxt, .fbTxt").slideDown(function() {
+									// refresh feedback so it is picked up by screen readers now not hidden
+									$("#fbTxt, .fbTxt").each(function() {
+										$(this).html($(this).html());
+									});
+								});
+							}
+
+                            $("#button").button("disable");
 							$("#copyBtn, #downloadBtn").show();
 
 							x_pageContentsUpdated();
@@ -366,24 +355,43 @@
 						} else {
 							$("#button").button("disable");
 						}
+
+						// to avoid a sudden jump in layout, feedback should slide back up gradually if content is centred vertically & panel is full height
+						if ($("#pageContents").data("slideIn")) {
+							$("#fbTxt, .fbTxt").slideUp();
+						} else {
+							$("#fbTxt,.fbTxt").html("");
+						}
 					});
 
 				// button will be disabled after submit, re-enable it if text changes again
 				} else {
 					$(".answerTxt").on('input', function() {
 						$("#button").button("enable");
+
+						// to avoid a sudden jump in layout, feedback should slide back up gradually if content is centred vertically & panel is full height
+						if ($("#pageContents").data("slideIn")) {
+							$("#fbTxt, .fbTxt").slideUp();
+						} else {
+							$("#fbTxt,.fbTxt").html("");
+						}
 					});
 				}
 
 			} else {
 				// there are no answer prompts - remove panel
-				$("#infoHolder").remove();
-				$("#textHolder")
-						.removeClass("left right")
-						.parents(".splitScreen").removeClass("splitScreen medium");
+				$(".splitScreen").children().unwrap();
+				$("#infoHolder").addClass("full").removeClass("left right");
+				$("#panel").remove();
+				$("#textHolder").removeClass("left right");
 			}
 
 			this.sizeChanged();
+
+			if ($("#pageContents").data("slideIn")) {
+				$("#fbTxt,.fbTxt").hide();
+			}
+
 			this.saveData();
 			x_pageLoaded();
 		};
@@ -495,25 +503,21 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
 		
-		<div id="textHolder" class="left"></div>
+	<div id="textHolder" class="splitScreen_A"></div>
 
-		<div id="infoHolder" class="right">
-			<div class="panel">
-				<div id="prompt"></div>
-				<div id="answer">
-					<div id="fbTxt" aria-live="polite"/>
-					<div id="btnHolder">
-						<button id="button"></button>
-						<button id="copyBtn"/>
-						<button id="downloadBtn"/>
-					</div>
+	<div id="infoHolder" class="splitScreen_B">
+		<div id="panel" class="panelContent panel">
+			<div id="prompt"></div>
+			<div id="answer">
+				<div id="fbTxt" aria-live="polite"/>
+				<div id="btnHolder">
+					<button id="button"></button>
+					<button id="copyBtn"/>
+					<button id="downloadBtn"/>
 				</div>
 			</div>
 		</div>
-		
 	</div>
 	
 </div>

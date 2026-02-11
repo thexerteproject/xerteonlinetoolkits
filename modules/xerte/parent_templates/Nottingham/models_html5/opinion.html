@@ -26,10 +26,10 @@
 
 		this.sizeChanged = function()
 		{
-			const $panel = $("#pageContents .qPanel");
 			let resized = false;
 
-			$panel.height(x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
 			
 			$.each($(".questionAudio"), function(key, qA) {
 			    var qAudio = $("#" + qA.id);
@@ -806,7 +806,6 @@
 				}
 			}*/
 			$("#diagram").attr("title", chartDescr);
-			console.log(graphObject);
 		};
 
 		this.init = function()
@@ -851,60 +850,8 @@
 				$pageContents.data('pageSize', 1);
 			}
 
-            var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
-				$splitScreen = $("#pageContents .splitScreen"),
-				$textHolder = $("#textHolder");
-
-			if (panelWidth == "Full")
-			{
-				$("#infoHolder .panel").appendTo($pageContents);
-				$splitScreen.remove();
-			}
-			else
-			{
-				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instructions")));
-				var textAlign = x_currentPageXML.getAttribute("align");
-
-				if (textAlign != "right")
-				{
-					if (panelWidth == "Small")
-					{
-						$splitScreen.addClass("large");
-					}
-					else if (panelWidth == "Large")
-					{
-						$splitScreen.addClass("small");
-					}
-					else
-					{
-						$splitScreen.addClass("medium");
-					}
-				}
-				else
-				{
-					$textHolder
-						.removeClass("left")
-						.addClass("right")
-						.appendTo($splitScreen);
-					$("#infoHolder")
-						.removeClass("right")
-						.addClass("left");
-					if (panelWidth == "Small")
-					{
-						$splitScreen.addClass("medium");
-					}
-					else if (panelWidth == "Large")
-					{
-						$splitScreen.addClass("xlarge");
-					}
-					else
-					{
-						$splitScreen.addClass("large");
-					}
-				}
-			}
-
-			if (panelWidth != "Full" && x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "") {
+			let txtString = x_currentPageXML.getAttribute("instructions") != undefined && x_currentPageXML.getAttribute("instructions") !== "" ? '<div id="txtContent">' + x_addLineBreaks(x_currentPageXML.getAttribute("instructions")) + '</div>' : "";
+			if (x_currentPageXML.getAttribute("img") != undefined && x_currentPageXML.getAttribute("img") != "") {
 				var newString = '';
 				if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
 					newString += '<figure>';
@@ -918,8 +865,19 @@
 				if (x_currentPageXML.getAttribute("caption") != undefined && x_currentPageXML.getAttribute("caption") != "") {
 					newString += '<figcaption>' + x_currentPageXML.getAttribute("caption") + '</figcaption><figure>';
 				}
-				$textHolder.append(newString);
+				txtString += newString;
 			}
+
+			$("#textHolder").html(txtString);
+
+			// panel position data is reversed as the property used to be called 'Align text' rather than 'Panel position'
+			// send amended data to split screen function as otherwise layout will be reversed
+			const attributes = {
+				panelPosition: x_currentPageXML.getAttribute("align") !== "right" ? "right" : "left",
+				pageTxt: x_currentPageXML.getAttribute("instructions"),  // xml property is instructions not text that is used in most page models
+			}
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
 			var backBtnText = x_currentPageXML.getAttribute("backBtnText");
 			if (backBtnText == undefined)
@@ -1023,7 +981,6 @@
         let startPadding;
         let canvasStartHeight;
         let canvasStartWidth;
-        let canvasStartPadding;
     	    $("#printBtn")
 				.button({
 					label: x_currentPageXML.getAttribute("downloadBtnText") == undefined ? 'Download' : x_currentPageXML.getAttribute("downloadBtnText")
@@ -1033,8 +990,8 @@
 					$("#mainPanel").prepend(
 						'<div id="print-title" style="font-size: 30px"><h1>' + x_currentPageXML.getAttribute("name") + '</h1></div>'
 					);
-					$("#mainPanel .panel").addClass("panel-print");
-					$("#mainPanel .panel").removeClass("panel");
+					$("#mainPanel .panelContent").addClass("panel-print");
+					$("#mainPanel .panelContent").removeClass("panel");
 					startHeight = $("#mainPanel")[0].style.height;
 					startWidth = $("#pageContents")[0].style.width;
 					panelStartWidth = $("#mainPanel")[0].style.width;
@@ -1065,7 +1022,7 @@
 						};
 						html2pdf().set(opt).from($("#mainPanel")[0]).toPdf().get('pdf').then(function (pdf) {
 							$("#mainPanel .panel-print").addClass("panel");
-							$("#mainPanel .panel").removeClass("panel-print");
+							$("#mainPanel .panelContent").removeClass("panel-print");
 							$("#pageContents").css("width", startWidth);
 							//$("#mainPanel").css("width", panelStartWidth);
 							$("#mainPanel").css("height", startHeight);
@@ -1119,36 +1076,33 @@
 
 <div id="pageContents">
 
-	<div class="splitScreen">
+	<div id="textHolder" class="splitScreen_A"></div>
 
-		<div id="textHolder" class="left"></div>
+	<div id="infoHolder" class="splitScreen_B">
 
-		<div id="infoHolder" class="right">
+		<div id="mainPanel" class="panelContent panel qPanel" tabindex="0">
 
-			<div id="mainPanel" class="panel qPanel" tabindex="0">
+			<p id="qNo" aria-live="polite"></p>
 
-				<p id="qNo" aria-live="polite"></p>
+			<fieldset class="noStyle">
 
-				<fieldset class="noStyle">
+				<div id="feedback" aria-live="polite"></div>
 
-					<div id="feedback" aria-live="polite"></div>
-				  <div id="canvas-container">
+				<div id="canvas-container">
 					<canvas id="diagram"></canvas>
-				  </div>
+				</div>
 
-					<div id="wrapper">
-						<div id="qHolder"></div>
-						<div id="buttonHolder">
-							<button id="printBtn"></button>
-							<button id="resetBtn"></button>
-							<button id="backBtn"></button>
-							<button id="checkBtn"></button>
-						</div>
+				<div id="wrapper">
+					<div id="qHolder"></div>
+					<div id="buttonHolder">
+						<button id="printBtn"></button>
+						<button id="resetBtn"></button>
+						<button id="backBtn"></button>
+						<button id="checkBtn"></button>
 					</div>
+				</div>
 
-				</fieldset>
-
-			</div>
+			</fieldset>
 
 		</div>
 

@@ -1,6 +1,6 @@
 /* cMcq.html */
 	
-	#infoHolder .panel {
+	#infoHolder .panelContent {
 		overflow:	auto;
 	}
 	
@@ -22,7 +22,6 @@
 		cursor:			pointer;
 		position:		relative;
 		margin-left:	2em;
-		margin-bottom:	10px;
 		display:		block;
 	}
 	

@@ -71,7 +71,7 @@ var x_languageData  = [],
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
 
-var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_footerBlock, $x_footerL,
+var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_innerPage, $x_footerBlock, $x_footerL,
 	$x_introBtn, $x_helpBtn, $x_pageIntroBtn, $x_pageResourcesBtn, $x_glossaryBtn, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_cssBtn, $x_background;
 
 $(document).keydown(function(e) {
@@ -1393,6 +1393,10 @@ function x_continueSetUp1() {
 	if (setUpComplete == false) {
 		XENITH.ACCESSIBILITY.init();
 
+		// if max width or centre vertically settings are set at project-level, set this up now
+		// these might be later overridden on individual pages
+		x_setUpPagePosition(true);
+
 		if (XENITH.PAGEMENU.menuPage) {
 			$x_pageNo.hide();
 			if (x_params.navigation == "Menu") {
@@ -2255,6 +2259,7 @@ function x_continueSetUp2() {
 	if (x_params.module != undefined && x_params.module != "") {
 		XTSetOption('module', x_params.module);
 	}
+
 	// Restart if we're NOT navigating to a standalone page
 	var standAlonePage = x_startPage.type == 'index' && x_pageInfo[x_startPage.ID] != undefined
 		&& x_pageInfo[x_startPage.ID].standalone != undefined && x_pageInfo[x_startPage.ID].standalone;
@@ -2548,16 +2553,113 @@ function x_checkPages(type, id, pageArray) {
 	return false;
 }
 
-function x_setMaxWidth() {
-	if (x_params.maxWidth != undefined && x_params.maxWidth != "") {
-		var workingPages = ['QRcode','accNav','adaptiveContent','annotatedDiagram','audioRecord','audioSlideshow','bleedingImage','bullets','buttonNav','buttonQuestion','buttonSequence','cMcq','categories','chart','columnPage','connectorHotspotImage','connectorMenu','crossword','customHotspots','decision','delicious','dialog','dictation','documentation','dragDropLabel','embedDiv','flashCards','flickr','gapFill','glossary','grid','hangman','hotSpotQuestion','hotspotImage','imageSequence','imageViewer','interactiveTable','interactiveText','inventory','language','links','list','map','mcq','media360','mediaLesson','memory','menu','modelAnswer','modelAnswerResults','modify','morphImages','nav','newWindow','opinion','orient','pdf','perspectives','quiz','results','resumeSession','rss','rssdownload','saveSession','scenario','showGraph','SictTimeline','slideshow','stopTracking','summary','tabNav','tabNavExtra','table','text','textCorrection','textDrawing','textGraphics','textHighlight','textMatch','textSWF','textVideo','thumbnailViewer','timeline','topXQ','transcriptReader','videoSynch','wiki','wordsearch','youtube','youtuberss','interactiveVideo'];
-		var styleString = '<style>';
-		for (var i=0; i<workingPages.length; i++) {
-			if (i>0) { styleString += ', '; }
-			styleString += '.x_' + workingPages[i] + '_page #x_pageDiv';
+// function gives page content a max width & positions horizontally/vertically if required
+function x_setUpPagePosition(project) {
+	// remove classes that might have been used to turn on/off page position settings at page level
+	if (project !== true) {
+		$x_mainHolder.removeClass("x_noVerticalCentre x_noVerticalCentrePanel");
+		$x_pageDiv.removeClass("x_noMaxW");
+		$x_pageHolder.removeClass("x_verticalCentre x_verticalCentrePanel");
+	}
+
+	// set a maximum width and align content horizontally on the screen (centre by default)
+	if ((project && x_params.maxWidth != undefined && x_params.maxWidth != "") || (project !== true && x_currentPageXML.getAttribute("maxWidthToggle") === "true" && x_currentPageXML.getAttribute("maxWidth") != undefined && x_currentPageXML.getAttribute("maxWidth") !== "")) {
+		// these pages don't work with max width yet
+		const nonWorkingPages = [];
+
+		if (project) {
+			// set max width & horizontal alignment for all working pages in the project
+			let styleString = '<style>';
+			if (nonWorkingPages == undefined || nonWorkingPages.length === 0) {
+				styleString += '#x_mainHolder #x_pageDiv:not(.x_noMaxW)';
+
+			} else {
+				styleString += '#x_mainHolder:not(';
+				for (let i=0; i<nonWorkingPages.length; i++) {
+					if (i>0) {
+						styleString += ', ';
+					}
+					styleString += '.x_' + nonWorkingPages[i] + '_page';
+				}
+				styleString += ') #x_pageDiv:not(.x_noMaxW)';
+			}
+
+			const margin = x_params.horizontalAlign === "left" ? "0 auto 0 0" : x_params.horizontalAlign === "right" ? "0 0 0 auto" : "0 auto";
+			styleString += '{ width: '+x_params.maxWidth+'px; max-width: 100%; box-sizing:border-box; margin: ' + margin + '; }</style>';
+			$('head').append(styleString);
+
+		} else {
+			// set max width & horizontal alignment just for this page
+			if (nonWorkingPages == undefined || nonWorkingPages.indexOf(x_pageInfo[x_currentPage].type) < 0) {
+				$("#x_page" + x_currentPage).css({
+                    "width": x_currentPageXML.getAttribute("maxWidth") + "px",
+					"box-sizing": "border-box",
+					"max-width": "100%"
+				});
+
+				// turn off max width set at project-level so it uses the page-level values
+				$("#x_pageDiv").addClass("x_noMaxW");
+
+				if (x_currentPageXML.getAttribute("horizontalAlign") != undefined) {
+					$("#x_page" + x_currentPage).css("margin", x_currentPageXML.getAttribute("horizontalAlign") === "left" ? "0 auto 0 0" : x_currentPageXML.getAttribute("horizontalAlign") === "right" ? "0 0 0 auto" : "0 auto");
+				}
+			}
 		}
-		styleString += '{max-width: '+x_params.maxWidth+'px;margin: 0 auto;}</style>';
-		$('head').append(styleString);
+
+	} else if (project !== true && x_currentPageXML.getAttribute("maxWidthToggle") === "false") {
+		// this page has max width turned off
+		$("#x_pageDiv").addClass("x_noMaxW");
+	}
+
+	// centre page content vertically on the screen
+	// related option individually centres columns vertically
+	if (project && x_params.verticalAlign === "true") {
+		// turn on for the whole project
+		$x_mainHolder.addClass("x_verticalCentre");
+		if (x_params.verticalAlignPanel === "true") {
+			$x_mainHolder.addClass("x_verticalCentrePanel");
+		}
+
+	} else if (project !== true) {
+		// these pages don't work with vertical centre yet & will break when it's applied - ensure it is always disabled when current page is of one of these types
+		const nonWorkingPages = ['imageSequence', 'mediaLesson', 'morphImages', 'thumbnailViewer', 'SictTimeline', 'perspectives', 'connectorMenu', 'interactiveVideo', 'links'];
+		if (x_currentPageXML.getAttribute("verticalAlign") != undefined && (nonWorkingPages == undefined || nonWorkingPages.indexOf(x_pageInfo[x_currentPage].type) < 0)) {
+			if (x_currentPageXML.getAttribute("verticalAlign") === "true") {
+				// turn on for this page
+				$x_pageHolder.addClass("x_verticalCentre");
+				if (x_currentPageXML.getAttribute("verticalAlignPanel") === "true") {
+					$x_pageHolder.addClass("x_verticalCentrePanel");
+				} else if (x_currentPageXML.getAttribute("verticalAlignPanel") === "false") {
+					$x_mainHolder.addClass("x_noVerticalCentrePanel");
+				}
+			} else if (x_currentPageXML.getAttribute("verticalAlign") === "false") {
+				// turn off for this page
+				$x_mainHolder.addClass("x_noVerticalCentre x_noVerticalCentrePanel");
+			}
+		} else if (nonWorkingPages != undefined && nonWorkingPages.indexOf(x_pageInfo[x_currentPage].type) >= 0) {
+			// always turn off for this type of page as it won't work properly
+			$x_mainHolder.addClass("x_noVerticalCentre x_noVerticalCentrePanel");
+		}
+	}
+}
+
+// function returns whether page contents is centred vertically
+// used in page models as the way feedback is shown may change when centred vertically (e.g. slide in rather than just appear)
+function x_checkVerticalCentre() {
+	if (($x_mainHolder.hasClass("x_verticalCentre") && !$x_mainHolder.hasClass("x_noVerticalCentre")) || $x_pageHolder.hasClass("x_verticalCentre")) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+// function adds the scrolling class when required - this helps determine whether the x_verticalCentrePanel css should be applied or not
+// columns should only be centred if all columns fit on screen with no scrolling - otherwise align top
+function x_checkForScrolling() {
+	if ($x_pageHolder.prop('scrollHeight') > $x_pageHolder.innerHeight()) {
+		$x_pageHolder.addClass("x_scrolling");
+	} else {
+		$x_pageHolder.removeClass("x_scrolling");
 	}
 }
 
@@ -2744,7 +2846,6 @@ function x_changePageStep2(x_gotoPage) {
 		}
 	}
 
-	x_setMaxWidth();
     var prevPage = x_currentPage;
 
     // disable onload of #special_theme_css & special_theme_responsive_css
@@ -2758,7 +2859,6 @@ function x_changePageStep2(x_gotoPage) {
 
     x_currentPage = x_gotoPage;
     x_currentPageXML = x_pages[x_currentPage];
-
 
     if ($x_pageDiv.children().length > 0) {
         // remove everything specific to previous page that's outside $x_pageDiv
@@ -2904,7 +3004,8 @@ function x_passwordPage(pswds) {
 			$x_pageDiv.css("height", "100%");
 			let paddingBlock = $x_pageDiv.innerHeight() - $x_pageDiv.height(); // padding top and bottom
 			$x_pageDiv.css("height", "calc(100% - " + paddingBlock + "px)");
-			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
+			$x_pageDiv.append('<div id="x_page' + x_currentPage + '" class="innerPage"></div>');
+			$x_innerPage = $x_pageDiv.find(".innerPage");
 
 			var $pswdBlock = $('#x_page' + x_currentPage);
 			$pswdBlock.css('height', '100%');
@@ -3017,6 +3118,12 @@ function x_changePageStep3() {
 
         var builtPage = x_pageInfo[x_currentPage].built;
         $x_pageDiv.append(builtPage);
+		$x_innerPage = $x_pageDiv.find(".innerPage");
+
+		// if max width or centre vertically settings are set at page-level, set this up now
+		// these will override settings at project-level
+		x_setUpPagePosition();
+
         builtPage.hide();
         builtPage.fadeIn();
 
@@ -3079,15 +3186,11 @@ function x_changePageStep3() {
         // checks if size has changed since last load - if it has, call function in current page model which does anything needed to adjust for the change
         var prevSize = builtPage.data("size");
         if (prevSize[0] != $x_mainHolder.width() || prevSize[1] != $x_mainHolder.height()) {
-			if (typeof window[pt].sizeChanged === "function") window[pt].sizeChanged();
-
-            // calls function in any customHTML that's been loaded into page
-            if ($(".customHTMLHolder").length > 0) {
-                if (typeof customHTML.sizeChanged === "function") {
-                	customHTML.sizeChanged();
-                }
-            }
-        }
+			x_sizeChanged();
+        } else {
+			// even if size hasn't changed, check if page now requires scrolling & add / remove the x_verticalCentrePanel class used in centring content vertically
+			x_checkForScrolling();
+		}
 
 		// any custom header styles will be disabled if a custom theme (via accessibility options) is in use
 		XENITH.ACCESSIBILITY.disableBespokeCSS();
@@ -3111,7 +3214,8 @@ function x_changePageStep3() {
 			customLoadCss(pt);
 		}
 		function loadModel() {
-			$x_pageDiv.append('<div id="x_page' + x_currentPage + '"></div>');
+			$x_pageDiv.append('<div id="x_page' + x_currentPage + '" class="innerPage"></div>');
+			$x_innerPage = $x_pageDiv.find(".innerPage");
 			$("#x_page" + x_currentPage).css("visibility", "hidden");
 
 			if (!XENITH.PAGEMENU.isThisMenu()) {
@@ -3270,6 +3374,10 @@ function x_setUpLightBox() {
 
 // function called on page model load
 function x_loadPage(response, status, xhr) {
+	// if max width or centre vertically settings are set at page-level, set this up now
+	// these will override settings at project-level
+	x_setUpPagePosition();
+
     if (status == "error") {
         $("#x_pageDiv div").html(x_getLangInfo(x_languageData.find("errorPage")[0], "label", "No template is currently available for this page type") + " (" + x_pageInfo[x_currentPage].type + ")");
         x_pageLoaded();
@@ -3547,6 +3655,8 @@ function x_pageLoaded() {
 	}
 
 	XENITH.SIDEBAR.pageLoad(true);
+
+	x_checkForScrolling();
 }
 
 //convert picker color to #value
@@ -3788,7 +3898,6 @@ function x_updateCss(updatePage, updateSidebar) {
 			
 		}
 	}
-
 	x_updateCss2(updatePage);
 }
 
@@ -3804,23 +3913,30 @@ function x_updateCss2(updatePage) {
     }
 
     if (updatePage != false) {
-        try {
-            // calls function in current page model which does anything needed on size change
-            if (x_pageInfo[x_currentPage].type == "text") {
-                simpleText.sizeChanged(); // errors if you just call text.sizeChanged()
-            } else {
-                eval(x_pageInfo[x_currentPage].type).sizeChanged();
-            }
-        }
-        catch(e) {} // Catch error thrown when you call sizeChanged() on an unloaded model
-
-        // calls function in any customHTML that's been loaded into page
-        if ($(".customHTMLHolder").length > 0) {
-            try { customHTML.sizeChanged(); } catch(e) {};
-        }
+		x_sizeChanged();
     }
 
     $(".x_popupDialog").parent().detach();
+}
+
+function x_sizeChanged() {
+	try {
+		// get short page type var
+		let pt = x_pageInfo[x_currentPage].type;
+		if (pt == "text") pt = 'simpleText'; // errors if you just call text.pageChanged()
+		if (typeof window[pt].sizeChanged === "function") {
+			window[pt].sizeChanged();
+		}
+	} catch(e) {} // Catch error thrown when you call sizeChanged() on an unloaded model
+
+	// calls function in any customHTML that's been loaded into page
+	if ($(".customHTMLHolder").length > 0) {
+		if (typeof customHTML.sizeChanged === "function") {
+			customHTML.sizeChanged();
+		}
+	}
+
+	x_checkForScrolling();
 }
 
 // functions open dialogs e.g. glossary, table of contents - just reattach if it's already loaded previously
@@ -4224,12 +4340,12 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
             imgH = $img.data("origSize")[1];
         }
 
-        if (enlarge === false) {
+        if (enlarge !== false) {
             maxW = Math.min(maxW, imgW);
             maxH = Math.min(maxH, imgH);
         }
 
-        if (imgW > maxW || imgH > maxH || firstScale != true || enlarge !== false) {
+        if (imgW > maxW || imgH > maxH || firstScale != true || enlarge === true) {
             var scaleW = maxW / imgW,
                 scaleH = maxH / imgH,
                 scaleFactor = Math.min(scaleW, scaleH);
@@ -4317,10 +4433,10 @@ function x_addLineBreaks(text, override) {
 
 // function returns the full height available for elements within the page e.g. panels
 function x_getAvailableHeight(excludePadding, excludeHeight, mobile) {
-	// get space available on page, excluding margins, borders & padding on parents
 	let availableH;
+	// starting height is the whole page height - excluding margins, borders & padding on parents
 	if (x_browserInfo.mobile === false) {
-		availableH = $x_pageHolder.height() - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height());
+		availableH = Math.floor($x_pageHolder.get(0).getBoundingClientRect().height - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height()));
 
 	} else if (mobile === true) {
 		// often height on mobiles will be auto so only return a height for mobile view when requested
@@ -7624,6 +7740,214 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 	self.init = init;
 	self.showHideBtn = showHideBtn;
 	self.checkCompletion = checkCompletion;
+
+	return parent;
+
+})(jQuery, XENITH || {});
+
+
+// ***** SPLIT SCREEN LAYOUT *****
+// Sets up the split screen layout that used in many page models
+var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
+	// declare local variables
+	let pageData = [];
+
+	// function sets up the split screen layout, including the panel & any text above or below it
+	function init(pageInfo) {
+		// most pages use the xml attributes & html elements below
+		const attributes = {};
+
+		if (!XENITH.PAGEMENU.isThisMenu()) {
+			// don't look for these if current page is menu page as x_currentPageXML will not be defined
+			attributes.panelWidth = x_currentPageXML.getAttribute("panelWidth");
+			attributes.panelWidthCustom = x_currentPageXML.getAttribute("panelWidthCustom");
+			attributes.panelHeight = x_currentPageXML.getAttribute("panelHeight");
+			attributes.panelPosition = x_currentPageXML.getAttribute("align");
+			attributes.panelStyle = x_currentPageXML.getAttribute("panelStyle");
+			attributes.removeTxt = x_currentPageXML.getAttribute("removeTxt");
+			attributes.topTxtWidth = x_currentPageXML.getAttribute("textTopWidth");
+			attributes.bottomTxtWidth = x_currentPageXML.getAttribute("textBottomWidth");
+			attributes.pageTxt = x_currentPageXML.getAttribute("text");
+			attributes.topTxt = x_currentPageXML.getAttribute("textTop");
+			attributes.bottomTxt = x_currentPageXML.getAttribute("textBottom");
+		}
+
+		const elements = {
+			holder: $("#pageContents"), // parent of text & panel columns
+			textColumn: $(".splitScreen_A"), // column containing text only
+			panelColumn: $(".splitScreen_B"), // column containing panel
+			panel: $(".splitScreen_B .panelContent")
+		}
+
+		// for pages that don't use attributes/elements above, the info will be passed into this function
+		// override defaults with these
+		if (pageInfo != undefined) {
+			if (pageInfo.attributes != undefined) {
+				$.extend(attributes, pageInfo.attributes);
+			}
+			if (pageInfo.elements != undefined) {
+				$.extend(elements, pageInfo.elements);
+			}
+		}
+
+		// some page models have data for panel width/position capitalised - change all to lowercase to make things simpler
+		if (attributes.panelWidth != undefined) {
+			attributes.panelWidth = attributes.panelWidth.toLowerCase();
+		}
+		if (attributes.panelPosition != undefined) {
+			attributes.panelPosition = attributes.panelPosition.toLowerCase();
+		}
+		attributes.panelPosition = attributes.panelPosition !== "left" ? "right" : "left"; // right is default if not set
+
+		// ensure there's a custom panel width (50%) if none is set
+		if (attributes.panelWidth === "custom") {
+			attributes.panelWidthCustom = attributes.panelWidthCustom == undefined ? 50 : Number(attributes.panelWidthCustom);
+
+		// one column should have a fixed width but no width is provided - default to medium
+		} else if (attributes.panelWidth === "fixed" && attributes.widthA == undefined && attributes.widthB == undefined) {
+			attributes.panelWidth = "medium";
+		}
+
+		// set up layout with panel at correct size & on left or right of screen (unless full width)
+		if (attributes.panelWidth === "full") {
+			elements.panelColumn.addClass("full");
+
+			// pre 3.15, page text was never shown with full panel
+			// there's now a checkbox to determine whether hidden or not
+			// needs to be hidden if checkbox checked but also if undefined for backwards compatibility
+			if (attributes.removeTxt !== "false" || attributes.pageTxt == undefined || x_addLineBreaks(attributes.pageTxt).trim() === "") {
+				elements.textColumn.remove();
+				delete elements.textColumn;
+			}
+
+		} else {
+			// two columns
+			elements.textColumn.add(elements.panelColumn).wrapAll('<div class="splitScreen"></div>');
+			const $splitScreen = $(".splitScreen");
+
+			if (attributes.panelPosition === "left") {
+				elements.panelColumn.addClass("left");
+				elements.textColumn.addClass("right").appendTo($splitScreen);
+
+				if (attributes.panelWidth === "small") {
+					$splitScreen.addClass("medium"); // 40 | 60
+				} else if (attributes.panelWidth === "large") {
+					$splitScreen.addClass("xlarge"); // 80 | 20
+				} else if (attributes.panelWidth === "custom") {
+					$splitScreen.addClass("custom");
+					const shrink = attributes.panelWidthCustom > 50 ? [1,0] : [0,1]; // allow larger column to shrink if needed
+					$splitScreen.find(".left").css("flex", "0 " + shrink[0] + " calc(" + attributes.panelWidthCustom + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+					$splitScreen.find(".right").css("flex", "0 " + shrink[1] + " calc(" + (100 - attributes.panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+				} else if (attributes.panelWidth === "fixed") {
+					if (attributes.widthA != undefined) {
+						// text column is fixed width
+						$splitScreen.find(".right").css("flex", "0 0 " + attributes.widthA);
+						$splitScreen.find(".left").css("flex", "1 1");
+					} else {
+						// panel column is fixed width
+						$splitScreen.find(".left").css("flex", "0 0 " + attributes.widthB);
+						$splitScreen.find(".right").css("flex", "1 1");
+					}
+				} else {
+					$splitScreen.addClass("large"); // 60 | 40
+				}
+			} else {
+				elements.textColumn.addClass("left");
+				elements.panelColumn.addClass("right").appendTo($splitScreen);
+
+				if (attributes.panelWidth === "small") {
+					$splitScreen.addClass("large"); // 60 | 40
+				} else if (attributes.panelWidth === "large") {
+					$splitScreen.addClass("small"); // 20 | 80
+				} else if (attributes.panelWidth === "custom") {
+					$splitScreen.addClass("custom");
+					const shrink = attributes.panelWidthCustom > 50 ? [1,0] : [0,1]; // allow larger column to shrink if needed
+					$splitScreen.find(".left").css("flex", "0 " + shrink[1] + " calc(" + (100 - attributes.panelWidthCustom) + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+					$splitScreen.find(".right").css("flex", "0 " + shrink[0] + " calc(" + attributes.panelWidthCustom + "% - " + (parseInt($splitScreen.css("column-gap")) / 2) + "px)");
+				} else if (attributes.panelWidth === "fixed") {
+					if (attributes.widthA != undefined) {
+						// text column is fixed width
+						$splitScreen.find(".left").css("flex", "0 0 " + attributes.widthA);
+						$splitScreen.find(".right").css("flex", "1 1");
+					} else {
+						// panel column is fixed width
+						$splitScreen.find(".right").css("flex", "0 0 " + attributes.widthB);
+						$splitScreen.find(".left").css("flex", "1 1");
+					}
+				} else {
+					$splitScreen.addClass("medium"); // 40 | 60
+				}
+			}
+		}
+
+		// remove panel styling
+		if (attributes.panelStyle === "true") {
+			elements.panel.removeClass("panel");
+		}
+
+		// add optional text above &/or below the panel
+		// these might be full width even when panel is not full width
+		if (x_addLineBreaks(attributes.topTxt) != undefined && x_addLineBreaks(attributes.topTxt).trim() !== "") {
+			if (attributes.topTxtWidth === "true" && attributes.panelWidth !== "full") {
+				elements.holder.prepend('<div class="textTopHolder">' + x_addLineBreaks(attributes.topTxt) + '</div>');
+			} else {
+				elements.panel.before('<div class="textTopHolder">' + x_addLineBreaks(attributes.topTxt) + '</div>');
+			}
+
+			elements.topTxt = $(".textTopHolder");
+		}
+		if (x_addLineBreaks(attributes.bottomTxt) != undefined && x_addLineBreaks(attributes.bottomTxt).trim() !== "") {
+			if (attributes.bottomTxtWidth === "true" && attributes.panelWidth !== "full") {
+				elements.holder.append('<div class="textBottomHolder">' + x_addLineBreaks(attributes.bottomTxt) + '</div>');
+			} else {
+				elements.panel.after('<div class="textBottomHolder">' + x_addLineBreaks(attributes.bottomTxt) + '</div>');
+			}
+
+			elements.bottomTxt = $(".textBottomHolder");
+		}
+
+		// add class to pages where panel heights should never be auto, e.g. 360 image
+		if (attributes.fullH || $.isArray(attributes.fullH)) {
+			elements.panelColumn.addClass("fullPanelH");
+		}
+
+		// store data for later use in resize function
+		pageData.push({
+			page: x_currentPage,
+			attributes: attributes,
+			elements: elements
+		});
+	}
+
+	// function sets panel in split screen layout to be full height, if required
+	function resizePanel() {
+		// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+		// this will be overridden on smaller screens (where columns are rearranged into rows) and panel height will be 'auto'
+		// can also be overridden if panelHeight is set to 'fit'
+		const data = pageData.find(obj => obj.page === x_currentPage);
+		if (data) {
+			if ((data.attributes.fullH || $.isArray(data.attributes.fullH)) || (data.attributes.panelStyle !== "true" && data.attributes.panelHeight !== "fit" && (data.elements.topTxt == undefined || data.elements.topTxt.length === 0) && (data.elements.bottomTxt == undefined || data.elements.bottomTxt.length === 0) && (data.attributes.panelWidth !== "full" || data.elements.textColumn == undefined || data.elements.textColumn.length === 0))) {
+				// force height to exclude height of certain elements
+				const excludeH = $.isArray(data.attributes.fullH) ? data.attributes.fullH.map(id => $("." + id)) : [];
+				const panelH = x_getAvailableHeight([data.elements.panel, $(".splitScreen")], excludeH, (data.attributes.fullH || $.isArray(data.attributes.fullH ? true : false)));
+				data.elements.panel.height(panelH);
+				return panelH;
+			} else if (data.attributes.maxFullH) {
+				// panel isn't fixed height but may still have a max height, e.g. if it contains an image that takes its size from the panel size
+				const panelH = x_getAvailableHeight([data.elements.panel, $(".splitScreen")], [], true);
+				data.elements.panel.css("max-height", panelH);
+				return false;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	// make some public methods
+	self.init = init;
+	self.resizePanel = resizePanel;
 
 	return parent;
 

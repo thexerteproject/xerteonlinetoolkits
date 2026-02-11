@@ -85,8 +85,14 @@
       // Always regenerate page
       $("#questionScores").html("");
       $("#fullResults").html("");
-      this.init();
+      this.init(true);
     };
+
+    // function called every time the size of the LO is changed
+    this.sizeChanged = function() {
+      // panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+      XENITH.SPLITSCREEN.resizePanel();
+    }
 
     this.loadJS = function() {
       if (numLoaded < filesToLoad.length) {
@@ -128,7 +134,7 @@
       return hours + ':' + minutes + ':' + seconds;
     };
 
-    this.init = function() {
+    this.init = function(regenerate) {
       // load files used to create pdf
       var loadFiles = true;
       if (xot_offline) {
@@ -183,9 +189,8 @@
       var firstnormalrow = true;
       var detailstable = $("<table class='details header shaded'>");
 
-      // add page text
-      $('#txtHolder').show();
-      if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
+      // add page text unless it's set to be removed (deal with this here rather than just in xenith as feedback text may be added even if removeTxt is true)
+      if ((x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") && ((x_currentPageXML.getAttribute("panelWidth") !== "Full" && x_currentPageXML.getAttribute("panelWidth") != undefined) || x_currentPageXML.getAttribute("removeTxt") !== "true")) {
         $('#mainTxtHolder').html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
       } else {
         $('#mainTxtHolder').remove();
@@ -233,6 +238,19 @@
         if ($('#mainTxtHolder').length == 0) {
           $('#txtHolder').hide();
         }
+      }
+
+      // only set up splitscreen layout 1st time page is loaded
+      if (regenerate !== true) {
+        // send amended data to split screen function dues to defaults being different for old projects
+        const attributes = {
+          panelWidth: x_currentPageXML.getAttribute("panelWidth") != undefined ? x_currentPageXML.getAttribute("panelWidth") : "Full",
+          panelStyle: x_currentPageXML.getAttribute("panelStyle") != undefined ? x_currentPageXML.getAttribute("panelStyle") : "true",
+          pageTxt: $('#mainTxtHolder').length > 0 ? "exists" : undefined, // make sure text column not removed if there's something in it (it contains tailored feedback as well as page text)
+          removeTxt: x_currentPageXML.getAttribute("removeTxt") === "true" && $('#mainTxtHolder').length === 0 ? "true" : "false"
+        }
+        // set up split screen layout
+        XENITH.SPLITSCREEN.init({"attributes": attributes});
       }
 
       // set up the general results table
@@ -288,7 +306,7 @@
       specificPDFrows = [];
       specificPDFcolumns = [];
 
-      xtresults.interactions.forEach(function(x) {
+      xtresults.interactions.forEach(function(x, index) {
         // don't show pages where weighting is zero, unless show pages with 0 tracking weight is on
         if (x.type == 'result' || ((!showzeroweight && x.judge) && x.completed == "true" && x.weighting == 0)) {
           return;
@@ -298,7 +316,7 @@
         let interactiveToken, interactiveTokenTxt;
         if (xtresults.mode == 'full-results') {
           if (x.type != 'page') {
-            interactiveToken = '<i class="fas fa-circle blue" title="' + detailsTooltip + '"><span class="ui-helper-hidden-accessible">' + detailsTooltip + '</span></i>';
+            interactiveToken = '<a href="#details' + index + '"><i class="fas fa-circle blue" title="' + detailsTooltip + '"><span class="ui-helper-hidden-accessible">' + detailsTooltip + '</span></i></a>';
             interactiveTokenTxt = "details";
           } else {
             interactiveToken = '<i class="far fa-circle blue" title="' + noDetailsTooltip + '"><span class="ui-helper-hidden-accessible">' + noDetailsTooltip + '</span></i>';
@@ -403,12 +421,12 @@
         // specific results tables
         if (xtresults.mode == 'full-results') {
           if (x.subinteractions.length > 0 && x.type != 'page') {
-            let detailstable = $("<table class='details header shaded'>");
+            let detailstable = $("<table class='details header shaded' id='details" + index + "'>");
             let specificHeaderRow = true;
             altSpecificRow = false;
             specificPDFrows.push([]);
 
-            x.subinteractions.forEach(function(y) {
+            x.subinteractions.forEach(function(y,index) {
               let judge = y.judge?? true;
               // set up the header row
               if (specificHeaderRow) {
@@ -757,45 +775,48 @@
   results.init();
 </script>
 
-
 <div id="pageContents">
-  <div id="txtHolder">
+
+  <div id="txtHolder" class="splitScreen_A">
     <div id="mainTxtHolder"></div>
     <div id="feedbackHolder"></div>
   </div>
 
-  <div id="pdfContent">
-    <h3 id="generalResultsTxt"></h3>
-    <table id="general_summary" rules="rows">
-      <tr>
-        <td id="averageTxt"></td>
-        <td><span id="averageScore"></span></td>
-      </tr>
-      <tr>
-        <td id="completionTxt"></td>
-        <td><span id="completion"></span></td>
-      </tr>
-      <tr>
-        <td id="startTimeTxt"></td>
-        <td><span id="startTime"></span></td>
-      </tr>
-      <tr>
-        <td id="durationTxt1"></td>
-        <td><span id="totalDuration"></span></td>
-      </tr>
-    </table>
-    <div id="specific">
-      <h3 id="interactivityResultsTxt"></h3>
-      <h4 id="globalResultsTxt"></h4>
-      <table id="questionScores" class="header shaded" rules="rows"></table>
-      <br />
-      <h4 id="specificResultsTxt"></h4>
-      <div id="fullResults"></div>
-      <br />
+  <div id="pdfContent" class="splitScreen_B">
+    <div id="panel" class="panelContent panel">
+      <h3 id="generalResultsTxt"></h3>
+      <table id="general_summary" rules="rows">
+        <tr>
+          <td id="averageTxt"></td>
+          <td><span id="averageScore"></span></td>
+        </tr>
+        <tr>
+          <td id="completionTxt"></td>
+          <td><span id="completion"></span></td>
+        </tr>
+        <tr>
+          <td id="startTimeTxt"></td>
+          <td><span id="startTime"></span></td>
+        </tr>
+        <tr>
+          <td id="durationTxt1"></td>
+          <td><span id="totalDuration"></span></td>
+        </tr>
+      </table>
+      <div id="specific">
+        <h3 id="interactivityResultsTxt"></h3>
+        <h4 id="globalResultsTxt"></h4>
+        <table id="questionScores" class="header shaded" rules="rows"></table>
+        <br />
+        <h4 id="specificResultsTxt"></h4>
+        <div id="fullResults"></div>
+        <br />
+      </div>
+      <br>
+      <div>
+        <button onClick="results.pdfDownload()" id="button"></button>
+      </div>
     </div>
   </div>
-  <br>
-  <div>
-    <button onClick="results.pdfDownload()" id="button"></button>
-  </div>
+
 </div>

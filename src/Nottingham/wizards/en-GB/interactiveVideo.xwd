@@ -182,7 +182,7 @@
 
 		<text label="Answer" type="TextArea" wysiwyg="true" placeholder="Enter an answer option here"/>
 	    <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
-	    <correct condition="parent.judge!='false'" label="Correct" options="True,False" type="ComboBox" data="true,false" defaultValue="false" width="100"/>
+	    <correct condition="parent.judge!='false'" label="Correct Answer" type="CheckBox" defaultValue="false"/>
 
 		<feedback label="Feedback" type="TextArea" height="100" defaultValue="" optional="true"/>
 		<page label="Go to Page" type="PageList" optional="true"/>

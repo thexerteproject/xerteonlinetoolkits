@@ -21,24 +21,15 @@
 	// Built using the feed library at https://rss2json.com/google-feed-api-alternative
  
 	var rssdownload = new function() {
-		var $pageContents,
-			$textHolder,
-			$panel,
-			$resultsHolder,
-			rssURL;
+		var rssURL;
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $("#pageContents .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
 		};
 		
 		this.init = function() {
-			/*
-			$script('https://rss2json.com/gfapi.js', function () {
-				rssdownload.begin();
-			});
-			*/
 			this.begin();
 		};
 
@@ -56,65 +47,23 @@
 					rssdownload.errorLoading(x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + " \"" + rssURL +"\"");
 				}
 			});
-			/*
-			var feed = new google.feeds.Feed(rssURL);
-			feed.load(function(result) {
-				$("#loadingSpinner").hide();
-				if (!result.error) {
-					rssdownload.listFeed(result.feed);
-				}
-				else {
-					rssdownload.errorLoading(x_getLangInfo(x_languageData.find("loadError")[0], "label", "Error loading") + " \"" + rssURL +"\"");
-				}
-			});
-			*/
-
 		};
 
 		this.begin = function() {
-			$pageContents = $("#pageContents");
-			$textHolder = $("#textHolder");
-			$panel = $("#pageContents .panel");
-			$resultsHolder = $pageContents.find("#resultsHolder");
 			$("#loadingSpinner p").html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
-
 			$("#loadingSpinner").show();
-
-			//google.load("feeds", "1");
 			
 			rssURL = x_currentPageXML.getAttribute("url");
 
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
-			//google.setOnLoadCallback(initialize);
-			
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			if (panelWidth == "Full") {
-				$("#pageContents .right div:first").appendTo($("#pageContents"));
-				$("#pageContents .splitScreen").remove();
-			} else {
-				var align = x_currentPageXML.getAttribute("align") == "Right" ? "Right" : "Left";
-				if (align == "Right") {
-					var $splitScreen = $("#pageContents .splitScreen");
-					
-					$textHolder
-						.removeClass("left")
-						.addClass("right")
-						.appendTo($splitScreen);
-					
-					$("#rssHolder")
-						.removeClass("right")
-						.addClass("left");
-				}
-				
-				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				if (panelWidth == "Small") {
-					align == "Right" ? $("#pageContents .splitScreen").addClass("medium") : $("#pageContents .splitScreen").addClass("large");
-				} else if (panelWidth == "Large") {
-					align == "Right" ? $("#pageContents .splitScreen").addClass("xlarge") : $("#pageContents .splitScreen").addClass("small");
-				} else {
-					align == "Right" ? $("#pageContents .splitScreen").addClass("large") : $("#pageContents .splitScreen").addClass("medium");
-				}
+			// panel position data is reversed as the property used to be called 'Align text' rather than 'Panel position'
+			// send amended data to split screen function as otherwise layout will be reversed
+			const attributes = {
+				panelPosition: x_currentPageXML.getAttribute("align") !== "Right" ? "Right" : "Left"
 			}
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
 			this.sizeChanged();
 			x_pageLoaded();
@@ -122,86 +71,86 @@
 		};
 		
 		this.listFeed = function(feed) {
-				var resultsString = "";
+			var resultsString = "";
 
-				if (feed.rss.channel.item == 0) {
-					resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>'
+			if (feed.rss.channel.item == 0) {
+				resultsString = '<div><p>' + x_getLangInfo(x_languageData.find("noResults")[0], "label", "No results returned") + '</p></div>'
+			}
+			else {
+				//get optional properties to show/hide links and info
+				var optdeployment=x_currentPageXML.getAttribute("deployment");
+				var optscorm2004=x_currentPageXML.getAttribute("scorm2004");
+				var optscorm12=x_currentPageXML.getAttribute("scorm12");
+				var optoffline=x_currentPageXML.getAttribute("offline");
+				var optauthor=x_currentPageXML.getAttribute("author");
+				var optlicense=x_currentPageXML.getAttribute("license");
+				var optmoddate=x_currentPageXML.getAttribute("moddate");
+				var optfeedheader=x_currentPageXML.getAttribute("feedheader");
+
+				//hide or show the feed header based on optional property
+				if (optfeedheader !="false" && optfeedheader !=null) {
+						$("#headerHolder").html("<h3>" + feed.rss.channel.description + "</h3>");
+				} else {
+					$("#headerHolder").remove();
 				}
-				else {
-					//get optional properties to show/hide links and info
-					var optdeployment=x_currentPageXML.getAttribute("deployment");
-					var optscorm2004=x_currentPageXML.getAttribute("scorm2004");
-					var optscorm12=x_currentPageXML.getAttribute("scorm12");
-					var optoffline=x_currentPageXML.getAttribute("offline");
-					var optauthor=x_currentPageXML.getAttribute("author");
-					var optlicense=x_currentPageXML.getAttribute("license");
-					var optmoddate=x_currentPageXML.getAttribute("moddate");
-					var optfeedheader=x_currentPageXML.getAttribute("feedheader");
 
-					//hide or show the feed header based on optional property
-					if (optfeedheader !="false" && optfeedheader !=null) {
-							$pageContents.find("#headerHolder").html("<h3>" + feed.rss.channel.description + "</h3>");
-					} else {
-						$pageContents.find("#headerHolder").remove();
+				$.each(feed.rss.channel.item, function (index, item) {
+					var xertefeed = (typeof item.xertedescription != "undefined");
+					var description = (typeof item.xertedescription != "undefined" ? item.xertedescription : item.description);
+					var templatename = (typeof item.xertetemplatename != "undefined" ? item.xertetemplatename : "");
+					var author = (typeof item.xerteauthor != "undefined" ? item.xerteauthor : (typeof item.author != "undefined" ? item.author : ""));
+					const faIcon = '<i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>';
+					resultsString += '<div><a target="_blank" href="' + item.link + '"><i class="fa fa-globe" aria-hidden="true"></i> View ' + item.title + ' ' + faIcon + '</a><br><br>';
+					if (typeof item.exportlink != "undefined" && optdeployment !="false")
+					{
+						resultsString += '<span class="rssDownloadDeployment"><a target="_blank" href="' + item.exportlink + '"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Download Deployment</a></span>';
+					}
+					if (typeof item.scorm2004link != "undefined" && optscorm2004 !="false")
+					{
+						resultsString += '<span class="rssDownloadScorm2004"><a target="_blank" href="' + item.scorm2004link + '"><i class="fa fa-cubes" aria-hidden="true"></i>  Download SCORM 2004 3rdEd</a></span>';
+					}
+					if (typeof item.scorm12link != "undefined" && optscorm12 !="false")
+					{
+						resultsString += '<span class="rssDownloadScorm12"><a target="_blank" href="' + item.scorm12link + '"><i class="fa fa-cube" aria-hidden="true"></i> Download SCORM 1.2</a></span>';
+					}
+					if (typeof item.offlinelink != "undefined" && optoffline !="false")
+					{
+						resultsString += '<span class="rssDownloadOffline"><a target="_blank" href="' + item.offlinelink + '"><i class="fa fa-cube" aria-hidden="true"></i> Download Offline</a></span>';
 					}
 
-					$.each(feed.rss.channel.item, function (index, item) {
-						var xertefeed = (typeof item.xertedescription != "undefined");
-						var description = (typeof item.xertedescription != "undefined" ? item.xertedescription : item.description);
-						var templatename = (typeof item.xertetemplatename != "undefined" ? item.xertetemplatename : "");
-						var author = (typeof item.xerteauthor != "undefined" ? item.xerteauthor : (typeof item.author != "undefined" ? item.author : ""));
-						const faIcon = '<i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>';
-						resultsString += '<div><a target="_blank" href="' + item.link + '"><i class="fa fa-globe" aria-hidden="true"></i> View ' + item.title + ' ' + faIcon + '</a><br><br>';
-						if (typeof item.exportlink != "undefined" && optdeployment !="false")
-						{
-							resultsString += '<span class="rssDownloadDeployment"><a target="_blank" href="' + item.exportlink + '"><i class="fa fa-file-archive-o" aria-hidden="true"></i> Download Deployment</a></span>';
+					if (x_currentPageXML.getAttribute("appearance") != 'title' && typeof item.description != "undefined") {
+						// snippet is a bit long so shorten it
+						if (description != "undefined" && description.length > 400) {
+							var cutOff = 400 + description.substr(400).indexOf(' ');
+							var $html = $('<div>').html(description.substring(0, cutOff));
+							resultsString += '<p class="rssDescription">' + $html.prop('innerHTML') + '...</p>';
+						} else {
+							var $html = $('<div>').html(description);
+							resultsString += '<p class="rssDescription">' + $html.prop('innerHTML') + '</p>';
 						}
-						if (typeof item.scorm2004link != "undefined" && optscorm2004 !="false")
-						{
-							resultsString += '<span class="rssDownloadScorm2004"><a target="_blank" href="' + item.scorm2004link + '"><i class="fa fa-cubes" aria-hidden="true"></i>  Download SCORM 2004 3rdEd</a></span>';
-						}
-						if (typeof item.scorm12link != "undefined" && optscorm12 !="false")
-						{
-							resultsString += '<span class="rssDownloadScorm12"><a target="_blank" href="' + item.scorm12link + '"><i class="fa fa-cube" aria-hidden="true"></i> Download SCORM 1.2</a></span>';
-						}
-						if (typeof item.offlinelink != "undefined" && optoffline !="false")
-						{
-							resultsString += '<span class="rssDownloadOffline"><a target="_blank" href="' + item.offlinelink + '"><i class="fa fa-cube" aria-hidden="true"></i> Download Offline</a></span>';
-						}
-						//resultsString += '</div>'
-						if (x_currentPageXML.getAttribute("appearance") != 'title' && typeof item.description != "undefined") {
-							// snippet is a bit long so shorten it
-							if (description != "undefined" && description.length > 400) {
-								var cutOff = 400 + description.substr(400).indexOf(' ');
-								var $html = $('<div>').html(description.substring(0, cutOff));
-								resultsString += '<p class="rssDescription">' + $html.prop('outerHTML') + '...</p>';
-							} else {
-								var $html = $('<div>').html(description);
-								resultsString += '<p class="rssDescription">' + $html.prop('outerHTML') + '</p>';
-							}
-						}
-						if (optauthor !="false" && optauthor !=null) {
-							resultsString += '<p class="rssAuthor">' + x_getLangInfo(x_languageData.find("rssDLAuthor")[0], "label", "Created by:") + " " + author + '</p>';
-						}
+					}
+					if (optauthor !="false" && optauthor !=null) {
+						resultsString += '<p class="rssAuthor">' + x_getLangInfo(x_languageData.find("rssDLAuthor")[0], "label", "Created by:") + " " + author + '</p>';
+					}
 
-						if (optlicense !="false" && optlicense !=null) {
-							resultsString += '<p class="rssLicense">' + x_getLangInfo(x_languageData.find("rssDLLicense")[0], "label", "License:") + " " + item.license + '</p>';
-						}
-						if (optmoddate !="false" && optmoddate !=null) {
-							var pubDate = item.pubDate.substring(0, 16);
-							resultsString += '<p class="rssModDate">' + x_getLangInfo(x_languageData.find("rssDLModDate")[0], "label", "Last modified:") + " " + pubDate + '</p>';
-						}
-						resultsString += '</div>';
-					});
-				}
-				
-				$resultsHolder
-					.html(resultsString)
-					.children("div:even").addClass("shadedDiv");
+					if (optlicense !="false" && optlicense !=null) {
+						resultsString += '<p class="rssLicense">' + x_getLangInfo(x_languageData.find("rssDLLicense")[0], "label", "License:") + " " + item.license + '</p>';
+					}
+					if (optmoddate !="false" && optmoddate !=null) {
+						var pubDate = item.pubDate.substring(0, 16);
+						resultsString += '<p class="rssModDate">' + x_getLangInfo(x_languageData.find("rssDLModDate")[0], "label", "Last modified:") + " " + pubDate + '</p>';
+					}
+					resultsString += '</div>';
+				});
+			}
+
+			$("#resultsHolder")
+				.html(resultsString)
+				.children("div:even").addClass("shadedDiv");
 		};
 
 		this.errorLoading = function(msg) {
-			$resultsHolder
+			$("#resultsHolder")
 				.html('<div><p>' + msg + '</p></div>');
 		};
 
@@ -213,19 +162,15 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
-		
-		<div id="textHolder" class="left"></div>
-		
-		<div id="rssHolder" class="right">
-			<div class="panel">
-				<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
-				<div id="headerHolder"></div>
-				<div id="resultsHolder"></div>
-			</div>
+
+	<div id="textHolder" class="splitScreen_A"></div>
+
+	<div id="rssHolder" class="splitScreen_B">
+		<div class="panelContent panel">
+			<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
+			<div id="headerHolder"></div>
+			<div id="resultsHolder"></div>
 		</div>
-		
 	</div>
 
 </div>

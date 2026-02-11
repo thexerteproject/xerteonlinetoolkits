@@ -283,7 +283,7 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
 }
 
 .x_annotatedDiagram_page #infoHolder {
-  background: #ffffff;
+  /*background:$defaultpagebackground;*/
 }
 
 .target.ui-droppable.border.highlight {
@@ -291,9 +291,9 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all {
 }
 
 .x_dragDropLabel_page #infoHolder {
-  padding: 20px;
-  margin-right: 20px;
-  background: #D5D6D2;
+  /*padding:20px;
+  margin-right:20px;
+  background:$brightcolor;*/
 }
 
 .x_dragDropLabel_page .label.panel {
@@ -368,7 +368,7 @@ a.hotspot, a.hotspot.selected {
 }
 
 .hsinfo {
-  padding: 1%;
+  /*padding:1%;*/
 }
 
 .x_hotspotImage_page #infoHolder {
@@ -575,9 +575,14 @@ table.headerCol.shaded td.header {
   color: #ffffff;
 }
 
+.x_nav_page #pageContents.tab #infoHolder {
+  border-radius: 2vmin;
+  background: #D5D6D2;
+}
+
 .x_mcq_page #pageContents .optionGroup.answerBtn.selected,
 .x_quiz_page #pageContents .optionGroup.answerBtn.selected {
-  background: #EDEDED;
+    background: #EDEDED;
 }
 
 #x_footerBlock {
@@ -1609,8 +1614,8 @@ body:not(.sb_right):not(.sb_left) #x_mainHolder {
 }
 
 #infoHolder {
-  border-radius: 2vmin;
-  background: #D5D6D2;
+  /*border-radius:$mediumroundedcorners;
+  background: $brightcolor;*/
 }
 
 /*****panel all pages with a panel*****/
@@ -1619,6 +1624,11 @@ body:not(.sb_right):not(.sb_left) #x_mainHolder {
   background: #D5D6D2;
   box-shadow: none;
   border-color: transparent;
+}
+
+.panel .panel.editorStyle {
+  background: #ffffff;
+  border-color: #ffffff;
 }
 
 .panelPage {

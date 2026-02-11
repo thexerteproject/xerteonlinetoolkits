@@ -100,8 +100,8 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
 .x_interactiveText_page #pageContents.show #btnHolder,
 .x_interactiveText_page #pageContents.find #btnHolder,
 .x_interactiveText_page #pageContents.find2 #btnHolder,
-.x_interactiveVideo_page .panel h3,
-.x_mediaLesson_page .panel h3,
+.x_interactiveVideo_page .videoPanel.panel h3,
+.x_mediaLesson_page .layoutPanel.panel h3,
 .x_youtuberss_page #resultsHolder .shadedDiv {
   border-bottom: 3px solid #ffffff;
 }
@@ -225,7 +225,7 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   border-color: #f86718;
 }
 
-.x_mediaLesson_page #panelHolder .panel {
+.x_mediaLesson_page #panelHolder .layoutPanel.panel {
   overflow-x: hidden;
 }
 
@@ -613,7 +613,7 @@ a.hotspot, a.hotspot.selected {
 }
 
 .hsinfo {
-  padding: 1%;
+  /*padding:1%;*/
 }
 
 .x_hotspotImage_page #infoHolder {
@@ -1828,8 +1828,8 @@ body:not(.sb_right):not(.sb_left) #x_mainHolder {
 }
 
 #infoHolder {
-  border-radius: 2vmin;
-  background: #ebebeb;
+  /*border-radius:$mediumroundedcorners;
+  background: $lightgrey;*/
 }
 
 .panel {
@@ -1837,6 +1837,11 @@ body:not(.sb_right):not(.sb_left) #x_mainHolder {
   background: #ebebeb;
   box-shadow: none;
   border-color: #ebebeb;
+}
+
+.panel .panel.editorStyle {
+  background: #ffffff;
+  border-color: #ffffff;
 }
 
 .panelPage {

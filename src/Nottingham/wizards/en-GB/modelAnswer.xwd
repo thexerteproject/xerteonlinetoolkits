@@ -1,7 +1,8 @@
 <wizard menus="Interactivity">Mark Answer
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="" pageFeedback="" panelWidth="Medium" align="left"
+      <modelAnswer><![CDATA[<modelAnswer name="Enter Page Title" text="" pageFeedback=""
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"
 	  feedbackBtnTxt="Submit" pageTxt="Page" questionTxt="Question" responseHeaderTxt="Your response:"
 	  noAnswerHeaderTxt="No response submitted" exampleHeaderTxt="Feedback:" feedbackTxt="Page feedback"
 	  copyBtn2Label="Copy" copyShortcutTxt="Press Ctrl+C to copy" downloadTxt="Download" answerFieldLabel="Answer"
@@ -13,10 +14,27 @@
   <modelAnswer menu="Interactivity" menuItem="Model Answer" hint="A text entry interaction, with feedback and the option to copy or download responses." icon="icPageWhiteEdit" thumb="thumbs/modelAnswer.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#modelanswer" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_model_answer_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
+    <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
     <pageFeedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here" mandatory="true"/>
-    <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Medium" width="100"/>
-    <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+
+    <layoutGroup label="Page Layout" type="group">
+      <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
+      <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+      <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox"  data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
+      <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Left" condition="panelWidth!='Full'"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
+      <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+      <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
+      <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+      <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
+      <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
 
     <textArea label="Text Area" type="group" deprecated="These options are deprecated as multiple text areas can now be added to the page. This text area will continue to work on this page but these options will not be available on new model answer pages.">
         <prompt label="Prompt" type="TextArea" height="100" placeholder="Enter prompt text here" tooltip="The question or prompt shown before the associated text field"/>

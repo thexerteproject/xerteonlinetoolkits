@@ -23,22 +23,28 @@
 	var links = new function() {
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-
 		}
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function(firstLoad) {
-			if (x_browserInfo.mobile == false) {
-				links.setRowHeight();
-			}
 		}
 
 		this.init = function() {
-			var $linkHolder = $("#linkHolder");
-			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-			var numCols = x_currentPageXML.getAttribute("cols");
-			if (numCols < 1) {
-				numCols = 3;
+			const $linkHolder = $("#linkHolder");
+
+			// add full width text above &/or below the columns
+			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text").trim() != "") {
+				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			} else {
+				$("#textHolder").remove();
+			}
+
+			if (x_currentPageXML.getAttribute("textTop") != undefined && x_currentPageXML.getAttribute("textTop").trim() != "") {
+				$('<div class="textTopHolder">' + x_addLineBreaks(x_currentPageXML.getAttribute("textTop")) + '</div>').insertBefore($linkHolder);
+			}
+
+			if (x_currentPageXML.getAttribute("textBottom") != undefined && x_currentPageXML.getAttribute("textBottom").trim() != "") {
+				$('<div class="textBottomHolder">' + x_addLineBreaks(x_currentPageXML.getAttribute("textBottom")) + '</div>').insertAfter($linkHolder);
 			}
 			
 			// warn that links open in new window (for screen readers)
@@ -54,7 +60,7 @@
 					$thisLink = $linkHolder;
 				}
 
-				if (this.getAttribute("name") == '') {
+				if (this.getAttribute("name").trim() === '' || x_currentPageXML.getAttribute("showTitles") === "false") {
 					$thisLink.find("h3").hide();
 				} else {
 					$thisLink.find("h3")
@@ -63,7 +69,7 @@
 							.show();
 				}
 
-				if (this.getAttribute("text") == '') {
+				if (this.getAttribute("text").trim() === '') {
 					$thisLink.find(".info").hide();
 				} else {
 					$thisLink.find(".info")
@@ -71,13 +77,13 @@
 							.show();
 				}
 
-				if (this.getAttribute("url") == '') {
+				if (this.getAttribute("url").trim() === '') {
 					$thisLink.find(".link").hide();
+
 				} else {
 					// the text read by screen reader for link (instead of url)
 					// this will be urlTxt (if exists) or name (if exists) or url, followed by the link warning that it opens in new window (if it does)
 					var screenreaderTxt = (this.getAttribute("urlTxt") != undefined && this.getAttribute("urlTxt") != "" ? this.getAttribute("urlTxt") : (this.getAttribute("name") != "" ? this.getAttribute("name") : this.getAttribute("url"))) + (this.getAttribute("target") != "lightbox" ? ": " + linkWarning : ": " + lbWarning);
-
 
 					const faIcon = '<i class="fa fa-external-link-alt " aria-label="' + x_getLangInfo(x_languageData.find('screenReaderInfo')[0], 'newWindow', 'opens in a new window') + '"></i>';
 					$thisLink.find(".link a")
@@ -94,73 +100,36 @@
 				if (this.getAttribute("target") == "lightbox") {
 					$thisLink.addClass("lb");
 				}
-				
-				if (i % numCols == 0) {
-					$thisLink.addClass("clear");
-				}
 			});
 
 			$(".linkBlock.lb .link a").attr('data-featherlight', 'iframe');
 
-			// set column widths
-			if (x_browserInfo.mobile == false) {
-				var numColumns = Number(x_currentPageXML.getAttribute("cols"));
-				var spacerWidth = (numColumns + 1) * 2,	// 2% gap between columns
-					paddingWidth = numColumns * 2,		// 1% padding inside panel
-					columnWidth = Math.floor((100 - spacerWidth - paddingWidth) / numColumns);
+			// set a minimum width for the columns - columns will wrap onto a new row rather than be shown smaller than this
+			$linkHolder.css("grid-template-columns", "repeat(auto-fit, minmax(" + (x_currentPageXML.getAttribute("minWidth") != undefined ? x_currentPageXML.getAttribute("minWidth") : "75") + "px, 1fr))");
 
-				$("#linkHolder .linkBlock")
-					.css({
-						width			:columnWidth + "%",
-						"padding"		:"1%",
-						"margin-left"	:"2%"
-					});
-				
-				setTimeout(function(){
-					links.setRowHeight();
-				}, 1000);
+			// add a panel style if needed
+			if (x_currentPageXML.getAttribute("panelStyle") === "single") {
+				$linkHolder.addClass("panel");
+			} else if (x_currentPageXML.getAttribute("panelStyle") !== "none") { // default is a panel for each link
+				$linkHolder.find(".linkBlock").addClass("panel");
 			}
 
+			// these calculations are for when page could fit more than x no. of columns - make sure the no. of columns is still used alongside the min column width
+			const minW = (x_currentPageXML.getAttribute("minWidth") != undefined ? x_currentPageXML.getAttribute("minWidth") : "75") + "px";
+			const gap = $linkHolder.css("gap");
+			const numCols = x_currentPageXML.getAttribute("cols") < 1 ? 3 : x_currentPageXML.getAttribute("cols");
+
+			$("<style>")
+				.prop("type", "text/css")
+				.html(`
+				@container page-contents (min-width: calc(${minW}*${numCols} + (${gap}*${numCols-1}))) {
+					#linkHolder {
+						grid-template-columns: repeat(${numCols}, 1fr) !important;
+					}
+				}`)
+				.appendTo($("#pageContents"));
+
 			x_pageLoaded();
-		}
-		
-		// set link height for each row
-		this.setRowHeight = function() {
-			
-			var maxH = [0,0,0],
-				numColumns = Number(x_currentPageXML.getAttribute("cols"));
-			
-			$(".linkBlock").each(function(i) {
-				var $this = $(this);
-				$this.find(".title, .info, .link").height("auto");
-				var remainder = i % numColumns;
-				if (remainder == 0) {
-					if (i != 0) {
-						for (var j=0; j<numColumns; j++) {
-							$(".linkBlock .title:eq(" + (i-1-j) + ")").height(maxH[0]);
-							$(".linkBlock .info:eq(" + (i-1-j) + ")").height(maxH[1]);
-							$(".linkBlock .link:eq(" + (i-1-j) + ")").height(maxH[2]);
-						}
-					}
-					// 1st in row so start maxH again from 0
-					maxH.splice(0, 1, $this.find(".title").height() > 0 ? $this.find(".title").height() : 0);
-					maxH.splice(1, 1, $this.find(".info").height() > 0 ? $this.find(".info").height() : 0);
-					maxH.splice(2, 1, $this.find(".link").height() > 0 ? $this.find(".link").height() : 0);
-				} else {
-					maxH.splice(0, 1, $this.find(".title").height() > maxH[0] ? $this.find(".title").height() : maxH[0]);
-					maxH.splice(1, 1, $this.find(".info").height() > maxH[1] ? $this.find(".info").height() : maxH[1]);
-					maxH.splice(2, 1, $this.find(".link").height() > maxH[2] ? $this.find(".link").height() : maxH[2]);
-					
-					// last row
-					if (i == $(".linkBlock .info").length - 1) {
-						for (var j=0; j<numColumns-(numColumns-remainder-1); j++) {
-							$(".linkBlock .title:eq(" + (i-j) + ")").height(maxH[0]);
-							$(".linkBlock .info:eq(" + (i-j) + ")").height(maxH[1]);
-							$(".linkBlock .link:eq(" + (i-j) + ")").height(maxH[2]);
-						}
-					}
-				}
-			});
 		}
 	}
 
@@ -172,7 +141,7 @@
 	<div id="textHolder"></div>
 
 	<div id="linkHolder">
-		<div class="panel linkBlock">
+		<div class="linkBlock">
 			<h3 class="title"></h3>
 			<div class="info"></div>
 			<p class="link"><a></a></p>

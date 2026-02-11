@@ -76,8 +76,8 @@ body:not(.sb_right):not(.sb_left) #x_mainHolder {
 	padding-bottom:10px;
 }
 #infoHolder{
-	border-radius:$mediumroundedcorners;
-	background: $brightcolor;
+	/*border-radius:$mediumroundedcorners;
+	background: $brightcolor;*/
 }
 //*****panel all pages with a panel*****/
 .panel {
@@ -85,6 +85,10 @@ body:not(.sb_right):not(.sb_left) #x_mainHolder {
 	background:$brightcolor;
 	box-shadow: none;
 	border-color: $brightcolor;
+}
+.panel .panel.editorStyle {
+	background: $defaultpagebackground;
+	border-color: $defaultpagebackground;
 }
 .panelPage{
 	padding:1%;

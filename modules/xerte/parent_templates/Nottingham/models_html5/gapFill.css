@@ -1,15 +1,11 @@
 /* gapFill.html */
 	
-	#pageContents .panel {
+	#pageContents #mainPanel.panel {
 		overflow:	auto;
 	}
 
-	#pageContents #dragDropHolder .panel {
+	#pageContents #dragDropHolder #mainPanel.panel {
 		overflow-x: hidden;
-	}
-	
-	#textHolder {
-		margin-bottom:	10px;
 	}
 	
 	#targetHolder .target {

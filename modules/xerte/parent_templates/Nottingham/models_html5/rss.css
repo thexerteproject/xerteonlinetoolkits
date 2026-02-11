@@ -41,7 +41,7 @@
 		font-weight:	bold;
 	}
 	
-	#rssHolder .panel {
+	#rssHolder .panelContent.panel {
 		overflow: auto;
 	}
 

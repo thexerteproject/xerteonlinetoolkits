@@ -1,7 +1,9 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <decision><![CDATA[<decision name="Enter Page Title" text="" panelWidth="Medium" firstStep="" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" yourAnswerString="Your answer" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision>
+      <decision><![CDATA[<decision name="Enter Page Title" text=""
+      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      firstStepNew="" overview="true" newBtnLabel="Restart" viewThisBtn="Overview" backBtn="Previous Step" fwdBtn="Next Step" copyBtn="Copy Overview" copyShortcutTxt="Press Ctrl + C to copy" yourAnswerString="Your answer" posAnswerString="Other possible answers" fromRangeString="From range" resultString="Result" resultEndString="" overviewString="Overview" helpString="More information" btnLabel="Next" errorString="ERROR! Invalid ID" sliderError="There is no next step for this value!" />]]></decision>
     </newNodes>
   </pageWizard>
 
@@ -9,11 +11,29 @@
   <decision menuItem="Decision Tree" menu="Interactivity" remove="true" thumb="thumbs/decision.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#decisiontree" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_decision_tree_page" hint="Find a solution to a problem by answering a series of questions." icon="icDecision" deepLink="true">
 	
 	<name type="TextInput" wysiwyg="true" label="Page Title"/>
-	<text label="Intro Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
-	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" defaultValue="Small" width="100"/>
-	<firstStep label="First Step ID" type="TextInput" placeholder="e.g. Q1"/>
+	<text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
+  	<firstStepNew label="First Step ID" type="pageList" listTarget="-1" defaultValue="" mandatory="true"/>
+	<firstStep label="First Step ID" type="TextInput" placeholder="e.g. Q1" optional="true" deprecated="This property has been deprecated - use the First Step drop down menu to select the target step instead. The ID entered in this field will continue to work until the drop down menu is used"/>
 	<overview label="Show Final Overview" type="CheckBox" defaultValue="true" mandatory="true"/>
-	
+
+	<layoutGroup label="Page Layout" type="group">
+		<panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
+		<panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+		<align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
+		<panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+		<removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+	</layoutGroup>
+
+	<textTopGroup label="Text Above Panel" type="group" optional="true">
+		<textTop label="Text" type="TextArea" height="100" optional="true"/>
+		<textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+	</textTopGroup>
+
+	<textBelowGroup label="Text Below Panel" type="group" optional="true">
+		<textBottom label="Text" type="TextArea" height="100" optional="true"/>
+		<textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+	</textBelowGroup>
+
 	<copy label="Copy Overview Option" type="CheckBox" optional="true" defaultValue="true" tooltip="Adds a button to the overview screen that presents users with an easy to copy version of their answers and results."/>
 	<number label="Question Numbering" type="CheckBox" optional="true" defaultValue="true" tooltip="Displays question / step numbers"/>
 	

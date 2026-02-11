@@ -1,7 +1,7 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="" imgWidth="Medium" url="" interactivity="Describe" submitText="Submit"  incomplete="Please complete the exercise" tip="" align="Left" showHighlight="true" highlightColour="0xFFFF00" tryAgainTxt="Try again"/>]]></dragDropLabel>
+      <dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="" align="Left" interactivity="Describe" url="" tip="" imgWidth="Medium" showHighlight="true" highlightColour="0xFFFF00" submitText="Submit"  incomplete="Please complete the exercise" tryAgainTxt="Try again"/>]]></dragDropLabel>
     </newNodes>
   </pageWizard>
 
@@ -11,10 +11,13 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text  label="Page Text" type="TextArea" height="250" placeholder="Enter text for the page here"/>
 	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+
+    <interactivity label="Interactivity" options="Describe,Match" type="ComboBox" data="Describe,Match" defaultValue="Describe" mandatory="true" width="100" tooltip="Describe: only allow labels to be dragged to the correct hotspot and then show description text. Match: labels can be dropped on any hotspot and answers are marked after clicking submit button (no description text shown)"/>
 	
 	<image type="group" label="Image">
 		<url label="File" type="media" placeholder="Select an image"/>
 		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
+        <imgWidth label="Size" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium"/>
 	</image>
 	
 	<highlight type="group" label="Hotspot Highlight">
@@ -22,13 +25,9 @@
 		<highlightColour label="Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
 	</highlight>
 	
-    <interactivity label="Interactivity" options="Describe,Match" type="ComboBox" data="Describe,Match" defaultValue="Describe" mandatory="true" width="100" tooltip="Describe: only allow labels to be dragged to the correct hotspot and then show description text. Match: labels can be dropped on any hotspot and answers are marked after clicking submit button (no description text shown)"/>
-	
 	<tryAgainTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true" />
 	<submitText label="Submit button label for Match" type="TextInput" wysiwyg="true" language="true" />
     <incomplete label= "Incomplete" type="TextInput" wysiwyg="true" language="true"/>
-
-	<imgWidth label="Image Width" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium" optional="true"/>
 	
 	<labelPos label="Label Position" type="ComboBox" data="image,text" options="Below Image,Below Text" defaultValue="image" optional="true"/>
 	

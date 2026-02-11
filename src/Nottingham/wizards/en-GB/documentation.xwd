@@ -1,7 +1,9 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <documentation><![CDATA[<documentation name="Enter Page Title" text="" intro="" display="all" download="last" panelWidth="Medium" instructions="Click the download button to save a copy of your answers" submittedTxt="Your answers have been submitted" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous" submitTxt="Submit"
+      <documentation><![CDATA[<documentation name="Enter Page Title" text="" intro="" display="all" download="last"
+      panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
+      instructions="Click the download button to save a copy of your answers" submittedTxt="Your answers have been submitted" notAnswered="Not answered" requiredTxt="Please complete all required fields" mediaError="No image selected" downloadTxt="Download" nextTxt="Next" prevTxt="Previous" submitTxt="Submit"
 	  />]]></documentation>      
     </newNodes>
   </pageWizard>
@@ -9,13 +11,30 @@
   <!-- DOCUMENTATION=============================== -->  
     <documentation menu="Interactivity" menuItem="Documentation" icon="icForm" remove="true" thumb="thumbs/documentation.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#documentation" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_documentation" hint="A form based interaction where the user downloads a copy of their responses.">
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-    <text label="Page Text" type="TextArea" height="120" placeholder="Enter text for the page here"/>
+    <text label="Page Text" type="TextArea" height="120" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
 	<intro label="Introduction Text" type="TextArea" height="120" placeholder="Enter introductory text here"/>
 	<display label="Show Introduction Text" data="separate,first,all" type="ComboBox" options="On additional page,On first page only,On all pages" width="120"/>
 	<download label="Show Download/Submit Buttons" data="last,extra" type="ComboBox" options="On last page,On additional page" width="120"/>
-	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="100" mandatory="true" />
 
-	<track label="Submit Button" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true" tooltip="Include a button that submits answers to the results page"/>
+    <layoutGroup label="Page Layout" type="group">
+        <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true" mandatory="true"/>
+        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
+
+    <track label="Submit Button" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true" tooltip="Include a button that submits answers to the results page"/>
 	<showDownload label="Download Button" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true" tooltip="A download button will be shown by default. Uncheck this option to remove the download button."/>
 	<trackingWeight condition="track=='true'" label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="0.0" />
 

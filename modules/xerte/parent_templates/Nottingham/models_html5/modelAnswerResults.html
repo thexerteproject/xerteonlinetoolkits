@@ -18,6 +18,8 @@
  * limitations under the License.
  */
 
+// ** allow top / bottom text to be copied / downloaded
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var modelAnswerResults = new function() {
@@ -35,23 +37,17 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $("#pageContents .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
 		}
 		
 		this.init = function() {
-			const panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			if (panelWidth == "Small") {
-				$("#pageContents .splitScreen").addClass("large");
-			} else if (panelWidth == "Large") {
-				$("#pageContents .splitScreen").addClass("small");
-			} else {
-				$("#pageContents .splitScreen").addClass("medium");
-			}
-
 			// page text might be in cdata (3.14 & earlier) or in text attribute
 			const pageText = x_currentPageXML.childNodes[0] == undefined || x_currentPageXML.childNodes[0] == "" || x_currentPageXML.childNodes[0].nodeValue == undefined ? (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") !== "" ? x_currentPageXML.getAttribute("text") : "") : x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue);
 			$("#textHolder").html(pageText);
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init();
 
 			// set up copy to clipboard button
 			// this is either turned on with an optional property (>v3.15) or will be on if copypasteinfo exists
@@ -230,23 +226,19 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
 		
-		<div id="textHolder" class="left"></div>
-		
-		<div id="infoHolder" class="right">
-			<div class="panel" tabindex="0">
-				<div id="panelTxt"></div>
-				<div id="btnHolder">
-					<button id="copyBtn"/>
-					<button id="downloadBtn"/>
-				</div>
+	<div id="textHolder" class="splitScreen_A"></div>
+
+	<div id="infoHolder" class="splitScreen_B">
+		<div id="panel" class="panelContent panel" tabindex="0">
+			<div id="panelTxt"></div>
+			<div id="btnHolder">
+				<button id="copyBtn"/>
+				<button id="downloadBtn"/>
 			</div>
 		</div>
-		
-		<div id="screenReaderInfo" class="ui-helper-hidden-accessible" aria-live="polite"/>
-		
 	</div>
 	
 </div>
+
+<div id="screenReaderInfo" class="ui-helper-hidden-accessible" aria-live="polite"></div>

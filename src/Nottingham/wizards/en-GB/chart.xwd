@@ -1,7 +1,8 @@
 <wizard menus="Charts">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text="" align="left"/>]]></chart>
+      <chart><![CDATA[<chart name="Enter Page Title" chartTitle="Chart Title" chartType="line" text=""
+      panelWidth="Medium" panelWidthCustom="50" align="left" panelStyle="false" removeTxt="false"/>]]></chart>
     </newNodes>
   </pageWizard>
 
@@ -10,12 +11,29 @@
   <chart menu="Charts" menuItem="Basic Chart" hint="A page for basic charts. Choose from line, bar, stacked bar or pie charts, and add several series of data to the chart." icon="icChart" thumb="thumbs/charts.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#basicchart" wiki="https://xerte.org.uk/wiki/doku.php?id=charts_basicchart_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="300" placeholder="Enter text for the page here"/>
+    <text label="Page Text" type="TextArea" height="150" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
     <chartTitle label="Chart Title" type="TextInput" wysiwyg="true"/>
     <chartType label="Chart Type" options="Line,Bar,Stacked bar,Pie" type="ComboBox" data="line,bar,stacked bar,pie" defaultValue="line" width="120"/>
-    <align label="Align Text" options="Left,Right" type="ComboBox" data="left,right" defaultValue="left" width="100"/>
-	
-	<alt label="Summary" type="TextInput" wysiwyg="false" defaultValue="" placeholder="Enter a summary for accessibility" optional="true" tooltip="A description of the chart that will be read by screen readers. Add this to improve the accessibility of the page"/>
+
+    <layoutGroup label="Page Layout" type="group">
+      <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
+      <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+      <align label="Panel Position" options="Right,Left" type="ComboBox" data="left,right" defaultValue="left" condition="panelWidth!='Full'"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="false" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+      <textTop label="Text" type="TextArea" height="100" optional="true"/>
+      <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+      <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+      <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
+
+    <alt label="Summary" type="TextInput" wysiwyg="false" defaultValue="" placeholder="Enter a summary for accessibility" optional="true" tooltip="A description of the chart that will be read by screen readers. Add this to improve the accessibility of the page"/>
 	
     <newNodes>
       <series><![CDATA[<series name="Enter Series Name" data="label|data" colour="0xFF0000"/>]]></series>

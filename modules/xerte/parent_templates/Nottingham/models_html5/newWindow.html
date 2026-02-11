@@ -36,7 +36,7 @@
 
 		this.resizeImg = function(firstLoad) {
 			var imgMaxW, imgMaxH;
-			imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
+			imgMaxW = Math.round($x_innerPage.width() * 0.55 - 20);
 			imgMaxH = x_getAvailableHeight([$("#imgHolder")], [$("#imgHolder figcaption")]);
 			$img.mapster('unbind');
 			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false);
@@ -67,7 +67,7 @@
 			
 			$("#pageImg")
 				.one("load", function() {
-					var imgMaxW = Math.round($x_pageHolder.width() * 0.55 - 20);
+					var imgMaxW = Math.round($x_innerPage.width() * 0.55 - 20);
 					var imgMaxH = x_getAvailableHeight([$("#imgHolder")], [$("#imgHolder figcaption")]);
 					if (x_browserInfo.mobile == true) {
 						imgMaxW = 250; // mobile
