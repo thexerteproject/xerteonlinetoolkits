@@ -36,7 +36,7 @@ abstract class AITranscribe {
     /**
      * Format transcription segments with start/end timestamps.
      */
-    protected function formatSegmentsWithTimestamps($vttContent, $secondsOnly = false)
+    public function formatSegmentsWithTimestamps($vttContent, $secondsOnly = false)
     {
         $lines = preg_split('/\R/', $vttContent);
         $formattedText = '';
@@ -206,7 +206,6 @@ abstract class AITranscribe {
         // If file is too big, split into segments
         if (\filesize($filePath) > $maxBytes) {
             // create a temp directory for this run
-            //todo alek double check if chunck are stored and handled in the userfiles instead of temp
             $tmpDir = $this->mediaPath . DIRECTORY_SEPARATOR . 'whisper_chunks_' . \uniqid();
             if (!\mkdir($tmpDir, 0777, true) && !\is_dir($tmpDir)) {
                 throw new \RuntimeException("Unable to create temp directory: {$tmpDir}");
@@ -216,8 +215,8 @@ abstract class AITranscribe {
             $this->chunkTmpDir = $tmpDir;
 
             $ext     = \pathinfo($filePath, PATHINFO_EXTENSION);
-            $pattern = $tmpDir . DIRECTORY_SEPARATOR . "chunk_03d.{$ext}";
-            //todo alek this part is broken.
+            //Be aware that '%03' is a pattern recognised by ffmpeg and as such must remain. Otherwise, ffmpeg does not know how to extrapolate the splitting request.
+            $pattern = $tmpDir . DIRECTORY_SEPARATOR . "chunk_%03d.{$ext}";
             $this->exec_chunk($filePath, $segmentSeconds, $pattern);
 
             // collect and sort the generated chunks
