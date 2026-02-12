@@ -1265,7 +1265,7 @@ var EDITOR = (function ($, parent) {
                 if (idxPreviewAny !== -1) {
                     // slice and strip quotes again just in case
                     //When normalizing in the corpus, if we see preview.xml, we update the LO in corpus.
-                    let completion_info = updateCorpusSingle(false, true);
+                    let completion_info = updateCorpusSingle(false, true, loLanguage);
                     const first = completion_info.results?.[0] || {};
                     const displaymsg = first.rag_status || first.transcription_status || completion_info?.error || 'No status available';
                     alert(displaymsg);
@@ -1277,7 +1277,7 @@ var EDITOR = (function ($, parent) {
                 throw new Error(`Unrecognized path: ${raw}`);
             }
             //Upload a single file to the corpus
-            async function updateCorpusSingle(postData, corpusGrid = false, useLoInCorpus) {
+            async function updateCorpusSingle(postData, corpusGrid = false, useLoInCorpus, language) {
                 // Show wait cursor
                 $('body, .featherlight, .featherlight-content').css("cursor", "wait");
 
@@ -1301,7 +1301,7 @@ var EDITOR = (function ($, parent) {
                     };
                 }
 
-                const payload = { name, baseURL, gridData: [singleRow], corpusGrid, useLoInCorpus };
+                const payload = { name, baseURL, gridData: [singleRow], corpusGrid, useLoInCorpus, language };
 
                 try {
                     // 1) Start the job and wait for the start response (job_id)
@@ -1421,7 +1421,7 @@ var EDITOR = (function ($, parent) {
             }
             (async () => {
                 try {
-                    let completion_info = await updateCorpusSingle(postdata, false, false);
+                    let completion_info = await updateCorpusSingle(postdata, false, false, loLanguage);
                     const first = completion_info.results?.[0] || {};
                     const displaymsg = first.rag_status || first.transcription_status || completion_info?.error || 'No status available';
                     alert(displaymsg);
@@ -6731,6 +6731,7 @@ var EDITOR = (function ($, parent) {
                         aiSettings['updateLoOnRequest'] = constructorObject['updateLoOnRequest'] !== undefined ? constructorObject['updateLoOnRequest'] : null;
                         delete constructorObject.updateLoOnRequest;
 
+                        //TODO: this needs to handle defaults in all languages, not just English!
                         // Check if fileUrl is "Upload a file", empty, or just whitespace
                         if (aiSettings['fileUrl'] === "Upload a file or enter a video link here..." || aiSettings['fileUrl'] === "Select a file or enter a video link here..." || !aiSettings['fileUrl'] || aiSettings['fileUrl'].trim() === "") {
                             aiSettings['fileUrl'] = null;
@@ -6806,7 +6807,7 @@ var EDITOR = (function ($, parent) {
                         * and pass useLoInCorpus to the final requests which signals that we intend to use the latest preview.xml.
                         *
                         */
-                        async function updateCorpus(fileUrl, corpusGrid = false, useLoInCorpus) {
+                        async function updateCorpus(fileUrl, corpusGrid = false, useLoInCorpus, language) {
                             const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
 
                             let singleRow;
@@ -6826,7 +6827,7 @@ var EDITOR = (function ($, parent) {
                                 };
                             }
 
-                            const payload = { name, baseURL, gridData: [singleRow], corpusGrid, useLoInCorpus };
+                            const payload = { name, baseURL, gridData: [singleRow], corpusGrid, useLoInCorpus, language};
 
                             $('body, .featherlight, .featherlight-content').css("cursor", "wait");
 
@@ -6988,7 +6989,7 @@ var EDITOR = (function ($, parent) {
                             if (loSettings['useLoInCorpus'] === true){
                                 alert(`${language.vendorApi.contextAlerts.contextUpdatePreviewMsg}`);
                                 await savepreviewPromise();
-                                const data = await updateCorpus(fileUrl, false, true);
+                                const data = await updateCorpus(fileUrl, false, true, loSettings['language']);
                                 const first = data.results?.[0] || {};
                                 const displaymsg =
                                     first.rag_status ||
@@ -7015,7 +7016,7 @@ var EDITOR = (function ($, parent) {
                                         return match.metaData.source;  // file found
                                     } else {
                                         if (confirm(`${language.vendorApi.contextAlerts.contextInPageProcessPromptMsg}`)){
-                                            let fileStatus = await updateCorpus(fileUrl, false);
+                                            let fileStatus = await updateCorpus(fileUrl, false, loSettings['language']);
                                             const first = fileStatus.results?.[0] || {};
                                             const displaymsg =
                                                 first.rag_status ||
@@ -7052,6 +7053,7 @@ var EDITOR = (function ($, parent) {
                         if (uploadPrompt == 'context'){
                             aiSettings['useCorpus'] = true;
                         }
+                        loSettings['language'] = lo_data['treeroot']['attributes']['language'];
 
                         const requiredLoTypes = ['summary', 'orient'];
                         //useLoInCorpus->add the current learning object preview to corpus

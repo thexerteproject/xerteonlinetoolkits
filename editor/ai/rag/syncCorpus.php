@@ -100,7 +100,7 @@ try {
         $job['workspace_id']
     );
 
-
+    $language = isset($input['language']) ? $input['language'] : '';
     $gridData = isset($input['gridData']) ? $input['gridData'] : [];
     function sanitize_grid_data(array $gridData)
     {
@@ -168,7 +168,8 @@ try {
         'api_key' => $transcriptionKey,
         'basedir' => $baseDir,
         'provider' => $provider,
-        'preferred_model' => $preferredTranscriptionModel
+        'preferred_model' => $preferredTranscriptionModel,
+        'language' => $language
     ];
 
     $transcriptMgr = makeTranscriber($cfgTranscribe);

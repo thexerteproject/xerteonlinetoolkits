@@ -12,6 +12,7 @@ require_once (str_replace('\\', '/', __DIR__) . "/../../../config.php");
 function makeTranscriber(array $cfg)
 {
     global $xerte_toolkits_site;
+    $lang = isset($cfg['language']) ? $cfg['language'] : '';
     $provider = isset($cfg['provider']) ? $cfg['provider'] : 'none';
     $baseDir = $cfg['basedir'];
     $adminEnabled = (bool)(isset($cfg['enabled']) ? $cfg['enabled'] : true);
@@ -36,7 +37,7 @@ function makeTranscriber(array $cfg)
     x_check_path_traversal($transcriptDir, $xerte_toolkits_site->users_file_area_full);
 
     $registryHandler = new RegistryHandler($transcriptDir);
-    $transcriptMgr = new TranscriptManager($registryHandler, $mediaHandler);
+    $transcriptMgr = new TranscriptManager($registryHandler, $mediaHandler, $lang);
 
     return $transcriptMgr;
 }

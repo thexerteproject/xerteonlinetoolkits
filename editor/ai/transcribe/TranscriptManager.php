@@ -6,9 +6,10 @@ class TranscriptManager {
     private $registry;
     private $mediaHandler;
 
-    public function __construct(RegistryHandler $registry, MediaHandler $mediaHandler) {
+    public function __construct(RegistryHandler $registry, MediaHandler $mediaHandler, $lang) {
         $this->registry = $registry;
         $this->mediaHandler = $mediaHandler;
+        $this->lang = $lang;
     }
 
     public function appendBase($uploadPath) {
@@ -72,7 +73,12 @@ class TranscriptManager {
         }
 
         echo "Processing: $source\n";
-        $transcript = $this->mediaHandler->getTranscript($fileSource);
+        $transcript = $this->mediaHandler->getTranscript($fileSource, $this->lang);
+
+        if (!isset($transcript) || trim((string)$transcript) === '') {
+            throw new Exception("Transcription failed: transcript is empty or not set!");
+        }
+
         $transcriptPath = $this->mediaHandler->saveAsTextFile($transcript, $mediaDir);
 
         $entry = [
