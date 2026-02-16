@@ -2,12 +2,17 @@ The Saml2 Authentication module is based on https://github.com/onelogin/php-saml
 
 If you want to connect the Xerte installation to an IdP do the following:
 
-1. Copy Sampl2.php.dist to Saml2.php. Only in very special circumstannces would you need to edit this file.
+1. Copy Sampl2.php.dist to Saml2.php. Only in very special circumstances would you need to edit this file.
 2. Copy the settings.php.dist file to settings.php and fill in the proper values for the contact details and your IdP.
    By default (since version v3.15.4) the settings.php.dist file requires the authentication request and the responses to be signed.
    That requires that you create a signing certificate. See certs/README on how to generate those.
-   If you do not want this, you can switch of the requirement of signing the request and the response, but this does create a
+   If you do not want this, you can switch off the requirement of signing the request and the response, but this does create a
    potential security risk!
+   YOU NEED TO PROTECT THIS FOLDER FROM BEING SERVED BY YOUR WEB BROWSER
+   There is a .htaccess file in the certs folder that should do this, but you should check if it works on your server configuration.
+   Alternatively you can insert the key and the certificate in the settings.php file directly instead of using the certs folder.
+   It is a bit more cumbersome, but a lot safer.
+
 3. Copy the endpoints/acs.php.dist file to endpoints/acs.php
    Normally if the IdP is standards compliant you should not need to adjust or change acs.php
    However, in case the IdP returns the Saml2 attrubutes in a different format than urn:oasis:names:tc:SAML:2.0:nameid-format:persistent,

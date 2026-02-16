@@ -1,5 +1,8 @@
 This is the location where to put the SP certificate if signing the request is enabled (default since 3.15.4).
 
+BE SURE THAT THE CONTENTS OF THIS FOLDER IS NEVER PUBLISHED AND IS NOT ACCESSIBLE TO ANYONE EXCEPT THE APPLICATION ITSELF.
+Instead of placing the certificate in this folder it is safer to include them in the settings.php file directly.
+
 The certificate must be in PEM format and the file must be named `sp.crt`, `sp.key`.
 
 You can create the certificates yourself using openssl:
