@@ -16,6 +16,15 @@ try {
     $idpSettings = $parseIdp->parseRemoteXML($idpMetadataUrl);
     $settingsInfoArray = $parseIdp->injectIntoSettings($settingsInfoArray, $idpSettings);
 
+    if (!isset($settingsInfoArray['sp']['x509cert']) || !isset($settingsInfoArray['sp']['privateKey'])) {
+        if (file_exists(__DIR__) . '/../certs/sp.crt') {
+            $settingsInfoArray['sp']['x509cert'] = file_get_contents(__DIR__ . '/../certs/sp.crt');
+        }
+        if (file_exists(__DIR__) . '/../certs/sp.key') {
+            $settingsInfoArray['sp']['privateKey'] = file_get_contents(__DIR__ . '/../certs/sp.key');
+        }
+    }
+
     $auth = new Auth($settingsInfoArray);
     $settings = $auth->getSettings();
     $metadata = $settings->getSPMetadata();

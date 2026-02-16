@@ -1,0 +1,11 @@
+This is the location where to put the SP certificate if signing the request is enabled (default since 3.15.4).
+
+The certificate must be in PEM format and the file must be named `sp.crt`, `sp.key`.
+
+You can create the certificates yourself using openssl:
+
+openssl req -newkey rsa:2048 -keyout sp.key -x509 -days 365 -out sp.crt
+
+Make sure the key does not have a passphrase, otherwise the signing will fail.
+
+openssl rsa -in sp.key -out sp.key

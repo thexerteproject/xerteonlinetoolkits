@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 
+// For configuring this Saml2 authentication plugin, see Saml2/README
 
 class Xerte_Authentication_Saml2 extends Xerte_Authentication_Abstract
 {
@@ -63,14 +64,6 @@ class Xerte_Authentication_Saml2 extends Xerte_Authentication_Abstract
     /** Saml2 integration */
     public function needsLogin()
     {
-        // Redirect to sso site with xertelogin.php RelayState
-        // sso site should do a saml sso, and the RelayState xertelogin.php, should POST all required data to
-        // <this website>/library/Xerte/Authentication/Saml2/xertelogin.php
-        //
-        // The latter xertelogin.php should set the SESSION as required and the _record
-        //
-        // This implementation is based on One_Logins Saml2 php implementation
-
         if (!isset($_SESSION['saml2session'])) {
             if ($this->_saml2config['ssourl'] == "")
                 $this->_saml2config['ssourl'] = $this->xerte_toolkits_site->site_url . "library/Xerte/Authentication/Saml2/xertesso.php";
