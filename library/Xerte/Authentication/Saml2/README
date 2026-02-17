@@ -26,3 +26,9 @@ See the instructions on https://github.com/onelogin/php-saml for further detaile
 IMPORTANT UPGRADE NOTE
 When upgrading an installation, no changes are enforced on settings.php and endpoints/acs.php. If you do not take action yourself in
 reconfiguring the Saml2 IdP, chances are very high that Authentication Requests are not signed when Saml2 was set up prior to v3.15.
+
+Upgrading:
+
+1. Check any mapping changes you applied in Saml2/xertesso.php and copy them to the new version of Saml2/endpoints/acs.php
+   (after copying Saml2/endpoints/acs.php.dist to Saml2/endpoints/acs.php)
+2. Perform steps 2 and 3 of the normal installation instructions above.
