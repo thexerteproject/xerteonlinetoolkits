@@ -3,19 +3,17 @@ The Saml2 Authentication module is based on https://github.com/onelogin/php-saml
 If you want to connect the Xerte installation to an IdP do the following:
 
 1. Copy Sampl2.php.dist to Saml2.php. Only in very special circumstances would you need to edit this file.
-2. Copy the settings.php.dist file to settings.php and fill in the proper values for the contact details and your IdP.
+2. Copy Saml2/xertesso.php.dist to Saml2/xertesso.php. This is just to prevent overwriting old (pre AI-v3.15 configurations)
+3. Copy the Saml2/settings.php.dist file to Saml2/settings.php and fill in the proper values for the contact details and your IdP.
    By default (since version v3.15.4) the settings.php.dist file requires the authentication request and the responses to be signed.
-   That requires that you create a signing certificate. See certs/README on how to generate those.
+   That requires that you create a signing certificate. See README.certs on how to generate those.
    If you do not want this, you can switch off the requirement of signing the request and the response, but this does create a
    potential security risk!
-   YOU NEED TO PROTECT THIS FOLDER FROM BEING SERVED BY YOUR WEB BROWSER
-   There is a .htaccess file in the certs folder that should do this, but you should check if it works on your server configuration.
-   Alternatively you can insert the key and the certificate in the settings.php file directly instead of using the certs folder.
-   It is a bit more cumbersome, but a lot safer.
-
-3. Copy the endpoints/acs.php.dist file to endpoints/acs.php
+   After creating the certificate you need to insert the key and the certificate in the settings.php file directly (see [sp][x509cert]
+   and [sp][privateKey].
+4. Copy the Saml2/endpoints/acs.php.dist file to Saml2/endpoints/acs.php
    Normally if the IdP is standards compliant you should not need to adjust or change acs.php
-   However, in case the IdP returns the Saml2 attrubutes in a different format than urn:oasis:names:tc:SAML:2.0:nameid-format:persistent,
+   However, in case the IdP returns the Saml2 attributes in a different format than urn:oasis:names:tc:SAML:2.0:nameid-format:persistent,
    you might need to change the mapping of the Saml2 attributes to the proper $xertedata structure in acs.php.
 
    To help you figure out the correct mapping, set $sso_logging to true and try to login. Then check the sso.log file in the error_logs folder.

@@ -1,0 +1,14 @@
+This is an explanation of how to generate the SP certificate if signing the request is enabled (default since 3.15.4).
+
+BE SURE THAT THE CERTIFICATES ARE NOT LEFT IN THE SOURCE TREE
+After generating the certificates you need to include them in the settings.php file.
+
+The certificate must be in PEM format.
+
+You can create the certificates yourself using openssl:
+
+openssl req -newkey rsa:2048 -keyout sp.key -x509 -days 365 -out sp.crt
+
+Make sure the key does not have a passphrase, otherwise the signing will fail:
+
+openssl rsa -in sp.key -out sp.key
