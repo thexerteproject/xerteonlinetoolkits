@@ -120,8 +120,14 @@ $settingsInfoArray = array (
         // Usually x509cert and privateKey of the SP are provided by files placed at
         // the certs folder. MAKE SURE THE CERTS FOLDER IS NEVER SERVED BY YOUR WEB SERVER
         // It is better to provide them with the following parameters
-        //'x509cert' => "",
-        //'privateKey' > "",
+        'x509cert' => "-----BEGIN CERTIFICATE-----
+                                 :
+                                 :
+-----END CERTIFICATE-----",
+        'privateKey' > "-----BEGIN RSA PRIVATE KEY-----
+                                 :
+                                 :
+-----END RSA PRIVATE KEY-----",
 
     ),
         // Security settings
