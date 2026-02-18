@@ -6734,6 +6734,58 @@ var EDITOR = (function ($, parent) {
                             aiSettings['textSnippet'] = null;
                         }
 
+                        // Update bar helpers
+
+                        function addLLMJobBar() {
+                            const $jobUI = $('#job-ui');
+                            if (!$jobUI.length) return;
+
+                            // Avoid duplicates if the user triggers multiple times
+                            if ($('#llm-ui').length) return;
+
+                            const llmUI = `
+                            <div id="llm-ui" style="margin-top:.75em;">
+                              <div id="llm-status">Generating content…</div>
+                              <div id="llm-progress-container" style="width:100%;background:#eee;height:4px;">
+                                <div id="llm-progress" style="width:25%;height:4px;background:#4caf50;"></div>
+                              </div>
+                            </div>`;
+                            $jobUI.append(llmUI);
+                        }
+
+                        function startLLMFakeProgress() {
+                            let pct = 25;
+                            const $bar = $('#llm-progress');
+                            const $status = $('#llm-status');
+
+                            if (!$bar.length) return () => {};
+
+                            $status.text('Generating content…');
+                            $bar.css('width', pct + '%');
+
+                            // creep up to a cap (don’t hit 100% until the await finishes)
+                            const cap = 92;
+                            const timer = setInterval(() => {
+                                const remaining = cap - pct;
+                                const step = Math.max(0.4, remaining * 0.08); // slows down near cap
+                                pct = Math.min(cap, pct + step);
+                                $bar.css('width', pct.toFixed(1) + '%');
+                            }, 450);
+
+                            return () => clearInterval(timer);
+                        }
+
+                        function finishLLMOk() {
+                            $('#llm-progress').css('width', '100%');
+                            $('#llm-status').text('Content generated');
+                        }
+
+                        function finishLLMError(msg) {
+                            $('#llm-progress').css('width', '100%').css('background', '#e53935');
+                            $('#llm-status').text(msg || 'Generation failed');
+                        }
+
+
                         // Corpus sync and update functions:
                         /*
                         * Normalises the upload path provided and extracts the relevant portions.
@@ -7095,11 +7147,17 @@ var EDITOR = (function ($, parent) {
                                 aiSettings['loSettings'] = loSettings;
 
                                 aiSettings['fullUrl'] = fullUrl;
+                                // Add a visual loading indicator to existing job sync bar, if any
+                                addLLMJobBar();
+                                const stopFake = startLLMFakeProgress();
 
                                 await ai_content_generator(aiSettings, constructorObject);
+                                stopFake();
+                                finishLLMOk();
                             }
                             catch (error) {
                                 console.log('Error occurred:', error);
+                                //stopFake();
                                 alert(language.vendorApi.genericAiAPiError);
                             } finally {
                                 // Re-enable the button after the function completes (success or failure)
@@ -7111,7 +7169,7 @@ var EDITOR = (function ($, parent) {
                         } else {
                             $btn.prop('disabled', false);
                         }
-
+                        $btn.prop('disabled', false);
                     });
                 break;
         case 'toggleadvanced':
