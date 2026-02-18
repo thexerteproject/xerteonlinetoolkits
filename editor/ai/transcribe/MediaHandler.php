@@ -161,26 +161,27 @@ class MediaHandler {
     /*
      * Language codes in Xerte do not always match those of yt-dlp, and yt-dlp often requires use of regex because of all the
      * regional differences. This function takes a xerte language code as input and turns it into a preference list which can
-     * be passed as the language parameter, including a fallback which is usually English.
+     * be passed as the language parameter.
      */
-    private function xerteLocaleToYtdlpSubLang(string $locale, string $fallback = 'en.*'): string
+    private function xerteLocaleToYtdlpSubLang(string $locale): string
     {
         $locale = trim($locale);
         if ($locale === '') {
-            return $fallback;
+            // No locale => no preference (caller should omit --sub-langs if empty) but really this should not be called without a locale
+            return '';
         }
 
         // Normalize underscore to hyphen
         $locale = str_replace('_', '-', $locale);
 
         // Split language-region
-        $parts = explode('-', $locale, 2);
-        $lang = strtolower($parts[0]);
+        $parts  = explode('-', $locale, 2);
+        $lang   = strtolower($parts[0]);
         $region = isset($parts[1]) ? strtoupper($parts[1]) : null;
 
         $prefs = [];
 
-        // Exact locale first (as provided, but normalized casing)
+        // Exact locale first (normalized casing)
         if ($region) {
             $prefs[] = $lang . '-' . $region;
         } else {
@@ -190,24 +191,26 @@ class MediaHandler {
         // Base language next
         $prefs[] = $lang;
 
-        // Special-case aliases
-        // Xerte: nb-NO -> also try "no"
+        // Special-case aliases (base + regex as well)
         if ($lang === 'nb') {
             $prefs[] = 'no';
+            $prefs[] = 'no.*';
         }
-        // Hebrew sometimes appears as "iw" in some contexts, though modern is "he"
         if ($lang === 'he') {
             $prefs[] = 'iw';
+            $prefs[] = 'iw.*';
         }
+
+        // Regex for any variant of the base language
+        // Put it after the exact/base matches, so we still prefer specific codes first.
+        $prefs[] = $lang . '.*';
 
         // De-duplicate while preserving order
         $prefs = array_values(array_unique($prefs));
 
-        // Add fallback at the end
-        $prefs[] = $fallback;
-
         return implode(',', $prefs);
     }
+
 
     private function exec_yt_dlp($filename, $url, $lang = "", $auto = false) {
         if (!isset($_SESSION['toolkits_logon_username']) && php_sapi_name() !== 'cli') {
