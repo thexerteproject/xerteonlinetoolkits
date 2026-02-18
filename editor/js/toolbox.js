@@ -6547,6 +6547,14 @@ var EDITOR = (function ($, parent) {
                         let aiSettingsOverride = constructorObject['overrideAiSettings'] !== undefined ? constructorObject['overrideAiSettings'] : "true";
                         delete constructorObject.overrideAiSettings;
 
+                        //'pixabayColors' is the expected field, so we create and let it inherit the dropdown value
+                        if (constructorObject['pixabayColorsDropdown']!=='custom'){
+                            constructorObject['pixabayColors'] = constructorObject['pixabayColorsDropdown'];
+                        }
+
+                        // pixabayColors inherits the dropdown value, so we have no need of it further
+                        delete constructorObject['pixabayColorsDropdown'];
+
                         if (serviceType==='generate'){
                             if(!hasApiKeyInstalled('imagegen', api)){
                                 $btn.prop('disabled', false);
@@ -6567,7 +6575,9 @@ var EDITOR = (function ($, parent) {
 
                         query = cleanTextField(query);
 
-                        img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject, event.data.key, event.data.value);
+                        let loLang= lo_data['treeroot']['attributes']['language'];
+
+                        img_search_and_help(query, api, rlopathvariable, interpretPrompt, aiSettingsOverride, constructorObject, event.data.key, event.data.value, loLang);
                         $btn.prop('disabled', false);
                     });
                 break;

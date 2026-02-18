@@ -9,12 +9,13 @@ if(!isset($_SESSION['toolkits_logon_id'])) {
 
 ob_start();
 $query = x_clean_input($_POST["query"]);
-$api     = x_clean_input(isset($_POST['api']) ? $_POST['api'] : 'pexels');
+$api = x_clean_input(isset($_POST['api']) ? $_POST['api'] : 'pexels');
 $textApi = x_clean_input(isset($_POST['textApi']) ? $_POST['textApi'] : 'mistral');
 $url = x_clean_input($_POST["target"]);
 $interpretPrompt = x_clean_input($_POST["interpretPrompt"]);
 $overrideSettings = x_clean_input($_POST["overrideSettings"]);
 $settings = x_clean_input($_POST["settings"]);
+$language = x_clean_input($_POST["language"]);
 
 $managementSettings = get_block_indicators();
 
@@ -33,7 +34,7 @@ $providerPreferredModel = $managementSettings['ai']['preferred_model'];
 $api_type = $api . 'Api';
 $imgshApi = new $api_type($textApi, $providerPreferredModel);
 
-$result = $imgshApi->sh_request($query, $url, $interpretPrompt, $overrideSettings, $settings); // original
+$result = $imgshApi->sh_request($query, $url, $interpretPrompt, $overrideSettings, $settings, $language);
 
 
 $_SESSION["paths_img_search"] = array();

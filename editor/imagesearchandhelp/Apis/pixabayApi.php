@@ -4,7 +4,7 @@ require_once __DIR__ . '/../Ai/AiChat.php';
 use Ai\AiChat;
 class pixabayApi extends BaseApi
 {
-    private function buildPixabayUrl($query, $aiParams, $perPage = 5, $page = 1)
+    private function buildPixabayUrl($query, $aiParams, $perPage = 5, $page = 1, $lang)
     {
         global $xerte_toolkits_site;
         $apiKey = $xerte_toolkits_site->pixabay_key;
@@ -20,16 +20,19 @@ class pixabayApi extends BaseApi
         if (isset($aiParams['pixabayType']) && $aiParams['pixabayType'] !== 'unmentioned') {
             $url .= "&image_type=" . urlencode($aiParams['pixabayType']);
         }
+        if (isset($lang) && $lang !== 'unmentioned') {
+            $url .= "&lang=" . urlencode($lang);
+        }
         return $url;
     }
 
-    private function GET_Pixabay($query, $aiParams, $perPage = 5, $page = 1)
+    private function GET_Pixabay($query, $aiParams, $perPage = 5, $page = 1, $lang)
     {
         if($perPage < 3){
             $perPage = 3;
         }
 
-        $url = $this->buildPixabayUrl($query, $aiParams, $perPage, $page);
+        $url = $this->buildPixabayUrl($query, $aiParams, $perPage, $page, $lang);
         $res = $this->httpGet($url);
 
         if (!$res->ok) {
@@ -43,6 +46,41 @@ class pixabayApi extends BaseApi
             return (object)["status" => "error", "message" => "Error on API call: " . $res->json->error];
         }
         return $res->json;
+    }
+
+    /**
+     * Determine the best-matching language code for Pixabay from a Xerte locale. Defaults to en.
+     */
+    private function determinePixabayLanguage(string $xerteLocale): string
+    {
+        $supported = [
+            'cs','da','de','en','es','fr','id','it','hu','nl','no','pl','pt','ro','sk','fi','sv','tr',
+            'vi','th','bg','ru','el','ja','ko','zh',
+        ];
+        $supportedSet = array_flip($supported);
+
+        $x = str_replace('_', '-', trim($xerteLocale));
+        if ($x === '') return 'en';
+
+        // Extract language part from Xerte locale (e.g. "nl-BE" -> "nl")
+        $lang = strtolower(explode('-', $x, 2)[0]);
+
+        // Xerte-specific overrides / approximations
+        $overrides = [
+            'cy' => 'en',  // Welsh not supported by Pixabay
+            'uk' => 'en',  // Pixabay list uses no "uk"; closest is English
+            'nb' => 'no',  // Xerte uses nb-NO; Pixabay uses "no"
+        ];
+        if (isset($overrides[$lang])) {
+            return $overrides[$lang];
+        }
+
+        // Direct support
+        if (isset($supportedSet[$lang])) {
+            return $lang;
+        }
+
+        return 'en';
     }
 
     private function rewritePrompt($query, $conversation = [])
@@ -153,7 +191,7 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
         return (object)["status" => "success", "message" => "Image downloaded successfully.", "path" => $dl->path];
     }
 
-    public function sh_request($query, $target, $interpretPrompt, $overrideSettings, $settings)
+    public function sh_request($query, $target, $interpretPrompt, $overrideSettings, $settings, $language)
     {
         if(!isset($_SESSION['toolkits_logon_id'])) {
             die("Session ID not set");
@@ -171,8 +209,10 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
             $aiParams = $tmp->params;
         }
 
+        $lang = $this->determinePixabayLanguage($language);
+
         $perPage = isset($settings['nri']) ? (int)$settings['nri'] : 5;
-        $apiResponse = $this->GET_Pixabay($aiQuery, $aiParams, $perPage);
+        $apiResponse = $this->GET_Pixabay($aiQuery, $aiParams, $perPage, 1, $lang);
 
         if (isset($apiResponse->status) && $apiResponse->status === 'error') {
             return (object)[
