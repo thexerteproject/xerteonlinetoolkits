@@ -1854,7 +1854,7 @@ var EDITOR = (function ($, parent) {
         });
     };
 
-img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings, key, name){
+img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings, key, name, loLang){
         $('body').css("cursor", "wait");
 		let input_type = "checkbox";
 		let image_data;
@@ -1907,7 +1907,7 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
         $.ajax({
             url: "editor/imagesearchandhelp/imgSHAPI.php",
             type: "POST",
-            data: {query: query, api: api, target: url, textApi: settings['textApi'],interpretPrompt: interpretPrompt, overrideSettings: overrideSettings, settings: settings},
+            data: {query: query, api: api, target: url, textApi: settings['textApi'],interpretPrompt: interpretPrompt, overrideSettings: overrideSettings, settings: settings, language: loLang},
             success: function(data_json) {
 								image_preview.find(".img_search_loading").remove();
 								let header = $("<h1>" + language.imageSelection.title + "</h1>");
