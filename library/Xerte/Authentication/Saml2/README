@@ -33,3 +33,5 @@ Upgrading:
 1. Check any mapping changes you applied in Saml2/xertesso.php and copy them to the new version of Saml2/endpoints/acs.php
    (after copying Saml2/endpoints/acs.php.dist to Saml2/endpoints/acs.php)
 2. Perform steps 2 and 3 of the normal installation instructions above.
+3. Remove the old Saml2/saml2login.php file
+

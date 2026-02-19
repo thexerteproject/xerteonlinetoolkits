@@ -21,6 +21,7 @@ USER-FILES/
 # Ignore Saml2 Settings file
 library/Xerte/Authentication/Saml2/settings.php
 library/Xerte/Authentication/Saml2/xertesso.php
+library/Xerte/Authentication/Saml2/xerteslo.php
 library/Xerte/Authentication/Saml2/endpoints/acs.php
 library/Xerte/Authentication/Saml2/certs
 
