@@ -1876,7 +1876,10 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 					pageHistory.push(historyEntry);
 				}
 
-				window.history.pushState('window.location.href',"",'#' + pageHash);
+				window.history.pushState('window.location.href',"",window.location.hash);
+				setTimeout( function() {
+					afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
+				}, 1000);
 			}
 
 			//clear out existing content
@@ -2126,8 +2129,6 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 
 	//FB.XFBML.parse(); // REMOVED??
 
-	afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
-
 	//has the back to top button be set to round
 	var topBtnRound=$(data).find('learningObject').attr('topBtnRound');
 	if (topBtnRound == 'true') {
@@ -2164,6 +2165,8 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 		$("section:nth-child(2n+0)").addClass("evenSection");
 		$("section:nth-child(2n+1)").addClass("oddSection");
 	}
+
+	afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
 }
 
 function loadSection(thisSection, section, sectionIndex, page, pageHash, pageIndex, pswds) {
