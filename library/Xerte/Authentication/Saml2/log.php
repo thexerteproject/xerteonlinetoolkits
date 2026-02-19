@@ -2,9 +2,11 @@
 
 global $sso_logging;
 $sso_logging = false;
-
-ini_set('error_reporting', 0);
+if (isset($development) && !$development) {
+    ini_set('error_reporting', 0);
+}
 if ($sso_logging) {
+    ini_set('error_reporting', E_ALL);
     // Change this to where you want the XOT log file to go;
     // the webserver will need to be able to write to it.
     define('XOT_SSO_LOGFILE', dirname(__FILE__) . '/../../../../error_logs/sso.log');
