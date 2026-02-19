@@ -1,9 +1,17 @@
 <?php
 
-$host = $_SERVER['HTTP_HOST'];
-$protocol=$_SERVER['PROTOCOL'] = (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']))
-                                  || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') ? 'https' : 'http';
+require_once(__DIR__.'/vendor/autoload.php');
+require_once(__DIR__.'/log.php');
 
+use OneLogin\Saml2\Utils;
+
+$host = $_SERVER['HTTP_HOST'];
+$protocol=(isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']))
+           || (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
+               && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') ? 'https' : 'http';
+if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+    Utils::setProxyVars(true);
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // SIMPLE CONFIGURATION
@@ -124,7 +132,7 @@ $settingsInfoArray = array (
                                  :
                                  :
 -----END CERTIFICATE-----",
-        'privateKey' > "-----BEGIN RSA PRIVATE KEY-----
+        'privateKey' => "-----BEGIN RSA PRIVATE KEY-----
                                  :
                                  :
 -----END RSA PRIVATE KEY-----",
@@ -153,14 +161,11 @@ $settingsInfoArray = array (
 
         /* Sign the Metadata
          False || True (use sp certs) || array (
-                                                    keyFileName => 'metadata.key',
-                                                    certFileName => 'metadata.crt'
+                                                    'keyFileName' => 'metadata.key',
+                                                    'certFileName' => 'metadata.crt'
                                                 )
         */
-        'signMetadata' => array (
-            keyFileName => 'sp.key',
-            certFileName => 'sp.crt'
-        ),
+        'signMetadata' => true,
 
         /** signatures and encryptions required **/
 

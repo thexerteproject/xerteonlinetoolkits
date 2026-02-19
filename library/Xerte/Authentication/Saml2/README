@@ -3,7 +3,8 @@ The Saml2 Authentication module is based on https://github.com/onelogin/php-saml
 If you want to connect the Xerte installation to an IdP do the following:
 
 1. Copy Sampl2.php.dist to Saml2.php. Only in very special circumstances would you need to edit this file.
-2. Copy Saml2/xertesso.php.dist to Saml2/xertesso.php. This is just to prevent overwriting old (pre AI-v3.15 configurations)
+2. Copy Saml2/xertesso.php.dist to Saml2/xertesso.php and Saml2/xerteslo.php.dist to Samle2/xerteslo.php.dist.
+   This is just to prevent overwriting old (pre AI-v3.15 configurations).
 3. Copy the Saml2/settings.php.dist file to Saml2/settings.php and fill in the proper values for the contact details and your IdP.
    By default (since version v3.15.4) the settings.php.dist file requires the authentication request and the responses to be signed.
    That requires that you create a signing certificate. See README.certs on how to generate those.
