@@ -58,6 +58,7 @@ else{
 }
 
 logToFile("User data extracted from SAML response: " . print_r($xertedata, true));
+$_SESSION['saml2session'] = json_encode($xertedata);
 
 if (isset($_POST['RelayState']) && Utils::getSelfURL() != $_POST['RelayState']) {
     $auth->redirectTo($_POST['RelayState']);
