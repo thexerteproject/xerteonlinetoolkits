@@ -280,7 +280,7 @@
 		<glossaryIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-book" condition="glossaryIc=='true'" optional="true"/>
 	</glossaryGroup>
 	
-	<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/USER-FILES/156-fay-Nottingham/media/Variables_Documentation.pdf' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for guidance on creating and using variables" tooltip="Create variables based on a series of parameters. Variables can be used to add variety to the data that is shown in projects, e.g. instead of including the sum 1+2=3, variables allow the sum a+b=c to be presented using a variety of numbers.">
+	<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/play.php?template_id=636' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for guidance on creating and using variables" tooltip="Create variables based on a series of parameters. Variables can be used to add variety to the data that is shown in projects, e.g. instead of including the sum 1+2=3, variables allow the sum a+b=c to be presented using a variety of numbers.">
 		<variables optional="true" label="Variable Data" conditionTrigger="true" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | " tooltip="The glossary terms and definitions. These can be entered manually or uploaded as a CSV file."/>
 	</varGroup>
 	
