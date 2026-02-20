@@ -83,10 +83,26 @@
 		%USE_URL%
 
 		var globalVars = {
-			lastUpdated: x_lastUpdatedLocale,
-			dateCreated: x_dateCreatedLocale,
-			numViews: x_numPlays
-		};
+            lastUpdated: x_lastUpdatedLocale,
+            dateCreated: x_dateCreatedLocale,
+            numViews: x_numPlays
+        }
+
+        try {
+            globalVars.todayDate = new Date().toLocaleDateString("%LANGUAGE%", localeoptions);
+            globalVars.todayDay = new Date().toLocaleDateString("%LANGUAGE%", {weekday: 'long'});
+            globalVars.todayMonth = new Date().toLocaleDateString("%LANGUAGE%", {month: 'long'});
+            globalVars.todayYear = new Date().toLocaleDateString("%LANGUAGE%", {year: 'numeric'});
+            globalVars.todayTime = new Date().toLocaleTimeString("%LANGUAGE%");
+        }
+        catch(e) {
+            globalVars.todayDate = new Date().toLocaleDateString();
+            globalVars.todayDay = new Date().toLocaleDateString({weekday: 'long'});
+            globalVars.todayMonth = new Date().toLocaleDateString({month: 'long'});
+            globalVars.todayYear = new Date().toLocaleDateString({year: 'numeric'});
+            globalVars.todayTime = new Date().toLocaleTimeString();
+        }
+
     </script>
 
 </head>
