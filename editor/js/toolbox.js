@@ -1263,9 +1263,10 @@ var EDITOR = (function ($, parent) {
                     return raw.slice(idxAny).replace(/^['"]+|['"]+$/g, '');
                 }
                 if (idxPreviewAny !== -1) {
+                    let lolang = loLanguage;
                     // slice and strip quotes again just in case
                     //When normalizing in the corpus, if we see preview.xml, we update the LO in corpus.
-                    let completion_info = updateCorpusSingle(false, true, loLanguage);
+                    let completion_info = updateCorpusSingle(false, true, false, lolang);
                     const first = completion_info.results?.[0] || {};
                     const displaymsg = first.rag_status || first.transcription_status || completion_info?.error || 'No status available';
                     alert(displaymsg);
@@ -1277,7 +1278,7 @@ var EDITOR = (function ($, parent) {
                 throw new Error(`Unrecognized path: ${raw}`);
             }
             //Upload a single file to the corpus
-            async function updateCorpusSingle(postData, corpusGrid = false, useLoInCorpus, language) {
+            async function updateCorpusSingle(postData, corpusGrid = false, useLoInCorpus = false, language) {
                 // Show wait cursor
                 $('body, .featherlight, .featherlight-content').css("cursor", "wait");
 
@@ -6131,6 +6132,7 @@ var EDITOR = (function ($, parent) {
                 html = $('<button>')
                     .attr('id', qf_button_id)
                     .attr('class', 'quickfill_button xerte_button_c')
+                    .attr('type', 'button')
                     .html('<i class="fa fa-arrows-rotate"></i> ' + language.assistents.QuickFillBtn.$label)
                     .click({key: key}, async function(event) {
                         const $btn = $(this);          // the button that was clicked
@@ -6400,24 +6402,16 @@ var EDITOR = (function ($, parent) {
                                 break;
                         }
                         // Show a confirm dialog with a custom message
-                        if (confirm("The specified nodes will be automatically generated with their default values. Proceed?")) {
+                        if (confirm(language.assistents.quickfill.QFConfirmRequest)) {
                             // User clicked "OK"
                             try {
                                 await quick_fill(event, type, parameters);
                             } catch (error) {
                                 console.log('Error occurred:', error);
-                                alert("Something went wrong. Please try using the quick fill feature again.");
-                                $btn.prop('disabled', false);
-                            } finally {
-                                // Re-enable the button after the function completes (success or failure)
-                                $btn.prop('disabled', false);
+                                alert(language.assistents.quickfill.QFError);
                             }
-                        } else {
-                            // User clicked "Cancel"
-                            console.log("Quick fill canceled by the user.");
-                            $btn.prop('disabled', false);
                         }
-
+                        $btn.prop('disabled', false);
                     });
                 break;
             case 'autotranslatebutton':
@@ -6681,10 +6675,12 @@ var EDITOR = (function ($, parent) {
                         if ($("#job-ui").length === 0) {
                             const jobUI = `
                               <div id="job-ui" style="margin-top:1em;">
-                                <div id="job-spinner">⏳</div>
-                                <div id="job-status">Starting…</div>
-                                <div id="job-progress-container" style="width:100%;background:#eee;height:4px;">
-                                  <div id="job-progress" style="width:0%;height:4px;background:#4caf50;"></div>
+                                <div id="job-starting" style="display:none;">
+                                    <div id="job-spinner">⏳</div>
+                                    <div id="job-status">${language.assistents.AIGenerationStatus.LLMStarting}</div>
+                                    <div id="job-progress-container" style="width:100%;background:#eee;height:4px;">
+                                      <div id="job-progress" style="width:0%;height:4px;background:#4caf50;"></div>
+                                    </div>
                                 </div>
                               </div>`;
                             $(this).after(jobUI);
@@ -6755,7 +6751,7 @@ var EDITOR = (function ($, parent) {
 
                             const llmUI = `
                             <div id="llm-ui" style="margin-top:.75em;">
-                              <div id="llm-status">Generating content…</div>
+                              <div id="llm-status">${language.assistents.AIGenerationStatus.LLMInProgress}</div>
                               <div id="llm-progress-container" style="width:100%;background:#eee;height:4px;">
                                 <div id="llm-progress" style="width:25%;height:4px;background:#4caf50;"></div>
                               </div>
@@ -6770,7 +6766,7 @@ var EDITOR = (function ($, parent) {
 
                             if (!$bar.length) return () => {};
 
-                            $status.text('Generating content…');
+                            $status.text(language.assistents.AIGenerationStatus.LLMInProgress);
                             $bar.css('width', pct + '%');
 
                             // creep up to a cap (don’t hit 100% until the await finishes)
@@ -6787,14 +6783,8 @@ var EDITOR = (function ($, parent) {
 
                         function finishLLMOk() {
                             $('#llm-progress').css('width', '100%');
-                            $('#llm-status').text('Content generated');
+                            $('#llm-status').text(language.assistents.AIGenerationStatus.LLMOk);
                         }
-
-                        function finishLLMError(msg) {
-                            $('#llm-progress').css('width', '100%').css('background', '#e53935');
-                            $('#llm-status').text(msg || 'Generation failed');
-                        }
-
 
                         // Corpus sync and update functions:
                         /*
@@ -6857,7 +6847,7 @@ var EDITOR = (function ($, parent) {
                         * and pass useLoInCorpus to the final requests which signals that we intend to use the latest preview.xml.
                         *
                         */
-                        async function updateCorpus(fileUrl, corpusGrid = false, useLoInCorpus, language) {
+                        async function updateCorpus(fileUrl, corpusGrid = false, useLoInCorpus, LOlanguage) {
                             const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
 
                             let singleRow;
@@ -6877,7 +6867,7 @@ var EDITOR = (function ($, parent) {
                                 };
                             }
 
-                            const payload = { name, baseURL, gridData: [singleRow], corpusGrid, useLoInCorpus, language};
+                            const payload = { name, baseURL, gridData: [singleRow], corpusGrid, useLoInCorpus, LOlanguage};
 
                             $('body, .featherlight, .featherlight-content').css("cursor", "wait");
 
@@ -6892,7 +6882,7 @@ var EDITOR = (function ($, parent) {
 
                                         success: function (resp) {
                                             $("#job-ui").show();
-                                            $("#job-status").text("Sync request queued…");
+                                            $("#job-status").text(`${language.assistents.AIGenerationStatus.LLMSyncQueued}`);
                                             $("#job-progress").css("width", "0%");
                                             resolve(resp);
                                         },
@@ -6924,6 +6914,7 @@ var EDITOR = (function ($, parent) {
                                     encodeURIComponent(jobId) + "&baseURL=" +
                                     encodeURIComponent(baseURL);
 
+                                $("#job-starting").show();
                                 const statusEl = $("#job-status");
                                 const spinner = $("#job-spinner");
 
@@ -6935,7 +6926,7 @@ var EDITOR = (function ($, parent) {
                                         success: function (data) {
 
                                             // Update UI
-                                            statusEl.text((data.stage || data.status || "Loading...") +
+                                            statusEl.text((data.stage || data.status || language.assistents.AIGenerationStatus.LLMLoaded) +
                                                 " — " + (data.message || ""));
 
                                             if (data.progress !== undefined) {
@@ -6951,14 +6942,14 @@ var EDITOR = (function ($, parent) {
                                                     data['completion_info']?.error ||
                                                     'No status available';
                                                 //alert(displaymsg);
-                                                statusEl.text("✅ Sync complete!");
+                                                statusEl.text(`✅ ${language.assistents.AIGenerationStatus.LLMSyncComplete}`);
                                                 resolve(data['completion_info']);
                                                 return;
                                             }
 
                                             if (data.status === "error") {
                                                 spinner.hide();
-                                                statusEl.text("❌ Sync failed: " + (data.error || "unknown"));
+                                                statusEl.text(`❌ ${language.assistents.AIGenerationStatus.LLMSyncFailed} ` + (data.error || "unknown"));
                                                 reject(data['completion_info']);
                                                 return;
                                             }
@@ -7062,11 +7053,11 @@ var EDITOR = (function ($, parent) {
 
                                     if (match) {
                                         alert(`${language.vendorApi.contextAlerts.contextFileFoundProceedMsg}`);
-                                        statusEl.text("✅ File already synced!");
+                                        statusEl.text(`✅ ${language.assistents.AIGenerationStatus.LLMSyncAlreadySynced}`);
                                         return match.metaData.source;  // file found
                                     } else {
                                         if (confirm(`${language.vendorApi.contextAlerts.contextInPageProcessPromptMsg}`)){
-                                            let fileStatus = await updateCorpus(fileUrl, false, loSettings['language']);
+                                            let fileStatus = await updateCorpus(fileUrl, false, loSettings['useLoInCorpus'], loSettings['language']);
                                             const first = fileStatus.results?.[0] || {};
                                             const displaymsg =
                                                 first.rag_status ||
@@ -7142,6 +7133,7 @@ var EDITOR = (function ($, parent) {
                                     aiSettings['fileUrl'] !== null){
                                     const fileUrl = aiSettings['fileUrl'];
                                     let fileStatus = null;
+                                    $("#job-starting").show();
                                     fileStatus = await doCorpusCheck(fileUrl, loSettings);
                                     if (fileStatus === false){
                                         $btn.prop('disabled', false);
@@ -7172,13 +7164,12 @@ var EDITOR = (function ($, parent) {
                             } finally {
                                 // Re-enable the button after the function completes (success or failure)
                                 $btn.prop('disabled', false);
-
-                                // Disable the job-ui as its no longer necessary sine the job finished
-                                $("#job-ui").remove();
                             }
                         } else {
                             $btn.prop('disabled', false);
                         }
+                        // Disable the job-ui as its no longer necessary sine the job finished
+                        $("#job-ui").remove();
                         $btn.prop('disabled', false);
                     });
                 break;

@@ -298,6 +298,20 @@
 		<GenerateSuggestion btnlabel="Suggest" intructionprompt="Regarding what kind of suggestions I'm looking for, see: "/>
 		<AutoTranslateBtn label="Translate"/>
 		<AIBtn label="Generate"/>
+		<AIGenerationStatus>
+			<LLMOk>Content generated</LLMOk>
+			<LLMInProgress>Generating content...</LLMInProgress>
+			<LLMStarting>Starting...</LLMStarting>
+			<LLMSyncQueued>Sync request queued...</LLMSyncQueued>
+			<LLMLoaded>Loaded...</LLMLoaded>
+			<LLMSyncComplete>Sync complete!</LLMSyncComplete>
+			<LLMSyncFailed>Sync failed: </LLMSyncFailed>
+			<LLMSyncAlreadySynced>File already synced!</LLMSyncAlreadySynced>
+		</AIGenerationStatus>
+		<quickfill>
+			<QFConfirmRequest>The specified nodes will be automatically generated with their default values. Proceed with request?</QFConfirmRequest>
+			<QFError>Something went wrong. Please try using the quick fill feature again.</QFError>
+		</quickfill>
 	</assistents>
 	<lightbox>
 		<settingsButton>Open Settings</settingsButton>

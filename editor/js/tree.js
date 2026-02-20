@@ -1738,6 +1738,7 @@ var EDITOR = (function ($, parent) {
                     success: function(data) {
                         try {
                             xml_to_xerte_content(data, aiSettings['key'], 'last', tree, parent);
+                            alert(`${language.vendorApi.generationComplete}`);
                             $.featherlight.close();
                         } catch (error) {
                             console.log('Error occurred in success callback:', error);
@@ -1821,7 +1822,6 @@ var EDITOR = (function ($, parent) {
     quick_fill = function(event, node_type, parameters) {
         return new Promise((resolve, reject) => {
             try {
-                // Call aiAPI.php via jQuery's AJAX method
                 var tree = $.jstree.reference("#treeview");
                 // Show wait icon
                 $('body').css("cursor", "wait");
@@ -1836,6 +1836,7 @@ var EDITOR = (function ($, parent) {
                     success: function(data) {
                         try {
                             xml_to_xerte_content(data, event.data.key, 'last', tree, parent);
+                            $.featherlight.close();
                         } catch (error) {
                             console.log('Error occurred in success callback:', error);
                             reject(error);
