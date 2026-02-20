@@ -163,7 +163,7 @@
 			<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" condition="lightbox!='false'" tooltip="Add a caption to lightbox images. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 		</lightboxGroup>
 
-		<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/USER-FILES/156-fay-Nottingham/media/Variables_Documentation.pdf' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for help creating and using variables">
+		<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/play.php?template_id=636' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for help creating and using variables">
 			<variables optional="true" label="Variable Data" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | "/>
 			<decimalseparator label="Decimal Separator" type="ComboBox" options="Period,Comma" data="period,comma" width="100" defaultValue="period" optional="true" tooltip="Specify the character used as the decimal separator when numeric variables are used"/>
 		</varGroup>

@@ -12,17 +12,8 @@
 	<textSize type="ComboBox" options="10,12,14,16,18,24,36" label="Default Text Size" width="100" tooltip="The default text size will only be used when responsive text is turned off. It can also be overridden when a text size is directly set in the text editor" condition="responsive!='true'"/>
 	
 	<!-- OPTIONAL PROPERTIES -->
-
-  	<maxWidthGroup type="group" label="Maximum Width" optional="true" tooltip="Use these options to set the maximum width (in pixels) for the page contents on larger displays. A maximum width optional property is also available on each page where you can adjust these settings on a page by page basis.">
-		<maxWidth label="Max Width (in pixels)" optional="true" type="NumericStepper" min="800" max="2000" step="10" defaultValue="1400"/>
-		<horizontalAlign label="Horizontal Alignment" optional="true" defaultValue="centre" options="Right,Centre,Left" data="right,centre,left" type="ComboBox"/>
-	</maxWidthGroup>
-
-	<verticalAlignGroup type="group" label="Centre Content Vertically" optional="true" tooltip="Centre the content vertically on the page. Can be used alongside the 'Maximum Width' optional properties to also centre content horizontally. A centre content vertically optional property is also available on each page where you can adjust these settings on a page by page basis.">
-  		<verticalAlign label="Centre Content Vertically" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true"/>
-  		<verticalAlignPanel label="Centre Columns Individually" optional="true" type="CheckBox" defaultValue="true" condition="verticalAlign=='true'" tooltip="On pages that contain column layouts, e.g. page text next to a panel, centre each column vertically on the page"/>
-	</verticalAlignGroup>
-
+	
+	<maxWidth optional="true" type="NumericStepper" min="800" max="2000" step="10" label="Max Width" defaultValue="1400" tooltip="Use this option to set the maximum width (in pixels) that the page contents will be displayed on larger displays"/>
 	<fixDisplay optional="true" type="TextInput" label="Fixed Display Size" defaultValue="800,600" condition="displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!='')" tooltip="Sets the project dimensions (in pixels) when 'display mode' is set to 'fixed size'" />
 	
 	<fullScreenGroup type="group" label="Full Screen Button" optional="true" condition="displayMode=='default'||(fixDisplay!=undefined&amp;&amp;fixDisplay!='')" tooltip="Customise the tooltip descriptions and icons used on the full screen toggle button">
@@ -69,20 +60,11 @@
 			<tocNumbers optional="true" type="CheckBox" label="Page Numbering" defaultValue="true" condition="navigation!='Historic'"/>
 			<tocChapterNumbers optional="true" type="CheckBox" label="Chapter Numbering" defaultValue="false" condition="navigation!='Historic'"/>
 		</tocNumberGroup>
-		<menuPageGroup type="group" label="Menu Page" optional="true" condition="navigation=='Menu'||navigation=='Menu with Page Controls'">
-			<menuText label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuPanelWidth!='Full'" optional="true" tooltip="Add text to the menu page (optional)"/>
-			<menuLayoutGroup label="Page Layout" type="group" optional="true" condition="navigation=='Menu'||navigation=='Menu with Page Controls'">
-				<menuPanelWidth label="Menu Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true" condition="navigation=='Menu'||navigation=='Menu with Page Controls'" optional="true"/>
-				<menuPanelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuPanelWidth=='Custom'" optional="true"/>
-				<menuAlign label="Menu Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Left" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuPanelWidth!='Full'" optional="true"/>
-				<menuPanelStyle label="Show in Panel" type="CheckBox" defaultValue="false" condition="navigation=='Menu'||navigation=='Menu with Page Controls'" optional="true"/>
-			</menuLayoutGroup>
-			<menuImageGroup type="group" label="Image" optional="true" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuPanelWidth!='Full'" tooltip="Add an image to the menu page (optional)">
-				<menuImage optional="true" type="media" label="Image" defaultValue="" placeholder="Select an image" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuPanelWidth!='Full'"/>
-				<menuImageAlt label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuPanelWidth!='Full'&amp;&amp;menuImageProperties=='Use Panel'" optional="true"/>
-				<menuImageProperties optional="true" type="ComboBox" label="Position" conditionTrigger="true" options="Panel,Background" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuPanelWidth!='Full'"/>
-			</menuImageGroup>
-		</menuPageGroup>
+		<menuImageGroup type="group" label="Menu Image" optional="true" condition="navigation=='Menu'||navigation=='Menu with Page Controls'" tooltip="Add an image to the menu page">
+			<menuImage optional="true" type="media" label="Image" defaultValue="" placeholder="Select an image" condition="navigation=='Menu'||navigation=='Menu with Page Controls'"/>
+			<menuImageAlt label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="(navigation=='Menu'||navigation=='Menu with Page Controls')&amp;&amp;menuImageProperties=='Use Panel'" optional="true"/>
+			<menuImageProperties optional="true" type="ComboBox" label="Position" conditionTrigger="true" options="Panel,Background" data="Use Panel,Full Screen" width="100" defaultValue="Use Panel" condition="navigation=='Menu'||navigation=='Menu with Page Controls'"/>
+		</menuImageGroup>
 	</toc>
 	
 	<homePageGroup type="group" label="Home Page" optional="true" tooltip="Customise which page is classed as the home page and create a link from the project title to the home page" info="The default home page is either the first page or the page menu (when navigation is menu or menu with page controls).">
@@ -298,7 +280,7 @@
 		<glossaryIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-book" condition="glossaryIc=='true'" optional="true"/>
 	</glossaryGroup>
 	
-	<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/USER-FILES/156-fay-Nottingham/media/Variables_Documentation.pdf' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for guidance on creating and using variables" tooltip="Create variables based on a series of parameters. Variables can be used to add variety to the data that is shown in projects, e.g. instead of including the sum 1+2=3, variables allow the sum a+b=c to be presented using a variety of numbers.">
+	<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/play.php?template_id=636' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for guidance on creating and using variables" tooltip="Create variables based on a series of parameters. Variables can be used to add variety to the data that is shown in projects, e.g. instead of including the sum 1+2=3, variables allow the sum a+b=c to be presented using a variety of numbers.">
 		<variables optional="true" label="Variable Data" conditionTrigger="true" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | " tooltip="The glossary terms and definitions. These can be entered manually or uploaded as a CSV file."/>
 	</varGroup>
 	
