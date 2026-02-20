@@ -97,7 +97,6 @@ function xml_to_xerte_content(data, key, pos, tree, realParent) {
             }
 
             console.log("done!")
-            alert(`${language.vendorApi.generationComplete}`);
         } else if(result.status='error'){
             alert(result.message);
         } else {
