@@ -45,6 +45,10 @@ class vendor_option_component
             $options = json_decode($vendor['sub_options']);
             $this->sub_options = $options;
             }
+
+        if ($vendor['preferred_model'] !== null && $vendor['preferred_model'] !== "") {
+            $this->preferred_model =  $vendor['preferred_model'];
+            }
         }
 
     //check if vendor has no sub options

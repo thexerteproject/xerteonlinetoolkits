@@ -1070,7 +1070,7 @@ div.hotspotEditor {
 }
 
 .featherlight-content {
-	background: rgba(0,0,0,0) !important;
+	background: rgba(0,0,0,0); /*!important;*/
 }
 
 .hotspotEditor
@@ -1656,6 +1656,11 @@ body.fl-jqgrid-top > .featherlight { z-index: 940 !important; }
 
 html.with-featherlight .featherlight {
 	background: rgba(0, 0, 0, 0.8);
+}
+
+.ai_button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
 }
 
 /* start of xertecss.css

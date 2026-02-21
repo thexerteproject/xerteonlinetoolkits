@@ -1738,6 +1738,7 @@ var EDITOR = (function ($, parent) {
                     success: function(data) {
                         try {
                             xml_to_xerte_content(data, aiSettings['key'], 'last', tree, parent);
+                            alert(`${language.vendorApi.generationComplete}`);
                             $.featherlight.close();
                         } catch (error) {
                             console.log('Error occurred in success callback:', error);
@@ -1821,7 +1822,6 @@ var EDITOR = (function ($, parent) {
     quick_fill = function(event, node_type, parameters) {
         return new Promise((resolve, reject) => {
             try {
-                // Call aiAPI.php via jQuery's AJAX method
                 var tree = $.jstree.reference("#treeview");
                 // Show wait icon
                 $('body').css("cursor", "wait");
@@ -1836,6 +1836,7 @@ var EDITOR = (function ($, parent) {
                     success: function(data) {
                         try {
                             xml_to_xerte_content(data, event.data.key, 'last', tree, parent);
+                            $.featherlight.close();
                         } catch (error) {
                             console.log('Error occurred in success callback:', error);
                             reject(error);
@@ -1854,7 +1855,7 @@ var EDITOR = (function ($, parent) {
         });
     };
 
-img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings, key, name){
+img_search_and_help = function(query, api, url, interpretPrompt, overrideSettings, settings, key, name, loLang){
         $('body').css("cursor", "wait");
 		let input_type = "checkbox";
 		let image_data;
@@ -1862,7 +1863,7 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
 				input_type = "radio";
 		}
 
-        let image_preview = $("<div class=\"img_search_preview\"><div class=\"img_search_loading\">loading...</div></div>");
+        let image_preview = $(`<div class=\"img_search_preview\"><div class=\"img_search_loading\">${language.imageSelection.imgLoadingText}</div></div>`);
         let keepClicked = false;
         let selection_window = $.featherlight(image_preview, {
             closeOnClick: false,
@@ -1874,6 +1875,10 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
                     let keptIndices = $.makeArray($boxes)
                         .filter(cb => cb.checked)
                         .map(cb => +cb.name);
+
+                    if (allIndices.length==1){
+                        keptIndices = allIndices;
+                    }
 
                     // if they’d checked something, ask whether to keep them
                     let toDelete;
@@ -1903,7 +1908,7 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
         $.ajax({
             url: "editor/imagesearchandhelp/imgSHAPI.php",
             type: "POST",
-            data: {query: query, api: api, target: url, textApi: settings['textApi'],interpretPrompt: interpretPrompt, overrideSettings: overrideSettings, settings: settings},
+            data: {query: query, api: api, target: url, textApi: settings['textApi'],interpretPrompt: interpretPrompt, overrideSettings: overrideSettings, settings: settings, language: loLang},
             success: function(data_json) {
 								image_preview.find(".img_search_loading").remove();
 								let header = $("<h1>" + language.imageSelection.title + "</h1>");
@@ -1979,13 +1984,13 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
                                     container.append(select_input).append(label);
                                     // Enlarge button. Prevent the label/checkbox from toggling on click
                                     let enlarge_button = $(
-                                        '<button title="Enlarge" type="button" class="enlarge_button">' +
+                                        '<button title="' + language.imageSelection.imgEnlargeCornerBtn + '" type="button" class="enlarge_button">' +
                                         '<i class="fa fa-lg fa-search xerte-icon"></i>' +
                                         '</button>'
                                     ).on("click", function (e) {
                                         e.preventDefault();
                                         e.stopPropagation();
-                                        $.featherlight(image_url);
+                                        $.featherlight({image:image_url});
                                     });
 
                                     frame.append(enlarge_button);

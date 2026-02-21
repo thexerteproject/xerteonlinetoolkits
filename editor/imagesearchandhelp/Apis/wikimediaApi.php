@@ -4,7 +4,6 @@ require_once __DIR__ . '/../Ai/AiChat.php';
 use Ai\AiChat;
 class wikimediaApi extends BaseApi
 {
-//TODO: with the current headers, the api returns an error/warning; as such I haven't been able to test every functionality
     private function GET_Wikimedia($query, $aiParams, $perPage = 5, $page = 1)
     {
         $query = urlencode($this->clean($query));
@@ -19,22 +18,25 @@ class wikimediaApi extends BaseApi
 
         while (count($filteredPages) < $perPage && $tries < $maxTries) {
             $url = "https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&generator=search"
-                . "&iiprop=url|user|canonicaltitle"
+                . "&iiprop=url|user|canonicaltitle|descriptionurl|extmetadata"
                 . "&gsrsearch={$query}"
                 . "&gsrlimit={$perPage}"
                 . "&gsrnamespace=6"
                 . "&gsroffset={$offset}";
 
 
-            if (isset($aiParams->wikimediaWidth) && $aiParams->wikimediaWidth !== 'unmentioned') {
-                $url .= "&iiurlwidth=" . urlencode($aiParams->wikimediaWidth);
+            if (isset($aiParams['wikimediaWidth']) && $aiParams['wikimediaWidth'] !== 'unmentioned' && !empty($aiParams['wikimediaWidth'])) {
+                $url .= "&iiurlwidth=" . urlencode($aiParams['wikimediaWidth']);
             }
-            if (isset($aiParams->wikimediaHeight) && $aiParams->wikimediaHeight !== 'unmentioned') {
-                $url .= "&iiurlheight=" . urlencode($aiParams->wikimediaHeight);
+            if (isset($aiParams['wikimediaHeight']) && $aiParams['wikimediaHeight'] !== 'unmentioned' && !empty($aiParams['wikimediaWidth'])) {
+                $url .= "&iiurlheight=" . urlencode($aiParams['wikimediaHeight']);
             }
 
+            $headers = [
+                'User-Agent: Xerte Online Toolkits, Image Search and Help Tool Request (https://github.com/torinfo/xerteonlinetoolkits; https://github.com/thexerteproject/xerteonlinetoolkits/wiki)',
+            ];
 
-            $res = $this->httpGet($url);
+            $res = $this->httpGet($url, $headers);
             if (!$res->ok) {
                 return [
                     'status'  => 'error',
@@ -43,7 +45,7 @@ class wikimediaApi extends BaseApi
             }
 
 
-            $resultDecoded = json_decode($res->raw, true); // assoc arrays like the original
+            $resultDecoded = json_decode($res->raw, true);
             if (isset($resultDecoded['error'])) {
                 return ["status" => "error", "message" => "Error on API call: " . $resultDecoded['error']['info']];
             }
@@ -110,7 +112,7 @@ class wikimediaApi extends BaseApi
         }
 
 
-        $conversation[] = ["role" => "user", "content" => "Great, now do the same for the following sentence: {$query}"];
+        $conversation[] = ["role" => "user", "content" => "Great, now do the same for the following sentence, keeping in mind that you should return only the final query itself and NO text before or after: {$query}"];
 
 
         $resp = $chat->complete($conversation, $this->aiProvider, [
@@ -195,8 +197,8 @@ class wikimediaApi extends BaseApi
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_TIMEOUT => 120, //TODO: user agent must be more specific; stil unsure how exactly to call this
-            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36',
+            CURLOPT_TIMEOUT => 120,
+            CURLOPT_USERAGENT => 'Xerte Online Toolkits, Image Search and Help Tool Request (https://github.com/torinfo/xerteonlinetoolkits; https://github.com/thexerteproject/xerteonlinetoolkits/wiki)',
         ]);
 
 
@@ -238,12 +240,11 @@ class wikimediaApi extends BaseApi
             ? $this->rewritePrompt($query)['prompt']
             : $query;
 
-        if ($overrideSettings === "true" || $overrideSettings === true) {
-            //todo again
-            $aiParams = json_decode(json_encode($settings));
+        if ($overrideSettings === "false" || $overrideSettings === false) {
+            $aiParams = $settings;
         } else {
             $tmp = $this->extractParameters($query);
-            $aiParams = json_decode($tmp['prompt']);
+            $aiParams = $this->extractAndDecodeJson($tmp['prompt']);
         }
 
         $perPage = isset($settings['nri']) ? (int)$settings['nri'] : 5;
@@ -275,21 +276,39 @@ class wikimediaApi extends BaseApi
                     if ($downloadResult->status === "success") {
                         $downloadedPaths[] = $downloadResult->path;
 
-                        $authorName = isset($page['imageinfo'][0]['user'])
-                            ? $page['imageinfo'][0]['user']
-                            : 'Unknown';
+                        $imageInfo = $page['imageinfo'][0] ?? [];
+                        $ext = $imageInfo['extmetadata'] ?? [];
 
-                        $imageTitle = isset($page['title'])
-                            ? $page['title']
-                            : '';
-                        $imageUrl   = $url;
+                        $downloadedAt = (new DateTime('now'))->format(DateTimeInterface::ATOM);
 
-                        $htmlEmbed = "<p>Image by <a href=\"https://commons.wikimedia.org/wiki/User:$authorName\" target=\"_blank\">$authorName</a> on Wikimedia Commons. <a href=\"$imageUrl\" target=\"_blank\">View Image</a>.</p>";
-                        $creditText = "Image by $authorName, https://commons.wikimedia.org/wiki/User:$authorName
-                        Image Title: $imageTitle
-                        Original Image URL: $imageUrl
-                        
-                        $htmlEmbed";
+                        // Prefer Artist from extmetadata; fallback to uploader user
+                        $authorName = isset($ext['Artist']['value'])
+                            ? trim(strip_tags($ext['Artist']['value']))
+                            : ($imageInfo['user'] ?? 'Unknown');
+
+                        $imageTitle = $page['title'] ?? '';
+                        $originalImageUrl = $imageInfo['url'] ?? '';                 // direct file URL
+                        $filePageUrl = $imageInfo['descriptionurl'] ?? $originalImageUrl; // Commons file page
+
+                        $licenseUrl = $ext['LicenseUrl']['value'] ?? $filePageUrl;
+                        $licenseName = isset($ext['LicenseShortName']['value'])
+                            ? trim(strip_tags($ext['LicenseShortName']['value']))
+                            : 'See file page';
+
+                        $htmlEmbed =
+                            "<p>Image by <a href=\"https://commons.wikimedia.org/wiki/User:$authorName\" target=\"_blank\">$authorName</a> on Wikimedia Commons. " .
+                            "<a href=\"$filePageUrl\" target=\"_blank\">View Image</a>. " .
+                            "<a href=\"$licenseUrl\" target=\"_blank\">License: $licenseName</a>.</p>";
+
+                        $creditText =
+                            "Image by $authorName, https://commons.wikimedia.org/wiki/User:$authorName\n" .
+                            "Image Title: $imageTitle\n" .
+                            "Original Image URL: $originalImageUrl\n" .
+                            "File Page: $filePageUrl\n" .
+                            "Downloaded at: $downloadedAt\n" .
+                            "License: $licenseUrl\n" .
+                            "\n" .
+                            $htmlEmbed;
                         $infoFilePath = pathinfo($downloadResult->path, PATHINFO_FILENAME) . '.txt';
                         file_put_contents($path . '/' . $infoFilePath, $creditText);
                     } else {

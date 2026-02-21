@@ -21,6 +21,21 @@ function is_vendor_active(vendor_option_component $v)
         );
 }
 
+function get_vendor_preferred_model($vendorName, $type){
+    $vendorName = strtolower(trim($vendorName));
+    $vendorTypes = get_vendor_settings();
+
+    if (!$vendorTypes) {
+        return false;
+    }
+
+    if (isset($vendorTypes[$type]) and isset($vendorTypes[$type][$vendorName])) {
+        return $vendorTypes[$type][$vendorName]->preferred_model;
+    }
+
+    return false;
+}
+
 /**
  * Normalizes per-block preferences to arrays of lowercase vendor names.
  * Accepts either a string or array of strings per block.
@@ -132,6 +147,7 @@ function get_block_indicators(array $preferences = [])
                     ? "{$vendor->vendor}_key"
                     : null, // pointer only; not the secret
                 'type'      => $vendor->type,
+                'preferred_model' => $vendor->preferred_model,
             ];
         }
 
@@ -141,10 +157,22 @@ function get_block_indicators(array $preferences = [])
             : (isset($prefs['model']) ? $prefs['model'] : []);
         $chosen    = choose_vendor($activeVendors, $typePrefs);
 
+        $preferredModel = null;
+
+        if ($chosen && isset($activeVendors[$chosen]['preferred_model'])) {
+            $pm = $activeVendors[$chosen]['preferred_model'];
+
+            // Treat "default" (case-insensitive) as "no preferred model"
+            if (is_string($pm) && strtolower(trim($pm)) !== 'default' && trim($pm) !== '') {
+                $preferredModel = $pm;
+            }
+        }
+
         $out[$type] = [
             'active'         => (bool)$activeVendors,
             'active_vendor'  => $chosen,
             'key_name'       => $chosen && isset($activeVendors[$chosen]['key_name']) ? $activeVendors[$chosen]['key_name'] : null,
+            'preferred_model'=> $preferredModel,
             'active_vendors' => $activeVendors,
         ];
     }

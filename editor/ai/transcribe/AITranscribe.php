@@ -11,13 +11,16 @@ abstract class AITranscribe {
     protected $apiKey;
     protected $mediaPath;
 
+    protected $preferredModel;
+
     /**
      * Constructor accepts the API key.
      */
-    public function __construct($apiKey, $basePath) {
+    public function __construct($apiKey, $basePath, $preferredModel = null) {
         $this->apiKey = $apiKey;
         $this->mediaPath = $basePath . DIRECTORY_SEPARATOR . 'RAG' . DIRECTORY_SEPARATOR . 'transcripts';
         $this->sessionId = "token is busted";
+        $this->preferredModel = $preferredModel;
     }
 
     /**
@@ -33,7 +36,7 @@ abstract class AITranscribe {
     /**
      * Format transcription segments with start/end timestamps.
      */
-    protected function formatSegmentsWithTimestamps($vttContent, $secondsOnly = false)
+    public function formatSegmentsWithTimestamps($vttContent, $secondsOnly = false)
     {
         $lines = preg_split('/\R/', $vttContent);
         $formattedText = '';
@@ -182,7 +185,7 @@ abstract class AITranscribe {
      * temporary directory. Otherwise, returns the single original file.
      *
      * @param string $filePath        Absolute path to the source file.
-     * @param int    $maxBytes        Max allowed size in bytes before splitting. Default 25 MB.
+     * @param int    $maxBytes        Max allowed size in bytes before splitting. Default 25MB.
      * @param int    $segmentSeconds  Length in seconds of each chunk. Default 900s.
      * @return string[]               List of file paths to process.
      * @throws \RuntimeException      On failure to create temp dir or if FFmpeg returns non‐zero.
@@ -203,7 +206,6 @@ abstract class AITranscribe {
         // If file is too big, split into segments
         if (\filesize($filePath) > $maxBytes) {
             // create a temp directory for this run
-            //todo alek double check if chunck are stored and handled in the userfiles instead of temp
             $tmpDir = $this->mediaPath . DIRECTORY_SEPARATOR . 'whisper_chunks_' . \uniqid();
             if (!\mkdir($tmpDir, 0777, true) && !\is_dir($tmpDir)) {
                 throw new \RuntimeException("Unable to create temp directory: {$tmpDir}");
@@ -213,8 +215,8 @@ abstract class AITranscribe {
             $this->chunkTmpDir = $tmpDir;
 
             $ext     = \pathinfo($filePath, PATHINFO_EXTENSION);
-            $pattern = $tmpDir . DIRECTORY_SEPARATOR . "chunk_03d.{$ext}";
-            //todo alek this part is broken.
+            //Be aware that '%03' is a pattern recognised by ffmpeg and as such must remain. Otherwise, ffmpeg does not know how to extrapolate the splitting request.
+            $pattern = $tmpDir . DIRECTORY_SEPARATOR . "chunk_%03d.{$ext}";
             $this->exec_chunk($filePath, $segmentSeconds, $pattern);
 
             // collect and sort the generated chunks
@@ -288,6 +290,12 @@ class OpenAITranscribe extends AITranscribe
         $timestampGranularities = 'segment'
     )  {
         global $xerte_toolkits_site;
+
+        $preferredModel = isset($this->preferredModel) ? trim((string)$this->preferredModel) : '';
+
+        if ($preferredModel !== '' && strtolower($preferredModel) !== 'default') {
+            $model = $preferredModel;
+        }
 
         // Check whether the file does not have path traversal
         x_check_path_traversal($filePath, $xerte_toolkits_site->users_file_area_full, 'Invalid file path specified');

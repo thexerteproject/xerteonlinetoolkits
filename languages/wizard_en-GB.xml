@@ -262,6 +262,8 @@
 		<imageSavedSuccessMsg>Kept images successfully saved to media folder.</imageSavedSuccessMsg>
 		<deletionError>An error occurred. Please double-check the media folder to confirm the status of your kept images.</deletionError>
 		<noImagesReturnedMsg>No results could be found for your query. Please verify that the given search terms have been spelled correctly and try again, or attempt the same query with a different service.</noImagesReturnedMsg>
+		<imgEnlargeCornerBtn>Enlarge</imgEnlargeCornerBtn>
+		<imgLoadingText>Loading...</imgLoadingText>
 	</imageSelection>
 	<vendorApi>
 		<missingKey>The selected vendor has no API key installed. Please contact your system administrator</missingKey>
@@ -298,6 +300,20 @@
 		<GenerateSuggestion btnlabel="Suggest" intructionprompt="Regarding what kind of suggestions I'm looking for, see: "/>
 		<AutoTranslateBtn label="Translate"/>
 		<AIBtn label="Generate"/>
+		<AIGenerationStatus>
+			<LLMOk>Content generated</LLMOk>
+			<LLMInProgress>Generating content...</LLMInProgress>
+			<LLMStarting>Starting...</LLMStarting>
+			<LLMSyncQueued>Sync request queued...</LLMSyncQueued>
+			<LLMLoaded>Loaded...</LLMLoaded>
+			<LLMSyncComplete>Sync complete!</LLMSyncComplete>
+			<LLMSyncFailed>Sync failed: </LLMSyncFailed>
+			<LLMSyncAlreadySynced>File already synced!</LLMSyncAlreadySynced>
+		</AIGenerationStatus>
+		<quickfill>
+			<QFConfirmRequest>The specified nodes will be automatically generated with their default values. Proceed with request?</QFConfirmRequest>
+			<QFError>Something went wrong. Please try using the quick fill feature again.</QFError>
+		</quickfill>
 	</assistents>
 	<lightbox>
 		<settingsButton>Open Settings</settingsButton>

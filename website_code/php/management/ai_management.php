@@ -39,21 +39,22 @@ if(is_user_admin()) {
         // vendor = second part
         $vendor = array_shift($parts);
 
-        // enabled
+        // option = remainder (with underscores converted back to spaces)
         $option = str_replace('_', ' ', implode('_', $parts));
 
-        //Dropdowns can't be true/false, as such they're selected
-        if ($option === "selected") {
-        $vendors["$type:$vendor"]["selected"] = $value;
-        continue;
-        }
-
-        //Build a compound key in case vendors have the same name
+        // compound key
         $compound_key = $type . ":" . $vendor;
 
-        if (!array_key_exists($compound_key, $vendors)) {
-            $vendors[$compound_key] = ['type'=>$type, 'vendor'=>$vendor, $option => $value];
+        // ensure base bucket exists
+        if (!isset($vendors[$compound_key])) {
+            $vendors[$compound_key] = ['type' => $type, 'vendor' => $vendor];
+        }
+
+        // store preferred model (dropdown)
+        if ($option === "selected") {
+            $vendors[$compound_key]['preferred_model'] = $value;
         } else {
+            // store ALL other options, including enabled and sub-options
             $vendors[$compound_key][$option] = $value;
         }
     }
@@ -62,19 +63,19 @@ if(is_user_admin()) {
         $type = $options['type'];
         $vendor = $options['vendor'];
 
-        $enabled = ($options['enabled'] == 'true');
+        $enabled = (isset($options['enabled']) && $options['enabled'] === 'true') ? 1 : 0;
 
-        unset($options['type']);
-        unset($options['vendor']);
-        unset($options['enabled']);
+        $preferred_model = $options['preferred_model'] ?? null;
+
+        unset($options['type'], $options['vendor'], $options['enabled'], $options['preferred_model']);
 
         $sub_options_json = empty($options) ? '{}' : json_encode($options);
 
-        $query = "UPDATE " . $xerte_toolkits_site->database_table_prefix . "management_helper 
-          SET enabled = ?, sub_options = ? 
+        $query = "UPDATE " . $xerte_toolkits_site->database_table_prefix . "management_helper
+          SET enabled = ?, sub_options = ?, preferred_model = ?
           WHERE vendor = ? AND type = ?";
 
-        $res = db_query_one($query, [$enabled, $sub_options_json, $vendor, $type]);
+        $res = db_query_one($query, [$enabled, $sub_options_json, $preferred_model, $vendor, $type]);
         if ($res === false) {
             echo MANAGEMENT_AI_FAIL . " Database error.";
         }
