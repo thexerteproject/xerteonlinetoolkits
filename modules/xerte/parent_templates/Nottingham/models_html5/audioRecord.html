@@ -36,8 +36,8 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $pageContents.find(".panel");
-			$panel.height(x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
 
 			audioRecord.reloadAudio();
 		}
@@ -61,25 +61,14 @@
 					blobs: []
 				});
 			});
+
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init();
 			
 			if (audioInfo.length > 0) {
 				// there's at least one audio clip - continue setting up the page
-
-				// set panel width
-				const panelWidth = x_currentPageXML.getAttribute("panelWidth");
-				if (panelWidth == "Full") {
-					$pageContents.find(".panel").appendTo($pageContents);
-					$pageContents.find(".splitScreen").remove();
-				} else {
-					$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-					if (panelWidth == "Small") {
-						$pageContents.find(".splitScreen").addClass("large"); // make text area on left large so panel on right is small
-					} else if (panelWidth == "Large") {
-						$pageContents.find(".splitScreen").addClass("small");
-					} else {
-						$pageContents.find(".splitScreen").addClass("medium");
-					}
-				}
 
 				if (audioInfo.length <= 1) {
 					// only one audio clip - remove the titles and buttons from top of the panel
@@ -223,11 +212,9 @@
 				this.loadAudio(true);
 				
 			} else {
-				// no audio clips have been added - just show the page text and remove the panel & divs/classes used for splitscreen layout
-				$(".panel").remove();
-				$('.splitScreen').removeClass('splitScreen');
-				$('.right').removeClass('right');
-				$('.left').removeClass('left');
+				// no audio clips have been added - just show the page text & remove everything from the panel
+				$(".panelContent").empty();
+				this.sizeChanged();
 				x_pageLoaded();
 			}
 		}
@@ -515,38 +502,34 @@
 
 <div id="pageContents">
 
-	<div class="splitScreen">
+	<div id="textHolder" class="splitScreen_A"></div>
 
-		<div id="textHolder" class="left"></div>
-		
-		<div class="right">
-			<div class="panel" tabindex="0">
-				<div id="panelTop">
-					<p id="count" aria-live="polite"></p>
-					<div id="btnHolder">
-						<button id="prevBtn"></button>
-						<button id="nextBtn"></button>
-						<button id="restartBtn"></button>
-					</div>
-				</div>
-				<div id="panelContent">
-					<div id="prompt"></div>
-					<div id="audioRecorder">
-						<div id="errorMsg"></div>
-						<div id="audioControls">
-							<div class="btnHolder">
-								<button id="recBtn"></button>
-								<button id="downloadBtn"></button>
-							</div>
-						</div>
-
-						<div id="recordedClips"></div>
-					</div>
-					<div id="feedbackTxt" aria-live="polite"></div>
+	<div class="splitScreen_B">
+		<div class="panelContent panel" tabindex="0">
+			<div id="panelTop">
+				<p id="count" aria-live="polite"></p>
+				<div id="btnHolder">
+					<button id="prevBtn"></button>
+					<button id="nextBtn"></button>
+					<button id="restartBtn"></button>
 				</div>
 			</div>
-		</div>
+			<div id="panelContent">
+				<div id="prompt"></div>
+				<div id="audioRecorder">
+					<div id="errorMsg"></div>
+					<div id="audioControls">
+						<div class="btnHolder">
+							<button id="recBtn"></button>
+							<button id="downloadBtn"></button>
+						</div>
+					</div>
 
+					<div id="recordedClips"></div>
+				</div>
+				<div id="feedbackTxt" aria-live="polite"></div>
+			</div>
+		</div>
 	</div>
 
 </div>

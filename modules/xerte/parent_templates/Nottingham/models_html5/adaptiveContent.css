@@ -6,10 +6,10 @@ canvas {
   height: 400px;
   width : 100%;
 }
-#adaptiveContent .panel {
-  margin-top: 5px;
+#adaptiveContent .panelContent {
+  /*margin-top: 5px;
   margin-bottom: 5px;
-  padding-bottom: 20px;
+  padding-bottom: 20px;*/
 }
 
 .legend {
@@ -93,10 +93,10 @@ li.select-interaction.selected {
 
 
 #adaptiveContentMain .splitScreen .left, #adaptiveContentMain .splitScreen .right {
-  overflow-y: auto;
+  /*overflow-y: auto;*/
 }
 
-#adaptiveContentMain {
+#adaptiveContentMain:not(.listed) {
   overflow-y: hidden;
 }
 

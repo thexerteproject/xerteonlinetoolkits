@@ -1,7 +1,8 @@
 <wizard menus="Connectors" restrict="template" modelFile="cMcq">
   <pageWizard remove="true" duplicate="false">
     <newNodes>  
-      <cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="" prompt="" align="Left" panelWidth="Medium"
+      <cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="" prompt=""
+      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"
 	  confirmBtnTxt="Confirm" 
 	  notFoundMessage="could not be found in this project." 
 	  notSetMessage="A destination page has not been set for this connection" />]]></cMcq>
@@ -13,10 +14,27 @@
   <cMcq menu="Connectors" menuItem="Multiple Choice Connector" icon="icConMCQ" hint="Pose a question with multiple answer options. When selected, each answer will take you to another page in the project or present further information." thumb="thumbs/connectorMCQ.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#multi-choiceconnector" wiki="https://xerte.org.uk/wiki/doku.php?id=connector_multiplechoiceconnector_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
-    <instruction label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
+    <instruction label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
     <prompt label="Question" type="TextArea" height="100" placeholder="Enter a question prompt"/>
-    <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" width="100"/>
-    <panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="Small,Medium,Large,Full" width="100"/>
+
+    <layoutGroup label="Page Layout" type="group">
+      <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true"/>
+      <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+      <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox"  data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle!='true'&amp;&amp;(panelWidth!='Full'||removeTxt!='false')"/>
+      <align label="Panel Position" options="Right,Left" type="ComboBox" data="Left,Right" defaultValue="Right" condition="panelWidth!='Full'"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" conditionTrigger="true" defaultValue="false"/>
+      <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+      <textTop label="Text" type="TextArea" height="100" conditionTrigger="true" optional="true"/>
+      <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+      <textBottom label="Text" type="TextArea" height="100" conditionTrigger="true" optional="true"/>
+      <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
 
     <confirmBtnTxt label="Confirm Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <confirmBtnTip label="Confirm Button Tip" type="textInput"  language="true" deprecated="This property is no longer required" />	

@@ -1,0 +1,29 @@
+<?php
+/**
+ * SAMPLE Code to demonstrate how to initiate a SAML Single Log Out request
+ *
+ * When the user visits this URL, the browser will be redirected to the SLO
+ * IdP with an SLO request.
+ */
+
+require_once dirname(__FILE__).'/../../../../config.php';
+
+require_once dirname(__FILE__).'/vendor/autoload.php';
+require_once dirname(__FILE__).'/log.php';
+require_once dirname(__FILE__).'/settings.php';
+
+use OneLogin\Saml2\IdPMetadataParser;
+
+$parseIdp = new IdPMetadataParser();
+$idpSettings = $parseIdp->parseRemoteXML($idpMetadataUrl);
+$settingsInfoArray = $parseIdp->injectIntoSettings($settingsInfoArray, $idpSettings);
+
+$settings = new OneLogin\Saml2\Settings($settingsInfoArray);
+
+try {
+    $auth = new OneLogin\Saml2\Auth($settingsInfoArray);
+    $auth->logout();
+} catch (\OneLogin\Saml2\Error $e) {
+    logToFile("Error creating SAML Auth object: " . $e->getMessage());
+}
+

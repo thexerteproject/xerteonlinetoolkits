@@ -1,7 +1,9 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <inventory><![CDATA[<inventory name="Enter Page Title" instructions="" feedback="" order="random" align="left" panelWidth="Medium" classes="" scoreType="absolute" chartHide="false" chartTitle="" chartType="bar" chartColour="0xFFFF00"
+      <inventory><![CDATA[<inventory name="Enter Page Title" instructions="" feedback="" order="random"
+       classes="" scoreType="absolute" chartHide="false" chartTitle="" chartType="bar" chartColour="0xFFFF00"
+      panelWidth="Medium" panelWidthCustom="50" align="left" panelStyle="false" removeTxt="false"
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  submitBtnText="Submit" 
 	  nextBtnText="Next" 
@@ -13,20 +15,36 @@
   <!-- INVENTORY =============================== -->
   <inventory menu="Interactivity" icon="icInventory" menuItem="Inventory" hint="Present a survey where answers map to different classes. The results for each class are displayed on a chart at the end of the survey." thumb="thumbs/inventory.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#inventory" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_inventory_page" remove="true">
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <instructions label="Page Text" type="textArea" height="100" placeholder="Enter text for the page here"/>
+    <instructions label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
     <feedback label="Feedback" type="textArea" height="100" placeholder="Enter feedback text"/>
     <order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
-    <align label="Align Text" options="Left,Right" type="comboBox" data="left,right" defaultValue="left" width="120"/>
-	<panelWidth label="Panel Width" options="Small,Medium,Large" type="ComboBox"  data="Small,Medium,Large" defaultValue="Medium" width="100" mandatory="true"/>
 	<classes label="Classes" type="TextInput" tooltip="A comma-separated list of classes that answer options will score against. A maximum of ten classes can be created." placeholder="e.g. class1,class2,class3"/>
 	<scoreType label="Score Type" options="Absolute,Individual Percent,Relative Percent" type="comboBox" data="absolute,individual percent,relative percent" defaultValue="absolute" width="120"/>
 
-	<chart type="group" label="Chart Options">
-        <chartHide label="Hide Chart" type="CheckBox" defaultValue="false" conditionTrigger="true" mandatory="true"/>
-        <chartTitle label="Title" type="TextInput" wysiwyg="true" condition="chartHide!='true'"/>
-        <chartType label="Type" options="Bar,Pie,Line" type="ComboBox" data="bar,pie,line" defaultValue="bar" width="120" condition="chartHide!='true'"/>
-        <chartColour label="Colour" type="colourPicker" condition="chartHide!='true'"/>
+    <chart type="group" label="Chart Options">
+      <chartHide label="Hide Chart" type="CheckBox" defaultValue="false" conditionTrigger="true" mandatory="true"/>
+      <chartTitle label="Title" type="TextInput" wysiwyg="true" condition="chartHide!='true'"/>
+      <chartType label="Type" options="Bar,Pie,Line" type="ComboBox" data="bar,pie,line" defaultValue="bar" width="120" condition="chartHide!='true'"/>
+      <chartColour label="Colour" type="colourPicker" condition="chartHide!='true'"/>
     </chart>
+
+    <layoutGroup label="Page Layout" type="group">
+      <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" conditionTrigger="true" mandatory="true"/>
+      <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+      <align label="Panel Position" options="Right,Left" type="ComboBox" data="left,right" defaultValue="left" condition="panelWidth!='Full'"/>
+      <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+      <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'"/>
+    </layoutGroup>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+      <textTop label="Text" type="TextArea" height="100" optional="true"/>
+      <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+      <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+      <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
+    </textBelowGroup>
 
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="true" language="true" />

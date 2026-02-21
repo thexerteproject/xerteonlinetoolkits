@@ -59,6 +59,9 @@ CKEDITOR.stylesSet.add( 'default', [
 	{ name: 'Subscript',		element: 'sub' },
 	{ name: 'Superscript',		element: 'sup' },
 	*/
+	{ name: 'Inline Panel',	element: 'span', attributes: { 'class': 'panel editorStyle inline' } },
+	{ name: 'Block Panel',	element: 'div', wrap:true, attributes: { 'class': 'panel editorStyle' } },
+
 	{ name: 'Panel 1',			element: 'span', attributes: { 'class': 'panel1' } },
     { name: 'Panel 2',			element: 'span', attributes: { 'class': 'panel2' } },
     { name: 'Panel 3',			element: 'span', attributes: { 'class': 'panel3' } },

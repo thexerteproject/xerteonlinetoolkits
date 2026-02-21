@@ -69,8 +69,8 @@ a:visited{color:$linkvisited;}
 	padding-bottom:$defaultpagepadding;
 }
 #infoHolder{
-	border-radius:$mediumroundedcorners;
-	background: $lightestcolor;
+	/*border-radius:$mediumroundedcorners;
+	background: $lightestcolor;*/
 }
 /*****panel all pages with a panel*****/
 .panel {
@@ -78,6 +78,10 @@ a:visited{color:$linkvisited;}
 	background:$lightestcolor;
 	box-shadow: none;
 	color:$blackordarkest;
+}
+.panel .panel.editorStyle {
+	background: $defaultpagebackground;
+	border-color: $defaultpagebackground;
 }
 .panelPage{
 	padding:1%;

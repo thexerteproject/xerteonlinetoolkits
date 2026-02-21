@@ -28,9 +28,12 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $("#pageContents .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
-			
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
+
+			// this will be used later when showing feedback - it is done differently depending on whether content is centred vertically on the page & whether panel is full height
+			$("#pageContents").data("slideIn", x_checkVerticalCentre() && panelH === false);
+
 			if ($("#pageContents .audioHolder").length > 0) {
 				var audioBarW = 0;
 				$("#pageContents .audioHolder:eq(0) .mejs-inner .mejs-controls").children().each(function() {
@@ -111,12 +114,12 @@
         this.showFeedBackandTrackScore = function() {
             var answerFeedback = "",
 				genFeedback,
-                    correct = (x_currentPageXML.getAttribute("type") == "Multiple Answer"),
-					answered = false,
-                    l_options = [],
-                    l_answers = [],
-                    l_feedbacks = [],
-                    selected = $("#optionHolder input");
+				correct = (x_currentPageXML.getAttribute("type") == "Multiple Answer"),
+                answered = false,
+				l_options = [],
+				l_answers = [],
+				l_feedbacks = [],
+				selected = $("#optionHolder input");
 			
             if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
 				genFeedback = x_addLineBreaks(x_currentPageXML.getAttribute("feedback"));
@@ -179,9 +182,9 @@
             }
 			if (answered) {
 				var singleRight = x_currentPageXML.getAttribute("singleRight") != undefined ? x_currentPageXML.getAttribute("singleRight") : "Your answer is correct",
-						singleWrong = x_currentPageXML.getAttribute("singleWrong") != undefined ? x_currentPageXML.getAttribute("singleWrong") : "Your answer is incorrect",
-						multiRight = x_currentPageXML.getAttribute("multiRight") != undefined ? x_currentPageXML.getAttribute("multiRight") : "You have selected all the correct answers",
-						multiWrong = x_currentPageXML.getAttribute("multiWrong") != undefined ? x_currentPageXML.getAttribute("multiWrong") : "You have not selected the correct combination of answers";
+                    singleWrong = x_currentPageXML.getAttribute("singleWrong") != undefined ? x_currentPageXML.getAttribute("singleWrong") : "Your answer is incorrect",
+                    multiRight = x_currentPageXML.getAttribute("multiRight") != undefined ? x_currentPageXML.getAttribute("multiRight") : "You have selected all the correct answers",
+                    multiWrong = x_currentPageXML.getAttribute("multiWrong") != undefined ? x_currentPageXML.getAttribute("multiWrong") : "You have not selected the correct combination of answers";
 
 				var rightWrongTxt = "";
 				// add correct feedback depending on if question overall has been answered correctly or not
@@ -258,6 +261,7 @@
 				$("#feedbackHeader").html(feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '');
 
 				$("#feedback")
+                        .hide()
 						.find(".audioHolder").each(function () {
 					$(this).mediaPlayer({
 						type: "audio",
@@ -270,74 +274,66 @@
 						x_addAudioTranscript($("#feedback").find(".audioHolder"), $(this).data("transcript"));
 					}
 				});
+				// to avoid a sudden jump in layout, feedback should slide in gradually if content is centred vertically & panel is full height
+				if ($("#pageContents").data("slideIn")) {
+					$("#feedback").slideDown(function() {
+						// refresh feedback so it is picked up by screen readers now not hidden
+						$("#feedback .feedbackBlock").each(function() {
+							$(this).html($(this).html());
+						});
+					});
+				} else {
+					$("#feedback").show();
+					$("#checkBtn").hide();
 
-				$(this).hide().show(); // hack to take care of IEs inconsistent handling of clicks
+					// refresh feedback so it is picked up by screen readers now not hidden
+					setTimeout(() => {
+						$("#feedback .feedbackBlock").each(function () {
+							$(this).html($(this).html());
+						});
+					},0);
+				}
+				$("#checkBtn").button("disable");
 
-				// scroll to the feedback div so there is less chance of feedback being completely off screen
+				// scroll to the feedback div so there is less chance of feedback being completely off-screen
 				$("#mainPanel").animate({
 					scrollTop: $("#mainPanel").scrollTop() - $("#mainPanel").offset().top + $("#feedback").offset().top
 				}, 500);
-			}
 
-			let judge = $("#pageContents").data("judge");
+				let judge = $("#pageContents").data("judge");
 
-			var result = {
-				success: correct || !judge,
-				score: correct ? 100.0 : 0.0,
-				judge: judge
-			};
-			XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
-			XTSetPageScore(x_currentPage, (correct || !judge ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
-			if (XTGetMode() == "normal") {
-				// Disable all options
-				var i = 0;
-				for (i = 0; i < mcq.currNrOptions; i++) {
-					$("#option" + i).attr("disabled", "disabled");
+				var result = {
+					success: correct || !judge,
+					score: correct ? 100.0 : 0.0,
+					judge: judge
+				};
+				XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
+				XTSetPageScore(x_currentPage, (correct || !judge ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
+				if (XTGetMode() == "normal") {
+					// Disable all options
+					var i = 0;
+					for (i = 0; i < mcq.currNrOptions; i++) {
+						$("#option" + i).attr("disabled", "disabled");
+					}
 				}
-			}
 
-			x_pageContentsUpdated();
+				x_pageContentsUpdated();
+			}
         }
 
 		this.init = function() {
-			// correct attribute on option also not used as it doesn't mark correct/incorrect - only gives feedback for each answer
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
-				$splitScreen = $("#pageContents .splitScreen"),
-				$textHolder = $("#textHolder");
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
 
-			if (panelWidth == "Full") {
-				$("#pageContents .panel").appendTo($("#pageContents"));
-				$splitScreen.remove();
-			} else {
-				$textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
-				
-				var textAlign = x_currentPageXML.getAttribute("align");
-				if (textAlign != "Right") {
-					if (panelWidth == "Small") {
-						$splitScreen.addClass("large");
-					} else if (panelWidth == "Large") {
-						$splitScreen.addClass("small");
-					} else {
-						$splitScreen.addClass("medium");
-					}
-				} else {
-					$textHolder
-						.removeClass("left")
-						.addClass("right")
-						.appendTo($splitScreen);
-					$("#infoHolder")
-						.removeClass("right")
-						.addClass("left");
-					if (panelWidth == "Small") {
-						$splitScreen.addClass("medium");
-					} else if (panelWidth == "Large") {
-						$splitScreen.addClass("xlarge");
-					} else {
-						$splitScreen.addClass("large");
-					}
-				}
+			// panel position data is reversed as the property used to be called 'Align text' rather than 'Panel position'
+			// send amended data to split screen function as otherwise layout will be reversed
+			const attributes = {
+				panelPosition: x_currentPageXML.getAttribute("align") !== "Right" ? "Right" : "Left",
+				pageTxt: x_currentPageXML.getAttribute("instruction")  // xml property is instruction not text that is used in most page models
 			}
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
+			$("#feedback").hide();
 			$("#question").html(x_addLineBreaks(x_currentPageXML.getAttribute("prompt")));
 			
 			var $optionHolder = $("#optionHolder").append('<div class="optionGroup"></div>');
@@ -409,7 +405,16 @@
 									"id"		:"option" + i
 								})
 								.change(function() {
-									$("#feedback").find('.feedbackBlock').html("");
+                                    // to avoid a sudden jump in layout, feedback should slide up gradually if content is centred vertically & panel is full height
+                                    if ($("#pageContents").data("slideIn")) {
+                                        if ($("#feedback").is(":visible")) {
+                                            $("#feedback").slideUp(function () {
+                                                $("#feedback").find('.feedbackBlock').html("");
+                                            });
+                                        }
+                                    } else {
+                                        $("#feedback").hide().find('.feedbackBlock').html("");
+                                    }
 									var $checkBtn = $("#checkBtn"),
 										$selected = $("#optionHolder input:checked");
 
@@ -468,7 +473,6 @@
 								disabled: true
 							})
 							.click(function () {
-								$(this).hide();
 								mcq.showFeedBackandTrackScore();
 								mcq.checked = true;
 							})
@@ -491,26 +495,22 @@
 
 <div id="pageContents">
 
-	<div class="splitScreen">
+	<div id="textHolder" class="splitScreen_A"></div>
 
-		<div id="textHolder" class="left"></div>
-
-		<div id="infoHolder" class="right">
-			<div id="mainPanel" class="panel" tabindex="0">
-				<fieldset class="noStyle">
-					<legend id="question"></legend>
-					<div id="optionHolder"></div>
-					<button id="checkBtn"></button>
-					<div id="feedback" aria-live="polite">
-						<div id="feedbackHeader" class="feedbackBlock"></div>
-						<div id="topFeedback" class="feedbackBlock"></div>
-						<div id="middleFeedback" class="feedbackBlock"></div>
-						<div id="bottomFeedback" class="feedbackBlock"></div>
-					</div>
-				</fieldset>
-			</div>
+	<div id="infoHolder" class="splitScreen_B">
+		<div id="mainPanel" class="panelContent panel" tabindex="0">
+			<fieldset class="noStyle">
+				<legend id="question"></legend>
+				<div id="optionHolder"></div>
+				<button id="checkBtn"></button>
+				<div id="feedback" aria-live="polite">
+					<div id="feedbackHeader" class="feedbackBlock"></div>
+					<div id="topFeedback" class="feedbackBlock"></div>
+					<div id="middleFeedback" class="feedbackBlock"></div>
+					<div id="bottomFeedback" class="feedbackBlock"></div>
+				</div>
+			</fieldset>
 		</div>
-
 	</div>
 
 </div>

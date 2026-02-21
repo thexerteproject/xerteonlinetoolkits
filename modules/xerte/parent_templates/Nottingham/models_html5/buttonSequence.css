@@ -4,7 +4,7 @@
 		overflow:	auto;
 	}
 	
-	#pageContents button {
+	#pageContents #infoBtn {
 		margin:		10px;
 		float:		right;
 	}

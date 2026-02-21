@@ -399,3 +399,14 @@ cite {
   margin-left:20px;*/
   padding:10px;
 }
+
+// most of styling for these default block & inline styles is taken from the default .panel style that will be set in mainStyles.css & in themes
+.panel.editorStyle,
+.panel.editorStyle.inline {
+  margin: 0;
+  font-size: 1em;
+}
+
+.panel.editorStyle {
+  display: flow-root;
+}

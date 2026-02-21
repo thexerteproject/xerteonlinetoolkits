@@ -59,7 +59,7 @@
         // function called every time the size of the LO is changed
         this.sizeChanged = function() {
             $panelHolder = $("#panelHolder");
-            var panels = $panelHolder.find(".panel");
+            var panels = $panelHolder.find(".videoPanel.panel");
             this.resizePanels();
         };
 
@@ -75,7 +75,7 @@
 			
 			$panelHolder.css("margin-top", infoHolderHeight);
 
-            $panelHolder.find(".panel").height(x_getAvailableHeight([$panelHolder.find(".panel")], [infoHolderHeight], true));
+            $panelHolder.find(".videoPanel.panel").height(x_getAvailableHeight([$panelHolder.find(".videoPanel.panel")], [infoHolderHeight], true));
 
             $x_pageHolder.css("overflow", curroverflow);
 
@@ -97,14 +97,14 @@
 
                 var tempW = $popcornMedia.data("max-width");
                 var tempH = $popcornMedia.data("max-height") - titleHeight - holderHeight;
-                if (tempW > $popcornMedia.closest(".panel").width()) {
-                    var scale = $popcornMedia.closest(".panel").width() / tempW;
-                    tempW = $popcornMedia.closest(".panel").width();
+                if (tempW > $popcornMedia.closest(".videoPanel.panel").width()) {
+                    var scale = $popcornMedia.closest(".videoPanel.panel").width() / tempW;
+                    tempW = $popcornMedia.closest(".videoPanel.panel").width();
                     tempH = Math.floor(tempH * scale);
                 }
-                if (tempH > $popcornMedia.closest(".panel").height() - titleHeight - holderHeight) {
-                    var scale = ($popcornMedia.closest(".panel").height() - titleHeight - holderHeight) / tempH;
-                    tempH = $popcornMedia.closest(".panel").height() - titleHeight - holderHeight;
+                if (tempH > $popcornMedia.closest(".videoPanel.panel").height() - titleHeight - holderHeight) {
+                    var scale = ($popcornMedia.closest(".videoPanel.panel").height() - titleHeight - holderHeight) / tempH;
+                    tempH = $popcornMedia.closest(".videoPanel.panel").height() - titleHeight - holderHeight;
                     tempW = Math.floor(tempW * scale);
                 }
 
@@ -183,7 +183,7 @@
                 $("#panelHolder").html("No media was loaded.");
             }
 
-            $panelHolder.find(".panel").each(function() {
+            $panelHolder.find(".videoPanel.panel").each(function() {
                 interactiveVideo.resizeContent($(this));
             });
 
@@ -194,7 +194,7 @@
 
         // function resizes contentBlocks that should fill available space
         this.resizeContent = function($holder) {
-            var $panel = $holder.parents(".panel");
+            var $panel = $holder.parents(".videoPanel.panel");
 
             // if content is overlay on media then use media for max sizes
             if ($holder.parents(".panelContent").length == 0) {
@@ -514,7 +514,7 @@
 					if (panelData[i].getAttribute("name") != "") {
 						title = '<h3 class="panelTitle">' + panelData[i].getAttribute("name") + '</h3>';
 					}
-                    $('<div class="panel">' + title + '</div>')
+                    $('<div class="videoPanel panel">' + title + '</div>')
                         .appendTo($panelHolder)
                         .attr("id", interactiveVideo.panelbaseid + i);
                 }
@@ -744,7 +744,7 @@
                 }
             });
 
-            $(".panel").each(function(i) {
+            $(".videoPanel.panel").each(function(i) {
                 if (i == 0)
                     $('<div id="panelContent' + 0 + '" class="panelContent" />').appendTo($(this));
                 else

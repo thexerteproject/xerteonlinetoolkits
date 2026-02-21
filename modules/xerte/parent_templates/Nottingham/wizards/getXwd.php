@@ -78,7 +78,7 @@ function evaluateConditionExpression($ctree)
 
 $xwd_path = dirname(__DIR__) .'/';
 
-if (file_exists($xwd_path . "wizards/" . $_SESSION['toolkits_language'] . "/data.xwd" ))
+if (isset($_SESSION['toolkits_language']) && $_SESSION['toolkits_language'] != "" && file_exists($xwd_path . "wizards/" . $_SESSION['toolkits_language'] . "/data.xwd" ))
 {
     $xwd_file_path = $xwd_path . "wizards/" . $_SESSION['toolkits_language'] . "/data.xwd";
 }
@@ -93,7 +93,7 @@ else if (file_exists($xwd_path . "data.xwd"))
 
 // Check if there are any custom files and merge those in.
 $plugin_path = "";
-if (file_exists($xwd_path . "wizards/plugins/" . $_SESSION['toolkits_language']))
+if (isset($_SESSION['toolkits_language']) && $_SESSION['toolkits_language'] != "" && file_exists($xwd_path . "wizards/plugins/" . $_SESSION['toolkits_language']))
 {
     $plugin_path = $xwd_path . "wizards/plugins/" . $_SESSION['toolkits_language'];
 }

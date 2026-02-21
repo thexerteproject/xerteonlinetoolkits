@@ -103,6 +103,10 @@ table.glossary tr.shaded td {
 	color:$mainfontcolour;
 	border-color: $panelcolor;
 }
+.panel .panel.editorStyle {
+	background: $defaultpagebackground;
+	border-color: $defaultpagebackground;
+}
 .panelPage{
 	padding:1%;
 	color:$mainfontcolour;

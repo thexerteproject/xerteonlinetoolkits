@@ -316,3 +316,16 @@ table.headerCol.shaded td.header {
 	background: #1c1c1c;
 	border-color: #1c1c1c;
 }
+
+/* compare images */
+.x_imageCompare_page #slider {
+	background-color: #1c1c1c;
+}
+
+.x_imageCompare_page #slider_handle {
+	background-color: #666666;
+}
+
+.x_imageCompare_page #slider_handle i {
+	color: #cfcfcf;
+}

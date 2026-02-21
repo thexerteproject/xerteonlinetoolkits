@@ -1,5 +1,13 @@
 	/* menu.html */
 	
-	#menuHolder #pageImg {
+	#textHolder #pageImg {
 		max-width: 80%;
+	}
+
+	#textHolder #pageImg + p {
+		margin-top: 1em;
+	}
+
+	#tocMenuPage #panel.panel {
+		overflow:	auto;
 	}

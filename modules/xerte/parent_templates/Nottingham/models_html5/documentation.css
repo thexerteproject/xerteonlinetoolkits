@@ -4,7 +4,7 @@
 		overflow: auto;
 	}
 
-	#x_mainHolder.x_mobile .panel {
+	#x_mainHolder.x_mobile .panelContent.panel {
 		overflow: auto;
 	}
 
@@ -32,8 +32,9 @@
 		height:	auto;
 	}
 	
-	#downloadBtn {
+	#downloadBtn, #submitBtn {
 		margin-top: 0.5em;
+		margin-right: 0.5em;
 	}
 	
 	#slideTxt {
@@ -126,3 +127,17 @@
 	input, textarea {
 		box-sizing: border-box;
 	}
+
+	.panelContent {
+		overflow: auto;
+	}
+
+@media (max-width: 480px) {
+	#pages {
+		height: unset !important;
+	}
+
+	#pages .itemImg {
+		max-height: unset !important;
+	}
+}

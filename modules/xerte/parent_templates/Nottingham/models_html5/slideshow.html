@@ -40,7 +40,7 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			if (x_browserInfo.mobile == false) {
-				var $panel = $("#pageContents .panel"),
+				var $panel = $("#pageContents .panelContent.panel"),
 					$btnHolder = $("#btnHolder"),
 					$slideTxt = $("#slideTxt");
 				
@@ -62,7 +62,7 @@
 				panelWidth = x_currentPageXML.getAttribute("panelWidth");
 			
 			if (panelWidth == "Full") {
-				$("#pageContents .panel").appendTo($pageContents);
+				$("#pageContents .panelContent.panel").appendTo($pageContents);
 				$("#pageContents .splitScreen").remove();
 			} else {
 				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
@@ -205,7 +205,7 @@
 				$("#slideTxt, #btnHolder").remove();
 			} else {
 				if (x_browserInfo.mobile == true) {
-					$("#pageContents .panel").prepend($("#btnHolder"));
+					$("#pageContents .panelContent.panel").prepend($("#btnHolder"));
 				}
 			}
 			
@@ -321,7 +321,7 @@
 		<div id="textHolder" class="left"></div>
 		
 		<div class="right">
-			<div class="panel">
+			<div class="panelContent panel">
 				<div id="infoHolder">
 					<div class="panelPage"></div>
 				</div>

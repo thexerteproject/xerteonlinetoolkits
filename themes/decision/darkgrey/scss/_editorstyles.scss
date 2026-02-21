@@ -105,6 +105,10 @@ $esc6: $accent3;
 .panel6 a{
   color: white !important;
 }
+.panel.editorStyle {
+  background-color: inherit;
+  border-color: $contrastcolor;
+}
 
 //*****highlights*****/
 .highlight1 {

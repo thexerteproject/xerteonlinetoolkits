@@ -81,6 +81,20 @@ $esc6: $accent3;
   background-color:$esc6;
   color:$whiteorlightest;
 }
+.panel.editorStyle {
+  margin: 1em 0;
+  padding: 14px 19px;
+  background-color: $brightcolor;
+  border: 1px solid $whiteorlightest;
+  color:$whiteorlightest;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+.panel.editorStyle.inline {
+  display: inline-block;
+}
+
 //*****highlights*****/
 .highlight1 {
   @include highlight;

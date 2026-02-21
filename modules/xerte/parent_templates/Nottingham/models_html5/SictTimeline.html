@@ -289,7 +289,7 @@
                 $storyslider.height(pageHeight - $timeline.height());
 
                 // force timeline controls to be in correct position as this doesn't always automatically change
-                $('.tl-menubar').css("top", $timeline.position().top + "px");
+                if ($timeline.length > 0) { $('.tl-menubar').css("top", $timeline.position().top + "px"); }
 
                 // reposition the next / previous buttons so they are in the (vertical) middle of the content area
                 $('.tl-slidenav-next, .tl-slidenav-previous').css("top", $storyslider.height() / 2);

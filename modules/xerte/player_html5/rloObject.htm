@@ -157,7 +157,37 @@
 			lastUpdated: x_lastUpdatedLocale,
 			dateCreated: x_dateCreatedLocale,
 			numViews: x_numPlays
-		};
+		}
+		try {
+			globalVars.todayDate = new Date().toLocaleDateString("%LANGUAGE%", localeoptions);
+			globalVars.todayDay = new Date().toLocaleDateString("%LANGUAGE%", {weekday: 'long'});
+			globalVars.todayMonth = new Date().toLocaleDateString("%LANGUAGE%", {month: 'long'});
+			globalVars.todayYear = new Date().toLocaleDateString("%LANGUAGE%", {year: 'numeric'});
+			globalVars.todayTime = new Date().toLocaleTimeString("%LANGUAGE%");
+		}
+		catch(e) {
+			globalVars.todayDate = new Date().toLocaleDateString();
+			globalVars.todayDay = new Date().toLocaleDateString({weekday: 'long'});
+			globalVars.todayMonth = new Date().toLocaleDateString({month: 'long'});
+			globalVars.todayYear = new Date().toLocaleDateString({year: 'numeric'});
+			globalVars.todayTime = new Date().toLocaleTimeString();
+		}
+
+		// Add user information to Global Vars if available
+		if (typeof lti_enabled != 'undefined' && typeof studentidmode != 'undefined' && lti_enabled && studentidmode == 2)
+		{
+			globalVars.userFullName = fullusername;
+			globalVars.userEmail = username;
+
+			const nameParts = fullusername.split(' ');
+			if (nameParts.length > 1)
+			{
+				globalVars.userFirstName = nameParts[0];
+				// Assign the rest of the name to last name in case there are more than 2 parts to the name
+				globalVars.userLastName = nameParts.slice(1).join(' ');
+			}
+		}
+
 		var token = "%TOKEN%";
 		%PLUGINS%;
 		%EMBED_SUPPORT%

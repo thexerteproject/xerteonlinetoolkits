@@ -23,9 +23,7 @@
 			docData = {
 				'filename': 'documentation',
 				'pages':[]
-			}
-
-
+			},
 			notAnsweredDefault = '',
 			required = [];
 		
@@ -38,14 +36,21 @@
 		}
 		
 		this.sizeChanged = function() {
-			const $panel = $("#pageContents .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
-			$("#pages").height(x_getAvailableHeight([$panel], [$("#btnHolder")]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
 
-			if (x_browserInfo.mobile == false) {
-				$("#pages .itemImg").each(function () {
-					$(this).css("max-height", $("#pages").height() - $(this).parents("figure").find("figcaption").outerHeight(true));
-				});
+			// when panel has fixed height set, keep buttons at bottom of panel by setting height of #pages above it
+			const $pages = $("#pages");
+			if (panelH !== false) {
+				$pages.height(x_getAvailableHeight([$("#pageContents .panelContent"), $pages], [$("#btnHolder"), 1]));
+
+				if (x_browserInfo.mobile == false) {
+					$pages.find(".itemImg").each(function () {
+						$(this).css("max-height", $pages.height() - $(this).parents("figure").find("figcaption").outerHeight(true));
+					});
+				}
+			} else {
+				$pages.find(".itemImg").css("max-height", "unset");
 			}
 		}
 
@@ -95,29 +100,9 @@
 
 			// Set up main layout structure & add in all non-subpage text
 			$("#textHolder").append(x_currentPageXML.getAttribute("text"));
-			
-			switch(x_currentPageXML.getAttribute("panelWidth")) {
-				case "Full":
-					$("#textHolder")
-						.unwrap()
-						.removeClass("left");
-					
-					$(".panel").unwrap();
-					
-					$("#textHolder").remove();
-					break;
-					
-				case "Small":
-					$("#pageContents .splitScreen").addClass("large");
-					break;
-					
-				case "Large":
-					$("#pageContents .splitScreen").addClass("small");
-					break;
-					
-				default:
-					$("#pageContents .splitScreen").addClass("medium");
-			}
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init();
 			
 			if (x_currentPageXML.getAttribute("intro") != "") {
 				$(".mainIntro").append(x_currentPageXML.getAttribute("intro"));
@@ -304,6 +289,9 @@
 
 			if(x_currentPageXML.getAttribute("track") == "true"){
 				$submitBtn.button({
+					icons: {
+						primary: "fa fa-share"
+					},
 					label: x_currentPageXML.getAttribute('submitTxt') != undefined ? x_currentPageXML.getAttribute('submitTxt') : "Submit"
 				}).click(function () {
 					documentation.track();
@@ -948,24 +936,20 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
 		
-		<div id="textHolder" class="left"></div>
-		
-		<div class="right">
-			<div class="panel">
-				<div id="pages" tabindex="0">
-					<div class="mainIntro intro"></div>
-				</div>
-				<div id="btnHolder">
-					<button id="prevBtn"></button>
-					<span id="slideTxt" aria-live="polite"></span>
-					<button id="nextBtn"></button>
-				</div>
+	<div id="textHolder" class="splitScreen_A"></div>
+
+	<div class="splitScreen_B">
+		<div class="panelContent panel">
+			<div id="pages" tabindex="0">
+				<div class="mainIntro intro"></div>
+			</div>
+			<div id="btnHolder">
+				<button id="prevBtn"></button>
+				<span id="slideTxt" aria-live="polite"></span>
+				<button id="nextBtn"></button>
 			</div>
 		</div>
-		
 	</div>
-	
+
 </div>

@@ -4,7 +4,8 @@
  *  SP Single Logout Service Endpoint
  */
 
-session_start();
+require_once dirname(__FILE__).'/../../../../../config.php';
+
 
 require_once dirname(__FILE__).'/../vendor/autoload.php';
 require_once dirname(__FILE__).'/../settings.php';

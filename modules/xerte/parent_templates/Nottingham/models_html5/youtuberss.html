@@ -21,46 +21,25 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var youtuberss = new function() {
-	
-		var $pageContents,
-			$panel,
-			$resultsHolder,
-			searchTerm;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-
 		};
-
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $("#pageContents .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
 		};
 		
 		this.init = function() {
-		
-			$pageContents = $("#pageContents");
-			$panel = $("#pageContents .panel");
-			$resultsHolder = $pageContents.find("#resultsHolder");
 			$("#loadingSpinner p").html(x_getLangInfo(x_languageData.find("fetchResults")[0], "label", "Fetching results..."));
-		
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			if (panelWidth == "Full") {
-				$("#pageContents .right div:first").appendTo($("#pageContents"));
-				$("#pageContents .splitScreen").remove();
-			} else {
-				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				if (panelWidth == "Small") {
-					$("#pageContents .splitScreen").addClass("large");
-				} else if (panelWidth == "Medium") {
-					$("#pageContents .splitScreen").addClass("medium");
-				} else {
-					$("#pageContents .splitScreen").addClass("small");
-				}
-			}
-		
+
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init();
+
 			$.ajax({
 				async:false,
 				type:'GET',
@@ -78,7 +57,7 @@
 		this.loadAPI = function(){
 
 			//gapi.client.setApiKey('ENTER YOUR KEY HERE');
-			
+
 			gapi.client.setApiKey(x_youtube_api_key);
 			
 			gapi.client.load('youtube', 'v3', function() {
@@ -90,41 +69,39 @@
 
 		this.fetchResults = function(){
 		
-			searchTerm = x_currentPageXML.getAttribute("url");
-			var searchCount = x_currentPageXML.getAttribute("results");
+			const searchTerm = x_currentPageXML.getAttribute("url");
 		
-			var request = gapi.client.youtube.search.list({
+			const request = gapi.client.youtube.search.list({
 				q: searchTerm,
 				part: 'snippet',
-				maxResults: searchCount,
+				maxResults: x_currentPageXML.getAttribute("results"),
 				type: 'video',
 				safeSearch: 'strict'
 			});
+
+			let resultsHolder = "";
 				
 			request.execute(function(response) {
-				// if language attributes aren't in xml will have to use english fall back
-				var resultsTxt = x_currentPageXML.getAttribute("resultsTxt");
-				if (resultsTxt == undefined) {
-					resultsTxt = "Youtube results for term";
-				}
-
-				var apiErrorMesg = x_currentPageXML.getAttribute("apiErrorMesg");
-				if (apiErrorMesg == undefined) {
-					apiErrorMesg = "The Youtube API returned the following error: \"{0}\" <br>If no API key is set, ask your admin to set up a key in api_keys.php (see api_keys.dist.php for a template).";
-				}
 				clearTimeout(x_timer);
 				$("#loadingSpinner").hide();
 
 				if (response.code !== undefined)
 				{
+					let apiErrorMesg = x_currentPageXML.getAttribute("apiErrorMesg");
+					if (apiErrorMesg == undefined) {
+						apiErrorMesg = "The YouTube API returned the following error: \"{0}\" <br>If no API key is set, ask your admin to set up a key in api_keys.php (see api_keys.dist.php for a template).";
+					}
 					apiErrorMesg = apiErrorMesg.replace("{0}", response.message);
 					resultsHolder = '<div><p>' + apiErrorMesg + '</p></div>';
 				}
 				else {
+					// if language attributes aren't in xml will have to use english fall back
+					let resultsTxt = x_currentPageXML.getAttribute("resultsTxt");
+					if (resultsTxt == undefined) {
+						resultsTxt = "YouTube results for term";
+					}
 
-					var resultsHolder = "";
-
-					$pageContents.find("#headerHolder").html("<h3>" + resultsTxt + " '" + searchTerm + "'</h3>");
+					$("#headerHolder").html("<h3>" + resultsTxt + " '" + searchTerm + "'</h3>");
 
 					if (response.pageInfo && response.pageInfo.totalResults > 0) { //we have results
 
@@ -149,8 +126,8 @@
 
 					}
 				}
-				
-				$resultsHolder
+
+				$("#resultsHolder")
 					.html(resultsHolder)
 					.find("div:even").addClass("shadedDiv");
 
@@ -170,19 +147,15 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
-		
-		<div id="textHolder" class="left"></div>
-		
-		<div id="youtuberssHolder" class="right">
-			<div class="panel">
-				<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
-				<div id="headerHolder"></div>
-				<div id="resultsHolder"></div>
-			</div>
+
+	<div id="textHolder" class="splitScreen_A"></div>
+
+	<div id="youtuberssHolder" class="splitScreen_B">
+		<div class="panelContent panel">
+			<div id="loadingSpinner"><div class="spinner"></div><p></p></div>
+			<div id="headerHolder"></div>
+			<div id="resultsHolder"></div>
 		</div>
-		
 	</div>
 
 </div>

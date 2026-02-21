@@ -1,0 +1,127 @@
+body
+{
+    margin: 0;
+    padding: 0;
+    font-family: Arial;
+}
+
+/* Menu */
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #0d47a1;
+}
+
+.title
+{
+    font-size: 25px;
+}
+
+.main_menu li {
+  float: left;
+}
+
+.main_menu li {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 23px 25px; /* was 14px 16px */
+  text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+  background-color: #111;
+}
+
+/* End Menu */
+
+.homepage
+{
+    text-align: center;
+}
+
+.button_1
+{
+    padding-top: 20px;
+}
+
+.button_1 > a
+{
+    background-color: #0d47a1;
+    margin: auto;
+    padding: 2px 20px 2px 20px;
+    border: 5px solid #000000;
+    border-radius: 5px;
+    opacity: 0.78;
+    
+    text-decoration: none;
+    color: #FFFFFF;
+    font-weight: 500;
+}
+
+.button_1 > a:hover
+{
+    background-color: #000000;
+    color: #FFFFFF;
+}
+
+.indextext
+{
+    margin: auto;
+    width: 1000px;
+}
+
+.install
+{
+    background-color: #099E12;
+    color: #ffffff;
+    margin: auto;
+    padding: 2px 20px 2px 20px;
+    border: 5px solid #000000;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: large;
+}
+
+.install:hover
+{
+    cursor: pointer;
+    background-color: #9c3328;
+}
+
+.update
+{
+    background-color: #0d47a1;
+    color: #ffffff;
+    margin: auto;
+    padding: 2px 20px 2px 20px;
+    border: 5px solid #000000;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: large;
+}
+
+.update:hover
+{
+    cursor: pointer;
+    background-color: #9c3328;
+}
+
+.log{
+    text-align: left;
+    width: fit-content;
+    background-color: #52993329;
+    margin: auto;
+    padding: 20px;
+    border: solid 1px #000000;
+}
+
+.centerblock{
+    text-align: left;
+    width: fit-content;
+    margin: auto;
+    padding: 20px;
+}

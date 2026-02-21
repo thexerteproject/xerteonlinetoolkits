@@ -104,8 +104,8 @@ a:hover{
 	padding-bottom:10px;
 }
 #infoHolder{
-	border-radius:$mediumroundedcorners;
-	background: $contrastcolor;
+	/*border-radius:$mediumroundedcorners;
+	background: $contrastcolor;*/
 }
 
 //*****panel all pages with a panel*****/
@@ -115,6 +115,10 @@ a:hover{
 	background:$contrastcolor;
 	box-shadow: none;
 	color:$whiteorlightest;
+}
+.panel .panel.editorStyle {
+	background: $defaultpagebackground;
+	border-color: $defaultpagebackground;
 }
 .panelPage{
 	padding:1%;

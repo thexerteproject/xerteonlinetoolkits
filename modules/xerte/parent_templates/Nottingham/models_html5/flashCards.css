@@ -89,12 +89,12 @@
 		float: right;
 	}
 	
-	.card .panel {
+	.card .cardSide {
 		padding: 0em;
 		text-align: left;
 	}
 	
-	.card:not(.fitHeight) .panel {
+	.card:not(.fitHeight) .cardSide {
 		width: auto !important;
 		height: auto !important;
 	}
@@ -108,7 +108,7 @@
 	}
 	
 	#cards.hideOverflow .cardInner,
-	#cards .panel.hideOverflow .cardInner {
+	#cards .cardSide.hideOverflow .cardInner {
 		overflow: hidden;
 	}
 	

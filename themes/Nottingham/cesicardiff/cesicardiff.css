@@ -1237,14 +1237,19 @@ img {
   font-size: 1em;
 }
 
-.right .panel {
+.right .panel:not(.editorStyle) {
   border-left: 1px solid #ddd;
   padding-left: 10px;
 }
 
-.left .panel {
+.left .panel:not(.editorStyle) {
   border-right: 1px solid #ddd;
   padding-right: 10px;
+}
+
+.panel.editorStyle {
+  border: 1px solid #ddd;
+  padding: 10px;
 }
 
 #x_pageDiv .x_floatRight {

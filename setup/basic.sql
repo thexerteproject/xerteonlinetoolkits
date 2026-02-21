@@ -26,7 +26,10 @@ DROP TABLE IF EXISTS `$template_group_rights` ;
 DROP TABLE IF EXISTS `$folderrights` ;
 DROP TABLE IF EXISTS `$folder_group_rights` ;
 DROP TABLE IF EXISTS `$oai_publish` ;
+DROP TABLE IF EXISTS `$role` ;
+DROP TABLE IF EXISTS `$logindetailsrole` ;
 DROP TABLE If EXISTS `$management_helper` ;
+DROP TABLE IF EXISTS `$ai_request_logs`;
 
 DROP TABLE IF EXISTS `$lti_context` ;
 DROP TABLE IF EXISTS `$lti_keys` ;
@@ -401,9 +404,9 @@ insert into `$role`(`roleid`, `name`) values
 
 CREATE TABLE IF NOT EXISTS `$management_helper` (
     `interaction_id` int(11) NOT NULL AUTO_INCREMENT,
-    `vendor` VARCHAR(10) NOT NULL,
-    `label` VARCHAR(34) NOT NULL,
-    `type` VARCHAR(10) NOT NULL,
+    `vendor` VARCHAR(45) NOT NULL,
+    `label` VARCHAR(45) NOT NULL,
+    `type` VARCHAR(45) NOT NULL,
     `needs_key` BOOLEAN NOT NULL,
     `enabled` BOOLEAN NOT NULL ,
     `sub_options` TEXT,
@@ -411,7 +414,7 @@ CREATE TABLE IF NOT EXISTS `$management_helper` (
     PRIMARY KEY (`interaction_id`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `management_helper` VALUES
+INSERT INTO `$management_helper` VALUES
                                     (1, 'openai', 'GPT (Openai)', 'ai', 1, 0, '{}', ''),
                                     (2, 'anthropic', 'Claude (Anthropic)', 'ai', 1, 0, '{}', ''),
                                     (3, 'mistral', 'Mistral AI', 'ai', 1, 0, '{}', ''),
@@ -428,7 +431,7 @@ INSERT INTO `management_helper` VALUES
                                     (14, 'openaienc', 'OpenAI (Encoding)', 'encoding', 1, 0, '{}', '');
 
 
-CREATE TABLE IF NOT EXISTS `ai_request_logs` (
+CREATE TABLE IF NOT EXISTS `$ai_request_logs` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `schema_version` VARCHAR(16) NOT NULL DEFAULT '1.0',
 
@@ -460,5 +463,5 @@ CREATE TABLE IF NOT EXISTS `ai_request_logs` (
     `cost_pricing_version` VARCHAR(32) DEFAULT NULL,
     `cost_total` DECIMAL(18,6) DEFAULT NULL,
 
-    PRIMARY KEY (`id`),
-) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;;
+    PRIMARY KEY (`id`)
+) DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

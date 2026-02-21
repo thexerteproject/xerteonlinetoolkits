@@ -69,7 +69,7 @@
   <QHotSpot type="flexhotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Feedback" type="TextArea" height="250" />
-    <truth label="Correct Answer" options="True,False" type="ComboBox" data="true,false" defaultValue="true" width="100"/>
+    <truth label="Correct Answer" type="CheckBox" defaultValue="true"/>
 	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" />
   </QHotSpot>
 

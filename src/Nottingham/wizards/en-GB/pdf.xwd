@@ -1,7 +1,9 @@
 <wizard menus="Media">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <pdf><![CDATA[<pdf name="Enter Page Title" url="" open="Open PDF"/>]]></pdf>
+      <pdf><![CDATA[<pdf name="Enter Page Title" text="" url=""
+      panelWidth="Medium" panelWidthCustom="50" align="right" panelStyle="false" removeTxt="false"
+      open="Open PDF"/>]]></pdf>
     </newNodes>
   </pageWizard>
 
@@ -9,14 +11,29 @@
   <pdf menu="Media" menuItem="PDF File" hint="Incorporate PDF files in your project." icon="icPDF" thumb="thumbs/pdf.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#pdffile" wiki="https://xerte.org.uk/wiki/doku.php?id=media_pdf_file_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <text label="Page Text" type="TextArea" defaultValue="" placeholder="Enter text for the page here" height="200" mandatory="true" condition="(panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||removeTxt!='true'"/>
     <url label="PDF File" type="media" placeholder="Select a PDF file"/>
-    
-    <pdfWidth label="PDF Width" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full" defaultValue="full" width="100" optional="true"/>
-	
-	<textGroup type="group" label="Page Text" optional="true">
-		<text label="Text" type="TextArea" defaultValue="" placeholder="Enter text for the page here" height="200" optional="true"/>
-		<position label="Position" options="Left,Right,Top" type="ComboBox" data="L,R,T" defaultValue="L" width="100" optional="true"/>
-	</textGroup>
+
+    <layoutGroup label="Page Layout" type="group">
+        <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Full" conditionTrigger="true" mandatory="true"/>
+        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
+        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'&amp;&amp;panelWidth!=undefined"/>
+        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+        <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="false" conditionTrigger="true" condition="panelWidth=='Full'||panelWidth==undefined"/>
+    </layoutGroup>
+
+    <pdfWidth label="PDF Width" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full" defaultValue="full" width="100" optional="true" deprecated="This property is deprecated. It will still work for older projects but can be removed to allow the newer project layout options above to be used instead"/>
+    <position label="Text Position" options="Left,Right,Top" type="ComboBox" data="L,R,T" defaultValue="L" optional="true" deprecated="This property is deprecated. It will still work for older projects but can be removed to allow the newer project layout options above to be used instead"/>
+
+    <textTopGroup label="Text Above Panel" type="group" optional="true">
+        <textTop label="Text" type="TextArea" height="100" optional="true"/>
+        <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'&amp;&amp;panelWidth!=undefined"/>
+    </textTopGroup>
+
+    <textBelowGroup label="Text Below Panel" type="group" optional="true">
+        <textBottom label="Text" type="TextArea" height="100" optional="true"/>
+        <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'&amp;&amp;panelWidth!=undefined"/>
+    </textBelowGroup>
 
 	<open label="Open PDF in new tab" type="TextInput" wysiwyg="true" language="true"/>
 

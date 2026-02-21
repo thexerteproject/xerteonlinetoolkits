@@ -35,6 +35,7 @@
         };
 
         // function called every time the size of the LO is changed
+        // also called when infoHolder text changes / labels are dropped (the image may change position with these changes if centre content vertically is on)
         this.sizeChanged = function() {
             $x_pageHolder.scrollTop(0);
             var $panel = $("#mainPanel");
@@ -45,7 +46,7 @@
 				labelHolderH = labelPos != "text" ? $("#labelHolder").height() : 0,
 				imgSize = x_currentPageXML.getAttribute("imgWidth") == undefined || x_currentPageXML.getAttribute("imgWidth") == "Medium" ? 0.5 : x_currentPageXML.getAttribute("imgWidth") == "Small" ? 0.3 : 0.8;
 
-			x_scaleImg($image, $x_pageHolder.width() * imgSize, x_getAvailableHeight([$("#mainPanel"), $("#dragDropHolderLabelling")], [labelHolderH]));
+			x_scaleImg($image, $x_innerPage.width() * imgSize, x_getAvailableHeight([$("#mainPanel"), $("#dragDropHolderLabelling")], [labelHolderH]));
 			$("#labelHolder").width($image.width());
 
 			// adjust target sizes and positions
@@ -260,11 +261,11 @@
                         $("#targetHolder .target.highlight").removeClass("highlight").addClass("transparent");
 
                         $pageContents.data("selectedLabel", "");
-                        $("#infoHolder").empty();
 					},
 					stop: function () {
 						if ($(this).data("success") != true) {
 							$("#infoHolder").html($pageContents.data("tryTxt"));
+                            dragDropLabel.sizeChanged();
 						}
 					}
 				})
@@ -304,6 +305,7 @@
                     $pageContents.data("selectedLabel", $this);
 
                     $("#infoHolder").empty();
+                    dragDropLabel.sizeChanged();
                 })
 				.disableSelection();
 			
@@ -394,11 +396,11 @@
 			const maxW = x_browserInfo.mobile != true ? imgSize : 1;
 			const maxH = 1;
 			
-			let imgMaxW = Math.round($x_pageHolder.width() * maxW),
+			let imgMaxW = Math.round($x_innerPage.width() * maxW),
 				imgMaxH = Math.round($x_pageHolder.height() * maxH);
 			
-			imgMaxW -= ($("#mainPanel").outerWidth(true) - $("#mainPanel").width()) + ($("#x_pageDiv").outerWidth(true) - $("#x_pageDiv").width()) + ($("#dragDropHolderLabelling").outerWidth(true) - $("#dragDropHolderLabelling").width());
-			imgMaxH -= ($("#mainPanel").outerHeight(true) - $("#mainPanel").height()) + labelHolderH + ($("#x_pageDiv").outerHeight(true) - $("#x_pageDiv").height()) + ($("#dragDropHolderLabelling").outerHeight(true) - $("#dragDropHolderLabelling").height());
+			imgMaxW -= ($("#mainPanel").outerWidth(true) - $("#mainPanel").width()) + ($x_pageDiv.outerWidth() - $x_pageDiv.width()) + ($("#dragDropHolderLabelling").outerWidth(true) - $("#dragDropHolderLabelling").width());
+			imgMaxH -= ($("#mainPanel").outerHeight(true) - $("#mainPanel").height()) + labelHolderH + ($x_pageDiv.outerHeight(true) - $x_pageDiv.height()) + ($("#dragDropHolderLabelling").outerHeight(true) - $("#dragDropHolderLabelling").height());
 			
             x_scaleImg($image, imgMaxW, imgMaxH, true, true);
 			
@@ -541,6 +543,7 @@
                             }
                         }
                     }
+                    dragDropLabel.sizeChanged();
                 });
         }
 
@@ -623,6 +626,7 @@
                         } else {
                             $("#infoHolder").html("");
                         }
+                        dragDropLabel.sizeChanged();
                     })
 					.data("target", $thisTarget);
 
@@ -643,6 +647,7 @@
                         } else {
                             $("#infoHolder").html("");
                         }
+                        dragDropLabel.sizeChanged();
                     });
 
                 $pageContents.data("selectedLabel", "");
@@ -663,7 +668,8 @@
 			} else {
 				$hr.show();
 			}
-			
+
+            this.sizeChanged();
 			x_pageContentsUpdated();
         };
 
@@ -797,6 +803,7 @@
             } else {
                 // an attempt must have been made before it's marked
                 $("#infoHolder").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("incomplete") != undefined && x_currentPageXML.getAttribute("incomplete") != "" ? x_currentPageXML.getAttribute("incomplete") : "Please complete the exercise.") + '</p>');
+                this.sizeChanged();
             }
 
             x_pageContentsUpdated();

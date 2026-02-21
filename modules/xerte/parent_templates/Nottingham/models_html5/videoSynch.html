@@ -21,31 +21,66 @@
 // pageChanged & sizeChanged functions are needed in every model file
 // other functions for model should also be in here to avoid conflicts
 var videoSynch = new function() {
-	var $infoHolder,
-		$pageContents;
+	let $infoHolder;
+	let $pageContents;
 
 	// function called every time the page is viewed after it has initially loaded
 	this.pageChanged = function() {
-		$("#pageVideo, #mainText, #infoHolder").empty();
-		this.setUp();
+		$infoHolder = $("#infoHolder");
+		$pageContents = $("#pageContents");
+
+		$("#pageVideo, #infoHolder #panel").empty();
+		this.createCaptions($pageContents.data("captionInfo"));
 	}
 
 	// function called every time the size of the LO is changed
 	this.sizeChanged = function() {
-		$infoHolder.height(x_getAvailableHeight([$infoHolder]));
-		const $mainText = $("#mainText");
-		$mainText.height(x_getAvailableHeight([$mainText], [$(".panel").outerHeight(true)]));
+		$(".panelContent").removeClass("noH");
 
-		if ($infoHolder.children("div:visible").last().length > 0) {
-			$infoHolder.children("div:visible").last()[0].scrollIntoView(true);
+		// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+		XENITH.SPLITSCREEN.resizePanel();
+
+		if (!$("#pageVideo").hasClass("fixedSize")) {
+			// ensure video isn't too large & is correct aspect ratio
+			let aspectRatio = [16,9];
+			if (x_currentPageXML.getAttribute("aspectRatio") != undefined && x_currentPageXML.getAttribute("aspectRatio") !== "") {
+				const temp = x_currentPageXML.getAttribute("aspectRatio").split(":");
+				if (temp.length === 2 && $.isNumeric(temp[0]) && $.isNumeric(temp[1])) {
+					aspectRatio = [Number(temp[0]),Number(temp[1])];
+				}
+			}
+
+			$(".popcornMedia.embed").width("unset");
+
+			let maxW = "100%";
+			let maxH = $(".popcornMedia.embed").width() / aspectRatio[0] * aspectRatio[1];
+			if (maxH > x_getAvailableHeight([$("#videoHolder"),$("#videoHolder .videoPanel")])) {
+				maxH = x_getAvailableHeight([$("#videoHolder"),$("#videoHolder .videoPanel")]);
+				maxW = maxH / aspectRatio[1] * aspectRatio[0];
+			}
+
+			resizeEmbededMedia($(".popcornMedia.embed"), { width: maxW, height: maxH });
+		}
+
+		if ($infoHolder.find("#panel").children("div:visible").last().length > 0) {
+			$infoHolder.find("#panel").children("div:visible").last()[0].scrollIntoView(true);
+		}
+
+		// don't force panel to be full height when in a single column
+		// fullH: true is sent to splitscreen function to ensure the panel doesn't get too tall for page, but we don't always want it full height in single column layout
+		if ($(".splitScreen_B").css("flex-basis") === "100%") {
+			$(".panelContent").addClass("noH");
 		}
 	}
 	// Loads popcorn, then calls setup.
 	this.init = function()
 	{
-		var popLocation = "common_html5/js/popcorn/"
-		var scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
-		var i = 0;
+		$infoHolder = $("#infoHolder");
+		$pageContents = $("#pageContents");
+
+		const popLocation = "common_html5/js/popcorn/"
+		const scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
+		let i = 0;
 		if(!xot_offline) {
 			scriptsToLoad.forEach(function (file) {
 				$.getScript(x_templateLocation + popLocation + file + ".js")
@@ -63,12 +98,33 @@ var videoSynch = new function() {
 	}
 
 	this.setUp = function() {
-		$infoHolder = $("#infoHolder");
-		$pageContents = $("#pageContents");
-
 		$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
-		var captionInfo = new Array();
+		// panel width is non-standard as the default used to be that the size was determined by the video size (or movieSize property if added)
+		const panelWidth = x_currentPageXML.getAttribute("panelWidth") == undefined || (x_currentPageXML.getAttribute("panelWidth") === "" && x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) ? "fixed" : x_currentPageXML.getAttribute("panelWidth") === "" ? "medium" : x_currentPageXML.getAttribute("panelWidth");
+		const attributes = {
+			panelWidth: panelWidth,
+			panelStyle: x_currentPageXML.getAttribute("panelStyle") == undefined ? "true" : x_currentPageXML.getAttribute("panelStyle"), // default is no panel for backwards compatibility
+			fullH: true
+		}
+
+		// if we are using the old way of doing things, splitScreen_A is a fixed width
+		if (panelWidth === "fixed") {
+			$("#pageVideo").addClass("fixedSize");
+			let videoDimensions = [320,240];
+			if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
+				const dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+				if (dimensions[0] != 0 && dimensions[1] != 0) {
+					videoDimensions = dimensions;
+				}
+			}
+			attributes.widthA = videoDimensions[0] + "px";
+		}
+
+		// set up split screen layout
+		XENITH.SPLITSCREEN.init({"attributes": attributes});
+
+		const captionInfo = [];
 
 		// uses data from timedText file if there is one - otherwise use nested page info
 		if (x_currentPageXML.getAttribute("timedText") != "" && x_currentPageXML.getAttribute("timedText") != undefined) {
@@ -78,7 +134,7 @@ var videoSynch = new function() {
 				dataType: "xml",
 				success: function(xml) {
 					$(xml).find("P, p").each(function() {
-						var	$this = $(this);
+						const $this = $(this);
 						captionInfo.push({text:$this.text(), synch:$this.attr("begin"), end:$this.attr("end")});
 					});
 
@@ -88,7 +144,7 @@ var videoSynch = new function() {
 				error: function () {
 					// see if there are any captions in xml to use instead
 					$(x_currentPageXML).children().each(function() {
-						var	$this = $(this);
+						const $this = $(this);
 						captionInfo.push({url:$this.attr("url"), tip:$this.attr("tip"), caption:$this.attr("caption"), align:$this.attr("align"), text:$this.attr("text"), synch:$this.attr("synch")});
 					});
 
@@ -97,9 +153,9 @@ var videoSynch = new function() {
 			});
 
 		} else {
-			var synchPoint = 0;
+			let synchPoint = 0;
 			$(x_currentPageXML).children().each(function() {
-				var	$this = $(this);
+				const $this = $(this);
 				synchPoint = $this.attr("synch")[0] == "+" ? ($.isNumeric($this.attr("synch").slice(1)) ? Number($this.attr("synch").slice(1)) + synchPoint : 0) : Number($this.attr("synch")),
 				captionInfo.push({url:$this.attr("url"), tip:$this.attr("tip"), caption:$this.attr("caption"), align:$this.attr("align"), text:$this.attr("text"), synch:synchPoint});
 			});
@@ -109,12 +165,13 @@ var videoSynch = new function() {
 	}
 
 	this.createCaptions = function(captionInfo) {
-		var	captions = new Array();
+		$pageContents.data("captionInfo", captionInfo);
+		const captions = [];
 
 		$(captionInfo).each(function() {
-			var	$this = $(this),
-				imgStr = "",
-				divString;
+			const $this = $(this);
+			let imgStr = "";
+			let divString;
 
 			if ($this.attr("url") != undefined && $this.attr("url") != "") {
 				imgStr += '<div class="myImg">';
@@ -138,13 +195,13 @@ var videoSynch = new function() {
 				divString = x_addLineBreaks($this.attr("text")) + imgStr;
 			}
 
-			var $caption = $('<div tabindex="0"></div>')
+			const $caption = $('<div tabindex="0"></div>')
 					.data({
 						"synch": $this.attr("synch"),
 						"content": divString
 					});
 
-			$infoHolder.append($caption);
+			$infoHolder.find("#panel").append($caption);
 
 			captions.push($caption[0]);
 		});
@@ -157,26 +214,27 @@ var videoSynch = new function() {
 				this.scrollIntoView(true);
 			})
 			.keypress(function(e) {
-				var charCode = e.charCode || e.keyCode;
+				const charCode = e.charCode || e.keyCode;
 				if (charCode == 32) {
 					$(this).trigger("click");
 				}
 			});
 
-		var $pageVideo = $("#pageVideo"),
+		let videoDimensions = ["100%","100%"];
+		if ($("#pageVideo").hasClass("fixedSize")) {
 			videoDimensions = [320,240];
-
-		if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
-			var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
-			if (dimensions[0] != 0 && dimensions[1] != 0) {
-				videoDimensions = dimensions;
+			if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
+				const dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+				if (dimensions[0] != 0 && dimensions[1] != 0) {
+					videoDimensions = dimensions;
+				}
 			}
 		}
 
-		var videoSrc = x_currentPageXML.getAttribute("url");
-		$pageVideo.data({
-			"src"			:videoSrc,
-			"dimensions"	:videoDimensions
+		const videoSrc = x_currentPageXML.getAttribute("url");
+		$("#pageVideo").data({
+			"src": videoSrc,
+			"dimensions" :videoDimensions
 		});
 
 		this.popcornInstance = loadMedia($("#pageVideo"), "video",
@@ -196,37 +254,28 @@ var videoSynch = new function() {
 		}, true);
 
 		this.addEvents(this.popcornInstance);
-		resizeEmbededMedia($(".popcornMedia.embed"), {width: videoDimensions[0], height: videoDimensions[1]})
-		
 		this.sizeChanged();
 		
 		// Show captions that should happen before the first timeupdate.
-		var $captionAtStart = $($pageContents.data("captions")).filter( function(){ return $(this).data("synch") == 0; });
+		const $captionAtStart = $($pageContents.data("captions")).filter( function(){ return $(this).data("synch") == 0; });
 		$captionAtStart.each(function() {
 			$(this)
 				.html($(this).data("content"))
 				.addClass("shown");
 		});
 
-		if (x_browserInfo.mobile == false) {
-			$pageContents.css("padding-left", Number($pageVideo.data("dimensions")[0]) + (parseInt($("#videoHolder .panel").css("padding-left")) * 2));
-			$("#videoHolder").width($pageContents.css("padding-left"));
-		} else {
-			$pageContents.find(".panel").addClass("inline");
-		}
-
 		x_pageLoaded();
 	}
 
 	this.addEvents = function(popcornInstance) {
 		popcornInstance.on( "timeupdate", function() {
-			var $captions 	= $($pageContents.data("captions")),
-			pause 		= x_currentPageXML.getAttribute("pause"),
-			erase    	= x_currentPageXML.getAttribute("erase"),
-			pop 		= videoSynch.popcornInstance;
+			const $captions = $($pageContents.data("captions"));
+			const pause = x_currentPageXML.getAttribute("pause");
+			const erase = x_currentPageXML.getAttribute("erase");
+			const pop = videoSynch.popcornInstance;
 
 			$captions.each(function(){
-				var $thisCaption = $(this);
+				const $thisCaption = $(this);
 				if (erase == "False") {
 					if (pop.currentTime() > $thisCaption.data("synch")) {
 						if ($thisCaption.html() === "") {
@@ -295,15 +344,17 @@ videoSynch.init();
 </script>
 
 
-<div id="pageContents" class="splitScreen">
+<div id="pageContents">
 	
-	<div id="videoHolder" class="left">
-		<div class="panel">
+	<div id="videoHolder" class="splitScreen_A">
+		<div class="videoPanel panel">
 			<div id="pageVideo"></div>
 		</div>
 		<div id="mainText"></div>
 	</div>
 	
-	<div id="infoHolder" class="right"></div>
+	<div id="infoHolder" class="splitScreen_B">
+		<div id="panel" class="panelContent panel"></div>
+	</div>
 	
 </div>

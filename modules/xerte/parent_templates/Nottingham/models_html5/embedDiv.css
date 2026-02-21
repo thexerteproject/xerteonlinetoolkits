@@ -3,11 +3,8 @@
 #iFrame {
 	background-color: white;
 	display: block;
-}
-
-.centre iframe {
-	margin:		0 auto;
-	display:	block;
+	width: 100%;
+	height: 100%;
 }
 
 #x_mainHolder.x_mobile #iFrame {

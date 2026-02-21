@@ -24,20 +24,20 @@
 				$attempts,
 				$answer,
 				$textArea;
-			
+
             this.pageChanged = function() {
 				$pageContents = $('#pageContents');
 				$attempts = $("#attempts");
 				$answer = $("#answer");
-				$textArea = $(".answer textarea");
+				$textArea = $(".answer #text");
             };
 
             this.sizeChanged = function() {
-                const $panel = $("#pageContents .panel");
-                $panel.height(x_getAvailableHeight([$panel]));
+                // panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+                const panelH = XENITH.SPLITSCREEN.resizePanel();
 
-                var $mainPanel = $("#mainPanel");
-                var padding = $mainPanel.innerWidth() - $mainPanel.width();
+                // this will be used later when showing feedback - it is done differently depending on whether content is centred vertically on the page & whether panel is full height
+                $("#pageContents").data("slideIn", x_checkVerticalCentre() && panelH === false);
             };
 
             this.leavePage = function () {
@@ -61,7 +61,7 @@
                 }else{
                     result = 0;
                 }
-				
+
                 XTExitInteraction(x_currentPage, 0, result,[], input, []);
                 XTSetPageScore(x_currentPage, result);
             };
@@ -71,7 +71,7 @@
 				$attempts = $("#attempts");
 				$answer = $("#answer");
 				$textArea = $(".answer textarea");
-				
+
 				$pageContents.data('hasExited', false)
 
                 var weighting = 1.0;
@@ -80,43 +80,15 @@
                 }
                 XTSetPageType(x_currentPage, "numeric", 1, weighting);
 
-				// page layout
-                var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
-                    $splitScreen = $("#pageContents .splitScreen");
-                var $textHolder = $("#textHolder");
+                $("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("introduction")));
 
-                if (panelWidth == "Full") {
-                    $("#pageContents .panel").appendTo($pageContents);
-                    $splitScreen.remove();
-                } else {
-                    $textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("introduction")));
-
-                    var textAlign = x_currentPageXML.getAttribute("align");
-                    if (textAlign != "Right") {
-                        if (panelWidth == "Small") {
-                            $splitScreen.addClass("large");
-                        } else if (panelWidth == "Large") {
-                            $splitScreen.addClass("small");
-                        } else {
-                            $splitScreen.addClass("medium");
-                        }
-                    } else {
-                        $textHolder
-                            .removeClass("left")
-                            .addClass("right")
-                            .appendTo($splitScreen);
-                        $("#infoHolder")
-                            .removeClass("right")
-                            .addClass("left");
-                        if (panelWidth == "Small") {
-                            $splitScreen.addClass("medium");
-                        } else if (panelWidth == "Large") {
-                            $splitScreen.addClass("xlarge");
-                        } else {
-                            $splitScreen.addClass("large");
-                        }
-                    }
+                // panel position data is reversed as the property used to be called 'Align text' rather than 'Panel position'
+                // send amended data to split screen function as otherwise layout will be reversed
+                const attributes = {
+                    panelPosition: x_currentPageXML.getAttribute("align") !== "Right" ? "Right" : "Left"
                 }
+                // set up split screen layout
+                XENITH.SPLITSCREEN.init({"attributes": attributes});
 
                 var $question = $("#question");
 				var originalQuestion = $('<div>').html(x_currentPageXML.getAttribute("wrongText")).text().trim();
@@ -128,19 +100,19 @@
 				if (x_currentPageXML.getAttribute("disableAnswers") !== "false") {
 					var correctLabel = x_currentPageXML.getAttribute("correctLabel") !== null ? x_currentPageXML.getAttribute("correctLabel") : 'Correct Answer',
 						convertedAnswer = '<p>' + answer.replace(/(?:\r\n|\r|\n)/g, '<br>') + '</p>';
-					
+
 					$answer.data("fb", "<h3 class='fbLabel'>" + correctLabel + "</h3>" + convertedAnswer);
 				} else {
 					$answer.remove();
 				}
-				
+
 				//Add aria-label to answer box
 				var answerFieldLabel = x_currentPageXML.getAttribute("answerLabel");
 				if (answerFieldLabel === undefined | answerFieldLabel === null) {
 					answerFieldLabel = "Answer";
 				}
 				$textArea.attr({"aria-label" : answerFieldLabel});
-			
+
                 if(x_currentPageXML.getAttribute("copyText") === "true"){
 					var placeHolder = $('<div>').html(originalQuestion).text().trim();
                     $textArea
@@ -157,14 +129,14 @@
                 var correct = '<p>' + correctIcon + x_currentPageXML.getAttribute("textRight") + '</p>';
                 var checkButtonTxt = x_currentPageXML.getAttribute("checkBtn");
                 var attemptLabel = x_currentPageXML.getAttribute("attemptLabel");
-				
+
                 if( x_currentPageXML.getAttribute("attemptLabel") == null){
                     attemptLabel = "Attempts remaining";
                 }
-				
+
 				// no. of tries allowed
 				var amountOfTries = x_currentPageXML.getAttribute("amountOfTries");
-				
+
 				if (amountOfTries !== null && amountOfTries !== undefined) {
 					$pageContents.data('triesLeft', parseInt(amountOfTries));
 					$attempts.html('<p>' + attemptLabel + ": " + amountOfTries + '</p>');
@@ -172,38 +144,37 @@
 					$pageContents.data('triesLeft', undefined);
 					$attempts.remove();
 				}
-				
+
                 $("#checkButton")
-                    .button({
-                        label: checkButtonTxt
-                    })
+                    .button({ label: checkButtonTxt })
                     .click(function () {
-						
+                        $(this).button("disable");
+
                         var input = $textArea.val(),
 							attemptMade = !(input === "" || ($textArea.data('placeHolder') != undefined && $textArea.data('placeHolder') == input));
-						
+
 						if (attemptMade && $pageContents.data('triesLeft') !== undefined) {
 							$pageContents.data('triesLeft', $pageContents.data('triesLeft') - 1);
 						}
-						
+
 						var triesLeft = $pageContents.data('triesLeft');
 
 						if ($attempts.length > 0) {
 							$attempts.html('<p>' + attemptLabel + ": " + $pageContents.data('triesLeft') + '</p>');
 						}
-                        var label=x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("introduction"), "");
+                        var label=x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("wrongText"), "");
                         if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
                         {
                             label = x_currentPageXML.getAttribute("trackinglabel");
                         }
                         XTEnterInteraction(x_currentPage, 0, "text", label, "",$pageContents.data('answer'), x_currentPageXML.getAttribute("FurtherClarification"));
-						
+
 						var $correctOrNot = $("#correctOrNot");
                         $correctOrNot.html("");
-						
+
 						if (!attemptMade) {
 							$correctOrNot.append(incompleet);
-							
+
 						} else {
 							if (input == $pageContents.data('answer')) {
 								$correctOrNot.append(correct);
@@ -216,26 +187,58 @@
 						}
 
                         if (attemptMade && (input === $pageContents.data('answer') || triesLeft == undefined || triesLeft <= 0)) {
-							// disable check btn & text area when correct answer entered or max tries reached
+							// disable text area when correct answer entered or max tries reached
 							if ((triesLeft != undefined && triesLeft <= 0) || input == $pageContents.data('answer')) {
-								$(this).hide();
-								$attempts.hide();
 								$textArea.attr('readonly','true');
 							}
-
-                            // show the correct answer unless answer entered is correct or show answer optional property is off
-                            if (input !== $pageContents.data('answer')) {
-                                $answer.html($answer.data("fb"));
-                            }
 
 							// feedback
                             if (x_currentPageXML.getAttribute("showFurtherClarification") !== "false" && x_currentPageXML.getAttribute("FurtherClarification") != undefined && x_currentPageXML.getAttribute("FurtherClarification").trim() != '') {
                                 $('#FurtherClarification').html($('#FurtherClarification').data("fb"));
                             }
+
+                            // show the correct answer unless answer entered is correct or show answer optional property is off
+                            if (input !== $pageContents.data('answer')) {
+                                $answer.html($answer.data("fb"));
+                            }
+                        }
+
+                        $("#fbBlock").children().each(function() {
+                            if ($(this).html() !== "") {
+                                $(this).show();
+                            } else {
+                                $(this).hide();
+                            }
+                        });
+
+                        if ($("#fbBlock").children().filter(function () { return $(this).css("display") !== "none"; }).length > 0) {
+                            if ($("#pageContents").data("slideIn")) {
+                                $("#fbBlock").slideDown();
+                            } else {
+                                $("#fbBlock").show();
+                            }
                         }
                     });
-					
+
+                $("#checkButton").button("disable");
+
+                $textArea
+                    .on('input', function() {
+                        $("#checkButton").button("enable");
+
+                        // to avoid a sudden jump in layout, feedback should slide back up gradually if content is centred vertically & panel is full height
+                        if ($("#pageContents").data("slideIn")) {
+                            $('#fbBlock').slideUp();
+                        } else {
+                            $("#fbBlock").hide();
+                            $('#FurtherClarification, #correctOrNot, #answer').html("").hide();
+                        }
+                    });
+
                 this.sizeChanged();
+
+                $("#fbBlock").hide();
+                $("#fbBlock").children().hide();
 
                 x_pageLoaded();
             }
@@ -248,24 +251,23 @@
 
 
 <div id="pageContents">
-    <div class="splitScreen">
-        <div id="textHolder" class="left"></div>
-        <div id="infoHolder" class="right">
-            <div id="mainPanel" class="panel" tabindex="0">
-                <div id="question">
 
-                </div>
-                <div id="optionHolder">
-                    <div class="answer"><textarea id="text" rows="5" cols="50" spellcheck="false"></textarea></div>
-                </div>
-                <button id="checkButton"></button>
-                <div id="fbBlock" aria-live="polite">
-                    <div id="attempts"></div>
-                    <div id="correctOrNot"></div>
-                    <div id="answer"></div>
-                    <div id="FurtherClarification"></div>
-                </div>
+    <div id="textHolder" class="splitScreen_A"></div>
+
+    <div id="infoHolder" class="splitScreen_B">
+        <div id="mainPanel" class="panelContent panel" tabindex="0">
+            <div id="question"></div>
+            <div id="optionHolder">
+                <div class="answer"><textarea id="text" rows="5" cols="50" spellcheck="false"></textarea></div>
+            </div>
+            <button id="checkButton"></button>
+            <div id="attempts"></div>
+            <div id="fbBlock" aria-live="polite">
+                <div id="correctOrNot"></div>
+                <div id="answer"></div>
+                <div id="FurtherClarification"></div>
             </div>
         </div>
     </div>
+
 </div>

@@ -45,7 +45,7 @@
 		float: right;
 	}
 
-	.panel {
+	.leftPanel.panel, panelContent.panel {
 		overflow: auto;
 	}
 	

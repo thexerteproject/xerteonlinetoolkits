@@ -21,73 +21,35 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var dialog = new function() {
-		var casesensitive,
-		tick = x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct"),
-		correctAnswers = 0;
-
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			// reset questions
-			$("#pageContents").data("currentQ", 0);
-			$("#submitBtn")
-				.button({label:	$("#pageContents").data("submitTxt")})
-				.data({
-					"attempt":	0,
-					"state":	0
-				})
-				.show();
-
-			$("#pageContents .result")
-				.addClass("hidden")
-				.parent().find(".tickTxt").html("");
-			
-			$("#pageContents input")
-				.prop("readonly", false)
-				.val("");
-			$("#pageContents .question:first input").focus();
-			$("#pageContents .question:not(:first)").hide();
-			$("#feedback").html("");
 		}
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $("#pageContents .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
+
+			// this will be used later when showing feedback - it is done differently depending on whether content is centred vertically on the page & whether panel is full height
+			$("#pageContents").data("slideIn", x_checkVerticalCentre() && panelH === false);
 		}
 
 		this.init = function() {
+			let weighting = x_currentPageXML.getAttribute("trackingWeight") != undefined ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
+			if (x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
+				weighting = 0.0;
+			}
+            XTSetPageType(x_currentPage, 'numeric', $(x_currentPageXML).children().length, weighting);
 
-			this.weighting = 1.0;
-            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
-            {
-                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
-            }
-			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
-				this.weighting= 0.0;
-			}
-			
-            XTSetPageType(x_currentPage, 'numeric', $(x_currentPageXML).children().length, this.weighting);
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			if (panelWidth == "Full") {
-				$("#pageContents .right div:first").appendTo($("#pageContents"));
-				$("#pageContents .splitScreen").remove();
-			} else {
-				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				if (panelWidth == "Small") {
-					$("#pageContents .splitScreen").addClass("large");
-				} else if (panelWidth == "Medium") {
-					$("#pageContents .splitScreen").addClass("medium");
-				} else {
-					$("#pageContents .splitScreen").addClass("small");
-				}
-			}
-			
-			casesensitive = x_currentPageXML.getAttribute("casesensitive") != "true" && x_currentPageXML.getAttribute("casesensitive") != "1" ? false : true;
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init();
+
 			var answerDelimeter = x_currentPageXML.getAttribute("answerDelimeter");
 			if (answerDelimeter == undefined) {
 				answerDelimeter = ",";
 			}
-
 
 			// if language attributes aren't in xml will have to use english fall back
 			var tryTxt = x_currentPageXML.getAttribute("tryTxt");
@@ -109,10 +71,12 @@
 
 			$("#pageContents").data({
 				"currentQ"	:0,
+				"correctAnswers": 0,
 				"tryTxt"	:tryTxt,
 				"correctTxt":correctTxt,
 				"submitTxt"	:submitTxt,
-				"nextTxt"	:nextTxt
+				"nextTxt"	:nextTxt,
+				"casesensitive": x_currentPageXML.getAttribute("casesensitive") != "true" && x_currentPageXML.getAttribute("casesensitive") != "1" ? false : true
 			});
 
 			var $question = $("#pageContents .question:first");
@@ -171,7 +135,7 @@
 							if (correctAnswer.indexOf(answerDelimeter) != -1) {
 								var splitAnswers = correctAnswer.split(answerDelimeter);
 								for (var i=0; i<splitAnswers.length; i++) {
-									if (casesensitive) {
+									if ($("#pageContents").data("casesensitive")) {
 										if ($.trim($thisInput.val()) == $.trim(splitAnswers[i])) {
 											isCorrect = true;
 											break;
@@ -185,7 +149,7 @@
 									}
 								}
 							} else {
-									if (casesensitive) {
+									if ($("#pageContents").data("casesensitive")) {
 										if ($.trim($thisInput.val()) == correctAnswer) {
 											isCorrect = true;
 										}
@@ -205,9 +169,9 @@
 								if(judge) {
 									$thisInput.parent().find(".result")
 										.removeClass("hidden")
-										.parent().find(".tickTxt").html(tick);
+										.parent().find(".tickTxt").html(x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct"));
 								}
-								
+
 								$feedback.html("");
 								$this.focus();
 								if (qNo + 1 != $(x_currentPageXML).children().length) {
@@ -215,7 +179,11 @@
 										.button({label:	$pageContents.data("nextTxt")})
 										.data("state", 1);
 								} else {
-									$this.hide();
+									if ($("#pageContents").data("slideIn")) {
+										$this.slideUp(200);
+									} else {
+										$this.hide();
+									}
 								}
 								let result = {
 									success: true,
@@ -223,13 +191,13 @@
 									judge: judge
 								}
 								XTExitInteraction(x_currentPage, qNo, result, null/* ignored for fill-in*/, userAnswer, null/*not used*/);
-								correctAnswers += 1;
+								$pageContents.data("correctAnswers", $pageContents.data("correctAnswers") + 1);
 								if($pageContents.data("currentQ")+1 == $(x_currentPageXML).children().length){
-									XTSetPageScore(x_currentPage, 100 * (correctAnswers / $(x_currentPageXML).children().length), x_currentPageXML.getAttribute("trackinglabel"));
+									XTSetPageScore(x_currentPage, 100 * ($pageContents.data("correctAnswers") / $(x_currentPageXML).children().length), x_currentPageXML.getAttribute("trackinglabel"));
 								}
 								if(!judge){
 									$feedback.html("");
-							$("#pageContents .question:eq(" + ($pageContents.data("currentQ") + 1) + ")").fadeIn();
+									$("#pageContents .question:eq(" + ($pageContents.data("currentQ") + 1) + ")").fadeIn();
 									$this
 										.data({
 											"attempt": 0,
@@ -270,7 +238,11 @@
 											.data("state", 1);
 										$feedback.html($feedback.html());
 									} else {
-										$this.hide();
+										if ($("#pageContents").data("slideIn")) {
+											$this.slideUp(200);
+										} else {
+											$this.hide();
+										}
 									}
 									let result = {
 										success: false,
@@ -279,15 +251,20 @@
 									};
 									XTExitInteraction(x_currentPage, qNo, result, null/* ignored for fill-in*/, userAnswer, null/*not used*/);
 									if($pageContents.data("currentQ")+1 == $(x_currentPageXML).children().length){
-										XTSetPageScore(x_currentPage, 100 * (correctAnswers / $(x_currentPageXML).children().length), x_currentPageXML.getAttribute("trackinglabel"));
+										XTSetPageScore(x_currentPage, 100 * ($pageContents.data("correctAnswers") / $(x_currentPageXML).children().length), x_currentPageXML.getAttribute("trackinglabel"));
 									}
 								} else { // another attempt allowed
 									$feedback.html($pageContents.data("tryTxt"));
 								}
 							}
 						} else { // move to next question
-							$feedback.html("");
-							$("#pageContents .question:eq(" + ($pageContents.data("currentQ") + 1) + ")").fadeIn();
+							if ($("#pageContents").data("slideIn")) {
+								$("#pageContents .question:eq(" + ($pageContents.data("currentQ") + 1) + ")").slideDown();
+							} else {
+								$feedback.html("");
+								$("#pageContents .question:eq(" + ($pageContents.data("currentQ") + 1) + ")").fadeIn();
+							}
+
 							$this
 								.data({
 									"attempt":	0,
@@ -296,10 +273,6 @@
 								.button({label:	$("#pageContents").data("submitTxt")});
 							
 							var qNo = $pageContents.data("currentQ");
-							/*$("#pageContents .question:eq(" + qNo + ") .result")
-								.removeClass("hidden")
-								.parent().find(".tickTxt").html(tick);*/
-							
 							$("#pageContents .question:eq(" + (qNo + 1) + ") input").focus();
 							let question = $(x_currentPageXML).children()[qNo+1];
 							let answers = question.getAttribute("answer").split(answerDelimeter);
@@ -342,25 +315,21 @@
 
 <div id="pageContents">
 
-	<div class="splitScreen">
+	<div id="textHolder" class="splitScreen_A"></div>
 
-		<div id="textHolder" class="left"></div>
-
-		<div id="infoHolder" class="right">
-			<div class="panel" tabindex="0">
-				<div id="questionGroup">
-					<div class="question">
-						<label></label>
-						<span class="tickTxt ui-helper-hidden-accessible" aria-live="polite"></span><span class="result fa fa-fw fa-x-tick"></span>
-						<input/>
-					</div>
-
+	<div id="infoHolder" class="splitScreen_B">
+		<div class="panelContent panel" tabindex="0">
+			<div id="questionGroup">
+				<div class="question">
+					<label></label>
+					<span class="tickTxt ui-helper-hidden-accessible" aria-live="polite"></span><span class="result fa fa-fw fa-x-tick"></span>
+					<input/>
 				</div>
-				<button id="submitBtn"></button>
-				<p id="feedback" aria-live="polite"></p>
-			</div>
-		</div>
 
+			</div>
+			<button id="submitBtn"></button>
+			<p id="feedback" aria-live="polite"></p>
+		</div>
 	</div>
 
 </div>

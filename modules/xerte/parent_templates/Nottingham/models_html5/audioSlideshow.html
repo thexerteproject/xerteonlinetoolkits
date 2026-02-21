@@ -21,83 +21,54 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var audioSlideshow = new function() {
-		var loaded,
-			$pageContents;
-		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			$pageContents = $("#pageContents");
-			
-			$("#infoHolder").scrollTop(0);
-			$("#infoHolder .slide")
-				.hide()
-				.filter(function() {return $(this).data("synch") == "0";}).show();
-			
-			this.loadAudio();
+			this.sizeChanged();
 		}
-		
+
 		// function called every time the size of the LO is changed
-		this.sizeChanged = function() {
-			const $panel = $("#pageContents .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
-			$("#infoHolder").height(x_getAvailableHeight([$panel], [x_audioBarH]));
+		this.sizeChanged = function(firstLoad) {
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
+
+			$("#infoHolder").height(x_getAvailableHeight([$("#pageContents .panelContent")], [x_audioBarH]));
 			
-			if (loaded != true) {
+			if (firstLoad === true) {
 				// first load of page - now panel size is set, add slides
 				this.createSlides();
-				loaded = true;
 				
 			} else {
-				// not the 1st load of the page - scale images to new size and reset slides and audio
-				$pageContents.data("mediaElement").setCurrentTime(0);
-				$pageContents.data("count", $pageContents.data("count") + 1);
-				
-				$("#infoHolder .slide")
-					.hide()
-					.filter(function() {return $(this).data("synch") == "0";}).show();
-				
+				$("#pageAudio").hide();
 				this.scaleImages();
-				this.loadAudio();
-				
-				$("#infoHolder").scrollTop(0);
+				$("#pageAudio").show();
+			}
+
+			// panel is full width so height is auto (fits content)
+			// this is done after the images have been scaled to avoid the images being too tall for screen
+			if ($(".splitScreen_B").css("flex-basis") === "100%") {
+				$("#infoHolder").height("unset");
 			}
 		}
 		
 		this.init = function() {
-			$pageContents = $("#pageContents");
-			$pageContents.data("count", 0);
-			
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			if (panelWidth == "Full") {
-				$("#pageContents .panel").appendTo($pageContents);
-				$("#pageContents .splitScreen").remove();
-			} else {
-				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
-				if (panelWidth == "Small") {
-					$("#pageContents .splitScreen").addClass("large"); // make text area on left large so panel on right is small
-				} else if (panelWidth == "Large") {
-					$("#pageContents .splitScreen").addClass("small");
-				} else {
-					$("#pageContents .splitScreen").addClass("medium");
-				}
-			}
-			
-			// erase attribute not used - old slides are always hidden
-			
-			this.sizeChanged();
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init();
+			this.sizeChanged(true);
 		}
 		
 		this.createSlides = function() {
-			var $infoHolder = $("#infoHolder"),
-				synchPoint = 0;
+			const $infoHolder = $("#infoHolder");
+			let synchPoint = 0;
 			
 			$(x_currentPageXML).children().each(function(i){
-				var infoString = this.getAttribute("text") == "" ? "" : '<div class="slideTxt">' + x_addLineBreaks(this.getAttribute("text")) + '</div>',
-					synch = this.getAttribute("synch")[0] == "+" ? ($.isNumeric(this.getAttribute("synch").slice(1)) ? Number(this.getAttribute("synch").slice(1)) + synchPoint : 0) : Number(this.getAttribute("synch")),
-					url = this.getAttribute("url");
+				let infoString = this.getAttribute("text") == "" ? "" : '<div class="slideTxt">' + x_addLineBreaks(this.getAttribute("text")) + '</div>';
+				const synch = this.getAttribute("synch")[0] == "+" ? ($.isNumeric(this.getAttribute("synch").slice(1)) ? Number(this.getAttribute("synch").slice(1)) + synchPoint : 0) : Number(this.getAttribute("synch"));
+				const url = this.getAttribute("url");
 				
 				if (url != undefined && url != "") {
-					var newString = '<div class="pageImg">';
+					let newString = '<div class="pageImg">';
 					if (this.getAttribute("caption") != undefined && this.getAttribute("caption") != "") {
 						newString += '<figure ';
 						if (this.getAttribute("align") != "Bottom") {
@@ -130,9 +101,9 @@
 					}
 				}
 				
-				infoString = (this.getAttribute("name").trim() != '' ? '<h3>' + this.getAttribute("name") + '</h3>' : '') + infoString;
+				infoString = (this.getAttribute("name").trim() != '' ? '<h3 class="slideTitle">' + this.getAttribute("name") + '</h3>' : '') + infoString;
 				
-				var $slide = $('<div class="slide"></div>')
+				const $slide = $('<div class="slide"></div>')
 					.html(infoString)
 					.appendTo($infoHolder)
 					.data("synch", synch);
@@ -170,7 +141,7 @@
 			});
 			
 			setTimeout(function () { // audio doesn't always load properly without a delay here
-				audioSlideshow.loadAudio(true);
+				audioSlideshow.loadAudio();
 			},1);
 
 			$('<div id="slideSrInfo" class="sr-only" aria-live="assertive"></div>').insertAfter("#pageAudio");
@@ -178,23 +149,19 @@
 		
 		// function scales image on visible slide - have to do them individually after slide change as I can't get dimensions of images on hidden slides
 		this.scaleImages = function() {
-			// has img already been scaled to fit this size screen?
-			if ($pageContents.data("count") != $("#infoHolder .pageImg img:visible").data("count")) {
-				var $img = $("#infoHolder .pageImg img:visible"),
-					$infoHolder = $("#infoHolder"),
-					firstScale = false;
-				
-				if ($img.data("count") == undefined) {
-					firstScale = true;
-				}
-				$img.data("count", $pageContents.data("count"));
+			const $img = $("#infoHolder .pageImg img:visible");
+			if ($img.length > 0) {
+				const maxW = $("#infoHolder").get(0).getBoundingClientRect().width;
+				const captionH = $img.parents("figure").length > 0 ? $img.parents("figure").find("figcaption").outerHeight(true) : 0;
+				const titleH = $img.parents(".slide").find(".slideTitle").length > 0 ? $img.parents(".slide").find(".slideTitle").outerHeight(true) : 0;
+				const maxH = $("#infoHolder").get(0).getBoundingClientRect().height - captionH - titleH - ($img.outerHeight(true) - $img.height());
 
-				var captionH = $infoHolder.find(".pageImg img:visible").parents(".pageImg").find("figcaption").length > 0 ? $infoHolder.find(".pageImg img:visible").parents(".pageImg").find("figcaption").outerHeight(true) : 0;
-				x_scaleImg($img, $infoHolder.width() - 20, $infoHolder.height() - captionH - 20, true, firstScale);
-				
+				x_scaleImg($img, Math.floor(maxW), Math.floor(maxH), true, $img.data("origSize") == undefined);
+
 				$img.css({
-					"opacity"	:1,
-					"filter"	:'alpha(opacity=100)'
+					"opacity": 1,
+					"filter": 'alpha(opacity=100)',
+					"max-width": "100%"
 				});
 			}
 
@@ -206,42 +173,40 @@
 			}
 		}
 		
-		this.loadAudio = function(firstLoad) {
-			var soundFile = x_currentPageXML.getAttribute("sound");
+		this.loadAudio = function() {
 			$("#pageAudio").mediaPlayer({
-				type		:"audio",
-				source		:soundFile,
-				pageName	:"audioSlideshow"
+				type: "audio",
+				source: x_currentPageXML.getAttribute("sound"),
+				pageName: "audioSlideshow",
+				width: "100%"
 			});
 			
 			// manually add a transcript button to the end of the audio bar
 			if (x_currentPageXML.getAttribute('soundTranscript') != undefined && x_currentPageXML.getAttribute('soundTranscript') != '') {
 				x_addAudioTranscript($("#pageAudio"), x_currentPageXML.getAttribute('soundTranscript'));
 			}
-			
-			if (firstLoad == true) {
-				x_pageLoaded(); // call this function in every model once everything's loaded
-			}
+
+			x_pageLoaded(); // call this function in every model once everything's loaded
 		}
 		
 		// function called from mediaPlayer.js when audio player has been set up
 		this.mediaFunct = function(mediaElement) {
-			$pageContents.data("mediaElement", mediaElement);
+			$("#pageContents").data("mediaElement", mediaElement);
 
-			var $slides = $("#infoHolder .slide");
+			const $slides = $("#infoHolder .slide");
 			mediaElement.addEventListener("timeupdate", function(e) {
-				var currentTime = mediaElement.currentTime,
-					$visibleSlide;
+				const currentTime = mediaElement.currentTime;
+				let $visibleSlide;
 				
 				$slides.each(function(){
-					var $thisSlide = $(this);
+					const $thisSlide = $(this);
 					if (currentTime > $thisSlide.data("synch")) {
 						$visibleSlide = $thisSlide;
 					}
 				});
 				
 				// fade old caption out and new one in
-				var $currentSlide = $("#infoHolder .slide:visible");
+				const $currentSlide = $("#infoHolder .slide:visible");
 				if ($currentSlide.length > 0) {
 					if ($currentSlide.is($visibleSlide) == false && currentTime != 0) {
 						if (x_currentPageXML.getAttribute("fadeSpeed") == '0') {
@@ -286,18 +251,16 @@
 
 
 <div id="pageContents">
-	
-	<div class="splitScreen">
-		
-		<div id="textHolder" class="left"></div>
-		
-		<div class="right">
-			<div class="panel">
+
+		<div id="textHolder" class="splitScreen_A"></div>
+
+		<div class="splitScreen_B">
+			<div class="panelContent panel">
 				<div id="infoHolder"></div>
 				<div id="pageAudio"></div>
 			</div>
 		</div>
-		
+
 	</div>
 	
 </div>

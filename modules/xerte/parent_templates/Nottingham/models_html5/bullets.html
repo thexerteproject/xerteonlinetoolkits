@@ -22,27 +22,22 @@
 	// other functions for model should also be in here to avoid conflicts
 	var bullets = new function() {
 		let $pageContents;
-		
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $("#pageContents");
-			if (x_currentPageXML.getAttribute("delaySecs") != "0" && x_currentPageXML.getAttribute("delaySecs") != undefined && $(".bullet").length > 1) {
-				$(".bullet").hide();
-				$(".bullet:eq(0)").show();
-				$pageContents.data("currentBullet", 1);
 
-				// reset button states if needed
-				if ($("#btnHolder").length > 0) {
-					$pageContents.data("playing", true);
-					$("#playPauseBulletBtn").button({
-						icons: {primary: "fa fa-fw fa-x-pause"},
-						label: x_currentPageXML.getAttribute("pauseBtn") && x_currentPageXML.getAttribute("pauseBtn") != "" ? x_currentPageXML.getAttribute("pauseBtn") : "Pause",
-					});
-					$("#backBulletBtn").button("disable");
-					$("#nextBulletBtn").button("enable");
-				}
+			if ($pageContents.data("resumePlaying")) {
+				$("#playPauseBulletBtn").click();
+			}
+		}
 
-				bullets.timer();
+		this.leavePage = function() {
+			if ($pageContents.data("playing") === true) {
+				$("#playPauseBulletBtn").click();
+				$pageContents.data("resumePlaying", true);
+			} else {
+				$pageContents.data("resumePlaying", false);
 			}
 		}
 		
@@ -62,11 +57,11 @@
 				$(".bullet").show();
 
 				// ensure panel is not too tall & therefore buttons are always visible
-				const $panel = $("#pageContents.panel");
+				const $panel = $(".panelContent");
 				$holder.css({"min-height": "", "max-height": ""});
 				$panel.css("max-height", "");
-				$panel.css("max-height", x_getAvailableHeight([$("#pageContents.panel")], [], true));
-				$holder.css("max-height", x_getAvailableHeight([$("#pageContents.panel"), $holder], [$("#btnHolderInner")], true));
+				$panel.css("max-height", x_getAvailableHeight([$(".panelContent")], [], true));
+				$holder.css("max-height", x_getAvailableHeight([$(".panelContent"), $holder], [$("#btnHolderInner")], true));
 				$holder.css("min-height", $holder.height());
 
 				$(".bullet").each(function () {
@@ -80,21 +75,24 @@
 		this.init = function() {
 			$pageContents = $("#pageContents");
 			const $holder = $("#holder")
-			
-			if (x_currentPageXML.getAttribute("showPanel") != "0") {
-				$pageContents.addClass("panel");
+
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// send amended data to split screen function
+			const attributes = {};
+
+			// 'remove panel style' used to be controlled with 'display panel' property - use this old property if it exists
+			if (x_currentPageXML.getAttribute("showPanel") === "0" || x_currentPageXML.getAttribute("showPanel") === "1") {
+				attributes.panelStyle = x_currentPageXML.getAttribute("showPanel") === "0" ? "true" : "false";
 			}
-			
-			if (x_browserInfo.mobile == false) {
-				const panelW = x_currentPageXML.getAttribute("panelWidth");
-				if (panelW == "Small") {
-					$pageContents.addClass("width40");
-				} else if (panelW == "Medium") {
-					$pageContents.addClass("width60");
-				} else if (panelW == "Large") {
-					$pageContents.addClass("width80");
-				} // else full width
+			if (x_currentPageXML.getAttribute("panelWidth") == undefined) {
+				attributes.panelWidth = "Full"; // fall back to full width if not set
+			} else if (x_currentPageXML.getAttribute("panelWidth") !== "Full" && x_currentPageXML.getAttribute("align") == undefined) {
+				attributes.panelPosition = "Left"; // fall back to left if not set
 			}
+
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
             /**
              * Bullet pages in the Flash editor were separated with <br /> tags
@@ -146,14 +144,14 @@
 				$holder.append(contentsStr);
 			}
 			
-			if (x_currentPageXML.getAttribute("showPanel") != "0") {
+			if (x_currentPageXML.getAttribute("showPanel") === "1" || (x_currentPageXML.getAttribute("showPanel") == undefined || x_currentPageXML.getAttribute("panelStyle") !== "false")) {
 				$holder.css("min-height", $holder.height()); // force height otherwise panel shrinks when bullets are hidden
 			}
 
 			// the bullets are gradually shown, one item at a time
 			if (x_currentPageXML.getAttribute("delaySecs") != "0" && x_currentPageXML.getAttribute("delaySecs") != undefined && $(".bullet").length > 1) {
 				// add buttons to allow the user to control the fade in animations
-				$pageContents.append('<div id="btnHolder"><div id="btnHolderInner"></div></div>');
+				$(".panelContent").append('<div id="btnHolder"><div id="btnHolderInner"></div></div>');
 				const $btnHolderInner = $("#btnHolderInner");
 
 				// button hides the last shown bullet point
@@ -313,9 +311,14 @@
 	
 </script>
 
-
 <div id="pageContents">
-	
-	<div id="holder"></div>
-	
+
+	<div id="textHolder" class="splitScreen_A"></div>
+
+	<div class="splitScreen_B">
+		<div class="panelContent panel">
+			<div id="holder"></div>
+		</div>
+	</div>
+
 </div>

@@ -1,7 +1,8 @@
 <wizard menus="Media">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <media360><![CDATA[<media360 name="Enter Page Title" text="" size="large" position="right"
+      <media360><![CDATA[<media360 name="Enter Page Title" text=""
+      size="large" panelWidthCustom="50" position="right" panelStyle="false" removeTxt="false"
 	  zoomInTxt="Zoom in" zoomOutTxt="Zoom out" fullScreenTxt="Full screen toggle"  sceneMenuTxt="Scene menu"
 	  pageError="Destination page not found"
 	  lockLabel="Password:" lockSubmit="Submit" lockPswdWrong="Incorrect password"
@@ -13,11 +14,27 @@
   <media360 menu="Media" menuItem="360&#176; Image" hint="An interaction allowing you to mark up a 360&#176; image with hotspots. Can be used to create tours of linked images." icon="ic360" thumb="thumbs/image360.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#image360" wiki="https://xerte.org.uk/wiki/doku.php?id=media_360_image_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="250" placeholder="Enter text for the page here"/>
-	<size label="Image Size" options="Small,Medium,Large,Full" type="ComboBox"  data="small,medium,large,full" width="200"/>
-	<position label="Image Position" options="Left,Right" type="ComboBox" data="left,right" defaultValue="right" width="100"/>
-	
-	<sceneMenu label="Scene Menu" type="CheckBox" defaultValue="true" optional="true" tooltip="Show list of links to each scene at the top of the image viewer. Exclude scenes from this list by adding the 'Hide Scene' optional property."/>
+	<text label="Page Text" type="TextArea" height="150" placeholder="Enter text for the page here" condition="size!='full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
+
+	<layoutGroup label="Page Layout" type="group">
+		<size label="Image Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="small,medium,large,full,custom" defaultValue="medium" conditionTrigger="true"/>
+	  	<panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="size=='custom'"/>
+	  	<position label="Image Position" options="Right,Left" type="ComboBox" data="right,left" defaultValue="right" condition="size!='full'"/>
+	  	<panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="false"/>
+	  	<removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="size=='full'"/>
+  	</layoutGroup>
+
+  	<textTopGroup label="Text Above Panel" type="group" optional="true">
+	  	<textTop label="Text" type="TextArea" height="100" optional="true"/>
+	  	<textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="size!='full'"/>
+  	</textTopGroup>
+
+  	<textBelowGroup label="Text Below Panel" type="group" optional="true">
+	  	<textBottom label="Text" type="TextArea" height="100" optional="true"/>
+	  	<textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="size!='full'"/>
+  	</textBelowGroup>
+
+  	<sceneMenu label="Scene Menu" type="CheckBox" defaultValue="true" optional="true" tooltip="Show list of links to each scene at the top of the image viewer. Exclude scenes from this list by adding the 'Hide Scene' optional property."/>
 	
 	<lockIcon label="Locked Hotspot Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-lock" optional="true" tooltip="The icon used on locked hotspots"/>
 	

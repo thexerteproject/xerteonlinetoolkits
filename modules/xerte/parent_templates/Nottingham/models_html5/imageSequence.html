@@ -25,7 +25,7 @@
 		
 		var allCases = [],
 			currentView = 1, // no. of series currently being viewed
-			imgNum = 0, // which image is currently being targetted?
+			imgNum = 0, // which image is currently being targeted?
 			lastLoaded, // which image was most recently loaded?
 			
 			currentCase = false,
@@ -225,8 +225,9 @@
 								$("#viewHolder").show();
 								
 							// if current series is clicked (when only 1 series in view), remove series from view & show case text again (if there is some)
-							} else if (currentView == 1 && allCases[currentCase].text != undefined && allCases[currentCase].text != '') {
-								$('#seriesHolderInner .thumbs.selected')
+							} else if (currentView == 1 && ((allCases[currentCase].text != undefined && allCases[currentCase].text != '') ||
+									(allCases.length == 1 && x_currentPageXML.getAttribute('forceText') == "true" && x_currentPageXML.getAttribute('text') != undefined && x_currentPageXML.getAttribute('text') != ''))) {
+									$('#seriesHolderInner .thumbs.selected')
 										.removeClass('selected')
 										.find('.srSelectTxt').html('');
 								currentSeries.splice(imgNum, 1, false);
@@ -254,7 +255,7 @@
 					}
 					
 					// if no case text then just show 1st series straight away (this could be more than one if allowed)
-					if ($('#mainTxt .caseTxt').length == 0 && seriesDeepLink != true) {
+					if ($('#mainTxt .caseTxt, #mainTxt .pageTxt').length == 0 && seriesDeepLink != true) {
 						for (var i=0; i<currentView; i++) {
 							$('#seriesHolderInner .thumbs:eq(' + i + ')').click();
 						}
@@ -348,7 +349,7 @@
 				
 				// not previously viewed so preload all images in series
 				if (thisSeries.viewed == false) {
-					$textHolder.find('#loadMsg').html('<div class="panel">' + loadTxt + '<div class="loadMsgSpinner fa-3x"><i class="fas fa-spinner fa-spin"></i><div></div>').show();
+					$textHolder.find('#loadMsg').html('<div class="panelContent panel">' + loadTxt + '<div class="loadMsgSpinner fa-3x"><i class="fas fa-spinner fa-spin"></i><div></div>').show();
 					preloadImgs(imgs[imgPos], function(){
 						imageSequence.initialiseViewer(thisSeries, imgPos);
 					});
@@ -370,7 +371,7 @@
 				$imgHolder.find('.imgs').empty();
 				$imgHolder.find('.resetBtn').hide();
 				
-				$textHolder.find('#loadMsg').html('<div class="panel">' + x_currentPageXML.getAttribute("load") + '<div class="fa-3x"><i class="fas fa-spinner fa-spin"></i><div></div>').show();
+				$textHolder.find('#loadMsg').html('<div class="panelContent panel">' + x_currentPageXML.getAttribute("load") + '<div class="fa-3x"><i class="fas fa-spinner fa-spin"></i><div></div>').show();
 				$textHolder.find('#mainTxt').html('').show();
 				
 				var $thisImg = $('<img class="singleImg x_noLightBox" id="img_0" alt="' + thisSeries.tooltip + '">');
@@ -705,6 +706,11 @@
 					txtString += '<h3 class="' + type + 'Title">' + info.name + '</h3>';
 				}
 				txtString += '<div class="' + type + 'Txt">' + info.text + '</div>';
+			}
+
+			// if just one case then page text may also be shown
+			if (type == "case" && allCases.length == 1 && x_currentPageXML.getAttribute('forceText') == "true" && x_currentPageXML.getAttribute('text') != undefined && x_currentPageXML.getAttribute('text') != '') {
+				txtString = '<div class="pageTxt">' + x_currentPageXML.getAttribute('text') + '</div>' + txtString;
 			}
 			
 			if ($target == 'lightbox') {

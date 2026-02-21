@@ -210,9 +210,9 @@ div.infoHolder.ui-tabs.ui-widget.ui-widget-content.ui-corner-all{
   background-color: transparentize($lightestcolor, .6) !important;
 }
 .x_dragDropLabel_page #infoHolder{
-  padding:20px;
+  /*padding:20px;
   margin-right:20px;
-  background:$contrastcolor;
+  background:$contrastcolor;*/
 }
 .x_dragDropLabel_page .label.panel{
   background:transparentize($lightestcolor, .1 )!important;
@@ -286,7 +286,7 @@ a.hotspot, a.hotspot.selected {
   background: none;
 }
 .hsinfo{
-  padding:1%;
+  /*padding:1%;*/
 }
 .x_hotspotImage_page #infoHolder {
   background: none;
@@ -490,4 +490,22 @@ table.headerCol.shaded td.header {
   color: $mainfontcolour;
   background: $defaultpagebackground;
   border-color: $contrastcolor;
+}
+
+.x_nav_page #pageContents.tab #infoHolder {
+  border-radius:$mediumroundedcorners;
+  background: $contrastcolor;
+}
+
+//*****compare images*****/
+.x_imageCompare_page #slider {
+  background-color: $panelbordercolor;
+}
+
+.x_imageCompare_page #slider_handle {
+  background-color: $defaultpagebackground;
+}
+
+.x_imageCompare_page #slider_handle i {
+  color: $mainfontcolour;
 }

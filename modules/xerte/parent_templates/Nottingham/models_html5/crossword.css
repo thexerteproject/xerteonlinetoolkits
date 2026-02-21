@@ -187,7 +187,7 @@
 	 float: right;
  }
  
- .panel #showButton{
+ .panelContent.panel #showButton{
 	 float: none;
  }
 

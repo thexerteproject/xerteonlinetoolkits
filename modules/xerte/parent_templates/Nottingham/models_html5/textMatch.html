@@ -17,6 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var textMatch = new function() {
@@ -32,6 +33,20 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
+
+			// when panel is a fills space rather than fits content the labels only stay in correct place on scroll if panel has position relative
+			if ($("#panel")[0].style.height !== "" && $(".splitScreen_B").css("flex-basis") !== "100%") {
+				$("#panel").addClass("scrollable");
+			} else {
+				$("#panel").removeClass("scrollable");
+			}
+
+			// scroll up so recaculations of label position are correct
+			$("#x_pageHolder")[0].scrollTo(0,0);
+			$("#panel")[0].scrollTo(0,0);
+
 			// label width should be same width as part 1 of sentence and target height should fit largest label
 			var $target = $("#targetHolder .target");
 			$target.css("height", "auto");
@@ -104,22 +119,29 @@
         }
 		
 		this.init = function() {
+
+			$("#mainTextHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("pageText")));
+
+			// send amended data to split screen function dues to defaults being different for old projects
+			const attributes = {
+				pageTxt: x_currentPageXML.getAttribute("pageText"),
+				panelWidth: x_currentPageXML.getAttribute("panelWidth") != undefined ? x_currentPageXML.getAttribute("panelWidth") : "Full",
+				panelStyle: x_currentPageXML.getAttribute("panelStyle") != undefined ? x_currentPageXML.getAttribute("panelStyle") : "true",
+				removeTxt: x_currentPageXML.getAttribute("removeTxt") != undefined ? x_currentPageXML.getAttribute("removeTxt") : "true"
+			}
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
+
 			$("#pageContents").data("audioW", 0);
 			numAttempts = 0;
 
 			$("#textHolder")
 				.html(x_addLineBreaks(x_currentPageXML.getAttribute("text")))
 				.addClass("transparent"); /* without the text having a bg the labels strangely aren't selectable in IE */
-			
-			// submitBtnWidth attribute not used as button will be sized automatically
-			var buttonLabel = x_currentPageXML.getAttribute("submitBtnTxt");
-			if (buttonLabel == undefined) {
-				buttonLabel = "Submit";
-			}
-			
+
 			$("#button")
 				.button({
-					label:	buttonLabel
+					label: x_currentPageXML.getAttribute("submitBtnTxt") != undefined ? x_currentPageXML.getAttribute("submitBtnTxt") : "Submit"
 				})
 				.click(function() { // mark labels and show feedback
 					var maxAttempts = x_currentPageXML.getAttribute("maxAttempts") ? x_currentPageXML.getAttribute("maxAttempts") : 3,
@@ -587,7 +609,7 @@
 				.removeAttr("aria-label")
 				.removeClass("selected")
 				.css({
-					"top"	:$thisTarget.find(".fixedTxt").position().top + $("div#x_pageHolder").scrollTop(),
+					"top"	:$thisTarget.find(".fixedTxt").position().top + $("div#x_pageHolder").scrollTop() + $("div#panel").scrollTop(),
 					"left"	:$thisTarget.position().left + $thisTarget.width() - parseInt($thisTarget.css("padding-left")) - $thisLabel.outerWidth() + 5
 				})
 				.addClass("onTarget");
@@ -598,25 +620,27 @@
 	
 </script>
 
-
 <div id="pageContents">
 
-	<div id="textHolder"></div>
+	<div id="mainTextHolder" class="splitScreen_A"></div>
 
-	<div id="dragDropHolder">
+	<div id="infoHolder" class="splitScreen_B">
+		<div id="panel" class="panelContent panel">
+			<div id="textHolder"></div>
 
-		<div id="labelHolder"></div>
-
-		<div id="targetHolder">
-			<div class="target highlight" tabindex="0">
-				<div class="fixedTxt" aria-hidden="true"></div>
+			<div id="dragDropHolder">
+				<div id="labelHolder"></div>
+				<div id="targetHolder">
+					<div class="target highlight" tabindex="0">
+						<div class="fixedTxt" aria-hidden="true"></div>
+					</div>
+				</div>
 			</div>
-		</div>
 
+			<button id="button"></button>
+			<div id="feedback" aria-live="polite"></div>
+		</div>
 	</div>
 
-	<button id="button"></button>
-
-	<div id="feedback" aria-live="polite"></div>
-
 </div>
+

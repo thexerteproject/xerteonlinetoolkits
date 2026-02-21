@@ -1,7 +1,7 @@
 /* flickr.html */
 	
-	#pageContents .right .panel {
-		overflow:	hidden;
+	#pageContents .panelContent.panel {
+		overflow: auto;
 	}
 	
 	#flickrHolder {
@@ -26,6 +26,7 @@
 	#pictureHolder img {
 		margin-left: 	auto;
   		margin-right: 	auto;
+		max-width: 100%;
 	}
 
 	#loadingSpinner {
@@ -47,3 +48,13 @@
 		margin-top: 0.5em;
 		float: right;
 	}
+
+	.panelContent:not(.panel) #btnHolder {
+		padding-bottom: 0.5em;
+	}
+
+@media (max-width: 480px) {
+	#flickrHolder {
+		height: unset !important;
+	}
+}

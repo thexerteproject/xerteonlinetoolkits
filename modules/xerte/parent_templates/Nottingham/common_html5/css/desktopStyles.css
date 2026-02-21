@@ -52,9 +52,13 @@
 }
 
 /* displays as one column on mobiles */
-.splitScreen {
+/*.splitScreen {
 	padding:	0 0 0 50%;
 	position:	relative;
+}
+
+.splitScreen.custom {
+	padding: 0;
 }
 
 .splitScreen.small {
@@ -106,7 +110,7 @@
 
 .splitScreen .right {
 	margin-left: 1em;
-}
+}*/
 
 .autocolumns2{
 	-webkit-columns: 2 250px;

@@ -30,7 +30,11 @@
 	}
 
 	#cardBottomHolder {
-		z-index:	-1;
+		/*z-index:	-1;*/
+	}
+
+	#cardTopHolder {
+		z-index: 300;
 	}
 
 	#cardBottomHolder .card {
@@ -63,5 +67,19 @@
 	#button {
 		position:	absolute;
 		bottom:		10px;
+		z-index: 301;
 	}
-	
+
+	#infoHolder .panelContent.panel {
+		overflow: auto;
+	}
+
+	.x_mobile #x_footerBlock {
+		z-index: 500;
+	}
+
+@media (min-width: 768px) and (min-height: 550px) {
+	#cardBottomHolder .card {
+		font-size: 1.5vmin;
+	}
+}

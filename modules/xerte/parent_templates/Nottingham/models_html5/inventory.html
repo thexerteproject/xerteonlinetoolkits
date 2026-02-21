@@ -34,8 +34,12 @@
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			const $panel = $("#infoHolder .panel");
-			$panel.height(x_getAvailableHeight([$panel]));
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			XENITH.SPLITSCREEN.resizePanel();
+
+			if ($(".chart").is(":visible")) {
+				this.drawChart();
+			}
 		}
 		
 		this.init = function() {
@@ -46,26 +50,15 @@
 			if (x_currentPageXML.getAttribute("chartHide") != "true") {
 				$("#chartTitle").html(x_currentPageXML.getAttribute("chartTitle"));
 			}
-			
-			var panelWidth = x_currentPageXML.getAttribute("panelWidth");
-			var align = x_currentPageXML.getAttribute("align") == "right" ? "Right" : "Left";
-			if (align == "Right") {
-				$("#textHolder")
-					.removeClass("left")
-					.addClass("right")
-					.appendTo($("#pageContents .splitScreen"));
-				$("#infoHolder")
-					.removeClass("right")
-					.addClass("left");
+
+			// panel position data is reversed as the property used to be called 'Align text' rather than 'Panel position'
+			// send amended data to split screen function as otherwise layout will be reversed
+			const attributes = {
+				panelPosition: x_currentPageXML.getAttribute("align") !== "right" ? "right" : "left",
+				pageTxt: x_currentPageXML.getAttribute("instructions"),  // xml property is instructions not text that is used in most page models
 			}
-			
-			if (panelWidth == "Small") {
-				align == "Right" ? $("#pageContents .splitScreen").addClass("medium") : $("#pageContents .splitScreen").addClass("large");
-			} else if (panelWidth == "Large") {
-				align == "Right" ? $("#pageContents .splitScreen").addClass("xlarge") : $("#pageContents .splitScreen").addClass("small");
-			} else {
-				align == "Right" ? $("#pageContents .splitScreen").addClass("large") : $("#pageContents .splitScreen").addClass("medium");
-			}
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
 			
 			var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
 			if (feedbackLabel == undefined) {
@@ -166,7 +159,7 @@
 				});
 			
 			if ($(x_currentPageXML).children('invQuestion').length == 0) {
-				$("#infoHolder .panel").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noQ", "No questions have been added") + '</span>');
+				$("#infoHolder .panelContent").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noQ", "No questions have been added") + '</span>');
 			} else {
 				// store data needed later - class info and string to base qNoTxt on
 				var	classes = x_currentPageXML.getAttribute("classes").split(",");
@@ -417,9 +410,9 @@
 				// draw everything on canvas - predominately John Smith's code from chart page model
 				var chartHolder = document.getElementById("chartHolder");
 				if (chartHolder.getContext) {
-					var $panel = $("#pageContents .panel"),
-							availW = Math.min(550, Math.max(300, $("#pageContents .panel").width() - ($("#pageContents .panel").outerWidth() - $("#pageContents .panel").width()) - ($("#pageContents .panel .chart .qContent").outerWidth() - $("#pageContents .panel .chart .qContent").width()))),
-							availH = Math.min(550, Math.max(300, x_getAvailableHeight([$panel, $("#pageContents .panel .chart .qContent")], [$("#restartBtn"), $("#chartTitle")], true)));
+					var $panel = $("#pageContents .panelContent"),
+							availW = Math.min(550, Math.max(300, $("#pageContents .panelContent").width() - ($("#pageContents .panelContent").outerWidth() - $("#pageContents .panelContent").width()) - ($("#pageContents .panelContent .chart .qContent").outerWidth() - $("#pageContents .panelContent .chart .qContent").width()))),
+							availH = Math.min(550, Math.max(300, x_getAvailableHeight([$panel, $("#pageContents .panelContent .chart .qContent")], [$("#restartBtn"), $("#chartTitle")], true)));
 
 					chartHolder.width = availW;
 					chartHolder.height = availH;
@@ -643,46 +636,42 @@
 
 <div id="pageContents">
 
-	<div class="splitScreen">
+	<div id="textHolder" class="splitScreen_A">
+		<div id="mainTxt" class="quiz"></div>
+		<div id="feedbackTxt" aria-live="polite"></div>
+	</div>
 
-		<div id="textHolder" class="left">
-			<div id="mainTxt" class="quiz"></div>
-			<div id="feedbackTxt" aria-live="polite"></div>
-		</div>
+	<div id="infoHolder" class="splitScreen_B">
+		<div class="panelContent panel" tabindex="0">
 
-		<div id="infoHolder" class="right">
-			<div class="panel" tabindex="0">
+			<fieldset class="quiz noStyle">
 
-				<fieldset class="quiz noStyle">
+				<p id="qNo" aria-live="polite"></p>
 
-					<p id="qNo" aria-live="polite"></p>
-
-					<div class="qContent">
-						<span><legend id="qTxt"></legend></span>
-						<div id="optionHolder"></div>
-						<div id="buttonHolder">
-							<button id="checkBtn"></button>
-							<button id="nextBtn"></button>
-						</div>
-						<div id="qFeedback" aria-live="polite">
-							<h3 id="qFeedbackTitle"></h3>
-							<p id="qFeedbackTxt"></p>
-						</div>
+				<div class="qContent">
+					<span><legend id="qTxt"></legend></span>
+					<div id="optionHolder"></div>
+					<div id="buttonHolder">
+						<button id="checkBtn"></button>
+						<button id="nextBtn"></button>
 					</div>
-
-
-				</fieldset>
-				
-				<div class="chart">
-					<h3 id="chartTitle"></h3>
-					<div class="qContent">
-						<canvas id="chartHolder"></canvas>
-						<button id="restartBtn"></button>
+					<div id="qFeedback" aria-live="polite">
+						<h3 id="qFeedbackTitle"></h3>
+						<p id="qFeedbackTxt"></p>
 					</div>
+				</div>
+
+
+			</fieldset>
+
+			<div class="chart">
+				<h3 id="chartTitle"></h3>
+				<div class="qContent">
+					<canvas id="chartHolder"></canvas>
+					<button id="restartBtn"></button>
 				</div>
 			</div>
 		</div>
-
 	</div>
 
 </div>

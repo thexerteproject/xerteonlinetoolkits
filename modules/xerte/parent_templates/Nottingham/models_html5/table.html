@@ -34,9 +34,9 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			if (x_browserInfo.mobile == true) {
-				$('#tableHolder .panel')
+				$('#tableHolder .panelContent.panel')
 					.width('auto')
-					.width($x_pageDiv.width() - ($('#tableHolder .panel').outerWidth(true) - $('#tableHolder .panel').width()));
+					.width($x_pageDiv.width() - ($('#tableHolder .panelContent.panel').outerWidth(true) - $('#tableHolder .panelContent.panel').width()));
 			}
 		}
 		
@@ -45,7 +45,7 @@
 			
 			var $pageContents = $("#pageContents"),
 				$textHolder = $("#textHolder"),
-				$panel = $("#pageContents .panel");
+				$panel = $("#pageContents .panelContent.panel");
 
 			if ($tableInfo[0].getAttribute("caption") != "" && $tableInfo[0].getAttribute("caption") != undefined) {
 				$pageContents.find("#footnote").html("<p>" + $tableInfo[0].getAttribute("caption") + "</p>");
@@ -193,7 +193,7 @@
 <div id="pageContents">
 	
 	<div id="tableHolder" class="mobileAlign"> <!-- this tag is only used when viewed on mobiles to change layout -->
-		<div class="panel inline">
+		<div class="panelContent panel inline">
 			<table id="table"></table>
 			<div id="footnote"></div>
 		</div>

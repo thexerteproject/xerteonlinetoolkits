@@ -37,8 +37,8 @@
 			
             // function called every time the size of the LO is changed
             this.sizeChanged = function () {
-                const $panel = $("#pageContents .panel");
-                $panel.height(x_getAvailableHeight([$panel]));
+                // panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+                XENITH.SPLITSCREEN.resizePanel();
             };
 
             this.leavePage = function () {
@@ -186,50 +186,21 @@
 				let nrInteractions = x_currentPageXML.getAttribute("numberAnswers") == "*"? $(x_currentPageXML).children().length : x_currentPageXML.getAttribute("numberAnswers");
                 XTSetPageType(x_currentPage, 'numeric', nrInteractions, this.weighting);
 
-                var panelWidth = x_currentPageXML.getAttribute("panelWidth"),
-                    $splitScreen = $("#pageContents .splitScreen");
-                var $textHolder = $("#textHolder");
+                $("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
 
-                if (panelWidth === "Full") {
-                    $("#pageContents .panel").appendTo($("#pageContents"));
-                    $splitScreen.remove();
-                } else {
-                    $textHolder.html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
-
-                    var textAlign = x_currentPageXML.getAttribute("align");
-                    if (textAlign !== "Right") {
-                        if (panelWidth === "Small") {
-                            $splitScreen.addClass("large");
-                        } else if (panelWidth === "Large") {
-                            $splitScreen.addClass("small");
-                        } else {
-                            $splitScreen.addClass("medium");
-                        }
-                    } else {
-                        $textHolder
-                            .removeClass("left")
-                            .addClass("right")
-                            .appendTo($splitScreen);
-                        $("#infoHolder")
-                            .removeClass("right")
-                            .addClass("left");
-                        if (panelWidth === "Small") {
-                            $splitScreen.addClass("medium");
-                        } else if (panelWidth === "Large") {
-                            $splitScreen.addClass("large");
-                        } else {
-                            $splitScreen.addClass("large");
-                        }
-                    }
+                // panel position data is reversed as the property used to be called 'Align text' rather than 'Panel position'
+                // send amended data to split screen function as otherwise layout will be reversed
+                const attributes = {
+                    panelPosition: x_currentPageXML.getAttribute("align") !== "Right" ? "Right" : "Left",
+                    pageTxt: x_currentPageXML.getAttribute("instruction"),  // xml property is instruction not text that is used in most page models
                 }
+                // set up split screen layout
+                XENITH.SPLITSCREEN.init({"attributes": attributes});
 
                 var attemptLabel = x_currentPageXML.getAttribute("attemptLabel");
                 if( x_currentPageXML.getAttribute("attemptLabel") === null){
                     attemptLabel = "Attempts remaining";
                 }
-
-                var instruction = x_currentPageXML.getAttribute("instruction");
-                $textHolder.html(instruction);
 
                 var $question = $("#question");
                 var prompt = x_currentPageXML.getAttribute("prompt");
@@ -579,28 +550,28 @@
 
 
 <div id="pageContents">
-    <div class="splitScreen">
-        <div id="textHolder" class="left"></div>
-        <div id="infoHolder" class="right">
-            <div id="mainPanel" class="panel" tabindex="0">
-                <fieldset class="noStyle">
 
-                    <div class="titleQuestion">
-                        <legend id="question"></legend>
-                    </div>
+    <div id="textHolder" class="splitScreen_A"></div>
 
-                    <div id="OptionHolder" class="question"></div>
+    <div id="infoHolder" class="splitScreen_B">
+        <div id="mainPanel" class="panelContent panel" tabindex="0">
+            <fieldset class="noStyle">
 
-                    <button id="checkButton"></button>
-                    <div id="attempts" aria-live="polite"></div>
-                    <div id="result" aria-live="polite"></div>
+                <div class="titleQuestion">
+                    <legend id="question"></legend>
+                </div>
 
-                    <div id="correctAnswer" aria-live="polite"></div>
-                    <div id="mainFeedback" aria-live="polite"></div>
+                <div id="OptionHolder" class="question"></div>
 
-                </fieldset>
-            </div>
+                <button id="checkButton"></button>
+                <div id="attempts" aria-live="polite"></div>
+                <div id="result" aria-live="polite"></div>
+
+                <div id="correctAnswer" aria-live="polite"></div>
+                <div id="mainFeedback" aria-live="polite"></div>
+
+            </fieldset>
         </div>
-
     </div>
+
 </div>
