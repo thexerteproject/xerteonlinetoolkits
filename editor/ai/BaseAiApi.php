@@ -3,7 +3,7 @@ use function rag\makeRag;
 
 require_once __DIR__.'/logging/log_ai_request.php';
 require_once(dirname(__FILE__) . "/../../config.php");
-_load_language_file("/editor/ai_internal/ai.inc");
+_load_language_file("/editor/ai_internal/ai_language_internal.inc");
 
 
 global $xerte_toolkits_site;
