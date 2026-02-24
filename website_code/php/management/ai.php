@@ -20,8 +20,7 @@
 require_once("../../../config.php");
 require_once ("../../../editor/ai/ModelLister.php");
 
-_load_language_file("/website_code/php/management/ai.inc");
-_load_language_file("/ai.inc");
+_load_language_file("/website_code/php/management/ai_website.inc");
 
 require("../user_library.php");
 require("management_library.php");

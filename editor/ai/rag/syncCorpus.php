@@ -13,7 +13,7 @@ require_once (str_replace('\\', '/', __DIR__) . "/RagFactory.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../management/dataRetrievalHelper.php");
 require_once (str_replace('\\', '/', __DIR__) . "/../logging/ActorContext.php");
 require_once __DIR__ . '/sync_job_store.php';
-\_load_language_file("/editor/ai_internal/ai.inc");
+\_load_language_file("/editor/ai_internal/ai_language_internal.inc");
 
 use function rag\makeRag;
 use function transcribe\makeTranscriber;
