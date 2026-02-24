@@ -4,7 +4,7 @@ namespace rag;
 use DocumentLoaderFactory;
 
 require_once __DIR__.'/../logging/log_ai_request.php';
-\_load_language_file("/editor/ai_internal/ai.inc");
+\_load_language_file("/editor/ai_internal/ai_language_internal.inc");
 
 abstract class BaseRAG
 {
