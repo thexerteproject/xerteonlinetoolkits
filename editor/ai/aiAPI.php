@@ -2,7 +2,7 @@
 
 require_once (dirname(__FILE__) . "/../../config.php");
 require_once (str_replace('\\', '/', __DIR__) . "/management/dataRetrievalHelper.php");
-_load_language_file("/editor/ai_internal/ai.inc");
+_load_language_file("/editor/ai_internal/ai_language_internal.inc");
 
 if(!isset($_SESSION['toolkits_logon_id'])) {
     die("Session ID not set");
