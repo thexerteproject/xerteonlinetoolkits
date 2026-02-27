@@ -4460,7 +4460,10 @@ function x_getAvailableHeight(excludePadding, excludeHeight, mobile) {
 					// a number has been passed instead of an element - minus this
 					availableH -= excludeHeight[i];
 				} else {
-					availableH -= excludeHeight[i].outerHeight(true);
+					// uses native javascript instead of jquery height / outerHeight to ensure no numbers rounded down
+					availableH -= excludeHeight[i][0].getBoundingClientRect().height;
+					availableH -= parseFloat(window.getComputedStyle(excludeHeight[i][0]).marginTop);
+					availableH -= parseFloat(window.getComputedStyle(excludeHeight[i][0]).marginBottom);
 				}
 			}
 		}
