@@ -120,6 +120,8 @@
 				l_answers = [],
 				l_feedbacks = [],
 				selected = $("#optionHolder input");
+
+			const judge = $("#pageContents").data("judge");
 			
             if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
 				genFeedback = x_addLineBreaks(x_currentPageXML.getAttribute("feedback"));
@@ -156,6 +158,9 @@
 						tempFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '" data-transcript="' + selectedOption.transcript + '"></div>';
 					}
 					if (tempFeedback != "") {
+						if (judge) {
+							tempFeedback = '<div class="' + (currCorrect ? 'correct' : 'incorrect')  + 'Feedback">' + tempFeedback + '</div>';
+						}
 						answerFeedback += tempFeedback;
 					}
 					
@@ -190,19 +195,23 @@
 				// add correct feedback depending on if question overall has been answered correctly or not
 				if (x_currentPageXML.getAttribute("markFeedback") != 'false') { // new optional property allows for this feedback to be turned off
 					if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
-						if ($("#pageContents").data("judge") == true) { // there is a correct answer for question
+						if (judge == true) { // there is a correct answer for question
 							if (correct == true) {
-								rightWrongTxt = multiRight != '' ? '<p>' + multiRight + '</p>' : '';
+								$("#feedback").addClass("correctFeedback");
+								rightWrongTxt = multiRight != '' ? '<div class="correctFeedback"><p>' + multiRight + '</p></div>' : '';
 							} else {
-								rightWrongTxt = multiWrong != '' ? '<p>' + multiWrong + '</p>' : '';
+								$("#feedback").addClass("incorrectFeedback");
+								rightWrongTxt = multiWrong != '' ? '<div class="incorrectFeedback"><p>' + multiWrong + '</p></div>' : '';
 							}
 						}
 					} else {
-						if ($("#pageContents").data("judge") == true) { // there is a correct answer for question
+						if (judge == true) { // there is a correct answer for question
 							if (correct == true) {
-								rightWrongTxt = singleRight != '' ? '<p>' + singleRight + '</p>' : '';
+								$("#feedback").addClass("correctFeedback");
+								rightWrongTxt = singleRight != '' ? '<div class="correctFeedback"><p>' + singleRight + '</p></div>' : '';
 							} else {
-								rightWrongTxt = singleWrong != '' ? '<p>' + singleWrong + '</p>' : '';
+								$("#feedback").addClass("incorrectFeedback");
+								rightWrongTxt = singleWrong != '' ? '<div class="incorrectFeedback"><p>' + singleWrong + '</p></div>' : '';
 							}
 						}
 					}
@@ -232,6 +241,7 @@
 				}
 
 				// show the feedback in the order specified
+				// feedback will include correctFeedback / incorrectFeedback classes that can be used in themes to style feedback differently
 				for (var i = 0; i < feedbackDiv.length; i++) {
 					if (i < feedback) {
 						var thisFeedback;
@@ -299,8 +309,6 @@
 				$("#mainPanel").animate({
 					scrollTop: $("#mainPanel").scrollTop() - $("#mainPanel").offset().top + $("#feedback").offset().top
 				}, 500);
-
-				let judge = $("#pageContents").data("judge");
 
 				var result = {
 					success: correct || !judge,
@@ -415,6 +423,8 @@
                                     } else {
                                         $("#feedback").hide().find('.feedbackBlock').html("");
                                     }
+									$(".correctFeedback, .incorrectFeedback").removeClass("correctFeedback incorrectFeedback");
+
 									var $checkBtn = $("#checkBtn"),
 										$selected = $("#optionHolder input:checked");
 
