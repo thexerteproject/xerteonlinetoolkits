@@ -97,6 +97,10 @@ a {
 	padding:	10px;
 }
 
+.innerPage {
+	visibility: hidden;
+}
+
 #x_headerBlock img {
 	max-height: 200px;
 }

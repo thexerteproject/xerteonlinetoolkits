@@ -3216,7 +3216,7 @@ function x_changePageStep3() {
 		function loadModel() {
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '" class="innerPage"></div>');
 			$x_innerPage = $x_pageDiv.find(".innerPage");
-			$("#x_page" + x_currentPage).css("visibility", "hidden");
+			$x_pageHolder.css("overflow-y", "hidden"); // prevent unnecessary scroll bars caused by sizing not yet being completed
 
 			if (!XENITH.PAGEMENU.isThisMenu()) {
 				// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
@@ -3632,6 +3632,9 @@ function x_pageLoaded() {
 
 	XENITH.VARIABLES.handleSubmitButton();
 
+	// allow scroll bars now that all sizing should be complete
+	$x_pageHolder.css("overflow-y", "auto");
+
     $("#x_page" + x_currentPage)
         .hide()
         .css("visibility", "visible")
@@ -3927,7 +3930,8 @@ function x_sizeChanged() {
 		if (typeof window[pt].sizeChanged === "function") {
 			window[pt].sizeChanged();
 		}
-	} catch(e) {} // Catch error thrown when you call sizeChanged() on an unloaded model
+	} catch(e) {
+	} // Catch error thrown when you call sizeChanged() on an unloaded model
 
 	// calls function in any customHTML that's been loaded into page
 	if ($(".customHTMLHolder").length > 0) {
@@ -4459,8 +4463,11 @@ function x_getAvailableHeight(excludePadding, excludeHeight, mobile) {
 				if ($.isNumeric(excludeHeight[i])) {
 					// a number has been passed instead of an element - minus this
 					availableH -= excludeHeight[i];
-				} else {
-					availableH -= excludeHeight[i].outerHeight(true);
+				} else if (excludeHeight[i].length > 0) {
+					// uses native javascript instead of jquery height / outerHeight to ensure no numbers rounded down
+					availableH -= excludeHeight[i][0].getBoundingClientRect().height;
+					availableH -= parseFloat(window.getComputedStyle(excludeHeight[i][0]).marginTop);
+					availableH -= parseFloat(window.getComputedStyle(excludeHeight[i][0]).marginBottom);
 				}
 			}
 		}

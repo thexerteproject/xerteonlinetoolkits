@@ -4,16 +4,25 @@
 		overflow-x: hidden;
 	}
 	
-	h3 {
+	h3.cardTitle {
 		padding: 4px;
 	}
 	
-	#textHolder {
-		margin-bottom: 2em;
+	#cardCtrls {
+		display: grid;
+		gap: 1rem;
+		grid-template-rows: auto auto;
+		width: 100%;
 	}
-	
-	#cardHolder, #cardCtrls {
-		display: table;
+
+	#cardCtrls:not(.noBtns) {
+		grid-template-columns: 2.4em 1fr 2.4em; /* fixed - flexible - fixed */
+	}
+
+	#leftBtn, #rightBtn {
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 	
 	#cardHolder {
@@ -22,38 +31,46 @@
 		min-height: 72.5%;
 	}
 	
-	#cardCtrls {
-		width: 100%;
-		height: 100%;
-	}
-	
 	.btnHolder, #cards {
-		display: table-cell;
 		vertical-align: middle;
 		text-align: center;
 	}
 	
 	#cards .card {
 		vertical-align: top;
-		margin-top: 1em;
-		margin-bottom: 1em;
 	}
 	
 	#pageContents:not(.horiz) #cards.small .card {
-		max-width: 40%;
+		min-width: 40%;
 	}
 	
 	#pageContents:not(.horiz) #cards.medium .card {
-		max-width: 60%;
+		min-width: 60%;
 	}
 	
 	#pageContents:not(.horiz) #cards.large .card {
-		max-width: 80%;
+		min-width: 80%;
 	}
-	
+
+	#pageContents:not(.horiz) #cards.small .card,
+	#pageContents:not(.horiz) #cards.medium .card,
+	#pageContents:not(.horiz) #cards.large .card,
+	#pageContents:not(.horiz) #cards.custom .card {
+		width: 200px;
+		max-width: 100%;
+	}
+
+	#pageContents.horiz .card {
+		min-width: 150px;
+	}
+
 	#pageContents.displaySingle .card, #pageContents.displayMultiple.vert .card {
 		margin-left: auto;
 		margin-right: auto;
+	}
+
+	#pageContents.displayMultiple.vert .card {
+		margin-bottom: 1em;
 	}
 	
 	#pageContents.displayMultiple.horiz #cardHolder, #pageContents.displayMultiple.horiz #cards {
@@ -76,7 +93,7 @@
 	
 	#pageContents.displayMultiple.horiz #cards .card {
 		display: inline-block;
-		margin: 1em 1em 1em 1em;
+		margin: 3px 1em 8px;
 		white-space: normal;
 	}
 	
@@ -103,40 +120,29 @@
 		overflow: auto;
 		backface-visibility: hidden;
 		margin: 1em 1em 0;
-		height: calc(100% - 2.4em /* flip button height offset */ - 1em /* card-inner margin offset */ );
+	}
 
+	.card.singleSided .cardInner {
+		margin-bottom: 1em;
 	}
-	
-	#cards.hideOverflow .cardInner,
-	#cards .cardSide.hideOverflow .cardInner {
-		overflow: hidden;
-	}
-	
-	#leftBtn {
-		text-align: right;
-	}
-	
-	#rightBtn {
-		text-align: left;
-	}	
 	
 	.btnHolder button {
 		background: none;
 		border: none;
-		width: 3em;
-		height: 3em;
-		margin: 1em;
+		width: 2em;
+		height: 2em;
+		margin: 0;
 	}
 	
 	.btnHolder button .ui-icon {
-		width: 100% !important;
-		height: 100% !important;
+		font-size: 1.9em;
 		margin: 0 !important;
-		font-size: 3em;
-		position: absolute;
 		top: 0;
 		left: 0;
-		background-position: 0;
+	}
+
+	#leftBtn button .ui-icon {
+		left: .05em;
 	}
 	
 	#cardCtrls .btnHolder button {
@@ -159,23 +165,18 @@
 		position: absolute;
 		bottom: 0;
 	}
-	
-	.emptyDiv {
-		height: 4em;
-	}
+
     .flipBtn{
 	z-index: 1;
     }
 	
 	#cardNoHolder {
-		display: table-row;
-		height: 1px;
-		vertical-align: middle;
-		text-align: center;
+		grid-column: 1 / -1;
+		display: grid;
+		place-items: center;
 	}
 	
 	#cardNoTxt {
-		display: table-cell;
 		vertical-align: middle;
 		font-weight: bold;
 	}
@@ -191,9 +192,10 @@
 	
 	iframe.mediaHolder {
 		width: 98%;
-		height: 100%;
+		/*height: 100%;*/
 		margin-top: 0.5em;
 		margin-bottom: 0.5em;
+		display: block;
 	}
 	
 	.mediaHolder img {
@@ -211,6 +213,30 @@
 		height: calc(100% - 2.4em /* flip button height offset */ - 1em /* card-inner margin offset */ );
 	}
 
-	.card .front, .card .back {
+	.card:not(.singleSided) .cardTitle.noAlign {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		margin: inherit;
+	}
+
+	.cardTitle.noAlign + .text-content {
+		overflow: auto;
+	}
+
+	.card .front, .card .back, .card .cardInner {
+		box-sizing: border-box;
+	}
+
+	#shuffleBtn {
+		margin-top: .5em;
+	}
+
+	#pageContents.vert #shuffleBtn {
+		margin-bottom: .5em;
+	}
+
+	.cardImg img {
 		box-sizing: border-box;
 	}

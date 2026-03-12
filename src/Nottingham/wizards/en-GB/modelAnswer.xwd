@@ -108,7 +108,7 @@
 
     <name label="Label" type="TextInput" wysiwyg="false" tooltip="The label is used to identify this text area on the results page and when tracking results, e.g. via SCORM/LTI/xAPI"/>
     <prompt label="Prompt" type="TextArea" height="100" placeholder="Enter prompt text here" tooltip="The question or prompt shown before the associated text field"/>
-    <rows label="No. of lines" type="NumericStepper" min="1" max="15" defaultValue="5" tooltip="The number of lines in the text field"/>
+    <rows label="No. of lines" type="NumericStepper" min="1" max="50" defaultValue="5" tooltip="The number of lines in the text field"/>
 
     <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here" optional="true" tooltip="The feedback shown below the associated text field after answers have been submitted"/>
 

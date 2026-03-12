@@ -124,17 +124,14 @@
 				
 			let imgMaxW = Math.round($x_innerPage.width() * maxW),
 				imgMaxH = Math.round(x_getAvailableHeight([$("#panel"), $("#mapster_wrap_0")], [$("#btnHolder")], true) * maxH);
-			
-			imgMaxW -= ($("#panel").outerWidth(true) - $("#panel").width()) + ($x_pageDiv.outerWidth() - $x_pageDiv.width());
+
+			// scaling can break if image is too small so set an arbitrary min size
+			imgMaxW = Math.max(imgMaxW, 100);
+			imgMaxH = Math.max(imgMaxH, 100);
 
 			$img.mapster('unbind');
 
 			x_scaleImg($img, imgMaxW, imgMaxH, true, firstLoad, false, true);
-
-			$img.css({
-				"opacity"	:1,
-				"filter"	:'alpha(opacity=100)'
-			});
 
 			this.createHS();
 		};
