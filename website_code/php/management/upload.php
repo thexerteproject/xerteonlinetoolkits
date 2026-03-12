@@ -268,6 +268,7 @@ function returnTargetFolderName($templateXML)
 
 function returnParentObject($targetFolder)
 {
+    global $xerte_toolkits_site;
     if($targetFolder == null)
     {
         return 0;
