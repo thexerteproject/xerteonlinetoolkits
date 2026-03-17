@@ -1869,7 +1869,18 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 					pageHistory.push(historyEntry);
 				}
 
-				window.history.pushState('window.location.href',"",window.location.hash);
+				// TOR: Oops my fix to keep the section id unchanged when using a deeplink messes up the updating of
+				// the url when navigating to a new page using the menu
+				if (currentPage == undefined)
+				{
+					// This is a deeplink, keep current hash but update pageHistory so that back button works correctly
+					window.history.pushState('window.location.href',"",window.location.hash);
+				}
+				else
+				{
+					// Set url hash to the page hash
+					window.history.pushState('window.location.href',"", '#' + pageHash);
+				}
 				setTimeout( function() {
 					afterLoadPage(sectionNum, contentNum, pageIndex, standAlonePage);
 				}, 1000);
