@@ -7,7 +7,7 @@ The certificate must be in PEM format.
 
 You can create the certificates yourself using openssl:
 
-openssl req -newkey rsa:2048 -keyout sp.key -x509 -days 365 -out sp.crt
+openssl req -newkey rsa:2048 -noenc -keyout sp.key -x509 -days 3650 -out sp.crt
 
 Make sure the key does not have a passphrase, otherwise the signing will fail:
 
