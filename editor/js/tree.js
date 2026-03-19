@@ -1079,7 +1079,8 @@ var EDITOR = (function ($, parent) {
                         button.attr('title', sorted_options['optional'][i].value.tooltip);
                     }
                     // If group, see if any of the individual items have a tooltip
-                    if (sorted_options['optional'][i].value.type == 'group') {
+                    // 19/03/26 agreed to turn this off as the compiled tooltips can get confusing quickly
+                    /*if (sorted_options['optional'][i].value.type == 'group') {
                         var tooltip_txt = "";
                         for (var j = 0; j < sorted_options['optional'][i].value.children.length; j++) {
                             if (sorted_options['optional'][i].value.children[j].value.tooltip) {
@@ -1097,7 +1098,7 @@ var EDITOR = (function ($, parent) {
                                 button.attr('title', tooltip_txt);
                             }
                         }
-                    }
+                    }*/
                     button.append(label);
 
 
