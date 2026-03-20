@@ -708,7 +708,7 @@ img {
 #pageContents p #instruction {
 	font-size: 1em;
 }
-.right .panel:not(.editorStyle) {
+#x_mainHolder:not(.x_flashCards_page) .right .panel:not(.editorStyle) {
 	border-left: 1px solid #ddd;
 	padding-left:10px;
 }
@@ -737,11 +737,11 @@ img {
 }
 
 .cardInner {
-	background:white;
+	/*background:white;
 	border:1px solid #152c51;
 	overflow: auto;
 	backface-visibility: hidden;
-	padding: 1em;
+	padding: 1em;*/
 }
 .fa {
 	vertical-align:baseline;
@@ -1139,13 +1139,9 @@ var {
 .pbTxt {
 	color: #EEE;
 }
-#cards {
-	width:90% !important; //OC
-	height: 60vh !important;
 
-}
-.x_flashCards_page .card { //OC
-	width:100% !important;
+.x_flashCards_page .cardSide {
+	border: 1px solid #434343;
 }
 
 .x_grid_page table {

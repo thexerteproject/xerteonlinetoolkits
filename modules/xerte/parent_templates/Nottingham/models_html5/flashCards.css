@@ -109,6 +109,7 @@
 	.card .cardSide {
 		padding: 0em;
 		text-align: left;
+		overflow-y: hidden;
 	}
 	
 	.card:not(.fitHeight) .cardSide {
@@ -211,6 +212,10 @@
 		display: flex;
 		flex-direction: column;
 		height: calc(100% - 2.4em /* flip button height offset */ - 1em /* card-inner margin offset */ );
+	}
+
+	.card.singleSided .flex {
+		height: calc(100% - 1em /* card-inner margin offset */ );
 	}
 
 	.card:not(.singleSided) .cardTitle.noAlign {

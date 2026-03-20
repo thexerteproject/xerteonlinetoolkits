@@ -666,6 +666,10 @@ button.ui-button-icon-only .ui-icon[class*=" fa-"] {
 	margin-top: -0.45em;
 }
 
+button.ui-button-icon-only .ui-icon.fa-x-refresh {
+	margin-left: -0.5em;
+}
+
 /*styling for optional show/hider footer tools*/
 #x_footerChevron{
     cursor: pointer;

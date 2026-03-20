@@ -279,21 +279,41 @@
 
 							let fontAwesome = false;
 							
-							if (this.nodeName == "image" || this.nodeName == "mpText") {
+							if (this.nodeName == "mpText") {
 								imgSrc = x_evalURL(this.getAttribute("src"));
 								imgTip = this.getAttribute("tooltip");
+							} else if (this.nodeName == "image") {
+								if (this.getAttribute("thumbSrc") != undefined && this.getAttribute("thumbSrc").trim() !== "") {
+									imgSrc = x_evalURL(this.getAttribute("thumbSrc"));
+									if (this.getAttribute("thumbTooltip").trim() !== "") {
+										imgTip = this.getAttribute("thumbTooltip");
+									}
+								} else {
+									imgSrc = x_evalURL(this.getAttribute("src"));
+								}
+
+								if (imgTip == undefined) {
+									imgTip = this.getAttribute("tooltip");
+								}
 								
 							} else { // sound - use default image / tip if none added
-								if (this.getAttribute("img") != undefined && this.getAttribute("img") != "") {
+								if (this.getAttribute("thumbSrc") != undefined && this.getAttribute("thumbSrc").trim() !== "") {
+									imgSrc = x_evalURL(this.getAttribute("thumbSrc"));
+									if (this.getAttribute("thumbTooltip").trim() !== "") {
+										imgTip = this.getAttribute("thumbTooltip");
+									}
+								} else if (this.getAttribute("img") != undefined && this.getAttribute("img") != "") {
 									imgSrc = x_evalURL(this.getAttribute("img"));
 								} else {
 									fontAwesome = "<i class='fa fa-volume-high'></i>";
 								}
-								
-								if (this.getAttribute("tooltip") != undefined) {
-									imgTip = this.getAttribute("tooltip");
-								} else {
-									imgTip = x_currentPageXML.getAttribute("soundTip") == undefined ? "Sound Clip" : x_currentPageXML.getAttribute("soundTip");
+
+								if (imgTip == undefined) {
+									if (this.getAttribute("tooltip") != undefined) {
+										imgTip = this.getAttribute("tooltip");
+									} else {
+										imgTip = x_currentPageXML.getAttribute("soundTip") == undefined ? "Sound Clip" : x_currentPageXML.getAttribute("soundTip");
+									}
 								}
 							}
 

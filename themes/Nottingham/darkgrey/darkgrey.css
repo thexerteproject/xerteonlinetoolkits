@@ -180,7 +180,7 @@ background-image: none;
 }*/
 
 /*change font color for cards*/
-#pageContents .card {
+.x_memory_page #pageContents .card {
   color: #000000;
 }
 
