@@ -2107,6 +2107,11 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
                 lchildren = allChildPages;
             }
 
+            // pages that now use flexhotspots should also allow hotspots for backwards compatibility
+            if ($.inArray("flexhotspot", lchildren) > -1 && $.inArray("hotspot", lchildren) === -1) {
+                lchildren.push("hotspot");
+            }
+
             return {
                 icon: parent.toolbox.getIcon(page_name),
                 valid_children: lchildren
