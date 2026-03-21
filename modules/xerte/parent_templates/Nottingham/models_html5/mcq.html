@@ -464,7 +464,7 @@
 				if ($("#checkBtn").length > 0) {
 					$("#checkBtn")
 							.button({
-								label: x_currentPageXML.getAttribute("checkBtnTxt") == undefined ? x_currentPageXML.getAttribute("checkBtnTxt") : "Check",
+								label: x_currentPageXML.getAttribute("checkBtnTxt") != undefined ? x_currentPageXML.getAttribute("checkBtnTxt") : "Check",
 								disabled: true
 							})
 							.click(function () {
