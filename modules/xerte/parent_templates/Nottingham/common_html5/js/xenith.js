@@ -227,6 +227,8 @@ x_restorePagesViewed = function(viewed)
 	viewed.forEach(function(item){
 		x_pageInfo[item].viewed = true;
 	});
+
+	checkChapterViewed();
 }
 
 // To be able to check on orientation, and also detect the difference between a mobile and tablet
@@ -294,6 +296,7 @@ x_projectDataLoaded = function(xmlData) {
 			for (let i=0; i<$this[0].attributes.length; i++) {
 				chapterInfo[$this[0].attributes[i].name] = $this[0].attributes[i].value;
 			}
+			chapterInfo.viewed = false;
 
 			x_chapters.push(chapterInfo);
 		} else {
@@ -2746,6 +2749,7 @@ function x_changePageApproved(x_gotoPage, addHistory) {
 		XENITH.PROGRESSBAR.update(x_gotoPage, "NewWindow");
 
 		x_pageInfo[x_gotoPage].viewedNewWindow = true;
+		checkChapterViewed(x_gotoPage);
 
 	// standalone page opening in lightbox
 	} else {
@@ -2764,6 +2768,7 @@ function x_changePageApproved(x_gotoPage, addHistory) {
 		XENITH.PROGRESSBAR.update(x_gotoPage, "LightBox");
 
 		x_pageInfo[x_gotoPage].viewedLightBox = true;
+		checkChapterViewed(x_gotoPage);
 	}
 
 	// if side bar and on mobile, close sidebar when page changed (as it covers whole of page)
@@ -3567,6 +3572,8 @@ function x_setUpPage() {
 function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
     x_pageInfo[x_currentPage].viewed = true;
+
+	checkChapterViewed(x_currentPage);
 	
 	// calls function in current theme (if it exists)
 	var pt = x_pageInfo[x_currentPage].type;
@@ -3662,24 +3669,49 @@ function x_pageLoaded() {
 	x_checkForScrolling();
 }
 
+// function checks whether all pages in a chapter have been viewed
+function checkChapterViewed(pageIndex) {
+	if (pageIndex == undefined || x_pages[pageIndex].getAttribute("chapterIndex") != undefined) {
+		const numChaptersToCheck = pageIndex != undefined ? 1 : x_chapters.length;
+		for (let i=0; i<numChaptersToCheck; i++) {
+			const index = pageIndex != undefined ? x_pages[pageIndex].getAttribute("chapterIndex") : i;
+			if (x_chapters[index].viewed == false) {
+				let allViewed = true;
+				for (let j=0; j<x_pages.length; j++) {
+					if (x_pages[j].getAttribute("chapterIndex") == index) {
+						if ((x_pageInfo[j].viewed == false && x_pageInfo[j].standalone != true) || (x_pageInfo[j].standalone == true && x_pageInfo[j].viewedLightBox != true && x_pageInfo[j].viewedNewWindow != true)) {
+							allViewed = false;
+							break;
+						}
+					}
+				}
+
+				if (allViewed == true) {
+					x_chapters[index].viewed = true;
+				}
+			}
+		}
+	}
+}
+
 //convert picker color to #value
 function formatColour(col) {
-	return (col.length > 3 && col.substr(0,2) == '0x') ? '#' + col.substr(2) : col;
+return (col.length > 3 && col.substr(0,2) == '0x') ? '#' + col.substr(2) : col;
 }
 
 // function adds / reloads narration bar above main controls on interface
 function x_addNarration(funct, arguments) {
-    if (x_currentPageXML.getAttribute("narration") != null && x_currentPageXML.getAttribute("narration") != "") {
-        x_checkMediaExists(x_evalURL(x_currentPageXML.getAttribute("narration")), function(mediaExists) {
-			if (mediaExists) {
-				$("#x_footerBlock div:first").before('<div id="x_pageNarration" class="x_pageNarration"></div>');
-				$("#x_footerBlock #x_pageNarration").mediaPlayer({
-					type        :"audio",
-					source      :x_currentPageXML.getAttribute("narration"),
-					width       :"100%",
-					autoPlay    :x_currentPageXML.getAttribute("playNarration"),
-					autoNavigate:x_currentPageXML.getAttribute("narrationNavigate")
-				});
+if (x_currentPageXML.getAttribute("narration") != null && x_currentPageXML.getAttribute("narration") != "") {
+	x_checkMediaExists(x_evalURL(x_currentPageXML.getAttribute("narration")), function(mediaExists) {
+		if (mediaExists) {
+			$("#x_footerBlock div:first").before('<div id="x_pageNarration" class="x_pageNarration"></div>');
+			$("#x_footerBlock #x_pageNarration").mediaPlayer({
+				type        :"audio",
+				source      :x_currentPageXML.getAttribute("narration"),
+				width       :"100%",
+				autoPlay    :x_currentPageXML.getAttribute("playNarration"),
+				autoNavigate:x_currentPageXML.getAttribute("narrationNavigate")
+			});
 				
 				// manually add a transcript button to the end of the narration bar
 				if (x_currentPageXML.getAttribute("narrationTranscript") != undefined && x_currentPageXML.getAttribute("narrationTranscript") != '') {
@@ -7257,7 +7289,7 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 		x_updateCss2();
 	}
 
-	// is responsive text currently on? not just dependant on editor setting - looks at whether it's been changed in accessibility options and whether it's turned off by default as project is being viewed at a fixed size
+	// is responsive text currently on? not just dependent on editor setting - looks at whether it's been changed in accessibility options and whether it's turned off by default as project is being viewed at a fixed size
 	function checkResponsiveTxt() {
 		return XENITH.ACCESSIBILITY.responsiveTxt == true && ((x_params.displayMode != "default" && !$.isArray(x_params.displayMode)) || x_fillWindow == true);
 	}

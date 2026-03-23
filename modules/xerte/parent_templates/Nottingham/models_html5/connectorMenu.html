@@ -47,7 +47,7 @@
 			
 			const menuItems = [];
 			const pageNames = [];
-			const checkIfVistedItems = [];
+			const checkIfVisitedItems = [];
 			
 			// work out which pages to include in menu item list...
 			
@@ -56,12 +56,12 @@
 				$(x_currentPageXML).children().each(function() {
 					if (this.getAttribute("pageID") != undefined && this.getAttribute("pageID") != '') {
 						menuItems.push(this.getAttribute("pageID"));
-						checkIfVistedItems.push(this.getAttribute("checkIfVisited") != undefined ? this.getAttribute("checkIfVisited") : this.getAttribute("pageID"));
+						checkIfVisitedItems.push(this.getAttribute("checkIfVisited") != undefined ? this.getAttribute("checkIfVisited") : this.getAttribute("pageID"));
 						pageNames.push(this.getAttribute("btnTxt") == "true" ? this.getAttribute("name") : undefined);
 						
 					} else if (this.getAttribute("externalURL") != undefined && this.getAttribute("externalURL") != '') {
 						menuItems.push({ type: "URL", url: this.getAttribute("externalURL"), target: this.getAttribute("externalTarget") });
-						checkIfVistedItems.push(false);
+						checkIfVisitedItems.push(false);
 						pageNames.push(this.getAttribute("btnTxt") == "true" ? this.getAttribute("name") : this.getAttribute("externalURL"));
 					}
 				});
@@ -95,7 +95,7 @@
 						if (i >= start && i <= end && i != x_currentPage && (x_pageInfo[0].type != "menu" || i > 0)) {
 							menuItems.push(allIDs[i]);
 							pageNames.push(undefined);
-							checkIfVistedItems.push(allIDs[i]);
+							checkIfVisitedItems.push(allIDs[i]);
 						}
 					}
 				
@@ -106,7 +106,7 @@
 						if ((x_pageInfo[0].type != "menu" || i > 0) && i != x_currentPage) {
 							menuItems.push(allIDs[i]);
 							pageNames.push(undefined);
-							checkIfVistedItems.push(allIDs[i]);
+							checkIfVisitedItems.push(allIDs[i]);
 						}
 					}
 				}
@@ -118,6 +118,7 @@
 			for (let i=0; i<menuItems.length; i++) {
 				let $thisItem;
 				let name;
+				let chapter = false;
 				
 				if (i != 0) {
 					$thisItem = $menuItem.clone().appendTo($menuItems);
@@ -152,7 +153,7 @@
 							menuItems.splice(i, 1, x_pageInfo[tempIndex != x_normalPages.length-1 && tempIndex != -1 ? x_normalPages[tempIndex+1] : x_normalPages[x_normalPages.length-1]].linkID);
 							break;
 					}
-					
+
 					if (i == 0 && menuItems[i] == undefined && x_pageInfo[0].type == 'menu') {
 						name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_getLangInfo(x_languageData.find("toc")[0], "label", "Table of Contents");
 						menuItems.splice(i, 1, "toc_menu");
@@ -164,29 +165,44 @@
 							name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_pages[tempIndex].getAttribute("name");
 							$thisItem.data('pageNo', tempIndex);
 						} else {
+							name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : "";
+
+							// keep track of whether this is a chapter & use chapter name on button
+							if (x_checkChapters("linkID", menuItems[i]) !== false) {
+								chapter = true;
+								if (pageNames[i] == undefined || pageNames[i] == "") {
+									name = x_chapters[x_pages[x_lookupPage("linkID", menuItems[i])].getAttribute("chapterIndex")].name;
+								}
+							}
+
 							const page = x_lookupPage("linkID", menuItems[i]);
 							if ($.isArray(page)) {
-								name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : this.getNestedName(page);
+								if (chapter != true && (pageNames[i] == undefined || pageNames[i] == "")) {
+									name = this.getNestedName(page);
+								}
 								$thisItem.data('parent', x_pages[page[0]].getAttribute('linkID'));
 							} else if( menuItems[i] != undefined &&  menuItems[i] != "") {
-								name = pageNames[i] != undefined && pageNames[i] != "" ? pageNames[i] : x_pages[page].getAttribute("name");
+								if (chapter != true && (pageNames[i] == undefined || pageNames[i] == "")) {
+									name = x_pages[page].getAttribute("name");
+								}
 							}else{
-								$('#subMenuItems').html("There are one or more page destinations empty")
+								$('#subMenuItems').html("There are one or more page destinations empty");
 								break;
 							}
 						}
 					}
-					
+
 					$thisItem
 						.data({
 							"id": menuItems[i],
-							"visitedid": $thisItem.data('parent') != undefined ? $thisItem.data('parent') : checkIfVistedItems[i]
+							"visitedid": $thisItem.data('parent') != undefined ? $thisItem.data('parent') : checkIfVisitedItems[i],
+							"chapter": chapter
 						});
 				}
-				
+
 				$thisItem
 					.html(name)
-					.append(' <i class="fa fa-x-tick-circle notvisited" aria-label="' + x_getLangInfo(x_languageData.find("viewed")[0], "label", "Viewed") + '"></i>');
+					.append(' <i class="fa fa-x-tick-circle notvisited" aria-hidden="true" aria-label="' + x_getLangInfo(x_languageData.find("viewed")[0], "label", "Viewed") + '"></i>');
 			}
 			
 			$(".subMenuItem")
@@ -296,17 +312,25 @@
 					}
 					
 					$("#subMenuItems .subMenuItem").each(function(i) {
-						// if nested page then look to parent page to see if visited
-						const pageToCheck = $(this).data('visitedid');
-						if (pageToCheck != undefined && (pageToCheck === true || (pageToCheck !== false && pageToCheck.substring(0,4) == 'page'))) {
-							if ($(this).data("url") != undefined) {
-								$(this).find('i').removeClass('notvisited')
-							} else if ($.inArray(Number(pageToCheck.substring(4)), allBuiltPageNums) > -1) {
-								$(this).find('i').removeClass('notvisited')
+						if ($(this).data("chapter") == true) {
+							// if chapter, check if all pages in chapter have been visited
+							const chapterIndex = x_pages[x_lookupPage("linkID", $(this).data('visitedid'))].getAttribute("chapterIndex");
+							if (x_chapters[chapterIndex].viewed) {
+								$(this).find('i').removeClass('notvisited').attr("aria-hidden", "false");
 							}
 						} else {
-							if ($.inArray(pageToCheck, allBuiltPages) > -1) {
-								$(this).find('i').removeClass('notvisited')
+							// if nested page then look to parent page to see if visited
+							const pageToCheck = $(this).data('visitedid');
+							if (pageToCheck != undefined && (pageToCheck === true || (pageToCheck !== false && pageToCheck.substring(0,4) == 'page'))) {
+								if ($(this).data("url") != undefined) {
+									$(this).find('i').removeClass('notvisited').attr("aria-hidden", "false");
+								} else if ($.inArray(Number(pageToCheck.substring(4)), allBuiltPageNums) > -1) {
+									$(this).find('i').removeClass('notvisited').attr("aria-hidden", "false");
+								}
+							} else {
+								if ($.inArray(pageToCheck, allBuiltPages) > -1) {
+									$(this).find('i').removeClass('notvisited').attr("aria-hidden", "false");
+								}
 							}
 						}
 					});
