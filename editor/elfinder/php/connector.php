@@ -34,6 +34,7 @@ require_once(dirname(__FILE__).DIRECTORY_SEPARATOR."../../../config.php");
 
 if (!isset($_SESSION['toolkits_logon_id'])){
     header("location: ../../../index.php");
+    exit(0);
 }
 
 if (empty($_REQUEST['uploadDir']) || empty($_REQUEST['uploadURL']))
@@ -42,6 +43,7 @@ if (empty($_REQUEST['uploadDir']) || empty($_REQUEST['uploadURL']))
 }
 
 // Get session data to set paths
+global $rootpath;
 $rootpath = x_clean_input($_REQUEST['uploadDir']);
 $rooturl = x_clean_input($_REQUEST['uploadURL']);
 
@@ -107,6 +109,16 @@ function sanitizeName($cmd, $result, $args, $elfinder)
     return true;
 }
 
+function preventPathTraversal($name)
+{
+    global $rootpath;
+    if (strpos(urldecode($name), '..') !== false) {
+        return false;
+    }
+    x_check_path_traversal_newpath($rootpath . 'media/' . $name, $rootpath, "Invalid file name", "file");
+    return true;
+}
+
 // Documentation for connector options:
 // https://github.com/Studio-42/elFinder/wiki/Connector-configuration-options
 $opts = array(
@@ -125,9 +137,10 @@ $opts = array(
             'tmbCrop'       => false,
             'uploadDeny' => array('text/x-php','application/x-php'),
             'disabled'      => array('archive', 'extract', 'forward', 'netmount', 'netunmount', 'zipdl'),
+            'acceptedName' => 'preventPathTraversal',
             'attributes' => array(
                 array( // hide readmes
-                    'pattern' => '/(readme\.txt)|\.(html|php|php5|php*|phtml|phar|inc|py|pl|sh)$/i',
+                    'pattern' => '/(readme\.txt)|\.(html|php|php5|php.*|phtml|phar|inc|py|pl|sh)$/i',
                     'read'   => false,
                     'write'  => false,
                     'locked' => true,
