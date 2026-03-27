@@ -20,7 +20,8 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
     var $mediaHolder,
         popcornInstance,
         classes = "popcornMedia";
-    
+
+    debugger;
     if (mainMedia == true) {
         classes += " mainMedia";
     }
@@ -225,8 +226,8 @@ this.resizeEmbededMedia = function($video, {ratio = 16 / 9, width, height}) {
         hh = $holder.height() - heightClaimed,  // max height
         hw = Math.floor(hh * ratio);            // width from heights perspective
 
-    var w = ww < hw ? ww : hw; 
-    var h = ww < hw ? wh : hh;
+    var w = ((ww < hw || hw < 10) ? ww : hw);
+    var h = ((ww < hw || hw < 10) ? wh : hh);
     //console.log("width,height,ww,wh,hh,hw,w,h="+(width?width:"UNDEF")+","+(height?height:"UNDEF")+","+ww+","+wh+","+hh+","+hw+","+w+","+h);
     //console.log("aspect    = " + ($video[0].getAttribute("aspect")?$video[0].getAttribute("aspect"):"UNDEF"));
     //console.log("mainMedia = " + ($video[0].getAttribute("mainMedia")?$video[0].getAttribute("mainMedia"):"UNDEF"));
