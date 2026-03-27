@@ -3671,7 +3671,7 @@ function x_pageLoaded() {
 
 // function checks whether all pages in a chapter have been viewed
 function checkChapterViewed(pageIndex) {
-	if (pageIndex == undefined || x_pages[pageIndex].getAttribute("chapterIndex") != undefined) {
+	if (pageIndex == undefined || (x_pageInfo[pageIndex].type != "menu" && x_pages[pageIndex].getAttribute("chapterIndex") != undefined)) {
 		const numChaptersToCheck = pageIndex != undefined ? 1 : x_chapters.length;
 		for (let i=0; i<numChaptersToCheck; i++) {
 			const index = pageIndex != undefined ? x_pages[pageIndex].getAttribute("chapterIndex") : i;
