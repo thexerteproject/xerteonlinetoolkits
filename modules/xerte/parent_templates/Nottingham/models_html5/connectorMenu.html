@@ -176,18 +176,22 @@
 							}
 
 							const page = x_lookupPage("linkID", menuItems[i]);
-							if ($.isArray(page)) {
-								if (chapter != true && (pageNames[i] == undefined || pageNames[i] == "")) {
-									name = this.getNestedName(page);
+							if (page) {
+								if ($.isArray(page)) {
+									if (chapter != true && (pageNames[i] == undefined || pageNames[i] == "")) {
+										name = this.getNestedName(page);
+									}
+									$thisItem.data('parent', x_pages[page[0]].getAttribute('linkID'));
+								} else if (menuItems[i] != undefined && menuItems[i] != "") {
+									if (chapter != true && (pageNames[i] == undefined || pageNames[i] == "")) {
+										name = x_pages[page].getAttribute("name");
+									}
+								} else {
+									$('#subMenuItems').html("There are one or more page destinations empty");
+									break;
 								}
-								$thisItem.data('parent', x_pages[page[0]].getAttribute('linkID'));
-							} else if( menuItems[i] != undefined &&  menuItems[i] != "") {
-								if (chapter != true && (pageNames[i] == undefined || pageNames[i] == "")) {
-									name = x_pages[page].getAttribute("name");
-								}
-							}else{
-								$('#subMenuItems').html("There are one or more page destinations empty");
-								break;
+							} else {
+								$thisItem.remove();
 							}
 						}
 					}
@@ -201,8 +205,8 @@
 				}
 
 				$thisItem
-					.html(name)
-					.append(' <i class="fa fa-x-tick-circle notvisited" aria-hidden="true" aria-label="' + x_getLangInfo(x_languageData.find("viewed")[0], "label", "Viewed") + '"></i>');
+						.html(name)
+						.append(' <i class="fa fa-x-tick-circle notvisited" aria-hidden="true" aria-label="' + x_getLangInfo(x_languageData.find("viewed")[0], "label", "Viewed") + '"></i>');
 			}
 			
 			$(".subMenuItem")
