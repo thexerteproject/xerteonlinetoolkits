@@ -7,5 +7,5 @@
     <h3>To reinstall:</h3>
 
     <ul>
-        <li>Delete 'database.php' from <code><?php echo $xot_setup->root_path; ?></code></li>
+        <li>Delete 'database.php' from the root of your Xerte Online Toolkits installation.</li>
     </ul>
