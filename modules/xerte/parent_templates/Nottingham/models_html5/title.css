@@ -35,6 +35,10 @@
 		padding-right: 1em;
 	}
 
+	#x_pageDiv {
+		box-sizing: border-box;
+	}
+
 	#x_pageDiv.autoLayout {
 		width: 100%;
 		height: auto !important;
