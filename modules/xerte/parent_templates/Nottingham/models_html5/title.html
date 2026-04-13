@@ -252,6 +252,15 @@
                 this.position_2();
                 x_pageLoaded();
             }
+
+            // if images have been added directly to title text then the autoLayout class may not be added when it is needed as image not yet loaded
+            // look for changes in the height of #txtHolder to account for this
+            const observer = new ResizeObserver(entries => {
+                for (let entry of entries) {
+                    title.position_2();
+                }
+            });
+            observer.observe($("#txtHolder")[0]);
         }
 
         this.responsiveTitle = function () {
@@ -276,7 +285,6 @@
         }
 
         this.position_2 = function () {
-
             if (x_browserInfo.mobile == true) {
                 // mobile view so title is always positioned at top
                 $("#pageContents").css("position", "inherit");

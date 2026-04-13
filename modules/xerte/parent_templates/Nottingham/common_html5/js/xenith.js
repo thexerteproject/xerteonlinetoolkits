@@ -4492,7 +4492,7 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
             imgH = $img.data("origSize")[1];
         }
 
-        if (enlarge !== false) {
+        if (enlarge !== true) {
             maxW = Math.min(maxW, imgW);
             maxH = Math.min(maxH, imgH);
         }
@@ -7348,6 +7348,7 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 				$special_theme_responsive_css.attr("href", currentResponsiveThemeURL + ".css");
 				$special_theme_responsive_css.prop("disabled", false);
 			}
+
 		} else {
 			// default theme in use
 			$special_theme_css.prop("disabled", true);
