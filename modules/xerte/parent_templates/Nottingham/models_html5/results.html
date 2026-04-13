@@ -290,7 +290,7 @@
 
       xtresults.interactions.forEach(function(x) {
         // don't show pages where weighting is zero, unless show pages with 0 tracking weight is on
-        if (x.type == 'result' || ((!showzeroweight && x.judge) && x.completed == "true" && x.weighting == 0)) {
+        if (x.type == 'result' || ((!showzeroweight && (x.judge == undefined || x.judge)) && (x.completed == undefined || x.completed == "true") && x.weighting == 0)) {
           return;
         }
 
@@ -346,14 +346,17 @@
               if (x_currentPageXML.getAttribute('global' + globalColumns[i].col) == 'false') {
                 globalColumns[i].active = false;
               } else {
-                tableSetUp += '<th>' + globalColumns[i].data + '</th>';
-                globalPDFcolumns.push(globalColumns[i].col == 'Name' ? x_GetTrackingTextFromHTML(globalColumns[i].data, "") : globalColumns[i].data);
-                if (globalColumns[i].col == 'Name') {
-                  globalPDFname = globalPDFcolumns.length - 1;
-                } else if (globalColumns[i].col == 'Completed') {
-                  globalPDFcomplete = globalPDFcolumns.length - 1;
-                } else if (globalColumns[i].col == 'Details') {
-                  globalPDFdetails = globalPDFcolumns.length - 1;
+                // Only show Details column in full-report mode
+                if (globalColumns[i].col != 'Details' || xtresults.mode == 'full-results') {
+                  tableSetUp += '<th>' + globalColumns[i].data + '</th>';
+                  globalPDFcolumns.push(globalColumns[i].col == 'Name' ? x_GetTrackingTextFromHTML(globalColumns[i].data, "") : globalColumns[i].data);
+                  if (globalColumns[i].col == 'Name') {
+                    globalPDFname = globalPDFcolumns.length - 1;
+                  } else if (globalColumns[i].col == 'Completed') {
+                    globalPDFcomplete = globalPDFcolumns.length - 1;
+                  } else if (globalColumns[i].col == 'Details' && xtresults.mode == 'full-results') {
+                    globalPDFdetails = globalPDFcolumns.length - 1;
+                  }
                 }
               }
             }
@@ -369,27 +372,31 @@
 
           for (let i=0; i<globalColumns.length; i++) {
             if (globalColumns[i].active == true) {
-              if (i==0) {
-                thisRow += '<td>';
-              } else {
-                thisRow += '<td class=\'td-center\'>';
-              }
-              thisRow += rowData[i] + (globalColumns[i].col == 'Duration' ? durationSecondTxt : '') + '</td>';
-
-              let rowInfo;
-              if (globalColumns[i].col == 'Name') {
-                rowInfo = x_GetTrackingTextFromHTML(rowData[i], "");
-              } else if (globalColumns[i].col == 'Completed') {
-                rowInfo = completedTokenTxt;
-              } else if (globalColumns[i].col == 'Details') {
-                rowInfo = interactiveTokenTxt;
-              } else {
-                rowInfo = rowData[i];
-                if (globalColumns[i].col == 'Duration') {
-                  rowInfo += durationSecondTxt;
+              // Only show Details column in full-report mode
+              if (globalColumns[i].col != 'Details' || xtresults.mode == 'full-results') {
+                if (i==0) {
+                  thisRow += '<td>';
+                } else {
+                  thisRow += '<td class=\'td-center\'>';
                 }
+
+                thisRow += rowData[i] + (globalColumns[i].col == 'Duration' ? durationSecondTxt : '') + '</td>';
+
+                let rowInfo;
+                if (globalColumns[i].col == 'Name') {
+                  rowInfo = x_GetTrackingTextFromHTML(rowData[i], "");
+                } else if (globalColumns[i].col == 'Completed') {
+                  rowInfo = completedTokenTxt;
+                } else if (globalColumns[i].col == 'Details' && xtresults.mode == 'full-results') {
+                  rowInfo = interactiveTokenTxt;
+                } else {
+                  rowInfo = rowData[i];
+                  if (globalColumns[i].col == 'Duration') {
+                    rowInfo += durationSecondTxt;
+                  }
+                }
+                globalPDFrow.push(rowInfo);
               }
-              globalPDFrow.push(rowInfo);
             }
           }
           globalPDFrows.push(globalPDFrow);
