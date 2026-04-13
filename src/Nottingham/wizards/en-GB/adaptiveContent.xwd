@@ -58,7 +58,8 @@
     </QFGroup>
 
       <newNodes>
-        <interaction ><![CDATA[<interaction acpWarning="" name="Enter Source Interaction" introduction="" label="" interactionType="score" scoreText="Your score is {0}" answerText="Your answer is {0}" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
+        <interaction ><![CDATA[<interaction acpWarning="" name="Enter Source Interaction" introduction="" label="" interactionType="score" scoreText="Your score is {0}" noScoreText="You do not have a score" answerText="Your answer is {0}" noAnswerTest="You did not give an answer" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" NrSessionsText="The number of sessions is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
+        noAnswerGivenGraphLabel="No answer"
         xAxisLabelBarAnswers = "Answers given"
         yAxisLabelBarAnswers = "Percentage of answers"
         xAxisLabelBarMarks = "Score Range [%]"
@@ -105,7 +106,7 @@
         <label label="Tracking Label of Source" type="TextInput" condition="interactionType!='grouping'" wysiwyg="false" />
         <grouping label="Grouping equals" type="Grouping" mandatory="true" defaultValue="" condition="interactionType=='grouping'" tooltip="Choose the grouping to extract the score from. More than one score can be part of the same grouping, and then the average score is used" />
         <opinionClass label="Opinion Class" type="TextInput" condition="interactionType=='score'" wysiwyg="false" optional="true" defaultValue="" placeholder="Enter label of class" tooltip="Enter the label of the class of the opinion to use as score in case the interaction type is based on score and the score comes from an opinion class" />
-        <sessionStatementUsed label="Which answer(s) to use within session" condition="interactionType!='opinionclasses'&amp;&amp;interactionType!='groupings'&amp;&amp;interactionType!='grouping'" type="combobox" data="first,last,best,all" options="First,Last,Best,All" defaultValue="all" optional="true" tooltip="Which answer should be used if within a session the answer is given more than one time."/>
+        <sessionStatementUsed label="Which answer(s) to use of session/participant" condition="interactionType!='opinionclasses'&amp;&amp;interactionType!='groupings'&amp;&amp;interactionType!='grouping'" type="combobox" data="first,last,best,all" options="First,Last,Best,All" defaultValue="all" optional="true" tooltip="Which answer should be used if within a session the answer is given more than one time."/>
         <acpWarning label="Please note: The Adaptive Content page does not function when using the preview/play link. To properly inspect the page, use the xAPI/LTI URL provided in the Xerte workspace. If no URL is available, the setup may be incomplete. In that case, please refer to the Adaptive Content manual or Wiki for setup instructions." type="info" />
         <graphgroup type="group" label="Graph" condition="interactionType!='open'" optional="true">
           <graph label="Show Graph" type="checkbox" defaultValue="false" optional="true"/>
@@ -139,12 +140,19 @@
         </graphgroup>
         <showScore label="Show score/answer" type="CheckBox" condition="interactionType=='score'||interactionType=='answer'||(interactionType=='opinion' &amp;&amp; opinionClass!=null)||interactionType=='grouping'||interactionType=='groupings'||interactionType=='opinionclasses'" optional="true" defaultValue="false" tooltip="Show your score or answer on which the interactionBlocks based" />
         <scoreText label="Score text" type="TextInput" wysiwyg="true" language="true" />
+        <noScoreText label="No Score text" type="TextInput" wysiwyg="true" language="true" />
         <answerText label="Answer text" type="TextInput" wysiwyg="true" language="true" />
+        <noAnswerText label="No Answer text" type="TextInput" wysiwyg="true" language="true" />
+        <noAnswerGivenGraphLabel label="No answer given graph label" type="TextInput" wysiwyg="false" language="true" />
         <!-- <showAvgScore label="Show average score" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the average score of the whole group" /> -->
         <SummaryText label="Summary Title" type="TextInput" wysiwyg="true" language="true" />
         <AvgScoreText label="Average Score Label" type="TextInput" wysiwyg="true" language="true" />
-        <showNrOfParticipants label="Show no. of participants" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the number of participants of this group" />
-        <NrParticipantsText label="No. of Participants Label" type="TextInput" wysiwyg="true" language="true" />
+        <nrOfParticipants type="group" label="Number of participants" optional="true" tooltip="Show the number of sessions or the number of participants">
+          <countParticipants type="combobox" optional="true" defaultValue="session" data="session,participant" options="Session,Participant" tooltip="What to count, participant or unique sessions"/>
+          <showNrOfParticipants label="Show no. of Sessions/Participants" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the number of participants of this group" />
+          <NrParticipantsText label="No. of Participants Label" type="TextInput" wysiwyg="true" language="true" />
+          <NrSessionsText label="No. of Sessions Label" type="TextInput" wysiwyg="true" language="true" />
+        </nrOfParticipants>
         <showOtherBlockContent label="Display content from other blocks" type="CheckBox" optional="true" defaultValue="false" tooltip="allow users to (optionally) see the content from all blocks" />
         <showNrOfQuestions label="Show no. of questions" condition="interactionType=='grouping'" type="CheckBox" optional="true" defaultValue="false" tooltip="Show the number of questions of this group" />
         <NrQuestionsText label="No. of Questions Label" type="TextInput" wysiwyg="true" language="true" />

@@ -668,19 +668,18 @@
         }
     }
 
-    function filterRelevantStatements(statements, type) {
-        if (type == "all") {
-            return statements
-        }
+    function getGroupedData(statements, counttype)
+    {
         var groupedData = {};
         statements.forEach(function (statement, i) {
             var participant = {
                 'attemptkeys': [],
                 'attempts': [],
+                'statements': [],
             };
 
             if (statement.actor.mbox != undefined) {
-                var key = statement.actor.mbox.substr(7).trim();
+                var key = toSHA1(statement.actor.mbox);
                 if (groupedData[key] == undefined) {
                     participant['key'] = key;
                     groupedData[key] = participant;
@@ -711,44 +710,96 @@
                 }
             }
             if (key != undefined) {
-                if (statement.context != undefined &&
-                    statement.context.extensions != undefined &&
-                    statement.context.extensions['http://xerte.org.uk/sessionId'] != undefined) {
-                    var attemptkey = statement.context.extensions['http://xerte.org.uk/sessionId'];
-                    if (!groupedData[key]['attemptkeys'].includes(attemptkey)) {
-                        groupedData[key]['attempts'][attemptkey] = {
-                            'key': attemptkey,
-                            'statements' : []
-                        };
-                        groupedData[key]['attemptkeys'].push(attemptkey)
+                if (counttype == 'session') {
+                    if (statement.context != undefined &&
+                        statement.context.extensions != undefined &&
+                        statement.context.extensions['http://xerte.org.uk/sessionId'] != undefined) {
+                        var attemptkey = statement.context.extensions['http://xerte.org.uk/sessionId'];
+                        if (!groupedData[key]['attemptkeys'].includes(attemptkey)) {
+                            groupedData[key]['attempts'][attemptkey] = {
+                                'key': attemptkey,
+                                'statements': []
+                            };
+                            groupedData[key]['attemptkeys'].push(attemptkey)
+                        }
+                        groupedData[key]['attempts'][attemptkey]['statements'].push(statement)
                     }
-                    groupedData[key]['attempts'][attemptkey]['statements'].push(statement)
+                }
+                else{
+                    groupedData[key]['statements'].push(statement);
                 }
             }
         });
-        var statements = [];
+        return groupedData;
+    }
+
+    function getNrParticipants(statements, counttype)
+    {
+        var groupedData = getGroupedData(statements, counttype);
+        if (counttype === 'session') {
+            let count = 0;
+            for (var user in groupedData) {
+                count += Object.keys(groupedData[user].attempts).length;
+            }
+            return count;
+        }
+        return Object.keys(groupedData).length;
+    }
+
+    function filterRelevantStatements(statements, counttype, type) {
+        if (counttype === 'session' && type === "all") {
+            return statements
+        }
+        var groupedData = getGroupedData(statements, counttype);
+        var fstatements = [];
         for (var user in groupedData) {
-            for (var attempt in groupedData[user].attempts) {
-                if (type == "first") {
-                    statements.push(groupedData[user].attempts[attempt].statements[groupedData[user].attempts[attempt].statements.length-1])
-                } else if (type == "last") {
-                    statements.push(groupedData[user].attempts[attempt].statements[0])
-                } else if (type == 'best') {
-                    var bestAttempt = null;
-                    for (var i = 0; i < groupedData[user].attempts[attempt].statements.length; i++) {
-                        if (bestAttempt != null) {
-                            if (bestAttempt.result.score.raw < groupedData[user].attempts[attempt].statements[i].result.score.raw) {
+            if (counttype === 'session') {
+                for (var attempt in groupedData[user].attempts) {
+                    if (type === "first") {
+                        fstatements.push(groupedData[user].attempts[attempt].statements[groupedData[user].attempts[attempt].statements.length - 1])
+                    } else if (type === "last") {
+                        fstatements.push(groupedData[user].attempts[attempt].statements[0])
+                    } else if (type === 'best') {
+                        let bestAttempt = null;
+                        for (let i = 0; i < groupedData[user].attempts[attempt].statements.length; i++) {
+                            if (bestAttempt != null) {
+                                if (bestAttempt.result.score.raw < groupedData[user].attempts[attempt].statements[i].result.score.raw) {
+                                    bestAttempt = groupedData[user].attempts[attempt].statements[i]
+                                }
+                            } else {
                                 bestAttempt = groupedData[user].attempts[attempt].statements[i]
                             }
+                        }
+                        fstatements.push(bestAttempt)
+                    }
+                }
+            }
+            else {
+                if (type === "first") {
+                    fstatements.push(groupedData[user].statements[groupedData[user].statements.length - 1])
+                } else if (type === "last") {
+                    fstatements.push(groupedData[user].statements[0])
+                } else if (type === 'best') {
+                    let bestAttempt = null;
+                    for (let i = 0; i < groupedData[user].statements.length; i++) {
+                        if (bestAttempt != null) {
+                            if (bestAttempt.result.score.raw < groupedData[user].statements[i].result.score.raw) {
+                                bestAttempt = groupedData[user].statements[i]
+                            }
                         } else {
-                            bestAttempt = groupedData[user].attempts[attempt].statements[i]
+                            bestAttempt = groupedData[user].statements[i]
                         }
                     }
-                    statements.push(bestAttempt)
+                    fstatements.push(bestAttempt)
+                }
+                else
+                {
+                    // All statements for user
+                    fstatements = fstatements.concat(groupedData[user].statements);
                 }
             }
         }
-        return statements
+        return fstatements;
     }
 
     //stores the static periods if a form we can use in the acp.
@@ -1007,10 +1058,14 @@
         if (sessionStatementUsed == undefined) {
             sessionStatementUsed = "all";
         }
+        var countParticipants = interaction.getAttribute("countParticipants");
+        if (countParticipants == undefined) {
+            countParticipants = "session";
+        }
         // You can only do this if you have a very targeted query
         // If type is grouping, groupings  or opinionclasses, we should NOT filter the data on sessions
         if (type != "grouping" && type != "groupings" && type != "opinionclasses") {
-            data = filterRelevantStatements(data, sessionStatementUsed);
+            data = filterRelevantStatements(data, countParticipants, sessionStatementUsed);
         }
         if (type == "open" && adaptiveContent.dashboardMode !== "true"){
             data = filterOwnStatements(data, xertelo)
@@ -1483,15 +1538,28 @@
       if (scoreLabelText == undefined) {
         scoreLabelText = "Your score is {0}";
       }
+      var noScoreLabelText = interaction.getAttribute("noScoreText");
+      if (noScoreLabelText == undefined) {
+        noScoreLabelText = "You do not have a score";
+      }
 
       var answerLabelText = interaction.getAttribute("answerText");
       if (answerLabelText == undefined) {
         answerLabelText = "Your answer is {0}";
       }
 
+      var noAnswerLabelText = interaction.getAttribute("noAnswerText");
+      if (noAnswerLabelText == undefined) {
+         noAnswerLabelText = "You did not give an answer";
+      }
+
       var nrParticipantsText = interaction.getAttribute("NrParticipantsText");
       if (nrParticipantsText == undefined) {
         nrParticipantsText = "The number of participants is {0}";
+      }
+      var nrSessionsText = interaction.getAttribute("NrSessionsText");
+      if (nrSessionsText == undefined) {
+        nrSessionsText = "The number of sessions is {0}";
       }
       var MultiPeriod = x_currentPageXML.getAttribute("multiPeriodVersion");
       if (MultiPeriod == undefined) {
@@ -1868,9 +1936,17 @@
       if (scoreLabelText == null) {
         scoreLabelText = "Your score is {0}";
       }
+      let noScoreLabelText = interaction.getAttribute("noScoreText");
+      if (noScoreLabelText == null) {
+        noScoreLabelText = "You do not have a score";
+      }
       let nrParticipantsText = interaction.getAttribute("NrParticipantsText");
       if (nrParticipantsText == null) {
         nrParticipantsText = "The number of participants is {0}";
+      }
+      let nrSessionsText = interaction.getAttribute("NrSessionsText");
+      if (nrSessionsText == null) {
+        nrSessionsText = "The number of sessions is {0}";
       }
       let NrQuestionsText = interaction.getAttribute("NrQuestionsText");
       if (NrQuestionsText == null) {
@@ -2095,10 +2171,16 @@
                   }
                   if (interaction.getAttribute("showScore") == "true") {
                       var txt = scoreLabelText;
-                      txt = txt.replace(/\{0\}/, score >= 0 ? Math.round(score * 10) / 10 : "NaN");
+                      if (score < 0)
+                      {
+                          txt = noScoreLabelText;
+                      }
+                      else {
+                          txt = txt.replace(/\{0\}/, score >= 0 ? (Math.round(score * 10) / 10) + "%"  : "-");
+                      }
                       $(
                           `#${escapeUrl(url, type, interactionIndex)}-stats${currentPeriod}`
-                      ).append("<li>" + txt + "%</li>");
+                      ).append("<li>" + txt + "</li>");
                   }
               }
           }
@@ -2166,17 +2248,18 @@
               if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
                   statements = periodStatements[currentPeriod];
               }
-              let sessionIds = statements.map(
-                  (x) => x.context.extensions["http://xerte.org.uk/sessionId"]
-              );
-              let uniqueSessions = sessionIds.filter(
-                  (e, i) => sessionIds.indexOf(e) === i
-              );
-              var txt = nrParticipantsText;
-              txt = txt.replace(/\{0\}/, uniqueSessions.length);
-              $(
-                  `#${escapeUrl(url, type, interactionIndex)}-stats${currentPeriod}`
-              ).append("<li>" + txt + "</li>");
+              if (interaction.getAttribute("countParticipants") === "session" || interaction.getAttribute("countParticipants") === null) {
+                  const nrSessions = getNrParticipants(statements, "session");
+                  var txt = nrSessionsText;
+                  txt = txt.replace(/\{0\}/, nrSessions);
+                  $(`#${escapeUrl(url, type, interactionIndex)}-stats${currentPeriod}`).append("<li>" + txt + "</li>");
+              }
+              else if (interaction.getAttribute("countParticipants") === "participant") {
+                  const nrUsers = getNrParticipants(statements, "participant");
+                  var txt = nrParticipantsText;
+                  txt = txt.replace(/\{0\}/, nrUsers);
+                  $(`#${escapeUrl(url, type, interactionIndex)}-stats${currentPeriod}`).append("<li>" + txt + "</li>");
+              }
           }
           //maintain proper statements state
           if (MultiPeriod === 'static'|| MultiPeriod === 'dynamic_always') {
@@ -2415,9 +2498,18 @@
             answerLabelText = "Your answer is: {0}";
         }
 
+        var noAnswerLabelText = interaction.getAttribute("noAnswerText");
+        if (noAnswerLabelText == undefined) {
+            noAnswerLabelText = "You did not give an answer";
+        }
+
         var nrParticipantsText = interaction.getAttribute("NrParticipantsText");
         if (nrParticipantsText == undefined) {
             nrParticipantsText = "The number of participants is: {0}";
+        }
+        var nrSessionsText = interaction.getAttribute("NrSessionsText");
+        if (nrSessionsText == undefined) {
+            nrSessionsText = "The number of sessions is {0}";
         }
         var xertelo = interaction.getAttribute("xertelo");
         if (xertelo == "") {
@@ -2458,7 +2550,7 @@
                 statements = periodStatements[currentPeriod];
                 ownstatements = ownstatementsPeriods[currentPeriod];
             }
-            var givenAnswer = "NaN"
+            var givenAnswer = noAnswerLabelText;
             if (ownstatements.length > 0) {
                 givenAnswer = ownstatements[0].result.response;
                 if (interaction.getAttribute("showScore") == "true") {
@@ -2472,12 +2564,28 @@
                     ).append("<li>" + txt + "</li>");
                 }
             }
+            else
+            {
+                if (interaction.getAttribute("showScore") == "true") {
+                    var txt = noAnswerLabelText;
+                    $(
+                            `#${escapeUrl(url, type, interactionIndex)}-stats${currentPeriod}`
+                    ).append("<li>" + txt + "</li>");
+                }
+            }
             if (interaction.getAttribute("showNrOfParticipants") == "true") {
-                var txt = nrParticipantsText;
-                txt = txt.replace(/\{0\}/, statements.length);
-                $(
-                        `#${escapeUrl(url, type, interactionIndex)}-stats${currentPeriod}`
-                ).append("<li>" + txt + "</li>");
+                if (interaction.getAttribute("countParticipants") === "session" || interaction.getAttribute("countParticipants") === null) {
+                    const nrSessions = getNrParticipants(statements, "session");
+                    var txt = nrSessionsText;
+                    txt = txt.replace(/\{0\}/, nrSessions);
+                    $(`#${escapeUrl(url, type, interactionIndex)}-stats${currentPeriod}`).append("<li>" + txt + "</li>");
+                }
+                else if (interaction.getAttribute("countParticipants") === "participant") {
+                    const nrUsers = getNrParticipants(statements, "participant");
+                    var txt = nrParticipantsText;
+                    txt = txt.replace(/\{0\}/, nrUsers);
+                    $(`#${escapeUrl(url, type, interactionIndex)}-stats${currentPeriod}`).append("<li>" + txt + "</li>");
+                }
             }
         }
 
@@ -2557,10 +2665,14 @@
             var yAxisLabelBarAnswers = interaction.getAttribute(
                 "yAxisLabelBarAnswers"
             );
+            var noAnswerGivenLabel = interaction.getAttribute("noAnswerGivenLabel");
             if (xAxisLabelBarAnswers == undefined)
                 xAxisLabelBarAnswers = "Answers given";
             if (yAxisLabelBarAnswers == undefined)
                 yAxisLabelBarAnswers = "Number of answers";
+            if (noAnswerGivenLabel == undefined) {
+                noAnswerGivenLabel = "No answer";
+            }
 
 
             for (let currentPeriod = 0; currentPeriod < periods.length; currentPeriod++) {
@@ -2604,8 +2716,9 @@
                     barColors: [...barColors],
                     ctx: ctx,
                     userAnswer: givenAnswer,
-                    xAxisLabel: interaction.getAttribute("xAxisLabelBarAnswers"),
-                    yAxisLabel: interaction.getAttribute("yAxisLabelBarAnswers"),
+                    xAxisLabel: xAxisLabelBarAnswers,
+                    yAxisLabel: yAxisLabelBarAnswers,
+                    //noAnswerGivenLabel: noAnswerGivenLabel,
                   }
                 });
                 graph.draw();
@@ -2632,9 +2745,17 @@
       if (scoreLabelText == null) {
         scoreLabelText = "Your score is {0}";
       }
+      let noScoreLabelText = interaction.getAttribute("noScoreText");
+      if (noScoreLabelText == null) {
+        noScoreLabelText = "You do not have a score";
+      }
       var nrParticipantsText = interaction.getAttribute("NrParticipantsText");
       if (nrParticipantsText == null) {
         nrParticipantsText = "The number of participants is {0}";
+      }
+      var nrSessionsText = interaction.getAttribute("NrSessionsText");
+      if (nrSessionsText == null) {
+        nrSessionsText = "The number of sessions is {0}";
       }
       var showExplanation = interaction.getAttribute("showExplanation");
       var Explanation = interaction.getAttribute("graphExplanation");
@@ -2702,11 +2823,18 @@
                 statements = periodStatements[currentPeriod];
             }
             if (interaction.getAttribute("showNrOfParticipants") == "true") {
-                var txt = nrParticipantsText;
-                txt = txt.replace(/\{0\}/, data.length);
-                $(
-                    `#${escapeUrl(url, type, interactionIndex)}-stats${currentPeriod}`
-                ).append("<li>" + txt + "</li>");
+                if (interaction.getAttribute("countParticipants") === "session" || interaction.getAttribute("countParticipants") === null) {
+                    const nrSessions = getNrParticipants(statements, "session");
+                    var txt = nrSessionsText;
+                    txt = txt.replace(/\{0\}/, nrSessions);
+                    $(`#${escapeUrl(url, type, interactionIndex)}-stats${currentPeriod}`).append("<li>" + txt + "</li>");
+                }
+                else if (interaction.getAttribute("countParticipants") === "participant") {
+                    const nrUsers = getNrParticipants(statements, "participant");
+                    var txt = nrParticipantsText;
+                    txt = txt.replace(/\{0\}/, nrUsers);
+                    $(`#${escapeUrl(url, type, interactionIndex)}-stats${currentPeriod}`).append("<li>" + txt + "</li>");
+                }
             }
             jsonData = statements.map(function (d) {
                 var obj = {};
@@ -2755,6 +2883,10 @@
       var nrParticipantsText = interaction.getAttribute("NrParticipantsText");
       if (nrParticipantsText == undefined) {
         nrParticipantsText = "The number of participants is {0}";
+      }
+      var nrSessionsText = interaction.getAttribute("NrSessionsText");
+      if (nrSessionsText == undefined) {
+        nrSessionsText = "The number of sessions is {0}";
       }
 
       var showUserId = "false";
@@ -3324,7 +3456,10 @@
         if (scoreLabelText == undefined) {
             scoreLabelText = "Your score is {0}";
         }
-
+        var noScoreLabelText = interaction.getAttribute("noScoreText");
+        if (noScoreLabelText == undefined) {
+          noScoreLabelText = "You do not have a score";
+        }
         for (
           var interactionIndex = 0;
           interactionIndex < oInteractions.length;
@@ -3350,7 +3485,7 @@
           name = interaction.getAttribute("name");
           div = $("<div></div>");
           var scoretext = "";
-          if (interaction.score != Number.MAX_VALUE) {
+          if (interaction.score != Number.MAX_VALUE && interaction.score >= 0) {
             scoretext =
               "<div class='score'><p>" +
               scoreLabelText.replace(
@@ -3358,6 +3493,12 @@
                 Math.round(interaction.score * 10) / 10
               ) +
               "</p></div>";
+          }
+          else if (interaction.score < 0) {
+            scoretext =
+              "<div class='score'><p>" +
+               noScoreLabelText +
+               "</p></div>";
           }
           div.html(
             "<h2><p>" +
