@@ -58,7 +58,7 @@
     </QFGroup>
 
       <newNodes>
-        <interaction ><![CDATA[<interaction acpWarning="" name="Enter Source Interaction" introduction="" label="" interactionType="score" scoreText="Your score is {0}" noScoreText="You do not have a score" answerText="Your answer is {0}" noAnswerTest="You did not give an answer" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" NrSessionsText="The number of sessions is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
+        <interaction ><![CDATA[<interaction acpWarning="" name="Enter Source Interaction" introduction="" label="" interactionType="score" scoreText="Your score is {0}" noScoreText="You do not have a score" answerText="Your answer is {0}" noAnswerText="You did not give an answer" AvgScoreText="The average score is {0}" NrParticipantsText="The number of participants is {0}" NrSessionsText="The number of sessions is {0}" myOpenAnswerText="My answers" allOpenAnswerText="All open answers"
         noAnswerGivenGraphLabel="No answer"
         xAxisLabelBarAnswers = "Answers given"
         yAxisLabelBarAnswers = "Percentage of answers"
