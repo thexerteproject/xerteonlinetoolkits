@@ -891,6 +891,9 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 			if (btnIcon.customised == true) { $x_menuBtn.addClass("customIconBtn"); } else { $x_menuBtn.removeClass("customIconBtn");  };
 			if (btnIcon.btnImgs == true) { $x_menuBtn.addClass("imgIconBtn"); } else { $x_menuBtn.removeClass("imgIconBtn"); };
 		}
+
+		// header / footer bar may have changed height with theme change
+		x_updateCss();
 	}
 }
 
@@ -7261,8 +7264,8 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 
 		for (let i=0; i<filterMap.length; i++) {
 			const $radio = $('<div class="optionGroup"></div>');
-			$radio.append('<input type="radio" name="colourChangerRadios" id="option' + i + '" value="' + i + '"' + (i===checked ? ' checked="checked"' : '') + '>');
-			$radio.append('<label for="option' + i + '"><p>' + x_getLangInfo(x_languageData.find("colourChanger").find(filterMap[i].name)[0], "label", filterMap[i].default) + '</p></label>');
+			$radio.append('<input type="radio" name="colourChangerRadios" id="colourChanger_option' + i + '" value="' + i + '"' + (i===checked ? ' checked="checked"' : '') + '>');
+			$radio.append('<label for="colourChanger_option' + i + '"><p>' + x_getLangInfo(x_languageData.find("colourChanger").find(filterMap[i].name)[0], "label", filterMap[i].default) + '</p></label>');
 			$colourChangerOptions.append($radio);
 		}
 
@@ -7335,6 +7338,7 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 		const $special_theme_responsive_css = $("#special_theme_responsive_css");
 		const $theme_css = $("#theme_css");
 		const $theme_responsive_css = $("#theme_responsive_css");
+		const $custom_special_theme_css = $("#custom_special_theme_css");
 
 		if (theme !== x_params.theme) {
 			// custom theme in use
@@ -7349,6 +7353,27 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 				$special_theme_responsive_css.prop("disabled", false);
 			}
 
+			// themes can contain css files only used when a special theme is in use
+			// e.g. when the theme changes layout and the special theme needs to keep these changes
+			const thisAccessibleTheme = x_themePath + x_params.theme + '/accessibility/' + theme + '.css';
+			function fileExists(url) {
+				return fetch(url, { method: "HEAD" })
+					.then(res => res.ok)
+					.catch(() => false);
+			}
+
+			fileExists(thisAccessibleTheme).then(exists => {
+				if (exists) {
+					if ($custom_special_theme_css.length > 0) {
+						$custom_special_theme_css.attr("href", thisAccessibleTheme);
+						$custom_special_theme_css.prop("disabled", false);
+					} else {
+						x_insertCSS(thisAccessibleTheme, function () {
+						}, false, "custom_special_theme_css", true);
+					}
+				}
+			});
+
 		} else {
 			// default theme in use
 			$special_theme_css.prop("disabled", true);
@@ -7358,6 +7383,11 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 			// only enable responsive text css files if needed responsive text is currently on
 			if (checkResponsiveTxt()) {
 				$theme_responsive_css.prop("disabled", false);
+			}
+
+			// disable any theme css files that are only used when a special theme is in use
+			if ($custom_special_theme_css.length > 0) {
+				$custom_special_theme_css.prop("disabled", true);
 			}
 		}
 
