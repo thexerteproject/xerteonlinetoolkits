@@ -2107,9 +2107,14 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
                 lchildren = allChildPages;
             }
 
-            // pages that now use flexhotspots should also allow hotspots for backwards compatibility
+            // some pages have changed the type of nested nodes that are used
+            // ensure the old versions are still accepted so that pages can still be fully duplicated
             if ($.inArray("flexhotspot", lchildren) > -1 && $.inArray("hotspot", lchildren) === -1) {
+                // pages that now use 'flexhotspot' should also allow 'hotspot'
                 lchildren.push("hotspot");
+            } else if ($.inArray("nestedColumnPage", lchildren) > -1 && $.inArray("nestedPage", lchildren) === -1) {
+                // column page that now uses 'nestedColumnPage' should also allow 'nestedPage'
+                lchildren.push("nestedPage");
             }
 
             return {
