@@ -205,10 +205,11 @@
 
 				var $thisQ = $(x_currentPageXML).children()[this.questions[this.currentQ]];
 
-
 				// if language attributes aren't in xml will have to use english fall back
-				const qNoTxt = x_currentPageXML.getAttribute("quesCount") == undefined ? "Question {i} of {n}" : x_currentPageXML.getAttribute("quesCount");
-				$("#qNo").html(qNoTxt.replace("{i}", this.currentQ + 1).replace("{n}", this.questions.length));
+				if ($("#qNo").length > 0) {
+					const qNoTxt = x_currentPageXML.getAttribute("quesCount") == undefined ? "Question {i} of {n}" : x_currentPageXML.getAttribute("quesCount");
+					$("#qNo").html(qNoTxt.replace("{i}", this.currentQ + 1).replace("{n}", this.questions.length));
+				}
 
 				var infoString = $thisQ.getAttribute("prompt");
 				
@@ -336,7 +337,9 @@
 						});
 
 					quiz.checked = false;
-					$('#qNo').attr('tabIndex', "-1").focus();
+					if ($("#qNo").length > 0) {
+						$('#qNo').attr('tabIndex', "-1").focus();
+					}
 				}
 			}
 		}
@@ -785,6 +788,11 @@
 				.click(function() {
 					quiz.startQs();
 				});
+
+			// remove qNoTxt if no string to put in it
+			if (x_currentPageXML.getAttribute("quesCount") === "") {
+				$("#qNo").remove();
+			}
 
 			this.startQs();
 			this.sizeChanged();
