@@ -195,6 +195,7 @@
 								// show the next bullet immediately
 								$(".bullet:eq(" + $pageContents.data("currentBullet") + ")").fadeIn();
 								$pageContents.data("currentBullet", $pageContents.data("currentBullet") + 1);
+								$("#backBulletBtn").button("enable");
 
 								if ($pageContents.data("currentBullet") < $(".bullet").length) {
 									// then set timer to reveal other bullets (if not all now shown)
