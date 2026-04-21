@@ -17,7 +17,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-require_once('page_header.php'); 
+require_once('page_header.php');
+
+session_start();
+if (!isset($_SESSION['xerte_setup'])) {
+    die("Access denied");
+}
+
 $ok = true; $warning = false; ?>
 
     <h2>PHP Module Checks</h2>
