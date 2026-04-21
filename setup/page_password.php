@@ -19,6 +19,9 @@
  */
  
 session_start();
+if (!isset($_SESSION['xerte_setup'])) {
+    die("Access denied");
+}
 require_once('page_header.php');
 
 global $xerte_toolkits_site, $development;

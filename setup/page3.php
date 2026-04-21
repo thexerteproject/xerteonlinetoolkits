@@ -17,7 +17,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-require_once('page_header.php'); ?>
+require_once('page_header.php');
+
+session_start();
+if (!isset($_SESSION['xerte_setup'])) {
+    die("Access denied");
+}
+
+
+?>
 
         <h2>Toolkits Set up page</h2>
 

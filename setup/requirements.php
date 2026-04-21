@@ -19,6 +19,11 @@
  */
 require_once('page_header.php');
 
+session_start();
+if (!isset($_SESSION['xerte_setup'])) {
+    die("Access denied");
+}
+
 $xot_setup->check['php']    = SetupRequirements::phpVersion(); 
 $xot_setup->check['mysql']  = SetupRequirements::MysqlCheck(); ?>
 

@@ -231,6 +231,17 @@ function _do_cleanup()
         'package.json',
         'package-lock.json',
         'modules/xerte/parent_templates/Nottingham/common_html5/js/jsPDF/jspdf.min.js',
+        'setup/*.swf',
+        'setup/*.org',
+        'setup/phpinfo.php',
+        'setup/*.flv',
+        'setup/page_top',
+        'setup/phpinfo.php',
+        'setup/rlm_test.rlm',
+        'setup/rlo_test.rlo',
+        'setup/rlt_test.rlt',
+        'setup/video_pod_finished.*',
+        'setup/xertecheck.*',
     );
 
     foreach ($filelist as $file)
@@ -1659,3 +1670,8 @@ function upgrade_52()
         }
     }
 }
+    else{
+        return "Adding new extensions to the blacklisted extensions - NO PREVIOUS EXTENSIONS FOUND!";
+    }
+}
+
