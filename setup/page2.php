@@ -18,6 +18,10 @@
  * limitations under the License.
  */
 session_start();
+if (!isset($_SESSION['xerte_setup'])) {
+    die("Access denied");
+}
+
 
 // prevent PDO warning notices
 // error_reporting(0);

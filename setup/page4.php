@@ -21,6 +21,12 @@ global $xerte_toolkits_site;
 global $development;
 $xerte_toolkits_site = new stdClass();
 
+session_start();
+if (!isset($_SESSION['xerte_setup'])) {
+    die("Access denied");
+}
+
+
 require_once(dirname(__FILE__) . "/../database.php");
 
 $success_string = '';

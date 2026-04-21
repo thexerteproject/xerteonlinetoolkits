@@ -231,6 +231,17 @@ function _do_cleanup()
         'package.json',
         'package-lock.json',
         'modules/xerte/parent_templates/Nottingham/common_html5/js/jsPDF/jspdf.min.js',
+        'setup/*.swf',
+        'setup/*.org',
+        'setup/phpinfo.php',
+        'setup/*.flv',
+        'setup/page_top',
+        'setup/phpinfo.php',
+        'setup/rlm_test.rlm',
+        'setup/rlo_test.rlo',
+        'setup/rlt_test.rlt',
+        'setup/video_pod_finished.*',
+        'setup/xertecheck.*',
     );
 
     foreach ($filelist as $file)
@@ -1658,6 +1669,9 @@ function upgrade_52()
             return "Adding new extensions to the blacklisted extensions - ok ? false";
         }
     }
+    else{
+        return "Adding new extensions to the blacklisted extensions - NO PREVIOUS EXTENSIONS FOUND!";
+    }
 }
 
 function upgrade_53()
@@ -1764,6 +1778,29 @@ function upgrade_55()
         $message .= "Creating ai_request_logs table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
     } else {
         $message .= "Table ai_request_logs already exists - ok ? true<br>";
+    }
+
+    return $message;
+}
+
+function upgrade_56()
+{
+    $UserGroupsRoleTable = table_by_key("user_group_role");
+
+    $message = '';
+
+    if (!_table_exists($UserGroupsRoleTable)) {
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$UserGroupsRoleTable` (
+        `groupid` int NOT NULL,
+        `userid` bigint(20) NOT NULL,
+        PRIMARY KEY (`roleid`, `groupid`)
+      )"
+        );
+
+        $message .= "Creating user_group_role table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    }
+    else{
+        $message .= "Table user_group_role already exists - ok ? true". "<br>";
     }
 
     return $message;

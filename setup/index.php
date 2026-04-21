@@ -19,11 +19,14 @@
  */
 require_once('page_header.php'); 
 
-if ( file_exists( '../database.php' ) ):
+if ( file_exists( '../database.php' ) ) {
 
     require_once('software_installed.php');
-
-else: ?>
+}
+else{
+    session_start();
+    $_SESSION['xerte_setup'] = true;
+    ?>
 
 			<h2>About Xerte Online Toolkits</h2>
 
@@ -61,4 +64,4 @@ else: ?>
 
 <?php require_once('page_footer.php'); ?>
 
-<?php endif; ?>
+<?php } ?>
