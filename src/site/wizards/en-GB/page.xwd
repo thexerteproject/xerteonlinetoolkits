@@ -30,7 +30,7 @@
 			<hideUntilTime label="Until (hh:mm)" type="TextInput" placeholder="00:00" optional="true"/>
 		</hideShow>
 
-		<customSectionLinkGroup type="group" label="Section ID" optional="true" tooltip="Create a customised URL to this section" info="Create a link directly to this section by adding a unique ID and then appending #yourSectionID to the end of the project URL.&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt;Please also note that IDs are case sensitive.">
+		<customSectionLinkGroup type="group" label="Section ID" optional="true" tooltip="Create a customised URL to this section" info="Create a link directly to this section by adding #yourSectionID to the end of the project URL.&lt;br/&gt;Avoid using spaces, special characters and the words 'page', 'section' and 'content' in IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt; IDs are case sensitive.">
             <customLinkID label="Section ID" type="TextInput" optional="true"/>
         </customSectionLinkGroup>
 
@@ -322,7 +322,7 @@
 
 		<name type="TextInput" label="Pane Title" wysiwyg="true"/>
 
-		<customPaneLinkGroup type="group" label="Pane ID" optional="true" tooltip="Create a customised URL to this pane" info="Create a link directly to this navigator pane by adding a unique ID and then appending #yourPaneID to the end of the project URL.&lt;br/&gt;Avoid using spaces and the words 'page' and 'section' in IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt;Please also note that IDs are case sensitive.">
+		<customPaneLinkGroup type="group" label="Pane ID" optional="true" tooltip="Create a customised URL to this pane" info="Create a link directly to this navigator pane by adding #yourPaneID to the end of the project URL.&lt;br/&gt;Avoid using spaces, special characters and the words 'page', 'section' and 'content' in IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt; IDs are case sensitive.">
             <customLinkID label="Pane ID" type="TextInput" optional="true"/>
         </customPaneLinkGroup>
 

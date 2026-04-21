@@ -89,7 +89,7 @@
 		<introShow type="ComboBox" label="Auto-open" defaultValue="first" options="Every time this page is viewed,The first time this page is viewed,Never" data="always,first,never" optional="true" tooltip="Specify whether the introduction will automatically open when the page is viewed"/>
 	</introGroup>
 	
-	<customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL&lt;br/&gt;Avoid using spaces, special characters and the words 'page' and 'section' in page IDs">
+	<customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL.&lt;br/&gt;Avoid using spaces, special characters and the word 'page' in IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt;IDs are case sensitive.">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
 	</customLinkGroup>
 		
