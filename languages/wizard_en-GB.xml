@@ -311,7 +311,7 @@
 			<LLMSyncAlreadySynced>File already synced!</LLMSyncAlreadySynced>
 		</AIGenerationStatus>
 		<quickfill>
-			<QFConfirmRequest>The specified nodes will be automatically generated with their default values. Proceed with request?</QFConfirmRequest>
+			<QFConfirmRequest>The specified items will be generated and populated with default values. Do you want to continue?</QFConfirmRequest>
 			<QFError>Something went wrong. Please try using the quick fill feature again.</QFError>
 		</quickfill>
 	</assistents>
