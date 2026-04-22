@@ -517,7 +517,7 @@ cite {
 
 .panel.editorStyle,
 .panel.editorStyle.inline {
-  margin: 0;
+  margin: 0.5em;
   font-size: 1em;
 }
 
