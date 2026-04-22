@@ -36,6 +36,9 @@ body {
 	font-family: $mainfonts;
 	color:$fontcolorfordarkestcolor;
 }
+.ui-button.selected .ui-button-text {
+	color: $mainfontcolour;
+}
 .ui-button{
 	//default button background unless changed for specific pages
 	background:$darkestcolor;
