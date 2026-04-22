@@ -41,7 +41,6 @@
 
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
-			debugger;
 			var $grid = $("#grid");
 			var data = x_currentPageXML.getAttribute("data").split("||");
 			this.addLabelRefresh(data)
@@ -681,7 +680,6 @@
 				}
 
 			} else {
-				debugger;
 				$holder = $('<div class="listHolder"></div>').appendTo($grid);
 				$ul = $('<ul/>').appendTo($holder);
 				labelData.push([]);
