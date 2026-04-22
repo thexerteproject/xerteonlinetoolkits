@@ -14,7 +14,7 @@
 
     <headerName label="Header Text" type="TextInput" wysiwyg="true" defaultValue="" optional="true" condition="includeInHeader=='true'" tooltip="By default, when the chapter title is shown on the header bar before the page title, the full chapter title will be used. Specify a different chapter title for use on the header bar here, e.g. an abbreviated version"/>
 
-    <chapterIDGroup type="group" label="Chapter ID" optional="true" tooltip="Create a customised URL to this chapter" info="Create a link directly to this chapter by adding #yourChapterID to the end of the project URL&lt;br/&gt;Avoid using spaces, special characters and the words 'page' and 'section' in chapter IDs">
+    <chapterIDGroup type="group" label="Chapter ID" optional="true" tooltip="Create a customised URL to this chapter" info="Create a link directly to this chapter by adding #yourChapterID to the end of the project URL.&lt;br/&gt;Avoid using spaces, special characters and the word 'page' in IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt;IDs are case sensitive.">
       <chapterID label="Chapter ID" type="TextInput" optional="true"/>
     </chapterIDGroup>
 
