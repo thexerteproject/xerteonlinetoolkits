@@ -23,7 +23,7 @@
     <textBottom label="Text Below Columns" type="TextArea" height="100" optional="true"/>
 
     <newNodes>
-      <nestedColumnPage><![CDATA[<nestedColumnPage name="Enter Title Here" text="Content for the pane" align="Top"/>]]></nestedColumnPage>
+      <nestedColumnPage><![CDATA[<nestedColumnPage name="Enter Title Here" text="" align="Top"/>]]></nestedColumnPage>
     </newNodes>
 
     <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
