@@ -47,45 +47,29 @@
 	width: 30px;
 	height: 30px;
 	border-radius: 20px;
+	display: flex;
+	justify-content: center; /* horizontal */
+	align-items: center;     /* vertical */
 }
 
 #slider_handle.horizontal {
 	top: calc(50% - 15px);
 	right: 13px;
+	gap: 2px;
 }
 
 #slider_handle.vertical {
 	left: calc(50% - 15px);
 	bottom: 13px;
+	flex-direction: column;
 }
 
 #slider_handle i {
 	color: #000;
-	position: absolute;
 }
 
 #slider_handle.vertical i {
-	left: 8.5px;
-}
-
-#slider_handle.vertical i.fa-chevron-up {
-	top: 3px;
-}
-
-#slider_handle.vertical i.fa-chevron-down {
-	bottom: 2px;
-}
-
-#slider_handle.horizontal i {
-	top: 9px;
-}
-
-#slider_handle.horizontal i.fa-chevron-left {
-	left: 5px;
-}
-
-#slider_handle.horizontal i.fa-chevron-right {
-	right: 5px;
+	height: .8em;
 }
 
 #imgCaption {
