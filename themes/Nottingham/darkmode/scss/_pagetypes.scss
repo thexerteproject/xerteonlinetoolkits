@@ -295,6 +295,12 @@ table.headerCol.shaded td.header {
   border-color: $contrastcolor;
   color: $fontcolorforlightestcolor;
 }
+.x_list_page #infoHolderTop .closeBtn {
+  color: $mainfontcolour;
+}
+.x_list_page #infoHolderTop .closeBtn:hover, .x_list_page #infoHolderTop .closeBtn:focus, .x_list_page #infoHolderTop .closeBtn:active {
+  color:$accent6;
+}
 //*****button navigator*****/
 .ui-button {
   border-radius: $smallroundedcorners;

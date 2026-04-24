@@ -439,6 +439,14 @@ table.headerCol.shaded td.header {
   color: #000000;
 }
 
+.x_list_page #infoHolderTop .closeBtn {
+  color: #E0E0E0;
+}
+
+.x_list_page #infoHolderTop .closeBtn:hover, .x_list_page #infoHolderTop .closeBtn:focus, .x_list_page #infoHolderTop .closeBtn:active {
+  color: #7094DB;
+}
+
 .ui-button {
   border-radius: 0;
   background: #121212;

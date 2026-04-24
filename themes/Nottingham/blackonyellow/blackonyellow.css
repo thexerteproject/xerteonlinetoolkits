@@ -846,6 +846,15 @@ li.ui-state-default.ui-draggable:not(.selected):focus {
   color: #000000;
 }
 
+.x_list_page #infoHolderTop .closeBtn {
+  color: #000000;
+}
+
+.x_list_page #infoHolderTop .closeBtn:hover, .x_list_page #infoHolderTop .closeBtn:focus, .x_list_page #infoHolderTop .closeBtn:active {
+  color: #000000;
+  background: #cccc00;
+}
+
 .x_flashCards_page .circleBtn.ui-button {
   background: #000000;
   border-color: #000000;

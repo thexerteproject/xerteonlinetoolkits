@@ -291,6 +291,12 @@ table.headerCol.shaded td.header {
   border-color: $contrastcolor;
   color: $fontcolorforlightestcolor;
 }
+.x_list_page #infoHolderTop .closeBtn {
+  color: $mainfontcolour;
+}
+.x_list_page #infoHolderTop .closeBtn:hover, .x_list_page #infoHolderTop .closeBtn:focus, .x_list_page #infoHolderTop .closeBtn:active {
+  color:$contrastcolor;
+}
 //*****button navigator*****/
 .ui-button {
   border-radius: $smallroundedcorners;
@@ -520,12 +526,8 @@ a.hotspot, a.hotspot.selected {
 .hsinfo{
   /*padding:1%;*/
 }
-//******Interactive lists*******/
-.x_list_page a.listItem:link {
-	background: $selectedbutton !important;
-}
 //******Interactive text*******/
-.x_list_page #pageContents a.listItem:link, #passageHolder a.listItem:link, #passageHolder a.listItem:visited, #passageHolder a.listItem:hover, #passageHolder a.listItem:active {
+#passageHolder a.listItem:link, #passageHolder a.listItem:visited, #passageHolder a.listItem:hover, #passageHolder a.listItem:active {
   color: $whiteorlightest !important;
 }
 .x_interactiveText_page .highlight{

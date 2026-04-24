@@ -15,8 +15,7 @@
 /*2vmin;*/
 /*3px 3px 5px grey*/
 /*define hr appearances*/
-/*start here and set the default values for all the variables*/
-/******Header******/
+/*start here and set the default values for all the variables*/ /******Header******/
 #x_headerBlock {
   color: #ffffff;
   background-repeat: no-repeat;
@@ -468,6 +467,14 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
 .x_list_page #listHolder a.listItem.highlight,
 .x_annotatedDiagram_page #listHolder a.listItem.highlight {
   background: #bdbdbd;
+}
+
+.x_list_page #infoHolderTop .closeBtn {
+  color: #222222;
+}
+
+.x_list_page #infoHolderTop .closeBtn:hover, .x_list_page #infoHolderTop .closeBtn:focus, .x_list_page #infoHolderTop .closeBtn:active {
+  color: #4078C0;
 }
 
 #pageContents textarea {
@@ -1022,7 +1029,6 @@ table.glossary tr.shaded {
   #x_footerProgress {
     display: block;
   }
-
   #x_pageNo {
     vertical-align: top;
     text-align: center;
@@ -1034,23 +1040,19 @@ table.glossary tr.shaded {
     z-index: 100;
     font-size: 12px;
   }
-
   #x_footerBlock button {
     font-size: 1.4rem;
     margin-left: 5px;
   }
-
   #x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
     font-size: 1.4rem;
     width: 1em;
     margin-left: 5px;
   }
-
   .pbContainer {
     display: block;
     margin-top: 1.2em;
   }
-
   .pbTxt {
     display: block;
     text-align: center;
@@ -1060,7 +1062,6 @@ table.glossary tr.shaded {
   #x_footerProgress {
     display: block;
   }
-
   #x_pageNo {
     vertical-align: top;
     text-align: center;
@@ -1075,17 +1076,14 @@ table.glossary tr.shaded {
     z-index: 100;
     font-size: 12px;
   }
-
   #x_footerBlock button {
     font-size: 1.3em;
     width: 1.1em;
     margin-left: 5px;
   }
-
   .pbContainer {
     margin-top: 1.2em;
   }
-
   .pbTxt {
     text-align: center;
   }
@@ -1786,8 +1784,7 @@ a:hover {
 
 #x_mainHolder {
   background: #ffffff;
-  border: none !important;
-  /*remove this to restore the default border*/
+  border: none !important; /*remove this to restore the default border*/
 }
 
 body:not(.sb_right):not(.sb_left) #x_mainHolder {

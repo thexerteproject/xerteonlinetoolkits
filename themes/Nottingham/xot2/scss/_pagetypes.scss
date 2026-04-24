@@ -354,6 +354,13 @@
 .x_annotatedDiagram_page #listHolder a.listItem.highlight {
   background: $darkergrey;
 }
+.x_list_page #infoHolderTop .closeBtn {
+  color: $mainfontcolour;
+}
+.x_list_page #infoHolderTop .closeBtn:hover, .x_list_page #infoHolderTop .closeBtn:focus, .x_list_page #infoHolderTop .closeBtn:active {
+  color:$contrastcolor;
+}
+
 //***********************************Interactivity*************************************/
 //most text areas unless changed for specifc pages
 #pageContents textarea {

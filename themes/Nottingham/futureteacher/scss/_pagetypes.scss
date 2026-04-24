@@ -291,6 +291,12 @@ a.hotspot, a.hotspot.selected {
   background: darken($lightestcolor, 70%);
   color:$fontcolorforcontrastcolor;
 }
+.x_list_page #infoHolderTop .closeBtn {
+  color: $mainfontcolour;
+}
+.x_list_page #infoHolderTop .closeBtn:hover, .x_list_page #infoHolderTop .closeBtn:focus, .x_list_page #infoHolderTop .closeBtn:active {
+  color:$contrastcolor;
+}
 //*********matching texts*********/
 .x_textMatch_page #dragDropHolder {
   background: $lightestcolor;

@@ -410,6 +410,15 @@ li.ui-state-default.ui-draggable:not(.selected):focus {
   color: $mainfontcolour;
 }
 
+.x_list_page #infoHolderTop .closeBtn {
+  color: $mainfontcolour;
+}
+
+.x_list_page #infoHolderTop .closeBtn:hover, .x_list_page #infoHolderTop .closeBtn:focus, .x_list_page #infoHolderTop .closeBtn:active {
+  color:$mainfontcolour;
+  background: $accent6;
+}
+
 //***Flash cards***/
 .x_flashCards_page .circleBtn.ui-button {
   background: $iconBtn;

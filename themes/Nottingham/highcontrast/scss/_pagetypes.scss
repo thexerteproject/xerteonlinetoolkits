@@ -326,9 +326,16 @@ table, table td, table th, table tr {
 }
 .x_tabNavExtra_page #topicHolder .topic:not(.highlight):focus, .x_tabNavExtra_page #topicHolder .topic:not(.highlight):hover,
 .x_list_page #listHolder .listItem:not(.highlight):focus, .x_list_page #listHolder .listItem:not(.highlight):hover {
-  background: $contrastcolor;
+  background: $contrastcolor !important;
   border-color: $contrastcolor;
   color: $panelcolor;
+}
+.x_list_page #infoHolderTop .closeBtn {
+  color: $mainfontcolour;
+}
+.x_list_page #infoHolderTop .closeBtn:hover, .x_list_page #infoHolderTop .closeBtn:focus, .x_list_page #infoHolderTop .closeBtn:active {
+  color:$panelcolor;
+  background: $contrastcolor;
 }
 //*****button navigator*****/
 .ui-button {
