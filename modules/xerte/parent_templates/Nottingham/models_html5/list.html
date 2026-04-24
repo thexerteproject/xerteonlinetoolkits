@@ -119,7 +119,7 @@
 				.each(function(i) {
 					let $thisItem;
 					if (i != 0) {
-						$thisItem = $listItem.clone().appendTo($("#listHolder"));
+						$thisItem = $listItem.clone().appendTo($("#listHolderInner"));
 					} else {
 						$thisItem = $listItem;
 					}
@@ -291,7 +291,9 @@
 <div id="pageContents">
 
 	<div id="listHolder" class="splitScreen_A" role="list">
-		<a class="listItem" role="listitem"></a>
+		<div id="listHolderInner">
+			<a class="listItem" role="listitem"></a>
+		</div>
 	</div>
 
 	<div class="splitScreen_B">
