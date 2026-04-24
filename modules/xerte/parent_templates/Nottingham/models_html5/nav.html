@@ -327,7 +327,7 @@
 				});
 
 				// get the minimum width for the columns - columns will wrap onto a new row rather than be shown smaller than this
-				const minWidth = x_currentPageXML.getAttribute("minWidth") != undefined ? x_currentPageXML.getAttribute("minWidth") : "75";
+				const minWidth = x_currentPageXML.getAttribute("minWidth") != undefined ? x_currentPageXML.getAttribute("minWidth") : "100";
 
 				// now work out if columns are equal width or whether width % have been set
 				let equal = true;
@@ -357,7 +357,7 @@
 							grid-template-columns: ${cssString};
 						}
 
-						@media (max-width: ${Number(minWidth)*columnWidths.length + (Math.ceil(parseFloat($navHolder.css("gap"))) * columnWidths.length-1)}px) {
+						@media (max-width: ${Number(minWidth)*columnWidths.length + (Math.ceil(parseFloat($navHolder.css("gap"))) * columnWidths.length-1) + ($("body").width() - $("#navHolder").width())}px) {
 							#navHolder {
 								grid-template-columns: repeat(auto-fit, minmax(${minWidth}px, 1fr));
 							}
@@ -375,6 +375,7 @@
 				if (x_currentPageXML.getAttribute("columnPanelStyle") === "single") {
 					$navHolder.addClass("panel");
 				} else if (x_currentPageXML.getAttribute("columnPanelStyle") === "each") {
+					$navHolder.addClass("panelColumns");
 					$navHolder.find(".column").addClass("panel");
 				}
 			}

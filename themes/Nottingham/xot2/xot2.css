@@ -75,9 +75,7 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
   color: #000000;
 }
 
-.x_columnPage_page #textHolder,
 .x_imageSequence_page #controlBar,
-.x_nav_page #pageContents.col #textHolder,
 .x_SictTimeline_page #pageContents .tl-text .tl-headline-date, .x_SictTimeline_page #pageContents .tl-text h3.tl-headline-date,
 .x_results_page #txtHolder {
   border-bottom: 3px solid #ebebeb;
@@ -481,6 +479,16 @@ body:not(.sb_right):not(.sb_left) #x_headerBlock {
 
 .x_list_page #infoHolderTop .closeBtn:hover, .x_list_page #infoHolderTop .closeBtn:focus, .x_list_page #infoHolderTop .closeBtn:active {
   color: #4078C0;
+}
+
+#x_mainHolder.x_nav_page #pageContents.col .textTopHolder + #navHolder:not(.panel):not(.panelColumns),
+#x_mainHolder.x_nav_page #pageContents.col #textHolder + #navHolder:not(.panel):not(.panelColumns),
+#x_mainHolder.x_nav_page #pageContents.col #navHolder:not(.panel):not(.panelColumns) + .textBottomHolder,
+#x_mainHolder.x_columnPage_page .textTopHolder + #columnHolder:not(.panel):not(.panelColumns),
+#x_mainHolder.x_columnPage_page #columnHolder:not(.panel):not(.panelColumns) + .textBottomHolder {
+  border-top: 3px solid #ebebeb;
+  margin-top: 1.5em;
+  padding-top: 1.5em;
 }
 
 #pageContents textarea {

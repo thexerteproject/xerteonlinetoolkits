@@ -1,7 +1,5 @@
 //*****hr lines & border-top/bottom lines*****
-.x_columnPage_page #textHolder,
 .x_imageSequence_page #controlBar,
-.x_nav_page #pageContents.col #textHolder,
 .x_SictTimeline_page #pageContents .tl-text .tl-headline-date, .x_SictTimeline_page #pageContents .tl-text h3.tl-headline-date,
 .x_results_page #txtHolder {
   border-bottom: $hrLine solid $hrColour;
@@ -353,6 +351,16 @@
 }
 .x_list_page #infoHolderTop .closeBtn:hover, .x_list_page #infoHolderTop .closeBtn:focus, .x_list_page #infoHolderTop .closeBtn:active {
   color:$contrastcolor;
+}
+
+#x_mainHolder.x_nav_page #pageContents.col .textTopHolder + #navHolder:not(.panel):not(.panelColumns),
+#x_mainHolder.x_nav_page #pageContents.col #textHolder + #navHolder:not(.panel):not(.panelColumns),
+#x_mainHolder.x_nav_page #pageContents.col #navHolder:not(.panel):not(.panelColumns) + .textBottomHolder,
+#x_mainHolder.x_columnPage_page .textTopHolder + #columnHolder:not(.panel):not(.panelColumns),
+#x_mainHolder.x_columnPage_page #columnHolder:not(.panel):not(.panelColumns) + .textBottomHolder {
+  border-top: $hrLine solid $hrColour;
+  margin-top: 1.5em;
+  padding-top: 1.5em;
 }
 
 //***********************************Interactivity*************************************/

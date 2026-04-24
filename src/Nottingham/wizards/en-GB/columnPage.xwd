@@ -2,7 +2,7 @@
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <columnPage><![CDATA[<columnPage name="Enter Page Title"
-      showTitles="true" minWidth="75" panelStyle="none"
+      showTitles="true" minWidth="100" panelStyle="none"
       />]]></columnPage>
     </newNodes>
   </pageWizard>
@@ -14,7 +14,7 @@
 
     <layoutGroup label="Page Layout" type="group">
         <showTitles label="Column Titles" type="CheckBox" defaultValue="false" mandatory="true"/>
-        <minWidth label="Minimum Column Width (px)" type="NumericStepper" min="20" max="1000" defaultValue="75" mandatory="true" tooltip="Columns will never be narrower than this width and will be wrapped onto a new line when required"/>
+        <minWidth label="Minimum Column Width (px)" type="NumericStepper" min="20" max="1000" defaultValue="100" mandatory="true" tooltip="Columns will never be narrower than this width and will be wrapped onto a new line when required"/>
         <panelStyle label="Panel" type="ComboBox" options="None,Single panel,Each column" data="none,single,each" defaultValue="none" mandatory="true"/>
     </layoutGroup>
 

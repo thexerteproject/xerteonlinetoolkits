@@ -291,7 +291,7 @@ table.headerCol.shaded td.header {
 }
 .x_tabNavExtra_page #topicHolder .topic:not(.highlight):focus, .x_tabNavExtra_page #topicHolder .topic:not(.highlight):hover,
 .x_list_page #listHolder .listItem:not(.highlight):focus, .x_list_page #listHolder .listItem:not(.highlight):hover {
-  background: $contrastcolor;
+  background: $contrastcolor !important;
   border-color: $contrastcolor;
   color: $fontcolorforlightestcolor;
 }
@@ -508,10 +508,6 @@ a.hotspot, a.hotspot.selected {
 }
 .hsinfo{
   /*padding:1%;*/
-}
-//******Interactive lists*******/
-.x_list_page a.listItem:link {
-	background: $selectedbutton !important;
 }
 //******Interactive text*******/
 .x_list_page #pageContents a.listItem:link, #passageHolder a.listItem:link, #passageHolder a.listItem:visited, #passageHolder a.listItem:hover, #passageHolder a.listItem:active {

@@ -2,12 +2,12 @@
 
 	.textTopHolder + #columnHolder,
 	#columnHolder + .textBottomHolder {
-		margin-top: 1em;
+		margin-top: 1.5em;
 	}
 
 	#x_mainHolder:not(.x_mobile) #columnHolder {
 		display: grid;
-		gap: 1em;
+		gap: 2em;
 		max-width: 100%;
 	}
 

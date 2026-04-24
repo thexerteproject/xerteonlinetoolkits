@@ -21,7 +21,6 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
         popcornInstance,
         classes = "popcornMedia";
 
-    debugger;
     if (mainMedia == true) {
         classes += " mainMedia";
     }
