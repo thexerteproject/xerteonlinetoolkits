@@ -85,7 +85,8 @@
                 // panel position data is reversed as the property used to be called 'Align text' rather than 'Panel position'
                 // send amended data to split screen function as otherwise layout will be reversed
                 const attributes = {
-                    panelPosition: x_currentPageXML.getAttribute("align") !== "Right" ? "Right" : "Left"
+                    panelPosition: x_currentPageXML.getAttribute("align") !== "Right" ? "Right" : "Left",
+                    pageTxt: x_currentPageXML.getAttribute("introduction")
                 }
                 // set up split screen layout
                 XENITH.SPLITSCREEN.init({"attributes": attributes});

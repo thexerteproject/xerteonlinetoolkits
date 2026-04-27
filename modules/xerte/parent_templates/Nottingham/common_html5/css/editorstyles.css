@@ -517,8 +517,12 @@ cite {
 
 .panel.editorStyle,
 .panel.editorStyle.inline {
-  margin: 0.5em;
   font-size: 1em;
+  margin: 0.5em 0;
+}
+
+.panel.editorStyle.inline {
+  margin: 0.5em;
 }
 
 .panel.editorStyle {

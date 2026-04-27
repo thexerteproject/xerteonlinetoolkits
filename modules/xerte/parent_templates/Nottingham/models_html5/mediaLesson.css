@@ -67,10 +67,6 @@
 		margin: 0 auto;
 	}
 	
-	.splitScreen .right {
-		margin-left:	15px;
-	}
-	
 	.audioImgHolder {
 		position:	relative;
 		overflow:	hidden;

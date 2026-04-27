@@ -88,7 +88,9 @@ body:not(.sb_right):not(.sb_left) #x_mainHolder {
 	box-shadow: none;
 	border-color: $lightgrey;
 }
-.panel .panel.editorStyle {
+.panel .panel.editorStyle,
+.ui-accordion-content .panel.editorStyle,
+.ui-tabs-panel .panel.editorStyle {
 	background: $defaultpagebackground;
 	border-color: $defaultpagebackground;
 }
