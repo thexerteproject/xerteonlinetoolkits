@@ -13,6 +13,7 @@
 #slider_handle{
 	background: lightgrey;
 	position: relative;
+	font-size: 10pt;
 }
 
 .image{

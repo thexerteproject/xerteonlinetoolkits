@@ -1,6 +1,6 @@
 /* navigator.html */
 	
-	#pageContents.tab #paneHolder, #pageContents.button #infoHolder, #pageContents.slide #infoHolder {
+	#pageContents.tab #paneHolder, #pageContents.tab #paneHolder .navChild, #pageContents.button #infoHolder, #pageContents.slide #infoHolder {
 		overflow-y: auto;
 		overflow-x: hidden;
 	}

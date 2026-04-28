@@ -56,6 +56,7 @@
 		this.sizeChanged = function() {
 			// only need to do some resizing if not column page & panel fills the available space (rather than fits content)
 			if (x_currentPageXML.getAttribute("type") != "Col") {
+				//const panelH = XENITH.SPLITSCREEN.resizePanel();
 				if ($("#pageContents").hasClass("fill")) {
 					if (x_currentPageXML.getAttribute("type") == "Acc") {
 						// accordion
@@ -237,6 +238,12 @@
 				let panelH = x_currentPageXML.getAttribute("panelHeight") === "fit" || x_browserInfo.mobile === true ? "fit" : "fill";
 				if (panelH === "fill" && ((x_addLineBreaks(x_currentPageXML.getAttribute("textTop")) != undefined && x_addLineBreaks(x_currentPageXML.getAttribute("textTop")).trim() !== "") || (x_addLineBreaks(x_currentPageXML.getAttribute("textBottom")) != undefined && x_addLineBreaks(x_currentPageXML.getAttribute("textBottom")).trim() !== "") || (x_currentPageXML.getAttribute("panelWidth") === "Full" && x_currentPageXML.getAttribute("removeTxt") === "false"))) {
 					panelH = "fit";
+				}
+				if (panelH === "fill" && (x_currentPageXML.getAttribute("type") === "Slide" || x_currentPageXML.getAttribute("type") === "Button") && x_currentPageXML.getAttribute("panelStyle") === "true") {
+					panelH = "fit";
+				}
+				if (panelH === "fit" && (x_currentPageXML.getAttribute("type") === "Slide" || x_currentPageXML.getAttribute("type") === "Button") && x_currentPageXML.getAttribute("buttonPos") === "Bottom") {
+					panelH = "fill";
 				}
 				$pageContents.addClass(panelH);
 

@@ -28,12 +28,12 @@
 	</magnifierGroup>
 	
 	<soundGroup type="group" label="Sound" optional="true" tooltip="Add an audio player below the image">
-		<sound label="File" type="media" optional="true" placeholder="Select an audio file"/>
-		<transcript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be shown when text is added here"/>
-		<transcriptPos label="Transcript Position" options="Below audio player,Lightbox" type="ComboBox" data="below,lightbox" defaultValue="lightbox" optional="true"/>
+		<sound label="File" type="media" optional="true" placeholder="Select an audio file" conditionTrigger="true"/>
+		<transcript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be shown when text is added here" conditionTrigger="true"/>
+		<transcriptPos label="Transcript Position" options="Below audio player,Lightbox" type="ComboBox" data="below,lightbox" defaultValue="lightbox" optional="true" conditionTrigger="true"/>
 	</soundGroup>
 	
-    <hidePanel label="Hide Panel"  type="checkBox" defaultValue="false" optional="true"/>
+    <hidePanel label="Hide Panel"  type="checkBox" defaultValue="false" optional="true" condition="sound==undefined||sound==''||(transcript==undefined||transcript==''||transcriptPos=='lightbox')"/>
 
       <AIGroup type="group" label="AI" optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
           <subject verification="^.+$"  label="Subject" type="TextInput" placeholder="Enter a subject here..." tooltip = "This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." optional="true"/>

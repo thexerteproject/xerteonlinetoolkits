@@ -98,7 +98,7 @@
 				transcriptTxt = x_currentPageXML.getAttribute("transcript"),
 				hidePanel = x_currentPageXML.getAttribute("hidePanel");
 			
-			if (hidePanel == undefined || (hidePanel == "true" && x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "" && transcriptTxt != undefined && transcriptTxt != "")) {
+			if (hidePanel == undefined || (hidePanel == "true" && x_currentPageXML.getAttribute("sound") != undefined && x_currentPageXML.getAttribute("sound") != "" && transcriptTxt != undefined && transcriptTxt != "" && x_currentPageXML.getAttribute("transcriptPos") != "lightbox")) {
 				hidePanel = "false";
 			}
 			$pageContents.data("hidePanel", hidePanel);

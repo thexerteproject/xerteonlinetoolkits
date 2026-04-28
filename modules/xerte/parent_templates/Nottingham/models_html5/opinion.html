@@ -79,13 +79,14 @@
 			height *= 0.98; // Build in some extra space
 			if(width > height) {
 				textSize = (width - height) / 10;
+				width = height;
 			}
 			else {
 				textSize = (height - width) / 10;
 				height = width;
 			}
-			if (textSize > 20) {
-				textSize = 20;
+			if (textSize > 18) {
+				textSize = 18;
 			}
 			else if (textSize < 12) {
 				textSize = 12;

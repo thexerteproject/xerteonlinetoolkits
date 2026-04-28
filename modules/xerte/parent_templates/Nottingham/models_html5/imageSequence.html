@@ -971,7 +971,7 @@
 				} else {
 					$('.resetBtn')
 						.button({
-							icons:	{secondary:"fa fa-refresh"},
+							icons:	{secondary:"fa fa-x-refresh"},
 							text: false,
 							label:	x_currentPageXML.getAttribute('resetLabel')
 						})
@@ -1011,7 +1011,7 @@
 				} else {
 					$('.playBtn')
 						.button({
-							icons:	{secondary:"fa fa-play"},
+							icons:	{secondary:"fa fa-x-play"},
 							text: false,
 							label:	x_currentPageXML.getAttribute('playLabel')
 						})
@@ -1034,7 +1034,7 @@
 							
 							$(this)
 								.button({
-									icons: {secondary:"fa fa-" + $this.data('state')},
+									icons: {secondary:"fa fa-x-" + $this.data('state')},
 									label: x_currentPageXML.getAttribute($this.data('state') + 'Label')
 								});
 						});

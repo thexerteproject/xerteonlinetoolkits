@@ -221,3 +221,11 @@
 .letterCount {
     margin-left: auto;
 }
+
+.x_crossword_page #textHolder {
+    margin-bottom: 1em;
+}
+
+.x_crossword_page #crosswordHolder + #textHolder {
+    margin-top: 1em;
+}

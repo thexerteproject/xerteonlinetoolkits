@@ -52,6 +52,7 @@
 
     .labelHolder table {
         width: 100%;
+        background: none !important;
     }
 
     .sliderHolder .labelHolder a p

@@ -37,6 +37,9 @@ h5 {
 .panelPage h3 {
     font-size: $pagecontentslarge;
 }
+#x_pageDiv {
+    font-size: $pagecontentslarge;
+}
 #mainTxt h3 {
     font-size: $pagecontentslarge;
 }
@@ -103,8 +106,11 @@ input#x_pagePswd {
 .panel #btnHolder {
 	font-size: $pagecontentslarge;
 }
-#infoHolder {
+#pageContents {
     font-size: $pagecontentslarge;
+}
+#textHolder {
+  font-size: $pagecontentslarge;
 }
 #targetHolder h3 {
     font-size: $pagecontentslarge;
@@ -165,7 +171,7 @@ h1#x_introH1 {
 .ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {
     padding: .1em;
 }
-.panel button {
+.panel button, .panelContent button {
 	font-size: $pagecontentsmedium;
 }
 #slideTxt {
