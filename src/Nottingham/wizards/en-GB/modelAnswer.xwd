@@ -5,8 +5,7 @@
       panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"
 	  feedbackBtnTxt="Submit" pageTxt="Page" questionTxt="Question" responseHeaderTxt="Your response:"
 	  noAnswerHeaderTxt="No response submitted" exampleHeaderTxt="Feedback:" feedbackTxt="Page feedback"
-	  copyBtn2Label="Copy" copyShortcutTxt="Press Ctrl+C to copy" downloadTxt="Download" answerFieldLabel="Answer"
-	  />]]></modelAnswer>
+	  copyBtn2Label="Copy" copyShortcutTxt="Press Ctrl+C to copy" downloadTxt="Download" answerFieldLabel="Answer"><modelAnswerField name="Text Area" prompt="" rows="5"/></modelAnswer>]]></modelAnswer>
     </newNodes>
   </pageWizard>
 
