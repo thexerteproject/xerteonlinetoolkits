@@ -1914,7 +1914,12 @@ button.resourceLink {
 	flex-direction: column;
 }
 
-@media (max-width: 480px) {
+#x_pageHolder {
+	container-name: x_pageHolder;
+	container-type: inline-size;
+}
+
+@container x_pageHolder (max-width: 480px) {
 	/* split screen layout used in lots of page models - stack vertically on smaller screens */
 	.splitScreen {
 		flex-direction: column;
