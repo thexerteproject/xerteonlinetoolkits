@@ -215,12 +215,11 @@ if($success_string!=""){
 <h2>Security Warning</h2>
 <p><strong><u>If you have installed this on a public facing server, ensure you delete the following:<br/>
 <ul>
-    <li>/setup (this installer; it can be used to overwrite files on your webserver)</li>
+    <li>/setup (this installer; it can be used to overwrite files on your webserver) </li>
 </ul>
-<p>You should also delete all of the following you are not planning to use:</p>
-<ul>
-    <li>webctlink,php (allows anyone to specify whatever username they wish)</li>
-</ul>
+<form action="remove_setup.php" method="post">
+    <button type="submit">Remove setup folder</button>
+</form>
 </u>
 </strong>
 </p>
