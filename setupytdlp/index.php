@@ -28,77 +28,6 @@ if ( ! is_Cli() ) {
     set_time_limit(0);
 }
 
-function backup_tables($tables = '*'){
-    global $xerte_toolkits_site;
-    $data = "\n/*---------------------------------------------------------------".
-        "\n  SQL DB BACKUP ".date("d.m.Y H:i")." ".
-        "\n  HOST: {$xerte_toolkits_site->database_host}".
-        "\n  DATABASE: {$xerte_toolkits_site->database_name}".
-        "\n  TABLES: {$tables}".
-        "\n  ---------------------------------------------------------------*/\n";
-    db_query( "SET NAMES `utf8` COLLATE `utf8_general_ci`"); // Unicode
-
-    if(!is_array($tables) && strpos( $tables, "*") !== false){ //get all of the tables
-        $pos = strpos( $tables, "*");
-        if ($pos === 0) {
-            $prefix = "";
-        }
-        else {
-            $prefix = substr($tables, 0, $pos);
-        }
-        $tables = array();
-        $result = db_query("SHOW TABLES");
-
-        foreach($result as $row){
-            if ($prefix === "" || strpos($row[0], $prefix) === 0)
-            {
-                $tables[] = $row[0];
-            }
-        }
-    }else{
-        $tables = is_array($tables) ? $tables : explode(',',$tables);
-    }
-
-    if (count($tables) == 0)
-        return false;
-
-    $dbconn = database_connect();
-    foreach($tables as $table){
-        $data.= "\n/*---------------------------------------------------------------".
-            "\n  TABLE: `{$table}`".
-            "\n  ---------------------------------------------------------------*/\n";
-        $data.= "DROP TABLE IF EXISTS `{$table}`;\n";
-        $res = db_query("SHOW CREATE TABLE `{$table}`");
-        $data.= $res[0][1].";\n";
-
-        $result = db_query("SELECT * FROM `{$table}`");
-
-        $vals = Array(); $z=0;
-        foreach($result as $items) {
-            $vals[$z] = "(";
-            $j=0;
-            foreach ($items as $key=>$value) {
-                if (isset($value)) {
-                    $vals[$z] .= "'" . $dbconn->quote($value) . "'";
-                } else {
-                    $vals[$z] .= "NULL";
-                }
-                if ($j < (count($items) - 1)) {
-                    $vals[$z] .= ",";
-                }
-                $j++;
-            }
-            $vals[$z] .= ")";
-            $z++;
-        }
-        if (count($vals) > 0) {
-            $data .= "INSERT INTO `{$table}` VALUES ";
-            $data .= "  " . implode(";\nINSERT INTO `{$table}` VALUES ", $vals) . ";\n";
-        }
-    }
-    $dbconn = null;
-    return $data;
-}
 
 function is_Cli() {
     if(php_sapi_name() == 'cli' && empty($_SERVER['REMOTE_ADDR'])) {
@@ -107,64 +36,6 @@ function is_Cli() {
         return false;
     }
 }
-
-/**
- * Returns a GUIDv4 string
- *
- * Ref: https://www.php.net/manual/en/function.com-create-guid.php
- *
- * Uses the best cryptographically secure method
- * for all supported pltforms with fallback to an older,
- * less secure version.
- *
- * @param bool $trim
- * @return string
- */
-function GUIDv4 ($trim = true)
-{
-    // Windows
-    if (function_exists('com_create_guid') === true) {
-        if ($trim === true)
-            return trim(com_create_guid(), '{}');
-        else
-            return com_create_guid();
-    }
-
-    // OSX/Linux
-    if (function_exists('openssl_random_pseudo_bytes') === true) {
-        $data = openssl_random_pseudo_bytes(16);
-        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);    // set version to 0100
-        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);    // set bits 6-7 to 10
-        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
-    }
-
-    // Fallback (PHP 4.2+)
-    mt_srand((double)microtime() * 10000);
-    $charid = strtolower(md5(uniqid(rand(), true)));
-    $hyphen = chr(45);                  // "-"
-    $lbrace = $trim ? "" : chr(123);    // "{"
-    $rbrace = $trim ? "" : chr(125);    // "}"
-    $guidv4 = $lbrace.
-        substr($charid,  0,  8).$hyphen.
-        substr($charid,  8,  4).$hyphen.
-        substr($charid, 12,  4).$hyphen.
-        substr($charid, 16,  4).$hyphen.
-        substr($charid, 20, 12).
-        $rbrace;
-    return $guidv4;
-}
-
-// Ref. https://stackoverflow.com/questions/4356289/php-random-string-generator
-function generateRandomString($length = 10) {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $randomString;
-}
-
 
 $_SESSION['elevated'] = true;
 if (!isset($_SESSION['toolkits_logon_id'])) {
@@ -199,8 +70,8 @@ $_SESSION['admin'] = true;
 <!DOCTYPE html>
 <html>
     <head>
-        <meta name="description" content="TSUGI Installer">
-        <meta name="keywords" content="tsugi, install">
+        <meta name="description" content="YT DLP">
+        <meta name="keywords" content="yt-dlp, install">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=0.80">
         <link rel="stylesheet" href="css/stylesheet.css">
@@ -208,12 +79,12 @@ $_SESSION['admin'] = true;
     <body>
 <!-- Menu -->
         <ul class="main_menu">
-            <li class="title">TSUGI Setup</li>
+            <li class="title">YT-DLP Setup</li>
         </ul>
         <div class="homepage"><br>
-            <h1>Welcome to TSUGI Setup!</h1>
+            <h1>Welcome to YT-DLP Setup!</h1>
             <p class="indextext">
-                Tsugi is a framework that handles much of the low-level detail of building multi-tenant tool that makes use of the IMS Learning Tools Interoperability® (LTI®) and other learning tool interoperability standards. The Tsugi Framework provides library and database code to receive and model all of the incoming LTI data in database tables and sets up a session with the important information about the LMS, user, and course.
+                Yt-dlp is a feature-rich command-line audio/video downloader
             </p>
             <br>
             <?php
@@ -222,62 +93,38 @@ $_SESSION['admin'] = true;
             <br>
             <br>
             <?php
-            $file_pointer = $xerte_toolkits_site->root_file_path .  "tsugi";
+            $file_pointer = $xerte_toolkits_site->root_file_path .  "yt-dlp";
             if (!file_exists($file_pointer))
             {
             ?>
                 <div class="centerblock">
-                <p>Installing TSUGI will do the following:</p>
+                <p>Installing yt-dlp will do the following:</p>
                 <ol>
                     <li>Do a pre-flight check to see whether requirements are met</li>
-                    <li>Create a folder named tsugi in your Xerte installation</li>
-                    <li>Retrieve the TSUGI install package and unzip it</li>
-                    <li>Create a config.php for TSUGI</li>
-                    <li>Create the TSUGI database (inside the Xerte database)</li>
+                    <li>Create a folder named yt-dlp in your Xerte installation</li>
+                    <li>Retrieve the yt-dlp install package and unzip it</li>
+                    <li>Retrieve ffmpeg executable and install it in the same folder</li>
                 </ol>
-                <p>Your TSUGI admin panel will have the same password as your Xerte admin user</p>
                 </div>
                 <form method="post">
-                <input type="submit" name="install" value="Install Tsugi" class="install">
+                <input type="submit" name="install" value="Install yt-dlp" class="install">
                 </form>
             <?php
             }
             else{
             ?>
                 <div class="centerblock">
-                <p>Upgrading TSUGI will do the following:</p>
+                <p>Upgrading yt-dlp will do the following:</p>
                 <ol>
-                    <li>Do a pre-flight check to see whether requirements are met</li>
-                    <li>Create a backup of the tsugi folder in the setuptsugi folder</li>
-                    <li>Create a backup of the MySQL database tables in the setuptsugi folder</li>
-                    <li>Remove the old folder and create a new empty folder named tsugi</li>
-                    <li>Retrieve the TSUGI install package and unzip it</li>
-                    <li>Write the original config.php to the new installation</li>
-                    <li>Upgrade the TSUGI database (inside the Xerte database)</li>
+                    <li>Run the self-updating routine of yt-dlp</li>
                 </ol>
                 </div>
                 <form method="post">
-                    <input type="submit" name="update" value="Update Tsugi" class="update">
+                    <input type="submit" name="update" value="Update yt-dlp" class="update">
                 </form>
             <?php
             }
             ?>
-
-
-            <br>
-
-            <div class="button_1">
-                <a href="<?php echo $xerte_toolkits_site->site_url .  "tsugi/"; ?>">
-                        Go to TSUGI panel
-                </a>
-            </div>
-
-            <div class="button_1">
-                <a href="<?php echo $xerte_toolkits_site->site_url .  "tsugi/admin"; ?>">
-                    Go to TSUGI admin panel
-                </a>
-            </div>
-
 
             <div class="button_1">
                 <a href="<?php echo $xerte_toolkits_site->site_url;?>">
@@ -289,48 +136,50 @@ $_SESSION['admin'] = true;
 
     function preflightchecks($mode)
     {
-        global $branch, $tag;
-
-        $tag = "";
+        global $yturl, $ytdlp_exe, $ffmpeg_url, $ffmpeg_pkg_extension, $os;
 
         echo "<br>Running pre-flight checks<br>\n";
         flush();
         // Check OS
         $os = php_uname('s');
-        if ($mode === "update" && $os === "Windows")
+        if ($mode !== "update" && $os === "Windows")
         {
-            echo "<span style='color:#F41F15;'>Updating on Windows is not supported (as there is no reliable way to create a backup)</span> <br>\n";
-            echo "Aborting!";
-            exit(-1);
+            echo "<span style='color:#F41F15;'>Using https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe</span> <br>\n";
+            $yturl = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
+            $ytdlp_exe = "yt-dlp.exe";
+            echo "<span style='color:#F41F15;'>https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip</span> <br>\n";
+            $ffmpeg_url = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip";
+            $ffmpeg_pkg_extension = "zip";
+        }
+        elseif ($mode !== "update" && $os === "Darwin") {
+            echo "<span style='color:#F41F15;'>Using https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos</span> <br>\n";
+            $yturl = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos";
+            $ytdlp_exe = "yt-dlp_macos";
+            echo "<span style='color:#F41F15;'>Make sure ffmpeg is installed and in the PATH</span> <br>\n";
+            $pyversion = exec("python -V 2>&1 | sed 's/Python //'");
+            $py3version = exec("python3 -V 2>&1 | sed 's/Python //'");
+            if (($pyversion === null && $py3version === null)||(version_compare($pyversion, '3.10', '<') && version_compare($py3version, '3.10', '<'))) {
+                echo "<span style='color:#F41F15;'>Python 3.10 or higher is required to run yt-dlp on MacOS. Please install Python and make sure it's in the PATH</span> <br>\n";
+                echo "Aborting!<br>";
+                exit(-1);
+            }
+        }
+        elseif ($mode !== "update") {
+            echo "<span style='color:#F41F15;'>Using https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp</span> <br>\n";
+            $yturl = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp";
+            $ytdlp_exe = "yt-dlp";
+            $pyversion = exec("python -V 2>&1 | sed 's/Python //'");
+            $py3version = exec("python3 -V 2>&1 | sed 's/Python //'");
+            if (($pyversion === null && $py3version === null)||(version_compare($pyversion, '3.10', '<') && version_compare($py3version, '3.10', '<'))) {
+                echo "<span style='color:#F41F15;'>Python 3.10 or higher is required to run yt-dlp on Linux. Please install Python and make sure it's in the PATH</span> <br>\n";
+                echo "Aborting!<br>";
+                exit(-1);
+            }
+            echo "<span style='color:#F41F15;'>Using https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz</span> <br>\n";
+            $ffmpeg_url = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz";
+            $ffmpeg_pkg_extension = "tar.xz";
         }
 
-        // Check PHP version
-        $phpversion = phpversion();
-        if ($phpversion < "7.2.0")
-        {
-            echo "<span style='color:#F41F15;'>Your PHP version (". $phpversion . ") is not supported by TSUGI. Please update to a PHP version 7.2 or higher. </span> <br>\n";
-            echo "Aborting!";
-            exit(-1);
-        }
-		else if ($phpversion < "8.0")
-		{
-			echo "Your PHP version is ". $phpversion . ". Using branch php-72-x of thexerteproject/tsugi fork.<br>";
-			$branch = "php-72-x";
-		}
-		else if ($phpversion < "8.1")
-		{
-			echo "Your PHP version is ". $phpversion . ". Using branch php-80-x of thexerteproject/tsugi fork.<br>";
-			$branch = "php-80-x";
-		}
-        else if ($phpversion < "8.4")
-        {
-            echo "Your PHP version is ". $phpversion . ". Using branch php-82-x of thexerteproject/tsugi fork.<br>";
-            $branch = "php-82-x";
-        }
-		else
-		{
-			$branch = "master";
-		}
 		flush();
         // Check zip extension
         $zipextension = phpversion("zip");
@@ -356,11 +205,11 @@ $_SESSION['admin'] = true;
     function backup()
     {
         global $CFG;;
-        echo "<br>Creating a backup of the current TSUGI folder (this may take several minutes)<br>\n";
+        echo "<br>Creating a backup of the current yt-dlp folder (this may take several minutes)<br>\n";
         flush();
         $date = date("YmdHi");
-        $tarfile = "setuptsugi/tsugi_" . $date . ".tar.bz2";
-        exec("cd ..; tar cjvf " . $tarfile . " tsugi", $out, $result);
+        $tarfile = "setupytdlp/yt-dlp_" . $date . ".tar.bz2";
+        exec("cd ..; tar cjvf " . $tarfile . " yt-dlp", $out, $result);
         if ($result !== 0)
         {
             echo "<span style='color:#F41F15;'>Creating backup failed!</span> <br>\n";
@@ -371,75 +220,48 @@ $_SESSION['admin'] = true;
         {
             echo "<span style='color:#099E12;'>Backup ". $tarfile . " created!</span> <br>\n";
         }
-        echo "Create backup of TSUGI tables (this may take several minutes)<br>\n";
-        flush();
-        $sqlbackup = backup_tables($CFG->dbprefix . "*");
-        if ($sqlbackup === false)
-        {
-            echo "<span style='color:#F41F15;'>Failed to create backup of SQL tables. No table were found in the Xerte database. This is not a TSUGI install previously done by setuptsugi. You have to upgrade your installation by hand.</span> <br>\n";
-            echo "Aborting!";
-            exit(-1);
-        }
-        $ok = file_put_contents("tsugidb_" . $date . ".sql", $sqlbackup);
-        if ($ok === false)
-        {
-            echo "<span style='color:#F41F15;'>Failed to create backup of SQL tables.</span> <br>\n";
-            echo "Aborting!";
-            exit(-1);
-        }
-        else
-        {
-            echo "<span style='color:#099E12;'>SQL backup created in setuptsugi/tsugidb_" . $date . ".sql</span><br> \n";
-        }
-        echo "Removing TSUGI folder (this may take several minutes)<br>\n";
+        echo "Removing yt-dlp folder (this may take several minutes)<br>\n";
         flush();
         unset($out);
-        exec("cd ..; rm -rf tsugi", $out,$result);
+        exec("cd ..; rm -rf yt-dlp", $out,$result);
         if ($result !== 0)
         {
-            echo "<span style='color:#F41F15;'>Could not remove tsugi folder. Please remove the folder yourself and try again. You need to make a copy of the config.php file, and put it back after the install!</span> <br>\n";
+            echo "<span style='color:#F41F15;'>Could not remove yt-dlp folder. Please remove the folder yourself and try again. You need to make a copy of the config.php file, and put it back after the install!</span> <br>\n";
             echo "Aborting!";
             exit(-1);
         }
         else
         {
-            echo "<span style='color:#099E12;'>Existing TSUGI folder has been removed</span><br> \n";
+            echo "<span style='color:#099E12;'>Existing yt-dlp folder has been removed</span><br> \n";
         }
 		flush();
     }
             
     function install()
     {
-        global $xerte_toolkits_site, $branch, $tag;
+        global $xerte_toolkits_site, $yturl, $ytdlp_exe, $ffmpeg_url, $ffmpeg_pkg_extension, $os;
 
-        // Download Tsugi bestanden
-        echo "<br>Download the TSUGI installer package<br>\n";
+        // Download yt-dlp files
+        echo "<br>Download the yt-dlp executable<br>\n";
         flush();
         global $xerte_toolkits_site;
         //$url = "https://github.com/$u/$repo/archive/master.zip";
-        if (!isset($tag) || $tag==="") {
-            if ($branch === 'master')
-            {
-                // Using the original TSUGI repository
-                $url = "https://github.com/tsugiproject/tsugi/archive/refs/heads/{$branch}.zip";
-            }
-            else
-            {
-                // Using patched fork
-                $url = "https://github.com/thexerteproject/tsugi/archive/refs/heads/{$branch}.zip";
-            }
-            $version = $branch;
-        }
-        else
+        // Create yt-dlp folder
+        $ret = mkdir($xerte_toolkits_site->root_file_path . "yt-dlp", 0755, true);
+        if ($ret === false)
         {
-            $url = "https://github.com/tsugiproject/tsugi/archive/refs/tags/{$tag}.zip";
-            $version = $tag;
+            $error = error_get_last();
+
+            echo "<span style='color:#F41F15;'>Could not create yt-dlp folder: " . $error['message'] . "</span> <br>\n";
+            echo "Aborting!<br>";
+            exit(-1);
         }
-        $tsugizip = __DIR__."/../import/tsugi-{$version}.zip";
+
+        $ytdlp_exe_path = __DIR__."/../yt-dlp/" . $ytdlp_exe;
         $ch = curl_init();
-        $f = fopen($tsugizip, 'w+');
+        $f = fopen($ytdlp_exe_path, 'w+');
         $opt = [
-            CURLOPT_URL => $url,
+            CURLOPT_URL => $yturl,
             CURLOPT_FILE => $f,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HEADER => false,
@@ -451,121 +273,128 @@ $_SESSION['admin'] = true;
 
         curl_close($ch);
         fclose($f);
-        if (!file_exists($tsugizip))
+        if (!file_exists($ytdlp_exe_path))
         {
-            echo "<span style='color:#F41F15;'>Could not download the tsugi package</span> <br>\n";
+            echo "<span style='color:#F41F15;'>Could not download the yt-dlp executable</span> <br>\n";
+            echo "Aborting!<br>";
+            exit(-1);
+        }
+        chmod($ytdlp_exe_path, 0755);
+
+        // Download ffmpeg package
+        if ($ffmpeg_url === null)
+        {
+            echo "<span style='color:#F41F15;'>Please install ffmpeg and make sure it's in the PATH</span> <br>\n";
+            return;
+        }
+        echo "<br>Download the ffmpeg package<br>\n";
+        flush();
+
+        $ffmpeg_pkg = __DIR__."/../import/ffmpeg." . $ffmpeg_pkg_extension;
+        $ch = curl_init();
+        $f = fopen($ffmpeg_pkg, 'w+');
+        $opt = [
+            CURLOPT_URL => $ffmpeg_url,
+            CURLOPT_FILE => $f,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HEADER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_SSL_VERIFYPEER => false,
+        ];
+        curl_setopt_array($ch, $opt);
+        $res = curl_exec($ch);
+
+        curl_close($ch);
+        fclose($f);
+        if (!file_exists($ffmpeg_pkg))
+        {
+            echo "<span style='color:#F41F15;'>Could not download the ffmpeg package</span> <br>\n";
             echo "Aborting!<br>";
             exit(-1);
         }
 
-        echo "Installing TSUGI package<br>\n";
+
+        echo "Installing ffmpeg package<br>\n";
         flush();
-        $zip = new ZipArchive;
-        $res = $zip->open($tsugizip);
-        if ($res === TRUE) {
-            // extract it to the path we determined above
-            $res = $zip->extractTo($xerte_toolkits_site->root_file_path . "/.");
-            if ($res === false)
+        // Windows
+        if ($os == "Windows") {
+            $zip = new ZipArchive;
+            $res = $zip->open($ffmpeg_pkg);
+            if ($res === TRUE) {
+                // extract it to the path we determined above
+                $res = $zip->extractTo($xerte_toolkits_site->root_file_path . "/.");
+                if ($res === false) {
+                    echo "<span style='color:#F41F15;'>Failed to extract " . $ffmpeg_pkg . ": " . x_clean_input($zip->getStatusString()) . "</span><br>\n";
+                    echo "Aborting!<br>";
+                    exit(-1);
+                }
+                $res = $zip->close();
+                // Move all files and folders in ffmpeg-master-latest-win64-gpl to .
+                $ffmpeg_folder = glob($xerte_toolkits_site->root_file_path . "/yt-dlp/ffmpeg-master-latest-win64-gpl/*");
+                foreach ($ffmpeg_folder as $file) {
+                    $res = rename($file, $xerte_toolkits_site->root_file_path . "/yt-dlp/" . basename($file));
+                    if ($res === false) {
+                        echo "<span style='color:#F41F15;'>Failed to move " . $file . " to " . $xerte_toolkits_site->root_file_path . ": " . x_clean_input(error_get_last()['message']) . "</span><br>\n";
+                    }
+                }
+                rmdir($xerte_toolkits_site->root_file_path . "/yt-dlp/ffmpeg-master-latest-win64-gpl");
+                unlink($ffmpeg_pkg);
+                echo "<span style='color:#099E12;'>ffmpeg package successfully extracted</span><br>\n";
+                flush();
+            } else {
+                echo "<span style='color:#F41F15;'>Couldn't open $ffmpeg_pkg!</span><br>\n";
+                echo "Aborting!";
+                exit(-1);
+            }
+        }
+        else {
+            // Linux/Mac
+            $cmp = "cd " . $xerte_toolkits_site->root_file_path . "/yt-dlp; tar xJf " . $ffmpeg_pkg;
+            exec($cmp, $out, $result);
+            if (!file_exists($xerte_toolkits_site->root_file_path . "/yt-dlp/ffmpeg-master-latest-linux64-gpl"))
             {
-                echo "<span style='color:#F41F15;'>Failed to extract " . $tsugizip . ": " . x_clean_input($zip->getStatusString()) . "</span><br>\n";
+                echo "<span style='color:#F41F15;'>Failed to extract " . $ffmpeg_pkg . "</span><br>\n";
                 echo "Aborting!<br>";
                 exit(-1);
             }
-            $res = $zip->close();
-            echo "<span style='color:#099E12;'>TSUGI package successfully extracted</span><br>\n";
-            flush();
-        } else {
-            echo "<span style='color:#F41F15;'>Couldn't open $tsugizip!</span><br>\n";
-            echo "Aborting!";
-            exit(-1);
-        }
-
-        rename($xerte_toolkits_site->root_file_path . "tsugi-{$version}", $xerte_toolkits_site->root_file_path . "tsugi");
-
-        echo "<span style='color:#099E12;'>TSUGI package successfully installed</span><br>\n";
-        flush();
-
-    }
-            
-    function prepare_config($config_file)
-    {
-        // Replace placeholders with unique keys
-        // Cookies
-        $lconfig_file = str_replace("warning:please-change-cookie-secret-a289b543", GUIDv4(), $config_file);
-        $lconfig_file = str_replace("TSUGIAUTO", "TSUGI" . gethostname(), $lconfig_file);
-        $lconfig_file = str_replace("390b246ea9", generateRandomString(), $lconfig_file);
-        // Session salt
-        $lconfig_file = str_replace("warning:please-change-sessionsalt-89b543", GUIDv4(), $lconfig_file);
-
-        return $lconfig_file;
-    }
-
-    function install_config_file($config_file)
-    {
-        global $xerte_toolkits_site;
-        $ok = file_put_contents($xerte_toolkits_site->root_file_path .  "tsugi/config.php", $config_file);
-        if ($ok === false)
-        {
-            echo "<span style='color:#F41F15;'>config.php can't be copied!</span> <br>\n";
-        }
-        else
-        {
-            echo "<span style='color:#099E12;'>config.php has been copied!</span> <br>\n";
-        }
-		flush();
-    }
-
-    function copy_config_template()
-    {
-        $config_file = file_get_contents("config.php");
-        $config_file = prepare_config($config_file);
-        install_config_file($config_file);
-    }
-
-    function upgrade_database()
-    {
-        echo "<br>Upgrade tsugi database<br>\n";
-        flush();
-        $_SESSION['admin'] = true;
-        // Try to call commandline php
-        $ok = exec("cd ../tsugi/admin; php upgrade.php", $out, $result);
-        if ($ok === false || $result !== 0) {
-            echo "<span style='color:#F41F15;'>upgrading database failed, please navigate to the TSUGI admin panel, and try from there!</span><br>\n";
-        }
-        else{
-            $upgrade_log = "<div><div class=\"log\">\n";
-            foreach ($out as $line)
-            {
-                $upgrade_log .= $line . "\n";
+            // Move all files and folders in ffmpeg-master-latest-linux64-gpl to .
+            $ffmpeg_folder = glob($xerte_toolkits_site->root_file_path . "/yt-dlp/ffmpeg-master-latest-linux64-gpl/*");
+            foreach ($ffmpeg_folder as $file) {
+                $res = rename($file, $xerte_toolkits_site->root_file_path . "/yt-dlp/" . basename($file));
+                if ($res === false) {
+                    echo "<span style='color:#F41F15;'>Failed to move " . $file . " to " . $xerte_toolkits_site->root_file_path . ": " . x_clean_input(error_get_last()['message']) . "</span><br>\n";
+                }
             }
-            $upgrade_log .= "</div></div>";
-            echo $upgrade_log;
+            rmdir($xerte_toolkits_site->root_file_path . "/yt-dlp/ffmpeg-master-latest-linux64-gpl");
+            unlink($ffmpeg_pkg);
+            echo "<span style='color:#099E12;'>ffmpeg package successfully extracted</span><br>\n";
             flush();
         }
+
+        echo "<span style='color:#099E12;'>yt-dlp package successfully installed</span><br>\n";
+        flush();
     }
             
     if(isset($_POST['install']))
     {
         preflightchecks('install');
         install();
-        copy_config_template();
-        upgrade_database();
         echo "<br><br><span style='color:#099E12;'>Installation is ready!</span> <br>\n";
         flush();
     }
 
     if(isset($_POST['update']))
     {
-        require_once("../tsugi/config.php");
-        preflightchecks('update');
-        $filepath = $xerte_toolkits_site->root_file_path .  "tsugi/config.php";
-        $config_file = file_get_contents($filepath);
-        backup();
-        install();
-        install_config_file($config_file);
-        upgrade_database();
-        echo "<br><br><span style='color:#099E12;'>Installation is ready!</span> <br>\n";
-        flush();
+//        require_once("../tsugi/config.php");
+//        preflightchecks('update');
+//        $filepath = $xerte_toolkits_site->root_file_path .  "tsugi/config.php";
+//        $config_file = file_get_contents($filepath);
+//        backup();
+//        install();
+//        install_config_file($config_file);
+//        upgrade_database();
+//        echo "<br><br><span style='color:#099E12;'>Installation is ready!</span> <br>\n";
+//        flush();
     }
 
 
