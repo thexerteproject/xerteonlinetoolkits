@@ -146,10 +146,14 @@
 		left: .05em;
 	}
 	
-	#cardCtrls .btnHolder button {
+	#cardCtrls .btnHolder button:not(:disabled) {
 		color: #434343;
 		background: none;
 		cursor: pointer;
+	}
+
+	#cardCtrls .btnHolder button:disabled {
+		background: none;
 	}
 	
 	#cardCtrls .btnHolder button:hover, #cardCtrls .btnHolder button:focus { color: #666666; }
@@ -211,7 +215,7 @@
 	.flex {
 		display: flex;
 		flex-direction: column;
-		height: calc(100% - 2.4em /* flip button height offset */ - 1em /* card-inner margin offset */ );
+		height: calc(100% - 2.4em - 1em ); /* minus flip button height offset & card-inner margin offset*/
 	}
 
 	.card.singleSided .flex {

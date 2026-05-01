@@ -694,6 +694,22 @@
 					$thisCard.flip({trigger: 'manual'});
 				}
 			});
+
+			// if images have been added directly to flesh card text then the card height may not be calculated correctly as image not yet loaded when calculations done
+			// look for changes in the height of .text-content to account for this
+			const observer = new ResizeObserver(entries => {
+				for (let entry of entries) {
+					const el = entry.target;
+					observer.unobserve(el); // stop observing this card
+					flashCards.sizeChanged();
+				}
+			});
+			// only do this for cards that contain images outside mediaHolder
+			$(".text-content").each(function() {
+				if ($(this).find(".mediaHolder").length == 0 && $(this).find("img").length > 0) {
+					observer.observe($(this)[0]);
+				}
+			});
 			
 			// set up button to show other side of card
             $('.flipBtn')
@@ -729,7 +745,7 @@
 					});
 				});
 			}
-			
+
 			this.sizeChanged(true);
 
 			if (firstLoad) {
