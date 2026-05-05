@@ -1328,9 +1328,7 @@ function setup() {
 
 		// add & position custom footer
 		if ($(data).find('learningObject').attr('customFooter') != undefined && $(data).find('learningObject').attr('customFooter') != ''){
-
-			var customFooterContent=$(data).find('learningObject').attr('customFooter');
-
+			var customFooterContent = XBOOTSTRAP.VARIABLES.replaceVariables($(data).find('learningObject').attr('customFooter'), 'variables');
 			if ($(data).find('learningObject').attr('footerPos') == 'below') {
 				$('.footer .container .row-fluid').append('<div id="customFooter">'+customFooterContent+'</div>');
 				$("#customFooter").css({"margin-top": "40px"});
@@ -1352,7 +1350,6 @@ function setup() {
 		// populate wcag logo and link and/or hide it
 		$(".wcagLink").removeClass("hidden");
 
-		// ** update logo image to wcag 2.2 after new accessibility statement is live
 		if ($(data).find('learningObject').attr('wcagHide') == 'true'){
 			$('.wcagLink').remove();
 		} else {
