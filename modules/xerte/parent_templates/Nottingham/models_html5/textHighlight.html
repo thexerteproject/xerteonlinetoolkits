@@ -30,23 +30,23 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $('#pageContents');
+			docData = $pageContents.data("docData");
 		};
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			// resize panels to maximum possible height
-			var textHolderH = $('#textHolder').length > 0 ? $('#textHolder').outerHeight(true) : 0,
-				mainBtnHolderH = $('#mainBtnHolder').length > 0 ? $('#mainBtnHolder').outerHeight(true) : 0,
-				panels = ['panelA', 'panelB'];
+			const textHolderH = $('#textHolder').length > 0 ? $('#textHolder').outerHeight(true) : 0;
+			const panels = ['panelA', 'panelB'];
 			
-			for (var i=0; i<panels.length; i++) {
-				var $thisPanel = $('.' + panels[i]),
+			for (let i=0; i<panels.length; i++) {
+				const $thisPanel = $('.' + panels[i]),
 					$thisPanelPaneHolder = $thisPanel.find('.paneHolder'),
 					$thisPanelTabHolder = $thisPanel.find('.tabHolder');
 
 				if ($(".splitScreen_B").css("flex-basis") !== "100%") {
 					// navigator isn't full width so ensure the panel is full height when needed
-					$thisPanel.height(x_getAvailableHeight([$thisPanel], [(x_browserInfo.mobile == true ? 0 : textHolderH), mainBtnHolderH]));
+					$thisPanel.height(x_getAvailableHeight([$thisPanel], [(x_browserInfo.mobile == true ? 0 : textHolderH)]));
 
 					// this resizing is for if the panel is a tabbed navigator
 					$thisPanelPaneHolder.height($thisPanel.height() - $thisPanelTabHolder.outerHeight());
@@ -69,7 +69,10 @@
 		// function resizes contenteditable div
 		this.resizeEditable = function($editableDiv) {
 			if (!$editableDiv.is($("#suggestedTxt"))) {
-				var btnHolderH = $editableDiv.parent().find('.btnHolder').length > 0 ? $editableDiv.parent().find('.btnHolder').outerHeight() : 0;
+				let btnHolderH = 0;
+				$editableDiv.parent().find('.btnHolder').each(function() {
+					btnHolderH += $(this).outerHeight(true);
+				});
 				$editableDiv.innerHeight(Math.floor($editableDiv.parents('.leftPanel, .panelContent, .navChild').height() - btnHolderH));
 			}
 		};
@@ -78,6 +81,7 @@
             if ($pageContents.data('tracked') != true) {
                 this.finishTracking();
             }
+			$pageContents.data("docData", docData);
         };
 
 		this.init = function() {
@@ -88,10 +92,10 @@
 			});
 			
 			// tracking - there's no correct answer so tracking just saves highlighted text/notes text alongside the suggested text - any highlights/notes count as activity completed
-			var weighting = x_currentPageXML.getAttribute("trackingWeight") != undefined ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
-			var label = x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "" ? x_currentPageXML.getAttribute("trackinglabel") : $('<div>').html(x_currentPageXML.getAttribute('name')).text();
+			const weighting = x_currentPageXML.getAttribute("trackingWeight") != undefined ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
+			const label = x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "" ? x_currentPageXML.getAttribute("trackinglabel") : $('<div>').html(x_currentPageXML.getAttribute('name')).text();
             XTSetPageType(x_currentPage, 'numeric', 1, weighting);
-            var suggestedTxt = $('<div>').html(x_currentPageXML.getAttribute("suggestedText")).text();
+            const suggestedTxt = $('<div>').html(x_currentPageXML.getAttribute("suggestedText") != undefined && x_currentPageXML.getAttribute("suggestedText") != "" ? x_currentPageXML.getAttribute("suggestedText") : "-").text();
 			XTEnterInteraction(x_currentPage, 0, 'text', label, [], suggestedTxt, [], x_currentPageXML.getAttribute("grouping"));
 			
 			// get info about downloadable document if download is allowed
@@ -106,7 +110,7 @@
 
 				
 				// styles used in downloaded word doc
-				var styles = '';
+				let styles = '';
 				styles += 'body, .ui-widget { font-family: Arial, sans-serif; -webkit-font-smoothing: antialiased; color: black; font-size: 12pt; } ';
 				docData.styles = styles;
 				
@@ -115,20 +119,8 @@
 				}
 			}
 			
-			// set up highlight / select style css
-			var groupStyles = "<style type='text/css'>",
-				highlightColour = x_getColour(x_currentPageXML.getAttribute('highlight1')),
-				selectedColour = x_getColour(x_currentPageXML.getAttribute('highlight2'));
-			groupStyles += " #initTxt *::selection {color:" + x_blackOrWhite(highlightColour) + "; background:" + highlightColour + ";} ";
-			groupStyles += " #initTxt *::-moz-selection {color:" + x_blackOrWhite(highlightColour) + "; background:" + highlightColour + ";} ";
-			groupStyles += "</style>";
-			$pageContents.prepend($(groupStyles));
-			
-			// selected style is added as inline css rather than a class so that it shows up in downloaded files - selected class is also used but just so the highlights can be easily removed
-			$pageContents.data("selectedStyle", "color:" + x_blackOrWhite(selectedColour) + "; background:" + selectedColour + ";");
-			
 			// if language attributes aren't in xml will have to use english fall back
-			var selectBtnLabel = x_currentPageXML.getAttribute("selectBtn") == undefined ? "Select" : x_currentPageXML.getAttribute("selectBtn"),
+			const selectBtnLabel = x_currentPageXML.getAttribute("selectBtn") == undefined ? "Select" : x_currentPageXML.getAttribute("selectBtn"),
 				noteBtnLabel = x_currentPageXML.getAttribute("noteBtn") == undefined ? "Copy to Notes" : x_currentPageXML.getAttribute("noteBtn"),
 				downloadBtnLabel = x_currentPageXML.getAttribute("downloadBtn") == undefined ? "Download" : x_currentPageXML.getAttribute("downloadBtn"),
 				checkBtnLabel = x_currentPageXML.getAttribute("checkBtn") == undefined ? "Check" : x_currentPageXML.getAttribute("checkBtn"),
@@ -140,9 +132,9 @@
 				notesTxtLabel = x_currentPageXML.getAttribute("notesTxtLabel") == undefined ? "Notes" : x_currentPageXML.getAttribute("notesTxtLabel");
 			
 			// sort layout of the different text fields & store the info that will be in the downloadable file
-			var position = { top:[], left:[], panelA:[], panelB:[], lightbox:[] },
-				submit = false,
-				index = 0;
+			const position = { top:[], left:[], panelA:[], panelB:[], lightbox:[] };
+			let submit = false;
+			let index = 0;
 			
 			// page text (instructions) - optional
 			if (x_currentPageXML.getAttribute("text") != "") {
@@ -150,7 +142,7 @@
 				index++;
 				
 				if (x_currentPageXML.getAttribute('download') == 'true') {
-					var txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("textTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("text") };
+					const txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("textTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("text") };
 					docData.pages.push(txtInfo);
 				}
 			}
@@ -161,7 +153,7 @@
 				index++;
 
 				if (x_currentPageXML.getAttribute('download') == 'true') {
-					var txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("initialTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("initialText") };
+					const txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("initialTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("initialText") };
 					docData.pages.push(txtInfo);
 				}
 			}
@@ -172,7 +164,7 @@
 				index++;
 				
 				if (x_currentPageXML.getAttribute('download') == 'true') {
-					var txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("notesTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("notesText") != undefined ? x_currentPageXML.getAttribute("notesText") : '' };
+					const txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("notesTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("notesText") != undefined && x_currentPageXML.getAttribute("notesTextRemove") != 'true' ? x_currentPageXML.getAttribute("notesText") : '' };
 					docData.pages.push(txtInfo);
 				}
 			}
@@ -184,18 +176,18 @@
 				index++;
 				
 				if (x_currentPageXML.getAttribute('download') == 'true') {
-					var txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("feedbackTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("feedback") };
+					const txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("feedbackTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("feedback") };
 					docData.pages.push(txtInfo);
 				}
 			}
 			
-			if (x_currentPageXML.getAttribute("suggestedText") != "") {
+			if (x_currentPageXML.getAttribute("suggestedText") != undefined && x_currentPageXML.getAttribute("suggestedText") != "") {
 				submit = true;
 				position[x_currentPageXML.getAttribute("suggestedPos")].push({ txt: x_currentPageXML.getAttribute("suggestedText"), title: x_currentPageXML.getAttribute("suggestedTitle"), index: index, class: 'suggestedTxt', hide: true });
 				index++;
 				
 				if (x_currentPageXML.getAttribute('download') == 'true') {
-					var txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("suggestedTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("suggestedText") };
+					const txtInfo = { pageName: '<h2>' + x_currentPageXML.getAttribute("suggestedTitle") + '</h2>', pageText: x_currentPageXML.getAttribute("suggestedText") };
 					docData.pages.push(txtInfo);
 				}
 			}
@@ -225,61 +217,95 @@
 				position.left = [];
 				position.panelB = [];
 			}
-			
-			// remember all the position info in case of page changes
-			$pageContents.data({
-				'position': position,
-				'docData': docData
-			});
 
 			// create split screen layout & add required classes
-			const $contentHolder = $('#contentHolder');
 			const left = position.left.length > 0 ? 'left' : 'panelA';
 			const right = left == 'left' ? 'panelB' : position.panelB.length > 0 ? 'panelB' : undefined;
 
 			if (left == 'panelA') {
-				$contentHolder.find('.left .leftPanel').addClass('panelA');
-				$contentHolder.find('.right .panelContent').addClass('panelB');
+				$pageContents.find('.splitScreen_A .leftPanel').addClass('panelA');
+				$pageContents.find('.splitScreen_B .panelContent').addClass(right == undefined ? 'panelA' : 'panelB');
 			} else {
-				$contentHolder.find('.right .panelContent').addClass('panelA');
-				$contentHolder.find('.left').addClass('introTxt').empty();
+				$pageContents.find('.splitScreen_B .panelContent').addClass('panelA');
+				$pageContents.find('.splitScreen_A').addClass('introTxt').empty();
 			}
 
-			// data sent to the split screen function doesn't take info from xwd as it just depends on whether one or two columns are required
+			// data sent to the split screen function is probably more complicated than it needs to be due to ensuring backwards compatability
 			const attributes = {
 				panelWidth: "custom",
-				panelWidthCustom: "50", // panels are always equal width
+				panelWidthCustom: "50",// panels are normally equal width
 				panelPosition: "right",
 				pageTxt: "true", // prevent the left column being deleted as there will always be something in it
-				holder: $("#contentHolder")
+				topTxtWidth: "true", // if there is text above / below, it is always full width
+				bottomTxtWidth: "true",
+				pageText: ""
 			}
 
 			if (right == undefined) {
 				// only one panel so full width with nothing to left of navigator panel
 				attributes.panelWidth = "full";
 				attributes.removeTxt = "true";
-				$contentHolder.find('.right .panelContent').removeClass('panelB').addClass('panelA');
+
+			} else {
+				// if layout options are set in editor, medium is 50% & small/large are reversed (as they are set for panel on left not on right as is normally assumed)
+				if (x_currentPageXML.getAttribute('panelWidth') != undefined && x_currentPageXML.getAttribute('panelWidth') != "Medium") {
+					attributes.panelWidth = x_currentPageXML.getAttribute('panelWidth');
+					if (attributes.panelWidth == "Custom" && x_currentPageXML.getAttribute('panelWidthCustom') != undefined) {
+						attributes.panelWidthCustom = String(100 - Number(x_currentPageXML.getAttribute('panelWidthCustom')));
+					} else if (attributes.panelWidth == "Small") {
+						// not using default small as that is 20/80% (too small) - we want it to be 40/60%
+						// so swap the side it thinks the panel is on and use large instead
+						attributes.panelPosition = "left";
+						const tempLeft = left == "panelA" ? position.panelA: position.left;
+						if (left == "panelA") {
+							position.panelA = position.panelB;
+							position.panelB = tempLeft;
+						} else {
+							position.left = position.panelA;
+							position.panelA = tempLeft;
+						}
+					} else if (attributes.panelWidth == "Large") {
+						attributes.panelWidth = "Small";
+					}
+				}
+			}
+
+			// if page text is at top, combine it with topTxt as having page text at top is not an option in splitscreen functions
+			if (x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") {
+				if (x_currentPageXML.getAttribute("textPos") == "top") {
+					let textTop = x_currentPageXML.getAttribute("text");
+					if (x_currentPageXML.getAttribute("topTxt") != undefined && x_currentPageXML.getAttribute("topTxt").trim() != "") {
+						textTop = '<div class="mainTxt">' + textTop + '</div><div class="topTxt">' + x_currentPageXML.getAttribute("topTxt") + '</div>';
+					}
+					attributes.textTop = textTop;
+				}
 			}
 
 			// set up split screen layout
 			XENITH.SPLITSCREEN.init({"attributes": attributes});
+
+			// remember all the position info in case of page changes
+			$pageContents.data({
+				'position': position,
+				'docData': docData
+			});
 			
 			// add info to the panels - if there's more than one thing to show on the panel then it will become tabbed navigator
 			// an optional property also forces panels with one thing on to be tabbed navigator anyway
-			var panels = ['panelA', 'panelB'];
+			const panels = ['panelA', 'panelB'];
 			
-			for (var i=0; i<panels.length; i++) {
-				var $thisPanel = $contentHolder.find('.' + panels[i]);
+			for (let i=0; i<panels.length; i++) {
+				const $thisPanel = $pageContents.find('.' + panels[i]);
 				
 				// create tabs
 				if (position[panels[i]].length > 1 || x_currentPageXML.getAttribute('forceTabs') == "true") {
 					$thisPanel.removeClass('panel');
 					
-					var $thisTabHolder = $('<ul class="tabHolder"/>').appendTo($thisPanel),
-						$thisPaneHolder = $('<div class="paneHolder"/>').appendTo($thisPanel);
+					const $thisTabHolder = $('<ul class="tabHolder"/>').appendTo($thisPanel);
+					const $thisPaneHolder = $('<div class="paneHolder"/>').appendTo($thisPanel);
 					
-					for (var j=0; j<position[panels[i]].length; j++) {
-						var tabTitle = position[panels[i]][j].title == null || position[panels[i]][j].title == '' ? ' ' : position[panels[i]][j].title;
+					for (let j=0; j<position[panels[i]].length; j++) {
+						const tabTitle = position[panels[i]][j].title == null || position[panels[i]][j].title == '' ? ' ' : position[panels[i]][j].title;
 						$thisTabHolder.append('<li class="navChildTitle" aria-hidden="false"><a id="' + panels[i] + 'Title_' + j + '" href="#' + panels[i] + '_' + j + '">' + tabTitle + '</a></li>');
 						$thisPaneHolder.append('<div id="' + panels[i] + '_' + j + '" class="navChild ' + position[panels[i]][j].class + '" tabindex="0"/>')
 					}
@@ -301,13 +327,13 @@
 			// layout has been sorted - now add the content to the holders that have been set up
 			$.each(position, function(key, info) {
 				if (key != 'lightbox') {
-					var hidden = 0;
+					let hidden = 0;
 					
-					for (var i=0; i<info.length; i++) {
-						var $holder = $('.' + info[i].class);
+					for (let i=0; i<info.length; i++) {
+						const $holder = $('.' + info[i].class);
 					
 						if (info[i].class == 'initTxt' || info[i].class == 'notesTxt' || info[i].class == 'suggestedTxt') {
-							$holder.append('<div id="' + info[i].class + '" contenteditable="' + (info[i].class != 'suggestedTxt') + '" spellcheck="false" class="editableDiv">' + info[i].txt + '</div>');
+							$holder.append('<div id="' + info[i].class + '" contenteditable="' + (info[i].class != 'initTxt' || ($pageContents.data('mode') != 'Notes' && x_currentPageXML.getAttribute('initialBtn') == "false")) + '" spellcheck="false" class="editableDiv">' + info[i].txt + '</div>');
 							
 							if (info[i].class == 'initTxt') {
 								$holder.append('<div id="' + info[i].class + 'BtnHolder" class="btnHolder"></div>');
@@ -340,7 +366,7 @@
 						
 						// hide suggestedTxt and feedbackTxt until work has been submitted
 						if (info[i].hide == true) {
-							var $pane = $('.' + info[i].class);
+							const $pane = $('.' + info[i].class);
 							$pane.hide();
 							hidden++;
 							
@@ -364,7 +390,7 @@
 				.attr('aria-readonly', 'true');
 			
 			// also prevent editing of notes field when not in notes mode
-			if ($pageContents.data('mode') != 'Notes' || x_currentPageXML.getAttribute('allowTyping') == 'false') {
+			if ($pageContents.data('mode') != 'Notes' || (x_currentPageXML.getAttribute('allowTyping') == 'false' && x_currentPageXML.getAttribute('initialBtn') != 'false')) {
 				$('#notesTxt')
 					.on('keypress paste dragover drop', function(e) {
 						e.preventDefault();
@@ -387,86 +413,101 @@
 			$('#initTxt').attr('aria-label', $pageContents.data('mode') == 'Notes' ? initTxtLabel : initTxtLabel2);
 			$('#suggestedTxt').attr('aria-label', suggestedTxtLabel);
 			$('#notesTxt').attr('aria-label', notesTxtLabel);
-			
-			
+
 			// set up buttons...
-			$('#initTxtBtnHolder').append('<button id="selectBtn"></button>');
-			$('#mainBtnHolder').append('<button id="downloadBtn"></button><button id="clearBtn"></button><button id="checkBtn"></button>');
+			const $mainBtnHolder = $('<div id="mainBtnHolder" class="btnHolder"></div>');
+			if ($pageContents.data('mode') == 'Notes') {
+				$(".notesTxt").append($mainBtnHolder);
+			} else {
+				$(".initTxt").append($mainBtnHolder);
+			}
+			$mainBtnHolder.append('<button id="checkBtn"></button><button id="clearBtn"></button><button id="downloadBtn"></button>');
 			
 			// select button - depending on mode this either duplicates text or highlights it
-			$("#selectBtn")
-				.button({
-					label: $pageContents.data('mode') == 'Notes' ? noteBtnLabel : selectBtnLabel
-				})
-				.click(function() {
-					// selected sections of text can be moved to notes panel
-					if ($pageContents.data('mode') == 'Notes') {
-						var selectedInfo = textHighlight.getSelectionHTML();
-						var selectedTxt = selectedInfo[0],
-							selectedParent = selectedInfo[1];
-						
-						if ($(selectedParent).is('#initTxt') || $(selectedParent).parents('#initTxt').length > 0) {
-							// wrap in p tag if plain text
-							if (selectedTxt.charAt(0) != '<' || selectedTxt.charAt(selectedTxt.length-1) != '>' || $('<div></div>').html(selectedTxt).text() == selectedTxt) {
-								selectedTxt = '<p>' + selectedTxt + '</p>';
-							}
-							
-							// move to notes panel & remove hightlight
-							$('#notesTxt').append(selectedTxt);
-							window.getSelection().removeAllRanges();
-							
-							if (x_currentPageXML.getAttribute('required') == "true") {
-								$("#checkBtn").prop('disabled', false);
-							}
-							
-							$('#notesTxt').animate({ scrollTop: $('#notesTxt').prop("scrollHeight")}, 1000);
-							
-						} else if (selectedTxt == '') {
-							// nothing's been selected
-							alert(x_currentPageXML.getAttribute("highlightTxt") == undefined ? "Selection error - no text selected" : x_currentPageXML.getAttribute("highlightTxt"));
-						}
-						
-					// highlighted sections of text are marked up with css so they can be later compared with the suggested highlights
-					} else {
-						var selectedInfo = textHighlight.getSelectionHTML();
-						var selectedTxt = selectedInfo[0],
-							selectedParent = selectedInfo[1];
-						
-						// wrap selected text in span to show permenant highlight
-						if ($(selectedParent).parents('#initTxt').length > 0) {
-							var selection = window.getSelection().getRangeAt(0),
-								selectedTxt = selection.extractContents(),
-								span = document.createElement("span");
-							
-							span.setAttribute('class', 'selected');
-							span.setAttribute('role', 'mark');
-							span.setAttribute('style', $pageContents.data('selectedStyle'));
-							span.appendChild(selectedTxt);
-							
-							// nothing's been selected
-							if ($(span).children().length == 0 && $(span).text() == '') {
-								alert(x_currentPageXML.getAttribute("highlightTxt") == undefined ? "Selection error - no text selected" : x_currentPageXML.getAttribute("highlightTxt"));
-								
-							} else {
-								selection.insertNode(span);
-								
-								// remove text highlight (leaving css highlight)
+			if ($pageContents.data('mode') != 'Notes' || x_currentPageXML.getAttribute('initialBtn') != "false") {
+				if ($pageContents.data('mode') == 'Notes') {
+					$('#initTxtBtnHolder').append('<button id="selectBtn"></button>');
+				} else {
+					$mainBtnHolder.prepend('<button id="selectBtn"></button>');
+					$('#initTxtBtnHolder').remove();
+				}
+
+				$("#selectBtn")
+					.button({
+						label: $pageContents.data('mode') == 'Notes' ? noteBtnLabel : selectBtnLabel
+					})
+					.click(function() {
+						// selected sections of text can be moved to notes panel
+						if ($pageContents.data('mode') == 'Notes') {
+							const selectedInfo = textHighlight.getSelectionHTML();
+							let selectedTxt = selectedInfo[0];
+							const selectedParent = selectedInfo[1];
+
+							if ($(selectedParent).is('#initTxt') || $(selectedParent).parents('#initTxt').length > 0) {
+								// wrap in p tag if plain text
+								if (selectedTxt.charAt(0) != '<' || selectedTxt.charAt(selectedTxt.length-1) != '>' || $('<div></div>').html(selectedTxt).text() == selectedTxt) {
+									selectedTxt = '<p>' + selectedTxt + '</p>';
+								}
+
+								// move to notes panel & remove hightlight
+								$('#notesTxt').append(selectedTxt);
 								window.getSelection().removeAllRanges();
-								
+
 								if (x_currentPageXML.getAttribute('required') == "true") {
 									$("#checkBtn").prop('disabled', false);
 								}
+
+								$('#notesTxt').animate({ scrollTop: $('#notesTxt').prop("scrollHeight")}, 1000);
+
+							} else if (selectedTxt == '') {
+								// nothing's been selected
+								alert(x_currentPageXML.getAttribute("highlightTxt") == undefined ? "Selection error - no text selected" : x_currentPageXML.getAttribute("highlightTxt"));
 							}
-								
-						} else if ($(selectedParent).is('#initTxt')) {
-							// wrapping multiple paragraphs causes line break issues so avoid this
-							alert(x_currentPageXML.getAttribute("errorTxt") == undefined ? "Selection error - you can not select content from more than one paragraph at a time" : x_currentPageXML.getAttribute("errorTxt"));
-						} else if (selectedTxt == '') {
-							// nothing's been selected
-							alert(x_currentPageXML.getAttribute("highlightTxt") == undefined ? "Selection error - no text selected" : x_currentPageXML.getAttribute("highlightTxt"));
+
+							// highlighted sections of text are marked up with css so they can be later compared with the suggested highlights
+						} else {
+							const selectedInfo = textHighlight.getSelectionHTML();
+							let selectedTxt = selectedInfo[0];
+							const selectedParent = selectedInfo[1];
+
+							// wrap selected text in span to show permenant highlight
+							if ($(selectedParent).parents('#initTxt').length > 0) {
+								const selection = window.getSelection().getRangeAt(0);
+								const selectedTxt = selection.extractContents();
+								const span = document.createElement("span");
+
+								span.setAttribute('class', 'selected');
+								span.setAttribute('role', 'mark');
+								span.setAttribute('style', $pageContents.data('selectedStyle'));
+								span.appendChild(selectedTxt);
+
+								// nothing's been selected
+								if ($(span).children().length == 0 && $(span).text() == '') {
+									alert(x_currentPageXML.getAttribute("highlightTxt") == undefined ? "Selection error - no text selected" : x_currentPageXML.getAttribute("highlightTxt"));
+
+								} else {
+									selection.insertNode(span);
+
+									// remove text highlight (leaving css highlight)
+									window.getSelection().removeAllRanges();
+
+									if (x_currentPageXML.getAttribute('required') == "true") {
+										$("#checkBtn").prop('disabled', false);
+									}
+								}
+
+							} else if ($(selectedParent).is('#initTxt')) {
+								// wrapping multiple paragraphs causes line break issues so avoid this
+								alert(x_currentPageXML.getAttribute("errorTxt") == undefined ? "Selection error - you can not select content from more than one paragraph at a time" : x_currentPageXML.getAttribute("errorTxt"));
+							} else if (selectedTxt == '') {
+								// nothing's been selected
+								alert(x_currentPageXML.getAttribute("highlightTxt") == undefined ? "Selection error - no text selected" : x_currentPageXML.getAttribute("highlightTxt"));
+							}
 						}
-					}
-				});
+					});
+			} else {
+				$('#initTxtBtnHolder').remove();
+			}
 			
 			// clear button - depending on mode this either clears notes panel or clears highlights from initial text
 			// also resets hidden areas if already submitted
@@ -501,12 +542,12 @@
 						// re-hide any bits of info that were hidden at the beginning of the activity
 						$.each($pageContents.data('position'), function(key, info) {
 							if (key == 'panelA' || key == 'panelB') {
-								var hidden = 0,
-									active = false;
+								let hidden = 0;
+								let active = false;
 								
-								for (var i=0; i<info.length; i++) {
+								for (let i=0; i<info.length; i++) {
 									if (info[i].hide == true) {
-										var $pane = $('.' + info[i].class);
+										const $pane = $('.' + info[i].class);
 										$pane.hide();
 										hidden++;
 										
@@ -525,7 +566,7 @@
 						});
 					}
 					
-					$('#downloadBtn').prop('disabled', true);
+					$('#downloadBtn').hide();
 				})
 				.data({
 					'resetBtnLabel': resetBtnLabel,
@@ -542,19 +583,19 @@
 						})
 						.click(function () {
 							// show the suggestedTxt & feedbackTxt
-							var show = ['feedbackTxt', 'suggestedTxt'],
-									activateTab = true;
+							const show = ['feedbackTxt', 'suggestedTxt'];
+							let activateTab = true;
 
-							for (var i = 0; i < show.length; i++) {
-								var $show = $('.' + show[i]);
+							for (let i = 0; i < show.length; i++) {
+								const $show = $('.' + show[i]);
 
 								if ($show.length > 0) {
 									// if in tab nav then show all related hidden bits too
 									if ($show.attr('aria-labelledby') != undefined) {
-										var $tab = $('#' + $show.attr('aria-labelledby'));
+										const $tab = $('#' + $show.attr('aria-labelledby'));
 										$tab.parent('.navChildTitle').show();
 
-										var activeTab = $show.parents('.ui-tabs').tabs('option', 'active');
+										let activeTab = $show.parents('.ui-tabs').tabs('option', 'active');
 										if (activeTab == $show.index()) {
 											$show.show();
 										}
@@ -584,7 +625,7 @@
 									}
 								});
 
-								$('#downloadBtn').prop('disabled', false);
+								$('#downloadBtn').show();
 							}
 
 							$pageContents.data({
@@ -623,7 +664,7 @@
 					});
 
 				if ($("#checkBtn").length > 0) {
-					$('#downloadBtn').prop('disabled', true);
+					$('#downloadBtn').hide();
 				}
 
 			} else {
@@ -634,31 +675,43 @@
 			if (x_currentPageXML.getAttribute('required') == "true") {
 				$("#checkBtn").prop('disabled', true);
 			}
+
+			// set up highlight / select style css
+			let groupStyles = "<style type='text/css'>";
+			const highlightColour = x_getColour(x_currentPageXML.getAttribute('highlight1'));
+			const selectedColour = x_getColour(x_currentPageXML.getAttribute('highlight2'));
+			groupStyles += " #initTxt *::selection {color:" + x_blackOrWhite(highlightColour) + "; background:" + highlightColour + ";} ";
+			groupStyles += " #initTxt *::-moz-selection {color:" + x_blackOrWhite(highlightColour) + "; background:" + highlightColour + ";} ";
+			groupStyles += "</style>";
+			$pageContents.prepend($(groupStyles));
+
+			// selected style is added as inline css rather than a class so that it shows up in downloaded files - selected class is also used but just so the highlights can be easily removed
+			$pageContents.data("selectedStyle", "color:" + x_blackOrWhite(selectedColour) + "; background:" + selectedColour + ";");
 			
 			this.sizeChanged();
 			x_pageLoaded();
 		};
 		
 		this.getSelectionHTML = function() {
-			var html = "",
-				container = null;
+			let html = "";
+			let container = null;
 			
 			if (typeof window.getSelection != "undefined") {
-				var sel = window.getSelection();
+				const sel = window.getSelection();
 				if (sel.rangeCount) {
-					var temp = document.createElement("div");
-					for (var i=0, len=sel.rangeCount; i<len; ++i) {
+					const temp = document.createElement("div");
+					for (let i=0, len=sel.rangeCount; i<len; ++i) {
 						temp.appendChild(sel.getRangeAt(i).cloneContents());
 					}
 					html = temp.innerHTML;
 					
-					var node = sel.getRangeAt(0).commonAncestorContainer;
+					const node = sel.getRangeAt(0).commonAncestorContainer;
 					container = node.nodeType == 1 ? node : node.parentNode;
 				}
 				
 			// IE
 			} else if (typeof document.selection != "undefined" && document.selection.type != "Control") {
-				var textRange = document.selection.createRange();
+				const textRange = document.selection.createRange();
 				container = textRange.parentElement();
 				text = textRange.htmlText;
 			}
@@ -668,7 +721,7 @@
 		
 		// function triggers the download of word document containing all the info on the screen
 		this.postData = function (data) {
-			var form = document.createElement("form");
+			const form = document.createElement("form");
 			form.method = 'post';
 			form.target = 'displayjson';
 			form.action = (typeof x_downloadURL != 'undefined') ? x_downloadURL : 'download.php';
@@ -686,7 +739,7 @@
 		};
 
         this.finishTracking = function() {
-			var answerTxt;
+			let answerTxt;
 			if ($pageContents.data('mode') == 'Notes') {
 				// if notes text has placeholder text only class as completed if the text here has changed
 				if ($('.notesTxt').hasClass('placeHolder') && $('#notesTxt').html() != $('.notesTxt').data('placeHolder')) {
@@ -702,7 +755,7 @@
 				}
 			}
 			
-			var answered = $(answerTxt).text().trim() == "" ? false : true;
+			const answered = $(answerTxt).text().trim() == "" ? false : true;
 			result = { success: answered, score: (answered == false ? 0.0 : 100.0) };
 			XTExitInteraction(x_currentPage, 0, result, [], answerTxt, []);
 			XTSetPageScore(x_currentPage, (answered == false ? 0.0 : 100.0));
@@ -719,17 +772,13 @@
 <div id="pageContents">
 	
 	<div id="textHolder" ></div>
-	
-	<div id="contentHolder">
-		<div class="left splitScreen_A">
-			<div class="panel leftPanel"></div>
-		</div>
 
-		<div class="right splitScreen_B">
-			<div class="panel panelContent"></div>
-		</div>
+	<div class="splitScreen_A">
+		<div class="panel leftPanel"></div>
 	</div>
-	
-	<div id="mainBtnHolder" class="btnHolder"></div>
-	
+
+	<div class="splitScreen_B">
+		<div class="panel panelContent"></div>
+	</div>
+
 </div>
