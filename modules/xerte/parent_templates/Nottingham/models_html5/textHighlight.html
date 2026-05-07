@@ -50,7 +50,7 @@
 
 					// this resizing is for if the panel is a tabbed navigator
 					$thisPanelPaneHolder.height($thisPanel.height() - $thisPanelTabHolder.outerHeight());
-					$thisPanelPaneHolder.find('.navChild').height($thisPanelPaneHolder.height() - ($thisPanelPaneHolder.find('.navChild').outerHeight(true) - $thisPanelPaneHolder.find('.navChild').height()));
+					$thisPanelPaneHolder.find('.navChild').height(Math.floor($thisPanelPaneHolder.height() - Math.ceil($thisPanelPaneHolder.find('.navChild').outerHeight(true) - $thisPanelPaneHolder.find('.navChild').height())));
 				} else {
 					// navigator is full width (or has text above it) so panel height is auto (fits content)
 					$thisPanel.height("unset");
@@ -73,7 +73,7 @@
 				$editableDiv.parent().find('.btnHolder').each(function() {
 					btnHolderH += $(this).outerHeight(true);
 				});
-				$editableDiv.innerHeight(Math.floor($editableDiv.parents('.leftPanel, .panelContent, .navChild').height() - btnHolderH));
+				$editableDiv.innerHeight(Math.floor($editableDiv.parents('.leftPanel, .panelContent, .navChild').height() - btnHolderH) - 2);
 			}
 		};
 

@@ -430,14 +430,14 @@ table, table td, table th, table tr {
   color: $contrastcolor;
 }
 //*****highlight text******/
-.x_textHighlight_page #selectBtn {
+.x_textHighlight_page .btnHolder button.ui-button {
   border-radius: $smallroundedcorners;
   background: $panelcolor;
   border: 1px solid $bordercolor;
   color: $mainfontcolour;
 }
-.x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):hover, .x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):active, .x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):focus,
-.x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):hover p, .x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):active p, .x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):focus p {
+.x_textHighlight_page .btnHolder button.ui-button:not(.ui-button-disabled):hover, .x_textHighlight_page .btnHolder button.ui-button:not(.ui-button-disabled):active, .x_textHighlight_page .btnHolder button.ui-button:not(.ui-button-disabled):focus,
+.x_textHighlight_page .btnHolder button.ui-button:not(.ui-button-disabled):hover p, .x_textHighlight_page .btnHolder button.ui-button:not(.ui-button-disabled):active p, .x_textHighlight_page .btnHolder button.ui-button:not(.ui-button-disabled):focus p {
   background: $contrastcolor;
   color: $panelcolor;
   border-color: $contrastcolor;

@@ -33,7 +33,7 @@
 		float: right;
 		display: flex;
 		flex-wrap: wrap;
-		column-gap: .5em;
+		gap: .5em;
 	}
 	
 	.btnHolder button {
@@ -56,6 +56,6 @@
 		border-bottom: 1px solid white !important;
 	}
 	
-	.paneHolder {
+	.paneHolder .navChild {
 		overflow: auto;
 	}

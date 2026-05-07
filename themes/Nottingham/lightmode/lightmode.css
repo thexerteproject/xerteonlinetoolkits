@@ -559,15 +559,15 @@ table.headerCol.shaded td.header {
   border-color: #278384 !important;
 }
 
-.x_textHighlight_page #selectBtn {
+.x_textHighlight_page .btnHolder button.ui-button {
   border-radius: 0;
   background: #FFFFFF;
   border: 1px solid #000000;
   color: #000000;
 }
 
-.x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):hover, .x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):active, .x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):focus,
-.x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):hover p, .x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):active p, .x_textHighlight_page #selectBtn.ui-button:not(.ui-button-disabled):focus p {
+.x_textHighlight_page .btnHolder button.ui-button:not(.ui-button-disabled):hover, .x_textHighlight_page .btnHolder button.ui-button:not(.ui-button-disabled):active, .x_textHighlight_page .btnHolder button.ui-button:not(.ui-button-disabled):focus,
+.x_textHighlight_page .btnHolder button.ui-button:not(.ui-button-disabled):hover p, .x_textHighlight_page .btnHolder button.ui-button:not(.ui-button-disabled):active p, .x_textHighlight_page .btnHolder button.ui-button:not(.ui-button-disabled):focus p {
   background: #278384;
   color: #FFFFFF;
   border-color: #278384;
