@@ -49,7 +49,7 @@
 					$thisPanel.height(x_getAvailableHeight([$thisPanel], [(x_browserInfo.mobile == true ? 0 : textHolderH)]));
 
 					// this resizing is for if the panel is a tabbed navigator
-					$thisPanelPaneHolder.height($thisPanel.height() - $thisPanelTabHolder.outerHeight());
+					$thisPanelPaneHolder.height($thisPanel.height() - $thisPanelTabHolder.outerHeight() - ($thisPanelPaneHolder.outerHeight(true) - $thisPanelPaneHolder.height()));
 					$thisPanelPaneHolder.find('.navChild').height(Math.floor($thisPanelPaneHolder.height() - Math.ceil($thisPanelPaneHolder.find('.navChild').outerHeight(true) - $thisPanelPaneHolder.find('.navChild').height())));
 				} else {
 					// navigator is full width (or has text above it) so panel height is auto (fits content)
