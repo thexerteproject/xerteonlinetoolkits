@@ -135,7 +135,7 @@ while ($ipos !== false) {
                     } else {
                         $imgdata = "";
                     }
-                } else if (strpos($imgfile, "http") === 0) {
+                } else if (strpos($imgfile, "http://") === 0 || strpos($imgfile, "https://") === 0) {
                     if ($validator->isValidImage($imgfile)) {
                         $imgdata = file_get_contents($imgfile);
                     } else {
