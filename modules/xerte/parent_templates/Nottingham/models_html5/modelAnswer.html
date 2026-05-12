@@ -18,8 +18,6 @@
  * limitations under the License.
  */
 
-// ** allow top / bottom text to be copied / downloaded
-
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var modelAnswer = new function() {
@@ -405,33 +403,34 @@
 			let stringToSave = '<div class="pageBlock' + (isStandalone ? ' standalone' : '') + '">';
 			let hLevel;
 
+			// this is an old style model answer page with just one prompt added at page level - use the now deprecated language strings
+			const thisLink = '<a href="#" class="dataPageLink" onclick="x_navigateToPage(false,{type:\'linkID\',ID:\'' + x_currentPageXML.getAttribute("linkID") + '\'}); return false;">';
+			if (langStrings.instructA != undefined) {
+				stringToSave += '<h3 class="dataPageH">' + langStrings.instructA + ' ' + thisLink + langStrings.page + '</a> ' + langStrings.instructB + '</h3>';
+			} else {
+				stringToSave += '<h3 class="dataPageH">' + thisLink + langStrings.pageTxt + '</a></h3>';
+			}
+
+			// add the text above the panels (optional)
+			if ($(".textTopHolder").length > 0) {
+				stringToSave += '<div class="dataPageTopTxt">' + $(".textTopHolder").html() + '</div>';
+			}
+
+			// add the main page text
+			if ($("#textHolder:not(.right)").length > 0) {
+				stringToSave += '<div class="dataPageTxt">' + $("#textHolder").html() + '</div>';
+			}
+
 			$(".prompt").each(function(i) {
 				let thisString = "";
 				const $this = $(this);
 				hLevel = 3;
-				const thisLink = '<a href="#" class="dataPageLink" onclick="x_navigateToPage(false,{type:\'linkID\',ID:\'' + x_currentPageXML.getAttribute("linkID") + '\'}); return false;">';
+				thisString += '<div class="questionBlock">';
 
-				if (langStrings.instructA != undefined) {
-					// this is an old style model answer page with just one prompt added at page level - use the now deprecated language strings
-					thisString += '<h3 class="dataPageH">' + langStrings.instructA + ' ' + thisLink + langStrings.page + '</a> ' + langStrings.instructB + '</h3>';
-					if ($("#textHolder").length > 0) {
-						thisString += '<div class="dataPageTxt">' + $("#textHolder").html() + '</div>';
-					}
-					thisString += '<div class="questionBlock">';
-
-				} else {
-					// this is a newer version of the model answer page with multiple prompts added - use newer language strings
-					if (i == 0) {
-						thisString += '<h3 class="dataPageH">' + thisLink + langStrings.pageTxt + '</a></h3>';
-						if ($("#textHolder").length > 0) {
-							thisString += '<div class="dataPageTxt">' + $("#textHolder").html() + '</div>';
-						}
-					}
-					thisString += '<div class="questionBlock">';
-					if ($(".prompt").length > 1) {
-						thisString += '<h4 class="dataQuestionH">' + langStrings.questionTxt + ' ' + (i + 1) + ':</h4>';
-						hLevel = 4;
-					}
+				// this is a newer version of the model answer page with multiple possible prompts added
+				if (langStrings.instructA == undefined && $(".prompt").length > 1) {
+					thisString += '<h4 class="dataQuestionH">' + langStrings.questionTxt + ' ' + (i + 1) + ':</h4>';
+					hLevel = 4;
 				}
 				hLevel++;
 
@@ -455,7 +454,17 @@
 			// add page level feedback
 			if ($("#fbTxt").length > 0 && $("#fbTxt").html().trim() !== "") {
 				hLevel--;
-				stringToSave += '<div class="dataPageFb"><h' + hLevel + ' class="dataPageH">' + langStrings.pageFeedbackTxt + ':</h' + hLevel + '>' + $("#fbTxt").html() + '</div>';
+				stringToSave += '<div class="dataPageFb"><h' + hLevel + ' class="dataQuestionH">' + langStrings.pageFeedbackTxt + ':</h' + hLevel + '>' + $("#fbTxt").html() + '</div>';
+			}
+
+			// add the main page text
+			if ($("#textHolder.right").length > 0) {
+				stringToSave += '<div class="dataPageTxt">' + $("#textHolder").html() + '</div>';
+			}
+
+			// add the text below the panels (optional)
+			if ($(".textBottomHolder").length > 0) {
+				stringToSave += '<div class="dataPageBottomTxt">' + $(".textBottomHolder").html() + '</div>';
 			}
 
 			stringToSave += "</div>";

@@ -18,8 +18,6 @@
  * limitations under the License.
  */
 
-// ** allow top / bottom text to be copied / downloaded
-
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var modelAnswerResults = new function() {
@@ -144,6 +142,19 @@
 				}
 			});
 
+			let acceptedPageTypes = ["modelAnswer", "textHighlight", "documentation"];
+			if (pages.length === 0) {
+				// there's now an option to include data from textHighlight & documentation pages too
+				// unless these are turned on, only data from modelAnswer pages will be compiled
+				for (let i=acceptedPageTypes.length-1; i>=0; i--) {
+					if ((acceptedPageTypes[i] != "modelAnswer" && x_currentPageXML.getAttribute(acceptedPageTypes[i]) != "true") || (acceptedPageTypes[i] == "modelAnswer" && x_currentPageXML.getAttribute(acceptedPageTypes[i]) == "false")) {
+						acceptedPageTypes.splice(i,1);
+					}
+				}
+			} else {
+				acceptedPageTypes = [];
+			}
+
 			// if this results page is a standalone page opening in a lightbox, ensure it gets the data about model answer pages from the parent project
 			const isStandalone = x_pageInfo[x_currentPage].standalone && x_pages[x_currentPage].getAttribute('linkTarget') === 'lightbox'
 					&& parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current() && parent.window.x_pageInfo != undefined;
@@ -157,7 +168,8 @@
 				const thisObject = thisPageInfo[i];
 				// only show info for modelAnswer pages, that have not been skipped, & have been selected to be shown (or all if not set)
 				let includeUnviewed = x_currentPageXML.getAttribute("unviewed") === "true" ? true : false;
-				if (thisObject.type == "modelAnswer" && (thisObject.savedData != undefined || includeUnviewed) && (pages.length === 0 || pages.indexOf(thisObject.linkID) !== -1)) {
+				if ((pages.length > 0 || $.inArray(thisObject.type,acceptedPageTypes) > -1) && (thisObject.savedData != undefined || includeUnviewed) && (pages.length === 0 || pages.indexOf(thisObject.linkID) !== -1)) {
+					const classNameEnding = thisObject.type != "modelAnswer" ? "_" + thisObject.type : "";
 					if (thisObject.savedData != undefined) {
 						dataString += thisObject.savedData;
 
@@ -173,12 +185,12 @@
 								dataString += thisLink + pageString + ' ' + (pageNum+1) + '</a>:';
 							}
 							dataString += '</h3>';
-							dataString += '<div class="dataQuestionAnswer"><p><em>' + pageUnviewed + '</em></p></div>';
+							dataString += '<div class="dataUnviewed' + classNameEnding + '"><p><em>' + pageUnviewed + '</em></p></div>';
 							dataString += '</div>';
 						} else {
 							dataString += '<div class="pageBlock standalone">';
 							dataString += '<h3 class="dataPageH">' + thisLink + x_pages[i].getAttribute("name") + '</a></h3>';
-							dataString += '<div class="dataQuestionAnswer"><p><em>' + pageUnviewed + '</em></p></div>';
+							dataString += '<div class="dataUnviewed' + classNameEnding + '"><p><em>' + pageUnviewed + '</em></p></div>';
 							dataString += '</div>';
 						}
 					}
@@ -198,22 +210,34 @@
 		this.refineData = function() {
 			// author can customise the type of data that is shown from model answer pages
 			// most are on by default & need to be turned off using 'customise results' optional property, except page text which is not shown unless the optional property is turned on
-			const dataToShow = ["dataPageH", "dataPageTxt", "dataPageFb", "dataQuestionH", "dataQuestionTxt", "dataQuestionAnswer", "dataQuestionFb"];
+			const dataToShow = ["dataPageH", "dataPageTxt", "dataPageFb", "dataPageTopTxt", "dataPageBottomTxt", "dataQuestionH", "dataQuestionTxt", "dataQuestionAnswer", "dataQuestionFb"];
 			for (let i = 0; i < dataToShow.length; i++) {
-				if (x_currentPageXML.getAttribute(dataToShow[i]) === "false" || (dataToShow[i] === "dataPageTxt" && x_currentPageXML.getAttribute(dataToShow[i]) == undefined)) {
+				if (x_currentPageXML.getAttribute(dataToShow[i]) === "false" || ((dataToShow[i] === "dataPageTxt" || dataToShow[i] === "dataPageTopTxt" || dataToShow[i] === "dataPageBottomTxt") && x_currentPageXML.getAttribute(dataToShow[i]) == undefined)) {
 					$("#panelTxt ." + dataToShow[i]).remove();
-				} else {
-					// should page title be made into a link back to that model answer page? the link is already there so remove if this setting isn't turned on
-					if (dataToShow[i] === "dataPageH" && x_currentPageXML.getAttribute("dataPageLink") !== "true") {
-						$("a.dataPageLink").contents().unwrap();
-					}
+				}
+				if (x_currentPageXML.getAttribute(dataToShow[i] + "_textHighlight") === "false") {
+					$("#panelTxt ." + dataToShow[i] + "_textHighlight").remove();
+				}
+				// should page title be made into a link back to that model answer page? the link is already there so remove if this setting isn't turned on
+				if (dataToShow[i] === "dataPageH" && x_currentPageXML.getAttribute("dataPageLink") !== "true") {
+					$("a.dataPageLink").contents().unwrap();
 				}
 			}
 
 			// remove every question block entirely if all the question level data strings are not shown
-			if (x_currentPageXML.getAttribute("dataQuestionH") === "false" && x_currentPageXML.getAttribute("dataQuestionTxt") === "false" && x_currentPageXML.getAttribute("dataQuestionAnswer") === "false" && x_currentPageXML.getAttribute("dataQuestionFb") === "false") {
-				$("#panelTxt").remove(".questionBlock");
-			}
+			$(".questionBlock, .questionBlock_textHighlight, .pageBlock").each(function() {
+				if ($(this).is(":empty")) {
+					$(this).remove();
+				}
+				if ($(this).hasClass("questionBlock") && x_currentPageXML.getAttribute("dataQuestionTxt") === "false" && x_currentPageXML.getAttribute("dataQuestionAnswer") === "false" && x_currentPageXML.getAttribute("dataQuestionFb") === "false") {
+					$(this).remove().remove();
+				}
+			});
+			$(".pageBlock").each(function() {
+				if ($(this).is(":empty")) {
+					$(this).remove();
+				}
+			});
 
 			// move data for any standalone pages which have not been viewed to the end
 			$("#panelTxt .standalone").appendTo("#panelTxt");

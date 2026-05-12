@@ -133,7 +133,6 @@
 			
 			// sort layout of the different text fields & store the info that will be in the downloadable file
 			const position = { top:[], left:[], panelA:[], panelB:[], lightbox:[] };
-			let submit = false;
 			let index = 0;
 			
 			// page text (instructions) - optional
@@ -171,8 +170,7 @@
 			
 			// suggested text & feedback are optional but the activities probably make more sense if at least one is present
 			if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != "") {
-				submit = true;
-				position[x_currentPageXML.getAttribute("feedbackPos")].push({ txt: x_currentPageXML.getAttribute("feedback"), title: x_currentPageXML.getAttribute("feedbackTitle"), index: index, class: 'feedbackTxt', hide: true });
+				position[x_currentPageXML.getAttribute("feedbackPos") == undefined ? "panelB" : x_currentPageXML.getAttribute("feedbackPos")].push({ txt: x_currentPageXML.getAttribute("feedback"), title: x_currentPageXML.getAttribute("feedbackTitle"), index: index, class: 'feedbackTxt', hide: true });
 				index++;
 				
 				if (x_currentPageXML.getAttribute('download') == 'true') {
@@ -182,7 +180,6 @@
 			}
 			
 			if (x_currentPageXML.getAttribute("suggestedText") != undefined && x_currentPageXML.getAttribute("suggestedText") != "") {
-				submit = true;
 				position[x_currentPageXML.getAttribute("suggestedPos")].push({ txt: x_currentPageXML.getAttribute("suggestedText"), title: x_currentPageXML.getAttribute("suggestedTitle"), index: index, class: 'suggestedTxt', hide: true });
 				index++;
 				
@@ -573,76 +570,73 @@
 					'clearBtnLabel': clearBtnLabel
 				});
 
-			if (submit == false) {
-				$("#checkBtn").remove();
-			} else {
-				// check button - displays feedback & suggested answer text
-				$("#checkBtn")
-						.button({
-							label: checkBtnLabel
-						})
-						.click(function () {
-							// show the suggestedTxt & feedbackTxt
-							const show = ['feedbackTxt', 'suggestedTxt'];
-							let activateTab = true;
+			// check button - displays feedback & suggested answer text
+			$("#checkBtn")
+					.button({
+						label: checkBtnLabel
+					})
+					.click(function () {
+						// show the suggestedTxt & feedbackTxt
+						const show = ['feedbackTxt', 'suggestedTxt'];
+						let activateTab = true;
 
-							for (let i = 0; i < show.length; i++) {
-								const $show = $('.' + show[i]);
+						for (let i = 0; i < show.length; i++) {
+							const $show = $('.' + show[i]);
 
-								if ($show.length > 0) {
-									// if in tab nav then show all related hidden bits too
-									if ($show.attr('aria-labelledby') != undefined) {
-										const $tab = $('#' + $show.attr('aria-labelledby'));
-										$tab.parent('.navChildTitle').show();
+							if ($show.length > 0) {
+								// if in tab nav then show all related hidden bits too
+								if ($show.attr('aria-labelledby') != undefined) {
+									const $tab = $('#' + $show.attr('aria-labelledby'));
+									$tab.parent('.navChildTitle').show();
 
-										let activeTab = $show.parents('.ui-tabs').tabs('option', 'active');
-										if (activeTab == $show.index()) {
-											$show.show();
-										}
-
-										if (activateTab == true) {
-											$show.parents('.ui-tabs').tabs('option', 'active', $show.index());
-											activateTab = false;
-										}
-										textHighlight.sizeChanged();
-
-									} else {
+									let activeTab = $show.parents('.ui-tabs').tabs('option', 'active');
+									if (activeTab == $show.index()) {
 										$show.show();
 									}
+
+									if (activateTab == true) {
+										$show.parents('.ui-tabs').tabs('option', 'active', $show.index());
+										activateTab = false;
+									}
+									textHighlight.sizeChanged();
+
+								} else {
+									$show.show();
 								}
 							}
+						}
 
-							// if reset button label is 'clear' change to 'reset'
-							if ($pageContents.data('mode') == 'Notes' && !$('.notesTxt').hasClass('placeHolder')) {
-								$("#clearBtn").button({label: $("#clearBtn").data('resetBtnLabel')});
-							}
+						// if reset button label is 'clear' change to 'reset'
+						if ($pageContents.data('mode') == 'Notes' && !$('.notesTxt').hasClass('placeHolder')) {
+							$("#clearBtn").button({label: $("#clearBtn").data('resetBtnLabel')});
+						}
 
-							// update data that will be used in downloadable document with changes made to any editable regions (highlights or notes)
-							if (x_currentPageXML.getAttribute('download') == 'true') {
-								$('.editableDiv').each(function () {
-									if ($(this).data('docDataIndex') != undefined) {
-										docData.pages[$(this).data('docDataIndex')].pageText = $(this).html();
-									}
-								});
-
-								$('#downloadBtn').show();
-							}
-
-							$pageContents.data({
-								'submitted': true,
-								'tracked': true
+						// update data that will be used in downloadable document with changes made to any editable regions (highlights or notes)
+						if (x_currentPageXML.getAttribute('download') == 'true') {
+							$('.editableDiv').each(function () {
+								if ($(this).data('docDataIndex') != undefined) {
+									docData.pages[$(this).data('docDataIndex')].pageText = $(this).html();
+								}
 							});
 
-							textHighlight.finishTracking();
-							textHighlight.sizeChanged();
+							$('#downloadBtn').show();
+						}
 
-							// only feedbackTxt can be in lightbox so no need to loop through them
-							if ($pageContents.data('position').lightbox.length > 0) {
-								$.featherlight($pageContents.data('position').lightbox[0].txt);
-								x_pageContentsUpdated();
-							}
+						$pageContents.data({
+							'submitted': true,
+							'tracked': true
 						});
-			}
+
+						textHighlight.finishTracking();
+						textHighlight.sizeChanged();
+
+						// only feedbackTxt can be in lightbox so no need to loop through them
+						if ($pageContents.data('position').lightbox.length > 0) {
+							$.featherlight($pageContents.data('position').lightbox[0].txt, { variant: "feedback" });
+							x_pageContentsUpdated();
+						}
+						textHighlight.saveData();
+					});
 			
 			// download button - triggers download of all text on page
 			if (x_currentPageXML.getAttribute('download') == 'true') {
@@ -689,6 +683,7 @@
 			$pageContents.data("selectedStyle", "color:" + x_blackOrWhite(selectedColour) + "; background:" + selectedColour + ";");
 			
 			this.sizeChanged();
+			this.saveData();
 			x_pageLoaded();
 		};
 		
@@ -738,7 +733,97 @@
 			document.body.removeChild(form);
 		};
 
-        this.finishTracking = function() {
+		// function saves data to savedData in xenith.js so it can be used later by modelAnswerResults page
+		this.saveData = function() {
+			// create the text string that will be shown on the model answer results page for this page
+			// the 'data' & 'standalone' classes are used in model answer results page - do not remove them
+			const noAnswerTxt = x_currentPageXML.getAttribute("noAnswerHeaderTxt") != undefined ? x_currentPageXML.getAttribute("noAnswerHeaderTxt") : "No response submitted";
+			const responseTxt = $pageContents.data('mode') !== 'Notes' ? (x_currentPageXML.getAttribute("responseHeaderTxt") != undefined ? x_currentPageXML.getAttribute("responseHeaderTxt") : "Your response:") : (x_currentPageXML.getAttribute("notesHeaderTxt") != undefined ? x_currentPageXML.getAttribute("notesHeaderTxt") : "Your notes:");
+
+			const isStandalone = x_pageInfo[x_currentPage].standalone && x_pages[x_currentPage].getAttribute('linkTarget') === 'lightbox' && parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current();
+			let stringToSave = '<div class="pageBlock' + (isStandalone ? ' standalone' : '') + '">';
+			stringToSave += '<h3 class="dataPageH">'
+					+ '<a href="#" class="dataPageLink" onclick="x_navigateToPage(false,{type:\'linkID\',ID:\'' + x_currentPageXML.getAttribute("linkID") + '\'}); return false;">'
+					+ x_currentPageXML.getAttribute("name")
+					+ '</a></h3>';
+
+			// add the text above the panels (optional)
+			if ($(".textTopHolder").length > 0) {
+				stringToSave += '<div class="dataPageTopTxt">' + $(".textTopHolder").html() + '</div>';
+			}
+
+			// add page text if not in panel / tabbed navigator
+			if ($("#textHolder").length > 0) {
+				// top
+				stringToSave += '<div class="dataPageTxt">' + $("#textHolder").html() + '</div>';
+			} else if ($(".splitScreen_A.introTxt").length > 0) {
+				// left
+				stringToSave += '<div class="dataPageTxt">' + $(".splitScreen_A.introTxt").html() + '</div>';
+			}
+
+			// add info from panels / tabbed nav panes in the order they are shown - left to right
+			$(".splitScreen .left .navChild, .splitScreen .leftPanel:not(.ui-tabs) > div, .splitScreen .right .navChild, .splitScreen .rightPanel:not(.ui-tabs) > div, .full .navChild, .full .panelContent:not(.ui-tabs) > div").each(function() {
+				const $this = $(this);
+				// only save data that is available to view (e.g. not feedback if not shown yet)
+				if ($this.is(":visible") || ($this.hasClass("navChild") && $this.parents(".ui-tabs").find(".tabHolder .navChildTitle:eq(" + $this.index() + ")").is(":visible"))) {
+					// if in a tabbed navigator, there will be a title to include
+					let title = !$this.hasClass("navChild") ? "" : '<h4 class="dataQuestionH_textHighlight">' + $this.parents(".ui-tabs").find(".tabHolder .navChildTitle:eq(" + $this.index() + ") a").html() + '</h4>';
+
+					if ($this.hasClass("introTxt")) {
+						stringToSave += '<div class="dataPageTxt">' + title + $(".introTxt").html() + '</div>';
+					} else if ($(this).hasClass("initTxt")) {
+						if ($pageContents.data('mode') !== 'Notes') {
+							// if in highlight text mode, this is where the student response will have been submitted - ensure it has a title
+							stringToSave += '<div class="questionBlock_textHighlight">';
+							if (title == "") {
+								title = '<h4 class="dataQuestionH_textHighlight">' + responseTxt + '</h4>';
+							}
+						}
+						stringToSave += '<div class="dataQuestionTxt_textHighlight">' + title + $("#initTxt").html() + ($pageContents.data('mode') !== 'Notes' && $pageContents.data('submitted') != true ? '<p><em>' + noAnswerTxt + '</p></em>' : '') + '</div>';
+						if ($pageContents.data('mode') !== 'Notes') {
+							stringToSave += '</div>';
+						}
+					} else if ($(this).hasClass("notesTxt")) {
+						// if in notes mode, this is where the student response will have been submitted - ensure it has a title
+						if (title == "") {
+							title = '<h4 class="dataQuestionH_textHighlight">' + responseTxt + '</h4>';
+						}
+						stringToSave += '<div class="questionBlock_textHighlight">';
+						stringToSave += '<div class="dataQuestionAnswer_textHighlight">' + title + $("#notesTxt").html() + ($pageContents.data('submitted') != true ? '<p><em>' + noAnswerTxt + '</p></em>' : '') + '</div>';
+						stringToSave += '</div>';
+					} else if ($(this).hasClass("feedbackTxt")) {
+						stringToSave += '<div class="dataPageFb_textHighlight">' + title + $(".feedbackTxt").html() + '</div>';
+					} else if ($(this).hasClass("suggestedTxt")) {
+						stringToSave += '<div class="dataQuestionFb_textHighlight">' + title + $("#suggestedTxt").html() + '</div>';
+					}
+				}
+			});
+
+			// add the text below the panels (optional)
+			if ($(".textBottomHolder").length > 0) {
+				stringToSave += '<div class="dataPageBottomTxt">' + $(".textBottomHolder").html() + '</div>';
+			}
+
+			// add feedback text if it's been displayed in a lightbox
+			if ($(".featherlight.feedback").length > 0) {
+				let $tempHtml = $(".featherlight.feedback .featherlight-content").clone()
+				$tempHtml.find(".featherlight-close").remove();
+				stringToSave += '<div class="dataPageFb_textHighlight">' + $tempHtml.html() + '</div>';
+			}
+			stringToSave += '</div>';
+
+			// save the data to x_pageInfo.savedData
+			x_pageInfo[x_currentPage].savedData = stringToSave;
+
+			// if this is a standalone page showing in a lightbox, also ensure we save in a way that data can later be retrieved by model answer results pages
+			if (x_pageInfo[x_currentPage].standalone && x_pages[x_currentPage].getAttribute('linkTarget') == 'lightbox'
+					&& parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current()
+					&& parent.window.x_pageInfo != undefined && parent.window.x_pageInfo[x_currentPage] != undefined) {
+				parent.window.x_pageInfo[x_currentPage].savedData = stringToSave;
+			}
+		};
+
+		this.finishTracking = function() {
 			let answerTxt;
 			if ($pageContents.data('mode') == 'Notes') {
 				// if notes text has placeholder text only class as completed if the text here has changed

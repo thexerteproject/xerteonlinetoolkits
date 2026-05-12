@@ -25,16 +25,21 @@
 	}
 
 	.pageBlock h4, .pageBlock h5 {
-		padding-left: 0.3em;
-		padding-right: 0.3em;
+		padding: 0.3em;
 		margin: 0;
 	}
 
-	.questionBlock:not(:first-of-type), .dataPageFb {
-		margin-top: 1em;
+	.pageBlock > div,
+	.questionBlock > div:not(:first-of-type),
+	.questionBlock > h4 {
+		margin-top: 0.5em;
 	}
 
 	#btnHolder {
 		margin-top: 1em;
+	}
+
+	.pageBlock:not(:first-of-type) h3 {
+		padding-top: 0.3em;
 	}
 	
