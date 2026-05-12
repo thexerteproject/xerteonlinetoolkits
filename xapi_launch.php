@@ -65,7 +65,7 @@ if(is_numeric($id))
     $xerte_toolkits_site->group = $_REQUEST['group'];
     if (isset($_REQUEST['actor'])) {
         $xapi_user = new stdClass();
-        $xapi_user->email = $_REQUEST['actor'];
+        $xapi_user->email = x_clean_input($_REQUEST['actor'], 'email');
         $pos = strpos($xapi_user->email, '@');
         if ($pos === false)
         {

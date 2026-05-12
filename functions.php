@@ -356,6 +356,26 @@ function x_clean_input($input, $expected_type = null, $specialcharsflags = ENT_Q
                 die("Expected numeric value, got " . htmlspecialchars($sanitized, $specialcharsflags));
             }
         }
+        else if ($expected_type == 'bool') {
+            if (!is_bool($input)) {
+                die("Expected boolean, got " . htmlentities($sanitized, $specialcharsflags));
+            }
+            return $input; // do not modify booleans
+        }
+        else if ($expected_type == 'email') {
+            if (!filter_var($sanitized, FILTER_VALIDATE_EMAIL)) {
+                die("Expected email address, got " . htmlentities($sanitized, $specialcharsflags));
+            }
+        }
+        else if ($expected_type == 'url') {
+            if (!filter_var($sanitized, FILTER_VALIDATE_URL)) {
+                die("Expected URL, got " . htmlentities($sanitized, $specialcharsflags));
+            }
+         }
+        else
+        {
+            die("Invalid expected type '$expected_type' specified in x_clean_input: " . htmlentities($expected_type, $specialcharsflags));
+        }
     }
     return $sanitized;
 }
