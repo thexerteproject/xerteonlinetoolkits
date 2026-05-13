@@ -62,7 +62,7 @@ if(is_numeric($id))
     $lrs = CheckLearningLocker($lrs, true);
     $_SESSION['XAPI_PROXY'] = $lrs;
 
-    $xerte_toolkits_site->group = $_REQUEST['group'];
+    $xerte_toolkits_site->group = x_clean_input($_REQUEST['group'], 'string');
     if (isset($_REQUEST['actor'])) {
         $xapi_user = new stdClass();
         $xapi_user->email = x_clean_input($_REQUEST['actor'], 'email');
@@ -81,10 +81,10 @@ if(is_numeric($id))
         $xerte_toolkits_site->xapi_user = $xapi_user;
     }
     if (isset($_REQUEST['course'])) {
-        $xerte_toolkits_site->course = $_REQUEST['course'];
+        $xerte_toolkits_site->course = x_clean_input($_REQUEST['course'], 'string');
     }
     if (isset($_REQUEST['module'])) {
-        $xerte_toolkits_site->course = $_REQUEST['module'];
+        $xerte_toolkits_site->course = x_clean_input($_REQUEST['module'], 'string');
     }
     _debug("xapi_launch: SESSION=" . print_r($_SESSION, true));
 
