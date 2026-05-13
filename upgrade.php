@@ -1657,7 +1657,6 @@ function upgrade_52()
             return "Adding new extensions to the blacklisted extensions - ok ? false";
         }
     }
-}
     else{
         return "Adding new extensions to the blacklisted extensions - NO PREVIOUS EXTENSIONS FOUND!";
     }
