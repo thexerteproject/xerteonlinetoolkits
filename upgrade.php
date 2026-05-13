@@ -1773,23 +1773,6 @@ function upgrade_55()
 
 function upgrade_56()
 {
-    $UserGroupsRoleTable = table_by_key("user_group_role");
-
-    $message = '';
-
-    if (!_table_exists($UserGroupsRoleTable)) {
-        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$UserGroupsRoleTable` (
-        `groupid` int NOT NULL,
-        `userid` bigint(20) NOT NULL,
-        PRIMARY KEY (`roleid`, `groupid`)
-      )"
-        );
-
-        $message .= "Creating user_group_role table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
-    }
-    else{
-        $message .= "Table user_group_role already exists - ok ? true". "<br>";
-    }
-
-    return $message;
+    // Intentional noop (because there was an error previously and we don't know exactly what the verion of the database is.
+    return "Updated to version 56 - ok ? true<br>";
 }
