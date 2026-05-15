@@ -635,6 +635,7 @@
 							$.featherlight($pageContents.data('position').lightbox[0].txt, { variant: "feedback" });
 							x_pageContentsUpdated();
 						}
+
 						textHighlight.saveData();
 					});
 			
@@ -839,8 +840,8 @@
 					answerTxt = '';
 				}
 			}
-			
-			const answered = $(answerTxt).text().trim() == "" ? false : true;
+
+			const answered = $('<div>' + answerTxt + '</div>').text().trim() == "" ? false : true;
 			result = { success: answered, score: (answered == false ? 0.0 : 100.0) };
 			XTExitInteraction(x_currentPage, 0, result, [], answerTxt, []);
 			XTSetPageScore(x_currentPage, (answered == false ? 0.0 : 100.0));
