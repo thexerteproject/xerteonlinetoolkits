@@ -793,7 +793,7 @@
 						stringToSave += '<div class="dataQuestionAnswer_textHighlight">' + title + $("#notesTxt").html() + ($pageContents.data('submitted') != true ? '<p><em>' + noAnswerTxt + '</p></em>' : '') + '</div>';
 						stringToSave += '</div>';
 					} else if ($(this).hasClass("feedbackTxt")) {
-						stringToSave += '<div class="dataPageFb_textHighlight">' + title + $(".feedbackTxt").html() + '</div>';
+						stringToSave += '<div class="dataPageFb">' + title + $(".feedbackTxt").html() + '</div>';
 					} else if ($(this).hasClass("suggestedTxt")) {
 						stringToSave += '<div class="dataQuestionFb_textHighlight">' + title + $("#suggestedTxt").html() + '</div>';
 					}
@@ -809,7 +809,7 @@
 			if ($(".featherlight.feedback").length > 0) {
 				let $tempHtml = $(".featherlight.feedback .featherlight-content").clone()
 				$tempHtml.find(".featherlight-close").remove();
-				stringToSave += '<div class="dataPageFb_textHighlight">' + $tempHtml.html() + '</div>';
+				stringToSave += '<div class="dataPageFb">' + $tempHtml.html() + '</div>';
 			}
 			stringToSave += '</div>';
 
