@@ -77,7 +77,7 @@ function merge_pages_to_project($source_project_id, $source_pages, $target_proje
 	}
 	$bannedLinkIDs = array();
 	$xBannedPaths = new DOMXPath($xmlTarget);
-	$bannedLinkIDsPath = $xBannedPaths->query("*[@linkID]");
+    $bannedLinkIDsPath = $xBannedPaths->query("//*[@linkID]");
 	foreach($bannedLinkIDsPath as $id)
 	{
 		$attr = $id->getAttribute("linkID");
