@@ -763,7 +763,7 @@
 			}
 
 			// add info from panels / tabbed nav panes in the order they are shown - left to right
-			$(".splitScreen .left .navChild, .splitScreen .leftPanel:not(.ui-tabs) > div, .splitScreen .right .navChild, .splitScreen .rightPanel:not(.ui-tabs) > div, .full .navChild, .full .panelContent:not(.ui-tabs) > div").each(function() {
+			$(".splitScreen .left .navChild, .splitScreen .leftPanel:not(.ui-tabs) > div, .splitScreen .right .navChild, .splitScreen .panelContent:not(.ui-tabs) > div, .full .navChild, .full .panelContent:not(.ui-tabs) > div").each(function() {
 				const $this = $(this);
 				// only save data that is available to view (e.g. not feedback if not shown yet)
 				if ($this.is(":visible") || ($this.hasClass("navChild") && $this.parents(".ui-tabs").find(".tabHolder .navChildTitle:eq(" + $this.index() + ")").is(":visible"))) {

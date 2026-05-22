@@ -3072,7 +3072,6 @@ function x_passwordPage(pswds) {
 			$(document).prop('title', $('<p>' + pageTitle +' - ' + x_params.name + '</p>').text());
 
 			x_updateCss(false);
-
 			$("#x_pageDiv").show();
 			$x_pageDiv.css("height", "100%");
 			let paddingBlock = $x_pageDiv.innerHeight() - $x_pageDiv.height(); // padding top and bottom
@@ -7439,7 +7438,7 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 
 		x_setProjectTxtSize();
 
-		// trigger recalculation of interface & page elements with heights / margins etc. that might be affected by turning repsonsive text on / off
+		// trigger recalculation of interface & page elements with heights / margins etc. that might be affected by turning responsive text on / off
 		x_updateCss2();
 	}
 
@@ -7599,9 +7598,9 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 			// add resources btn to the header bar - this might be moved to side bar later if that's where it's supposed to be
 			$x_pageResourcesBtn = $('<button id="x_pageResourcesBtn"></button>').appendTo($('#x_headerBlock h2'));
 
-			let btnLabel = !trackCompletion ? x_getLangInfo(x_languageData.find("resources")[0], "text", "{x} Resources Available") : x_getLangInfo(x_languageData.find("resources")[0], "completeText", "{y}/{x} Resources Complete");
+			let btnLabel = !trackCompletion ? '<span class="multiResource">' + x_getLangInfo(x_languageData.find("resources")[0], "text", "{x} Resources Available") + '</span>' + (x_getLangInfo(x_languageData.find("resources")[0], "textSingle") == undefined ? "" : '<span class="singleResource">' + x_getLangInfo(x_languageData.find("resources")[0], "textSingle") + '</span>') : x_getLangInfo(x_languageData.find("resources")[0], "completeText", "{y}/{x} Resources Complete");
 			btnLabel = btnLabel
-				.replace("{x}", "<span class='totalResourcesNum'></span>")
+				.replace(/{x}/g,"<span class='totalResourcesNum'></span>")
 				.replace("{y}", "<span class='completedResourcesNum'></span>");
 			btnLabel += " <span class='x_resourcesClickTxt'><span class='sr-only'>" + x_params.dialogTxt + "</span></span>";
 
@@ -7875,12 +7874,25 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 			$x_pageResourcesBtn.show();
 			// update the no. resources & no. completed resources
 			$x_pageResourcesBtn.find(".totalResourcesNum").html(resourcesInfo[x_currentPage].length);
+			let title = $x_pageResourcesBtn.find(".ui-button-text").text();
+			if (resourcesInfo[x_currentPage].length == 1 && $x_pageResourcesBtn.find(".singleResource").length > 0) {
+				$x_pageResourcesBtn.find(".singleResource").show();
+				$x_pageResourcesBtn.find(".multiResource").hide();
+				title = $x_pageResourcesBtn.find(".singleResource").text();
+			} else if ($x_pageResourcesBtn.find(".multiResource").length > 0) {
+				$x_pageResourcesBtn.find(".singleResource").hide();
+				$x_pageResourcesBtn.find(".multiResource").show();
+				title = $x_pageResourcesBtn.find(".multiResource").text();
+			}
 			$x_pageResourcesBtn.find(".completedResourcesNum").html(resourcesInfo[x_currentPage].filter((obj) => obj.complete === true).length);
 			$x_pageResourcesBtn.find(".resourceNumberTxt").html(resourcesInfo[x_currentPage].length);
 
 			// button has icon only - need to adjust the button title
 			if (x_params.resourceBtn != "text") {
-				$x_pageResourcesBtn.attr("title", $x_pageResourcesBtn.find(".ui-button-text").text());
+				if ($x_pageResourcesBtn.find(".completedResourcesNum").length > 0) {
+					title = $x_pageResourcesBtn.find(".ui-button-text").text(); // refresh now num completed has been set
+				}
+				$x_pageResourcesBtn.attr("title", title);
 			}
 		} else if (resources == true) {
 			$x_pageResourcesBtn.hide();

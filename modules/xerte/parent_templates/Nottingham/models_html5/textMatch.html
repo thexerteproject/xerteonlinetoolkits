@@ -189,6 +189,7 @@
 								if (XTGetMode() == "normal" || x_currentPageXML.getAttribute('markEnd') == 'true') {
 									// tracked or set to mark at end - show cross
 									$this.find(".labelTxt").append('<span class="tick"><span class="ui-helper-hidden-accessible"> ' + crossTxt + '</span><span class="fa fa-fw fa-x-cross"></span></span>');
+									$this.addClass("incorrect");
 
 									// change title of target so screen readers know it's filled incorrectly
 									$currentTarget.attr("title", $currentTarget.data("title") + ": " + $temp.text() + " (" + crossTxt + ")");
@@ -512,6 +513,7 @@
 						
 						$("#feedback").empty();
 						$("#dragDropHolder .label:not(.correct) .tick, #targetHolder .hint").remove();
+						$("#dragDropHolder .label.incorrect").removeClass("incorrect");
 						$("#labelHolder .label:not(.correct) .audioHolder").hide();
 					}
 					})
@@ -543,6 +545,7 @@
 					$pageContents.data("selectedLabel", $this);
 
 					$("#dragDropHolder .label:not(.correct) .tick, #targetHolder .hint").remove();
+					$("#dragDropHolder .label.incorrect").removeClass("incorrect");
 					$("#labelHolder .label:not(.correct) .audioHolder").hide();
 					$("#feedback").empty();
 				})

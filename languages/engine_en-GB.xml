@@ -151,7 +151,7 @@
 	  <responsiveTxt label="Responsive text" tip="When responsive text is turned on, the text size will adapt to the size of the screen you are viewing this project on. If you use the browser zoom to increase the text size then you may get a better experience if you turn responsive text off."/>
   </colourChanger>
 
-  <resources label="Resources" text="{x} Resources Available" completeText="{y}/{x} Resources Complete">
+  <resources label="Resources" text="{x} Resources Available" textSingle="{x} Resource Available" completeText="{y}/{x} Resources Complete">
 	  <table title="Title" description="Description" actions="Actions" complete="Mark as complete" downloadBtn="Download resource" viewBtn="Open resource"/>
 	  <warning suppress="Don't show this message again" continue="Continue anyway" review="Review the resources"/>
   </resources>

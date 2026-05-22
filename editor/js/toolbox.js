@@ -5957,13 +5957,12 @@ var EDITOR = (function ($, parent) {
 						.attr('id', id + '_addcolumns')
 						.addClass('jqgridAddColumnsContainer'));
 
+                // add buttons below grid to upload / download csv files containing data for / from the grid
                 const $btnHolder = $('<div class="csvBtnHolder"></div>')
-                // add button below grid - when clicked a lightbox opens where you can upload a CSV containing data for the grid
                 $('<input type="button" name="csvUpload" value="' + language.UploadCSV.UploadCSVBtn.$label + '">')
                     .click(function() { csvUploadLb(name, id); })
                     .appendTo($btnHolder);
 
-                // add button below grid - when clicked a lightbox opens where you can upload a CSV containing data for the grid
                 $('<input type="button" name="csvDownload" value="' + language.downloadCSV.downloadCSVBtn.$label + '">')
                     .click(function() { csvDownload(name, id); })
                     .appendTo($btnHolder);
