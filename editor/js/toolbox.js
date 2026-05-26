@@ -7320,7 +7320,7 @@ var EDITOR = (function ($, parent) {
 						.attr('contenteditable', 'true');
 
                     // Do not always add a paragraph tag if the value already starts with a <p tag (with for example a class attribute)
-                    if (value.indexOf('<p') === 0) {
+                    if (value && value.indexOf('<p') === 0) {
                         html = html.append(value);
                     } else {
                         html = html.append('<p>' + value + '</p>');

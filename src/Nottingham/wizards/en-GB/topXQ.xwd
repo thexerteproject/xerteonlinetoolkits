@@ -53,11 +53,11 @@
 
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="false" divider="true" language="true" />
     <correctAnswersLabel label="Correct Answers Label" type="TextInput" wysiwyg="false" language="true"/>
-    <otherCorrectAnswersLabel label="Other Answers Label" type="TextInput" wysiwyg="false" language="true" mandatory="true"/>
+    <otherCorrectAnswersLabel label="Other Answers Label" type="TextInput" wysiwyg="false" language="true" defaultValue="" mandatory="true"/>
     <passed label="Correct Text" type="TextInput" wysiwyg="false" language="true"  />
     <failed label="Incorrect Text" type="TextInput" wysiwyg="false" language="true" />
 	<attemptLabel label="Attempt Label" type="TextInput" wysiwyg="false" language="true"/>
-	<noAttemptTxt label="No attempt Text" type="TextInput" wysiwyg="false" language="true" mandatory="true"/>
+	<noAttemptTxt label="No attempt Text" type="TextInput" wysiwyg="false" language="true" defaultValue="" mandatory="true"/>
     <checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="false" language="true" />
 	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that each text field is labelled and spoken as Answer 1, Answer 2 etc."/>
 
@@ -91,7 +91,7 @@
 
     <optionXQ menuItem="Answer" icon="icBullet">
         <name label="Label" type="TextInput" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
-        <answer label="Answer" type="TextInput" wysiwyg="false" mandatory="true" placeholder="Enter an answer option here" tooltip="A comma-separated list of all possible answers for this item"/>
+        <answer label="Answer" type="TextInput" wysiwyg="false" defaultValue="" mandatory="true" placeholder="Enter an answer option here" tooltip="A comma-separated list of all possible answers for this item"/>
     </optionXQ>
 
 </wizard>

@@ -13,7 +13,7 @@
              thumb="thumbs/results.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#resultspage" wiki="https://xerte.org.uk/wiki/doku.php?id=trackingxapi_results_page" remove="true">
 
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
-        <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="(panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||removeTxt!='true'" mandatory="true"/>
+        <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="(panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||removeTxt!='true'" defaultValue="" mandatory="true"/>
 
         <resultmode label="Results Mode" type="ComboBox" options="Minimal,Normal,Full" data="minimal-results,normal-results,full-results" conditionTrigger="true"/>
 
