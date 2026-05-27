@@ -4,21 +4,21 @@
 		overflow:	auto;
 	}
 	
-	#dragDropHolder .label {
+	.x_categories_page #dragDropHolder .label {
 		cursor:				pointer;
 		list-style-type:	none;
 		padding:			5px;
 		position:			relative;
 	}
-	
+
 	#dragDropHolder .label.focus {
 		border:	2px solid yellow;
 	}
-	
+
 	#dragDropHolder .label.selected {
 		border:	2px solid green;
 	}
-	
+
 	#dragDropHolder .tick {
 		position: absolute;
 		bottom: 0px;
@@ -38,23 +38,42 @@
 	#categoryHolder .category {
 		padding: 1%;
 		float: left;
+	}
+
+	.x_categories_page #categoryHolder .category {
 		cursor: pointer;
 	}
-	
-	#categoryHolder .category .label {
+
+	.x_categories_page #categoryHolder .category .label {
 		margin-top:		10px;
 	}
-	
+
 	#categoryHolder .categoryTitle {
 		text-align:		center;
 		font-weight: bold;
 		padding: 0;
 	}
+
+	.featherlight-content #categoryHolder {
+		display: flex;
+		justify-content: space-evenly;
+	}
+
+	.featherlight-content #categoryHolder .category {
+		min-height: unset !important;
+	}
+
+	.featherlight-content #categoryHolder .category .label {
+		text-align: center;
+	}
+
+	#btnHolder {
+		clear: left;
+		float: right;
+	}
 	
-	#button {
-		clear:			left;
-		margin-bottom:	10px;
-		float:			right;
+	#button, #showBtn {
+		margin-bottom: 10px;
 	}
 	
 	#feedback {
@@ -63,4 +82,8 @@
 	
 	ul#initHolder {
 		overflow: visible;
+	}
+
+	.textBottomHolder {
+		clear: both;
 	}
