@@ -1,8 +1,4 @@
 /* textMatch.html */
-#textHolder {
-	margin-bottom: 20px;
-}
-
 #dragDropHolder {
 	overflow: auto;
 	margin-bottom: 10px;
@@ -65,16 +61,36 @@
 	clear: right;
 }
 
-#targetHolder .target {
+#pageContents #targetHolder .target {
 	padding: 1%;
 	margin-top: 10px;
 	margin-bottom: 10px;
 	cursor: pointer;
 }
 
-#targetHolder .fixedTxt {
+#pageContents #targetHolder .fixedTxt {
 	width: 48%;
+}
+
+#targetHolder .fixedTxt {
 	font-weight: bold;
+}
+
+.featherlight-content .target {
+	height: auto !important;
+	clear: both;
+	overflow: auto;
+	padding-top: .5em;
+	padding-bottom: .5em;
+}
+
+.featherlight-content .target:not(:last-of-type) {
+	border-bottom: 1px solid black;
+}
+
+.featherlight-content .fixedTxt, .featherlight-content .correctAnswer {
+	width: 50%;
+	float: left;
 }
 
 #targetHolder .hint {
@@ -82,9 +98,13 @@
 	float: right;
 }
 
-#button {
-	margin-bottom: 10px;
+#btnHolder {
+	clear: left;
 	float: right;
+}
+
+#button, #showBtn {
+	margin-bottom: 10px;
 }
 
 #panel {
@@ -93,4 +113,8 @@
 
 #panel.scrollable {
 	position: relative;
+}
+
+.textBottomHolder {
+	clear: both;
 }

@@ -10,7 +10,7 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true" />
     <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here"/>
-    <attempts label="Attempts" type="TextInput" defaultValue="1" mandatory="true" condition="judge!='false'" tooltip="Attempts allowed before feedback and correct answers are given"/>
+    <attempts label="Attempts" type="NumericStepper" min="1" max="99" step="1" defaultValue="1" mandatory="true" condition="judge!='false'" tooltip="Attempts allowed before feedback and correct answers are given"/>
     <answers label="Show Answers" type="CheckBox" defaultValue="false" mandatory="true" condition="judge!='false'" tooltip="Show the correct answers after the maximum number of attempts have been made"/>
 
     <fbGroup label="Feedback" type="group">
