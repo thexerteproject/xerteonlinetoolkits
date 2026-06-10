@@ -17,11 +17,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var categories = new function() {
 		let totaloptions,
-			$pageContents = $("#pageContents");
+			$pageContents = $("#pageContents"),
+			labelTxt2 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected"),
+			labelTxt3 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "toSelect", "Press space to select"),
+			targetTxt1 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "description", "Drop zone for"),
+			targetTxt2 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "toSelect", "Press space to drop the selected item.");
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -92,8 +97,9 @@
 					if ($this.data("category").is($this.parent()) || !l_judge) {
 						// marking is on so add tick & disable correctly placed label
 						if (l_judge && isAttempt !== false) {
-							$this.html($this.html() + '<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct") + '</span><span class="fa fa-fw fa-x-tick"></span></span>');
-							$this.addClass("disabled correct");
+							$this
+								.append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct") + '</span><span class="fa fa-fw fa-x-tick"></span></span>')
+								.addClass("disabled correct");
 						}
 						l_feedback.push("correct");
 						l_option.result = true;
@@ -101,8 +107,9 @@
 					}
 					else {
 						if (isAttempt !== false) {
-							$this.html($this.html() + '<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "title", "Incorrect") + '</span><span class="fa fa-fw fa-x-cross"></span></span>');
-							$this.addClass("incorrect");
+							$this
+								.append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "title", "Incorrect") + '</span><span class="fa fa-fw fa-x-cross"></span></span>')
+								.addClass("incorrect");
 						}
 						l_feedback.push("incorrect");
 						l_option.result = false;
@@ -127,7 +134,7 @@
 
 				// add feedback text
 				const $feedback = $("#feedback");
-				if ($(".labels:not(.disabled)").length > 0) {
+				if ($(".label:not(.disabled)").length > 0) {
 					$feedback.empty();
 				}
 				if (isAttempt !== false) {
@@ -173,8 +180,14 @@
 				}
 
 				// all labels should be disabled when max no attempts have been made
-				if ($pageContents.data("attemptsMade") >= $pageContents.data("attemptsAllowed") && x_currentPageXML.getAttribute("attempts") != undefined) {
+				if (l_judge && $pageContents.data("attemptsMade") >= $pageContents.data("attemptsAllowed") && x_currentPageXML.getAttribute("attempts") != undefined) {
 					$(".label").addClass("disabled");
+
+					// add cross to any labels that are still at the top
+					$("#initHolder .label")
+						.append('<span class="tick"><span class="ui-helper-hidden-accessible">' + x_getLangInfo(x_languageData.find("cross")[0], "title", "Incorrect") + '</span><span class="fa fa-fw fa-x-cross"></span></span>')
+						.addClass("incorrect");
+
 					$("#button").hide();
 				}
 				// remove keyboard controls from disabled labels
@@ -194,14 +207,8 @@
 			$pageContents = $("#pageContents");
 			$pageContents.data({
 				"attemptsAllowed": x_currentPageXML.getAttribute("judge") !== "false" && x_currentPageXML.getAttribute("attempts") != undefined && $.isNumeric(x_currentPageXML.getAttribute("attempts").trim()) ? Number(x_currentPageXML.getAttribute("attempts").trim()) : 1,
-				"attemptsMade": 0,
-				"languageStrings": {}
+				"attemptsMade": 0
 			});
-
-			$pageContents.data("languageStrings").labelTxt2 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "selected", "Item Selected");
-			$pageContents.data("languageStrings").labelTxt3 = x_getLangInfo(x_languageData.find("interactions").find("draggableItem")[0], "toSelect", "Press space to select");
-			$pageContents.data("languageStrings").targetTxt1 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "description", "Drop zone for");
-			$pageContents.data("languageStrings").targetTxt2 = x_getLangInfo(x_languageData.find("interactions").find("targetArea")[0], "toSelect", "Press space to drop the selected item.");
 
             totaloptions = 0;
             const correctOptions = [];
@@ -257,7 +264,7 @@
 						for (let i=0; i<labels.length; i++) {
 							$categoryHolderCopy.find(".category:eq(" + labels[i].index + ")").append('<li class="label panel">' + labels[i].name + '</li>');
 						}
-						$.featherlight($('<div id="correctAnswers"><h3>Correct answers:</h3></div>').append($categoryHolderCopy));
+						$.featherlight($('<div id="correctAnswers"><h3>' + (x_currentPageXML.getAttribute("correctTxt") != undefined ? x_currentPageXML.getAttribute("correctTxt") : "Correct answers:") + '</h3></div>').append($categoryHolderCopy));
 					})
 					.hide();
 			}
@@ -323,7 +330,7 @@
 						$(this).addClass("highlightDark");
 						const categoryTitle = $("<div>").html($(this).find(".categoryTitle").html()).text();
 						if ($pageContents.data("selectedLabel") != undefined && $pageContents.data("selectedLabel") != "") {
-							$(this).attr("title", $pageContents.data("languageStrings").targetTxt1 + " " + categoryTitle + " - " + $pageContents.data("languageStrings").targetTxt2);
+							$(this).attr("title", targetTxt1 + " " + categoryTitle + " - " + targetTxt2);
 						}
 					}
 					})
@@ -331,7 +338,7 @@
 					const categoryTitle = $("<div>").html($(this).find(".categoryTitle").html()).text();
 					$(this)
 						.removeClass("highlightDark")
-						.attr("title", $pageContents.data("languageStrings").targetTxt1 + " " + categoryTitle);
+						.attr("title", targetTxt1 + " " + categoryTitle);
 					})
 				.keypress(function(e) {
 					if ($(e.target).hasClass("category")) {
@@ -355,7 +362,7 @@
 
 						$pageContents.data("selectedLabel", "");
 						const categoryTitle = $("<div>").html($(this).find(".categoryTitle").html()).text();
-						$(this).attr("title", $pageContents.data("languageStrings").targetTxt1 + " " + categoryTitle);
+						$(this).attr("title", targetTxt1 + " " + categoryTitle);
 					}
 				});
 
@@ -363,7 +370,7 @@
 				const $category = $categoryHolder.find(".category:eq(" + i + ")");
 				const categoryTitle = $("<div>").html($category.find(".categoryTitle").html()).text();
 
-				$category.attr({"title": $pageContents.data("languageStrings").targetTxt1 + " " + categoryTitle});
+				$category.attr({"title": targetTxt1 + " " + categoryTitle});
 			}
 			
 			this.createLabels();
@@ -418,7 +425,7 @@
 					const targetInFocus = $("#dragDropHolder .category.highlightDark");
 					if (targetInFocus.length > 0) {
 						const categoryTitle = $("<div>").html(targetInFocus.find(".categoryTitle").html()).text();
-						targetInFocus.attr("title", $pageContents.data("languageStrings").targetTxt1 + " " + categoryTitle);
+						targetInFocus.attr("title", targetTxt1 + " " + categoryTitle);
 					}
 					$("#dragDropHolder .selected").removeClass("selected");
 					$("#dragDropHolder .focus").removeClass("focus");
@@ -438,7 +445,7 @@
 					if ($this.is($pageContents.data("selectedLabel")) == false) {
 						$this
 							.addClass("focus")
-							.attr("title", $pageContents.data("languageStrings").labelTxt3);
+							.attr("title", labelTxt3);
 					}
 					})
 				.focusout(function() {
@@ -464,7 +471,7 @@
 					$this
 						.removeClass("focus")
 						.addClass("selected")
-						.attr("title", $pageContents.data("languageStrings").labelTxt2);
+						.attr("title", labelTxt2);
 					$pageContents.data("selectedLabel", $this);
 
 					$("#feedback").empty();

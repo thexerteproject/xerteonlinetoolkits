@@ -377,7 +377,7 @@
 						$targetHolderCopy.find(".target").each(function(i) {
 							$(this).append('<div class="correctAnswer">' + $("#targetHolder .target:eq(" + i + ")").data("correct") + '</div>');
 						});
-						$.featherlight($('<div id="correctAnswers"><h3>Correct answers:</h3></div>').append($targetHolderCopy));
+						$.featherlight($('<div id="correctAnswers"><h3>' + (x_currentPageXML.getAttribute("correctTxt") != undefined ? x_currentPageXML.getAttribute("correctTxt") : "Correct answers:") + '</h3></div>').append($targetHolderCopy));
 					})
 					.hide();
 			}

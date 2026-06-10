@@ -4483,7 +4483,7 @@ function x_checkDecimalSeparator(value, forcePeriod) {
 // function called from model pages to scale images - scale, firstScale & setH are optional
 function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
     var $img = $(img);
-    if (scale != false && $img.width() > 0 && $img.height() > 0) {
+    if (scale != false && ($img.data("origSize") != undefined || ($img.width() > 0 && $img.height() > 0))) {
         var imgW = $img.width(),
             imgH = $img.height();
 
@@ -4591,7 +4591,6 @@ function x_getAvailableHeight(excludePadding, excludeHeight, mobile) {
 	// starting height is the whole page height - excluding margins, borders & padding on parents
 	if (x_browserInfo.mobile === false) {
 		availableH = Math.floor($x_pageHolder.get(0).getBoundingClientRect().height - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height()));
-
 	} else if (mobile === true) {
 		// often height on mobiles will be auto so only return a height for mobile view when requested
 		availableH = $x_mobileScroll.height() - $x_headerBlock.outerHeight(true) - $x_footerBlock.outerHeight(true) - ($x_pageDiv.outerHeight(true) - $x_pageDiv.height());
@@ -4621,7 +4620,6 @@ function x_getAvailableHeight(excludePadding, excludeHeight, mobile) {
 				}
 			}
 		}
-
 		availableH = Math.floor(availableH);
 	}
 

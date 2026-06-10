@@ -22,19 +22,32 @@
         margin-top:	10px;
     }
 
+    #x_pageDiv #dragDropHolderLabelling {
+        padding-top: 0;
+        padding-right: 0;
+    }
+
     #dragDropHolderLabelling #labelHolder {
         clear: both;
         float: left;
     }
 
-    #labelHolder .label {
-        display:	inline-block;
-        cursor:		pointer;
+    #labelHolder .label,
+    .tempLabel {
+        display: inline-block;
         padding:	5px;
+    }
+
+    #labelHolder .label:not(.ui-draggable-disabled) {
+        cursor: pointer;
+    }
+
+    #labelHolder .label {
         margin:		10px;
     }
 
-    #labelHolder .label.correct .result, #labelHolder .label.incorrect .result {
+    #labelHolder .label.correct .result,
+    #labelHolder .label.incorrect .result {
 		padding-left: 0.5em;
 	}
 
@@ -46,12 +59,14 @@
         border:		2px solid green;
     }
 
+    .label.ui-state-disabled {
+        opacity: 1;
+    }
+
     #buttonHolder {
-        margin   : 10px;
+        margin   : 0 10px 10px;
         float    : right;
-        position : absolute;
-        bottom   : 0;
-        right    : 0;
+        clear: both;
     }
 
     #targetHolder {
@@ -60,25 +75,44 @@
         left:		0;
     }
 
-    #pageContents #targetHolder .target {
+    #targetHolder .target,
+    #targetHolder .tempTarget {
         position: absolute;
-        cursor: pointer;
         padding: 0 !important;
     }
 
-    #targetHolder .target.border {
+    #targetHolder .target.border,
+    #targetHolder .tempTarget.border {
         border:	1px solid;
     }
+
+    #targetHolder .target {
+        cursor: pointer;
+    }
+
+    .tempTarget {
+        display: flex;
+    }
+
+    #targetHolder.left .tempTarget { justify-content: left; }
+    #targetHolder.center .tempTarget { justify-content: center; }
+    #targetHolder.right .tempTarget { justify-content: right; }
+    #targetHolder.top .tempTarget { align-items: start; }
+    #targetHolder.middle .tempTarget { align-items: center; }
+    #targetHolder.bottom .tempTarget { align-items: end; }
+
+	#infoHolder:not(:empty),
+    #feedback:not(:empty) {
+		margin-top: 1em;
+	}
 
     #pageContents hr {
         border: none;
         background-color: #CCCCCC;
         height: 1px;
     }
-	
-	#infoHolder {
-		margin-top: 1em;
-	}
-	
-	
 
+    hr:has(+ #infoHolder:empty),
+    hr:has(+ #feedback:empty) {
+        display: none;
+    }

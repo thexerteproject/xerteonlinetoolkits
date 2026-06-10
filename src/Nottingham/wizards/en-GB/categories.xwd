@@ -1,7 +1,8 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <categories><![CDATA[<categories name="Enter Page Title" text="" attempts="1" answers="true" feedback="" feedbackCorrect="" feedbackIncorrect="" feedbackOrder="SGC" buttonLabel="Check Answers" submitButtonLabel="Submit Answers" feedbackScore="You have placed {i} out of {n} labels correctly" incomplete="Complete the exercise." showAnswersLabel="Show answers"/>]]></categories>
+      <categories><![CDATA[<categories name="Enter Page Title" text="" attempts="1" answers="true" feedback="" feedbackCorrect="" feedbackIncorrect="" feedbackOrder="SGC"
+      buttonLabel="Check Answers" submitButtonLabel="Submit Answers" feedbackScore="You have placed {i} out of {n} labels correctly" incomplete="Complete the exercise." showAnswersLabel="Show answers" correctTxt="Correct answers:"/>]]></categories>
     </newNodes>
   </pageWizard>
 
@@ -30,6 +31,7 @@
     <feedbackScore label="Score Feedback" type="TextInput" wysiwyg="true" language="true" />
     <incomplete label="Incomplete Text" type="TextInput" wysiwyg="true" language="true" defaultValue="Complete the exercise." mandatory="true"/>
     <showAnswersLabel label="Show Answers Text" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Show answers"/>
+    <correctTxt label="Correct Text" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Correct answers:" language="true" />
     <buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="120" width="100" language="true" deprecated="Width is now set automatically"/>
 
     <newNodes>
