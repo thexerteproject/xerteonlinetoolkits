@@ -1,4 +1,8 @@
 /* textMatch.html */
+#textHolder {
+	margin-bottom: 20px;
+}
+
 #dragDropHolder {
 	overflow: auto;
 	margin-bottom: 10px;
@@ -61,36 +65,16 @@
 	clear: right;
 }
 
-#pageContents #targetHolder .target {
+#targetHolder .target {
 	padding: 1%;
 	margin-top: 10px;
 	margin-bottom: 10px;
 	cursor: pointer;
 }
 
-#pageContents #targetHolder .fixedTxt {
-	width: 48%;
-}
-
 #targetHolder .fixedTxt {
+	width: 48%;
 	font-weight: bold;
-}
-
-.featherlight-content .target {
-	height: auto !important;
-	clear: both;
-	overflow: auto;
-	padding-top: .5em;
-	padding-bottom: .5em;
-}
-
-.featherlight-content .target:not(:last-of-type) {
-	border-bottom: 1px solid black;
-}
-
-.featherlight-content .fixedTxt, .featherlight-content .correctAnswer {
-	width: 50%;
-	float: left;
 }
 
 #targetHolder .hint {
@@ -98,13 +82,9 @@
 	float: right;
 }
 
-#btnHolder {
-	clear: left;
-	float: right;
-}
-
-#button, #showBtn {
+#button {
 	margin-bottom: 10px;
+	float: right;
 }
 
 #panel {
@@ -113,8 +93,4 @@
 
 #panel.scrollable {
 	position: relative;
-}
-
-.textBottomHolder {
-	clear: both;
 }

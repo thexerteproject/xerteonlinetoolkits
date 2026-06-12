@@ -1,118 +1,83 @@
 /* dragDropLabel.html */
 
-    #textHolder {
-        margin-bottom:	10px;
-    }
+#textHolder {
+    margin-bottom:	10px;
+}
 
-    .borderTop {
-        border-top:		1px solid gray;
-        margin-top:		20px;
-        padding-top:	20px;
-    }
-	
-	#mainText {
-		margin-bottom: 1em;
-	}
+.borderTop {
+    border-top:		1px solid gray;
+    margin-top:		20px;
+    padding-top:	20px;
+}
 
-    #mainPanel {
-        position:	relative;
-    }
+#mainText {
+    margin-bottom: 1em;
+}
 
-    #mainPanel #labelHolder {
-        margin-top:	10px;
-    }
+#mainPanel {
+    position:	relative;
+}
 
-    #x_pageDiv #dragDropHolderLabelling {
-        padding-top: 0;
-        padding-right: 0;
-    }
+#mainPanel #labelHolder {
+    margin-top:	10px;
+}
 
-    #dragDropHolderLabelling #labelHolder {
-        clear: both;
-        float: left;
-    }
+#dragDropHolderLabelling #labelHolder {
+    clear: both;
+    float: left;
+}
 
-    #labelHolder .label,
-    .tempLabel {
-        display: inline-block;
-        padding:	5px;
-    }
+#labelHolder .label {
+    display:	inline-block;
+    cursor:		pointer;
+    padding:	5px;
+    margin:		10px;
+}
 
-    #labelHolder .label:not(.ui-draggable-disabled) {
-        cursor: pointer;
-    }
+#labelHolder .label.correct .result, #labelHolder .label.incorrect .result {
+    padding-left: 0.5em;
+}
 
-    #labelHolder .label {
-        margin:		10px;
-    }
+#labelHolder .label.focus {
+    border:		2px solid yellow;
+}
 
-    #labelHolder .label.correct .result,
-    #labelHolder .label.incorrect .result {
-		padding-left: 0.5em;
-	}
+#labelHolder .label.selected {
+    border:		2px solid green;
+}
 
-    #labelHolder .label.focus {
-        border:		2px solid yellow;
-    }
+#buttonHolder {
+    margin   : 10px;
+    float    : right;
+    position : absolute;
+    bottom   : 0;
+    right    : 0;
+}
 
-    #labelHolder .label.selected {
-        border:		2px solid green;
-    }
+#targetHolder {
+    position:	absolute;
+    top:		0;
+    left:		0;
+}
 
-    .label.ui-state-disabled {
-        opacity: 1;
-    }
+#pageContents #targetHolder .target {
+    position: absolute;
+    cursor: pointer;
+    padding: 0 !important;
+}
 
-    #buttonHolder {
-        margin   : 0 10px 10px;
-        float    : right;
-        clear: both;
-    }
+#targetHolder .target.border {
+    border:	1px solid;
+}
 
-    #targetHolder {
-        position:	absolute;
-        top:		0;
-        left:		0;
-    }
+#pageContents hr {
+    border: none;
+    background-color: #CCCCCC;
+    height: 1px;
+}
 
-    #targetHolder .target,
-    #targetHolder .tempTarget {
-        position: absolute;
-        padding: 0 !important;
-    }
+#infoHolder {
+    margin-top: 1em;
+}
 
-    #targetHolder .target.border,
-    #targetHolder .tempTarget.border {
-        border:	1px solid;
-    }
 
-    #targetHolder .target {
-        cursor: pointer;
-    }
-
-    .tempTarget {
-        display: flex;
-    }
-
-    #targetHolder.left .tempTarget { justify-content: left; }
-    #targetHolder.center .tempTarget { justify-content: center; }
-    #targetHolder.right .tempTarget { justify-content: right; }
-    #targetHolder.top .tempTarget { align-items: start; }
-    #targetHolder.middle .tempTarget { align-items: center; }
-    #targetHolder.bottom .tempTarget { align-items: end; }
-
-	#infoHolder:not(:empty),
-    #feedback:not(:empty) {
-		margin-top: 1em;
-	}
-
-    #pageContents hr {
-        border: none;
-        background-color: #CCCCCC;
-        height: 1px;
-    }
-
-    hr:has(+ #infoHolder:empty),
-    hr:has(+ #feedback:empty) {
-        display: none;
-    }

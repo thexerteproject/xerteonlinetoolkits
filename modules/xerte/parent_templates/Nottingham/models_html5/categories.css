@@ -1,90 +1,66 @@
 /* categories.html */
-	
-	#dragDropHolder {
-		overflow:	auto;
-	}
-	
-	.x_categories_page #dragDropHolder .label {
-		cursor:				pointer;
-		list-style-type:	none;
-		padding:			5px;
-		position:			relative;
-	}
 
-	#dragDropHolder .label.focus {
-		border:	2px solid yellow;
-	}
+#dragDropHolder {
+	overflow:	auto;
+}
 
-	#dragDropHolder .label.selected {
-		border:	2px solid green;
-	}
+#dragDropHolder .label {
+	cursor:				pointer;
+	list-style-type:	none;
+	padding:			5px;
+	position:			relative;
+}
 
-	#dragDropHolder .tick {
-		position: absolute;
-		bottom: 0px;
-		right: 0px
-	}
-	
-	#initHolder {
-		padding:		0px;
-		margin-right:	2%;
-		float:			right;
-	}
-	
-	#categoryHolder {
-		clear:	right;
-	}
-	
-	#categoryHolder .category {
-		padding: 1%;
-		float: left;
-	}
+#dragDropHolder .label.focus {
+	border:	2px solid yellow;
+}
 
-	.x_categories_page #categoryHolder .category {
-		cursor: pointer;
-	}
+#dragDropHolder .label.selected {
+	border:	2px solid green;
+}
 
-	.x_categories_page #categoryHolder .category .label {
-		margin-top:		10px;
-	}
+#dragDropHolder .tick {
+	position: absolute;
+	bottom: 0px;
+	right: 0px
+}
 
-	#categoryHolder .categoryTitle {
-		text-align:		center;
-		font-weight: bold;
-		padding: 0;
-	}
+#initHolder {
+	padding:		0px;
+	margin-right:	2%;
+	float:			right;
+}
 
-	.featherlight-content #categoryHolder {
-		display: flex;
-		justify-content: space-evenly;
-	}
+#categoryHolder {
+	clear:	right;
+}
 
-	.featherlight-content #categoryHolder .category {
-		min-height: unset !important;
-	}
+#categoryHolder .category {
+	padding: 1%;
+	float: left;
+	cursor: pointer;
+}
 
-	.featherlight-content #categoryHolder .category .label {
-		text-align: center;
-	}
+#categoryHolder .category .label {
+	margin-top:		10px;
+}
 
-	#btnHolder {
-		clear: left;
-		float: right;
-	}
-	
-	#button, #showBtn {
-		margin-bottom: 10px;
-		margin-left: 0.5em;
-	}
-	
-	#feedback {
-		clear:	left;
-	}
-	
-	ul#initHolder {
-		overflow: visible;
-	}
+#categoryHolder .categoryTitle {
+	text-align:		center;
+	font-weight: bold;
+	padding: 0;
+}
 
-	.textBottomHolder {
-		clear: both;
-	}
+#button {
+	clear:			left;
+	margin-bottom:	10px;
+	float:			right;
+}
+
+#feedback {
+	clear:	left;
+}
+
+ul#initHolder {
+	overflow: visible;
+}
