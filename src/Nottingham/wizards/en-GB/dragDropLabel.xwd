@@ -1,56 +1,83 @@
 <wizard menus="Interactivity">
-    <pageWizard remove="true" duplicate="false">
-        <newNodes>
-            <dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="" align="Left" interactivity="Describe" url="" tip="" imgWidth="Medium" showHighlight="true" highlightColour="0xFFFF00" submitText="Submit"  incomplete="Please complete the exercise" tryAgainTxt="Try again"/>]]></dragDropLabel>
-        </newNodes>
-    </pageWizard>
+  <pageWizard remove="true" duplicate="false">
+    <newNodes>
+      <dragDropLabel><![CDATA[<dragDropLabel name="Enter Page Title" text="" align="Left" markEnd="false" url="" tip="" imgWidth="Medium"
+      submitText="Check Answers" submitTextNoJudge="Submit Answers" showAnswersText="Show Answers"
+      incomplete="Complete the exercise" tryAgainTxt="Try again" score="You have scored {i} out of {n}." submittedTxt="Your answers have been submitted"
+      warningTxt="You will not be able to make further attempts once the correct answers have been viewed. Do you want to continue?" correctTxt="Correct answers:"/>]]>
+      </dragDropLabel>
+    </newNodes>
+  </pageWizard>
 
-    <!-- DRAG DROP LABEL INTERACTION==================== -->
-    <dragDropLabel menu="Interactivity" menuItem="Drag and Drop Labelling" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region." icon="icTagBlue" thumb="thumbs/labelling.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#draganddroplabelling" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_drag_and_drop_labelling" remove="true">
+  <!-- DRAG DROP LABEL INTERACTION==================== -->
+  <dragDropLabel menu="Interactivity" menuItem="Drag and Drop Labelling" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region." icon="icTagBlue" thumb="thumbs/labelling.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#draganddroplabelling" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_drag_and_drop_labelling" remove="true">
 
-        <name label="Page Title" type="TextInput" wysiwyg="true"/>
-        <text  label="Page Text" type="TextArea" height="250" placeholder="Enter text for the page here"/>
-        <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+    <name label="Page Title" type="TextInput" wysiwyg="true"/>
+    <text  label="Page Text" type="TextArea" height="250" placeholder="Enter text for the page here"/>
+	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+    <interactivity label="Interactivity" options="Describe,Match" type="ComboBox" data="Describe,Match" defaultValue="Describe" conditionTrigger="true" condition="judge!='false'" optional="true" deprecated="This property is deprecated. Use the 'Mark at End' option to determine whether the labels can only be placed correctly or whether they can be placed on any hotspot and marked at the end." tooltip="Describe: only allow labels to be dragged to the correct hotspot and then show description text. Match: labels can be dropped on any hotspot and answers are marked after clicking submit button (no description text shown)"/>
+    <markEnd label="Mark at End" type="CheckBox" defaultValue="false" mandatory="true" conditionTrigger="true" condition="judge!='false'" tooltip="Allow labels to be placed incorrectly before marking when the check button is clicked"/>
 
-        <interactivity label="Interactivity" options="Describe,Match" type="ComboBox" data="Describe,Match" defaultValue="Describe" mandatory="true" width="100" tooltip="Describe: only allow labels to be dragged to the correct hotspot and then show description text. Match: labels can be dropped on any hotspot and answers are marked after clicking submit button (no description text shown)"/>
+	<image type="group" label="Image">
+		<url label="File" type="media" placeholder="Select an image"/>
+		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
+        <imgWidth label="Size" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium"/>
+	</image>
+	
+	<highlight type="group" label="Hotspot Highlight" optional="true" tooltip="Customise the appearance of the hotspots where the labels can be placed">
+		<showHighlight label="Show Highlight" type="CheckBox" defaultValue="true" optional="true"/>
+		<highlightColour label="Colour" type="ColourPicker" defaultValue="0xFFFF00" optional="true"/>
+	</highlight>
 
-        <image type="group" label="Image">
-            <url label="File" type="media" placeholder="Select an image"/>
-            <tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
-            <imgWidth label="Size" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium"/>
-        </image>
+    <labelPosGroup label="Label Position" type="group" optional="true" tooltip="Set the initial position of the labels and their relative position to the hotspots when placed on the image">
+        <labelPos label="Initial" type="ComboBox" data="image,text" options="Below Image,Below Text" defaultValue="image" optional="true"/>
+        <labelPosOnImgGroup label="When on Hotspot" type="group" optional="true">
+            <labelPosOnImgV label="Vertical" type="ComboBox" data="top,middle,bottom" options="Top,Middle,Bottom" defaultValue="top" optional="true"/>
+            <labelPosOnImgH label="Horizontal" type="ComboBox" data="left,center,right" options="Left,Centre,Right" defaultValue="left" optional="true"/>
+        </labelPosOnImgGroup>
+    </labelPosGroup>
 
-        <highlight type="group" label="Hotspot Highlight">
-            <showHighlight label="Show Highlight" type="CheckBox" defaultValue="true"/>
-            <highlightColour label="Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
-        </highlight>
+    <attempts label="Attempts" type="NumericStepper" min="1" max="99" step="1" defaultValue="1" optional="true" condition="judge!='false'&amp;&amp;(markEnd=='true'||(markEnd==undefined&amp;&amp;interactivity=='Match')||answers=='true'||feedback!=undefined)" tooltip="Attempts allowed before feedback and correct answers are given"/>
+    <answers label="Show Answers" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="judge!='false'" tooltip="Show a button to display the correct answers after the specified number of attempts have been made. The activity will be locked from further attempts once the correct answers have been viewed."/>
 
-        <tryAgainTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true" />
-        <submitText label="Submit button label for Match" type="TextInput" wysiwyg="true" language="true" />
-        <incomplete label= "Incomplete" type="TextInput" wysiwyg="true" language="true"/>
+    <fbGroup label="Feedback" type="group" optional="true">
+        <feedback label="General" type="TextArea" height="100" optional="true" conditionTrigger="true" placeholder="Enter general feedback here" tooltip="Feedback shown when the activity has been completed correctly, or the specified number of attempts have been made. This will be shown alongside any correct/incorrect feedback."/>
+        <feedbackCorrect label="Correct" type="TextArea" height="100" defaultValue="" condition="judge!='false'" optional="true" placeholder="Enter correct feedback here" tooltip="Feedback shown when the activity has been fully completed correctly."/>
+        <feedbackIncorrect label="Incorrect" type="TextArea" height="100" defaultValue="" condition="judge!='false'" optional="true" placeholder="Enter incorrect feedback here"  tooltip="Feedback shown when the specified number of attempts have been made, but not all labels have been placed correctly."/>
+        <feedbackOrder label="Order" type="ComboBox" options="Score > General > Correct/Incorrect,Score > Correct/Incorrect > General,General > Score > Correct/Incorrect,General > Correct/Incorrect > Score,Correct/Incorrect > General > Score,Correct/Incorrect > Score > General" data="SGC,SCG,GSC,GCS,CGS,CSG" defaultValue="SGC" optional="true" condition="judge!='false'" tooltip="The order the different types of feedback are shown within the feedback block. Default order is Score > General feedback > Correct/Incorrect feedback"/>
+    </fbGroup>
 
-        <labelPos label="Label Position" type="ComboBox" data="image,text" options="Below Image,Below Text" defaultValue="image" optional="true"/>
+	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
+    <judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result."/>
 
-        <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
+    <submitText label="Check Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="Used when answers are marked (default)"/>
+    <submitTextNoJudge label="Submit Button Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="" tooltip="Used when answers are not marked"/>
+    <showAnswersText label="Show Answers Button Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Show Answers"/>
+    <incomplete label= "Incomplete" type="TextInput" wysiwyg="true" language="true"/>
+    <tryAgainTxt label="Try Again Text" type="TextInput" wysiwyg="true" language="true" />
+    <score label="{i} out of {n} Text" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="" language="true"/>
+    <submittedTxt label="Submitted Text" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Your answers have been submitted" language="true" />
+    <warningTxt label="Warning Text" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="" language="true" />
+    <correctTxt label="Correct Text" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="Correct answers:" language="true" />
 
-        <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
-            <qfHotspot label="Number of Hotspots" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
-            <qfButton type="quickfillbutton" optional="true"/>
-        </QFGroup>
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
+      <qfHotspot label="Number of Hotspots" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+	
+    <newNodes>
+	  <hotspot><![CDATA[<hotspot name="Enter Label Title" text="" x="0" y="0" w="100" h="100" />]]></hotspot>
+    </newNodes>
 
-        <newNodes>
-            <hotspot><![CDATA[<hotspot name="Enter Label Title" text="" x="0" y="0" w="100" h="100" />]]></hotspot>
-        </newNodes>
+  </dragDropLabel>
 
-    </dragDropLabel>
+  <!-- HOTSPOT============================== -->
+  <hotspot label="Edit Hotspot" menuItem="Hotspot" type="hotSpot"  icon="icLayers" remove="true">
 
-    <!-- HOTSPOT============================== -->
-    <hotspot label="Edit Hotspot" menuItem="Hotspot" type="hotSpot"  icon="icLayers" remove="true">
+    <name label="Drag Label" type="TextInput" wysiwyg="true"/>
+    <text label="Text" type="TextArea" height="250" placeholder="Enter a description for the hotspot"/>
+	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" />
 
-        <name label="Drag Label" type="TextInput" wysiwyg="true"/>
-        <text label="Text" type="TextArea" height="250" placeholder="Enter a description for the hotspot"/>
-        <alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" />
-
-    </hotspot>
+  </hotspot> 
 
 </wizard>
