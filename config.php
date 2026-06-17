@@ -196,6 +196,19 @@ $xerte_toolkits_site->error_log_path = $xerte_toolkits_site->root_file_path . $r
 
 $xerte_toolkits_site->flash_flv_skin = $xerte_toolkits_site->site_url . $row['flash_flv_skin'];
 
+// Set extra options
+if (file_exists(__DIR__ . "/extra_config.php"))
+{
+    require_once(__DIR__ . "/extra_config.php");
+}
+else
+{
+    // Disable antivirus and ignore management settings
+    $xerte_toolkits_site->enable_clamav_check = "false";
+    $xerte_toolkits_site->clamav_cmd = "/usr/bin/clamscan";
+    $xerte_toolkits_site->enable_clamav = "--no-summary";
+}
+
 /* Record the last error reported during file checks. */
 global $last_file_check_error;
 
