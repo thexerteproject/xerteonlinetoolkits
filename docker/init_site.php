@@ -1,0 +1,212 @@
+<?php
+/**
+ * Idempotent database provisioning for the Xerte Docker image.
+ *
+ * Run by docker/entrypoint.sh on every container start. It will:
+ *   - create the schema from setup/basic.sql if the sitedetails table is missing;
+ *   - insert a default sitedetails row (and the matching ldap row) if none exists.
+ *
+ * It is safe to run repeatedly: once a sitedetails row exists, it does nothing.
+ */
+
+declare(strict_types=1);
+
+$docroot = getenv('XERTE_DOCROOT') ?: '/var/www/xerte';
+
+// Bring in the credentials that entrypoint.sh just wrote to database.php.
+$xerte_toolkits_site = new stdClass();
+require_once $docroot . '/database.php';
+
+$dbHost = $xerte_toolkits_site->database_host;
+$dbName = $xerte_toolkits_site->database_name;
+$dbUser = $xerte_toolkits_site->database_username;
+$dbPass = $xerte_toolkits_site->database_password;
+$prefix = $xerte_toolkits_site->database_table_prefix ?? '';
+
+function log_msg(string $msg): void { echo "[xerte-init] " . $msg . "\n"; }
+
+function fatal(string $msg): void { fwrite(STDERR, "[xerte-init] FATAL: " . $msg . "\n"); exit(1); }
+
+// Connect to the database (creating the schema below will CREATE DATABASE IF NOT EXISTS).
+try {
+    $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    ]);
+} catch (Throwable $e) {
+    fatal("Could not connect to database '{$dbName}' on '{$dbHost}': " . $e->getMessage());
+}
+
+// ---------------------------------------------------------------------------
+// Detect whether the schema is installed by looking for the sitedetails table.
+// ---------------------------------------------------------------------------
+function table_exists(PDO $pdo, string $table): bool {
+    $stmt = $pdo->prepare("SHOW TABLES LIKE ?");
+    $stmt->execute([$table]);
+    return $stmt->fetch() !== false;
+}
+
+$sitedetailsTable = $prefix . 'sitedetails';
+
+if (!table_exists($pdo, $sitedetailsTable)) {
+    log_msg("sitedetails table not found - importing setup/basic.sql ...");
+
+    $sqlFile = $docroot . '/setup/basic.sql';
+    if (!file_exists($sqlFile)) {
+        fatal("Cannot find {$sqlFile}. The setup directory must be present in the image.");
+    }
+    $sql = file_get_contents($sqlFile);
+
+    // Replicate the substitution logic used by the web wizard (SetupDatabase::getSQL):
+    //   "$"  -> table prefix
+    //   "<databasename>" -> database name
+    $sql = str_replace('<databasename>', $dbName, $sql);
+    $sql = str_replace('$', $prefix, $sql);
+
+    // basic.sql has no semicolons inside string literals (verified), so a naive
+    // split is sufficient and matches the behaviour of the original installer.
+    $statements = explode(';', $sql);
+    $count = 0;
+    foreach ($statements as $stmt) {
+        $stmt = trim($stmt);
+        if ($stmt === '') {
+            continue;
+        }
+        // Skip CREATE DATABASE / USE: the container's entrypoint already created
+        // the database and we connected to it, and the app DB user typically only
+        // has privileges on its own database (not global CREATE).
+        if (preg_match('/^(CREATE\s+DATABASE|USE)\s/i', $stmt)) {
+            continue;
+        }
+        try {
+            $pdo->exec($stmt);
+            $count++;
+        } catch (Throwable $e) {
+            // Keep going - the file uses DROP TABLE IF EXISTS before every
+            // CREATE TABLE, so individual failures are unexpected; surface them.
+            log_msg("  warning: statement failed: " . $e->getMessage());
+        }
+    }
+    log_msg("Imported {$count} statements from basic.sql.");
+} else {
+    log_msg("sitedetails table already exists - skipping schema import.");
+}
+
+// ---------------------------------------------------------------------------
+// Insert default site settings if none are present.
+// ---------------------------------------------------------------------------
+$row = $pdo->query("SELECT COUNT(*) FROM `{$sitedetailsTable}`")->fetchColumn();
+if ((int)$row > 0) {
+    log_msg("sitedetails already populated - nothing to do.");
+    exit(0);
+}
+
+log_msg("sitedetails empty - inserting default settings ...");
+
+$adminUser = getenv('XERTE_ADMIN_USERNAME') ?: 'admin';
+$adminPass = getenv('XERTE_ADMIN_PASSWORD') ?: 'admin';
+$authMethod = getenv('XERTE_AUTH_METHOD') ?: 'Guest';
+$siteUrl = getenv('XERTE_SITE_URL') ?: 'http://localhost/';
+
+// Default field values, mirroring setup/page3.php form defaults.
+// Fields that config.php base64-decodes must be stored base64-encoded.
+$b64 = static function (string $s): string { return base64_encode(stripcslashes($s)); };
+
+$rootPath = $docroot . '/';
+
+// play_edit_preview_query is stored base64-encoded.
+$playEditPreviewQuery = 'select " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_name, " . $xerte_toolkits_site->database_table_prefix . "logindetails.username, " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_framework, " . $xerte_toolkits_site->database_table_prefix . "templaterights.user_id, " . $xerte_toolkits_site->database_table_prefix . "templaterights.folder, " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id, " . $xerte_toolkits_site->database_table_prefix . "templatedetails.access_to_whom from " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails, " . $xerte_toolkits_site->database_table_prefix . "templaterights, " . $xerte_toolkits_site->database_table_prefix . "templatedetails, " . $xerte_toolkits_site->database_table_prefix . "logindetails where " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_type_id = " . $xerte_toolkits_site->database_table_prefix . "originaltemplatesdetails.template_type_id and " . $xerte_toolkits_site->database_table_prefix . "templatedetails.creator_id = " . $xerte_toolkits_site->database_table_prefix . "logindetails.login_id and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id = " . $xerte_toolkits_site->database_table_prefix . "templatedetails.template_id and " . $xerte_toolkits_site->database_table_prefix . "templaterights.template_id="TEMPLATE_ID_TO_REPLACE" and role="creator"';
+
+$defaults = [
+    'site_url'                  => $siteUrl,
+    'apache'                    => 'false',
+    'enable_mime_check'         => 'false',
+    'mimetypes'                 => 'text/xml,text/rtf,application/msword,application/x-shockwave-flash,image/bmp,image/jpg,image/jpeg,image/pjpeg,image/png,image/gif,image/svg+xml,image/x-png,audio/mp3,audio/mpeg,application/vnd.ms-excel,application/pdf,application/svg,application/vnd.ms-powerpoint,video/x-ms-wmv,text/html,video/mp4,video/mpeg,video/avi,audio/wav,text/plain,video/quicktime,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/ogg',
+    'enable_file_ext_check'     => 'false',
+    'file_extensions'           => 'php,php1,php2,php3,php4,php5,php6,php7,php8,phar,phtml,inc,py,bat,cmd,ps,pl,cgi,exe,vbs,pif,application,gadget,msi,msp,com,scr,hta,htaccess,ini,cpl,msc,jar,bat,cmd,vb,vbe,jsp,jse,ws,wsf,wsc,wsh,ps1,ps1xml,ps2,ps2xml,psc1,psc2,msh,msh1,msh2,mshxml,msh1xml,msh2xml,scf,lnk,inf,reg,docm,dotm,xlsm,xltm,xlam,pptm,potm,ppam,ppsm,sldm',
+    'enable_clamav_check'       => 'false',
+    'clamav_cmd'                => '/usr/bin/clamscan',
+    'clamav_opts'               => '--no-summary',
+    'site_session_name'         => 'XERTE_TOOLKITS',
+    'authentication_method'     => $authMethod,
+    'LDAP_preference'           => 'sAMAccountName',
+    'LDAP_filter'               => 'cn=',
+    'integration_config_path'   => '',
+    'admin_username'            => $adminUser,
+    'admin_password'            => hash('sha256', $adminPass),
+    'site_title'                => 'Welcome to Xerte Online Toolkits',
+    'site_name'                 => 'Xerte Online Toolkits',
+    'site_logo'                 => 'website_code/images/xerteLogo.jpg',
+    'organisational_logo'       => 'website_code/images/UofNLogo.jpg',
+    'welcome_message'           => 'Welcome to Xerte Online Toolkits',
+    'site_text'                 => 'Welcome to the toolkits front page, developed by the Apereo Foundation',
+    'news_text'                 => $b64('<p class="news_title">Other resources</p><p class="news_story"><a data-featherlight="iframe" href="https://xerte.org.uk" target="_blank">Xerte Community</a></p><p class="news_story"><a data-featherlight="iframe" href="https://xot.xerte.org.uk/play.php?template_id=116#xertepagetypes" target="_blank">XOT Page Types example</a></p><p class="news_story"><a data-featherlight="iframe" href="https://xot.xerte.org.uk/play.php?template_id=137" target="_blank">Website/Bootstrap example</a></p>'),
+    'pod_one'                   => $b64('<p class="news_title">How to use Xerte</p><p class="demo"><a data-featherlight="iframe" href="modules/xerte/training/toolkits.htm" target="_blank">Demo >></a><br />A very short demo showing a simple project being built and viewed.<br /><br /><a data-featherlight="iframe" href="https://xot.xerte.org.uk/play.php?template_id=150#page1" target="_blank">Getting started >></a></p>'),
+    'pod_two'                   => $b64('<p class="news_title">Want to share some thoughts?</p><p class="general">If you have any questions, requests for help, ideas for new projects or problems to report, then please get in touch.</p>'),
+    'copyright'                 => 'Copyright Apereo Foundation 2021',
+    'rss_title'                 => 'Xerte Online Toolkits RSS Feed',
+    'synd_publisher'            => 'Local Docker install',
+    'synd_rights'               => 'Licensed under a Creative Commons Attribution - NonCommercial-ShareAlike 2.0 Licence - see http://creativecommons.org/licenses/by-nc-sa/2.0/uk/',
+    'synd_license'              => 'Licensed under a Creative Commons Attribution - NonCommercial-ShareAlike 2.0 Licence - see http://creativecommons.org/licenses/by-nc-sa/2.0/uk/',
+    'demonstration_page'        => 'modules/xerte/training/toolkits.htm',
+    'form_string'               => $b64('<html><body><center><p><form method="post" action=""><p>Username <input type="text" size="20" maxlength="12" name="login" /></p><p>Password <input type="password" size="20" maxlength="36" name="password" /></p><p><input type="image" src="website_code/images/Bttn_LoginOff.gif" onmouseover="this.src=\'website_code/images/Bttn_LoginOn.gif\'" onmousedown="this.src=\'website_code/images/Bttn_LoginClick.gif\'" onmouseout="this.src=\'website_code/images/Bttn_LoginOff.gif\'" /></p>'),
+    'peer_form_string'          => $b64('<html><body><center><p><form method="post" action=""><p>Password <input type="password" size="20" maxlength="36" name="password" /></p><p><input type="image" src="website_code/images/Bttn_LoginOff.gif" onmouseover="this.src=\'website_code/images/Bttn_LoginOn.gif\'" onmousedown="this.src=\'website_code/images/Bttn_LoginClick.gif\'" onmouseout="this.src=\'website_code/images/Bttn_LoginOff.gif\'" /></p>'),
+    'module_path'               => 'modules/',
+    'website_code_path'         => 'website_code/',
+    'users_file_area_short'     => 'USER-FILES/',
+    'users_file_area_path'      => null,
+    'php_library_path'          => 'website_code/php/',
+    'import_path'               => $rootPath . 'import/',
+    'root_file_path'            => $rootPath,
+    'play_edit_preview_query'   => $b64($playEditPreviewQuery),
+    'error_log_path'            => 'error_logs/',
+    'email_error_list'          => '',
+    'error_log_message'         => 'false',
+    'max_error_size'            => '10',
+    'error_email_message'       => 'false',
+    'ldap_host'                 => '',
+    'ldap_port'                 => '',
+    'bind_pwd'                  => '',
+    'basedn'                    => '',
+    'bind_dn'                   => '',
+    'flash_save_path'           => 'modules/xerte/engine/save.php',
+    'flash_upload_path'         => 'upload.php?path=',
+    'flash_preview_check_path'  => 'modules/xerte/engine/file_exists.php',
+    'flash_flv_skin'            => 'modules/xerte/engine/tools/SteelOverAll.swf',
+    'site_email_account'        => '',
+    'headers'                   => '',
+    'email_to_add_to_username'  => '',
+    'proxy1'                    => '',
+    'port1'                     => '',
+    'feedback_list'             => '',
+    'LRS_Endpoint'              => '',
+    'LRS_Key'                   => '',
+    'LRS_Secret'                => '',
+    'tsugi_dir'                 => '',
+];
+
+// Build a parameterised INSERT.
+$columns = array_keys($defaults);
+$placeholders = array_map(static function (string $c): string { return ':' . $c; }, $columns);
+
+$pdo->exec("INSERT INTO `{$sitedetailsTable}` (site_id) VALUES (1)");
+
+$sql = "UPDATE `{$sitedetailsTable}` SET "
+    . implode(', ', array_map(static function (string $c): string { return "`{$c}` = :{$c}"; }, $columns))
+    . " WHERE site_id = 1";
+$stmt = $pdo->prepare($sql);
+foreach ($defaults as $col => $value) {
+    $stmt->bindValue(':' . $col, $value, $value === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+}
+$stmt->execute();
+
+log_msg("Default sitedetails inserted (auth='{$authMethod}', admin='{$adminUser}').");
+
+// Mirror setup/page4.php which also inserts a (mostly empty) ldap row.
+$ldapTable = $prefix . 'ldap';
+if (table_exists($pdo, $ldapTable)) {
+    $pdo->exec("INSERT INTO `{$ldapTable}` (ldap_filter, ldap_filter_attr, ldap_knownname, ldap_host, ldap_port, ldap_password, ldap_basedn, ldap_username) VALUES ('', '', '', '', '', '', '', '')");
+    log_msg("Default ldap row inserted.");
+}
+
+log_msg("Provisioning complete.");
+exit(0);
