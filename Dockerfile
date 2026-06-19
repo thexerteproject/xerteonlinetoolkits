@@ -45,6 +45,37 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         gd \
         intl
 
+# ---- Antivirus (ClamAV) + media transcoding (ffmpeg) ---------------------
+# ClamAV: XOT scans uploaded files with clamscan when enable_clamav_check is
+# on (the entrypoint generates extra_config.php to enable it). We attempt to
+# pre-seed the virus database at build time; the entrypoint does a best-effort
+# refresh on start (signatures live in /var/lib/clamav).
+# ffmpeg: required by cron/transcoder.php at /usr/bin/ffmpeg (libx264 enabled)
+# to transcode legacy .flv uploads to .mp4 for HTML5 templates.
+# python3: useful runtime; note that XOT's setupytdlp/ web tool needs Python
+# 3.10+ which Debian bullseye does not ship, so install yt-dlp separately if you
+# need it (see docker/README.md).
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        clamav \
+        clamav-daemon \
+        ffmpeg \
+        python3 \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /var/lib/clamav /var/log/clamav \
+    && chown -R clamav:clamav /var/lib/clamav /var/log/clamav \
+    # Pre-seed the ClamAV signature database (best effort with retries - do
+    # not fail the build if the mirror is unreachable; the entrypoint retries
+    # on start). --no-dns avoids a DNS lookup that occasionally fails in build
+    # sandboxes.
+    && for i in 1 2 3; do \
+            freshclam --no-dns --datadir=/var/lib/clamav --no-warn \
+            && break \
+            || echo "[xerte] freshclam attempt $i failed - will retry"; \
+           sleep 5; \
+       done \
+    || echo '[xerte] freshclam failed at build time - will retry at runtime'
+
 # ---- Apache configuration ---------------------------------------------------
 RUN a2enmod rewrite headers \
     && echo "ServerName localhost" > /etc/apache2/conf-available/servername.conf \
@@ -100,7 +131,11 @@ ENV XERTE_DOCROOT=/var/www/xerte \
     XERTE_ADMIN_USERNAME=admin \
     XERTE_ADMIN_PASSWORD=admin \
     XERTE_AUTH_METHOD=Guest \
-    XERTE_SITE_URL=http://localhost/
+    XERTE_SITE_URL=http://localhost/ \
+    XERTE_ENABLE_CLAMAV=true \
+    XERTE_CLAMAV_CMD=/usr/bin/clamscan \
+    XERTE_CLAMAV_OPTS=--no-summary \
+    XERTE_FRESHCLAM_ON_START=true
 
 EXPOSE 80
 

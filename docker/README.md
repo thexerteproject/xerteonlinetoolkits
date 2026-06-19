@@ -161,6 +161,10 @@ once by the entrypoint on each start; the database/user and `database.php` are
 | `XERTE_ADMIN_USERNAME` | `admin` | Management-area admin username |
 | `XERTE_ADMIN_PASSWORD` | `admin` | Management-area admin password (stored SHA-256 hashed) |
 | `XERTE_SITE_URL` | `http://localhost/` | Stored site URL. The host/port are recomputed at request time from the browser, so this mainly controls the sub-path. |
+| `XERTE_ENABLE_CLAMAV` | `true` | Enables ClamAV scanning of uploads (`true`/`false`). The image ships clamscan + a pre-seeded signature database. |
+| `XERTE_CLAMAV_CMD` | `/usr/bin/clamscan` | Path to the clamscan binary (must be executable). |
+| `XERTE_CLAMAV_OPTS` | `--no-summary` | Extra options passed to clamscan. |
+| `XERTE_FRESHCLAM_ON_START` | `true` | Run `freshclam` on container start to refresh signatures (best effort; signatures are also baked into the image). |
 
 Example — a more locked-down local instance using database authentication:
 
@@ -206,6 +210,86 @@ On every `docker start` the entrypoint:
 
 Because steps 5 and 6 are guarded by "already exists / already populated"
 checks, your users, projects and files are safe across restarts and upgrades.
+
+---
+
+## Antivirus (ClamAV) & media transcoding (ffmpeg)
+
+The image bundles **ClamAV** and **ffmpeg** so two of XOT's optional features
+work out of the box.
+
+### ClamAV upload scanning
+
+XOT scans every uploaded file with `clamscan` when `enable_clamav_check` is on.
+The image installs `clamav`, pre-seeds the virus database (`/var/lib/clamav/*.cvd`)
+at build time, and the entrypoint writes `extra_config.php` to enable scanning
+(XOT's `config.php` forces ClamAV **off** unless that file exists). It is on by
+default; turn it off with `-e XERTE_ENABLE_CLAMAV=false`.
+
+Signatures are baked into the image, so scanning works with no network at
+runtime. The entrypoint also runs `freshclam` once on start (best effort) to
+refresh them; disable that with `-e XERTE_FRESHCLAM_ON_START=false`. To persist
+fresh signatures across container recreations, mount a volume at
+`/var/lib/clamav`.
+
+Quick check that it works (uses the standard EICAR test file):
+
+```bash
+docker exec xerte sh -c 'printf "X5O!P%@AP[4\\PZX54(P^)7CC)7}\$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!\$H+H*" > /tmp/eicar.txt'
+docker exec xerte clamscan --no-summary /tmp/eicar.txt      # -> Eicar-Test-Signature FOUND, exit 1
+docker exec xerte clamscan --no-summary /etc/passwd         # -> OK, exit 0
+```
+
+The same check through Xerte's own validator (`Xerte_Validate_VirusScanClamAv`,
+the class the upload pipeline uses):
+
+```bash
+docker exec xerte php -r '
+  require_once("/var/www/xerte/config.php");
+  require_once("/var/www/xerte/library/Xerte/Validate/VirusScanClamAv.php");
+  Xerte_Validate_VirusScanClamAv::$ClamAV_Cmd=$xerte_toolkits_site->clamav_cmd;
+  Xerte_Validate_VirusScanClamAv::$ClamAV_Opts=$xerte_toolkits_site->clamav_opts;
+  $v=new Xerte_Validate_VirusScanClamAv();
+  var_dump($v->isValid("/tmp/eicar.txt"), $v->getMessages()); // false + VIRUS_FOUND
+'
+```
+
+> Note: `clamscan` loads the full (~110 MB) signature database on every call,
+> so each scan takes a few seconds. For high-volume sites you'd run `clamd`
+> instead, but `clamscan` is what XOT's code invokes.
+
+### ffmpeg transcoding
+
+`cron/transcoder.php` transcodes legacy `.flv` uploads to `.mp4` so they play
+in HTML5 templates. It requires `/usr/bin/ffmpeg` (with `libx264`), which the
+image provides. Run it manually or via cron:
+
+```bash
+docker exec xerte php /var/www/xerte/cron/transcoder.php
+```
+
+> **Caveat:** `cron/transcoder.php` invokes ffmpeg with the `-sameq` flag,
+> which was removed from ffmpeg years ago, so the job will error
+> (`Unrecognized option 'sameq'`) on modern ffmpeg builds (including the one
+> in this image). This is an upstream XOT bug, not a container issue — to
+> actually run transcodes, edit that line in `cron/transcoder.php` (e.g. drop
+> `-sameq` and use `-c:v libx264 -preset fast -crf 23`). ffmpeg itself works:
+>
+> ```bash
+> docker exec xerte sh -c '
+>   ffmpeg -hide_banner -loglevel error -f lavfi -i testsrc=duration=1:size=120x80:rate=10 -c:v flv1 /tmp/s.flv &&
+>   ffmpeg -hide_banner -loglevel error -i /tmp/s.flv -c:v libx264 /tmp/s.mp4 &&
+>   file -b /tmp/s.mp4'   # -> ISO Media, MP4 Base Media ...
+> ```
+
+### yt-dlp (not included)
+
+XOT's `setupytdlp/` web tool downloads media via yt-dlp, which now requires
+**Python 3.10+**. This image is based on Debian bullseye (Python 3.9), so
+yt-dlp is **not** installed. If you need it, either run the `setupytdlp/`
+installer on a host with Python 3.10+, or rebuild this image on a newer base
+(e.g. switch the `FROM` line to `php:8.2-apache` — note XOT's code currently
+has PHP 8 incompatibilities, see the Dockerfile comment — and `pip install yt-dlp`).
 
 ---
 

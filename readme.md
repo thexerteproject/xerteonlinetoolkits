@@ -81,6 +81,8 @@ Override any of these by passing `-e NAME=value` to `docker run`:
 | `XERTE_ADMIN_USERNAME` | `admin` | Management area admin username |
 | `XERTE_ADMIN_PASSWORD` | `admin` | Management area admin password |
 | `XERTE_SITE_URL` | `http://localhost/` | Stored site URL (host/port are recomputed at runtime) |
+| `XERTE_ENABLE_CLAMAV` | `true` | ClamAV upload scanning (clamscan + signatures ship in the image) |
+| `XERTE_FRESHCLAM_ON_START` | `true` | Refresh ClamAV signatures on start (best effort) |
 
 **Security note:** the default `Guest` authentication lets *anyone* visiting
 the site create, edit and delete content. That is fine for a purely local
@@ -94,6 +96,13 @@ beyond local testing.
 - MariaDB logs: `docker exec xerte tail -n 100 /var/log/mysqld.log`
 - To enable Xerte's own debug logging, edit `config.php` inside the container
   and set `$development = true;`, then restart.
+
+### Antivirus & transcoding (included)
+
+The image ships **ClamAV** (upload scanning, on by default — tested against the
+EICAR test file) and **ffmpeg** with `libx264` (for `cron/transcoder.php`).
+Disable ClamAV with `-e XERTE_ENABLE_CLAMAV=false`. See `docker/README.md` for
+verification commands and the ffmpeg `-sameq` caveat.
 
 For full details — including **bind-mount ("pass-through") volumes**, backups,
 troubleshooting, and what the entrypoint does under the hood — see

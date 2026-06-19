@@ -19,6 +19,7 @@ tests
 # Don't copy a locally generated database.php or local config into the image —
 # the entrypoint generates it from environment variables.
 database.php
+extra_config.php
 auth_config.php
 lrsdb_config.php
 vendor_config.php
