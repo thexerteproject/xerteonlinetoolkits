@@ -8,7 +8,7 @@ through the web setup wizard.
 
 | File | Purpose |
 |------|---------|
-| `../Dockerfile` | Builds the image (PHP 7.4 + Apache + MariaDB + XOT code). |
+| `../Dockerfile` | Builds the image (PHP 8.3 + Apache + MariaDB + XOT code). |
 | `entrypoint.sh` | Starts MariaDB, auto-provisions the DB/schema/site config, then runs Apache. |
 | `init_site.php`  | Idempotent PHP provisioning script (imports `setup/basic.sql`, inserts default site settings). |
 | `apache-xerte.conf` | Apache vhost serving XOT from `/var/www/xerte` at the web root. |
@@ -284,12 +284,13 @@ docker exec xerte php /var/www/xerte/cron/transcoder.php
 
 ### yt-dlp (not included)
 
-XOT's `setupytdlp/` web tool downloads media via yt-dlp, which now requires
-**Python 3.10+**. This image is based on Debian bullseye (Python 3.9), so
-yt-dlp is **not** installed. If you need it, either run the `setupytdlp/`
-installer on a host with Python 3.10+, or rebuild this image on a newer base
-(e.g. switch the `FROM` line to `php:8.2-apache` — note XOT's code currently
-has PHP 8 incompatibilities, see the Dockerfile comment — and `pip install yt-dlp`).
+XOT's `setupytdlp/` web tool downloads media via yt-dlp, which requires
+**Python 3.10+**. The image is based on Debian trixie (PHP 8.3 image), which
+ships Python 3.13, so yt-dlp would work here — but it is **not** installed to
+keep the image lean. If you need it, install it inside the container, e.g.
+`docker exec xerte sh -c 'apt-get update && apt-get install -y python3-pip &&
+pip3 install --break-system-packages yt-dlp'`, or use the in-app
+`setupytdlp/` installer.
 
 ---
 

@@ -10,10 +10,12 @@
 # The first start auto-provisions the database (schema + default site settings),
 # so there is no need to walk through the web setup wizard.
 
-# PHP 7.4 is used because XOT's README targets PHP 7.x and parts of the
-# codebase (e.g. Snoopy.class.php, editor/upload.php) still rely on functions
-# that were removed in PHP 8.0 (each(), get_magic_quotes_gpc()).
-FROM php:7.4-apache
+# PHP 8.3 — XOT runs on PHP 8.x. The only PHP 8 incompatibility in this repo
+# is the removed each() function in Snoopy.class.php (used only by
+# rss_proxy.php); those calls have been converted to foreach in the source.
+# The remaining get_magic_quotes_gpc() calls are all guarded by
+# function_exists() and are safe on PHP 8.
+FROM php:8.3-apache
 
 # ---- Runtime / build dependencies -------------------------------------------
 # mariadb-server ships the database inside the same container.
@@ -28,6 +30,7 @@ RUN apt-get update \
         libxml2-dev \
         libcurl4-openssl-dev \
         libonig-dev \
+        libicu-dev \
         unzip \
     && rm -rf /var/lib/apt/lists/*
 
@@ -52,9 +55,9 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 # refresh on start (signatures live in /var/lib/clamav).
 # ffmpeg: required by cron/transcoder.php at /usr/bin/ffmpeg (libx264 enabled)
 # to transcode legacy .flv uploads to .mp4 for HTML5 templates.
-# python3: useful runtime; note that XOT's setupytdlp/ web tool needs Python
-# 3.10+ which Debian bullseye does not ship, so install yt-dlp separately if you
-# need it (see docker/README.md).
+# python3: useful runtime. XOT's setupytdlp/ web tool needs Python 3.10+
+# (trixie ships 3.13, so yt-dlp would work) but yt-dlp is not installed here
+# to keep the image lean - see docker/README.md to add it.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         clamav \
