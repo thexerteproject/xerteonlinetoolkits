@@ -10,11 +10,6 @@
 # The first start auto-provisions the database (schema + default site settings),
 # so there is no need to walk through the web setup wizard.
 
-# PHP 8.3 — XOT runs on PHP 8.x. The only PHP 8 incompatibility in this repo
-# is the removed each() function in Snoopy.class.php (used only by
-# rss_proxy.php); those calls have been converted to foreach in the source.
-# The remaining get_magic_quotes_gpc() calls are all guarded by
-# function_exists() and are safe on PHP 8.
 FROM php:8.3-apache
 
 # ---- Runtime / build dependencies -------------------------------------------
