@@ -4715,6 +4715,7 @@
 
           elem.id = "peertubeIframe";
           elem.addClass = " .iframe ";
+          elem.setAttribute("loading", "lazy");
 
         function addPlayerReadyCallback( callback ) {
             playerReadyCallbacks.push( callback );
