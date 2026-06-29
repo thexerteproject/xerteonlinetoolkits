@@ -286,7 +286,8 @@
 			if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
 				// store data about all possible combo box answers
 				$gapFillTxt.find(".target").each(function() {
-					$(this).data("answer", $(this).html());
+					// save decoded answer in data attribute for later use when checking answers
+					$(this).data("answer", $(this).text());
 				});
 				$("#dragDropHolder").addClass('dragDrop');
 				this.setUpDragDrop();
