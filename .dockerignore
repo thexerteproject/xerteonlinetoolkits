@@ -1,0 +1,39 @@
+# Keep the Docker build context lean and avoid copying secrets / large files.
+.git
+.github
+.gitignore
+.well-known
+
+# Large, non-runtime files.
+commitlist.csv
+commitlist_year.csv
+documentation
+sonar-project.properties
+tests
+
+# Local CI / editor cruft.
+.idea
+.buildpath
+*.project
+
+# Don't copy a locally generated database.php or local config into the image —
+# the entrypoint generates it from environment variables.
+database.php
+extra_config.php
+auth_config.php
+lrsdb_config.php
+vendor_config.php
+config_edlib.php
+ai_sync_worker_config.php
+openai_config.php
+
+# Local user files / logs / imports should not be baked into the image.
+USER-FILES
+error_logs
+import
+
+# Docker compose file isn't needed inside the image (the docker/ folder IS
+# needed because the Dockerfile copies the entrypoint + apache config from it).
+Dockerfile
+docker-compose.yml
+.dockerignore
