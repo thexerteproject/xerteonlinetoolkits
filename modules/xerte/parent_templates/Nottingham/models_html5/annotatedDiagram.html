@@ -27,7 +27,6 @@
 			$infoHolder,
 			$panel,
 			$maintainSelection,
-
 			tabfocusoptions,
 			options,
 			$canvas,
@@ -104,13 +103,11 @@
 			if ($pageContents.data("hsType") == "centre") {
 				$canvas = $("#canvas");
 				context = $canvas[0].getContext("2d");
-				
 			} else {
 				$("#canvas").remove();
 				
 				if ($pageContents.data("hsType") == "flex") {
 					$hsHolder.addClass("mapster");
-					
 				} else {
 					var newStyles = "<style type='text/css'> #pageContents #hsHolder:not(.mapster).oval .hotspot.selected, #pageContents #hsHolder:not(.mapster).oval .hsGroup.selected .hotspot { border-color: " + highlightColour + ";} <style>";
 					$pageContents.prepend($(newStyles));
@@ -163,7 +160,6 @@
 													}else{
 														annotatedDiagram.drawLineToText($(this), shape);
 													}
-
 												});
 									} else {
 										if(x_currentPageXML.getAttribute("link") == "false" || x_currentPageXML.getAttribute("link") == undefined){
@@ -171,9 +167,7 @@
 										}else{
 											annotatedDiagram.drawLineToText($hs, shape);
 										}
-
 									}
-
 								}
 							}
 							
@@ -183,10 +177,10 @@
 						}
 					});
 			});
+
 			let url = x_currentPageXML.getAttribute("url").split(".");
 			if (url.length > 1) {
 				if (url[1].slice(0, -1) != "swf") {
-
 					$img
 							.data('firstLoad', true)
 							.css({
@@ -212,22 +206,18 @@
 								}
 							});
 
-					if ($pageContents.data("hsType") == "flex") {
-						$img.attr("usemap", "#hsHolder_map");
-					}
-
 				} else {
 					// have had to add this in I found one old project where a swf was used instead of an image on this page
 					$("#imageHolder").html('<p>Flash files (.swf) are no longer supported</p>');
 					x_pageLoaded();
 				}
-			}else{
+			} else {
 				// If no image was selected
 				$("#imageHolder").html('<p>No image selected.</p>');
 				x_pageLoaded();
 			}
 
-			if(x_currentPageXML.getAttribute("link") == "true"){
+			if (x_currentPageXML.getAttribute("link") == "true") {
 				$("#listHolder").css("display", "none")
 			}
 		}
@@ -271,11 +261,45 @@
 			if ($pageContents.data("hsType") == "centre" && align == "Left") {
 				$(".listItem").css("minWidth", $x_innerPage.width() - $panel.outerWidth(true) - parseInt($(".listItem").css('padding-left')) - parseInt($(".listItem").css('padding-right')) - 20);
 			}
+
+			// now get info about hotspots & create them
+			if ($pageContents.data("hsType") == "flex") {
+				$hsHolder.html('<map id="hsHolder_map" name="hsHolder_map"></map>');
+				$img.attr("usemap", "#hsHolder_map");
+			}
+
+			$(x_currentPageXML).children().each(function(i) {
+				var _this = this;
+				if (this.nodeName == "hotspotGroup") {
+
+					var $hsGroup;
+					if ($pageContents.data("hsType") != "flex") {
+						$hsGroup = $('<div class="hsGroup"></div>');
+						$hsHolder.append($hsGroup);
+					}
+
+					$(this).children().each(function(j) {
+
+						if ($pageContents.data("hsType") != "flex") {
+							annotatedDiagram.createHs(this, i, $hsGroup);
+
+						} else {
+							annotatedDiagram.createHs(this, i, $("#hsHolder_map"));
+						}
+					});
+
+				} else {
+					if ($pageContents.data("hsType") != "flex") {
+						annotatedDiagram.createHs(this, i, $hsHolder);
+
+					} else {
+						annotatedDiagram.createHs(this, i, $("#hsHolder_map"));
+					}
+				}
+			});
 			
 			// now get info about hotspots & create them
 			if ($pageContents.data("hsType") == "flex") {
-				
-				$hsHolder.html('<map id="hsHolder_map" name="hsHolder_map"></map>');
 
 				var stroke = true,
 					strokeWidth = borderW,
@@ -318,7 +342,6 @@
 				// Make sure focus is ALWAYS visible, even if strokewidth is set to 0
 				tabfocusoptions.render_highlight.stroke = true;
 				tabfocusoptions.render_highlight.strokeWidth = (strokeWidth == 0 ? 1 : strokeWidth * 2);
-
 				$img.mapster(options);
 				
 			} else {
@@ -336,40 +359,15 @@
 					$hsHolder.addClass("oval");
 				}
 			}
-			
-			$(x_currentPageXML).children().each(function(i) {
-				var _this = this;
-				if (this.nodeName == "hotspotGroup") {
-					
-					var $hsGroup;
-					if ($pageContents.data("hsType") != "flex") {
-						$hsGroup = $('<div class="hsGroup"></div>');
-						$hsHolder.append($hsGroup);
-					}
-					
-					$(this).children().each(function(j) {
-						
-						if ($pageContents.data("hsType") != "flex") {
-							annotatedDiagram.createHs(this, i, $hsGroup);
-							
-						} else {
-							annotatedDiagram.createHs(this, i, $("#hsHolder_map"));
-						}
-					});
-					
-				} else {
-					if ($pageContents.data("hsType") != "flex") {
-						annotatedDiagram.createHs(this, i, $hsHolder);
-						
-					} else {
-						annotatedDiagram.createHs(this, i, $("#hsHolder_map"));
-					}
-				}
-			});
 
 			if ($maintainSelection != undefined) {
 				$maintainSelection.each( function() {
-					$("area." + $(this).data("group")).mapster("select");
+					if ($pageContents.data("hsType") == "flex") {
+						$("area." + $(this).data("group")).mapster("select");
+					} else {
+						annotatedDiagram.deselect();
+						$(this).click();
+					}
 				});
 			}
 		}
