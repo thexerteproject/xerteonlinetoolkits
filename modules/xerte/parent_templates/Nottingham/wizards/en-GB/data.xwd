@@ -573,7 +573,7 @@
 		checkBtn="Submit"
 		clearBtn="Clear" 
 		resetBtn="Reset"
-		errorTxt="Selection error - you can not select content from more than one paragraph at a time"
+		errorTxt="Selection error"
 		highlightTxt="Selection error - no text selected"
 		initTxtLabel="Initial text - select text and copy to your notes"
 		initTxtLabel2="Initial text - select text before clicking highlight button"
