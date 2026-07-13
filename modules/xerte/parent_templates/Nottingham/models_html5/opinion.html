@@ -68,34 +68,38 @@
 					}
 				}
 			}
-			
-			var width = $("#mainPanel").width(),
-					height = $("#pageContents").innerHeight() - $("#qNo").outerHeight(true) - $("#feedback").outerHeight(true) - $("#buttonHolder").outerHeight(true),
-					textSize;
-			let paddingHeightMainPanel = $("#mainPanel").outerHeight(true) - $("#mainPanel").innerHeight() + parseFloat($("#mainPanel").css('padding-top')) + parseFloat($("#mainPanel").css('padding-bottom'));
-			let paddingWidthMainPanel = $("#mainPanel").outerWidth(true) - $("#mainPanel").innerWidth() + parseFloat($("#mainPanel").css('padding-left')) + parseFloat($("#mainPanel").css('padding-right'));
-			width -= paddingWidthMainPanel;
-			height -= paddingHeightMainPanel;
-			height *= 0.98; // Build in some extra space
-			if(width > height) {
-				textSize = (width - height) / 10;
-				width = height;
+
+
+
+			// ensure radar chart resizes sensibly
+			if ($("#diagram").length > 0 && $("#diagram").is(":visible")) {
+				$("#canvas-container").css({
+					"width": "0px",
+					"height": "0px"
+				});
+				this.setWidths();
+				this.drawGraph(false);
+
+			} else {
+				this.setWidths();
 			}
-			else {
-				textSize = (height - width) / 10;
+		};
+
+		this.setWidths = function() {
+			let width = $("#mainPanel").width();
+			let height = x_getAvailableHeight([$("#mainPanel")],[$("#qNo"), $("#feedback"), $("#buttonHolder")], false);
+			const paddingWidthMainPanel = $("#mainPanel").outerWidth(true) - $("#mainPanel").innerWidth() + parseFloat($("#mainPanel").css('padding-left')) + parseFloat($("#mainPanel").css('padding-right'));
+			width -= paddingWidthMainPanel;
+
+			if (width > height) {
+				width = height;
+			} else {
 				height = width;
 			}
-			if (textSize > 18) {
-				textSize = 18;
-			}
-			else if (textSize < 12) {
-				textSize = 12;
-			}
-			$pageContents.data('textSize', textSize);
 
 			$("#canvas-container")
-					.css('width', width)
-					.css('height', height);
+				.width(Math.max(300, width))
+				.height(Math.max(300, height));
 
 			$("#qHolder .qImg").each(function() {
 				$(this).css({
@@ -103,7 +107,7 @@
 					"max-height": $("#mainPanel").height() - ($(this).parents("figure").find("figcaption").outerHeight(true) - $(this).parents("figure").find("figcaption").height())
 				});
 			});
-		};
+		}
 
 		this.loadAudio = function(currentQuestion, soundFile, transcript)
 		{
@@ -608,9 +612,7 @@
 		};
 
 		this.trackOpinion = function() {
-            // Last question answered - show results
-			this.drawGraph();
-
+			// Last question answered - show results
 			$("#qNo").html($pageContents.data("onCompletionText"));
 
             var myScore = 0;
@@ -665,11 +667,13 @@
             $("#qHolder").hide();
             $("#checkBtn").hide();
 
+			this.drawGraph();
+
             XTSetPageScoreJSON(x_currentPage, myScore, JSON.stringify(JSONGraph), x_currentPageXML.getAttribute("trackinglabel"));
             $pageContents.data('checked', true);
 		};
 
-		this.drawGraph = function() {
+		this.drawGraph = function(redraw) {
 			JSONGraph = this.createGraphObject();
 			if (x_currentPageXML.getAttribute("diagram") !== "true") {
 				if (x_currentPageXML.getAttribute("diagram") !== "true") {
@@ -677,7 +681,9 @@
 				} else {
 					$('#canvas-container').hide();
 				}
-				this.sizeChanged();
+				if (redraw !== false) {
+					this.sizeChanged();
+				}
 				this.createDiagram(JSONGraph);
 			}
 		}
@@ -742,10 +748,12 @@
 			let lineColour = $("body").css("color");
 			lineColour = lineColour.indexOf('rgba') === -1 ? lineColour.replace(')', ', 0.2)').replace('rgb', 'rgba') : lineColour;
 
+			const fontSize = Math.max(12,parseInt(ctx.css("font-size"))*0.8);
+
 			var myRadarChart = new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: classTitles,
+                    labels: opinion.wrapText(ctx, classTitles, Math.max(50,$("#mainPanel").width()*0.15)),
                     datasets: [{
 						label: htmlToChar(x_currentPageXML.getAttribute("name")),
                         data: classValues,
@@ -766,10 +774,10 @@
 						ticks: {
 							suggestedMin: 0,
 							suggestedMax: 100,
-							fontSize: $pageContents.data('textSize') - 10
+							fontSize: Math.max(10,fontSize*0.85)
 						},
 						pointLabels: {
-							fontSize: $pageContents.data('textSize'),
+							fontSize: fontSize,
 							fontColor: txtColour
 						},
 						gridLines: {
@@ -781,7 +789,7 @@
 					},
 					legend: {
 						labels: {
-							fontSize: $pageContents.data('textSize'),
+							fontSize: fontSize,
 							fontColor: txtColour
 						},
 						display: x_currentPageXML.getAttribute("key") == 'false' ? false : true,
@@ -796,17 +804,37 @@
 			for (let i=0; i<graphObject.classtitles.length; i++) {
 				chartDescr += graphObject.classtitles[i] + " = " + graphObject.classvalues[i] + "%. "
 			}
-			/*
-			for (i = 0; i < scores.length; i++) {
-				chartDescr += " " + $pageContents.data("classes")[i] + " = " + scores[i];
-				if (x_currentPageXML.getAttribute("scoreType") == "relative percent" || x_currentPageXML.getAttribute("scoreType") == "individual percent") {
-					chartDescr += "%";
-				}
-				if (i != scores.length - 1) {
-					chartDescr += ",";
-				}
-			}*/
+
 			$("#diagram").attr("title", chartDescr);
+		};
+
+		this.wrapText = function(ctx, labels, maxWidth) {
+			for (let i=0; i<labels.length; i++) {
+				const thisLabel = labels[i];
+				const words = thisLabel.split(' ');
+				const lines = [];
+				let line = '';
+
+				words.forEach(word => {
+					const test = line ? `${line} ${word}` : word;
+
+					if (ctx[0].getContext("2d").measureText(test).width > maxWidth) {
+						lines.push(line);
+						line = word;
+					} else {
+						line = test;
+					}
+				});
+
+				if (line) {
+					lines.push(line);
+				}
+
+				if (lines.length > 1) {
+					labels.splice(i,1,lines);
+				}
+			}
+			return labels;
 		};
 
 		this.init = function()
