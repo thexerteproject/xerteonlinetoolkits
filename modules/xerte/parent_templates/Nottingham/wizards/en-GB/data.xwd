@@ -13729,6 +13729,9 @@
 
     <feedback label="Feedback" type="textArea" height="120" defaultValue="" placeholder="Enter feedback here"/>
 
+    <!-- disableprinting used to be an optional property but has been replaced with the downloadGroup options - these are not shown when disable PDF export is used in older projects to avoid confusion-->
+    <disableprinting label="Disable PDF Export" type="CheckBox" defaultValue="false" tooltip="Remove the button to download a PDF of the graph that appears once all answers have been submitted" conditionTrigger="true" condition="diagram!='true'"/>
+
     <textTopGroup label="Text Above Panel" type="group" optional="true">
         <textTop label="Text" type="TextArea" height="100" optional="true"/>
         <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
@@ -13738,6 +13741,12 @@
         <textBottom label="Text" type="TextArea" height="100" optional="true"/>
         <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
+
+    <downloadGroup label="Download Button" type="group" optional="true" condition="disableprinting==undefined" tooltip="Include a button that allows users to download the page feedback">
+        <showDownload label="Include button" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="disableprinting==undefined"/>
+        <filename label="Filename (without extension)" type="TextInput" defaultValue="" optional="true" condition="disableprinting==undefined&amp;&amp;showDownload!='false'" tooltip="By default, the downloaded file will use the page title as the file name. Enter a different file name here if required."/>
+        <fileOrientation label="File orientation" type="ComboBox" data="portrait,landscape" options="Portrait,Landscape" defaultValue="portrait" optional="true" condition="disableprinting==undefined&amp;&amp;showDownload!='false'" tooltip="Orientation of downloaded file"/>
+    </downloadGroup>
 
     <showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true" deprecated="This optional property is now deprecated"/>
 
@@ -13762,8 +13771,6 @@
 		<colour label="Colour" type="colourPicker" defaultValue="0x000000" optional="true" condition="diagram!='true'" tooltip="The colour used for this page on the graph"/>
 		<key label="Show Key" type="CheckBox" defaultValue="true" optional="true" condition="diagram!='true'" tooltip="Show a key listing page names and colours"/>
 	</graph>
-
-    <disableprinting label="Disable PDF Export" type="CheckBox" optional="true" defaultValue="false" tooltip="Remove the button to download a PDF of the graph that appears once all answers have been submitted" condition="diagram!='true'"/>
 
     <layout label="Layout" type="group" optional="true">
       <list label="Question Layout" type="ComboBox" options="One Per Page,List in Pages,List All" data="false,true,all" optional="true" defaultValue="false" conditionTrigger="true"/>
@@ -13914,6 +13921,7 @@
     <newNodes>
       <opinionQuestion><![CDATA[<opinionQuestion  name="Question" prompt="" scale="false" classWeight="1" interactivity="slider" />]]></opinionQuestion>
       <classFeedback><![CDATA[<classFeedback name="Enter Feedback Title" minScore="0" maxScore="50" feedbackTxt="" />]]></classFeedback>
+      <!--<classData><![CDATA[<classData name="Enter Data Title" id="Enter Data ID" score="0" />]]></classData>-->
     </newNodes>
 
   <imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
