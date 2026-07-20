@@ -1,66 +1,66 @@
 /* categories.html */
-	
-	#dragDropHolder {
-		overflow:	auto;
-	}
-	
-	#dragDropHolder .label {
-		cursor:				pointer;
-		list-style-type:	none;
-		padding:			5px;
-		position:			relative;
-	}
-	
-	#dragDropHolder .label.focus {
-		border:	2px solid yellow;
-	}
-	
-	#dragDropHolder .label.selected {
-		border:	2px solid green;
-	}
-	
-	#dragDropHolder .tick {
-		position: absolute;
-		bottom: 0px;
-		right: 0px
-	}
-	
-	#initHolder {
-		padding:		0px;
-		margin-right:	2%;
-		float:			right;
-	}
-	
-	#categoryHolder {
-		clear:	right;
-	}
-	
-	#categoryHolder .category {
-		padding: 1%;
-		float: left;
-		cursor: pointer;
-	}
-	
-	#categoryHolder .category .label {
-		margin-top:		10px;
-	}
-	
-	#categoryHolder .categoryTitle {
-		text-align:		center;
-		font-weight: bold;
-		padding: 0;
-	}
-	
-	#button {
-		clear:			left;
-		margin-bottom:	10px;
-		float:			right;
-	}
-	
-	#feedback {
-		clear:	left;
-	}
-	
-	ul#initHolder {
-		overflow: visible;
-	}
+
+#dragDropHolder {
+	overflow:	auto;
+}
+
+#dragDropHolder .label {
+	cursor:				pointer;
+	list-style-type:	none;
+	padding:			5px;
+	position:			relative;
+}
+
+#dragDropHolder .label.focus {
+	border:	2px solid yellow;
+}
+
+#dragDropHolder .label.selected {
+	border:	2px solid green;
+}
+
+#dragDropHolder .tick {
+	position: absolute;
+	bottom: 0px;
+	right: 0px
+}
+
+#initHolder {
+	padding:		0px;
+	margin-right:	2%;
+	float:			right;
+}
+
+#categoryHolder {
+	clear:	right;
+}
+
+#categoryHolder .category {
+	padding: 1%;
+	float: left;
+	cursor: pointer;
+}
+
+#categoryHolder .category .label {
+	margin-top:		10px;
+}
+
+#categoryHolder .categoryTitle {
+	text-align:		center;
+	font-weight: bold;
+	padding: 0;
+}
+
+#button {
+	clear:			left;
+	margin-bottom:	10px;
+	float:			right;
+}
+
+#feedback {
+	clear:	left;
+}
+
+ul#initHolder {
+	overflow: visible;
+}

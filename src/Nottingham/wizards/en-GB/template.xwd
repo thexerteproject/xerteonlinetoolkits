@@ -384,7 +384,7 @@
 	  prevText="Previous" nextText="Next" restartText="Restart" restartConfirmText="Restarting will remove all recordings. Do you want to restart?" countText="Clip {i} of {n}" recText="Record" stopText="Stop" downloadText="Download all" downloadText2="Download example" downloadText3="Download recordings" deleteText="Delete" clipNameLabel="Enter audio clip name" defaultClipName="Unnamed clip" clipNameRenameLabel="Edit audio clip name" micErrorLabel="Try Again"
 	  />]]></audioRecord><audioSlideshow><![CDATA[<audioSlideshow name="Enter Page Title" sound="" text=""
       panelWidth="Medium" panelWidthCustom="50" align="Right" panelStyle="false" removeTxt="false"
-     />]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left" url="" tip="" imagesize="medium"></bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" delaySecs="1" showBullets="0" panelWidth="Full" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="true"></bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="" prompt="" feedback=""
+     />]]></audioSlideshow><bleedingImage><![CDATA[<bleedingImage name="Enter Page Title" align="Left" url="" tip="" imagesize="medium"></bleedingImage>]]></bleedingImage><bullets><![CDATA[<bullets name="Enter Page Title" text="" delaySecs="1" showBullets="0" panelWidth="Full" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="true"></bullets>]]></bullets><buttonNav><![CDATA[<buttonNav name="" text="Enter text for the page here" panelWidth="Medium"/>]]></buttonNav><buttonQuestion><![CDATA[<buttonQuestion name="Enter Page Title" instruction="" prompt="" feedback=""
       panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"
       label="Check" />]]></buttonQuestion><buttonSequence><![CDATA[<buttonSequence name="Enter Page Title" text="" intro=""
       panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"/>]]></buttonSequence><cMcq><![CDATA[<cMcq name="Enter Page Title" instruction="" prompt=""
@@ -573,16 +573,14 @@
 		checkBtn="Submit"
 		clearBtn="Clear" 
 		resetBtn="Reset"
-		errorTxt="Selection error - you can not select content from more than one paragraph at a time"
+		errorTxt="Selection error"
 		highlightTxt="Selection error - no text selected"
 		initTxtLabel="Initial text - select text and copy to your notes"
 		initTxtLabel2="Initial text - select text before clicking highlight button"
 		suggestedTxtLabel="A suggested answer"
 		notesTxtLabel="Notes"
 		responseHeaderTxt="Your response:" notesHeaderTxt="Your notes:" noAnswerHeaderTxt="No response submitted"
-	  />]]></textHighlight><textMatch><![CDATA[<textMatch name="Enter Page Title" pageText="" text="" maxAttempts="3"
-      panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
-      correctMessage="Correct answers are shown" submitBtnTxt="Submit" feedback="" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Description for Accessibility" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="" tip="" full="false" transcriptTabTxt="Transcript" ></textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="" nextBtnTip="Scroll Forward" priorBtnTip="Scroll Back"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="" interactivity="Timeline" feedback="" checkBtnTxt="Check Answers" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></timeline><title><![CDATA[<title name="Enter Page Title" text="" size="30" titleVAlign="200" titleHAlign="center" startBtnTxt="Start"></title>]]></title><topXQ><![CDATA[<topXQ name="Enter Page Title" instruction="" prompt=""
+	  />]]></textHighlight><textMatch><![CDATA[<textMatch name="Enter Page Title" text="" maxAttempts="3" correctMessage="Correct answers are shown" submitBtnTxt="Submit" feedback="" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></textMatch><textSWF><![CDATA[<textSWF name="Enter Page Title" align="Left" url="Select a SWF File" tip="Enter a Description for Accessibility" >Enter text for the page here</textSWF>]]></textSWF><textVideo><![CDATA[<textVideo name="Enter Page Title" align="Left" url="" tip="" full="false" transcriptTabTxt="Transcript" ></textVideo>]]></textVideo><thumbnailViewer><![CDATA[<thumbnailViewer name="Enter Page Title" text="" nextBtnTip="Scroll Forward" priorBtnTip="Scroll Back"/>]]></thumbnailViewer><timeline><![CDATA[<timeline name="Enter Page Title" text="" interactivity="Timeline" feedback="" checkBtnTxt="Check Answers" allWrong="You have not placed any labels correctly. Try again." allWrongTracking="You have not placed any labels correctly." score="You have scored {i} out of {n}. Try again." scoreTracking="You have scored {i} out of {n}." incomplete="Complete the exercise." />]]></timeline><title><![CDATA[<title name="Enter Page Title" text="" size="30" titleVAlign="200" titleHAlign="center" startBtnTxt="Start"></title>]]></title><topXQ><![CDATA[<topXQ name="Enter Page Title" instruction="" prompt=""
              panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"
              numberAnswers="*" caseSensitivity="true"
 			 feedbackLabel="Feedback"
@@ -3184,29 +3182,29 @@
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></captivate><categories menu="Interactivity" menuItem="Categories" hint="An interaction allowing the user to sort items into a number of categories." icon="icLayers" remove="true" thumb="thumbs/categories.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#categories" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_categories_page">
 
-    <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here"/>
-    <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here"/>
+        <name label="Page Title" type="TextInput" wysiwyg="true"/>
+        <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here"/>
+        <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here"/>
 
-	<buttonLabel label="Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-	<buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="120" width="100" language="true" deprecated="Width is now set automatically"/>
-	<feedbackScore label="Score Feedback" type="TextInput" wysiwyg="true" language="true"/>
-    <incomplete label="Incomplete Text" type="TextInput" wysiwyg="true" language="true" defaultValue="Complete the exercise." mandatory="true"/>
+        <buttonLabel label="Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+        <buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="120" width="100" language="true" deprecated="Width is now set automatically"/>
+        <feedbackScore label="Score Feedback" type="TextInput" wysiwyg="true" language="true"/>
+        <incomplete label="Incomplete Text" type="TextInput" wysiwyg="true" language="true" defaultValue="Complete the exercise." mandatory="true"/>
 
-    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
-	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result."/>
+        <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
+        <judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result."/>
 
-    <newNodes>
-      <category><![CDATA[<category name="Enter Category Name"/>]]></category>
-    </newNodes>
+        <newNodes>
+            <category><![CDATA[<category name="Enter Category Name"/>]]></category>
+        </newNodes>
 
-    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
-      <qfCategory label="Number of Categories" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
-      <qfItem label="Number of Items per Category" type="TextInput" wysiwyg="true" defaultValue="5" optional="true"/>
-      <qfButton type="quickfillbutton" optional="true"/>
-    </QFGroup>
+        <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
+            <qfCategory label="Number of Categories" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfItem label="Number of Items per Category" type="TextInput" wysiwyg="true" defaultValue="5" optional="true"/>
+            <qfButton type="quickfillbutton" optional="true"/>
+        </QFGroup>
 
-  	<AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
+        <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
             <categories label="Categories" verification="^(\s*[^,]+\s*,\s*)+[^,]+\s*$" type="TextInput" tooltip="List each category separated by a comma (,). Categories may be single words or sentences (as long as they don't contain commas). Examples: 'Mammals, birds, fish', 'birds endemic to the Netherlands, common birds found in Europe, birds found exclusively outside of Europe'." defaultValue="" placeholder="Enter categories here. E.g. Category 1, Category 2..." optional="true"/>
             <additionalInstructions label="Additional Instructions" type="text" tooltip="You can leave this blank or provide additional instructions or requests on how the generated result should look. Please note that certain instructions may break the structure of the generated response. If this occurs, change the wording and attempt to generate again." wysiwyg="true" height="50" placeholder="Write your instructions here..." optional="true"/>
             <uploadPrompt label="Information Source" options="None (uses model base knowledge), All Context Resources,Learning Object (Limited Scope), Single File (Limited Scope)" type="comboBox" data="false,context,lo,true" defaultValue="false" tooltip="Select &#x2018;All Context Resources&#x2019; when you wish to use all of the sources in the context resources table.  Select  'Learning Object (Limited Scope)' when you wish to use the latest preview of the learning object as the single source for generating this content. Select &#x2018;Single File (Limited Scope)&#x2019; when you wish to use one uploaded file, video or audio link, as the only source (you will be prompted to upload it if it has not already been added). Please ensure the source content corresponds to the requested subject. If relevant information is not found in the sources the AI will attempt to supplement with its own knowledge." conditionTrigger="true" optional="true"/>
@@ -3220,8 +3218,8 @@
             <tone advanced="true" label="Tone and Style" type="TextInput" defaultValue="" placeholder="Enter an indicator of tone. Defaults to 'Semi-formal.'" tooltip="Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive (as well as combinations of these). Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." overrideField="baseTone" optional="true"/>
             <aiButton type="aibutton" optional="true"/>
             <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
-      </AIGroup>
-  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+        </AIGroup>
+    <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -3329,13 +3327,13 @@
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></categories><category menuItem="Category" icon="icGroup" remove="true">
 
-    <name label="Category Name" type="TextInput" wysiwyg="true"/>
+        <name label="Category Name" type="TextInput" wysiwyg="true"/>
 
-    <newNodes>
-      <item><![CDATA[<item name="Enter Item Text"/>]]></item>
-    </newNodes>
+        <newNodes>
+            <item><![CDATA[<item name="Enter Item Text"/>]]></item>
+        </newNodes>
 
-  <imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
+    <imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
 		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
 		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
 		<imgGenApi label="Service" type="comboBox_imagegen" defaultValue="dalle3" width="120" optional="true" conditionTrigger="true" tooltip="Dalle2: Attempt to generate the specified number of images based on the given descriptions using an AI model; Dalle3: Attempt to generate a single image based on the given description using an AI model." condition="serviceType=='generate' &amp;&amp; hasrole('aiuser')"/>
@@ -3364,8 +3362,8 @@
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false'  &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
 		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></category><item menuItem="Item" icon="icBullet">
-    <name label="Item Text" type="TextInput" wysiwyg="true"/>
-  <imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
+        <name label="Item Text" type="TextInput" wysiwyg="true"/>
+    <imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
 		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
 		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
 		<imgGenApi label="Service" type="comboBox_imagegen" defaultValue="dalle3" width="120" optional="true" conditionTrigger="true" tooltip="Dalle2: Attempt to generate the specified number of images based on the given descriptions using an AI model; Dalle3: Attempt to generate a single image based on the given description using an AI model." condition="serviceType=='generate' &amp;&amp; hasrole('aiuser')"/>
@@ -4140,7 +4138,7 @@
 	</imgSearchAndHelpGroup></cHotspot><connectorMenu menu="Connectors" menuItem="Menu Connector" hint="Generate a menu of all or a selected range of the pages in a project." icon="icConMenu" thumb="thumbs/connectorMenu.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#menuconnector" wiki="https://xerte.org.uk/wiki/doku.php?id=connector_menuconnector_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="(panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||removeTxt!='true'" mandatory="true"/>
+    <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="(panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||removeTxt!='true'" defaultValue="" mandatory="true"/>
 
     <layoutGroup label="Page Layout" type="group">
         <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Full" conditionTrigger="true" mandatory="true"/>
@@ -4552,7 +4550,7 @@
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true"/>
     <restart label="Restart Button Text" type="TextInput" wysiwyg="true" language="true"/>
 	
-    <pinAlt label="Pin Description" type="TextInput" language="true" tooltip="A description of the draggable pin image used by screenreaders" mandatory="true"/>
+    <pinAlt label="Pin Description" type="TextInput" language="true" tooltip="A description of the draggable pin image used by screenreaders" defaultValue="" mandatory="true"/>
 
   <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
@@ -4695,7 +4693,7 @@
 	<fwdBtn label="Forward Button" type="TextInput" wysiwyg="true" language="true"/>
 	<copyBtn label="Copy Button" type="TextInput" wysiwyg="true" language="true"/>
 	<copyShortcutTxt label="Copy Instructions" type="TextInput" wysiwyg="true" language="true"/>
-	<yourAnswerString label="Your Answer Label" type="TextInput" language="true" mandatory="true"/>
+	<yourAnswerString label="Your Answer Label" type="TextInput" language="true" defaultValue="" mandatory="true"/>
 	<posAnswerString label="Other Answers Label" type="TextInput" wysiwyg="true" language="true"/>
 	<fromRangeString label="Slider Range Label" type="TextInput" wysiwyg="true" language="true"/>
 	<resultString label="Solution Label" type="TextInput" wysiwyg="true" language="true"/>
@@ -6283,41 +6281,41 @@
 		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></textbox><dragDropLabel menu="Interactivity" menuItem="Drag and Drop Labelling" hint="An interactive labelling exercise. Mark up an image with regions and add a title and description for each region." icon="icTagBlue" thumb="thumbs/labelling.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#draganddroplabelling" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_drag_and_drop_labelling" remove="true">
 
-    <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <text label="Page Text" type="TextArea" height="250" placeholder="Enter text for the page here"/>
-	<align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
+        <name label="Page Title" type="TextInput" wysiwyg="true"/>
+        <text label="Page Text" type="TextArea" height="250" placeholder="Enter text for the page here"/>
+        <align label="Align Text" options="Left,Right" type="ComboBox" data="Left,Right" defaultValue="Left" width="100"/>
 
-    <interactivity label="Interactivity" options="Describe,Match" type="ComboBox" data="Describe,Match" defaultValue="Describe" mandatory="true" width="100" tooltip="Describe: only allow labels to be dragged to the correct hotspot and then show description text. Match: labels can be dropped on any hotspot and answers are marked after clicking submit button (no description text shown)"/>
-	
-	<image type="group" label="Image">
-		<url label="File" type="media" placeholder="Select an image"/>
-		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
-        <imgWidth label="Size" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium"/>
-	</image>
-	
-	<highlight type="group" label="Hotspot Highlight">
-		<showHighlight label="Show Highlight" type="CheckBox" defaultValue="true"/>
-		<highlightColour label="Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
-	</highlight>
-	
-	<tryAgainTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-	<submitText label="Submit button label for Match" type="TextInput" wysiwyg="true" language="true"/>
-    <incomplete label="Incomplete" type="TextInput" wysiwyg="true" language="true"/>
-	
-	<labelPos label="Label Position" type="ComboBox" data="image,text" options="Below Image,Below Text" defaultValue="image" optional="true"/>
-	
-	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
+        <interactivity label="Interactivity" options="Describe,Match" type="ComboBox" data="Describe,Match" defaultValue="Describe" mandatory="true" width="100" tooltip="Describe: only allow labels to be dragged to the correct hotspot and then show description text. Match: labels can be dropped on any hotspot and answers are marked after clicking submit button (no description text shown)"/>
 
-    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
-      <qfHotspot label="Number of Hotspots" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
-      <qfButton type="quickfillbutton" optional="true"/>
-    </QFGroup>
-	
-    <newNodes>
-	  <hotspot><![CDATA[<hotspot name="Enter Label Title" text="" x="0" y="0" w="100" h="100" />]]></hotspot>
-    </newNodes>
+        <image type="group" label="Image">
+            <url label="File" type="media" placeholder="Select an image"/>
+            <tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
+            <imgWidth label="Size" options="Small,Medium,Large" type="ComboBox" data="Small,Medium,Large" defaultValue="Medium"/>
+        </image>
 
-  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+        <highlight type="group" label="Hotspot Highlight">
+            <showHighlight label="Show Highlight" type="CheckBox" defaultValue="true"/>
+            <highlightColour label="Colour" type="ColourPicker" defaultValue="0xFFFF00"/>
+        </highlight>
+
+        <tryAgainTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+        <submitText label="Submit button label for Match" type="TextInput" wysiwyg="true" language="true"/>
+        <incomplete label="Incomplete" type="TextInput" wysiwyg="true" language="true"/>
+
+        <labelPos label="Label Position" type="ComboBox" data="image,text" options="Below Image,Below Text" defaultValue="image" optional="true"/>
+
+        <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
+
+        <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
+            <qfHotspot label="Number of Hotspots" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfButton type="quickfillbutton" optional="true"/>
+        </QFGroup>
+
+        <newNodes>
+            <hotspot><![CDATA[<hotspot name="Enter Label Title" text="" x="0" y="0" w="100" h="100" />]]></hotspot>
+        </newNodes>
+
+    <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -6426,7 +6424,7 @@
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></dragDropLabel><embedDiv menu="Links / Feeds" menuItem="Embed Content" hint="A page for including any web page or embed code in your project." icon="icPageWhiteCodeRed" thumb="thumbs/embedDiv.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#embedcontent" wiki="https://xerte.org.uk/wiki/doku.php?id=linksfeeds_embedcontent_page" remove="true">
 
     <name type="TextInput" wysiwyg="true" label="Page Title"/>
-    <text label="Page Text" type="TextArea" height="150" placeholder="Enter text for the page here" condition="(windowWidth!='Full'&amp;&amp;windowWidth!=undefined)||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)" mandatory="true"/>
+    <text label="Page Text" type="TextArea" height="150" placeholder="Enter text for the page here" condition="(windowWidth!='Full'&amp;&amp;windowWidth!=undefined)||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)" defaultValue="" mandatory="true"/>
     <src label="Embed Code or URL" type="script" height="150"/>
 
     <layoutGroup label="Page Layout" type="group">
@@ -7709,8 +7707,8 @@
     <scoreTxt label="Score Label" type="TextInput" wysiwyg="true" divider="true" language="true" tooltip="where /c is the total number of correct answers available, /r is the number of right selections made and /w is the number of wrong selections made"/>
     <warning label="Warning Label" type="TextInput" wysiwyg="true" language="true"/>
     <again label="Try Again Label" type="TextInput" wysiwyg="true" language="true" tooltip="where /a is the number of attempts remaining"/>
-    <allGood label="All Correct Label" type="TextInput" wysiwyg="true" mandatory="true" language="true"/>
-    <allWrong label="All Wrong Label" type="TextInput" wysiwyg="true" mandatory="true" language="true" tooltip="where /c is the total number of correct answers available."/>
+    <allGood label="All Correct Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="" language="true"/>
+    <allWrong label="All Wrong Label" type="TextInput" wysiwyg="true" mandatory="true" defaultValue="" language="true" tooltip="where /c is the total number of correct answers available."/>
 	<allGood2 label="Incomplete Correct Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="" tooltip="where /c is the total number of correct answers available."/>
 	<btnLabel label="Submit Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Submit"/>
 
@@ -8621,7 +8619,7 @@
 	
 	<image type="group" label="Image">
 		<url label="File" type="media" placeholder="Select an image"/>
-		<imagesize label="Size" options="Small,Medium,Large" data="small,medium,large" mandatory="true" type="ComboBox" width="100"/>
+		<imagesize label="Size" options="Small,Medium,Large" data="small,medium,large" defaultValue="medium" mandatory="true" type="ComboBox" width="100"/>
 		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 	</image>
 	
@@ -12624,6 +12622,7 @@
     </textArea>
 
 	<judge label="Mark Answer" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result."/>
+    <required label="Require Answer" type="CheckBox" optional="true" defaultValue="true" tooltip="Require text to be entered in all text areas before answers can be submitted"/>
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
     <copyPaste label="Copy Button" type="CheckBox" defaultValue="true" optional="true" tooltip="Include a button that allows users to easily select &amp; copy their responses"/>
@@ -12637,8 +12636,6 @@
     <copypasteinfo2 label="Copy &amp; Paste Info" defaultValue="Note: Click the 'Select Text' button to highlight the instruction, question, your response and the feedback and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true" deprecated="This property is deprecated - use the 'Copy Button' optional property to add a button that copies responses to the clipboard"/>
     <copypasteinfo label="Copy &amp; Paste Info (Flash)" defaultValue="Note: the instruction and question, your response and the feedback, have been copied to the clipboard which you can paste (ctrl + v) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true" deprecated="This property is no longer required"/>
     <label label="Button Label" defaultValue="deprecated - for backward compatibility only" type="TextInput" wysiwyg="true" optional="true" deprecated="This property is no longer required"/>
-
-	<required label="Require Answer" type="CheckBox" optional="true" defaultValue="true" tooltip="Require text to be entered in all text areas before answers can be submitted"/>
 
 	<imgInfo type="group" label="Image" optional="true" deprecated="This optional property is deprecated as multiple text areas, with associated images, can now be added to the page. This image will continue to work on this page but this optional property will not be available on new model answer pages.">
 		<image label="File" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
@@ -12836,14 +12833,6 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="280" placeholder="Enter text for the page here" mandatory="true" defaultValue="" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
 
-    <collatedPagesGroup label="Collated Page Data" type="group">
-      <dataPageLink label="Include Link" type="CheckBox" condition="dataPageH=='true'||dataPageH==undefined" defaultValue="false" mandatory="true" tooltip="Include links to pages where the collated data originated from"/>
-      <collatedPages label="Page Types" type="group" mandatory="true" info="&lt;p&gt;Select the types of page to include in the collated data shown on this page.&lt;br/&gt;These page selections will be overridden if specific pages are added via the new 'Page Results' option below.&lt;/p&gt;">
-        <modelAnswer label="Model Answer" type="CheckBox" defaultValue="true" mandatory="true"/>
-        <textHighlight label="Highlight Text / Note Taking" type="CheckBox" defaultValue="false" mandatory="true"/>
-      </collatedPages>
-    </collatedPagesGroup>
-
     <layoutGroup label="Page Layout" type="group">
       <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" mandatory="true" conditionTrigger="true"/>
       <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
@@ -12865,28 +12854,35 @@
       <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
-    <dataGroup label="Customise results" type="group" optional="true" tooltip="Customise the type of data from viewed pages that will be shown on this page" info="Customise the data from viewed pages that will be shown on this on this page.">
-      <dataPageGroup label="Page" type="group" optional="true">
-        <dataPageH label="Title" type="CheckBox" conditionTrigger="true" optional="true" defaultValue="true"/>
-        <dataPageTxt label="Text" type="CheckBox" optional="true" defaultValue="false"/>
-        <dataPageFb label="Feedback" type="CheckBox" optional="true" defaultValue="true"/>
-        <dataPageTopTxt label="Text Above" type="CheckBox" optional="true" defaultValue="false"/>
-        <dataPageBottomTxt label="Text Below" type="CheckBox" optional="true" defaultValue="false"/>
-      </dataPageGroup>
-      <dataQuestionGroup label="Exercise" type="group" optional="true">
-        <dataQuestionGroup_modelAnswer type="group" label="Model Answer Pages" optional="true">
-          <dataQuestionH label="Titles" type="CheckBox" optional="true" defaultValue="true"/>
-          <dataQuestionTxt label="Prompt" type="CheckBox" optional="true" defaultValue="true"/>
-          <dataQuestionAnswer label="Response" type="CheckBox" optional="true" defaultValue="true"/>
-          <dataQuestionFb label="Feedback" type="CheckBox" optional="true" defaultValue="true"/>
-        </dataQuestionGroup_modelAnswer>
-        <dataQuestionGroup_textHighlight type="group" label="Highlight Text / Note Taking Pages" optional="true">
-          <dataQuestionH_textHighlight label="Titles" type="CheckBox" optional="true" defaultValue="true"/>
-          <dataQuestionTxt_textHighlight label="Initial Text" type="CheckBox" optional="true" defaultValue="true"/>
-          <dataQuestionAnswer_textHighlight label="Notes" type="CheckBox" optional="true" defaultValue="true"/>
-          <dataQuestionFb_textHighlight label="Suggested Text" type="CheckBox" optional="true" defaultValue="true"/>
-        </dataQuestionGroup_textHighlight>
-      </dataQuestionGroup>
+    <dataGroup label="Customise Results" type="group" optional="true" tooltip="Customise the type of data from viewed pages that will be shown on this page">
+      <dataPageLink label="Include Link" type="CheckBox" optional="true" condition="dataPageH=='true'||dataPageH==undefined" defaultValue="false" mandatory="true" tooltip="Include links to pages where the collated data originated from"/>
+      <collatedPages label="Page Types" type="group" optional="true" cols="2" info="&lt;p&gt;Select the types of page to include in the collated data shown on this page.&lt;br/&gt;These page selections will be overridden if specific pages are added via the new 'Page Results' option below.&lt;/p&gt;">
+        <modelAnswer label="Model Answer" type="CheckBox" defaultValue="true" optional="true"/>
+        <textHighlight label="Highlight Text / Note Taking" type="CheckBox" defaultValue="false" optional="true"/>
+      </collatedPages>
+      <dataGroup2 label="Displayed Data" type="group" optional="true" info="Select the data from each page that will be shown here.">
+        <dataPageGroup label="Page" type="group" optional="true">
+          <dataPageH label="Title" type="CheckBox" conditionTrigger="true" optional="true" defaultValue="true"/>
+          <dataPageTxt label="Text" type="CheckBox" optional="true" defaultValue="false"/>
+          <dataPageFb label="Feedback" type="CheckBox" optional="true" defaultValue="true"/>
+          <dataPageTopTxt label="Text Above" type="CheckBox" optional="true" defaultValue="false"/>
+          <dataPageBottomTxt label="Text Below" type="CheckBox" optional="true" defaultValue="false"/>
+        </dataPageGroup>
+        <dataQuestionGroup label="Exercise" type="group" optional="true">
+          <dataQuestionGroup_modelAnswer type="group" label="Model Answer Pages" optional="true">
+            <dataQuestionH label="Titles" type="CheckBox" optional="true" defaultValue="true"/>
+            <dataQuestionTxt label="Prompt" type="CheckBox" optional="true" defaultValue="true"/>
+            <dataQuestionAnswer label="Response" type="CheckBox" optional="true" defaultValue="true"/>
+            <dataQuestionFb label="Feedback" type="CheckBox" optional="true" defaultValue="true"/>
+          </dataQuestionGroup_modelAnswer>
+          <dataQuestionGroup_textHighlight type="group" label="Highlight Text / Note Taking Pages" optional="true">
+            <dataQuestionH_textHighlight label="Titles" type="CheckBox" optional="true" defaultValue="true"/>
+            <dataQuestionTxt_textHighlight label="Initial Text" type="CheckBox" optional="true" defaultValue="true"/>
+            <dataQuestionAnswer_textHighlight label="Notes" type="CheckBox" optional="true" defaultValue="true"/>
+            <dataQuestionFb_textHighlight label="Suggested Text" type="CheckBox" optional="true" defaultValue="true"/>
+          </dataQuestionGroup_textHighlight>
+        </dataQuestionGroup>
+      </dataGroup2>
     </dataGroup>
 
     <unviewed label="Include Unviewed Pages" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true" tooltip="Include data from unviewed pages"/>
@@ -13733,6 +13729,9 @@
 
     <feedback label="Feedback" type="textArea" height="120" defaultValue="" placeholder="Enter feedback here"/>
 
+    <!-- disableprinting used to be an optional property but has been replaced with the downloadGroup options - these are not shown when disable PDF export is used in older projects to avoid confusion-->
+    <disableprinting label="Disable PDF Export" type="CheckBox" defaultValue="false" tooltip="Remove the button to download a PDF of the graph that appears once all answers have been submitted" conditionTrigger="true" condition="diagram!='true'"/>
+
     <textTopGroup label="Text Above Panel" type="group" optional="true">
         <textTop label="Text" type="TextArea" height="100" optional="true"/>
         <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
@@ -13742,6 +13741,12 @@
         <textBottom label="Text" type="TextArea" height="100" optional="true"/>
         <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
+
+    <downloadGroup label="Download Button" type="group" optional="true" condition="disableprinting==undefined" tooltip="Include a button that allows users to download the page feedback">
+        <showDownload label="Include button" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="disableprinting==undefined"/>
+        <filename label="Filename (without extension)" type="TextInput" defaultValue="" optional="true" condition="disableprinting==undefined&amp;&amp;showDownload!='false'" tooltip="By default, the downloaded file will use the page title as the file name. Enter a different file name here if required."/>
+        <fileOrientation label="File orientation" type="ComboBox" data="portrait,landscape" options="Portrait,Landscape" defaultValue="portrait" optional="true" condition="disableprinting==undefined&amp;&amp;showDownload!='false'" tooltip="Orientation of downloaded file"/>
+    </downloadGroup>
 
     <showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true" deprecated="This optional property is now deprecated"/>
 
@@ -13766,8 +13771,6 @@
 		<colour label="Colour" type="colourPicker" defaultValue="0x000000" optional="true" condition="diagram!='true'" tooltip="The colour used for this page on the graph"/>
 		<key label="Show Key" type="CheckBox" defaultValue="true" optional="true" condition="diagram!='true'" tooltip="Show a key listing page names and colours"/>
 	</graph>
-
-    <disableprinting label="Disable PDF Export" type="CheckBox" optional="true" defaultValue="false" tooltip="Remove the button to download a PDF of the graph that appears once all answers have been submitted" condition="diagram!='true'"/>
 
     <layout label="Layout" type="group" optional="true">
       <list label="Question Layout" type="ComboBox" options="One Per Page,List in Pages,List All" data="false,true,all" optional="true" defaultValue="false" conditionTrigger="true"/>
@@ -13918,6 +13921,7 @@
     <newNodes>
       <opinionQuestion><![CDATA[<opinionQuestion  name="Question" prompt="" scale="false" classWeight="1" interactivity="slider" />]]></opinionQuestion>
       <classFeedback><![CDATA[<classFeedback name="Enter Feedback Title" minScore="0" maxScore="50" feedbackTxt="" />]]></classFeedback>
+      <!--<classData><![CDATA[<classData name="Enter Data Title" id="Enter Data ID" score="0" />]]></classData>-->
     </newNodes>
 
   <imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
@@ -15120,7 +15124,7 @@
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></raptivity><results menu="Tracking / xAPI" menuItem="Results Page" hint="A page displaying a summary of the results of the interactions." icon="icResults" thumb="thumbs/results.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#resultspage" wiki="https://xerte.org.uk/wiki/doku.php?id=trackingxapi_results_page" remove="true">
 
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
-        <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="(panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||removeTxt!='true'" mandatory="true"/>
+        <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="(panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||removeTxt!='true'" defaultValue="" mandatory="true"/>
 
         <resultmode label="Results Mode" type="ComboBox" options="Minimal,Normal,Full" data="minimal-results,normal-results,full-results" conditionTrigger="true"/>
 
@@ -17752,7 +17756,7 @@
 	</initialGroup>
 
 	<feedbackGroup type="group" label="Feedback Text" tooltip="Feedback text that appears after answers are submitted">
-	  <feedbackTitle label="Title" type="TextInput" wysiwyg="true" condition="(feedbackPos=='panelA'||feedbackPos=='panelB') || download=='true'" defaultValue="" mandatory="true" tooltip="Title to appear on tab and in downloaded document"/>
+	  <feedbackTitle label="Title" type="TextInput" wysiwyg="true" condition="(feedbackPos=='panelA'||feedbackPos=='panelB'||feedbackPos==undefined) || download=='true'" defaultValue="" mandatory="true" tooltip="Title to appear on tab and in downloaded document"/>
 	  <feedback label="Text" type="TextArea" height="100" defaultValue="" placeholder="Enter feedback here" mandatory="true"/>
 	  <feedbackPos label="Position" type="combobox" options="Panel 1,Panel 2,Lightbox" data="panelA,panelB,lightbox" conditionTrigger="true" defaultValue="panelB" mandatory="true" tooltip="The position of the feedback text on the screen"/>
 	</feedbackGroup>
@@ -17940,73 +17944,53 @@
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></textHighlight><textMatch menu="Interactivity" menuItem="Matching Texts" hint="An interaction for the user to match chunks of text." icon="icConnect" thumb="thumbs/textMatch.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#matchingtexts" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_matching_texts_page" remove="true">
 
-    <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <pageText label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="(panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)" mandatory="true"/>
-    <text label="Question" type="TextArea" height="100" placeholder="Enter text for the page here"/>
-    <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here"/>
+        <name label="Page Title" type="TextInput" wysiwyg="true"/>
+        <text label="Instructions" type="TextArea" height="100" placeholder="Enter text for the page here"/>
+        <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here"/>
 
-	<maxAttempts label="Attempts Before Hint" type="NumericStepper" min="1" max="99" step="1" defaultValue="3" mandatory="true"/>
+        <maxAttempts label="Attempts Before Hint" type="NumericStepper" min="1" max="99" step="1" defaultValue="3" mandatory="true"/>
 
-    <layoutGroup label="Page Layout" type="group">
-        <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Full" conditionTrigger="true" mandatory="true"/>
-        <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
-        <panelHeight label="Panel Height" options="Fill Space,Fit Content" type="ComboBox" data="fill,fit" defaultValue="fill" condition="textTop==undefined&amp;&amp;textBottom==undefined&amp;&amp;panelStyle=='false'&amp;&amp;((panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||removeTxt!='false')"/>
-        <align label="Panel Position" options="Right,Left" type="ComboBox" data="Right,Left" defaultValue="Right" condition="panelWidth!='Full'&amp;&amp;panelWidth!=undefined"/>
-        <panelStyle label="Remove Panel Style" type="CheckBox" defaultValue="true" conditionTrigger="true"/>
-        <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'||panelWidth==undefined"/>
-    </layoutGroup>
+        <correctMessage label="Correct Message" type="TextInput" wysiwyg="true" divider="true" language="true"/>
+        <submitBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
+        <submitBtnTip label="Check Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
+        <submitBtnWidth label="Check Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="80" language="true" deprecated="Width is now set automatically"/>
 
-    <textTopGroup label="Text Above Panel" type="group" optional="true">
-        <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
-        <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
-    </textTopGroup>
+        <allWrong label="All Wrong Text" type="TextInput" wysiwyg="true" language="true"/>
+        <score label="{i} out of {n} Text" type="TextInput" wysiwyg="true" language="true"/>
+        <allWrongTracking label="All Wrong Text Tracking" type="TextInput" wysiwyg="true" language="true"/>
+        <scoreTracking label="{i} out of {n} Text Tracking" type="TextInput" wysiwyg="true" language="true"/>
+        <incomplete label="Incomplete Text" type="TextInput" wysiwyg="true" language="true"/>
 
-    <textBelowGroup label="Text Below Panel" type="group" optional="true">
-        <textBottom label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
-        <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
-    </textBelowGroup>
+        <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
+            <subject verification="^.+$" label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." conditionTrigger="true" optional="true"/>
+            <additionalInstructions label="Additional Instructions" type="text" tooltip="You can leave this blank or provide additional instructions or requests on how the generated result should look. Please note that certain instructions may break the structure of the generated response. If this occurs, change the wording and attempt to generate again." wysiwyg="true" height="50" placeholder="Write your instructions here..." optional="true"/>
+            <uploadPrompt label="Information Source" options="None (uses model base knowledge), All Context Resources,Learning Object (Limited Scope), Single File (Limited Scope)" type="comboBox" data="false,context,lo,true" defaultValue="false" tooltip="Select &#x2018;All Context Resources&#x2019; when you wish to use all of the sources in the context resources table.  Select  'Learning Object (Limited Scope)' when you wish to use the latest preview of the learning object as the single source for generating this content. Select &#x2018;Single File (Limited Scope)&#x2019; when you wish to use one uploaded file, video or audio link, as the only source (you will be prompted to upload it if it has not already been added). Please ensure the source content corresponds to the requested subject. If relevant information is not found in the sources the AI will attempt to supplement with its own knowledge." conditionTrigger="true" optional="true"/>
+            <textSnippet label="Text Snippet" type="text" tooltip="Provide the text snippet you wish the model to use as a source for generating the interactivity." condition="uploadPrompt=='trueText'" optional="true"/>
+            <file label="File / Video Link" type="mediaCorpus" defaultValue="Select a file or enter a video link here..." tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation. If you've selected a file or used a video link which has not yet been processed, you may have to wait up to a few minutes for processing to finish, especially for larger videos." condition="uploadPrompt=='true'" optional="true"/>
+            <length label="Sentence Length" verification="^\d+$" type="TextInput" wysiwyg="true" defaultValue="20" tooltip="Approximate length of sentences. For example, 30-50 words." optional="true"/>
+            <nrs label="Number of Sentences" verification="^\d+$" type="TextInput" tooltip="Specify the number of two-part sentences to generate." wysiwyg="true" defaultValue="3" optional="true"/>
+            <infoGenSettings advanced="true" label="For this page, the following settings will be used instead of those assigned on the learning-object level:" type="info" optional="true"/>
+            <aiSelector advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" overrideField="baseAiSettings" conditionTrigger="true" optional="true"/>
+            <range advanced="true" label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education, or other qualifier used by the AI to determine the appropriate reading level and linguistic complexity of the generated language. Examples include students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, or A2 level Dutch speakers, etc." defaultValuePH="Intermediate English B2" placeholder="Enter reading level. Defaults to 'Intermediate English, B2'" overrideField="baseRange" optional="true"/>
+            <eduLevel advanced="true" label="Education Level" type="TextInput" tooltip="The education level for which the content is intended. Examples: University students, HBO students in the Netherlands, Middle school students who have already learned the basics, etc." defaultValuePH="University" placeholder="Enter educational level. Defaults to 'University.'" overrideField="baseEduLevel" optional="true"/>
+            <tone advanced="true" label="Tone and Style" type="TextInput" defaultValuePH="Semi-formal" placeholder="Enter an indicator of tone. Defaults to 'Semi-formal.'" tooltip="Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive (as well as combinations of these). Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." overrideField="baseTone" optional="true"/>
+            <aiButton type="aibutton" optional="true"/>
+            <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
+        </AIGroup>
 
-    <correctMessage label="Correct Message" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-    <submitBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
-    <submitBtnTip label="Check Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>	
-    <submitBtnWidth label="Check Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="80" language="true" deprecated="Width is now set automatically"/>	
+        <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
+            <qfSentence label="Number of Sentences" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfButton type="quickfillbutton" optional="true"/>
+        </QFGroup>
 
-	<allWrong label="All Wrong Text" type="TextInput" wysiwyg="true" language="true"/>
-	<score label="{i} out of {n} Text" type="TextInput" wysiwyg="true" language="true"/>
-	<allWrongTracking label="All Wrong Text Tracking" type="TextInput" wysiwyg="true" language="true"/>
-	<scoreTracking label="{i} out of {n} Text Tracking" type="TextInput" wysiwyg="true" language="true"/>
-	<incomplete label="Incomplete Text" type="TextInput" wysiwyg="true" language="true"/>
+        <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
+        <markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true"/>
 
-	<AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
-        <subject verification="^.+$" label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." conditionTrigger="true" optional="true"/>
-        <additionalInstructions label="Additional Instructions" type="text" tooltip="You can leave this blank or provide additional instructions or requests on how the generated result should look. Please note that certain instructions may break the structure of the generated response. If this occurs, change the wording and attempt to generate again." wysiwyg="true" height="50" placeholder="Write your instructions here..." optional="true"/>
-        <uploadPrompt label="Information Source" options="None (uses model base knowledge), All Context Resources,Learning Object (Limited Scope), Single File (Limited Scope)" type="comboBox" data="false,context,lo,true" defaultValue="false" tooltip="Select &#x2018;All Context Resources&#x2019; when you wish to use all of the sources in the context resources table.  Select  'Learning Object (Limited Scope)' when you wish to use the latest preview of the learning object as the single source for generating this content. Select &#x2018;Single File (Limited Scope)&#x2019; when you wish to use one uploaded file, video or audio link, as the only source (you will be prompted to upload it if it has not already been added). Please ensure the source content corresponds to the requested subject. If relevant information is not found in the sources the AI will attempt to supplement with its own knowledge." conditionTrigger="true" optional="true"/>
-        <textSnippet label="Text Snippet" type="text" tooltip="Provide the text snippet you wish the model to use as a source for generating the interactivity." condition="uploadPrompt=='trueText'" optional="true"/>
-        <file label="File / Video Link" type="mediaCorpus" defaultValue="Select a file or enter a video link here..." tooltip="Select a video, audio, powerpoint, PDF or other text file to be used for content generation. If you've selected a file or used a video link which has not yet been processed, you may have to wait up to a few minutes for processing to finish, especially for larger videos." condition="uploadPrompt=='true'" optional="true"/>
-        <length label="Sentence Length" verification="^\d+$" type="TextInput" wysiwyg="true" defaultValue="20" tooltip="Approximate length of sentences. For example, 30-50 words." optional="true"/>
-        <nrs label="Number of Sentences" verification="^\d+$" type="TextInput" tooltip="Specify the number of two-part sentences to generate." wysiwyg="true" defaultValue="3" optional="true"/>
-        <infoGenSettings advanced="true" label="For this page, the following settings will be used instead of those assigned on the learning-object level:" type="info" optional="true"/>
-        <aiSelector advanced="true" label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" overrideField="baseAiSettings" conditionTrigger="true" optional="true"/>
-        <range advanced="true" label="Reading Level" type="TextInput" tooltip="The estimated age, grade, education, or other qualifier used by the AI to determine the appropriate reading level and linguistic complexity of the generated language. Examples include students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, or A2 level Dutch speakers, etc." defaultValuePH="Intermediate English B2" placeholder="Enter reading level. Defaults to 'Intermediate English, B2'" overrideField="baseRange" optional="true"/>
-        <eduLevel advanced="true" label="Education Level" type="TextInput" tooltip="The education level for which the content is intended. Examples: University students, HBO students in the Netherlands, Middle school students who have already learned the basics, etc." defaultValuePH="University" placeholder="Enter educational level. Defaults to 'University.'" overrideField="baseEduLevel" optional="true"/>
-        <tone advanced="true" label="Tone and Style" type="TextInput" defaultValuePH="Semi-formal" placeholder="Enter an indicator of tone. Defaults to 'Semi-formal.'" tooltip="Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive (as well as combinations of these). Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." overrideField="baseTone" optional="true"/>
-        <aiButton type="aibutton" optional="true"/>
-        <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
-    </AIGroup>
+        <newNodes>
+            <sentence><![CDATA[<sentence p1="" p2="" hint="" name="Sentence" />]]></sentence>
+        </newNodes>
 
-    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
-         <qfSentence label="Number of Sentences" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
-         <qfButton type="quickfillbutton" optional="true"/>
-    </QFGroup>
-
-	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
-    <markEnd label="Mark at End" type="CheckBox" defaultValue="true" optional="true"/>
-	
-    <newNodes>
-      <sentence><![CDATA[<sentence p1="" p2="" hint="" name="Sentence" />]]></sentence>
-    </newNodes>
-
-  <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
+    <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
 		<narration label="Audio File" type="media" defaultValue="" placeholder="Select an audio file" optional="true"/>
 		<narrationTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will be added to the audio bar when transcript text is included"/>    
 		<playNarration label="Auto-Play" type="CheckBox" defaultValue="false" optional="true" tooltip="Automatically play the audio when the page is viewed. Note: some browsers prevent media from auto-playing"/>
@@ -18112,19 +18096,19 @@
 	</lightboxGroup><pageHeaderGroup type="group" label="Header Colours" optional="true" tooltip="Change the header background colour and/or the colour of the titles for this page." common="true">
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
-    </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></textMatch><sentence menuItem="Sentence" icon="icPageWhiteText" remove="true">
-    <p1 label="Part 1" type="TextArea" height="50" placeholder="Enter part one of the sentence here"/>
-    <p2 label="Part 2" type="TextArea" height="50" placeholder="Enter part two of the sentence here"/>
-	<hint label="Hint" type="TextArea" height="50" placeholder="Enter a hint here"/>
-	
-	<audioGroup type="group" label="Audio Feedback" optional="true" tooltip="Add an audio player to this label, which appears when marked as correct">
-		<audioFeedback label="File" type="media" optional="true" placeholder="Select an audio file"/>
-		<audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
-	</audioGroup>
-	
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Sentence" wysiwyg="false" tooltip="The label is read by screen readers when the drop area (containing text 1) is in focus. Brief, unique and meaningful labels will ensure screen reader users understand where the label they have selected will be dropped."/>
+    </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></textMatch><sentence menuItem="Sentence" icon="icPageWhiteText" remove="true" max="5">
+        <p1 label="Part 1" type="TextArea" height="50" placeholder="Enter part one of the sentence here"/>
+        <p2 label="Part 2" type="TextArea" height="50" placeholder="Enter part two of the sentence here"/>
+        <hint label="Hint" type="TextArea" height="50" placeholder="Enter a hint here"/>
 
-  <imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
+        <audioGroup type="group" label="Audio Feedback" optional="true" tooltip="Add an audio player to this label, which appears when marked as correct">
+            <audioFeedback label="File" type="media" optional="true" placeholder="Select an audio file"/>
+            <audioTranscript label="Transcript" type="textArea" height="100" defaultValue="" optional="true" tooltip="A transcript button will appear on the audio player when text is added here"/>
+        </audioGroup>
+
+        <name label="Label" type="TextInput" mandatory="true" defaultValue="Sentence" wysiwyg="false" tooltip="The label is read by screen readers when the drop area (containing text 1) is in focus. Brief, unique and meaningful labels will ensure screen reader users understand where the label they have selected will be dropped."/>
+
+    <imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
 		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
 		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
 		<imgGenApi label="Service" type="comboBox_imagegen" defaultValue="dalle3" width="120" optional="true" conditionTrigger="true" tooltip="Dalle2: Attempt to generate the specified number of images based on the given descriptions using an AI model; Dalle3: Attempt to generate a single image based on the given description using an AI model." condition="serviceType=='generate' &amp;&amp; hasrole('aiuser')"/>
@@ -18932,11 +18916,11 @@
 
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="false" divider="true" language="true"/>
     <correctAnswersLabel label="Correct Answers Label" type="TextInput" wysiwyg="false" language="true"/>
-    <otherCorrectAnswersLabel label="Other Answers Label" type="TextInput" wysiwyg="false" language="true" mandatory="true"/>
+    <otherCorrectAnswersLabel label="Other Answers Label" type="TextInput" wysiwyg="false" language="true" defaultValue="" mandatory="true"/>
     <passed label="Correct Text" type="TextInput" wysiwyg="false" language="true"/>
     <failed label="Incorrect Text" type="TextInput" wysiwyg="false" language="true"/>
 	<attemptLabel label="Attempt Label" type="TextInput" wysiwyg="false" language="true"/>
-	<noAttemptTxt label="No attempt Text" type="TextInput" wysiwyg="false" language="true" mandatory="true"/>
+	<noAttemptTxt label="No attempt Text" type="TextInput" wysiwyg="false" language="true" defaultValue="" mandatory="true"/>
     <checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="false" language="true"/>
 	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that each text field is labelled and spoken as Answer 1, Answer 2 etc."/>
 
@@ -19074,7 +19058,7 @@
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></topXQ><optionXQ menuItem="Answer" icon="icBullet">
         <name label="Label" type="TextInput" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make answers easier to locate for editing at a later date."/>
-        <answer label="Answer" type="TextInput" wysiwyg="false" mandatory="true" placeholder="Enter an answer option here" tooltip="A comma-separated list of all possible answers for this item"/>
+        <answer label="Answer" type="TextInput" wysiwyg="false" defaultValue="" mandatory="true" placeholder="Enter an answer option here" tooltip="A comma-separated list of all possible answers for this item"/>
     <imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
 		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
 		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>

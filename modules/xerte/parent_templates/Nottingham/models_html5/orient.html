@@ -89,7 +89,7 @@
 
             // add a panel containing an image, video or audio player to the page
             if (x_currentPageXML.getAttribute("url") != null && x_currentPageXML.getAttribute("url") != "") {
-                const url = x_currentPageXML.getAttribute("url");
+                const url = x_currentPageXML.getAttribute("url").trim();
                 const fileExt = url.split('.').pop().toLowerCase();
                 const tip = x_currentPageXML.getAttribute("tip");
                 const audioImg = x_currentPageXML.getAttribute("audioImg");

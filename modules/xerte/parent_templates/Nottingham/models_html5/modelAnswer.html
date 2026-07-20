@@ -135,7 +135,7 @@
 						names.push(this.getAttribute("name"));
 					} else {
 						// NB: names MUST be a string
-						names.push((string)(names.length + 1));
+						names.push(String(names.length + 1));
 					}
 					prompts.push(this.getAttribute("prompt"));
 					rows.push(Number(this.getAttribute("rows")));

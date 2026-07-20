@@ -213,6 +213,10 @@
 	padding:initial !important;
 }
 
+#targetHolder select[disabled] {
+	appearance: none;
+}
+
 /*gap fill: remove red crosses when show answers selected*/
 #targetHolder .target.answerShown+span:before, #targetHolder select[disabled].answerShown+span:before, #targetHolder input.answerShown+span:before {
 	content:"";

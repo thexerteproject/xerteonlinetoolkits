@@ -56,7 +56,7 @@
   <errorQuestions noQ="No questions have been added" noA="No answer options have been added" />
   
   <errorFlash label="You need to install the Flash Player to view this content." description="Get the Flash Player"/>
-  
+	
   <authorSupport label="Author Support is ON: text shown in red will not appear in live projects."/>
   
   <hiddenPage label="This page will be hidden in live projects" hidden="This page is currently hidden in live projects" shown="This page is currently shown in live projects" until="Hide until" from="Hide from"/>
@@ -122,6 +122,7 @@
   
   <fetchResults label="Fetching results..."/>
   <loadError label="Error loading"/>
+  <downloadError label="Download error"/>
   <noResults label="No results returned"/>
   <noData label="No page data"/>
 
@@ -151,7 +152,7 @@
 	  <responsiveTxt label="Responsive text" tip="When responsive text is turned on, the text size will adapt to the size of the screen you are viewing this project on. If you use the browser zoom to increase the text size then you may get a better experience if you turn responsive text off."/>
   </colourChanger>
 
-  <resources label="Resources" text="{x} Resources Available" completeText="{y}/{x} Resources Complete">
+  <resources label="Resources" text="{x} Resources Available" textSingle="{x} Resource Available" completeText="{y}/{x} Resources Complete">
 	  <table title="Title" description="Description" actions="Actions" complete="Mark as complete" downloadBtn="Download resource" viewBtn="Open resource"/>
 	  <warning suppress="Don't show this message again" continue="Continue anyway" review="Review the resources"/>
   </resources>

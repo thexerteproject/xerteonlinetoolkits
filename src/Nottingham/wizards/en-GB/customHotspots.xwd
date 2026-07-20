@@ -68,7 +68,7 @@
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true"/>
     <restart label="Restart Button Text" type="TextInput" wysiwyg="true" language="true"/>
 	
-    <pinAlt label="Pin Description" type="TextInput" language="true" tooltip="A description of the draggable pin image used by screenreaders" mandatory="true"/>
+    <pinAlt label="Pin Description" type="TextInput" language="true" tooltip="A description of the draggable pin image used by screenreaders" defaultValue="" mandatory="true"/>
 
   </customHotspots>
 

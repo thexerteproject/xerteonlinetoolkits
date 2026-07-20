@@ -220,7 +220,7 @@
 			if(x_currentPageXML.getAttribute('hicolHover') !== null && x_currentPageXML.getAttribute('hicolHover') !== undefined){
 				
 				$(".listItem").css({
-					'background-color': x_currentPageXML.getAttribute('hicolback') !== null ? backgroundColor : 'auto'
+					'background-color': x_currentPageXML.getAttribute('hicolback') !== null ? x_currentPageXML.getAttribute('hicolback') : 'auto'
 				})
 				.on({
 					mouseenter: function (event) {
@@ -230,7 +230,7 @@
 					},
 					mouseleave: function (event) {
 						$( this ).css({
-							'background-color': x_currentPageXML.getAttribute('hicolback') !== null ? backgroundColor : 'auto'
+							'background-color': x_currentPageXML.getAttribute('hicolback') !== null ? x_currentPageXML.getAttribute('hicolback') : 'auto'
 						})
 					}
 				})

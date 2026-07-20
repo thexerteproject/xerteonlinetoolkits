@@ -1,84 +1,83 @@
 /* dragDropLabel.html */
 
-    #textHolder {
-        margin-bottom:	10px;
-    }
+#textHolder {
+    margin-bottom:	10px;
+}
 
-    .borderTop {
-        border-top:		1px solid gray;
-        margin-top:		20px;
-        padding-top:	20px;
-    }
-	
-	#mainText {
-		margin-bottom: 1em;
-	}
+.borderTop {
+    border-top:		1px solid gray;
+    margin-top:		20px;
+    padding-top:	20px;
+}
 
-    #mainPanel {
-        position:	relative;
-    }
+#mainText {
+    margin-bottom: 1em;
+}
 
-    #mainPanel #labelHolder {
-        margin-top:	10px;
-    }
+#mainPanel {
+    position:	relative;
+}
 
-    #dragDropHolderLabelling #labelHolder {
-        clear: both;
-        float: left;
-    }
+#mainPanel #labelHolder {
+    margin-top:	10px;
+}
 
-    #labelHolder .label {
-        display:	inline-block;
-        cursor:		pointer;
-        padding:	5px;
-        margin:		10px;
-    }
+#dragDropHolderLabelling #labelHolder {
+    clear: both;
+    float: left;
+}
 
-    #labelHolder .label.correct .result, #labelHolder .label.incorrect .result {
-		padding-left: 0.5em;
-	}
+#labelHolder .label {
+    display:	inline-block;
+    cursor:		pointer;
+    padding:	5px;
+    margin:		10px;
+}
 
-    #labelHolder .label.focus {
-        border:		2px solid yellow;
-    }
+#labelHolder .label.correct .result, #labelHolder .label.incorrect .result {
+    padding-left: 0.5em;
+}
 
-    #labelHolder .label.selected {
-        border:		2px solid green;
-    }
+#labelHolder .label.focus {
+    border:		2px solid yellow;
+}
 
-    #buttonHolder {
-        margin   : 10px;
-        float    : right;
-        position : absolute;
-        bottom   : 0;
-        right    : 0;
-    }
+#labelHolder .label.selected {
+    border:		2px solid green;
+}
 
-    #targetHolder {
-        position:	absolute;
-        top:		0;
-        left:		0;
-    }
+#buttonHolder {
+    margin   : 10px;
+    float    : right;
+    position : absolute;
+    bottom   : 0;
+    right    : 0;
+}
 
-    #pageContents #targetHolder .target {
-        position: absolute;
-        cursor: pointer;
-        padding: 0 !important;
-    }
+#targetHolder {
+    position:	absolute;
+    top:		0;
+    left:		0;
+}
 
-    #targetHolder .target.border {
-        border:	1px solid;
-    }
+#pageContents #targetHolder .target {
+    position: absolute;
+    cursor: pointer;
+    padding: 0 !important;
+}
 
-    #pageContents hr {
-        border: none;
-        background-color: #CCCCCC;
-        height: 1px;
-    }
-	
-	#infoHolder {
-		margin-top: 1em;
-	}
-	
-	
+#targetHolder .target.border {
+    border:	1px solid;
+}
+
+#pageContents hr {
+    border: none;
+    background-color: #CCCCCC;
+    height: 1px;
+}
+
+#infoHolder {
+    margin-top: 1em;
+}
+
 

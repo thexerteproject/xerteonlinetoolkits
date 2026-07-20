@@ -1,36 +1,36 @@
 <wizard menus="Interactivity">
-  <pageWizard remove="true" duplicate="false">
-    <newNodes>
-      <categories><![CDATA[<categories name="Enter Page Title" text="" feedback="" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly" incomplete="Complete the exercise."/>]]></categories>
-    </newNodes>
-  </pageWizard>
+    <pageWizard remove="true" duplicate="false">
+        <newNodes>
+            <categories><![CDATA[<categories name="Enter Page Title" text="" feedback="" buttonLabel="Check Answers" feedbackScore="You have placed {i} out of {n} labels correctly" incomplete="Complete the exercise."/>]]></categories>
+        </newNodes>
+    </pageWizard>
 
-  <!-- CATEGORIES INTERACTION========================= -->
-  <categories menu="Interactivity" menuItem="Categories" hint="An interaction allowing the user to sort items into a number of categories." icon="icLayers" remove="true" thumb="thumbs/categories.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#categories" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_categories_page" >
+    <!-- CATEGORIES INTERACTION========================= -->
+    <categories menu="Interactivity" menuItem="Categories" hint="An interaction allowing the user to sort items into a number of categories." icon="icLayers" remove="true" thumb="thumbs/categories.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#categories" wiki="https://xerte.org.uk/wiki/doku.php?id=interactivity_categories_page" >
 
-    <name label="Page Title" type="TextInput" wysiwyg="true" />
-    <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here"/>
-    <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here"/>
+        <name label="Page Title" type="TextInput" wysiwyg="true" />
+        <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here"/>
+        <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here"/>
 
-	<buttonLabel label="Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
-	<buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="120" width="100" language="true" deprecated="Width is now set automatically"/>
-	<feedbackScore label="Score Feedback" type="TextInput" wysiwyg="true" language="true" />
-    <incomplete label="Incomplete Text" type="TextInput" wysiwyg="true" language="true" defaultValue="Complete the exercise." mandatory="true"/>
+        <buttonLabel label="Button Label" type="TextInput" wysiwyg="true" divider="true" language="true" />
+        <buttonWidth label="Button Width" type="NumericStepper" min="100" max="300" step="10" defaultValue="120" width="100" language="true" deprecated="Width is now set automatically"/>
+        <feedbackScore label="Score Feedback" type="TextInput" wysiwyg="true" language="true" />
+        <incomplete label="Incomplete Text" type="TextInput" wysiwyg="true" language="true" defaultValue="Complete the exercise." mandatory="true"/>
 
-    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
-	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result."/>
+        <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
+        <judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result."/>
 
-    <newNodes>
-      <category><![CDATA[<category name="Enter Category Name"/>]]></category>
-    </newNodes>
+        <newNodes>
+            <category><![CDATA[<category name="Enter Category Name"/>]]></category>
+        </newNodes>
 
-    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
-      <qfCategory label="Number of Categories" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
-      <qfItem label="Number of Items per Category" type="TextInput" wysiwyg="true" defaultValue = "5" optional="true"/>
-      <qfButton type="quickfillbutton" optional="true"/>
-    </QFGroup>
+        <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
+            <qfCategory label="Number of Categories" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfItem label="Number of Items per Category" type="TextInput" wysiwyg="true" defaultValue = "5" optional="true"/>
+            <qfButton type="quickfillbutton" optional="true"/>
+        </QFGroup>
 
-  	<AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
+        <AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
             <categories label="Categories" verification="^(\s*[^,]+\s*,\s*)+[^,]+\s*$" type="TextInput" tooltip = "List each category separated by a comma (,). Categories may be single words or sentences (as long as they don't contain commas). Examples: 'Mammals, birds, fish', 'birds endemic to the Netherlands, common birds found in Europe, birds found exclusively outside of Europe'." defaultValue = "" placeholder="Enter categories here. E.g. Category 1, Category 2..." optional="true"/>
             <additionalInstructions label="Additional Instructions" type="text" tooltip="You can leave this blank or provide additional instructions or requests on how the generated result should look. Please note that certain instructions may break the structure of the generated response. If this occurs, change the wording and attempt to generate again." wysiwyg="true" height="50" placeholder="Write your instructions here..." optional="true"/>
             <uploadPrompt label="Information Source" options="None (uses model base knowledge), All Context Resources,Learning Object (Limited Scope), Single File (Limited Scope)" type="comboBox" data="false,context,lo,true" defaultValue="false" tooltip="Select ‘All Context Resources’ when you wish to use all of the sources in the context resources table.  Select  'Learning Object (Limited Scope)' when you wish to use the latest preview of the learning object as the single source for generating this content. Select ‘Single File (Limited Scope)’ when you wish to use one uploaded file, video or audio link, as the only source (you will be prompted to upload it if it has not already been added). Please ensure the source content corresponds to the requested subject. If relevant information is not found in the sources the AI will attempt to supplement with its own knowledge." conditionTrigger="true" optional="true"/>
@@ -44,21 +44,21 @@
             <tone advanced="true" label="Tone and Style" type="TextInput" defaultValue="" placeholder="Enter an indicator of tone. Defaults to 'Semi-formal.'" tooltip = "Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive (as well as combinations of these). Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." overrideField="baseTone" optional="true"/>
             <aiButton type="aibutton" optional="true"/>
             <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
-      </AIGroup>
-  </categories>
+        </AIGroup>
+    </categories>
 
-  <category menuItem="Category" icon="icGroup" remove="true">
+    <category menuItem="Category" icon="icGroup" remove="true">
 
-    <name label="Category Name" type="TextInput" wysiwyg="true"/>
+        <name label="Category Name" type="TextInput" wysiwyg="true"/>
 
-    <newNodes>
-      <item><![CDATA[<item name="Enter Item Text"/>]]></item>
-    </newNodes>
+        <newNodes>
+            <item><![CDATA[<item name="Enter Item Text"/>]]></item>
+        </newNodes>
 
-  </category>
+    </category>
 
-  <item menuItem="Item" icon="icBullet">
-    <name label="Item Text" type="TextInput" wysiwyg="true"/>
-  </item>  
-  
+    <item menuItem="Item" icon="icBullet">
+        <name label="Item Text" type="TextInput" wysiwyg="true"/>
+    </item>
+
 </wizard>

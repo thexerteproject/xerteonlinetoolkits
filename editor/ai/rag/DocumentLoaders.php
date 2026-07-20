@@ -250,8 +250,13 @@ class PptxLoader implements DocumentLoader {
         while (($xml_index = $zip->locateName("ppt/slides/slide{$slide_number}.xml")) !== false) {
             $xml_data = $zip->getFromIndex($xml_index);
             $dom = new DOMDocument();
-            // Load XML with flags to suppress warnings and handle entities.
-            $loaded = $dom->loadXML($xml_data, LIBXML_NOENT | LIBXML_XINCLUDE | LIBXML_NOERROR | LIBXML_NOWARNING);
+	    // Load XML with flags to suppress warnings and handle entities.
+	    //
+	    // Be careful with  LIBXML_NOENT | LIBXML_XINCLUDE  flags
+	    // See XML External Entity (XXE) in the RAG PptxLoader of Xerte Online Toolkits
+	    // reported by tonghuaroot on June 3 2026
+            // $loaded = $dom->loadXML($xml_data, LIBXML_NOENT | LIBXML_XINCLUDE | LIBXML_NOERROR | LIBXML_NOWARNING);
+            $loaded = $dom->loadXML($xml_data, LIBXML_NOERROR | LIBXML_NOWARNING);
             if ($loaded) {
                 // Extract text by stripping the XML tags.
                 $output_text .= strip_tags($dom->saveXML()) . "\n";
