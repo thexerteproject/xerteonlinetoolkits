@@ -1248,7 +1248,6 @@ function x_desktopSetUp() {
 
 function x_cssSetUp(param) {
 	param = (typeof param !== 'undefined') ?  param : "language";
-
 	switch(param) {
         case "language":
 			if (x_params.kblanguage != undefined) {
@@ -7523,7 +7522,10 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 								}
 							}
 
-							if (resource.endsWith(".mp3")) {
+							if (resource.startsWith("http")) {
+								// URL
+								return "url";
+							} else if (resource.endsWith(".mp3")) {
 								// audio
 								return "audio";
 							} else if (resource.endsWith(".png") || resource.endsWith(".jpg") || resource.endsWith(".jpeg") || resource.endsWith(".gif") || resource.endsWith(".svg")) {
@@ -7538,9 +7540,6 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 							} else if (x_isYouTubeVimeo(resource) !== false) {
 								// youtube or vimeo
 								return "videoEmbed";
-							} else if (resource.startsWith("http")) {
-								// URL
-								return "url";
 							} else if (resource.startsWith("<iframe")) {
 								return "iframe";
 							} else {
