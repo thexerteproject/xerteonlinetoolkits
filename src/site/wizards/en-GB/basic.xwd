@@ -171,7 +171,12 @@
 		<globalVars type="CheckBox" label="Surface Global Variables" defaultValue="true" optional="true" tooltip="Allow the surfacing of global variables using the format {variableName}"/>
 
 				<alternatingSections type="CheckBox" label="Alternating Sections" defaultValue="false" optional="true" tooltip="Enable alternating sections on all pages. When enabled, extra padding, round corners and a subtle change of background colour shows for odd and even sections. Note: if you are using a custom theme the default background colours may not be suitable. These can be changed using .oddSection and .evenSection styles."/>
-		
+
+                <scrollRevealGroup type="group" label="Scroll Reveal Sections" optional="true" tooltip="Enable scroll reveal of sections and how many should remain static.">
+				<scrollRevealSections type="CheckBox" label="Scroll Reveal Sections" defaultValue="false" optional="true" conditionTrigger="true" tooltip="Enable Scroll Reveal of sections on all pages. When enabled there will be a subtle fade and reveal of sections as pages are scrolled up and down."/>
+                 <scrollRevealStatic label="Static sections" type="NumericStepper" condition="scrollRevealSections!='false'" min="1" max="10" step="1" width="20" optional="true" defaultValue="2" tooltip="The number of static sections at the top of the pages to show without the scroll reveal effect. The default is 2, change to 1 if you want just the 1st section to show by default."/>
+                 </scrollRevealGroup>
+
 		<topBtnGroup type="group" label="Back to Top Button" optional="true" tooltip="Hide or change the Back to Top button">
 			<topBtnHide label="Hide Buttons" type="Checkbox" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Hide the Back to Top buttons on all pages"/>
 			<topBtnRound label="Appearance" type="ComboBox" options="'Top' text,Circle with up arrow" data="false,true" defaultValue="false" condition="topBtnHide=='false'" conditionTrigger="true" optional="true" tooltip="Change the appearance of the back to top button"/>

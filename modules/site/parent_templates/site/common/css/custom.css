@@ -346,6 +346,38 @@ h3.contentTitle {
         margin-right: 10px;
     }
 
+/*scrollReveal css*/
+/* Only fade sections when ScrollReveal is enabled */
+.scrollRevealEnabled #mainContent section {
+    position: relative;
+    opacity: 0.15;
+    transition: opacity 0.6s ease;
+    will-change: opacity;
+}
+
+.scrollRevealEnabled #mainContent section.visible {
+    opacity: 1;
+}
+
+.scrollRevealEnabled #mainContent section::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.95) 0%,
+            rgba(255,255,255,0.6) 20%,
+            rgba(255,255,255,0) 45%
+    );
+    opacity: 1;
+    transition: opacity 0.8s ease;
+}
+
+.scrollRevealEnabled #mainContent section.visible::after {
+    opacity: 0;
+}
+
     /* --LARGE DESKTOP-------------------------------------------------------------- */
     @media (min-width: 1200px) {
         body {
