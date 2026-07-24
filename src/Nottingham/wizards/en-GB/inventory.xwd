@@ -2,7 +2,7 @@
   <pageWizard remove="true" duplicate="false">
     <newNodes>
       <inventory><![CDATA[<inventory name="Enter Page Title" instructions="" feedback="" order="random" classes="" scoreType="absolute"
-       chartHide="false" chartTitle="" chartType="bar" chartColourToggle="false" chartColour="0x000000"
+       chartHide="false" chartTitle="" chartType="bar" chartBarType="vertical" chartColourToggle="false" chartColour="0x000000"
        chartAxisTitle="true" chartAxisXTitle="Class" chartAxisYTitle="Score" chartAxisYTitle2="Score (%)"
       panelWidth="Medium" panelWidthCustom="50" align="left" panelStyle="false" removeTxt="false"
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
@@ -25,6 +25,7 @@
     <chart type="group" label="Chart Options">
       <chartHide label="Hide Chart" type="CheckBox" defaultValue="false" conditionTrigger="true" mandatory="true"/>
       <chartType label="Type" options="Bar,Pie,Line,Polar,Doughnut,Radar" type="ComboBox" data="bar,pie,line,polar,doughnut,radar" defaultValue="bar" condition="chartHide!='true'" conditionTrigger="true"/>
+      <chartBarType label="Alignment" options="Horizontal,Vertical" type="ComboBox" data="horizontal,vertical" defaultValue="vertical" condition="chartHide!='true'&amp;&amp;chartType=='bar'" mandatory="true"/>
       <chartTitle label="Title" type="TextInput" wysiwyg="true" condition="chartHide!='true'"/>
       <chartAxisGroup label="Axis Titles" type="group" mandatory="true" condition="chartHide!='true'&amp;&amp;(chartType=='bar'||chartType=='line')">
         <chartAxisTitle label="Show Titles" type="CheckBox" defaultValue="false" condition="chartHide!='true'&amp;&amp;(chartType=='bar'||chartType=='line')" conditionTrigger="true" mandatory="true"/>
