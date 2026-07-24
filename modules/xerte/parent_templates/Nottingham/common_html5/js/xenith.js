@@ -7293,7 +7293,7 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 			// refresh (trigger pageChanged function) or completely rebuild pages of these types
 			// as they involve things like writing text on a canvas (text might not be an appropriate colour after the theme change)
 			const pageTypesRequiringRebuild = ['chart', 'textDrawing'];
-			const pageTypesRequiringRefresh = ['opinion'];
+			const pageTypesRequiringRefresh = ['opinion', 'inventory'];
 
 			// flag built pages of these types as not built yet, so they will be rebuilt when next viewed
 			for (let i=0, len=x_pageInfo.length; i<len; i++) {

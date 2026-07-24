@@ -687,8 +687,8 @@
 			const lnColour = x_hexToRgb(bgColourIn.substr(bgColourIn.length - 6), 1);
 			const ctx = $("#diagram");
 
-			let txtColour = $x_body.css("color");
-			let lineColour = $x_body.css("color");
+			let txtColour = $(".panelContent").css("color");
+			let lineColour = txtColour;
 			lineColour = lineColour.indexOf('rgba') === -1 ? lineColour.replace(')', ', 0.2)').replace('rgb', 'rgba') : lineColour;
 			const fontSize = Math.max(12,parseInt(ctx.css("font-size"))*0.8);
 
@@ -780,6 +780,7 @@
 					labels.splice(i,1,lines);
 				}
 			}
+
 			return labels;
 		};
 
