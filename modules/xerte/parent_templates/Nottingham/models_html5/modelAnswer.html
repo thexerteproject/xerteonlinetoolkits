@@ -24,6 +24,45 @@
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 		};
+
+		this.leavePage = function() {
+			// show a warning on leaving the page if the current response hasn't been downloaded
+			if ($("#pageContents").data("warn")) {
+				// only warn if there is something typed into the text inputs, and it has changed since the last download
+				$(".answerTxt").each(function () {
+					if ($(this).data("change")) {
+						if ($("#downloadBtn").is(":enabled") || (x_currentPageXML.getAttribute("showDownload") === "submit" && $("#button").is(":enabled"))) {
+							// prompt if they want to submit / download immediately
+							let warningTxt = x_currentPageXML.getAttribute("downloadWarningTxt1");
+							if (warningTxt == undefined || warningTxt == "") {
+								warningTxt = "You have not downloaded your responses. Do you want to download them now?";
+							}
+
+							if (confirm(warningTxt)) {
+								if ($("#downloadBtn").is(":enabled")) {
+									$("#downloadBtn").click();
+								} else {
+									$("#button").click();
+								}
+							}
+
+						} else {
+							// can't ask if they want to download now as the activity is not in a state to download yet - just warn that it's not complete
+							let warningTxt = x_currentPageXML.getAttribute("downloadWarningTxt2");
+							if (warningTxt == undefined || warningTxt == "") {
+								warningTxt = "You have not submitted and downloaded your current responses. Make sure you return and complete this activity or you will lose your work.";
+							}
+
+							alert(warningTxt);
+						}
+
+						// only warn once per page, so it doesn't get too annoying when moving back to the page
+						$("#pageContents").data("warn", false);
+						return false;
+					}
+				});
+			}
+		}
 		
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
@@ -85,6 +124,12 @@
 			langStrings.pageFeedbackTxt = x_currentPageXML.getAttribute("feedbackTxt") != undefined ? x_currentPageXML.getAttribute("feedbackTxt") : "Page feedback";
 
 			$("#pageContents").data("langStrings", langStrings);
+
+			// should a warning be shown on leaving the page if responses haven't been downloaded?
+			if (x_currentPageXML.getAttribute("downloadWarning") === "true" && (x_currentPageXML.getAttribute("showDownload") === "true" || x_currentPageXML.getAttribute("showDownload") === "submit")) {
+				$("#pageContents").data("warn", true);
+				$(".answerTxt").data("change", false);
+			}
 
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
@@ -254,56 +299,18 @@
 								label: x_currentPageXML.getAttribute("downloadTxt") != undefined ? x_currentPageXML.getAttribute("downloadTxt") : "Download"
 							})
 							.click(function() {
-								// download a Word doc containing the text shown in the #panelTxt div
-
-								// styles used in downloaded word doc
-								let styles = 'body, .ui-widget { font-family: Arial, sans-serif; -webkit-font-smoothing: antialiased; color: black; font-size: 12pt; } ';
-								styles += 'table.tableDoc { font-size: 1em; margin: 0.2em; padding: 0.2em; width: 100%; border-collapse: collapse; } ';
-
-								// remove page text & links from the text data
-								let $downloadTxt = $(x_pageInfo[x_currentPage].savedData);
-								$downloadTxt.find(".dataPageTxt").remove();
-								$downloadTxt.find("a.dataPageLink").contents().unwrap();
-
-								const docData = {
-									"filename": x_currentPageXML.getAttribute("filename") != undefined && x_currentPageXML.getAttribute("filename").trim() !== "" ? x_currentPageXML.getAttribute("filename") : "model_answer_results",
-									"orientation": x_currentPageXML.getAttribute("fileOrientation") != undefined ? x_currentPageXML.getAttribute("fileOrientation") : "portrait",
-									"documentName": '<h1>' + x_params.name + '</h1><h2>' + x_currentPageXML.getAttribute('name') + '</h2>',
-									"pages": [{ pageName: "", pageText: $downloadTxt.html() }], // add all data into one 'page' (download.php was written for documentation page so expects info in specific format)
-
-									// these styles are the same as those used in documentation page model
-									"styles": styles,
-									"size": x_currentPageXML.getAttribute('fileOrientation') == 'landscape' ? '841.7pt 595.45pt' : '595.45pt 841.7pt',
-									"h1": "20px",
-									"h2": "18px",
-									"h3": "16px",
-									"p": "15px"
-								}
-
-								let form = document.createElement("form");
-								form.method = 'post';
-								form.target = 'displayjson';
-								form.action = (typeof x_downloadURL != 'undefined') ? x_downloadURL : 'download.php';
-
-								$('<input type="hidden">') // IE compatibility
-										.attr({
-											name: 'data',
-											value: JSON.stringify(docData)
-										})
-										.appendTo(form);
-								document.body.appendChild(form);
-								form.submit();
-								document.body.removeChild(form);
+								modelAnswer.download();
 							})
-							.hide();
+							.hide().button("disable");
 				} else {
 					$("#downloadBtn").remove();
 				}
 
 				// set up submit button
 				$("#button")
-						.button({
-							label: x_currentPageXML.getAttribute("feedbackBtnTxt") == undefined || x_currentPageXML.getAttribute("feedbackBtnTxt") == "" ? "Submit" : x_currentPageXML.getAttribute("feedbackBtnTxt")
+						.button({ // button label will be different if it just submits or submits & automatically downloads
+							label: x_currentPageXML.getAttribute("showDownload") === 'submit' ? x_currentPageXML.getAttribute("downloadSubmitTxt") == undefined || x_currentPageXML.getAttribute("downloadSubmitTxt") == "" ? "Submit & Download" : x_currentPageXML.getAttribute("downloadSubmitTxt") :
+									x_currentPageXML.getAttribute("feedbackBtnTxt") == undefined || x_currentPageXML.getAttribute("feedbackBtnTxt") == "" ? "Submit" : x_currentPageXML.getAttribute("feedbackBtnTxt")
 						})
 						.click(function() {
 							$("#fbTxt").empty();
@@ -328,23 +335,35 @@
 							}
 
                             $("#button").button("disable");
-							$("#copyBtn, #downloadBtn").show();
+							$("#copyBtn, #downloadBtn").show().button("enable");
 
 							x_pageContentsUpdated();
 							modelAnswer.saveData();
 
 							modelAnswer.finishTracking();
+
+							// download on submit
+							if (x_currentPageXML.getAttribute("showDownload") === 'submit') {
+								modelAnswer.download();
+							}
 						});
 
-				// if answer is required, only show submit button when something has been typed in every text area
-				if (x_currentPageXML.getAttribute("required") == 'true') {
-					$("#button").button("disable");
+				// detect when answer fields have changed - this may affect what is enabled / disabled
+				$(".answerTxt").on('input', function() {
+					if ($("#pageContents").data("warn")) {
+						$(this).data("change", $(this).val().trim() !== '');
+					}
 
-					$(".answerTxt").on('input', function() {
+					$("#downloadBtn").hide().button("disable");
+
+					// if answer is required, only show submit button when something has been typed in every text area
+					if (x_currentPageXML.getAttribute("required") == 'true') {
 						let complete = true;
-						$(".answerTxt").each(function() {
-							if ($(this).val().trim() == '') {
+						$(".answerTxt").each(function () {
+							if ($(this).val().trim() === '') {
 								complete = false;
+								// at least 1 answer field is empty - don't allow submission
+								return false;
 							}
 						});
 
@@ -354,13 +373,18 @@
 							$("#button").button("disable");
 						}
 
+						// hide feedback - this should only be shown if response has been submitted
 						// to avoid a sudden jump in layout, feedback should slide back up gradually if content is centred vertically & panel is full height
 						if ($("#pageContents").data("slideIn")) {
 							$("#fbTxt, .fbTxt").slideUp();
 						} else {
 							$("#fbTxt,.fbTxt").html("");
 						}
-					});
+					}
+				});
+
+				if (x_currentPageXML.getAttribute("required") == 'true') {
+					$("#button").button("disable");
 
 				// button will be disabled after submit, re-enable it if text changes again
 				} else {
@@ -392,6 +416,51 @@
 
 			this.saveData();
 			x_pageLoaded();
+		};
+
+		this.download = function() {
+			// download a Word doc containing the text shown in the #panelTxt div
+
+			// styles used in downloaded word doc
+			let styles = 'body, .ui-widget { font-family: Arial, sans-serif; -webkit-font-smoothing: antialiased; color: black; font-size: 12pt; } ';
+			styles += 'table.tableDoc { font-size: 1em; margin: 0.2em; padding: 0.2em; width: 100%; border-collapse: collapse; } ';
+
+			// remove page text & links from the text data
+			let $downloadTxt = $(x_pageInfo[x_currentPage].savedData);
+			$downloadTxt.find(".dataPageTxt").remove();
+			$downloadTxt.find("a.dataPageLink").contents().unwrap();
+
+			const docData = {
+				"filename": x_currentPageXML.getAttribute("filename") != undefined && x_currentPageXML.getAttribute("filename").trim() !== "" ? x_currentPageXML.getAttribute("filename") : "model_answer_results",
+				"orientation": x_currentPageXML.getAttribute("fileOrientation") != undefined ? x_currentPageXML.getAttribute("fileOrientation") : "portrait",
+				"documentName": '<h1>' + x_params.name + '</h1><h2>' + x_currentPageXML.getAttribute('name') + '</h2>',
+				"pages": [{ pageName: "", pageText: $downloadTxt.html() }], // add all data into one 'page' (download.php was written for documentation page so expects info in specific format)
+
+				// these styles are the same as those used in documentation page model
+				"styles": styles,
+				"size": x_currentPageXML.getAttribute('fileOrientation') == 'landscape' ? '841.7pt 595.45pt' : '595.45pt 841.7pt',
+				"h1": "20px",
+				"h2": "18px",
+				"h3": "16px",
+				"p": "15px"
+			}
+
+			let form = document.createElement("form");
+			form.method = 'post';
+			form.target = 'displayjson';
+			form.action = (typeof x_downloadURL != 'undefined') ? x_downloadURL : 'download.php';
+
+			$('<input type="hidden">') // IE compatibility
+					.attr({
+						name: 'data',
+						value: JSON.stringify(docData)
+					})
+					.appendTo(form);
+			document.body.appendChild(form);
+			form.submit();
+			document.body.removeChild(form);
+
+			$(".answerTxt").data("change", false);
 		};
 
 		// function saves data to savedData in xenith.js so it can be used later by modelAnswerResults page
