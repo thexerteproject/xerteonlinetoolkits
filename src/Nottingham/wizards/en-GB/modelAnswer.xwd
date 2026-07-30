@@ -49,7 +49,7 @@
 
     <downloadGroup label="Download responses" type="group" optional="true" tooltip="Allows users to download a copy their responses as a Word document">
         <showDownload label="Allow Download" type="ComboBox" options="Separate download button,Download on submit,No download" data="true,submit,false" optional="true" defaultValue="true" conditionTrigger="true"/>
-        <downloadWarning label="Warn if Not Downloaded" type="CheckBox" defaultValue="false" condition="showDownload!='false'" optional="true" mandatory="true" tooltip="Change this text"/>
+        <downloadWarning label="Warn if Not Downloaded" type="CheckBox" defaultValue="false" condition="showDownload!='false'" optional="true" mandatory="true" tooltip="Warn students if they have not downloaded their work after making changes. This warning will only be shown for this page."/>
         <fileGroup label="File Settings" type="group" optional="true" condition="showDownload!='false'">
           <filename label="Filename (without extension)" condition="showDownload!='false'" type="TextInput" defaultValue="model_answer" optional="true"/>
           <fileOrientation label="Orientation" condition="showDownload!='false'" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
