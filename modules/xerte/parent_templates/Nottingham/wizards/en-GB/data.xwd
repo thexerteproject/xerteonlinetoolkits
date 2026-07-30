@@ -571,7 +571,10 @@
 		panelWidth="Medium" panelWidthCustom="50"
 		selectBtn="Highlight" 
 		noteBtn="Copy to Notes" 
-		downloadBtn="Download" 
+		downloadBtn="Download"
+		downloadSubmitBtn="Submit &amp; Download"
+		downloadWarningTxt1="You have not downloaded your response. Do you want to download now?"
+		downloadWarningTxt2="You have not submitted and downloaded your current response. Make sure you return and complete this activity or you will lose your work."
 		checkBtn="Submit"
 		clearBtn="Clear" 
 		resetBtn="Reset"
@@ -17820,28 +17823,34 @@
     </AIGroup>
 
 	<notesText label="Notes Placeholder Text" type="TextArea" height="100" defaultValue="" condition="mode=='Notes'" optional="true" tooltip="When in note taking mode this text will appear in the notes area by default"/>
-	
-	<downloadGroup type="group" label="Download Notes" optional="true" tooltip="Allow text on the page to be downloaded as a Word document">
-		<download label="Allow Download" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
-		<filename label="Filename (without extension)" type="TextInput" defaultValue="textHighlight" condition="download=='true'" optional="true"/>
-		<fileOrientation label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" condition="download=='true'" optional="true"/>
-		
-		<fontSize type="group" label="Font Size" optional="true" tooltip="Customise the font sizes used in the downloaded document">
-			<h1 label="h1" type="TextInput" defaultValue="20" width="100" optional="true"/>
-			<h2 label="h2" type="TextInput" defaultValue="18" width="100" optional="true"/>
-			<h3 label="h3" type="TextInput" defaultValue="16" width="100" optional="true"/>
-			<p label="p" type="TextInput" defaultValue="15" width="100" optional="true"/>
-		</fontSize>
+
+	<downloadGroup label="Download Notes" type="group" optional="true" tooltip="Allow text on the page to be downloaded as a Word document">
+		<download label="Allow Download" type="ComboBox" options="Separate download button,Download on submit,No download" data="true,submit,false" optional="true" defaultValue="true" conditionTrigger="true"/>
+		<downloadWarning label="Warn if Not Downloaded" type="CheckBox" defaultValue="false" condition="download!='false'" optional="true" mandatory="true" tooltip="Warn students if they have not downloaded their work after making changes. This warning will only be shown for this page."/>
+
+		<fileGroup label="File Settings" type="group" optional="true" condition="download!='false'">
+			<filename label="Filename (without extension)" type="TextInput" defaultValue="textHighlight" condition="download!='false'" optional="true"/>
+			<fileOrientation label="Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" condition="download!='false'" optional="true" tooltip="Orientation of downloaded file"/>
+			<fontSize type="group" label="Font Size" optional="true" tooltip="Customise the font sizes used in the downloaded document" condition="download!='false'">
+				<h1 label="h1" type="TextInput" defaultValue="20" width="100" optional="true" condition="download!='false'"/>
+				<h2 label="h2" type="TextInput" defaultValue="18" width="100" optional="true" condition="download!='false'"/>
+				<h3 label="h3" type="TextInput" defaultValue="16" width="100" optional="true" condition="download!='false'"/>
+				<p label="p" type="TextInput" defaultValue="15" width="100" optional="true" condition="download!='false'"/>
+			</fontSize>
+		</fileGroup>
 	</downloadGroup>
 	
 	<allowTyping label="Allow Typing" type="CheckBox" optional="true" condition="mode=='Notes'&amp;&amp;initialBtn!='false'" defaultValue="true" tooltip="Allow typing directly in notes area (on by default)"/>
-	<required label="Answer Required Before Feedback" type="CheckBox" optional="true" defaultValue="true"/>
+	<required label="Require Answer" type="CheckBox" optional="true" defaultValue="true" tooltip="Require at attempt to be made before a response can be submitted for feedback"/>
 	<forceTabs label="Panels to Tabs" type="CheckBox" optional="true" defaultValue="true" tooltip="Force all panels to be shown as tabbed navigators, even when they contain just one pane of information"/>
 
     <selectBtn label="Select Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <noteBtn label="Notes Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
-    <downloadBtn label="Download Button Label" type="TextInput" wysiwyg="true" language="true"/>
-    <checkBtn label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
+    <downloadBtn label="Download Button Label" type="TextInput" wysiwyg="true" condition="download=='submit'||download=='true'" language="true"/>
+	<downloadSubmitBtn label="Submit &amp; Download Button Label" type="TextInput" condition="download=='submit'" mandatory="true" wysiwyg="true" language="true" defaultValue="Submit &amp; Download"/>
+	<downloadWarningTxt1 label="Download Warning Text 1" type="TextInput" condition="download=='submit'||download=='true'" mandatory="true" language="true" defaultValue="You have not downloaded your response. Do you want to download now?"/>
+	<downloadWarningTxt2 label="Download Warning Text 2" type="TextInput" condition="download=='submit'||download=='true'" mandatory="true" language="true" defaultValue="You have not submitted and downloaded your current response. Make sure you return and complete this activity or you will lose your work."/>
+	<checkBtn label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
     <clearBtn label="Clear Button Label" type="TextInput" wysiwyg="true" language="true"/>
     <resetBtn label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
     <errorTxt label="Selection Error" type="TextInput" language="true"/>
