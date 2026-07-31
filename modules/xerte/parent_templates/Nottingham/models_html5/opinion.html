@@ -77,7 +77,7 @@
 
 		this.setWidths = function() {
 			// try to make best use of the space
-			let width = Math.floor($("#mainPanel").innerWidth() - 20);
+			let width = Math.floor($("#mainPanel").innerWidth() - ($("#canvas-container").parent("fieldset").outerWidth() - $("#canvas-container").parent("fieldset").width()) - 20);
 			const paddingWidthMainPanel = $("#mainPanel").outerWidth(true) - $("#mainPanel").innerWidth() + parseFloat($("#mainPanel").css('padding-left')) + parseFloat($("#mainPanel").css('padding-right'));
 			width -= paddingWidthMainPanel;
 
