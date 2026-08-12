@@ -482,9 +482,14 @@ if ($export_logo_sidebar) {
 }
 
 /* 
- * documentation
+ * pages that may include download button
  */
- if ($xml->modelUsed("documentation")) $need_download_url = true;
+ if ($xml->modelUsed("documentation") ||
+     $xml->modelUsed("modelAnswer") ||
+     $xml->modelUsed("modelAnswerResults") ||
+     $xml->modelUsed("textHighlight")) {
+     $need_download_url = true;
+ }
 
 
 export_folder_loop($dir_path);

@@ -4715,6 +4715,7 @@
 
           elem.id = "peertubeIframe";
           elem.addClass = " .iframe ";
+          elem.setAttribute("loading", "lazy");
 
         function addPlayerReadyCallback( callback ) {
             playerReadyCallbacks.push( callback );
@@ -4958,7 +4959,7 @@
 
 (function( Popcorn, window, document )
 {
-  var CURRENT_TIME_MONITOR_MS = 16;
+  var CURRENT_TIME_MONITOR_MS = 100;
 
   function YujaOriginFromSrc(src)
   {
@@ -5167,7 +5168,7 @@
       if (playerReady && !impl.playerPaused) {
         setTimeout(function(){
             player.getCurrentPlayTime();
-        }, 250);
+        }, 200);
       }
     }
 

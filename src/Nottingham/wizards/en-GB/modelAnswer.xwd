@@ -5,7 +5,8 @@
       panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Left" panelStyle="false" removeTxt="false"
 	  feedbackBtnTxt="Submit" pageTxt="Page" questionTxt="Question" responseHeaderTxt="Your response:"
 	  noAnswerHeaderTxt="No response submitted" exampleHeaderTxt="Feedback:" feedbackTxt="Page feedback"
-	  copyBtn2Label="Copy" copyShortcutTxt="Press Ctrl+C to copy" downloadTxt="Download" answerFieldLabel="Answer"><modelAnswerField name="Text Area" prompt="" rows="5"/></modelAnswer>]]></modelAnswer>
+	  copyBtn2Label="Copy" copyShortcutTxt="Press Ctrl+C to copy" downloadTxt="Download" downloadSubmitTxt="Submit &amp; Download" downloadWarningTxt1="You have not downloaded your responses. Do you want to download them now?" downloadWarningTxt2="You have not submitted and downloaded your current responses. Make sure you return and complete this activity or you will lose your work."
+	  answerFieldLabel="Answer"><modelAnswerField name="Text Area" prompt="" rows="5"/></modelAnswer>]]></modelAnswer>
     </newNodes>
   </pageWizard>
 
@@ -46,10 +47,13 @@
 
     <copyPaste label="Copy Button" type="CheckBox" defaultValue="true" optional="true" tooltip="Include a button that allows users to easily select &amp; copy their responses"/>
 
-    <downloadGroup label="Download Button" type="group" optional="true" tooltip="Include a button that allows users to download a copy their responses">
-        <showDownload label="Include button" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true"/>
-        <filename condition="showDownload!='false'" label="Filename (without extension)" type="TextInput" defaultValue="model_answer" optional="true"/>
-        <fileOrientation condition="showDownload!='false'" label="File orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
+    <downloadGroup label="Download responses" type="group" optional="true" tooltip="Allows users to download a copy their responses as a Word document">
+        <showDownload label="Allow Download" type="ComboBox" options="Separate download button,Download on submit,No download" data="true,submit,false" optional="true" defaultValue="true" conditionTrigger="true"/>
+        <downloadWarning label="Warn if Not Downloaded" type="CheckBox" defaultValue="false" condition="showDownload!='false'" optional="true" mandatory="true" tooltip="Warn students if they have not downloaded their work after making changes. This warning will only be shown for this page."/>
+        <fileGroup label="File Settings" type="group" optional="true" condition="showDownload!='false'">
+          <filename label="Filename (without extension)" condition="showDownload!='false'" type="TextInput" defaultValue="model_answer" optional="true"/>
+          <fileOrientation label="Orientation" condition="showDownload!='false'" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
+        </fileGroup>
     </downloadGroup>
 
     <copypasteinfo2 label="Copy &amp; Paste Info" defaultValue="Note: Click the 'Select Text' button to highlight the instruction, question, your response and the feedback and then Ctrl + C to copy this text to the clipboard. You can then paste (Ctrl + V) into another application such as Open Office, Word or an email to save for future reference." type="TextArea" height="50" optional="true" deprecated="This property is deprecated - use the 'Copy Button' optional property to add a button that copies responses to the clipboard"/>
@@ -68,10 +72,13 @@
     <noAnswerHeaderTxt label="No Answer Text" type="TextInput" wysiwyg="true" language="true"/>
     <exampleHeaderTxt label="Feedback Text" type="TextInput" wysiwyg="true" language="true"/>
     <feedbackTxt label="Main Feedback Text" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Page feedback"/>
-    <feedbackBtnTxt label="Check Button Label" type="TextInput" wysiwyg="true" language="true"/>
+    <feedbackBtnTxt label="Submit Button Label" type="TextInput" condition="showDownload!='true'&amp;&amp;showDownload!='submit'" wysiwyg="true" language="true"/>
+    <downloadTxt label="Download Button Label" type="TextInput" condition="showDownload=='true'" mandatory="true" wysiwyg="true" language="true" defaultValue="Download" />
+    <downloadSubmitTxt label="Submit &amp; Download Button Label" type="TextInput" condition="showDownload=='submit'" mandatory="true" wysiwyg="true" language="true" defaultValue="Submit &amp; Download" />
+    <downloadWarningTxt1 label="Download Warning Text 1" type="TextInput" condition="showDownload=='true'||showDownload=='submit'" mandatory="true" language="true" defaultValue="You have not downloaded your responses. Do you want to download them now?" />
+    <downloadWarningTxt2 label="Download Warning Text 2" type="TextInput" condition="showDownload=='true'||showDownload=='submit'" mandatory="true" language="true" defaultValue="You have not submitted and downloaded your current responses. Make sure you return and complete this activity or you will lose your work." />
     <copyBtn2Label label="Copy Button Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Copy"/>
     <copyShortcutTxt label="Copy Shortcut Text" type="TextInput" wysiwyg="true" language="true"/>
-    <downloadTxt label="Download Button Label" type="TextInput" condition="showDownload!='false'" mandatory="true" language="true" defaultValue="Download" />
     <answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that the text field where they should respond is labelled and the label is spoken to the screenreader user. e.g. Answer."/>
 
     <copyBtnLabel label="Select Button Label" type="TextInput" wysiwyg="true" language="true" deprecated="This property is no longer required"/>

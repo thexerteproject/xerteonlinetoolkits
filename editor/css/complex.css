@@ -619,6 +619,7 @@ div.ui-layout-north div.content {
 	margin:0 auto;
 	width:100%;
 	padding:0;
+	height: auto !important;
 }
 .elevated div.ui-layout-north div.content {
 	background-image: url(../img/warning.png);

@@ -16,17 +16,7 @@
 
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
-
-	/**
-	 * 
-	 * feedback/index.htm english language file
-	 *
-	 * @author Patrick Lockley
-	 * @version 1.0
-	 * @copyright Pat Lockley
-	 * @package
-	 */
+ */
 	 
 	define("FEEDBACK_TITLE","Welcome to Xerte Online Toolkits");
 	define("FEEDBACK_RESPONSE","Thank you for your feedback");

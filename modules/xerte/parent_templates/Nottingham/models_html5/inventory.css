@@ -67,3 +67,11 @@
 	#qTxt {
 		padding: 0;
 	}
+
+	#chartContainer {
+		position: relative;
+	}
+
+	#btnHolder {
+		overflow: auto;
+	}

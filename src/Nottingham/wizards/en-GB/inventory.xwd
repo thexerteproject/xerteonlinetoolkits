@@ -1,8 +1,9 @@
 <wizard menus="Interactivity">
   <pageWizard remove="true" duplicate="false">
     <newNodes>
-      <inventory><![CDATA[<inventory name="Enter Page Title" instructions="" feedback="" order="random"
-       classes="" scoreType="absolute" chartHide="false" chartTitle="" chartType="bar" chartColour="0xFFFF00"
+      <inventory><![CDATA[<inventory name="Enter Page Title" instructions="" feedback="" order="random" classes="" scoreType="absolute"
+       chartHide="false" chartTitle="" chartType="bar" chartBarType="vertical" chartColourToggle="false" chartColour="0x000000"
+       chartAxisTitle="true" chartAxisXTitle="Class" chartAxisYTitle="Score" chartAxisYTitle2="Score (%)"
       panelWidth="Medium" panelWidthCustom="50" align="left" panelStyle="false" removeTxt="false"
 	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" 
 	  submitBtnText="Submit" 
@@ -19,13 +20,23 @@
     <feedback label="Feedback" type="textArea" height="100" placeholder="Enter feedback text"/>
     <order label="Question Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="random" width="120"/>
 	<classes label="Classes" type="TextInput" tooltip="A comma-separated list of classes that answer options will score against. A maximum of ten classes can be created." placeholder="e.g. class1,class2,class3"/>
-	<scoreType label="Score Type" options="Absolute,Individual Percent,Relative Percent" type="comboBox" data="absolute,individual percent,relative percent" defaultValue="absolute" width="120"/>
+	<scoreType label="Score Type" type="comboBox" options="Raw score,Percentage of each class,Percentage of total score" data="absolute,individual percent,relative percent" defaultValue="absolute" condition="chartType!='doughnut'&amp;&amp;chartType!='radar'&amp;&amp;chartType!='pie'" conditionTrigger="true" tootip="Choose how scores are calculated for the chart and tailored feedback: 'Raw score' uses the points achieved in each class, 'percentage of each class' uses each class's score as a percentage of its own maximum, 'percentage of total score' uses each class's score as a proportion of the combined score across all classes (totals 100%)."/>
 
     <chart type="group" label="Chart Options">
       <chartHide label="Hide Chart" type="CheckBox" defaultValue="false" conditionTrigger="true" mandatory="true"/>
+      <chartType label="Type" options="Bar,Pie,Line,Polar,Doughnut,Radar" type="ComboBox" data="bar,pie,line,polar,doughnut,radar" defaultValue="bar" condition="chartHide!='true'" conditionTrigger="true"/>
+      <chartBarType label="Alignment" options="Horizontal,Vertical" type="ComboBox" data="horizontal,vertical" defaultValue="vertical" condition="chartHide!='true'&amp;&amp;chartType=='bar'" mandatory="true"/>
       <chartTitle label="Title" type="TextInput" wysiwyg="true" condition="chartHide!='true'"/>
-      <chartType label="Type" options="Bar,Pie,Line" type="ComboBox" data="bar,pie,line" defaultValue="bar" width="120" condition="chartHide!='true'"/>
-      <chartColour label="Colour" type="colourPicker" condition="chartHide!='true'"/>
+      <chartAxisGroup label="Axis Titles" type="group" mandatory="true" condition="chartHide!='true'&amp;&amp;(chartType=='bar'||chartType=='line')">
+        <chartAxisTitle label="Show Titles" type="CheckBox" defaultValue="false" condition="chartHide!='true'&amp;&amp;(chartType=='bar'||chartType=='line')" conditionTrigger="true" mandatory="true"/>
+        <chartAxisXTitle label="X Axis Title" type="TextInput" defaultValue="" condition="chartHide!='true'&amp;&amp;chartAxisTitle=='true'&amp;&amp;(chartType=='bar'||chartType=='line')" mandatory="true"/>
+        <chartAxisYTitle label="Y Axis Title" type="TextInput" defaultValue="" condition="chartHide!='true'&amp;&amp;chartAxisTitle=='true'&amp;&amp;(chartType=='bar'||chartType=='line')&amp;&amp;scoreType=='absolute'" mandatory="true"/>
+        <chartAxisYTitle2 label="Y Axis Title" type="TextInput" defaultValue="" condition="chartHide!='true'&amp;&amp;chartAxisTitle=='true'&amp;&amp;(chartType=='bar'||chartType=='line')&amp;&amp;scoreType!='absolute'" mandatory="true"/>
+      </chartAxisGroup>
+      <chartColourGroup label="Colours" type="group" condition="chartHide!='true'">
+        <chartColourToggle label="Customise" type="CheckBox" defaultValue="true" mandatory="true" condition="chartHide!='true'" conditionTrigger="true" tooltip="When unchecked, the chart will use the default colour scheme"/>
+        <chartColour label="Base Colour" type="colourPicker" condition="chartHide!='true'&amp;&amp;chartColourToggle!='false'" tooltip="Select a colour that will be used by the chart. If required, a range of shades of this colour will be used."/>
+      </chartColourGroup>
     </chart>
 
     <layoutGroup label="Page Layout" type="group">
