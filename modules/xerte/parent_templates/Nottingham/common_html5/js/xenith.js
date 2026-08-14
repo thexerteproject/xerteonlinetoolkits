@@ -25,9 +25,11 @@ var x_languageData  = [],
     x_pageInfo      = [],   // holds info about pages (type, built, linkID, pageID, standalone, savedData) - use savedData if any input from page needs to be saved for use on other pages or on return to this page
 	x_normalPages	= [],	// indexes of pages in x_pages that are normal pages (i.e. not standalone)
 	x_chapters = [], // contains details of all page chapters
+	x_pageStates = [], // holds data about the current state of each page (can also contain state of blocks within the page for when the blocks project work is done)
 	x_urlParams		= {},
 	x_startPage		= {type : "index", ID : "0"},
     x_currentPage   = -1,
+	x_currentPageState = {},
     x_currentPageXML,
     x_specialChars  = [],
     x_inputFocus    = false,
@@ -70,6 +72,15 @@ var x_languageData  = [],
 // Determine whether offline mode or not
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
+
+// promise ensures pageState data is received before page setup begins (only if project loads because a standalone page is opening in a lightbox)
+let x_resolvePageStateReady;
+const x_pageStateReady = new Promise(function(resolve) { x_resolvePageStateReady = resolve; });
+
+function x_receiveLightboxPageState(pageStates) {
+	x_pageStates = pageStates;
+	x_resolvePageStateReady();
+}
 
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_innerPage, $x_footerBlock, $x_footerL,
 	$x_introBtn, $x_helpBtn, $x_pageIntroBtn, $x_pageResourcesBtn, $x_glossaryBtn, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_cssBtn, $x_background;
@@ -193,6 +204,10 @@ x_restorePagesViewed = function(viewed)
 	checkChapterViewed();
 }
 
+x_restorePageStates = function(pageStates) {
+	// ** use for SCORM / xAPI tracking?
+}
+
 // To be able to check on orientation, and also detect the difference between a mobile and tablet
 // See https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
 x_isMobileBrowser = function() {
@@ -226,6 +241,36 @@ x_projectDataLoaded = function(xmlData) {
 		} else {
 			hash = tempUrlParams[i];
 		}
+	}
+
+	// resolve promise if the page isn't a standalone page loading in a lightbox as no pageState data will be received later
+	if (x_urlParams.lightboxState !== "1") {
+		if (XTTrackingSystem().indexOf('SCORM') < 0 && XTGetMode() != 'normal') {
+			// project is not being tracked
+			// browser may have some local storage data to allow previous page state to be recreated
+			const savedData = localStorage.getItem("xerte_" + x_TemplateId + "_state");
+			if (savedData !== null) {
+				/* ** TODO
+					- only prompt to restore data if there is some useful info there
+					- only restore data if it is from same published version of the project (to avoid situations where the data no longer matches project structure)
+					- reword strings & add to language files
+				 */
+				const allData = JSON.parse(savedData);
+				if (confirm("Restore previous session")) {
+					try {
+						x_pageStates = allData.state;
+						console.log("x_pageStates restored from browser local storage " + allData.date);
+						console.log(x_pageStates);
+					} catch (e) {
+						alert("Saved session state could not be restored");
+					}
+				} else {
+					localStorage.removeItem("xerte_" + x_TemplateId + "_state");
+				}
+			}
+		}
+
+		x_resolvePageStateReady();
 	}
 
     x_pages = xmlData.children();
@@ -474,7 +519,7 @@ x_projectDataLoaded = function(xmlData) {
 	
 	for (var i=0; i<numPages; i++) {
 		if (pageToHide.indexOf(i) != -1) {
-			x_pages.splice(i-offset, 1);
+			x_pages.splice(i - offset, 1);
 			offset++;
 		}
 	}
@@ -2237,111 +2282,133 @@ function x_goHome() {
 }
 
 function x_continueSetUp2() {
-	// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
-	var mediaElementText = [{
-		name: "stopButton",
-		label: "Stop",
-		description: "Stop Media Button"
-	}, {name: "playPauseButton", label: "Play/Pause", description: "Play/Pause Media Button"}, {
-		name: "muteButton",
-		label: "Mute Toggle",
-		description: "Toggle Mute Button"
-	}, {name: "fullscreenButton", label: "Fullscreen", description: "Fullscreen Movie Button"}, {
-		name: "captionsButton",
-		label: "Captions/Subtitles",
-		description: "Show/Hide Captions Button"
-	}];
-
-	for (var i = 0, len = mediaElementText.length; i < len; i++) {
-		x_mediaText.push({
-			label: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "label", mediaElementText[i].label[0]),
-			description: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0])
-		});
-	}
-	x_mediaText.push(
-		{label: x_getLangInfo(x_languageData.find("mediaElementControls")[0], "video", "")},
-		{label: x_getLangInfo(x_languageData.find("mediaElementControls")[0], "audio", "")}
-	);
-
-	// script optional property added after all interface set up & before any pages load
-	if (x_params.script != undefined && x_params.script != "") {
-		$x_head.append('<script>' + x_params.script + '</script>');
-	}
-
-	// Setup beforeunload
-	window.onbeforeunload = XTTerminate;
-
-	XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
-	// Set course, module and resume options AFTER XTInitialise
-	// Display warning if this is a SCORM object and the tracking mode is NOT 'normal'
-	if (XTTrackingSystem().indexOf('SCORM') >= 0 && XTGetMode() != 'normal')
-	{
-		var scorm_alert_default = "Please note: SCORM mode is '{0}'. This means that your progress, interactions and results from this viewing will not be tracked or saved. For tracking you should start a new attempt.";
-		var scorm_alert_lang = x_getLangInfo(x_languageData.find("scormTrackingAlert")[0], "warning", scorm_alert_default);
-		scorm_alert_lang = scorm_alert_lang.replace("{0}", XTGetMode());
-		alert(scorm_alert_lang);
-	}
-	if (x_params.course != undefined && x_params.course != "") {
-		XTSetOption('course', x_params.course);
-	}
-	if (x_params.module != undefined && x_params.module != "") {
-		XTSetOption('module', x_params.module);
-	}
-
-	// Restart if we're NOT navigating to a standalone page
-	var standAlonePage = x_startPage.type == 'index' && x_pageInfo[x_startPage.ID] != undefined
-		&& x_pageInfo[x_startPage.ID].standalone != undefined && x_pageInfo[x_startPage.ID].standalone;
-	if (XTTrackingSystem() === 'xAPI' && !standAlonePage) {
-		var callStartPage = false;
-		if (x_params.restartOptions == undefined)
-		{
-			x_params.restartOptions = 'ask';
+	// promise will already have been resolved if this project is not a standalone page opening in a lightbox
+	// otherwise wait until page state data is received from parent project before continuing set up as it will be needed when page models are loaded
+	x_pageStateReady.then(function() {
+		if (x_urlParams.lightboxState !== "1") {
+			// not a standalone page in a lightbox
+			// use existing pageStates (e.g. tracked projects) or set up empty objects for new pageState data
+			for (var i=0; i<x_pageInfo.length; i++) {
+				if (x_pageStates[i] == null) {
+					// this will contain state: {page state data here} when page models generate states
+					// this could be simplified to not be nested objects but keeping this format to make it easier for future blocks project work
+					x_pageStates[i] = {};
+				}
+			}
 		}
-		switch (x_params.restartOptions) {
-			case 'ask':
-				var canResume = XTCanResume();
-				if (canResume.canResume) {
-					x_dialogInfo.push({type: 'resumeSession', built: false});
-					x_openDialog(
-						"resumeSession",
-						x_getLangInfo(x_languageData.find("resumeSession")[0], "label", "Resume Session"),
-						x_getLangInfo(x_languageData.find("resumeSession").find("closeButton")[0], "description", "Close Resume Session Dialog"),
-						null,
-						null,
-						function () {
-							setUpComplete = true;
-							// use this function in theme files to execute code after interface has been completely set up
-							try { x_interfaceComplete(); } catch (e){}
-							x_navigateToPage(true, x_startPage);
-						}
-					);
-				} else {
+
+		// store language data for mediaelement buttons - use fallbacks in mediaElementText array if no lang data
+		var mediaElementText = [{
+			name: "stopButton",
+			label: "Stop",
+			description: "Stop Media Button"
+		}, {name: "playPauseButton", label: "Play/Pause", description: "Play/Pause Media Button"}, {
+			name: "muteButton",
+			label: "Mute Toggle",
+			description: "Toggle Mute Button"
+		}, {name: "fullscreenButton", label: "Fullscreen", description: "Fullscreen Movie Button"}, {
+			name: "captionsButton",
+			label: "Captions/Subtitles",
+			description: "Show/Hide Captions Button"
+		}];
+
+		for (var i = 0, len = mediaElementText.length; i < len; i++) {
+			x_mediaText.push({
+				label: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "label", mediaElementText[i].label[0]),
+				description: x_getLangInfo(x_languageData.find("mediaElementControls").find(mediaElementText[i].name)[0], "description", mediaElementText[i].description[0])
+			});
+		}
+		x_mediaText.push(
+			{label: x_getLangInfo(x_languageData.find("mediaElementControls")[0], "video", "")},
+			{label: x_getLangInfo(x_languageData.find("mediaElementControls")[0], "audio", "")}
+		);
+
+		// script optional property added after all interface set up & before any pages load
+		if (x_params.script != undefined && x_params.script != "") {
+			$x_head.append('<script>' + x_params.script + '</script>');
+		}
+
+		// Setup beforeunload
+		window.onbeforeunload = XTTerminate;
+
+		XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
+		// Set course, module and resume options AFTER XTInitialise
+		// Display warning if this is a SCORM object and the tracking mode is NOT 'normal'
+		if (XTTrackingSystem().indexOf('SCORM') >= 0 && XTGetMode() != 'normal') {
+			var scorm_alert_default = "Please note: SCORM mode is '{0}'. This means that your progress, interactions and results from this viewing will not be tracked or saved. For tracking you should start a new attempt.";
+			var scorm_alert_lang = x_getLangInfo(x_languageData.find("scormTrackingAlert")[0], "warning", scorm_alert_default);
+			scorm_alert_lang = scorm_alert_lang.replace("{0}", XTGetMode());
+			alert(scorm_alert_lang);
+		}
+		if (x_params.course != undefined && x_params.course != "") {
+			XTSetOption('course', x_params.course);
+		}
+		if (x_params.module != undefined && x_params.module != "") {
+			XTSetOption('module', x_params.module);
+		}
+
+		// Restart if we're NOT navigating to a standalone page
+		var standAlonePage = x_startPage.type == 'index' && x_pageInfo[x_startPage.ID] != undefined
+			&& x_pageInfo[x_startPage.ID].standalone != undefined && x_pageInfo[x_startPage.ID].standalone;
+		if (XTTrackingSystem() === 'xAPI' && !standAlonePage) {
+			var callStartPage = false;
+			if (x_params.restartOptions == undefined) {
+				x_params.restartOptions = 'ask';
+			}
+			switch (x_params.restartOptions) {
+				case 'ask':
+					var canResume = XTCanResume();
+					if (canResume.canResume) {
+						x_dialogInfo.push({type: 'resumeSession', built: false});
+						x_openDialog(
+							"resumeSession",
+							x_getLangInfo(x_languageData.find("resumeSession")[0], "label", "Resume Session"),
+							x_getLangInfo(x_languageData.find("resumeSession").find("closeButton")[0], "description", "Close Resume Session Dialog"),
+							null,
+							null,
+							function () {
+								setUpComplete = true;
+								// use this function in theme files to execute code after interface has been completely set up
+								try {
+									x_interfaceComplete();
+								} catch (e) {
+								}
+								x_navigateToPage(true, x_startPage);
+							}
+						);
+					} else {
+						XTSetOption('resume', false);
+						callStartPage = true;
+					}
+					break;
+				case 'restart':
+					XTSetOption('resume', true);
+					callStartPage = true;
+					break;
+				case 'do_not_restart':
 					XTSetOption('resume', false);
 					callStartPage = true;
+					break;
+			}
+			if (callStartPage) {
+				setUpComplete = true;
+				// use this function in theme files to execute code after interface has been completely set up
+				try {
+					x_interfaceComplete();
+				} catch (e) {
 				}
-				break;
-			case 'restart':
-				XTSetOption('resume', true);
-				callStartPage = true;
-				break;
-			case 'do_not_restart':
-				XTSetOption('resume', false);
-				callStartPage = true;
-				break;
-		}
-		if (callStartPage)
-		{
+				x_navigateToPage(true, x_startPage);
+			}
+		} else {
 			setUpComplete = true;
 			// use this function in theme files to execute code after interface has been completely set up
-			try { x_interfaceComplete(); } catch (e){}
+			try {
+				x_interfaceComplete();
+			} catch (e) {
+			}
 			x_navigateToPage(true, x_startPage);
 		}
-	} else {
-		setUpComplete = true;
-		// use this function in theme files to execute code after interface has been completely set up
-		try { x_interfaceComplete(); } catch (e){}
-		x_navigateToPage(true, x_startPage);
-	}
+	});
 }
 
 // function sets the default text size
@@ -2496,6 +2563,45 @@ function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID
 	} else {
 		x_changePage(page);
 	}
+}
+
+// ----- functions that deal with state handling -----
+
+// called from init functions in page models - returns page state data
+// this will be either be new or retrieved from a previous session's attempt
+function x_createPageState(name) {
+	let state = x_getPageState(name);
+	if (state === undefined) {
+		// no data from a previous session - generate new state
+		try {
+			let pt = x_pageInfo[x_currentPage].type;
+			if (pt == "text") pt = 'simpleText';
+			if (typeof window[pt].generateModelState === "function") {
+				state = x_pushToPageState(window[pt].generateModelState(), name);
+			}
+		} catch(e) {
+			console.log("Failed to create / retrieve page state data as generateModelState function does not exist in model file");
+		}
+	} else {
+		x_pageStates[x_currentPage][name].reinstate = true;
+	}
+	return state;
+}
+
+// Pushes a dom element or object to x_pageStates
+// returns the given object for convenience
+// When dealing with primitives and immutables, push new values to the dictionary,
+// or wrap them in an object if you plan on changing the values later.
+function x_pushToPageState(object, name){
+	if (x_pageStates[x_currentPage][name] == null) {
+		x_pageStates[x_currentPage][name] = object;
+	}
+	return x_pageStates[x_currentPage][name];
+}
+
+// returns an object from x_pageStates
+function x_getPageState(name) {
+	return x_pageStates[x_currentPage][name];
 }
 
 // function returns page no. of page with matching linkID / pageID & whether it's from array of normal pages or standalone pages
@@ -2801,9 +2907,20 @@ function x_changePageApproved(x_gotoPage, addHistory) {
 		url += XENITH.ACCESSIBILITY.removeBg !== false ? (url.indexOf("?") > -1 ? "&" : "?") + "removeBg=" + XENITH.ACCESSIBILITY.removeBg : "";
 		url += XENITH.ACCESSIBILITY.responsiveTxt != undefined ? (url.indexOf("?") > -1 ? "&" : "?") + "responsiveTxt=" + XENITH.ACCESSIBILITY.responsiveTxt : "";
 
+		if (x_pageStates.length > 0) { url += '&lightboxState=1'; }
+
 		url += '#' + pageHash;
 		$.featherlight.defaults.beforeClose = x_closeStandAlonePage;
-		$.featherlight({iframe: url, iframeWidth: $x_mainHolder.width()*0.8, iframeHeight: $x_mainHolder.height()*0.8});
+		$.featherlight({
+			iframe: url,
+			iframeWidth: $x_mainHolder.width()*0.8,
+			iframeHeight: $x_mainHolder.height()*0.8,
+			afterContent: function() {
+				if (x_pageStates.length > 0) {
+					this.$content[0].contentWindow.x_receiveLightboxPageState(x_pageStates);
+				}
+			}
+		});
 
 		XENITH.PROGRESSBAR.update(x_gotoPage, "LightBox");
 
@@ -2814,6 +2931,43 @@ function x_changePageApproved(x_gotoPage, addHistory) {
 	// if side bar and on mobile, close sidebar when page changed (as it covers whole of page)
 	if (x_browserInfo.mobile === true && !x_firstLoad) {
 		XENITH.SIDEBAR.close();
+	}
+}
+
+// function calls the leavePage function in page model files as the page is moved away from (by navigating or closing a lightbox window if standalone page)
+function x_leavePage(page, lightbox) {
+	const pageObjType = x_pageInfo[page].type == "text" ? "simpleText" : x_pageInfo[page].type;
+	const pageObj = lightbox != null ? lightbox[pageObjType] : eval(pageObjType);
+	if (typeof pageObj.leavePage === 'function') {
+		pageObj.leavePage();
+	}
+
+	// calls function in any customHTML that's been loaded into page
+	// this can probably be removed
+	if ($(".customHTMLHolder").length > 0) {
+		if (typeof customHTML.leavePage() === 'function') {
+			customHTML.leavePage();
+		}
+	}
+
+	if (XTTrackingSystem().indexOf('SCORM') < 0 && XTGetMode() != 'normal') {
+		// project is not being tracked - save current state of page to browser's local storage so you can resume where you left off
+		/* ** TODO
+			- do we need to warn users if we are doing this? in similar way to cookie warnings? or not as it's all local?
+			- also store data about pages viewed & data used on results page (this will need to be got from project XML - is it already there?)
+			- include a timestamp of when project was last saved/published as if it has been edited the localStorage data should not be used (in case pages have changed etc.)
+			- include a timestamp of when the localStorage data was stored? should there be a limit on whether very old data should be restored?
+		 */
+		const localData = {
+			//version: // ** timestamp for when project was last published? & then don't use localStorage data if it doesn't match
+			date: Date.now(),
+			state: x_pageStates
+		};
+		console.log("leaving page - project not tracked");
+		console.log("save x_pageStates to browser local storage: ");
+		console.log(localData);
+
+		localStorage.setItem("xerte_" + x_TemplateId + "_state", JSON.stringify(localData));
 	}
 }
 
@@ -2831,18 +2985,7 @@ function x_closeStandAlonePage(event) {
 		// 3. The XTInitialise code made sure that the iframe state variable is actually pointing to the main state variable
 		//    i.e. when calling the leavePage inside the iframe, it's updating the main state variable
 		// 4. It is necessary to call the leavePage from the iframe in case the pagetype has not been yet in the main page
-		var pageObj, pageObjType;
-
-		if (x_pageInfo[standAlonePage].type == "text") {
-			pageObjType = 'simpleText';
-		} else {
-			pageObjType = x_pageInfo[standAlonePage].type
-		}
-		pageObj = eval('this.$content[0].contentWindow.' + pageObjType);
-		if (typeof pageObj.leavePage === 'function') {
-			pageObj.leavePage();
-		}
-
+		x_leavePage(standAlonePage, this.$content[0].contentWindow);
 		XTExitPage(standAlonePage);
 	}
 
@@ -2850,6 +2993,12 @@ function x_closeStandAlonePage(event) {
 	for (let i=0; i<this.$content[0].contentWindow.x_pageInfo.length; i++) {
 		if (this.$content[0].contentWindow.x_pageInfo[i].viewed === true) {
 			x_pageInfo[i].viewedLightBox = true;
+
+			// send page state data back so page can be recreated if required
+			const pageState = this.$content[0].contentWindow.x_pageStates[i];
+			if (Object.keys(pageState).length > 0) {
+				x_pageStates[i] = pageState;
+			}
 		}
 	}
 
@@ -2870,25 +3019,7 @@ function x_endPageTracking(pagechange, x_gotoPage) {
 	// End page tracking of x_currentPage
     if (x_currentPage != -1 && !XENITH.PAGEMENU.isThisMenu() && (!pagechange || x_currentPage != x_gotoPage) && x_pageInfo[x_currentPage].passwordPass != false)
     {
-        var pageObj;
-
-        if (x_pageInfo[x_currentPage].type == "text") {
-            pageObj = simpleText;
-        } else {
-            pageObj = eval(x_pageInfo[x_currentPage].type);
-        }
-        if (typeof pageObj.leavePage === 'function')
-        {
-            pageObj.leavePage();
-        }
-        // calls function in any customHTML that's been loaded into page
-        if ($(".customHTMLHolder").length > 0)
-        {
-            if (typeof customHTML.leavePage() === 'function')
-            {
-                customHTML.leavePage();
-            }
-        }
+		x_leavePage(x_currentPage);
         XTExitPage(x_currentPage);
     }
 }
@@ -3237,6 +3368,7 @@ function x_changePageStep3() {
 		}
 
         // calls function in any customHTML that's been loaded into page
+		// this can probably be removed
         if ($(".customHTMLHolder").length > 0) {
 			if (typeof customHTML.pageChanged === "function") {
 				customHTML.pageChanged();
@@ -4083,6 +4215,7 @@ function x_sizeChanged() {
 	} // Catch error thrown when you call sizeChanged() on an unloaded model
 
 	// calls function in any customHTML that's been loaded into page
+	// this can probably be removed
 	if ($(".customHTMLHolder").length > 0) {
 		if (typeof customHTML.sizeChanged === "function") {
 			customHTML.sizeChanged();

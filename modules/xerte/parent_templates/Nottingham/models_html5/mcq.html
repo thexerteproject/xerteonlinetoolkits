@@ -17,13 +17,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* ** TODO: different ways state data should be looked at:
+		1: SCORM
+		2: xAPI
+		3: Standalone pages in lightbox (DONE)
+		4: Refresh page (WIP)
+*/
  
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var mcq = new function() {
-        // function called every time the page is viewed after it has initially loaded
+		// the info needed to regenerate a previous state of this page
+		this.generateModelState = function () {
+			return {
+				judge: null, // is there a correct answer for this question?
+				optionElements: null, // info about the answer options
+				checked: null, // has an answer been submitted? if yes, which answers?
+			};
+		}
+
+		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
-			this.optionElements = $("#pageContents").data("optionElements");
+			x_currentPageState = x_getPageState("state");
 		}
 
 		// function called every time the size of the LO is changed
@@ -34,8 +50,9 @@
 			// this will be used later when showing feedback - it is done differently depending on whether content is centred vertically on the page & whether panel is full height
 			$("#pageContents").data("slideIn", x_checkVerticalCentre() && panelH === false);
 
+			// ensure any audio players are shown at an appropriate size
 			if ($("#pageContents .audioHolder").length > 0) {
-				var audioBarW = 0;
+				let audioBarW = 0;
 				$("#pageContents .audioHolder:eq(0) .mejs-inner .mejs-controls").children().each(function() {
 					audioBarW += $(this).outerWidth();
 				});
@@ -45,42 +62,44 @@
 			}
 		}
 
-        this.startQ = function() {
-            var correctOptions = [],
-               correctAnswer = [],
-               correctFeedback = [],
-               judge = false; // is there a correct answer for the question?
+        this.startQ = function(newAttempt) {
+			const correctOptions = [],
+					correctAnswer = [],
+					correctFeedback = [];
 
-            this.checked = false;
+			let judge = false; // is there a correct answer for the question?
+
             // Track the quiz page
-            for (var i = 0; i < this.optionElements.length; i++) {
-				var answerTxt;
-				if (this.optionElements[i].label != undefined)
-				{
-					answerTxt=this.optionElements[i].label;
-				}
-				else
-				{
+            for (let i=0; i<x_currentPageState.optionElements.length; i++) {
+				let answerTxt;
+				if (x_currentPageState.optionElements[i].label != undefined) {
+					answerTxt = x_currentPageState.optionElements[i].label;
+				} else {
 					// Create fallback label
 					answerTxt = (x_currentPageXML.getAttribute('answerTxt') != undefined ? x_currentPageXML.getAttribute('answerTxt') : "Option");
 					answerTxt += ' ' + (i+1);
-					answerTxt = x_GetTrackingTextFromHTML(this.optionElements[i].text, answerTxt);
+					answerTxt = x_GetTrackingTextFromHTML(x_currentPageState.optionElements[i].text, answerTxt);
 				}
+
 				correctOptions.push({
 					id: (i+1)+"",
 					answer: answerTxt,
-					result: this.optionElements[i].correct == 'true'
+					result: x_currentPageState.optionElements[i].correct === 'true'
 				});
-				if (this.optionElements[i].correct == 'true') {
+				if (x_currentPageState.optionElements[i].correct === 'true') {
 					judge = true;
                     correctAnswer.push(answerTxt);
                 }
-				correctFeedback.push(x_GetTrackingTextFromHTML(this.optionElements[i].feedback, ""));
+				correctFeedback.push(x_GetTrackingTextFromHTML(x_currentPageState.optionElements[i].feedback, ""));
             }
-			if(x_currentPageXML.getAttribute("markFeedback") != undefined && x_currentPageXML.getAttribute("markFeedback") == 'false'){
-				judge = false;
+
+			if (newAttempt) {
+				if(x_currentPageXML.getAttribute("markFeedback") != undefined && x_currentPageXML.getAttribute("markFeedback") == 'false'){
+					judge = false;
+				}
+
+				x_currentPageState.judge = judge;
 			}
-			$("#pageContents").data("judge", judge);
 			
             // Create fallback label
             this.weighting = 1.0;
@@ -88,9 +107,10 @@
             {
                 this.weighting = x_currentPageXML.getAttribute("trackingWeight");
             }
+
             XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
 
-            var label = (x_currentPageXML.getAttribute('name') != undefined ? x_currentPageXML.getAttribute('name') : "Multiple choice question");
+            let label = (x_currentPageXML.getAttribute('name') != undefined ? x_currentPageXML.getAttribute('name') : "Multiple choice question");
             label += ' ' + (x_currentPage+1);
 			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
 			{
@@ -101,27 +121,35 @@
 				label = x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), label);
 			}
             XTEnterInteraction(x_currentPage, 0, 'multiplechoice', label, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
-        }
 
-        this.leavePage = function() {
-			if ($(x_currentPageXML).children().length > 0) {
-				if (!this.checked) {
-					this.showFeedBackandTrackScore();
+			if (!newAttempt && x_currentPageState.checked !== false) {
+				// an attempt was made in a previous session - reinstate this now
+				for (let i=0; i<x_currentPageState.checked.length; i++) {
+					$("#option" + x_currentPageState.checked[i]).prop("checked", true);
 				}
+				mcq.answerSelected($("#optionHolder").hasClass("answerBtn") ? $("#option" + x_currentPageState.checked[0]) : null, false);
 			}
         }
 
-        this.showFeedBackandTrackScore = function() {
-            var answerFeedback = "",
-				genFeedback,
-				correct = (x_currentPageXML.getAttribute("type") == "Multiple Answer"),
-                answered = false,
-				l_options = [],
-				l_answers = [],
-				l_feedbacks = [],
-				selected = $("#optionHolder input");
+        this.leavePage = function() {
+			// no answers have been submitted but a selection has been made
+			// auto submit answer on leaving the page
+			if ($(x_currentPageXML).children().length > 0 && x_currentPageState.checked === false && $("#optionHolder input:checked").length > 0) {
+				this.showFeedBackandTrackScore(true);
+			}
+        }
 
-			const judge = $("#pageContents").data("judge");
+        this.showFeedBackandTrackScore = function(newAttempt) {
+            let answerFeedback = "",
+					genFeedback,
+					correct = (x_currentPageXML.getAttribute("type") == "Multiple Answer"),
+					answered = false;
+
+			const l_options = [],
+					l_answers = [],
+					l_feedbacks = [],
+					checked = [],
+					selected = $("#optionHolder input");
 			
             if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
 				genFeedback = x_addLineBreaks(x_currentPageXML.getAttribute("feedback"));
@@ -130,10 +158,11 @@
 				}
             }
 
-            for (var i=0; i<selected.length; i++) {
-                var optionIndex = $(selected[i]).parents(".answerBtn").length > 0 ? $(selected[i]).parents(".answerBtn").index() : $(selected[i]).parent().index(),
-					selectedOption = this.optionElements[optionIndex],
-					currCorrect;
+            for (let i=0; i<selected.length; i++) {
+                const optionIndex = $(selected[i]).parents(".answerBtn").length > 0 ? $(selected[i]).parents(".answerBtn").index() : $(selected[i]).parent().index(),
+						selectedOption = x_currentPageState.optionElements[optionIndex];
+
+				let currCorrect;
 
 				if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
 					currCorrect = (
@@ -149,8 +178,8 @@
 
                 if ($(selected[i]).is(':checked')) {
 					answered = true;
-					var tempFeedback = "";
-                    tempFeedback += selectedOption.feedback;
+					let tempFeedback = "";
+					tempFeedback += selectedOption.feedback;
 					if (tempFeedback != "" && tempFeedback.indexOf('<p') == -1) {
 						tempFeedback = '<p>' + tempFeedback + '</p>';
 					}
@@ -158,46 +187,48 @@
 						tempFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '" data-transcript="' + selectedOption.transcript + '"></div>';
 					}
 					if (tempFeedback != "") {
-						if (judge) {
-							tempFeedback = '<div class="' + (currCorrect ? 'correct' : 'incorrect')  + 'Feedback">' + tempFeedback + '</div>';
+						if (x_currentPageState.judge) {
+							tempFeedback = '<div class="' + (currCorrect ? 'correct' : 'incorrect') + 'Feedback">' + tempFeedback + '</div>';
 						}
 						answerFeedback += tempFeedback;
 					}
-					
-					var answerTxt = "";
+
+					let answerTxt = "";
 					if (selectedOption.label != undefined) {
-                        answerTxt = selectedOption.label;
-                    }
-                    else
-					{
-                        // Create fallback label
-                        answerTxt = (x_currentPageXML.getAttribute('answerTxt') != undefined ? x_currentPageXML.getAttribute('answerTxt') : "Option");
-                        answerTxt += ' ' + (optionIndex+1);
-                        answerTxt = x_GetTrackingTextFromHTML(selectedOption.text, answerTxt);
+						answerTxt = selectedOption.label;
+					} else {
+						// Create fallback label
+						answerTxt = (x_currentPageXML.getAttribute('answerTxt') != undefined ? x_currentPageXML.getAttribute('answerTxt') : "Option");
+						answerTxt += ' ' + (optionIndex + 1);
+						answerTxt = x_GetTrackingTextFromHTML(selectedOption.text, answerTxt);
 					}
 
-                    l_options.push({
-						id :optionIndex+1+"",
-						answer: answerTxt,
-						result: currCorrect
-                        });
-					l_answers.push(answerTxt);
-                    l_feedbacks.push(x_GetTrackingTextFromHTML(selectedOption.feedback, ""));
+					if (newAttempt) {
+						checked.push(optionIndex);
+						l_options.push({
+							id: optionIndex + 1 + "",
+							answer: answerTxt,
+							result: currCorrect
+						});
+						l_answers.push(answerTxt);
+						l_feedbacks.push(x_GetTrackingTextFromHTML(selectedOption.feedback, ""));
+					}
                 }
             }
-			if (answered) {
 
+			if (answered) {
 				function feedback() {
-					var singleRight = x_currentPageXML.getAttribute("singleRight") != undefined ? x_currentPageXML.getAttribute("singleRight") : "Your answer is correct",
+					const singleRight = x_currentPageXML.getAttribute("singleRight") != undefined ? x_currentPageXML.getAttribute("singleRight") : "Your answer is correct",
 							singleWrong = x_currentPageXML.getAttribute("singleWrong") != undefined ? x_currentPageXML.getAttribute("singleWrong") : "Your answer is incorrect",
 							multiRight = x_currentPageXML.getAttribute("multiRight") != undefined ? x_currentPageXML.getAttribute("multiRight") : "You have selected all the correct answers",
 							multiWrong = x_currentPageXML.getAttribute("multiWrong") != undefined ? x_currentPageXML.getAttribute("multiWrong") : "You have not selected the correct combination of answers";
 
-					var rightWrongTxt = "";
+					let rightWrongTxt = "";
+
 					// add correct feedback depending on if question overall has been answered correctly or not
 					if (x_currentPageXML.getAttribute("markFeedback") != 'false') { // new optional property allows for this feedback to be turned off
 						if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
-							if (judge == true) { // there is a correct answer for question
+							if (x_currentPageState.judge == true) { // there is a correct answer for question
 								if (correct == true) {
 									$("#feedback").addClass("correctFeedback");
 									rightWrongTxt = multiRight != '' ? '<div class="correctFeedback"><p>' + multiRight + '</p></div>' : '';
@@ -207,7 +238,7 @@
 								}
 							}
 						} else {
-							if (judge == true) { // there is a correct answer for question
+							if (x_currentPageState.judge == true) { // there is a correct answer for question
 								if (correct == true) {
 									$("#feedback").addClass("correctFeedback");
 									rightWrongTxt = singleRight != '' ? '<div class="correctFeedback"><p>' + singleRight + '</p></div>' : '';
@@ -219,11 +250,11 @@
 						}
 					}
 
-					var feedback = 0,
-							feedbackDiv = ['top', 'middle', 'bottom'],
-							// order feedback is shown - default is: general feedback > answer feedback > correct/incorrect feedback
-							feedbackOrder = x_currentPageXML.getAttribute("feedbackPos") == undefined ? 'GAC' : x_currentPageXML.getAttribute("feedbackPos");
+					let feedback = 0;
+					const feedbackDiv = ['top', 'middle', 'bottom'];
 
+					// order feedback is shown - default is: general feedback > answer feedback > correct/incorrect feedback
+					let feedbackOrder = x_currentPageXML.getAttribute("feedbackPos") == undefined ? 'GAC' : x_currentPageXML.getAttribute("feedbackPos");
 					feedbackOrder = [...feedbackOrder];
 
 					if (answerFeedback != undefined && answerFeedback != '') {
@@ -244,9 +275,9 @@
 
 					// show the feedback in the order specified
 					// feedback will include correctFeedback / incorrectFeedback classes that can be used in themes to style feedback differently
-					for (var i = 0; i < feedbackDiv.length; i++) {
+					for (let i=0; i<feedbackDiv.length; i++) {
 						if (i < feedback) {
-							var thisFeedback;
+							let thisFeedback;
 							if (feedbackOrder[i] == 'G') {
 								thisFeedback = genFeedback;
 							} else if (feedbackOrder[i] == 'A') {
@@ -266,10 +297,7 @@
 						}
 					}
 
-					var feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel");
-					if (feedbackLabel == undefined) {
-						feedbackLabel = "Feedback";
-					}
+					const feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel") == undefined ? "Feedback" : x_currentPageXML.getAttribute("feedbackLabel");
 					$("#feedbackHeader").html(feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '');
 
 					$("#feedback")
@@ -288,7 +316,7 @@
 					});
 
 					// to avoid a sudden jump in layout, feedback should slide in gradually if content is centred vertically & panel is full height
-					if ($("#pageContents").data("slideIn")) {
+					if ($("#pageContents").data("slideIn") && newAttempt) {
 						$("#feedback").slideDown(function () {
 							// refresh feedback so it is picked up by screen readers now not hidden
 							$("#feedback .feedbackBlock").each(function () {
@@ -314,17 +342,21 @@
 						scrollTop: $("#mainPanel").scrollTop() - $("#mainPanel").offset().top + $("#feedback").offset().top
 					}, 500);
 
-					var result = {
-						success: correct || !judge,
+					const result = {
+						success: correct || !x_currentPageState.judge,
 						score: correct ? 100.0 : 0.0,
-						judge: judge
+						judge: x_currentPageState.judge
 					};
-					XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
-					XTSetPageScore(x_currentPage, (correct || !judge ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
+
+					if (newAttempt) {
+						x_currentPageState.checked = checked;
+						XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
+						XTSetPageScore(x_currentPage, (correct || !x_currentPageState.judge ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
+					}
+
 					if (XTGetMode() == "normal") {
 						// Disable all options
-						var i = 0;
-						for (i = 0; i < mcq.currNrOptions; i++) {
+						for (let i=0; i<$(".optionGroup").length; i++) {
 							$("#option" + i).attr("disabled", "disabled");
 						}
 					}
@@ -345,6 +377,15 @@
         }
 
 		this.init = function() {
+			// reload a saved state if it already exists, otherwise create a fresh state ready for data to be added on page setup
+			x_currentPageState = x_createPageState("state");
+
+			// is this a brand new attempt at this activity - no previous state loaded?
+			// some setup won't need to be done if state data has been loaded
+			const newAttempt = x_currentPageState.reinstate !== true;
+			console.log(x_currentPageState);
+			console.log("new attempt: " + newAttempt);
+
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
 
 			// panel position data is reversed as the property used to be called 'Align text' rather than 'Panel position'
@@ -359,7 +400,7 @@
 			$("#feedback").hide();
 			$("#question").html(x_addLineBreaks(x_currentPageXML.getAttribute("prompt")));
 			
-			var $optionHolder = $("#optionHolder").append('<div class="optionGroup"></div>');
+			const $optionHolder = $("#optionHolder").append('<div class="optionGroup"></div>');
 			
 			if ($(x_currentPageXML).children().length == 0) {
 				$("#optionHolder").html('<span class="alert">' + x_getLangInfo(x_languageData.find("errorQuestions")[0], "noA", "No answer options have been added") + '</span>');
@@ -376,39 +417,46 @@
 					$optionHolder.find(".optionGroup").append('<input type="radio" name="option" /><label class="optionTxt"></label>');
 				}
 
-				var $optionGroup = $optionHolder.find(".optionGroup");
+				const $optionGroup = $optionHolder.find(".optionGroup");
 
-				// Store the answers in a temporary array
-				var elements = [];
-				$(x_currentPageXML).children().each(function(i) {
-					elements.push(
-						{
-							label:		this.getAttribute("name"),
-							text:		this.getAttribute("text"),
-							correct:	this.getAttribute("correct"),
-							feedback:	this.getAttribute("feedback"),
-							audioFB:	this.getAttribute("audioFB"),
-							transcript:	this.getAttribute("audioTranscript") != undefined && this.getAttribute("audioTranscript") != '' ? this.getAttribute("audioTranscript") : false
+				// store info about this question
+				if (newAttempt) {
+					const elements = []
+					$(x_currentPageXML).children().each(function (i) {
+						elements.push(
+								{
+									label: this.getAttribute("name"),
+									text: this.getAttribute("text"),
+									correct: this.getAttribute("correct"),
+									feedback: this.getAttribute("feedback"),
+									audioFB: this.getAttribute("audioFB"),
+									transcript: this.getAttribute("audioTranscript") != undefined && this.getAttribute("audioTranscript") != '' ? this.getAttribute("audioTranscript") : false
+								}
+						);
+					});
+
+					// ** try to minimise the state data being stored? just store the index of options in the order they are displayed?
+					x_currentPageState.optionElements = elements;
+
+					// Randomise the answers, if required
+					if (x_currentPageXML.getAttribute("answerOrder") == 'random') {
+						for (let tmp, j, k, i = x_currentPageState.optionElements.length; i--;) {
+							j = Math.floor(Math.random() * x_currentPageState.optionElements.length);
+							k = Math.floor(Math.random() * x_currentPageState.optionElements.length);
+							tmp = x_currentPageState.optionElements[j];
+							x_currentPageState.optionElements[j] = x_currentPageState.optionElements[k];
+							x_currentPageState.optionElements[k] = tmp;
 						}
-					);
-				});
-				this.optionElements = elements;
-				
-				// Randomise the answers, if required
-				if (x_currentPageXML.getAttribute("answerOrder") == 'random') {
-					for (var tmp, j, k, i = this.optionElements.length; i--;) {
-						j = Math.floor(Math.random() * this.optionElements.length);
-						k = Math.floor(Math.random() * this.optionElements.length);
-						tmp = this.optionElements[j];
-						this.optionElements[j] = this.optionElements[k];
-						this.optionElements[k] = tmp;
 					}
-				}
-				
-				$.each(this.optionElements, function(i, thisOption) {
-						mcq.currNrOptions = i+1;
 
-						var $thisOptionGroup, $thisOption, $thisOptionTxt;
+					x_currentPageState.checked = false;
+				}
+
+				$.each(x_currentPageState.optionElements, function(i, thisOption) {
+						let $thisOptionGroup,
+								$thisOption,
+								$thisOptionTxt;
+
 						if (i != 0) {
 							$thisOptionGroup = $optionGroup.clone().appendTo($optionHolder);
 						} else {
@@ -428,42 +476,19 @@
 									"id"		:"option" + i
 								})
 								.change(function() {
-                                    // to avoid a sudden jump in layout, feedback should slide up gradually if content is centred vertically & panel is full height
-                                    if ($("#pageContents").data("slideIn")) {
+									// to avoid a sudden jump in layout, feedback should slide up gradually if content is centred vertically & panel is full height
+									if ($("#pageContents").data("slideIn")) {
 										if ($("#feedback").is(":visible")) {
 											$("#feedback").slideUp(function () {
 												$("#feedback").find('.feedbackBlock').html("");
 											});
 										}
-                                    } else {
-                                        $("#feedback").hide().find('.feedbackBlock').html("");
-                                    }
+									} else {
+										$("#feedback").hide().find('.feedbackBlock').html("");
+									}
 									$(".correctFeedback, .incorrectFeedback").removeClass("correctFeedback incorrectFeedback");
 
-									var $checkBtn = $("#checkBtn"),
-										$selected = $("#optionHolder input:checked");
-
-									if (!$thisOptionGroup.hasClass("answerBtn")) {
-										// radio button / checkbox
-										$checkBtn.show();
-										if ($selected.length == 0) {
-											$checkBtn.button("disable");
-										} else if ($selected.length > 0) {
-											$checkBtn.button("enable");
-										}
-									} else if ($selected.length > 0) {
-										// toggle button
-										if ($selected.length > 1) {
-											$selected.not($(this))
-													.prop("checked", false)
-													.parents(".answerBtn").removeClass("selected");
-										}
-										$(this).parents(".answerBtn").addClass("selected");
-										mcq.showFeedBackandTrackScore();
-										mcq.checked = true;
-									} else if ($(".answerBtn.selected").length > 0) {
-										$(".answerBtn.selected").removeClass("selected");
-									}
+									mcq.answerSelected($(this), true);
 								});
 
 						if (x_currentPageXML.getAttribute("type") == "Multiple Answer" || x_currentPageXML.getAttribute("answerType") !== "button") {
@@ -498,18 +523,46 @@
 								disabled: true
 							})
 							.click(function () {
-								mcq.showFeedBackandTrackScore();
-								mcq.checked = true;
+								mcq.showFeedBackandTrackScore(true);
 							})
 				}
 
-				this.startQ();
-				
-				$("#pageContents").data("optionElements", this.optionElements);
+				this.startQ(newAttempt);
 			}
 			
 			this.sizeChanged();
 			x_pageLoaded();
+		}
+
+		this.answerSelected = function($this, newAttempt) {
+			const $checkBtn = $("#checkBtn"),
+					$selected = $("#optionHolder input:checked");
+
+			if (!$("#optionHolder").hasClass("answerBtn")) {
+				// radio button / checkbox
+				$checkBtn.show();
+				if ($selected.length == 0) {
+					$checkBtn.button("disable");
+				} else if ($selected.length > 0) {
+					$checkBtn.button("enable");
+					if (!newAttempt) {
+						// reinstate feedback etc. but without tracking attempt again
+						mcq.showFeedBackandTrackScore(newAttempt);
+					}
+				}
+
+			} else if ($selected.length > 0) {
+				// toggle button
+				if ($selected.length > 1) {
+					$selected.not($this)
+							.prop("checked", false)
+							.parents(".answerBtn").removeClass("selected");
+				}
+				$this.parents(".answerBtn").addClass("selected");
+				mcq.showFeedBackandTrackScore(newAttempt);
+			} else if ($(".answerBtn.selected").length > 0) {
+				$(".answerBtn.selected").removeClass("selected");
+			}
 		}
 	}
 
