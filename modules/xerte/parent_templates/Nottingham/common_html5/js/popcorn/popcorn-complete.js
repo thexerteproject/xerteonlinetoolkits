@@ -4716,6 +4716,7 @@
           elem.id = "peertubeIframe";
           elem.addClass = " .iframe ";
           elem.setAttribute("loading", "lazy");
+          elem.setAttribute("allow", "autoplay; fullscreen");
 
         function addPlayerReadyCallback( callback ) {
             playerReadyCallbacks.push( callback );
@@ -4738,7 +4739,8 @@
             self.dispatchEvent("progress");
             elem.width="100%";
             elem.height="100%";
-            elem.src=aSrc + "?api=1";
+            // TOR check is URL already contains url params, if so use &api=1 instead of ?api=1
+            elem.src = aSrc.indexOf("?") > -1 ? elem.src=aSrc + "&api=1" : elem.src=aSrc + "?api=1"
             elem.frameborder="0";
             elem.allowfullscreen="";
             elem.sandbox="allow-same-origin allow-scripts allow-popups";
@@ -4779,7 +4781,7 @@
             if (impl.duration != videoState.duration) {
               impl.duration = videoState.duration;
               self.dispatchEvent( "durationchange" );
-              if (prev_duration == 0 && impl.duration > 0) {
+              if ((prev_duration == 0 || isNaN(prev_duration)) && impl.duration > 0) {
                 self.dispatchEvent( "loadedmetadata" );
                 self.dispatchEvent( "loadeddata" );
               }
