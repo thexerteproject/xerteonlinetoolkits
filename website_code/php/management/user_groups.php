@@ -9,7 +9,7 @@
  * compliance with the License. You may obtain a copy of the License at:
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,16 +44,16 @@ if (is_user_permitted("useradmin")) {
     $user_groups = db_query($query);
 
     echo "<h2>" . MANAGEMENT_MENUBAR_USER_GROUPS . "</h2>";
-	
-	echo "<div class=\"admin_block\">";
-	echo "<h3>" . USER_GROUPS_MANAGEMENT_ADD . "</h3>";
-	echo "<form><input type=\"textinput\" name=\"newgroup\" id=\"newgroup\" /><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:add_new_group('newgroup')\">" . USER_GROUPS_MANAGEMENT_ADD_GROUP . "</button></form>";
-	echo "</div>";
-	
-	echo "<div class=\"admin_block\">";
-	echo "<h3>" . USER_GROUPS_MANAGEMENT_MANAGE . "</h3>";
-	
-	echo "<form name=\"user_groups\" action=\"javascript:list_group_members('group')\">";
+
+    echo "<div class=\"admin_block\">";
+    echo "<h3>" . USER_GROUPS_MANAGEMENT_ADD . "</h3>";
+    echo "<form><input type=\"textinput\" name=\"newgroup\" id=\"newgroup\" /><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:add_new_group('newgroup')\">" . USER_GROUPS_MANAGEMENT_ADD_GROUP . "</button></form>";
+    echo "</div>";
+
+    echo "<div class=\"admin_block\">";
+    echo "<h3>" . USER_GROUPS_MANAGEMENT_MANAGE . "</h3>";
+
+    echo "<form name=\"user_groups\" action=\"javascript:list_group_members('group')\">";
     echo "<label for=\"group\"><p>" . USER_GROUPS_MANAGEMENT_SELECT_GROUP . "</p></label>";
     echo "<select id=\"group\" onchange=\"this.form.submit();\">";
     $firstgroup = null;
@@ -61,11 +61,12 @@ if (is_user_permitted("useradmin")) {
         if ($firstgroup == null){
             $firstgroup = $group['group_id'];
         }
-            echo "<option value=\"" . $group['group_id'] . "\">" . $group['group_name'] ."</option>";
+        echo "<option value=\"" . $group['group_id'] . "\">" . $group['group_name'] ."</option>";
     }
 
     echo "</select>";
     echo "<button class=\"xerte_button\" onclick=\"javascript:delete_group('group')\"><i class=\"fa fa-minus-circle\"></i> " . USER_GROUPS_MANAGEMENT_REMOVE_GROUP . "</button><br>";
+    echo "<button class=\"xerte_button\" onclick=\"javascript:rename_group('group')\"><i class=\"fa fa-edit\"></i> " . USER_GROUPS_MANAGEMENT_RENAME_GROUP . "</button><br>";
     echo "</form>";
 
 //    $database_id = database_connect("user list connected","user list failed");
@@ -100,11 +101,11 @@ if (is_user_permitted("useradmin")) {
 
     */
     echo "</form>";
-	echo "</div>";
+    echo "</div>";
 
     echo "<div id=\"memberlist\" class=\"admin_block\">";
     get_group_members($firstgroup);
-	echo "</div>";
+    echo "</div>";
 
 }else{
 

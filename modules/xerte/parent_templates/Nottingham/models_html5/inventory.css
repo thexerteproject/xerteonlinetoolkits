@@ -71,3 +71,7 @@
 	#chartContainer {
 		position: relative;
 	}
+
+	#btnHolder {
+		overflow: auto;
+	}

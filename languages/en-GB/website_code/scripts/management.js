@@ -39,6 +39,12 @@ var CREATE_GROUP = "Are you sure you want to create this group?";
 
 var DELETE_GROUP = "Are you sure you want to delete this group?";
 
+var GROUP_RENAME = "Enter a new group name for";
+
+var GROUP_RENAME_FAIL = "Failed to rename group.";
+
+var GROUP_RENAME_SUCCESS = "Group successfully renamed.";
+
 var ADD_MEMBER_FAIL = "Failed to add member.";
 
 var DELETE_MEMBER_FAIL = "Failed to delete member.";
