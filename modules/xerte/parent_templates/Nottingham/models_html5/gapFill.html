@@ -201,7 +201,7 @@
 				} else {
 					// a blank to be filled
 					// keep track of correct answers from each blank in answerData array
-					decodedAnswer = $("<textarea/>").html(passageArray[i]).text();
+					decodedAnswer = $("<div/>").html(passageArray[i]).text();
 
 					if (x_currentPageXML.getAttribute("interactivity") == "Drag Drop") {
 						// create span used for target area
