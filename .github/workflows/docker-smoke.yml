@@ -1,0 +1,76 @@
+# Simple smoke test for the Xerte Docker container.
+#
+# Builds the image, runs it, and verifies the app comes up and responds
+# correctly. Intentionally minimal — it checks that the container builds,
+# the database auto-provisions, and the homepage / a DB-backed page render
+# without errors. Runs on every pull request and on pushes to main.
+
+name: Docker smoke test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Build the image
+        run: docker build -t xerte:smoke .
+
+      - name: Run the container
+        run: |
+          docker run -d --name xerte -p 8080:80 \
+            -e XERTE_FRESHCLAM_ON_START=false \
+            xerte:smoke
+
+      - name: Wait for the app to come up
+        run: |
+          # The entrypoint initialises MariaDB + provisions the DB on first start.
+          # Wait until /index.php returns HTTP 200 (up to ~90s).
+          for i in $(seq 1 45); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/index.php || echo 000)
+            echo "attempt $i: HTTP $code"
+            if [ "$code" = "200" ]; then exit 0; fi
+            sleep 2
+          done
+          echo "App did not become ready in time" >&2
+          docker logs xerte >&2
+          exit 1
+
+      - name: Smoke checks
+        run: |
+          set -e
+          # 1. Homepage renders and includes the Xerte title.
+          curl -s http://localhost:8080/index.php | grep -q "Welcome to Xerte Online Toolkits" \
+            || { echo "Homepage title missing"; exit 1; }
+
+          # 2. The setup wizard correctly detects the (auto-provisioned) install.
+          curl -s http://localhost:8080/setup/ | grep -q "Software Installed" \
+            || { echo "setup/ did not report installed"; exit 1; }
+
+          # 3. A DB-backed page responds (management.php redirects to index when
+          #    not logged in as admin -> 302), proving config.php + DB connected.
+          code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/management.php)
+          [ "$code" = "302" ] || { echo "management.php returned $code, expected 302"; exit 1; }
+
+          # 4. PHP error log should not contain fatal errors from the app bootstrap.
+          if docker exec xerte sh -c 'grep -iE "fatal error|parse error|undefined function" /var/log/apache2/xerte_error.log 2>/dev/null'; then
+            echo "PHP fatal errors found in error log"; exit 1
+          fi
+          echo "All smoke checks passed."
+
+      - name: Dump logs on failure
+        if: failure()
+        run: |
+          docker logs xerte || true
+          docker exec xerte sh -c 'tail -n 100 /var/log/apache2/xerte_error.log' 2>/dev/null || true
+
+      - name: Cleanup
+        if: always()
+        run: docker rm -f xerte >/dev/null 2>&1 || true
