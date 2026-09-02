@@ -139,6 +139,18 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
     // Replace spaces by %20
     $url = str_replace(" ", "%20", $url);
     _debug("RSS: encoded url:" . $url);
+
+    // Validate URL scheme and target host to prevent SSRF against internal
+    // services / cloud metadata endpoints (e.g. 169.254.169.254).
+    $url_parts = parse_url($url);
+    $scheme = isset($url_parts['scheme']) ? strtolower($url_parts['scheme']) : '';
+    $host = isset($url_parts['host']) ? $url_parts['host'] : '';
+    $ip = $host !== '' ? gethostbyname($host) : '';
+    if (!in_array($scheme, array('http', 'https'), true) || $ip === '' || !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+        echo "Invalid or disallowed URL";
+        exit;
+    }
+
     $content = $snoopy->fetch($url);
     if ($snoopy->status != 200) {
         _debug("RSS: complete dump of return: " . print_r($snoopy, true));
