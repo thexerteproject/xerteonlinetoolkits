@@ -25,6 +25,7 @@
 
 include 'Snoopy.class.php';
 require_once(dirname(__FILE__) . "/config.php");
+require_once(dirname(__FILE__) . "/library/Xerte/Validate/Url.php");
 
 class SimpleXmlToObject {
     public $xml;
@@ -140,22 +141,86 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQU
     $url = str_replace(" ", "%20", $url);
     _debug("RSS: encoded url:" . $url);
 
-    // Validate URL scheme and target host to prevent SSRF against internal
-    // services / cloud metadata endpoints (e.g. 169.254.169.254).
-    $url_parts = parse_url($url);
-    $scheme = isset($url_parts['scheme']) ? strtolower($url_parts['scheme']) : '';
-    $host = isset($url_parts['host']) ? $url_parts['host'] : '';
-    $ip = $host !== '' ? gethostbyname($host) : '';
-    if (!in_array($scheme, array('http', 'https'), true) || $ip === '' || !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
-        echo "Invalid or disallowed URL";
+    // Validate URL to prevent SSRF attacks
+    // Allows RFC1918 private networks (10.x, 172.16.x, 192.168.x) for internal RSS feeds
+    // Blocks loopback (127.x), link-local (169.254.x), and other dangerous destinations
+    $validator = new Xerte_Validate_Url();
+    if (!$validator->isValid($url)) {
+        $messages = $validator->getMessages();
+        $error_msg = !empty($messages) ? reset($messages) : "Invalid or disallowed URL";
+        _debug("RSS: URL validation failed: " . $error_msg);
+        http_response_code(400);
+        echo $error_msg;
         exit;
     }
 
-    $content = $snoopy->fetch($url);
+    // Disable automatic redirect following to validate each redirect target
+    $snoopy->maxredirs = 0;
+
+    // Manually handle redirects with validation at each step
+    $max_redirects = 5;
+    $redirect_count = 0;
+    $current_url = $url;
+
+    while ($redirect_count < $max_redirects) {
+        $content = $snoopy->fetch($current_url);
+
+        // Check if there's a redirect (3xx status codes)
+        if ($snoopy->status >= 300 && $snoopy->status < 400) {
+            // Look for redirect location in headers
+            $redirect_url = null;
+            if (isset($snoopy->headers['location'])) {
+                $redirect_url = $snoopy->headers['location'];
+            } elseif (isset($snoopy->headers['uri'])) {
+                $redirect_url = $snoopy->headers['uri'];
+            }
+
+            if ($redirect_url === null) {
+                _debug("RSS: Redirect indicated but no location header found");
+                break;
+            }
+
+            _debug("RSS: Following redirect to: " . $redirect_url);
+
+            // Validate redirect target before following
+            if (!$validator->isValid($redirect_url)) {
+                $messages = $validator->getMessages();
+                $error_msg = !empty($messages) ? reset($messages) : "Redirect target not allowed";
+                _debug("RSS: Redirect validation failed: " . $error_msg);
+                http_response_code(400);
+                echo "Redirect target not allowed: " . $error_msg;
+                exit;
+            }
+
+            $current_url = $redirect_url;
+            $redirect_count++;
+        } else {
+            // Not a redirect, we have the final response
+            break;
+        }
+    }
+
+    if ($redirect_count >= $max_redirects) {
+        _debug("RSS: Too many redirects");
+        http_response_code(400);
+        echo "Too many redirects";
+        exit;
+    }
+
     if ($snoopy->status != 200) {
         _debug("RSS: complete dump of return: " . print_r($snoopy, true));
     }
     _debug("RSS: raw result:" . $snoopy->results);
+
+    // Validate that the response is actually RSS/XML content
+    if (stripos($snoopy->results, '<?xml') === false &&
+        stripos($snoopy->results, '<rss') === false &&
+        stripos($snoopy->results, '<feed') === false) {
+        _debug("RSS: Response is not valid RSS/XML");
+        http_response_code(400);
+        echo "Response is not valid RSS/XML content";
+        exit;
+    }
 
 
     //Namespace handling in simplexml is no fun....
