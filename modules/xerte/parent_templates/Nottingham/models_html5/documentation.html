@@ -774,7 +774,7 @@
 				var cells = rows[i].split(separators[1]);
 				for (var j=0; j<cells.length; j++) {
 					if (xml.getAttribute('replace') != 'false') {
-						if ($.trim(cells[j]) == '') {
+						if ($.trim($("<div>" + cells[j] + "</div>").text()) == '') {
 							var textarea = '<textarea class="cell' + id + '" rows="' + rowNum + '"></textarea>';
 							tableString += '<' + dataTag + ' class="editable">' + textarea + '</' + dataTag + '>';
 							id++;
