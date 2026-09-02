@@ -293,7 +293,7 @@
 				}
 
 				// set up download button
-				if (x_currentPageXML.getAttribute("showDownload") === 'true') {
+				if (x_currentPageXML.getAttribute("showDownload") === 'true' || (x_currentPageXML.getAttribute("showDownload") === null && x_currentPageXML.getAttribute("filename") !== null && x_currentPageXML.getAttribute("filename").trim() !== "")) {
 					$("#downloadBtn")
 							.button({
 								label: x_currentPageXML.getAttribute("downloadTxt") != undefined ? x_currentPageXML.getAttribute("downloadTxt") : "Download"
