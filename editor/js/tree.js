@@ -333,6 +333,7 @@ var EDITOR = (function ($, parent) {
         // ***************** TEMPORARY ****************
 
         var json = build_json("treeroot");
+        json.attributes.saveTimeStamp = Date.now();
         var clickevent = e || window.event;
         var urlparam = "";
         if (clickevent.shiftKey)
@@ -392,6 +393,7 @@ var EDITOR = (function ($, parent) {
     		return;
     	}
         var json = build_json("treeroot");
+        json.attributes.saveTimeStamp = Date.now();
         upload_url ??= "editor/upload.php";
         var ajax_call = $.ajax({
                 url: upload_url,

@@ -158,7 +158,7 @@ $(document).ready(function() {
     {
         var newString = x_makeAbsolute(x_fixLineBreaks(dataxmlstr)),
         xmlData = $($.parseXML(newString)).find("learningObject");
-        x_projectDataLoaded(xmlData);
+		x_projectDataLoaded(xmlData);
     }
     else {
 		var now = new Date().getTime();
@@ -174,7 +174,7 @@ $(document).ready(function() {
             success: function (text) {
                 var newString = x_makeAbsolute(x_fixLineBreaks(text)),
                     xmlData = $($.parseXML(newString)).find("learningObject");
-                x_projectDataLoaded(xmlData);
+				x_projectDataLoaded(xmlData);
             },
             error: function () {
                 // can't have translation for this as if it fails to load we don't know what language file to use
@@ -217,593 +217,641 @@ x_isMobileBrowser = function() {
 };
 
 x_projectDataLoaded = function(xmlData) {
-    var i, len;
-	var markedPages = new Array();
-    for (i = 0, len = xmlData[0].attributes.length; i < len; i++) {
-        x_params[xmlData[0].attributes[i].name] = xmlData[0].attributes[i].value;
-    }
+	// don't continue setup until the language (or fallback) data has successfully loaded
+	x_getLangData(x_params.language)
+		.done(function() {
+			var i, len;
+			var markedPages = new Array();
+			for (i = 0, len = xmlData[0].attributes.length; i < len; i++) {
+				x_params[xmlData[0].attributes[i].name] = xmlData[0].attributes[i].value;
+			}
 
-	// author support should only work when previewed (not play link)
-	if (x_params.authorSupport == "true") {
-		if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") == -1) {
-			x_params.authorSupport = "false";
-		}
-	}
-
-	// sort any parameters in url - these will override those in xml
-	var tempUrlParams = window.location.href.slice(window.location.href.indexOf('?') + 1).split(/[#&]/),
-		hash;
-
-	for (var i=0; i<tempUrlParams.length; i++) {
-		var split = tempUrlParams[i].split("=");
-		if (split.length == 2) {
-			x_urlParams[split[0]] = split[1];
-		} else {
-			hash = tempUrlParams[i];
-		}
-	}
-
-	// resolve promise if the page isn't a standalone page loading in a lightbox as no pageState data will be received later
-	if (x_urlParams.lightboxState !== "1") {
-		if (XTTrackingSystem().indexOf('SCORM') < 0 && XTGetMode() != 'normal') {
-			// project is not being tracked
-			// browser may have some local storage data to allow previous page state to be recreated
-			const savedData = localStorage.getItem("xerte_" + x_TemplateId + "_state");
-			if (savedData !== null) {
-				/* ** TODO
-					- only prompt to restore data if there is some useful info there
-					- only restore data if it is from same published version of the project (to avoid situations where the data no longer matches project structure)
-					- reword strings & add to language files
-				 */
-				const allData = JSON.parse(savedData);
-				if (confirm("Restore previous session")) {
-					try {
-						x_pageStates = allData.state;
-						console.log("x_pageStates restored from browser local storage " + allData.date);
-						console.log(x_pageStates);
-					} catch (e) {
-						alert("Saved session state could not be restored");
-					}
-				} else {
-					localStorage.removeItem("xerte_" + x_TemplateId + "_state");
+			// author support should only work when previewed (not play link)
+			if (x_params.authorSupport == "true") {
+				if (window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") == -1) {
+					x_params.authorSupport = "false";
 				}
 			}
-		}
 
-		x_resolvePageStateReady();
-	}
+			// sort any parameters in url - these will override those in xml
+			var tempUrlParams = window.location.href.slice(window.location.href.indexOf('?') + 1).split(/[#&]/),
+				hash;
 
-    x_pages = xmlData.children();
-	var pageToHide = [],
-		currActPage = 0;
+			for (var i = 0; i < tempUrlParams.length; i++) {
+				var split = tempUrlParams[i].split("=");
+				if (split.length == 2) {
+					x_urlParams[split[0]] = split[1];
+				} else {
+					hash = tempUrlParams[i];
+				}
+			}
 
-	// remove pages from chapters and put directly in x_pages
-	// keep record of chapter details in x_chapters and keep track of which page belongs in each chapter
-	let tempPages = [];
-	x_pages.each(function (i) {
-		const $this = $(this)
-		if ($this[0].nodeName === "chapter") {
-			$($this.children()).each(function(j) {
-				const $thisChild = $(this);
-				$thisChild[0].setAttribute("chapterIndex", x_chapters.length);
+			let pagesViewed = false;
 
-				// if the chapter is a standalone chapter then all pages within it will take on the same standalone properties
-				// unless the page has separate standalone properties set - these will take priority
-				const standAloneAttrs = ["linkPage", "linkTarget", "headerHide", "footerHide", "reqProgress"];
-				if ($thisChild[0].getAttribute(standAloneAttrs[0]) === null && $this[0].getAttribute(standAloneAttrs[0] + "Chapter") === 'true') {
-					$(standAloneAttrs).each(function() {
-						$thisChild[0].setAttribute(this, $this[0].getAttribute(this + "Chapter"));
-					});
+			// resolve promise if the page isn't a standalone page loading in a lightbox as no pageState data will be received later
+			if (x_urlParams.lightboxState !== "1") {
+				if (XTTrackingSystem().indexOf('SCORM') < 0 && XTGetMode() != 'normal') {
+					// project is not being tracked
+					// browser may have some local storage data which will allow previous page state to be recreated
+					const savedData = localStorage.getItem("xerte_" + x_TemplateId + "_state");
+					if (savedData !== null) {
+						const allData = JSON.parse(savedData);
+
+						// only attempt to restore if the previous session data was from the same saved version of this project
+						// the project xml will contain a timestamp of when it was last saved & this needs to match the version saved in localstorage data
+						if (x_params.saveTimeStamp === allData.version) {
+							// inform user of when the session data was stored & ask if they want to restore it
+							const savedDate = new Date(allData.date);
+							const now = new Date();
+
+							let restoreMessage;
+							if (savedDate.getFullYear() === now.getFullYear() && savedDate.getMonth() === now.getMonth() && savedDate.getDate() === now.getDate()) {
+								// saved earlier today
+								const time = savedDate.toLocaleTimeString([], {
+									hour: "numeric",
+									minute: "2-digit"
+								});
+								restoreMessage = x_getLangInfo(x_languageData.find("localStorage")[0], "today", "Restore previous session from today at {x}?");
+								restoreMessage = restoreMessage.replace("{x}", time);
+
+							} else {
+								// saved on a previous day
+								const daysAgo = Math.floor(
+									(new Date(now.getFullYear(), now.getMonth(), now.getDate()) -
+										new Date(savedDate.getFullYear(), savedDate.getMonth(), savedDate.getDate()))
+									/ (1000 * 60 * 60 * 24)
+								);
+								if (daysAgo === 1) {
+									restoreMessage = x_getLangInfo(x_languageData.find("localStorage")[0], "day1", "Restore previous session from {x} day ago?");
+								} else {
+									restoreMessage = x_getLangInfo(x_languageData.find("localStorage")[0], "day2", "Restore previous session from {x} days ago?");
+								}
+								restoreMessage = restoreMessage.replace("{x}", daysAgo);
+							}
+
+							if (confirm(restoreMessage)) {
+								// restore state
+								try {
+									x_pageStates = allData.state;
+									pagesViewed = allData.viewed;
+								} catch (e) {
+									alert(x_getLangInfo(x_languageData.find("localStorage")[0], "error", "Session could not be restored"));
+								}
+							} else {
+								// delete saved data
+								localStorage.removeItem("xerte_" + x_TemplateId + "_state");
+							}
+						}
+					}
 				}
 
-				tempPages.push($thisChild[0]);
+				x_resolvePageStateReady();
+			}
+
+			x_pages = xmlData.children();
+			var pageToHide = [],
+				currActPage = 0;
+
+			// remove pages from chapters and put directly in x_pages
+			// keep record of chapter details in x_chapters and keep track of which page belongs in each chapter
+			let tempPages = [];
+			x_pages.each(function (i) {
+				const $this = $(this)
+				if ($this[0].nodeName === "chapter") {
+					$($this.children()).each(function (j) {
+						const $thisChild = $(this);
+						$thisChild[0].setAttribute("chapterIndex", x_chapters.length);
+
+						// if the chapter is a standalone chapter then all pages within it will take on the same standalone properties
+						// unless the page has separate standalone properties set - these will take priority
+						const standAloneAttrs = ["linkPage", "linkTarget", "headerHide", "footerHide", "reqProgress"];
+						if ($thisChild[0].getAttribute(standAloneAttrs[0]) === null && $this[0].getAttribute(standAloneAttrs[0] + "Chapter") === 'true') {
+							$(standAloneAttrs).each(function () {
+								$thisChild[0].setAttribute(this, $this[0].getAttribute(this + "Chapter"));
+							});
+						}
+
+						tempPages.push($thisChild[0]);
+					});
+
+					const chapterInfo = {pages: []};
+					for (let i = 0; i < $this[0].attributes.length; i++) {
+						chapterInfo[$this[0].attributes[i].name] = $this[0].attributes[i].value;
+					}
+					chapterInfo.viewed = false;
+
+					x_chapters.push(chapterInfo);
+				} else {
+					tempPages.push($this[0]);
+				}
 			});
 
-			const chapterInfo = { pages: [] };
-			for (let i=0; i<$this[0].attributes.length; i++) {
-				chapterInfo[$this[0].attributes[i].name] = $this[0].attributes[i].value;
-			}
-			chapterInfo.viewed = false;
+			x_pages = $(tempPages);
 
-			x_chapters.push(chapterInfo);
-		} else {
-			tempPages.push($this[0]);
-		}
-	});
+			x_pages.each(function (i) {
+				// work out whether the page is hidden or not - can be simply hidden or hidden between specific dates/times
+				var hidePage = $(this)[0].getAttribute("hidePage") == "true" ? true : false;
+				if (hidePage == true) {
+					// get current date/time according to browser
+					var nowTemp = new Date();
+					var now = {
+						day: nowTemp.getDate(),
+						month: nowTemp.getMonth() + 1,
+						year: nowTemp.getFullYear(),
+						time: Number(String(nowTemp.getHours()) + (String(nowTemp.getMinutes()) < 10 ? '0' : '') + String(nowTemp.getMinutes()))
+					};
 
-	x_pages = $(tempPages);
-	
-    x_pages.each(function (i) {
-		// work out whether the page is hidden or not - can be simply hidden or hidden between specific dates/times
-		var hidePage = $(this)[0].getAttribute("hidePage") == "true" ? true : false;
-		if (hidePage == true) {
-			// get current date/time according to browser
-			var nowTemp = new Date();
-			var now = {day:nowTemp.getDate(), month:nowTemp.getMonth()+1, year:nowTemp.getFullYear(), time:Number(String(nowTemp.getHours()) + (String(nowTemp.getMinutes()) < 10 ? '0' : '') + String(nowTemp.getMinutes()))};
+					// functions to get hide on/until date/times from xml
+					var hideOn, hideUntil,
+						hideOnString = '', hideUntilString = '';
 
-			// functions to get hide on/until date/times from xml
-			var hideOn, hideUntil,
-				hideOnString = '', hideUntilString = '';
-			
-			var getDateInfo = function(dmy, hm) {
-				// some basic checks of whether values are valid & then splits the data into time/day/month/year
-				var tempDmy = dmy.split('/'), // original date format
-					formatType = 0,
-					format = [[0,1,2], [2,1,0]]; // d, m, y
-				
-				if (tempDmy.length == 3) {
-					dmy = tempDmy;
-				} else if (tempDmy.length == 1) {
-					tempDmy = dmy.split('-'); // try the newer date format
-					if (tempDmy.length == 3) {
-						tempDmy.splice(2, 1, tempDmy[2].split('T')[0]);
-						dmy = tempDmy;
-						formatType = 1;
-					} else {
-						dmy = false;
-					}
-					
-				} else {
-					dmy = false;
-				}
-				
-				if (dmy == false) {
-					return [false];
-				} else {
-					var day = Math.max(1, Math.min(Number(dmy[format[formatType][0]]), 31)),
-						month = Math.max(1, Math.min(Number(dmy[format[formatType][1]]), 12)),
-						year = Math.max(Number(dmy[format[formatType][2]]), 2017),
-						time = 0; // use midnight if no time is given
-					
-					if (hm != undefined && hm.trim() != '') {
-						var hm = hm.split(':');
-						if (hm.length == 2) {
-							var hour = Math.min(Number(hm[0]), 23),
-								minute = Math.min(Number(hm[1]), 59);
-							time = Number(String(hour) + (minute < 10 ? '0' : '') + String(minute));
-						}
-					}
-					return [{day:day, month:month, year:year, time:time}, (formatType == 0 ? day + '/' + month + '/' + year : year + '-' + month + '-' + day)];
-				}
-			}
-			
-			var getFullDate = function(info) {
-				var timeZero = '';
-				for (var i=0; i<4-String(info.time).length; i++) {
-					timeZero += '0';
-				}
-				return Number(String(info.year) + (info.month < 10 ? '0' : '') + String(info.month) + (info.day < 10 ? '0' : '') + String(info.day) + timeZero + String(info.time));
-			}
-			
-			var skipHideDateCheck = false,
-				hideOnInfo,
-				hideUntilInfo;
-			
-			if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '') {
-				hideOnInfo = getDateInfo($(this)[0].getAttribute("hideOnDate"), $(this)[0].getAttribute("hideOnTime"));
-				hideOn = hideOnInfo[0];
-			}
-			
-			if ($(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
-				hideUntilInfo = getDateInfo($(this)[0].getAttribute("hideUntilDate"), $(this)[0].getAttribute("hideUntilTime"));
-				hideUntil = hideUntilInfo[0];
-			}
-			
-			// if hide from & to date/times are identical then hide (to prevent issue with a previous release where these were never blank but pages should have been hidden)
-			if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '' && $(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
-				if (hideOn.day == hideUntil.day && hideOn.month == hideUntil.month && hideOn.year == hideUntil.year) {
-					if ($(this)[0].getAttribute("hideOnTime") == $(this)[0].getAttribute("hideUntilTime") || $(this)[0].getAttribute("hideOnTime") == '' || $(this)[0].getAttribute("hideUntilTime") == '') {
-						skipHideDateCheck = true;
-					}
-				}
-			}
-			
-			if (skipHideDateCheck != true) {
-				// is it hidden from a certain date? if so, have we passed that date/time?
-				if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '') {
+					var getDateInfo = function (dmy, hm) {
+						// some basic checks of whether values are valid & then splits the data into time/day/month/year
+						var tempDmy = dmy.split('/'), // original date format
+							formatType = 0,
+							format = [[0, 1, 2], [2, 1, 0]]; // d, m, y
 
-					if (hideOn != false) {
-						if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
-							hidePage = false;
-						}
-
-						hideOnString = '{from}: ' + hideOnInfo[1] + ' ' + $(this)[0].getAttribute("hideOnTime");
-					}
-				}
-
-				// is it hidden until a certain date? if so, have we passed that date/time?
-				if ($(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
-					if (hideUntil != false) {
-						// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
-						var skip = false;
-						if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
-							if (hidePage == false) {
-								hidePage = true;
+						if (tempDmy.length == 3) {
+							dmy = tempDmy;
+						} else if (tempDmy.length == 1) {
+							tempDmy = dmy.split('-'); // try the newer date format
+							if (tempDmy.length == 3) {
+								tempDmy.splice(2, 1, tempDmy[2].split('T')[0]);
+								dmy = tempDmy;
+								formatType = 1;
 							} else {
-								skip = true;
+								dmy = false;
 							}
+
+						} else {
+							dmy = false;
 						}
 
-						if (skip != true && hidePage == true) {
-							if (hideUntil.year < now.year || (hideUntil.year == now.year && hideUntil.month < now.month) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day < now.day) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day == now.day && hideUntil.time <= now.time)) {
-								hidePage = false;
-							}
-						}
+						if (dmy == false) {
+							return [false];
+						} else {
+							var day = Math.max(1, Math.min(Number(dmy[format[formatType][0]]), 31)),
+								month = Math.max(1, Math.min(Number(dmy[format[formatType][1]]), 12)),
+								year = Math.max(Number(dmy[format[formatType][2]]), 2017),
+								time = 0; // use midnight if no time is given
 
-						hideUntilString = '{until}: ' + hideUntilInfo[1] + ' ' + $(this)[0].getAttribute("hideUntilTime");
+							if (hm != undefined && hm.trim() != '') {
+								var hm = hm.split(':');
+								if (hm.length == 2) {
+									var hour = Math.min(Number(hm[0]), 23),
+										minute = Math.min(Number(hm[1]), 59);
+									time = Number(String(hour) + (minute < 10 ? '0' : '') + String(minute));
+								}
+							}
+							return [{
+								day: day,
+								month: month,
+								year: year,
+								time: time
+							}, (formatType == 0 ? day + '/' + month + '/' + year : year + '-' + month + '-' + day)];
+						}
 					}
-				}
-			}
 
-			// language data hasn't been sorted yet so temporarily just store the attribute name of where we can later get the language we need
-			var infoString = '';
-			if (hideOnString != '') {
-				infoString += '(' + hideOnString;
-			}
-			if (hideUntilString != '') {
-				if (infoString == '') { infoString += '('; } else { infoString += ' & '; }
-				infoString += hideUntilString;
-			}
-			if (infoString != '') { infoString += ')'; }
+					var getFullDate = function (info) {
+						var timeZero = '';
+						for (var i = 0; i < 4 - String(info.time).length; i++) {
+							timeZero += '0';
+						}
+						return Number(String(info.year) + (info.month < 10 ? '0' : '') + String(info.month) + (info.day < 10 ? '0' : '') + String(info.day) + timeZero + String(info.time));
+					}
 
-			if (hidePage == true) {
-				infoString = '{hidden} ' + infoString;
-			} else {
-				infoString = '{shown} ' + infoString;
-			}
+					var skipHideDateCheck = false,
+						hideOnInfo,
+						hideUntilInfo;
 
-			$(this)[0].setAttribute("hidePageInfo", infoString);
-		}
+					if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '') {
+						hideOnInfo = getDateInfo($(this)[0].getAttribute("hideOnDate"), $(this)[0].getAttribute("hideOnTime"));
+						hideOn = hideOnInfo[0];
+					}
 
-		if (hidePage == false || x_params.authorSupport == "true") {
-			var linkID = $(this)[0].getAttribute("linkID"),
-				pageID = $.trim($(this)[0].getAttribute("pageID")),
-				page = {type: $(this)[0].nodeName, built: false, viewed: false};
-			
-			if (linkID != undefined) {
-				page.linkID = linkID;
-			}
-			
-			// pageID optional property was deprecated previously but has been brought back
-			// it's now blank when added to editor but need to ignore default text that used to be in field prior to it being deprecated
-			if (pageID != undefined && pageID != "" && pageID != "Unique ID for this page") {
-				// if pages have custom ID then make sure they don't include spaces
-				page.pageID = pageID.split(" ").join("_");
-			}
+					if ($(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
+						hideUntilInfo = getDateInfo($(this)[0].getAttribute("hideUntilDate"), $(this)[0].getAttribute("hideUntilTime"));
+						hideUntil = hideUntilInfo[0];
+					}
 
-			// Get child linkIDs for deeplinking
-			page.childIDs = [];
-			var tempArrays = [];
-			var allChildIDs = function($this, array) {
-				$this.children().each(function () {
-					var $child = $(this)
-					if ($child.children().length > 0) {
-						array.push($child[0].getAttribute("linkID"));
-						tempArrays.push([]);
-						var tempArray = tempArrays[tempArrays.length-1];
-						allChildIDs($child, tempArray);
-						array.push(tempArray);
+					// if hide from & to date/times are identical then hide (to prevent issue with a previous release where these were never blank but pages should have been hidden)
+					if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '' && $(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
+						if (hideOn.day == hideUntil.day && hideOn.month == hideUntil.month && hideOn.year == hideUntil.year) {
+							if ($(this)[0].getAttribute("hideOnTime") == $(this)[0].getAttribute("hideUntilTime") || $(this)[0].getAttribute("hideOnTime") == '' || $(this)[0].getAttribute("hideUntilTime") == '') {
+								skipHideDateCheck = true;
+							}
+						}
+					}
 
+					if (skipHideDateCheck != true) {
+						// is it hidden from a certain date? if so, have we passed that date/time?
+						if ($(this)[0].getAttribute("hideOnDate") != undefined && $(this)[0].getAttribute("hideOnDate") != '') {
+
+							if (hideOn != false) {
+								if (hideOn.year > now.year || (hideOn.year == now.year && hideOn.month > now.month) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day > now.day) || (hideOn.year == now.year && hideOn.month == now.month && hideOn.day == now.day && hideOn.time > now.time)) {
+									hidePage = false;
+								}
+
+								hideOnString = '{from}: ' + hideOnInfo[1] + ' ' + $(this)[0].getAttribute("hideOnTime");
+							}
+						}
+
+						// is it hidden until a certain date? if so, have we passed that date/time?
+						if ($(this)[0].getAttribute("hideUntilDate") != undefined && $(this)[0].getAttribute("hideUntilDate") != '') {
+							if (hideUntil != false) {
+								// if hideUntil date is before hideOn date then the page is hidden/shown/hidden rather than shown/hidden/shown & it might need to be treated differently:
+								var skip = false;
+								if (hideOn != undefined && getFullDate(hideOn) > getFullDate(hideUntil)) {
+									if (hidePage == false) {
+										hidePage = true;
+									} else {
+										skip = true;
+									}
+								}
+
+								if (skip != true && hidePage == true) {
+									if (hideUntil.year < now.year || (hideUntil.year == now.year && hideUntil.month < now.month) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day < now.day) || (hideUntil.year == now.year && hideUntil.month == now.month && hideUntil.day == now.day && hideUntil.time <= now.time)) {
+										hidePage = false;
+									}
+								}
+
+								hideUntilString = '{until}: ' + hideUntilInfo[1] + ' ' + $(this)[0].getAttribute("hideUntilTime");
+							}
+						}
+					}
+
+					// language data hasn't been sorted yet so temporarily just store the attribute name of where we can later get the language we need
+					var infoString = '';
+					if (hideOnString != '') {
+						infoString += '(' + hideOnString;
+					}
+					if (hideUntilString != '') {
+						if (infoString == '') {
+							infoString += '(';
+						} else {
+							infoString += ' & ';
+						}
+						infoString += hideUntilString;
+					}
+					if (infoString != '') {
+						infoString += ')';
+					}
+
+					if (hidePage == true) {
+						infoString = '{hidden} ' + infoString;
 					} else {
-						array.push($child[0].getAttribute("linkID"));
+						infoString = '{shown} ' + infoString;
 					}
-				});
+
+					$(this)[0].setAttribute("hidePageInfo", infoString);
+				}
+
+				if (hidePage == false || x_params.authorSupport == "true") {
+					var linkID = $(this)[0].getAttribute("linkID"),
+						pageID = $.trim($(this)[0].getAttribute("pageID")),
+						page = {type: $(this)[0].nodeName, built: false, viewed: false};
+
+					if (linkID != undefined) {
+						page.linkID = linkID;
+					}
+
+					// pageID optional property was deprecated previously but has been brought back
+					// it's now blank when added to editor but need to ignore default text that used to be in field prior to it being deprecated
+					if (pageID != undefined && pageID != "" && pageID != "Unique ID for this page") {
+						// if pages have custom ID then make sure they don't include spaces
+						page.pageID = pageID.split(" ").join("_");
+					}
+
+					// Get child linkIDs for deeplinking
+					page.childIDs = [];
+					var tempArrays = [];
+					var allChildIDs = function ($this, array) {
+						$this.children().each(function () {
+							var $child = $(this)
+							if ($child.children().length > 0) {
+								array.push($child[0].getAttribute("linkID"));
+								tempArrays.push([]);
+								var tempArray = tempArrays[tempArrays.length - 1];
+								allChildIDs($child, tempArray);
+								array.push(tempArray);
+
+							} else {
+								array.push($child[0].getAttribute("linkID"));
+							}
+						});
+					}
+
+					allChildIDs($(this), page.childIDs);
+
+					// is this a standalone page?
+					if ($(this)[0].getAttribute("linkPage") == 'true') {
+						page.standalone = true;
+					}
+
+					x_pageInfo.push(page);
+
+					if (($(this)[0].getAttribute("unmarkForCompletion") === "false" || $(this)[0].getAttribute("unmarkForCompletion") == undefined) && this.nodeName !== "results") {
+						markedPages.push(currActPage);
+						currActPage++;
+					} else {
+						currActPage++;
+					}
+				} else {
+					pageToHide.push(i);
+				}
+			});
+
+			// if the project is being restored to a previous state from data in local storage, restore the viewed pages
+			if (pagesViewed !== false) {
+				x_restorePagesViewed(pagesViewed);
 			}
-			
-			allChildIDs($(this), page.childIDs);
 
-			// is this a standalone page?
-			if ($(this)[0].getAttribute("linkPage") == 'true') {
-				page.standalone = true;
-			}
-			
-			x_pageInfo.push(page);
-			
-            if (($(this)[0].getAttribute("unmarkForCompletion") === "false" || $(this)[0].getAttribute("unmarkForCompletion") == undefined) && this.nodeName !== "results" )
-            {
-                markedPages.push(currActPage);
-                currActPage++;
-            }
-            else {
-                currActPage++;
-            }
-		}
-		else {
-			pageToHide.push(i);
-		}
-    });
-	
-	// removes hidden pages from x_pages array
-	var numPages = x_pages.length,
-		offset = 0;
-	
-	for (var i=0; i<numPages; i++) {
-		if (pageToHide.indexOf(i) != -1) {
-			x_pages.splice(i - offset, 1);
-			offset++;
-		}
-	}
+			// removes hidden pages from x_pages array
+			var numPages = x_pages.length,
+				offset = 0;
 
-	// make array containing indexes of normal pages (not standalone)
-	for (var i=0; i<x_pageInfo.length; i++) {
-		if (x_pageInfo[i].standalone != true) {
-			x_normalPages.push(i);
-		}
-
-		// add indexes of pages within each chapter to the chapters array
-		const chapterIndex = x_pages[i].getAttribute("chapterIndex");
-		if (chapterIndex != undefined) {
-			x_chapters[chapterIndex].pages.push(i);
-		}
-	}
-
-	// will a sidebar need to be built?
-	// need to know now as depending on how it's set up it can change the navigation and displayMode
-	XENITH.SIDEBAR.init();
-	
-    if (x_normalPages.length < 2) {
-        // don't show navigation options if there's only one page
-        $("#x_footerBlock #x_footerRight").hide();
-    } else {
-        if (x_params.navigation == undefined) {
-            x_params.navigation = "Linear";
-        }
-
-		if (x_params.navigation != "Linear" && x_params.navigation != "LinearWithHistoric" && x_params.navigation != "Historic" && x_params.navigation != undefined) {
-			XENITH.PAGEMENU.init("page");
-		}
-    }
-
-    if (x_params.fixDisplay != undefined) {
-        if ($.isNumeric(x_params.fixDisplay.split(",")[0]) == true && $.isNumeric(x_params.fixDisplay.split(",")[1]) == true) {
-            x_params.displayMode = x_params.fixDisplay.split(",");
-            x_fillWindow = false; // overrides fill window for touchscreen devices
-        }
-    }
-	
-	// there are several URL params that can determine the 1st page viewed - check if they are valid pages before setting start page
-	var customStartPage = false;
-	
-	if (x_urlParams.linkID) { // ID auto-generated in xwd e.g. URL/play_123&linkID=PG1593081880325
-		var temp = getDeepLink(x_urlParams.linkID);
-		if (temp.length > 1) {
-			x_deepLink = temp[1];
-		}
-		
-		var validPage = x_lookupPage("linkID", temp[0]);
-		if (validPage !== false) {
-			x_startPage = { type : "index", ID : validPage };
-			customStartPage = true;
-		}
-		
-		delete x_urlParams.linkID;
-	}
-	
-	if (x_urlParams.pageID) { // ID created by author OR auto-generated in xwd e.g. URL/play_123&pageID=customID OR URL/play_123&pageID=PG1593081880325
-		var temp = getDeepLink(x_urlParams.pageID);
-		if (temp.length > 1) {
-			x_deepLink = temp[1];
-		}
-		
-		var validPage = x_lookupPage("pageID", temp[0]);
-		if (validPage !== false) {
-			x_startPage = { type : "index", ID : validPage };
-			customStartPage = true;
-		}
-		
-		delete x_urlParams.pageID;
-	}
-	
-	if (x_urlParams.page) { // ID created by author OR numeric page number e.g. URL/play_123&page=customID OR URL/play_123&page=5
-		var temp = getDeepLink(x_urlParams.page);
-		if (temp.length > 1) {
-			x_deepLink = temp[1];
-		}
-		
-		var validPage = x_lookupPage("pageID", temp[0]);
-		if (validPage !== false) {
-			x_startPage = {type : "index", ID : validPage};
-			customStartPage = true;
-			
-		} else {
-			if ($.isNumeric(temp[0]) && temp[0] <= x_normalPages.length) {
-				var tempIndex = x_normalPages[Number(temp[0])-1];
-				x_startPage = { type : "index", ID : tempIndex };
-				customStartPage = true;
-			}
-		}
-		
-		delete x_urlParams.page;
-	}
-	
-	if (x_urlParams.resume) { // Numeric page number e.g. URL/play_123#resume=5 - deprecated but needs to work for existing links
-		var temp = getDeepLink(x_urlParams.resume);
-		if (temp.length > 1) {
-			x_deepLink = temp[1];
-		}
-		
-		if ($.isNumeric(temp[0]) && temp[0] <= x_normalPages.length) {
-			var tempIndex = x_normalPages[Number(temp[0])-1];
-			x_startPage = { type : "index", ID : tempIndex };
-			customStartPage = true;
-		}
-		
-		delete x_urlParams.resume;
-	}
-	
-	if (hash != undefined) { // ID created by author OR numeric page number e.g. URL/play_123#customID OR URL/play_123#page5 OR URL/play_123#5
-		var temp = getDeepLink(hash);
-		if (temp.length > 1) {
-			x_deepLink = temp[1];
-		}
-		
-		var info = getHashInfo(temp[0]);
-		if (info !== false) {
-			x_startPage = {type : "index", ID : info};
-			customStartPage = true;
-		}
-	}
-
-	// any params in URL which can change the start page can be disabled from working by adding optional property
-	// also, if 1st page is project is standalone page then it should default to 1st non-standalone page instead
-	if (x_pageInfo[x_startPage.ID] != undefined) {
-		if ((x_pageInfo[x_startPage.ID].standalone == true && customStartPage == false) || 
-			(x_params.forcePage1 == 'true' && customStartPage == true && (x_pageInfo[x_startPage.ID].standalone == undefined || x_pageInfo[x_startPage.ID].standalone == false))) {
-			var tempIndex;
-			for (var i=0; i<x_pageInfo.length; i++) {
-				if (x_pageInfo[i].standalone != true) {
-					tempIndex = i;
-					break;
+			for (var i = 0; i < numPages; i++) {
+				if (pageToHide.indexOf(i) != -1) {
+					x_pages.splice(i - offset, 1);
+					offset++;
 				}
 			}
-			
-			if (tempIndex) {
-				x_startPage = {type : "index", ID : String(tempIndex)};
-			} else {
-				x_startPage = {type : "index", ID : "0"};
+
+			// make array containing indexes of normal pages (not standalone)
+			for (var i = 0; i < x_pageInfo.length; i++) {
+				if (x_pageInfo[i].standalone != true) {
+					x_normalPages.push(i);
+				}
+
+				// add indexes of pages within each chapter to the chapters array
+				const chapterIndex = x_pages[i].getAttribute("chapterIndex");
+				if (chapterIndex != undefined) {
+					x_chapters[chapterIndex].pages.push(i);
+				}
 			}
-		}
-	}
-	
-	// tidy up the URL to remove all of the params about start page - hash at end of URL will change according to currently viewed page
-	var shortParams = "";
-	Object.keys(x_urlParams).forEach(function(key, index) {
-		shortParams += index==0 ? '?' : '&';
-		shortParams += key + '=' + x_urlParams[key];
-	});
-	
-	// change URL params without reloading the page
-	window.history.pushState('window.location.href', "", shortParams);
 
-	// url embed parameter uses ideal setup for embedding in iframes - can be overridden with other parameters below
-	if (x_urlParams.embed == 'true') {
-		x_params.embed = true;
-		x_params.displayMode = 'full screen';
-		x_params.responsive = 'false';
-		// css button also won't appear
-	}
+			// will a sidebar need to be built?
+			// need to know now as depending on how it's set up it can change the navigation and displayMode
+			XENITH.SIDEBAR.init();
 
-    // url display parameter will set size of LO (display=fixed|full|fill - or a specified size e.g. display=200,200)
-    if (x_urlParams.display != undefined) {
-        if ($.isNumeric(x_urlParams.display.split(",")[0]) == true && $.isNumeric(x_urlParams.display.split(",")[1]) == true) {
-            x_params.displayMode = x_urlParams.display.split(",");
-            x_fillWindow = false; // overrides fill window for touchscreen devices
+			if (x_normalPages.length < 2) {
+				// don't show navigation options if there's only one page
+				$("#x_footerBlock #x_footerRight").hide();
+			} else {
+				if (x_params.navigation == undefined) {
+					x_params.navigation = "Linear";
+				}
 
-        } else if (x_urlParams.display == "fixed" || x_urlParams.display == "default" || x_urlParams.display == "full" || x_urlParams.display == "fill") {
-            if (x_browserInfo.mobile == true) {
-                x_fillWindow = true;
-            }
-            if (x_urlParams.display == "fixed" || x_urlParams.display == "default") { // default fixed size using values in css (800,600)
-                x_params.displayMode = "default";
-            } else if (x_urlParams.display == "full" || x_urlParams.display == "fill") {
-                x_params.displayMode = "full screen"
-            }
-        }
-    }
+				if (x_params.navigation != "Linear" && x_params.navigation != "LinearWithHistoric" && x_params.navigation != "Historic" && x_params.navigation != undefined) {
+					XENITH.PAGEMENU.init("page");
+				}
+			}
 
-	if (window.location.href.indexOf("/peer.php") != -1 || window.location.href.indexOf("/peerreview_") != -1) {
-		x_params.displayMode = "default";
-		x_fillWindow = false;
-	}
+			if (x_params.fixDisplay != undefined) {
+				if ($.isNumeric(x_params.fixDisplay.split(",")[0]) == true && $.isNumeric(x_params.fixDisplay.split(",")[1]) == true) {
+					x_params.displayMode = x_params.fixDisplay.split(",");
+					x_fillWindow = false; // overrides fill window for touchscreen devices
+				}
+			}
 
-	// this is being shown in iframe so force to fill available space
-	if (self !== top) {
-		x_fillWindow = true;
-	}
+			// there are several URL params that can determine the 1st page viewed - check if they are valid pages before setting start page
+			var customStartPage = false;
 
-    // url hide parameter will remove x_headerBlock &/or x_footerBlock divs
-    if (x_urlParams.hide != undefined) {
-        if (x_urlParams.hide == "none") {
-            x_params.hideHeader = "false";
-            x_params.hideFooter = "false";
-        } else if (x_urlParams.hide == "both") {
-            x_params.hideHeader = "true";
-            x_params.hideFooter = "true";
-        } else if (x_urlParams.hide == "bottom") {
-            x_params.hideHeader = "false";
-            x_params.hideFooter = "true";
-        } else if (x_urlParams.hide == "top") {
-            x_params.hideHeader = "true";
-            x_params.hideFooter = "false";
-        }
-    }
+			if (x_urlParams.linkID) { // ID auto-generated in xwd e.g. URL/play_123&linkID=PG1593081880325
+				var temp = getDeepLink(x_urlParams.linkID);
+				if (temp.length > 1) {
+					x_deepLink = temp[1];
+				}
 
-	// url parameter to turn responsive text on / off
-	if (x_urlParams.responsiveTxt != undefined && (x_urlParams.responsiveTxt == "true" || x_urlParams.responsiveTxt == "false")) {
-		x_params.responsive = x_urlParams.responsiveTxt;
-	}
+				var validPage = x_lookupPage("linkID", temp[0]);
+				if (validPage !== false) {
+					x_startPage = {type: "index", ID: validPage};
+					customStartPage = true;
+				}
 
-	// url parameters to change default theme used
-	if (x_urlParams.theme != undefined && (x_params.themeurl == undefined || x_params.themeurl != 'true')) {
-        x_params.theme = x_urlParams.theme;
-    }
+				delete x_urlParams.linkID;
+			}
 
-	// url parameters to change to remove background images or use a special theme selected via the accessibility options
-	// these will only be present if this is a standalone page opening in a new window or lightbox - ensure that if the parent project that opened this was using a special theme / no bg images then this should too
-	if (x_urlParams.specialTheme != undefined) {
-		XENITH.ACCESSIBILITY.specialTheme = x_urlParams.specialTheme;
-	}
-	if (x_urlParams.removeBg != undefined) {
-		XENITH.ACCESSIBILITY.removeBg = x_urlParams.removeBg;
-	}
-	if (x_params.responsive == "true") {
-		XENITH.ACCESSIBILITY.responsiveTxt = true;
-	} else {
-		XENITH.ACCESSIBILITY.responsiveTxt = null;
-	}
-	
-	// Setup nr of pages for tracking
-    XTSetOption('nrpages', x_pageInfo.length);
-	XTSetOption('toComplete', markedPages);
-	XTSetOption('templateId', x_TemplateId);
-	XTSetOption('templateName', x_params.name);
+			if (x_urlParams.pageID) { // ID created by author OR auto-generated in xwd e.g. URL/play_123&pageID=customID OR URL/play_123&pageID=PG1593081880325
+				var temp = getDeepLink(x_urlParams.pageID);
+				if (temp.length > 1) {
+					x_deepLink = temp[1];
+				}
 
-    if (x_params.trackingMode != undefined) {
-        XTSetOption('tracking-mode', x_params.trackingMode);
-    }
+				var validPage = x_lookupPage("pageID", temp[0]);
+				if (validPage !== false) {
+					x_startPage = {type: "index", ID: validPage};
+					customStartPage = true;
+				}
 
-	if (x_params.trackingPassed != undefined)
-	{
-		// Get value, and try to convert to decimal between 0 and 1
-        var passed = x_params.trackingPassed;
-        var factor = 1;
-        var percpos = passed.indexOf('%')
-        if (percpos > 0)
-        {
-            factor = 0.01;
-            passed = passed.substr(0, passed.indexOf('%'));
-        }
-        // Change decimal ',' to '.'
-        passed = passed.replace(',', '.');
-        var passednumber = Number(passed) * factor;
-        XTSetOption('objective_passed', passednumber);
-	}
+				delete x_urlParams.pageID;
+			}
 
-	if (x_params.trackingPageTimeout != undefined)
-    {
-        XTSetOption('page_timeout', x_params.trackingPageTimeout);
-    }
-    if (x_params.forceTrackingMode != undefined)
-    {
-        XTSetOption('force_tracking_mode', x_params.forceTrackingMode);
-    }
-	if (typeof x_embed == "undefined")
-	{
-		x_embed = false;
-		x_embed_activated = false;
-	}
-	if (x_embed && !x_embed_activated)
-	{
-		// Activate overlay
-		$("#x_embed_overlay")
-			.switchClass("embed-overlay-inactive", "embed-overlay")
-			.click(function(){
-				window.location = x_embed_activation_url;
-			})
-			.append("<span><i class='far fa-play-circle fa-2x'></i></span>");
-	}
-	
-	x_getThemeInfo(x_params.theme);
+			if (x_urlParams.page) { // ID created by author OR numeric page number e.g. URL/play_123&page=customID OR URL/play_123&page=5
+				var temp = getDeepLink(x_urlParams.page);
+				if (temp.length > 1) {
+					x_deepLink = temp[1];
+				}
+
+				var validPage = x_lookupPage("pageID", temp[0]);
+				if (validPage !== false) {
+					x_startPage = {type: "index", ID: validPage};
+					customStartPage = true;
+
+				} else {
+					if ($.isNumeric(temp[0]) && temp[0] <= x_normalPages.length) {
+						var tempIndex = x_normalPages[Number(temp[0]) - 1];
+						x_startPage = {type: "index", ID: tempIndex};
+						customStartPage = true;
+					}
+				}
+
+				delete x_urlParams.page;
+			}
+
+			if (x_urlParams.resume) { // Numeric page number e.g. URL/play_123#resume=5 - deprecated but needs to work for existing links
+				var temp = getDeepLink(x_urlParams.resume);
+				if (temp.length > 1) {
+					x_deepLink = temp[1];
+				}
+
+				if ($.isNumeric(temp[0]) && temp[0] <= x_normalPages.length) {
+					var tempIndex = x_normalPages[Number(temp[0]) - 1];
+					x_startPage = {type: "index", ID: tempIndex};
+					customStartPage = true;
+				}
+
+				delete x_urlParams.resume;
+			}
+
+			if (hash != undefined) { // ID created by author OR numeric page number e.g. URL/play_123#customID OR URL/play_123#page5 OR URL/play_123#5
+				var temp = getDeepLink(hash);
+				if (temp.length > 1) {
+					x_deepLink = temp[1];
+				}
+
+				var info = getHashInfo(temp[0]);
+				if (info !== false) {
+					x_startPage = {type: "index", ID: info};
+					customStartPage = true;
+				}
+			}
+
+			// any params in URL which can change the start page can be disabled from working by adding optional property
+			// also, if 1st page is project is standalone page then it should default to 1st non-standalone page instead
+			if (x_pageInfo[x_startPage.ID] != undefined) {
+				if ((x_pageInfo[x_startPage.ID].standalone == true && customStartPage == false) ||
+					(x_params.forcePage1 == 'true' && customStartPage == true && (x_pageInfo[x_startPage.ID].standalone == undefined || x_pageInfo[x_startPage.ID].standalone == false))) {
+					var tempIndex;
+					for (var i = 0; i < x_pageInfo.length; i++) {
+						if (x_pageInfo[i].standalone != true) {
+							tempIndex = i;
+							break;
+						}
+					}
+
+					if (tempIndex) {
+						x_startPage = {type: "index", ID: String(tempIndex)};
+					} else {
+						x_startPage = {type: "index", ID: "0"};
+					}
+				}
+			}
+
+			// tidy up the URL to remove all of the params about start page - hash at end of URL will change according to currently viewed page
+			var shortParams = "";
+			Object.keys(x_urlParams).forEach(function (key, index) {
+				shortParams += index == 0 ? '?' : '&';
+				shortParams += key + '=' + x_urlParams[key];
+			});
+
+			// change URL params without reloading the page
+			window.history.pushState('window.location.href', "", shortParams);
+
+			// url embed parameter uses ideal setup for embedding in iframes - can be overridden with other parameters below
+			if (x_urlParams.embed == 'true') {
+				x_params.embed = true;
+				x_params.displayMode = 'full screen';
+				x_params.responsive = 'false';
+				// css button also won't appear
+			}
+
+			// url display parameter will set size of LO (display=fixed|full|fill - or a specified size e.g. display=200,200)
+			if (x_urlParams.display != undefined) {
+				if ($.isNumeric(x_urlParams.display.split(",")[0]) == true && $.isNumeric(x_urlParams.display.split(",")[1]) == true) {
+					x_params.displayMode = x_urlParams.display.split(",");
+					x_fillWindow = false; // overrides fill window for touchscreen devices
+
+				} else if (x_urlParams.display == "fixed" || x_urlParams.display == "default" || x_urlParams.display == "full" || x_urlParams.display == "fill") {
+					if (x_browserInfo.mobile == true) {
+						x_fillWindow = true;
+					}
+					if (x_urlParams.display == "fixed" || x_urlParams.display == "default") { // default fixed size using values in css (800,600)
+						x_params.displayMode = "default";
+					} else if (x_urlParams.display == "full" || x_urlParams.display == "fill") {
+						x_params.displayMode = "full screen"
+					}
+				}
+			}
+
+			if (window.location.href.indexOf("/peer.php") != -1 || window.location.href.indexOf("/peerreview_") != -1) {
+				x_params.displayMode = "default";
+				x_fillWindow = false;
+			}
+
+			// this is being shown in iframe so force to fill available space
+			if (self !== top) {
+				x_fillWindow = true;
+			}
+
+			// url hide parameter will remove x_headerBlock &/or x_footerBlock divs
+			if (x_urlParams.hide != undefined) {
+				if (x_urlParams.hide == "none") {
+					x_params.hideHeader = "false";
+					x_params.hideFooter = "false";
+				} else if (x_urlParams.hide == "both") {
+					x_params.hideHeader = "true";
+					x_params.hideFooter = "true";
+				} else if (x_urlParams.hide == "bottom") {
+					x_params.hideHeader = "false";
+					x_params.hideFooter = "true";
+				} else if (x_urlParams.hide == "top") {
+					x_params.hideHeader = "true";
+					x_params.hideFooter = "false";
+				}
+			}
+
+			// url parameter to turn responsive text on / off
+			if (x_urlParams.responsiveTxt != undefined && (x_urlParams.responsiveTxt == "true" || x_urlParams.responsiveTxt == "false")) {
+				x_params.responsive = x_urlParams.responsiveTxt;
+			}
+
+			// url parameters to change default theme used
+			if (x_urlParams.theme != undefined && (x_params.themeurl == undefined || x_params.themeurl != 'true')) {
+				x_params.theme = x_urlParams.theme;
+			}
+
+			// url parameters to change to remove background images or use a special theme selected via the accessibility options
+			// these will only be present if this is a standalone page opening in a new window or lightbox - ensure that if the parent project that opened this was using a special theme / no bg images then this should too
+			if (x_urlParams.specialTheme != undefined) {
+				XENITH.ACCESSIBILITY.specialTheme = x_urlParams.specialTheme;
+			}
+			if (x_urlParams.removeBg != undefined) {
+				XENITH.ACCESSIBILITY.removeBg = x_urlParams.removeBg;
+			}
+			if (x_params.responsive == "true") {
+				XENITH.ACCESSIBILITY.responsiveTxt = true;
+			} else {
+				XENITH.ACCESSIBILITY.responsiveTxt = null;
+			}
+
+			// Setup nr of pages for tracking
+			XTSetOption('nrpages', x_pageInfo.length);
+			XTSetOption('toComplete', markedPages);
+			XTSetOption('templateId', x_TemplateId);
+			XTSetOption('templateName', x_params.name);
+
+			if (x_params.trackingMode != undefined) {
+				XTSetOption('tracking-mode', x_params.trackingMode);
+			}
+
+			if (x_params.trackingPassed != undefined) {
+				// Get value, and try to convert to decimal between 0 and 1
+				var passed = x_params.trackingPassed;
+				var factor = 1;
+				var percpos = passed.indexOf('%')
+				if (percpos > 0) {
+					factor = 0.01;
+					passed = passed.substr(0, passed.indexOf('%'));
+				}
+				// Change decimal ',' to '.'
+				passed = passed.replace(',', '.');
+				var passednumber = Number(passed) * factor;
+				XTSetOption('objective_passed', passednumber);
+			}
+
+			if (x_params.trackingPageTimeout != undefined) {
+				XTSetOption('page_timeout', x_params.trackingPageTimeout);
+			}
+			if (x_params.forceTrackingMode != undefined) {
+				XTSetOption('force_tracking_mode', x_params.forceTrackingMode);
+			}
+			if (typeof x_embed == "undefined") {
+				x_embed = false;
+				x_embed_activated = false;
+			}
+			if (x_embed && !x_embed_activated) {
+				// Activate overlay
+				$("#x_embed_overlay")
+					.switchClass("embed-overlay-inactive", "embed-overlay")
+					.click(function () {
+						window.location = x_embed_activation_url;
+					})
+					.append("<span><i class='far fa-play-circle fa-2x'></i></span>");
+			}
+
+			x_getThemeInfo(x_params.theme);
+		});
 }
 
 function x_getThemeInfo(thisTheme, themeChg) {
@@ -888,7 +936,7 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 	}
 
 	if (themeChg !== true) {
-		x_getLangData(x_params.language); // x_setUp() function called in here after language file loaded
+		x_setUp();
 		
 	} else {
 		// theme has been changed sometime after the project has already loaded
@@ -1048,36 +1096,44 @@ function x_fixLineBreaks(text) {
 
 // function gets data from language file
 function x_getLangData(lang) {
-    if (typeof langxmlstr != 'undefined')
-    {
+
+	const deferred = $.Deferred();
+
+    if (typeof langxmlstr != 'undefined') {
         // We have a off-line object with the language definition in a string
         // Convert to an XML object and continue like before
         langxmlstr = langxmlstr.substr(langxmlstr.indexOf("<"), langxmlstr.lastIndexOf(">") + 1);
         x_languageData = $($.parseXML(langxmlstr)).find("language");
-        x_setUp();
-    }
-    else {
+		deferred.resolve();
+
+    } else {
         if (lang == undefined || lang == "undefined" || lang == "") {
             lang = "en-GB";
         }
         $.ajax({
-            type: "GET",
-            url: "languages/engine_" + lang + ".xml",
-            dataType: "xml",
-            success: function (xml) {
-                x_languageData = $(xml).find("language");
-                x_setUp();
-            },
-            error: function () {
-                if (lang != "en-GB") { // no language file found - try default GB one
-                    x_getLangData("en-GB");
-                } else { // hasn't found GB language file - set up anyway, will use fallback text in code
-                    x_languageData = $("");
-                    x_setUp();
-                }
-            }
-        });
+			type: "GET",
+			url: "languages/engine_" + lang + ".xml",
+			dataType: "xml"
+		})
+		.done(function(xml) {
+			x_languageData = $(xml).find("language");
+			deferred.resolve();
+		})
+		.fail(function() {
+			if (lang != "en-GB") { // no language file found - try default GB one
+				x_getLangData("en-GB")
+					.always(function() {
+						deferred.resolve();
+					});
+			} else {
+				// hasn't found GB language file - set up anyway, will use fallback text in code
+				x_languageData = $("");
+				deferred.resolve();
+			}
+		});
     }
+
+	return deferred.promise();
 }
 
 function x_evalURL(url)
@@ -2578,6 +2634,7 @@ function x_createPageState(name) {
 			if (pt == "text") pt = 'simpleText';
 			if (typeof window[pt].generateModelState === "function") {
 				state = x_pushToPageState(window[pt].generateModelState(), name);
+				state.saveToLocalStorage = false; // helps decide whether there is any useful info that is worth reinstating from local storage for the project - will change to true after an answer is submitted
 			}
 		} catch(e) {
 			console.log("Failed to create / retrieve page state data as generateModelState function does not exist in model file");
@@ -2917,6 +2974,7 @@ function x_changePageApproved(x_gotoPage, addHistory) {
 			iframeHeight: $x_mainHolder.height()*0.8,
 			afterContent: function() {
 				if (x_pageStates.length > 0) {
+					// pass state data to the lightbox so previous state is maintained when reopening
 					this.$content[0].contentWindow.x_receiveLightboxPageState(x_pageStates);
 				}
 			}
@@ -2951,23 +3009,29 @@ function x_leavePage(page, lightbox) {
 	}
 
 	if (XTTrackingSystem().indexOf('SCORM') < 0 && XTGetMode() != 'normal') {
-		// project is not being tracked - save current state of page to browser's local storage so you can resume where you left off
-		/* ** TODO
-			- do we need to warn users if we are doing this? in similar way to cookie warnings? or not as it's all local?
-			- also store data about pages viewed & data used on results page (this will need to be got from project XML - is it already there?)
-			- include a timestamp of when project was last saved/published as if it has been edited the localStorage data should not be used (in case pages have changed etc.)
-			- include a timestamp of when the localStorage data was stored? should there be a limit on whether very old data should be restored?
-		 */
-		const localData = {
-			//version: // ** timestamp for when project was last published? & then don't use localStorage data if it doesn't match
-			date: Date.now(),
-			state: x_pageStates
-		};
-		console.log("leaving page - project not tracked");
-		console.log("save x_pageStates to browser local storage: ");
-		console.log(localData);
+		// ** QUESTION - do we need to warn users if we are doing this? in similar way to cookie warnings?
+		// ** data about pages viewed is only restored if there is other useful data
+		// ** store data used on results page? (look at how scorm etc. does this at the moment)
 
-		localStorage.setItem("xerte_" + x_TemplateId + "_state", JSON.stringify(localData));
+		// only save current state if there is some useful data to save
+		// each model file should set state.saveToLocalStorage to true if there is useful data to save for the page (this is generally if an attempt has been made)
+		let saveToLocalStorage = x_pageStates.some(pageState =>
+			Object.values(pageState).some(value => value.saveToLocalStorage === true )
+		);
+
+		if (saveToLocalStorage) {
+			const localData = {
+				version: x_params.saveTimeStamp,
+				date: Date.now(),
+				state: x_pageStates,
+				viewed: x_pagesViewed()
+			};
+
+			localStorage.setItem("xerte_" + x_TemplateId + "_state", JSON.stringify(localData));
+
+		} else {
+			localStorage.removeItem("xerte_" + x_TemplateId + "_state");
+		}
 	}
 }
 

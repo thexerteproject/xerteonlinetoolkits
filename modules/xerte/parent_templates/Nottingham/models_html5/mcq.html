@@ -19,7 +19,7 @@
  */
 
 /* ** TODO: different ways state data should be looked at:
-		1: SCORM
+		1: SCORM - WIP
 		2: xAPI
 		3: Standalone pages in lightbox (DONE)
 		4: Refresh page (WIP)
@@ -350,6 +350,7 @@
 
 					if (newAttempt) {
 						x_currentPageState.checked = checked;
+						x_currentPageState.saveToLocalStorage = true; // as an answer has been submitted, there is now useful data that might be able to be reinstated from local storage if project is refreshed
 						XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
 						XTSetPageScore(x_currentPage, (correct || !x_currentPageState.judge ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
 					}

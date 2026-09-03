@@ -185,6 +185,8 @@
 	  <btnLabelTxtLTiOnly label="Close this session"/>
   </saveSession>
 
+  <localStorage today="Restore previous session from today at {x}?" day1="Restore previous session from {x} day ago?" day2="Restore previous session from {x} days ago?" error="Session could not be restored"/>
+
   <resumeSession label="Resume Session" description="Resume stored session" tooltip="Resume last stored session">
 	  <closeButton label="" description="Close Resume Session Dialog"/>
 	  <resumeTxt label="&lt;p&gt;Welcome back. Do you want to resume the session of {date} {time}? Choose 'Yes' to resume the session. Choose 'No' to start a new session.&lt;/p&gt;"/>
