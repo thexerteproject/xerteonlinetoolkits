@@ -157,7 +157,7 @@ function ScormTrackingState()
     this.lo_completed = "unknown";
     this.finished = false;
     this.interactions = new Array();
-
+    this.pageStates = {};
 
     this.pageCompleted = pageCompleted;
     this.setVars = setVars;
@@ -229,6 +229,9 @@ function ScormTrackingState()
             }
             if (typeof jsonObj.pagesViewed != "undefined") {
                 x_restorePagesViewed(jsonObj.pagesViewed);
+            }
+            if (typeof jsonObj.pageStates != "undefined") {
+                x_restorePageStates(jsonObj.pageStates);
             }
 
 //            this.finished = jsonObj.finished;
@@ -773,6 +776,7 @@ function ScormTrackingState()
             x_pageHistory.splice(x_pageHistory.length - 1, 1);
             state.pageHistory = x_pageHistory;
             state.pagesViewed = x_pagesViewed();
+            state.pageStates = x_pageStates;
 
             var suspend_str = JSON.stringify(this);
             if (completionStatus != "completed") {
@@ -781,7 +785,8 @@ function ScormTrackingState()
             }
             else
             {
-                setValue('cmi.exit', 'normal');
+                setValue('cmi.exit', 'suspend');
+                //setValue('cmi.exit', 'normal');
                 setValue('cmi.suspend_data', suspend_str);
             }
 
@@ -799,9 +804,13 @@ function ScormTrackingState()
 
     function initTracking()
     {
+        console.log("initTracking");
+        console.log("SCORM entry:", getValue('cmi.entry'));
+        console.log("SCORM suspend_data:", getValue('cmi.suspend_data'));
         if (getValue('cmi.entry') == 'resume')
         {
             var suspend_str = getValue('cmi.suspend_data');
+            console.log("SUSPEND DATA:", suspend_str);
             if (suspend_str.length > 0)
             {
                 this.setVars(suspend_str);
@@ -1812,4 +1821,3 @@ function XTResults(fullcompletion) {
 
     return results;
 }
-

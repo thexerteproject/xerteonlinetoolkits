@@ -205,7 +205,10 @@ x_restorePagesViewed = function(viewed)
 }
 
 x_restorePageStates = function(pageStates) {
-	// ** use for SCORM / xAPI tracking?
+	// SCORM
+	if (pageStates !== null) {
+		x_pageStates = pageStates;
+	}
 }
 
 // To be able to check on orientation, and also detect the difference between a mobile and tablet
@@ -2390,6 +2393,7 @@ function x_continueSetUp2() {
 		XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
 		// Set course, module and resume options AFTER XTInitialise
 		// Display warning if this is a SCORM object and the tracking mode is NOT 'normal'
+		console.log("SCORM mode:", XTGetMode());
 		if (XTTrackingSystem().indexOf('SCORM') >= 0 && XTGetMode() != 'normal') {
 			var scorm_alert_default = "Please note: SCORM mode is '{0}'. This means that your progress, interactions and results from this viewing will not be tracked or saved. For tracking you should start a new attempt.";
 			var scorm_alert_lang = x_getLangInfo(x_languageData.find("scormTrackingAlert")[0], "warning", scorm_alert_default);
