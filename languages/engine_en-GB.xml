@@ -175,14 +175,15 @@
 
   <saveSession label="Save Session" description="Save session and stop tracking" tooltip="Save Session" tooltip_ltionly="Stop Session">
   	  <closeButton label="" description="Close"/>
-	  <trackingCloseTxt label="&lt;p&gt;Do you want to stop with this session and continue later? If so, please press the button below to save this session.&lt;/p&gt;"/>
-	  <closeTxt label="&lt;p&gt;Your session has been saved. You can now close the browser window or browser tab of this LO.&lt;/p&gt;"/>
-	  <closeTxtEmbedded label="&lt;p&gt;Your session has been saved. You need to revisit this resource to access the session again.&lt;/p&gt;"/>
-	  <btnLabelTxt label="Save this session"/>
-	  <trackingCloseTxtLtiOnly label="&lt;p&gt;Do you want to stop with this session? If so, please press the button below to stop this session and send the grade to the LMS.&lt;/p&gt;"/>
-	  <closeTxtLtiOnly label="&lt;p&gt;Your session has been stopped. You can now close the browser window or browser tab of this LO.&lt;/p&gt;"/>
-	  <closeTxtEmbeddedLtiOnly label="&lt;p&gt;Your session has been stopped. You need to revisit this resource to restart the content again.&lt;/p&gt;"/>
-	  <btnLabelTxtLTiOnly label="Close this session"/>
+	  <trackingCloseTxt label="&lt;p&gt;Do you want to save this session and continue later?&lt;/p&gt;"/>
+	  <closeTxt label="&lt;p&gt;Your session has been saved. You can now close the browser window or browser tab.&lt;/p&gt;"/>
+	  <closeTxtEmbedded label="&lt;p&gt;Your session has been saved. You will need to refresh or revisit this page to access the session again.&lt;/p&gt;"/>
+	  <btnLabelTxt label="Save session"/>
+	  <trackingCloseTxtLtiOnly label="&lt;p&gt;Do you want to end this session and send your grade to the LMS?&lt;/p&gt;"/>
+	  <closeTxtLtiOnly label="&lt;p&gt;Your session has been stopped. You can now close the browser window or browser tab.&lt;/p&gt;"/>
+	  <closeTxtEmbeddedLtiOnly label="&lt;p&gt;Your session has ended. You will need to refresh or revisit this page if you would like to restart.&lt;/p&gt;"/>
+	  <btnLabelTxtLTiOnly label="End session"/>
+	  <closeTxtNoTracking label="&lt;p&gt;It is not possible to save your progress as this project is not being tracked.&lt;/p&gt;&lt;p&gt;You are seeing the save button as 'force tracking mode' is turned on to simulate the behaviour of a tracked project.&lt;/p&gt;"/>
   </saveSession>
 
   <localStorage today="Restore previous session from today at {x}?" day1="Restore previous session from {x} day ago?" day2="Restore previous session from {x} days ago?" error="Session could not be restored"/>

@@ -785,8 +785,12 @@ function ScormTrackingState()
             }
             else
             {
+                // previously this set cmi.exit to 'normal' when the SCORM was completed
+                // Moodle would then not send the suspend_data back to SCORM when users reviewed the completed project
+                // therefore project appeared in initial state rather than showing submitted answers
+
+                // ** will this change cause issues with other VLEs? or other versions of Moodle?
                 setValue('cmi.exit', 'suspend');
-                //setValue('cmi.exit', 'normal');
                 setValue('cmi.suspend_data', suspend_str);
             }
 
@@ -1348,6 +1352,7 @@ function XTGetMode(extended)
 {
     if (state.scormmode == "normal")
     {
+        console.log(state);
         if (state.currentpageid)
         {
             var sit=state.find(state.currentpageid);
@@ -1373,6 +1378,7 @@ function XTGetMode(extended)
         }
         return "normal";
     }
+    console.log(state.scormmode);
     return state.scormmode;
 }
 

@@ -18,12 +18,14 @@
  * limitations under the License.
  */
 
-/* ** TODO: different ways state data should be looked at:
-		1: SCORM - WIP
+/* ** TODO: different ways state data should be used:
+		1: SCORM - WIP 2004 only
 		2: xAPI
 		3: Standalone pages in lightbox (DONE)
-		4: Refresh page (WIP)
+		4: Refresh page (WIP) - see comments in xenith for improvements needed
 */
+
+// ** lots of "Invalid structure for learneranswers for type numeric:" logs in console (SCORM 2004)
  
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -355,7 +357,12 @@
 						XTSetPageScore(x_currentPage, (correct || !x_currentPageState.judge ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
 					}
 
-					if (XTGetMode() == "normal") {
+					// only one attempt allowed when project is tracked
+					// normal mode - project is incomplete but still being worked through
+					// review mode - project has been completed & is viewed again
+					// browse mode - project is being previewed ** should we disable on preview completely?
+					// ** are there any other modes in xAPI?
+					if (XTGetMode() == "normal" || XTGetMode() == "review"/* || XTGetMode() == "browse"*/) {
 						// Disable all options
 						for (let i=0; i<$(".optionGroup").length; i++) {
 							$("#option" + i).attr("disabled", "disabled");

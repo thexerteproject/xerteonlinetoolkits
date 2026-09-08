@@ -206,6 +206,8 @@ x_restorePagesViewed = function(viewed)
 
 x_restorePageStates = function(pageStates) {
 	// SCORM
+	// ** do we need to do any checks for if it's the same version?
+	// ** what happens if the project is replaced in Moodle?
 	if (pageStates !== null) {
 		x_pageStates = pageStates;
 	}
@@ -253,7 +255,7 @@ x_projectDataLoaded = function(xmlData) {
 
 			// resolve promise if the page isn't a standalone page loading in a lightbox as no pageState data will be received later
 			if (x_urlParams.lightboxState !== "1") {
-				if (XTTrackingSystem().indexOf('SCORM') < 0 && XTGetMode() != 'normal') {
+				if (XTTrackingSystem().indexOf("SCORM") < 0 && XTTrackingSystem() !== "xAPI" && (typeof lti_enabled === "undefined" || !lti_enabled)) {
 					// project is not being tracked
 					// browser may have some local storage data which will allow previous page state to be recreated
 					const savedData = localStorage.getItem("xerte_" + x_TemplateId + "_state");
@@ -1211,8 +1213,7 @@ function x_setUp() {
 		$x_footerBlock	= $("#x_footerBlock");
 		$x_footerL		= $("#x_footerBlock .x_floatLeft");
 		$x_menuBtn		= $("#x_menuBtn");
-		$x_colourChangerBtn		= $("#x_colourChangerBtn");
-		$x_saveSessionBtn = $("#x_saveSessionBtn");
+		$x_colourChangerBtn = $("#x_colourChangerBtn");
 		$x_prevBtn		= $("#x_prevBtn");
 		$x_pageNo		= $("#x_pageNo");
 		$x_nextBtn		= $("#x_nextBtn");
@@ -1362,13 +1363,10 @@ function x_cssSetUp(param) {
             break;
         case "glossary":
 			if (x_params.glossary != undefined) {
-				x_insertCSS(x_templateLocation + "models_html5/glossary.css?version=" + x_Version, function() {x_cssSetUp("saveSession")});
+				x_insertCSS(x_templateLocation + "models_html5/glossary.css?version=" + x_Version, function () {x_cssSetUp("responsive")});
 			} else {
-				x_cssSetUp("saveSession");
+				x_cssSetUp("responsive");
 			}
-            break;
-		case "saveSession":
-			x_insertCSS(x_templateLocation + "models_html5/saveSession.css?version=" + x_Version, function() {x_cssSetUp("responsive")});
 			break;
 		case "responsive":
             if (x_params.responsive == "true") {
@@ -2082,55 +2080,9 @@ function x_continueSetUp1() {
 			}
 		}
 
-		if (x_params["hideSaveSession"] !== "true" && (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))) {
-			x_dialogInfo.push({type:'saveSession', built:false});
+		// set up save session button
+		XENITH.SAVESESSION.init();
 
-			// labels can now be set in editor but fall back to language file if not set
-			var tooltip = x_params.saveSessionLabel != undefined && x_params.saveSessionLabel != "" ? x_params.saveSessionLabel : x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session");
-			if (typeof lti_enabled != "undefined" && lti_enabled)
-			{
-				tooltip = x_params.closeSessionLabel != undefined && x_params.closeSessionLabel != "" ? x_params.closeSessionLabel : x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip_ltionly", "Close Session");
-			}
-
-			const saveSessionIcon = x_btnIcons.filter(function(icon){return icon.name === 'saveSession';})[0];
-
-			$x_saveSessionBtn
-				.button({
-					icons: {
-						primary: saveSessionIcon.iconClass
-					},
-					label: tooltip,
-					text: false
-				})
-				.attr("aria-label", $x_saveSessionBtn.attr("title") + x_params.dialogTxt)
-				.click(function () {
-					x_openDialog(
-						"saveSession",
-						tooltip,
-						x_getLangInfo(x_languageData.find("saveSession").find("closeButton")[0], "description", "Close"),
-						null,
-						null,
-						function () {
-							$x_saveSessionBtn
-								.blur()
-								.removeClass("ui-state-focus")
-								.removeClass("ui-state-hover");
-						}
-					);
-				});
-
-			if (saveSessionIcon.customised == true) {
-				$x_saveSessionBtn.addClass("customIconBtn");
-			}
-			if (saveSessionIcon.btnImgs == true) {
-				$x_saveSessionBtn.addClass("imgIconBtn");
-			}
-		}
-		else
-		{
-			$x_saveSessionBtn.remove();
-			$x_saveSessionBtn = undefined;
-		}
 		// If this LO is being tracked and is part of the install (not SCORM) keep session open
 		if (XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled)) {
 			x_KeepAlive();
@@ -2394,7 +2346,8 @@ function x_continueSetUp2() {
 		// Set course, module and resume options AFTER XTInitialise
 		// Display warning if this is a SCORM object and the tracking mode is NOT 'normal'
 		console.log("SCORM mode:", XTGetMode());
-		if (XTTrackingSystem().indexOf('SCORM') >= 0 && XTGetMode() != 'normal') {
+
+		if (XTTrackingSystem().indexOf('SCORM') >= 0 && XTGetMode() != 'normal' && x_urlParams.lightboxState !== "1") {
 			var scorm_alert_default = "Please note: SCORM mode is '{0}'. This means that your progress, interactions and results from this viewing will not be tracked or saved. For tracking you should start a new attempt.";
 			var scorm_alert_lang = x_getLangInfo(x_languageData.find("scormTrackingAlert")[0], "warning", scorm_alert_default);
 			scorm_alert_lang = scorm_alert_lang.replace("{0}", XTGetMode());
@@ -3012,7 +2965,8 @@ function x_leavePage(page, lightbox) {
 		}
 	}
 
-	if (XTTrackingSystem().indexOf('SCORM') < 0 && XTGetMode() != 'normal') {
+	// save state data to local storage if project is not tracked
+	if (XTTrackingSystem().indexOf("SCORM") < 0 && XTTrackingSystem() !== "xAPI" && (typeof lti_enabled === "undefined" || !lti_enabled)) {
 		// ** QUESTION - do we need to warn users if we are doing this? in similar way to cookie warnings?
 		// ** data about pages viewed is only restored if there is other useful data
 		// ** store data used on results page? (look at how scorm etc. does this at the moment)
@@ -3093,16 +3047,6 @@ function x_endPageTracking(pagechange, x_gotoPage) {
 }
 
 function x_changePageStep2(x_gotoPage) {
-	// Check if saveSession button is styled
-	if (typeof x_varSaveSessionBtnIsStyled == "undefined") {
-		x_varSaveSessionBtnIsStyled = x_saveSessionBtnIsStyled();
-		if (!x_varSaveSessionBtnIsStyled) {
-			if ($('#savesessionbtn_css').length == 0) {
-				$x_head.append('<style type="text/css" id="savesessionbtn_css">#x_saveSessionBtn:after {content: "\\f0c7"; font-family: "Font Awesome 5 Free"; font-weight: 900; } #x_saveSessionBtn { font-size: 1.9em; width:1.1em; }  .ui-button .ui-icon.x_saveSession { background-image: none; } #x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button { padding: 0; } #x_saveSessionBtn span { display: none; }</style>');
-			}
-		}
-	}
-
     var prevPage = x_currentPage;
 
     // disable onload of #special_theme_css & special_theme_responsive_css
@@ -3803,10 +3747,8 @@ function x_setUpPage() {
 		if (x_currentPageXML.getAttribute("next") == "false") {
 			$x_nextBtn.button("disable");
 		}
-		if (x_currentPageXML.getAttribute("save") == "false") {
-			if ($("#x_saveSessionBtn").length > 0) {
-				$x_saveSessionBtn.button("disable");
-			}
+		if (x_currentPageXML.getAttribute("save") == "false" && $("#x_saveSessionBtn").length > 0) {
+			$x_saveSessionBtn.button("disable");
 		}
 	} else if (!XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute("navSetting") != undefined) {
 		// fallback to old way of doing things (navSetting - this should still work for projects that contain it but will be overridden by the navBtns group way of doing it where each button can be turned off individually)
@@ -4968,35 +4910,6 @@ function x_fixYouTubeVimeo(url) {
 function x_getAriaText(text) {
 	return $('<p>' + text + '</p>').text();
 }
-
-// Script to check whether saveSession button is styled in theme
-function x_saveSessionBtnIsStyled() {
-	// In offline the line below with r.rules causes a CORS error.
-	// Offline doesn't use save session anyway, so return true
-	if (xot_offline)
-		return true;
-	if (x_params.theme == undefined || x_params.theme == "default") // old projects might not have a theme so fall back to using default
-		return true;
-	var files = $.map(document.styleSheets, function(s) {
-		// All css files in the themes folders except responsivetext.css
-		return s.href && s.href.indexOf('/themes/Nottingham/')>0 && s.href.indexOf('responsivetext')<0 ? s : null;
-	});
-
-	try {
-		var isStyled = files.reduce(function (a, r) {
-			return [].slice.call(r.rules).reduce(function (a, r) {
-				return (r.cssText && r.cssText.indexOf('x_saveSession') > 0) || a;
-			}, false) || a;
-		}, false);
-	}
-	catch (e)
-	{
-		console.log("Error checking whether saveSession button is styled in theme: " + e);
-		return false;
-	}
-	return isStyled;
-}
-
 
 // video has loaded to intro lightbox - make sure it's sized correctly (MP4 only)
 function x_introMediaMetadata($video, wh) {
@@ -8351,6 +8264,151 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 	// make some public methods
 	self.init = init;
 	self.resizePanel = resizePanel;
+
+	return parent;
+
+})(jQuery, XENITH || {});
+
+
+// ***** SAVE SESSION *****
+// Sets up the save session button that is shown when project is tracked or force tracking mode is on
+var XENITH = (function ($, parent) { var self = parent.SAVESESSION = {};
+	// function sets up the save session button, or removes it if it's not required
+	function init() {
+		// only add the save session button when the project is being tracked & saving is possible (not in browse or review mode)
+		if (x_params["hideSaveSession"] !== "true" && !xot_offline &&
+			((XTTrackingSystem().indexOf("SCORM") >= 0 && XTGetMode() !== "review" && XTGetMode() !== "browse") ||
+				XTTrackingSystem() === "xAPI" ||
+				(typeof lti_enabled != "undefined" && lti_enabled) ||
+				x_params.forceTrackingMode)) {
+
+			// labels can now be set in editor but fall back to language file if not set
+			let tooltip = x_params.saveSessionLabel != undefined && x_params.saveSessionLabel != "" ? x_params.saveSessionLabel : x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session");
+			if (typeof lti_enabled != "undefined" && lti_enabled) {
+				tooltip = x_params.closeSessionLabel != undefined && x_params.closeSessionLabel != "" ? x_params.closeSessionLabel : x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip_ltionly", "Close Session");
+			}
+
+			const saveSessionIcon = x_btnIcons.filter(function(icon){return icon.name === 'saveSession';})[0];
+			$x_saveSessionBtn = $('<button id="x_saveSessionBtn"></button>').prependTo("#x_footerRight");
+
+			$x_saveSessionBtn
+				.button({
+					icons: {
+						primary: saveSessionIcon.iconClass
+					},
+					label: tooltip,
+					text: false
+				})
+				.attr("aria-label", $x_saveSessionBtn.attr("title") + x_params.dialogTxt)
+				.click(function () {
+					$.featherlight('<div id="saveSessionInfo"></div>');
+
+					buildPage();
+				});
+
+			if (saveSessionIcon.customised == true) {
+				$x_saveSessionBtn.addClass("customIconBtn");
+			}
+			if (saveSessionIcon.btnImgs == true) {
+				$x_saveSessionBtn.addClass("imgIconBtn");
+			}
+
+			// checks whether saveSession button is styled in theme - adds default styling if not
+			let isStyled = false;
+
+			// old projects might not have a theme so fall back to using default (this will have button styles)
+			if (x_params.theme == undefined || x_params.theme == "default") {
+				isStyled = true;
+
+			} else {
+				const files = $.map(document.styleSheets, function (s) {
+					// All css files in the themes folders except responsivetext.css
+					return s.href && s.href.indexOf('/themes/Nottingham/') > 0 && s.href.indexOf('responsivetext') < 0 ? s : null;
+				});
+
+				try {
+					isStyled = files.reduce(function (a, r) {
+						return [].slice.call(r.rules).reduce(function (a, r) {
+							return (r.cssText && r.cssText.indexOf('x_saveSession') > 0) || a;
+						}, false) || a;
+					}, false);
+				} catch (e) {
+					console.log("Error checking whether saveSession button is styled in theme: " + e);
+				}
+			}
+
+			// no styling for button found in theme files - add default styling
+			if (!isStyled && $('#savesessionbtn_css').length == 0) {
+				$x_head.append('<style type="text/css" id="savesessionbtn_css">#x_saveSessionBtn:after {content: "\\f0c7"; font-family: "Font Awesome 5 Free"; font-weight: 900; } #x_saveSessionBtn { font-size: 1.9em; width:1.1em; }  .ui-button .ui-icon.x_saveSession { background-image: none; } #x_footerBlock .x_floatLeft button, #x_footerBlock #x_saveSessionBtn.x_floatRight button { padding: 0; } #x_saveSessionBtn span { display: none; }</style>');
+			}
+		}
+	}
+
+	// save session page generation
+	function buildPage() {
+
+		$("#saveSessionInfo").append(`
+		<div id="saveSessionHolder">
+			<div id="closingText"></div>
+			<button id="closeBtn"></button>
+		</div>`);
+
+		const $closeText = $("#closingText");
+
+		if ((XTTrackingSystem().indexOf("SCORM") >= 0 && XTGetMode() !== "review" && XTGetMode() !== "browse") ||
+				XTTrackingSystem() === "xAPI" ||
+				(typeof lti_enabled != "undefined" && lti_enabled)) {
+
+			const lti_only = (typeof lti_enabled != "undefined" && lti_enabled && XTTrackingSystem() !=="xAPI");
+
+			let closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("trackingCloseTxt")[0], "label", "<p>Do you want to save this session and continue later?</p>");
+			if (lti_only) {
+				closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("trackingCloseTxtLtiOnly")[0], "label", "<p>Do you want to end this session and send your grade to the LMS?</p>");
+			}
+			$closeText.html(closeHtml);
+
+			let lbl = (x_getLangInfo(x_languageData.find("saveSession").find("btnLabelTxt")[0], "label", "Save session"));
+			if (lti_only) {
+				lbl = (x_getLangInfo(x_languageData.find("saveSession").find("btnLabelTxtLtiOnly")[0], "label", "End session"));
+			}
+
+			// button in lightbox will force tracking to end & disable the project
+			$("#closeBtn").button({
+				label: lbl
+
+			}).click(function(){
+				// Disable all the buttons and menu
+				XTTerminate();
+				$('#x_footerRight button').button("disable");
+				$('#closeBtn').hide();
+				if (typeof x_params["embed"] != "undefined") {
+					$closeText.addClass('closeTextEmbed'); // ** is this necessary?
+					closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("closeTxtEmbedded")[0], "label", "<p>Your session has been saved. You will need to refresh or revisit this page to access the session again.</p>");
+					if (lti_only) {
+						closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("closeTxtEmbeddedLtiOnly")[0], "label", "<p>Your session has ended. You will need to refresh or revisit this page if you would like to restart.</p>");
+					}
+					$closeText.html(closeHtml)
+				} else {
+					closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("closeTxt")[0], "label", "<p>Your session has been saved. You can now close the browser window or browser tab.</p>");
+					if (lti_only) {
+						closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("closeTxtLtiOnly")[0], "label", "<p>Your session has been stopped. You can now close the browser window or browser tab.</p>")
+					}
+					$closeText.html(closeHtml);
+				}
+			});
+
+		} else {
+			// button is only shown because force tracking mode was on to simulate tracking
+			$("#closeBtn").remove();
+			$("#saveSessionInfo").addClass("noBtn");
+
+			const closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("closeTxtNoTracking")[0], "label", "<p>It is not possible to save your progress as this project is not being tracked.</p><p>You are seeing the save button as 'force tracking mode' is turned on to simulate the behaviour of a tracked project.</p>")
+			$closeText.html(closeHtml);
+		}
+	}
+
+	// make some public methods
+	self.init = init;
 
 	return parent;
 
