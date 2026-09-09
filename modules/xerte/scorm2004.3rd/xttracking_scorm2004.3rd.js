@@ -788,10 +788,11 @@ function ScormTrackingState()
                 // previously this set cmi.exit to 'normal' when the SCORM was completed
                 // Moodle would then not send the suspend_data back to SCORM when users reviewed the completed project
                 // therefore project appeared in initial state rather than showing submitted answers
-
                 // ** will this change cause issues with other VLEs? or other versions of Moodle?
                 setValue('cmi.exit', 'suspend');
                 setValue('cmi.suspend_data', suspend_str);
+                // ** issue caused by completion not meaning all activities attempted - because of this you can complete a project and when going back in you can not reattempt any activities you did not try the first time around
+                // ** need to look at what triggers completion of a page - if a page has an interaction, completion of the interaction should be taken into account
             }
 
             setValue('cmi.success_status', this.getSuccessStatus());
@@ -808,13 +809,9 @@ function ScormTrackingState()
 
     function initTracking()
     {
-        console.log("initTracking");
-        console.log("SCORM entry:", getValue('cmi.entry'));
-        console.log("SCORM suspend_data:", getValue('cmi.suspend_data'));
         if (getValue('cmi.entry') == 'resume')
         {
             var suspend_str = getValue('cmi.suspend_data');
-            console.log("SUSPEND DATA:", suspend_str);
             if (suspend_str.length > 0)
             {
                 this.setVars(suspend_str);
@@ -1352,7 +1349,6 @@ function XTGetMode(extended)
 {
     if (state.scormmode == "normal")
     {
-        console.log(state);
         if (state.currentpageid)
         {
             var sit=state.find(state.currentpageid);
@@ -1378,7 +1374,6 @@ function XTGetMode(extended)
         }
         return "normal";
     }
-    console.log(state.scormmode);
     return state.scormmode;
 }
 
@@ -1501,6 +1496,7 @@ function XTExitPage(page_nr)
 {
     if (state.scormmode == 'normal')
     {
+        // ** this consistently causes errors in console, e.g. Invalid structure for learneranswers for type numeric:
         state.exitInteraction(page_nr, -1, {score: 0, success:true}, "", "", "", false);
     }
 }

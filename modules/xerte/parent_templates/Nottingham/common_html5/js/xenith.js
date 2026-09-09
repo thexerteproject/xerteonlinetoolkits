@@ -17,6 +17,14 @@
  * limitations under the License.
  */
 
+/* ** TODO: different ways state data should be used:
+		1: Standalone pages in lightbox (DONE)
+	   	2: Refresh page (WIP) - see comments in xenith for improvements needed
+		3: SCORM 2004 (DONE)
+		4: SCORM 1.2 - leave this as it is because of the character limit?
+		5: xAPI
+*/
+
 // all elements, variables and functions for interface are called "x_id" - do not make new id's prefixed with "x_" in page models
 var XENITH = {};
 var x_languageData  = [],
@@ -43,6 +51,7 @@ var x_languageData  = [],
     x_mediaText     = [],
     x_deepLink		= "",
     x_timer,        // use as reference to any timers in page models - they are cancelled on page change
+	x_lockFurtherAttempts = false,
 	x_responsive = [], // list of any responsivetext.css files in use
 	x_cssFiles = [],
 	x_pageLoadPause = false,
@@ -2356,6 +2365,15 @@ function x_continueSetUp2() {
 		}
 		if (x_params.module != undefined && x_params.module != "") {
 			XTSetOption('module', x_params.module);
+		}
+
+		// only one attempt allowed when project is tracked
+		// normal mode - project is incomplete but still being worked through
+		// review mode - project has been completed & is viewed again (no saves possible)
+		// browse mode - project is being previewed (no saves possible)
+		// ** should we disable on browse mode completely to avoid people from finding correct answers before they have marked attempt?
+		if (XTGetMode() == "normal" || XTGetMode() == "review"/* || XTGetMode() == "browse"*/) {
+			x_lockFurtherAttempts = true;
 		}
 
 		// Restart if we're NOT navigating to a standalone page

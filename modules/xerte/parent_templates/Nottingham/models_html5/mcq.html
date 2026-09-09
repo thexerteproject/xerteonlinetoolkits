@@ -17,15 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/* ** TODO: different ways state data should be used:
-		1: SCORM - WIP 2004 only
-		2: xAPI
-		3: Standalone pages in lightbox (DONE)
-		4: Refresh page (WIP) - see comments in xenith for improvements needed
-*/
-
-// ** lots of "Invalid structure for learneranswers for type numeric:" logs in console (SCORM 2004)
  
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -34,7 +25,7 @@
 		this.generateModelState = function () {
 			return {
 				judge: null, // is there a correct answer for this question?
-				optionElements: null, // info about the answer options
+				optionIndexes: null, // info about the order of the answer options
 				checked: null, // has an answer been submitted? if yes, which answers?
 			};
 		}
@@ -64,7 +55,7 @@
 			}
 		}
 
-        this.startQ = function(newAttempt) {
+        this.startQ = function(options, newAttempt) {
 			const correctOptions = [],
 					correctAnswer = [],
 					correctFeedback = [];
@@ -72,27 +63,27 @@
 			let judge = false; // is there a correct answer for the question?
 
             // Track the quiz page
-            for (let i=0; i<x_currentPageState.optionElements.length; i++) {
+            for (let i=0; i<options.length; i++) {
 				let answerTxt;
-				if (x_currentPageState.optionElements[i].label != undefined) {
-					answerTxt = x_currentPageState.optionElements[i].label;
+				if (options[i].label != undefined) {
+					answerTxt = options[i].label;
 				} else {
 					// Create fallback label
 					answerTxt = (x_currentPageXML.getAttribute('answerTxt') != undefined ? x_currentPageXML.getAttribute('answerTxt') : "Option");
 					answerTxt += ' ' + (i+1);
-					answerTxt = x_GetTrackingTextFromHTML(x_currentPageState.optionElements[i].text, answerTxt);
+					answerTxt = x_GetTrackingTextFromHTML(options[i].text, answerTxt);
 				}
 
 				correctOptions.push({
 					id: (i+1)+"",
 					answer: answerTxt,
-					result: x_currentPageState.optionElements[i].correct === 'true'
+					result: options[i].correct === 'true'
 				});
-				if (x_currentPageState.optionElements[i].correct === 'true') {
+				if (options[i].correct === 'true') {
 					judge = true;
                     correctAnswer.push(answerTxt);
                 }
-				correctFeedback.push(x_GetTrackingTextFromHTML(x_currentPageState.optionElements[i].feedback, ""));
+				correctFeedback.push(x_GetTrackingTextFromHTML(options[i].feedback, ""));
             }
 
 			if (newAttempt) {
@@ -122,7 +113,7 @@
 			{
 				label = x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), label);
 			}
-            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', label, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
+            XTEnterInteraction(x_currentPage, 0, 'numeric', label, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 
 			if (!newAttempt && x_currentPageState.checked !== false) {
 				// an attempt was made in a previous session - reinstate this now
@@ -160,9 +151,10 @@
 				}
             }
 
+			const allOptions = mcq.getOptionData();
             for (let i=0; i<selected.length; i++) {
                 const optionIndex = $(selected[i]).parents(".answerBtn").length > 0 ? $(selected[i]).parents(".answerBtn").index() : $(selected[i]).parent().index(),
-						selectedOption = x_currentPageState.optionElements[optionIndex];
+						selectedOption = allOptions[optionIndex];
 
 				let currCorrect;
 
@@ -357,12 +349,7 @@
 						XTSetPageScore(x_currentPage, (correct || !x_currentPageState.judge ? 100.0 : 0.0), x_currentPageXML.getAttribute("trackinglabel"));
 					}
 
-					// only one attempt allowed when project is tracked
-					// normal mode - project is incomplete but still being worked through
-					// review mode - project has been completed & is viewed again
-					// browse mode - project is being previewed ** should we disable on preview completely?
-					// ** are there any other modes in xAPI?
-					if (XTGetMode() == "normal" || XTGetMode() == "review"/* || XTGetMode() == "browse"*/) {
+					if (x_lockFurtherAttempts) {
 						// Disable all options
 						for (let i=0; i<$(".optionGroup").length; i++) {
 							$("#option" + i).attr("disabled", "disabled");
@@ -391,8 +378,8 @@
 			// is this a brand new attempt at this activity - no previous state loaded?
 			// some setup won't need to be done if state data has been loaded
 			const newAttempt = x_currentPageState.reinstate !== true;
-			console.log(x_currentPageState);
 			console.log("new attempt: " + newAttempt);
+			console.log(x_currentPageState);
 
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
 
@@ -427,40 +414,36 @@
 
 				const $optionGroup = $optionHolder.find(".optionGroup");
 
-				// store info about this question
-				if (newAttempt) {
-					const elements = []
-					$(x_currentPageXML).children().each(function (i) {
-						elements.push(
-								{
-									label: this.getAttribute("name"),
-									text: this.getAttribute("text"),
-									correct: this.getAttribute("correct"),
-									feedback: this.getAttribute("feedback"),
-									audioFB: this.getAttribute("audioFB"),
-									transcript: this.getAttribute("audioTranscript") != undefined && this.getAttribute("audioTranscript") != '' ? this.getAttribute("audioTranscript") : false
-								}
-						);
-					});
+				// get info about the answer options for this question
+				let options;
 
-					// ** try to minimise the state data being stored? just store the index of options in the order they are displayed?
-					x_currentPageState.optionElements = elements;
+				if (newAttempt) {
+					const indexes = [];
+					for (let i=0; i<$(x_currentPageXML).children().length; i++) {
+						indexes.push(i);
+					}
 
 					// Randomise the answers, if required
 					if (x_currentPageXML.getAttribute("answerOrder") == 'random') {
-						for (let tmp, j, k, i = x_currentPageState.optionElements.length; i--;) {
-							j = Math.floor(Math.random() * x_currentPageState.optionElements.length);
-							k = Math.floor(Math.random() * x_currentPageState.optionElements.length);
-							tmp = x_currentPageState.optionElements[j];
-							x_currentPageState.optionElements[j] = x_currentPageState.optionElements[k];
-							x_currentPageState.optionElements[k] = tmp;
+						for (let tmp, j, k, i = indexes.length; i--;) {
+							j = Math.floor(Math.random() * indexes.length);
+							k = Math.floor(Math.random() * indexes.length);
+
+							tmp = indexes[j];
+							indexes[j] = indexes[k];
+							indexes[k] = tmp;
 						}
 					}
 
+					// only store indexes of answer options in state to minimise amount of data stored
+					x_currentPageState.optionIndexes = indexes;
 					x_currentPageState.checked = false;
+
 				}
 
-				$.each(x_currentPageState.optionElements, function(i, thisOption) {
+				options = mcq.getOptionData();
+
+				$.each(options, function(i, thisOption) {
 						let $thisOptionGroup,
 								$thisOption,
 								$thisOptionTxt;
@@ -535,7 +518,7 @@
 							})
 				}
 
-				this.startQ(newAttempt);
+				this.startQ(options, newAttempt);
 			}
 			
 			this.sizeChanged();
@@ -571,6 +554,34 @@
 			} else if ($(".answerBtn.selected").length > 0) {
 				$(".answerBtn.selected").removeClass("selected");
 			}
+		}
+
+		this.getOptionData = function() {
+			// return the info about all answer options
+			let options = [];
+			$(x_currentPageXML).children().each(function (i) {
+				options.push(
+						{
+							label: this.getAttribute("name"),
+							text: this.getAttribute("text"),
+							correct: this.getAttribute("correct"),
+							feedback: this.getAttribute("feedback"),
+							audioFB: this.getAttribute("audioFB"),
+							transcript: this.getAttribute("audioTranscript") != undefined && this.getAttribute("audioTranscript") != '' ? this.getAttribute("audioTranscript") : false
+						}
+				);
+			});
+
+			// randomise the order of answer options if required
+			if (x_currentPageXML.getAttribute("answerOrder") == 'random') {
+				const temp = [];
+				for (let i = 0; i<x_currentPageState.optionIndexes.length; i++) {
+					temp.push(options[x_currentPageState.optionIndexes[i]]);
+				}
+				options = temp;
+			}
+
+			return options;
 		}
 	}
 
