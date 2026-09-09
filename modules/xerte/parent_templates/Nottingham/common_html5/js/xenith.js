@@ -206,8 +206,6 @@ x_restorePagesViewed = function(viewed)
 
 x_restorePageStates = function(pageStates) {
 	// SCORM
-	// ** do we need to do any checks for if it's the same version?
-	// ** what happens if the project is replaced in Moodle?
 	if (pageStates !== null) {
 		x_pageStates = pageStates;
 	}
@@ -8346,7 +8344,6 @@ var XENITH = (function ($, parent) { var self = parent.SAVESESSION = {};
 
 	// save session page generation
 	function buildPage() {
-
 		$("#saveSessionInfo").append(`
 		<div id="saveSessionHolder">
 			<div id="closingText"></div>
@@ -8382,7 +8379,7 @@ var XENITH = (function ($, parent) { var self = parent.SAVESESSION = {};
 				$('#x_footerRight button').button("disable");
 				$('#closeBtn').hide();
 				if (typeof x_params["embed"] != "undefined") {
-					$closeText.addClass('closeTextEmbed'); // ** is this necessary?
+					$(".featherlight-content").addClass("closeTextEmbed");
 					closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("closeTxtEmbedded")[0], "label", "<p>Your session has been saved. You will need to refresh or revisit this page to access the session again.</p>");
 					if (lti_only) {
 						closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("closeTxtEmbeddedLtiOnly")[0], "label", "<p>Your session has ended. You will need to refresh or revisit this page if you would like to restart.</p>");
