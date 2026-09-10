@@ -92,7 +92,7 @@
 	<customLinkGroup type="group" label="Page ID" optional="true" tooltip="Create a customised URL to this page" info="Create a link directly to this page by adding #yourPageID to the end of the project URL.&lt;br/&gt;Avoid using spaces, special characters and the word 'page' in IDs and ensure that each ID is unique throughout the whole project.&lt;br/&gt;IDs are case sensitive.">
 		<pageID label="Page ID" type="TextInput" optional="true"/>
 	</customLinkGroup>
-		
+
 	<unmarkForCompletion label="Completion Not Required" type ="CheckBox" defaultValue="true" tooltip="When the project is being tracked (e.g. using SCORM or xAPI), remove the requirement for this page to be completed in order for the project to be marked as complete" optional="true"/>
 	<disableGlossary label="Disable Glossary" defaultValue="true" type="CheckBox" condition="treeroot.glossary!=undefined" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page"/>
 	<styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page"/>

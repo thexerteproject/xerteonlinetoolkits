@@ -111,6 +111,10 @@
 	/*overflow: auto;*/
 }
 
+.panelContent.panel {
+	overflow: auto;
+}
+
 fieldset {
 	border: 0;
 }

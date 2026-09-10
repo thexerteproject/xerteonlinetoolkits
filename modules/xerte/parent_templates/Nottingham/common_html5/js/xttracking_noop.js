@@ -65,11 +65,12 @@ function NoopTrackingState()
     this.lo_passed = -1;
     this.page_timeout = 0;
     this.forcetrackingmode = false;
+    this.page_completion = "attempt";
     this.debug = false;
-
 
     this.initialise = initialise;
     this.pageCompleted = pageCompleted;
+    this.setVars = setVars;
     this.getCompletionStatus = getCompletionStatus;
     this.getCompletionPercentage = getCompletionPercentage;
     this.getSuccessStatus = getSuccessStatus;
@@ -102,6 +103,25 @@ function NoopTrackingState()
     function initialise()
     {
 
+    }
+
+    function setVars(data)
+    {
+        state.currentid = data.currentid;
+        state.currentpageid = data.currentpageid;
+        state.lo_type = data.lo_type;
+        state.lo_passed = data.lo_passed;
+        state.lo_completed = data.lo_completed;
+        state.completedPages = data.completedPages;
+        state.toCompletePages = data.toCompletePages;
+
+        state.interactions = new Array();
+        for (let i=0; i<data.interactions.length; i++) {
+            const thisSit = data.interactions[i];
+            const sit = new NoopTracking(thisSit.page_nr, thisSit.ia_nr, thisSit.ia_type, thisSit.ia_name);
+            sit.setVars(thisSit);
+            state.interactions.push(sit);
+        }
     }
 
     function getCompletionStatus()
@@ -287,24 +307,47 @@ function NoopTrackingState()
 
     function pageCompleted(sit)
     {
+        console.log("page completed?");
         var sits = this.findAllInteractions(sit.page_nr);
         if (sits.length != sit.nrinteractions)
         {
+            // not all interactions on the page have loaded
+            console.log("false - not all interactions loaded? viewed?");
             return false;
         }
-        if (sit.ia_type=="page" && sit.duration < this.page_timeout)
-        {
-            return false;
+        if (sit.ia_type=="page") {
+            if (sit.duration < this.page_timeout) {
+                // time for page completion hasn't been reached
+                console.log("false - time for completion not reached");
+                return false;
+            }
+        } else if (this.page_completion !== "view") {
+            // ** also have this option at page level?
+            // ** completion on view used to be the default - is this change to existing projects ok?
+            for (let i=0; i<sits.length; i++) {
+                const interaction = this.interactions[sits[i]];
+                if (interaction.result === undefined) {
+                    // interaction has not been attempted
+                    // ** will this work for all interactions? quiz seems to be one question ahead
+                    console.log("false - interaction not attempted");
+                    return false;
+                }
+            }
         }
+        console.log("true");
         return true;
     }
 
     function enterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, correctanswer, feedback)
     {
+        // check this interaction hasn't already been entered in a previous attempt
+        // don't add it to interactions array if it has, otherwise multiple rows are added to results page
         interaction = new NoopTracking(page_nr, ia_nr, ia_type, ia_name);
-        this.verifyEnterInteractionParameters(ia_type, ia_name, correctoptions, correctanswer, feedback);
-        interaction.enterInteraction(correctanswer, correctoptions);
-        this.interactions.push(interaction);
+        if (!this.interactions.some(item => item.id === interaction.id)) {
+            this.verifyEnterInteractionParameters(ia_type, ia_name, correctoptions, correctanswer, feedback);
+            interaction.enterInteraction(correctanswer, correctoptions);
+            this.interactions.push(interaction);
+        }
     }
 
     function exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
@@ -418,8 +461,9 @@ function NoopTrackingState()
         }
         for (let i=0; i<this.interactions.length; i++)
         {
-            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr == ia_nr)
+            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr == ia_nr) {
                 return this.interactions[i];
+            }
         }
         return null;
     }
@@ -938,14 +982,36 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
     this.nrinteractions = 0;
     this.weighting = 0.0;
     this.score = 0.0;
+    this.result = 'unknown';
     this.correctOptions = [];
     this.correctAnswers = [];
     this.learnerAnswers = [];
     this.learnerOptions = [];
 
+    this.setVars = setVars;
     this.exit = exit;
     this.enterInteraction = enterInteraction;
     this.exitInteraction = exitInteraction;
+
+    function setVars(data)
+    {
+        this.page_nr = data.page_nr;
+        this.ia_nr = data.ia_nr;
+        this.ia_type = data.ia_type;
+        this.ia_name = data.ia_name;
+        this.start = new Date(data.start);
+        this.end = new Date(data.end);
+        this.count = data.count;
+        this.duration = data.duration;
+        this.nrinteractions = data.nrinteractions;
+        this.weighting = data.weighting;
+        this.score = data.score;
+        this.result = data.result;
+        this.correctOptions = data.correctOptions;
+        this.correctAnswers = data.correctAnswers;
+        this.learnerOptions = data.learnerOptions;
+        this.learnerAnswers = data.learnerAnswers;
+    }
 
     function exit()
     {
@@ -979,10 +1045,6 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
     }
 
 }
-
-
-
-
 
 var state = new NoopTrackingState();
 // Enable debugging for now
@@ -1064,9 +1126,12 @@ function XTSetOption(option, value)
             state.nrpages = value;
             break;
         case "toComplete":
-            state.toCompletePages = value;
-            for (i = 0; i < state.toCompletePages.length; i++) {
-                state.completedPages[i] = false;
+            // don't do this if data from a previous session has already loaded
+            if (state.toCompletePages.length === 0) {
+                state.toCompletePages = value;
+                for (i = 0; i < state.toCompletePages.length; i++) {
+                    state.completedPages[i] = false;
+                }
             }
             break;
         case "tracking-mode":
@@ -1110,6 +1175,9 @@ function XTSetOption(option, value)
             break;
         case "force_tracking_mode":
             state.forcetrackingmode = value;
+            break;
+        case "completionOn":
+            state.page_completion = value;
             break;
     }
 }
@@ -1271,7 +1339,6 @@ function XTTerminate()
                     });
             }
         }
-
     }
 }
 
@@ -1280,6 +1347,7 @@ function XTResults(fullcompletion) {
     var nrcompleted = 0;
     var nrvisited = 0;
     var completed;
+
     $.each(state.completedPages, function (i, completed) {
         // indices not defined will be visited anyway.
         // In that case 'completed' will be undefined
@@ -1462,5 +1530,24 @@ function XTResults(fullcompletion) {
     //});
 
     return results;
+}
+
+// returns data required for restoring results pages - this will be saved to localStorage
+function XTGetData() {
+    return {
+        currentid: state.currentid,
+        currentpageid: state.currentpageid,
+        lo_type: state.lo_type,
+        lo_passed: state.lo_passed,
+        lo_completed: state.lo_completed,
+        completedPages: state.completedPages,
+        toCompletePages: state.toCompletePages,
+        interactions: state.interactions
+    }
+}
+
+// restores any useful data that was saved to localStorage, so results pages can be restored
+function XTRestoreData(data) {
+    state.setVars(data);
 }
 

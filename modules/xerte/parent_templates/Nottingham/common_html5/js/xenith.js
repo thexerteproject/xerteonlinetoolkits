@@ -17,14 +17,6 @@
  * limitations under the License.
  */
 
-/* ** TODO: different ways state data should be used:
-		1: Standalone pages in lightbox (DONE)
-	   	2: Refresh page (WIP) - see comments in xenith for improvements needed
-		3: SCORM 2004 (DONE)
-		4: SCORM 1.2 - leave this as it is because of the character limit?
-		5: xAPI
-*/
-
 // all elements, variables and functions for interface are called "x_id" - do not make new id's prefixed with "x_" in page models
 var XENITH = {};
 var x_languageData  = [],
@@ -306,7 +298,14 @@ x_projectDataLoaded = function(xmlData) {
 								try {
 									x_pageStates = allData.state;
 									pagesViewed = allData.viewed;
+
+									// extra data may have been stored to allow results pages to be restored
+									if (allData.trackingData !== undefined) {
+										XTRestoreData(allData.trackingData);
+									}
+
 								} catch (e) {
+									localStorage.removeItem("xerte_" + x_TemplateId + "_state");
 									alert(x_getLangInfo(x_languageData.find("localStorage")[0], "error", "Session could not be restored"));
 								}
 							} else {
@@ -844,6 +843,9 @@ x_projectDataLoaded = function(xmlData) {
 
 			if (x_params.trackingPageTimeout != undefined) {
 				XTSetOption('page_timeout', x_params.trackingPageTimeout);
+			}
+			if (x_params.completionOn != undefined) {
+				XTSetOption('page_completion', x_params.completionOn);
 			}
 			if (x_params.forceTrackingMode != undefined) {
 				XTSetOption('force_tracking_mode', x_params.forceTrackingMode);
@@ -2087,8 +2089,16 @@ function x_continueSetUp1() {
 			}
 		}
 
-		// set up save session button
-		XENITH.SAVESESSION.init();
+		// only add the save session button when the project is being tracked & saving is possible (not in browse or review mode), or if force tracking mode is on
+		if (x_params["hideSaveSession"] !== "true" && !xot_offline &&
+			((XTTrackingSystem().indexOf("SCORM") >= 0 && XTGetMode() !== "review" && XTGetMode() !== "browse") ||
+				XTTrackingSystem() === "xAPI" ||
+				(typeof lti_enabled != "undefined" && lti_enabled) ||
+				x_params.forceTrackingMode === "true")) {
+
+			XENITH.SAVESESSION.init();
+
+		}
 
 		// If this LO is being tracked and is part of the install (not SCORM) keep session open
 		if (XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled)) {
@@ -2371,7 +2381,6 @@ function x_continueSetUp2() {
 		// normal mode - project is incomplete but still being worked through
 		// review mode - project has been completed & is viewed again (no saves possible)
 		// browse mode - project is being previewed (no saves possible)
-		// ** should we disable on browse mode completely to avoid people from finding correct answers before they have marked attempt?
 		if (XTGetMode() == "normal" || XTGetMode() == "review"/* || XTGetMode() == "browse"*/) {
 			x_lockFurtherAttempts = true;
 		}
@@ -2983,10 +2992,6 @@ function x_leavePage(page, lightbox) {
 
 	// save state data to local storage if project is not tracked
 	if (XTTrackingSystem().indexOf("SCORM") < 0 && XTTrackingSystem() !== "xAPI" && (typeof lti_enabled === "undefined" || !lti_enabled)) {
-		// ** QUESTION - do we need to warn users if we are doing this? in similar way to cookie warnings?
-		// ** data about pages viewed is only restored if there is other useful data
-		// ** store data used on results page? (look at how scorm etc. does this at the moment)
-
 		// only save current state if there is some useful data to save
 		// each model file should set state.saveToLocalStorage to true if there is useful data to save for the page (this is generally if an attempt has been made)
 		let saveToLocalStorage = x_pageStates.some(pageState =>
@@ -3000,6 +3005,18 @@ function x_leavePage(page, lightbox) {
 				state: x_pageStates,
 				viewed: x_pagesViewed()
 			};
+
+			// if project contains a results page, store data required to restore the results page too
+			let resultsPage = false;
+			x_pages.each(function() {
+				if (this.nodeName === "results") {
+					resultsPage = true;
+					return false;
+				}
+			});
+			if (resultsPage) {
+				localData.trackingData = XTGetData();
+			}
 
 			localStorage.setItem("xerte_" + x_TemplateId + "_state", JSON.stringify(localData));
 
@@ -8289,74 +8306,66 @@ var XENITH = (function ($, parent) { var self = parent.SPLITSCREEN = {};
 // ***** SAVE SESSION *****
 // Sets up the save session button that is shown when project is tracked or force tracking mode is on
 var XENITH = (function ($, parent) { var self = parent.SAVESESSION = {};
-	// function sets up the save session button, or removes it if it's not required
+	// function sets up the save session button
 	function init() {
-		// only add the save session button when the project is being tracked & saving is possible (not in browse or review mode)
-		if (x_params["hideSaveSession"] !== "true" && !xot_offline &&
-			((XTTrackingSystem().indexOf("SCORM") >= 0 && XTGetMode() !== "review" && XTGetMode() !== "browse") ||
-				XTTrackingSystem() === "xAPI" ||
-				(typeof lti_enabled != "undefined" && lti_enabled) ||
-				x_params.forceTrackingMode)) {
+		// labels can now be set in editor but fall back to language file if not set
+		let tooltip = x_params.saveSessionLabel != undefined && x_params.saveSessionLabel != "" ? x_params.saveSessionLabel : x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session");
+		if (typeof lti_enabled != "undefined" && lti_enabled) {
+			tooltip = x_params.closeSessionLabel != undefined && x_params.closeSessionLabel != "" ? x_params.closeSessionLabel : x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip_ltionly", "Close Session");
+		}
 
-			// labels can now be set in editor but fall back to language file if not set
-			let tooltip = x_params.saveSessionLabel != undefined && x_params.saveSessionLabel != "" ? x_params.saveSessionLabel : x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip", "Save Session");
-			if (typeof lti_enabled != "undefined" && lti_enabled) {
-				tooltip = x_params.closeSessionLabel != undefined && x_params.closeSessionLabel != "" ? x_params.closeSessionLabel : x_getLangInfo(x_languageData.find("saveSession")[0], "tooltip_ltionly", "Close Session");
+		const saveSessionIcon = x_btnIcons.filter(function(icon){return icon.name === 'saveSession';})[0];
+		$x_saveSessionBtn = $('<button id="x_saveSessionBtn"></button>').prependTo("#x_footerRight");
+
+		$x_saveSessionBtn
+			.button({
+				icons: {
+					primary: saveSessionIcon.iconClass
+				},
+				label: tooltip,
+				text: false
+			})
+			.attr("aria-label", $x_saveSessionBtn.attr("title") + x_params.dialogTxt)
+			.click(function () {
+				$.featherlight('<div id="saveSessionInfo"></div>');
+
+				buildPage();
+			});
+
+		if (saveSessionIcon.customised == true) {
+			$x_saveSessionBtn.addClass("customIconBtn");
+		}
+		if (saveSessionIcon.btnImgs == true) {
+			$x_saveSessionBtn.addClass("imgIconBtn");
+		}
+
+		// checks whether saveSession button is styled in theme - adds default styling if not
+		let isStyled = false;
+
+		// old projects might not have a theme so fall back to using default (this will have button styles)
+		if (x_params.theme == undefined || x_params.theme == "default") {
+			isStyled = true;
+
+		} else {
+			const files = $.map(document.styleSheets, function (s) {
+				// All css files in the themes folders except responsivetext.css
+				return s.href && s.href.indexOf('/themes/Nottingham/') > 0 && s.href.indexOf('responsivetext') < 0 ? s : null;
+			});
+
+			try {
+				isStyled = files.reduce(function (a, r) {
+					return [].slice.call(r.rules).reduce(function (a, r) {
+						return (r.cssText && r.cssText.indexOf('x_saveSession') > 0) || a;
+					}, false) || a;
+				}, false);
+			} catch (e) {
+				console.log("Error checking whether saveSession button is styled in theme: " + e);
 			}
+		}
 
-			const saveSessionIcon = x_btnIcons.filter(function(icon){return icon.name === 'saveSession';})[0];
-			$x_saveSessionBtn = $('<button id="x_saveSessionBtn"></button>').prependTo("#x_footerRight");
-
-			$x_saveSessionBtn
-				.button({
-					icons: {
-						primary: saveSessionIcon.iconClass
-					},
-					label: tooltip,
-					text: false
-				})
-				.attr("aria-label", $x_saveSessionBtn.attr("title") + x_params.dialogTxt)
-				.click(function () {
-					$.featherlight('<div id="saveSessionInfo"></div>');
-
-					buildPage();
-				});
-
-			if (saveSessionIcon.customised == true) {
-				$x_saveSessionBtn.addClass("customIconBtn");
-			}
-			if (saveSessionIcon.btnImgs == true) {
-				$x_saveSessionBtn.addClass("imgIconBtn");
-			}
-
-			// checks whether saveSession button is styled in theme - adds default styling if not
-			let isStyled = false;
-
-			// old projects might not have a theme so fall back to using default (this will have button styles)
-			if (x_params.theme == undefined || x_params.theme == "default") {
-				isStyled = true;
-
-			} else {
-				const files = $.map(document.styleSheets, function (s) {
-					// All css files in the themes folders except responsivetext.css
-					return s.href && s.href.indexOf('/themes/Nottingham/') > 0 && s.href.indexOf('responsivetext') < 0 ? s : null;
-				});
-
-				try {
-					isStyled = files.reduce(function (a, r) {
-						return [].slice.call(r.rules).reduce(function (a, r) {
-							return (r.cssText && r.cssText.indexOf('x_saveSession') > 0) || a;
-						}, false) || a;
-					}, false);
-				} catch (e) {
-					console.log("Error checking whether saveSession button is styled in theme: " + e);
-				}
-			}
-
-			// no styling for button found in theme files - add default styling
-			if (!isStyled && $('#savesessionbtn_css').length == 0) {
-				$x_head.append('<style type="text/css" id="savesessionbtn_css">#x_saveSessionBtn:after {content: "\\f0c7"; font-family: "Font Awesome 5 Free"; font-weight: 900; } #x_saveSessionBtn { font-size: 1.9em; width:1.1em; }  .ui-button .ui-icon.x_saveSession { background-image: none; } #x_footerBlock .x_floatLeft button, #x_footerBlock #x_saveSessionBtn.x_floatRight button { padding: 0; } #x_saveSessionBtn span { display: none; }</style>');
-			}
+		// no styling for button found in theme files - add default styling
+		if (!isStyled && $('#savesessionbtn_css').length == 0) {
+			$x_head.append('<style type="text/css" id="savesessionbtn_css">#x_saveSessionBtn:after {content: "\\f0c7"; font-family: "Font Awesome 5 Free"; font-weight: 900; } #x_saveSessionBtn { font-size: 1.9em; width:1.1em; }  .ui-button .ui-icon.x_saveSession { background-image: none; } #x_footerBlock .x_floatLeft button, #x_footerBlock #x_saveSessionBtn.x_floatRight button { padding: 0; } #x_saveSessionBtn span { display: none; }</style>');
 		}
 	}
 

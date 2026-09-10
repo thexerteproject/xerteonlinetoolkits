@@ -258,11 +258,15 @@
 	<stylesheet optional="true" type="Media" label="Stylesheet" tooltip="Upload a CSS file to customise this project" placeholder="Select a CSS file"/>
 	<styles optional="true" type="script" height="200" label="Styles" tooltip="Add bespoke CSS to this project"/>
 	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true" tooltip="Add JavaScript to this project. The code will run after the project interface has been set up but before any pages have loaded."/>
+
+	<completionGroup label="Page completion" type="group" optional="true" tooltip="Properties relating to how the completion of pages is recorded, e.g. for use on the progress bar or results page, or when tracked via SCORM or xAPI. These can be overridden via optional properties on individual pages.">
+	  <completionOn label="Complete on" type="ComboBox" options="Page view,Task attempt,Task full attempt" data="view,attempt,maxAttempt" defaultValue="attempt" optional="true" tooltip="The criteria that need to be met before each page is marked as complete. Pages that do not contain media or a task where responses can be submitted, will always be completed on page view."/>
+	  <trackingPageTimeout label="Required viewing time (seconds)" type="NumericStepper" min="0" max="1000" step="1" defaultValue="0" optional="true" tooltip="The number of seconds each page that does not contain a task has to be viewed before it is marked as complete. Use with caution." />
+	</completionGroup>
 	
 	<tracking type="group" label="Tracking" optional="true" tooltip="Properties relating to tracked projects (e.g. using SCORM or xAPI)">
 		<trackingMode optional="true" label="Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
 		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal fraction or percentage" placeholder="e.g. 55%"/>
-        <trackingPageTimeout label="Required Time for Page Completion" type="NumericStepper" min="0" max="1000" step="1" optional="true" defaultValue="0" tooltip="The number of seconds a page has to be viewed for to count as completed" />
         <forceTrackingMode label="Force Tracking Mode Behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracked projects. This will change the behaviour of some page types, e.g. the restart button will be disabled on Quiz pages and labels will stick on drag and drop exercises, even if they are placed incorrectly" />
 		<restartOptions label="Restart Session" type="ComboBox" options="Restart session if possible,Ask to restart session,Do not restart session" data="restart,ask,do_not_restart" defaultValue="ask" optional="true" tooltip="Restart the session if restart xAPI information is available" />
 		

@@ -113,7 +113,7 @@
 			{
 				label = x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), label);
 			}
-            XTEnterInteraction(x_currentPage, 0, 'numeric', label, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
+            XTEnterInteraction(x_currentPage, 0, 'multiplechoice', label, correctOptions, correctAnswer, correctFeedback, x_currentPageXML.getAttribute("grouping"));
 
 			if (!newAttempt && x_currentPageState.checked !== false) {
 				// an attempt was made in a previous session - reinstate this now
@@ -378,8 +378,8 @@
 			// is this a brand new attempt at this activity - no previous state loaded?
 			// some setup won't need to be done if state data has been loaded
 			const newAttempt = x_currentPageState.reinstate !== true;
-			console.log("new attempt: " + newAttempt);
-			console.log(x_currentPageState);
+			//console.log("new attempt: " + newAttempt);
+			//console.log(x_currentPageState);
 
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
 

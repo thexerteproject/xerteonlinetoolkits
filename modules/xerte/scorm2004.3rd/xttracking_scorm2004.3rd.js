@@ -788,11 +788,8 @@ function ScormTrackingState()
                 // previously this set cmi.exit to 'normal' when the SCORM was completed
                 // Moodle would then not send the suspend_data back to SCORM when users reviewed the completed project
                 // therefore project appeared in initial state rather than showing submitted answers
-                // ** will this change cause issues with other VLEs? or other versions of Moodle?
                 setValue('cmi.exit', 'suspend');
                 setValue('cmi.suspend_data', suspend_str);
-                // ** issue caused by completion not meaning all activities attempted - because of this you can complete a project and when going back in you can not reattempt any activities you did not try the first time around
-                // ** need to look at what triggers completion of a page - if a page has an interaction, completion of the interaction should be taken into account
             }
 
             setValue('cmi.success_status', this.getSuccessStatus());
@@ -1496,7 +1493,6 @@ function XTExitPage(page_nr)
 {
     if (state.scormmode == 'normal')
     {
-        // ** this consistently causes errors in console, e.g. Invalid structure for learneranswers for type numeric:
         state.exitInteraction(page_nr, -1, {score: 0, success:true}, "", "", "", false);
     }
 }
