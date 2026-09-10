@@ -307,34 +307,25 @@ function NoopTrackingState()
 
     function pageCompleted(sit)
     {
-        console.log("page completed?");
         var sits = this.findAllInteractions(sit.page_nr);
         if (sits.length != sit.nrinteractions)
         {
-            // not all interactions on the page have loaded
-            console.log("false - not all interactions loaded? viewed?");
             return false;
         }
         if (sit.ia_type=="page") {
             if (sit.duration < this.page_timeout) {
                 // time for page completion hasn't been reached
-                console.log("false - time for completion not reached");
                 return false;
             }
         } else if (this.page_completion !== "view") {
-            // ** also have this option at page level?
-            // ** completion on view used to be the default - is this change to existing projects ok?
             for (let i=0; i<sits.length; i++) {
                 const interaction = this.interactions[sits[i]];
-                if (interaction.result === undefined) {
+                if (interaction.result === undefined || interaction.result === "unknown") {
                     // interaction has not been attempted
-                    // ** will this work for all interactions? quiz seems to be one question ahead
-                    console.log("false - interaction not attempted");
                     return false;
                 }
             }
         }
-        console.log("true");
         return true;
     }
 
@@ -1176,7 +1167,7 @@ function XTSetOption(option, value)
         case "force_tracking_mode":
             state.forcetrackingmode = value;
             break;
-        case "completionOn":
+        case "page_completion":
             state.page_completion = value;
             break;
     }
