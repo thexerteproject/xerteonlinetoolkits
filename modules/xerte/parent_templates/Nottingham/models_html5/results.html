@@ -436,6 +436,8 @@
 
             x.subinteractions.forEach(function(y,index) {
               let judge = y.judge?? true;
+              const correctAnswerVal = y.correctAnswer == null ? '' : String(y.correctAnswer).trim();
+              const displayCorrect = (judge && correctAnswerVal !== '' && correctAnswerVal !== '-') ? y.correctAnswer : '-';
               // set up the header row
               if (specificHeaderRow) {
                 let specificPDFcolumn = [];
@@ -447,12 +449,8 @@
                   if (x_currentPageXML.getAttribute('specific' + specificColumns[i].col) == 'false') {
                     specificColumns[i].active = false;
                   } else {
-					if(judge || specificColumns[i].col !== "Correct"){
-						tableSetUp += '<th>' + specificColumns[i].data + '</th>';
-						specificPDFcolumn.push(specificColumns[i].col == 'Name' ? x_GetTrackingTextFromHTML(specificColumns[i].data, "") : specificColumns[i].data);
-				    }else {
-						tableSetUp += '<th>' + '' + '</th>';
-					}
+                    tableSetUp += '<th>' + specificColumns[i].data + '</th>';
+                    specificPDFcolumn.push(specificColumns[i].col == 'Name' ? x_GetTrackingTextFromHTML(specificColumns[i].data, "") : specificColumns[i].data);
                     if (specificColumns[i].col == 'Check' && specificPDFcheck == null) {
                       specificPDFcheck = specificPDFcolumns.length;
                     }
@@ -467,7 +465,7 @@
 
               // add a row of info
               let thisRow = '';
-              const rowData = ['', y.question, y.learnerAnswer, (judge ? y.correctAnswer: "")];
+              const rowData = ['', y.question, y.learnerAnswer, displayCorrect];
               let specificPDFrow = [];
 
               for (let i=0; i<specificColumns.length; i++) {

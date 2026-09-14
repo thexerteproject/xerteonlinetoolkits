@@ -193,6 +193,29 @@ function ScormTrackingState()
     this.verifyResult = verifyResult;
     this.verifyEnterInteractionParameters = verifyEnterInteractionParameters;
     this.verifyExitInteractionParameters = verifyExitInteractionParameters;
+    this.storeSuspendData = storeSuspendData;
+
+    function storeSuspendData()
+    {
+        this.pageHistory = x_pageHistory;
+        if (typeof x_pagesViewed === "function") {
+            this.pagesViewed = x_pagesViewed();
+        }
+        this.pageStates = x_pageStates;
+        var suspend_str = JSON.stringify(this);
+        console.log("SCORM suspend_data length: " + suspend_str.length);
+        var completionStatus = this.getCompletionStatus();
+        if (completionStatus) {
+            setValue('cmi.completion_status', completionStatus);
+        }
+        setValue('cmi.success_status', this.getSuccessStatus());
+        setValue('cmi.score.scaled', this.getScaledScore());
+        setValue('cmi.score.raw', this.getRawScore());
+        setValue('cmi.score.min', this.getMinScore());
+        setValue('cmi.score.max', this.getMaxScore());
+        setValue('cmi.exit', 'suspend');
+        setValue('cmi.suspend_data', suspend_str);
+    }
 
     function attemptRecorded(sit)
     {
@@ -614,7 +637,6 @@ function ScormTrackingState()
                 res = setValue(comment + 'location', sit.page_ref);
                 res = setValue(comment + 'timestamp', this.formatDate(new Date()));
             }
-            res = persistData();
 
             if (ia_nr < 0) {
                 var temp = false;
@@ -640,6 +662,8 @@ function ScormTrackingState()
                     }
                 }
             }
+            this.storeSuspendData();
+            persistData();
 
         }
     }
@@ -799,35 +823,9 @@ function ScormTrackingState()
     {
         if (this.trackingmode != 'none')
         {
-            var completionStatus = this.getCompletionStatus();
-
-            if (completionStatus)
-                setValue('cmi.completion_status', completionStatus);
             state.currentpageid = currentid;
             x_pageHistory.splice(x_pageHistory.length - 1, 1);
-            state.pageHistory = x_pageHistory;
-            state.pagesViewed = x_pagesViewed();
-            state.pageStates = x_pageStates;
-
-            var suspend_str = JSON.stringify(this);
-            if (completionStatus != "completed") {
-                setValue('cmi.exit', 'suspend');
-                setValue('cmi.suspend_data', suspend_str);
-            }
-            else
-            {
-                // previously this set cmi.exit to 'normal' when the SCORM was completed
-                // Moodle would then not send the suspend_data back to SCORM when users reviewed the completed project
-                // therefore project appeared in initial state rather than showing submitted answers
-                setValue('cmi.exit', 'suspend');
-                setValue('cmi.suspend_data', suspend_str);
-            }
-
-            setValue('cmi.success_status', this.getSuccessStatus());
-            setValue('cmi.score.scaled', this.getScaledScore());
-            setValue('cmi.score.raw', this.getRawScore());
-            setValue('cmi.score.min', this.getMinScore());
-            setValue('cmi.score.max', this.getMaxScore());
+            this.storeSuspendData();
 
             var end = new Date();
             var duration = end.getTime() - this.start.getTime();
@@ -1515,6 +1513,7 @@ function XTEnterPage(page_nr, page_name, grouping)
             result = setValue(comment + 'comment', commentText);
             result = setValue(comment + 'location', sit.page_ref);
             result = setValue(comment + 'timestamp', state.formatDate(new Date()));
+            state.storeSuspendData();
             result = persistData();
         }
         state.currentpageid = sit.id;
@@ -1657,16 +1656,13 @@ function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
 function XTTerminate()
 {
     if (state.finished) return;
+    state.finished = true;
     if (state.scormmode == 'normal')
     {
-        if (!state.finished)
-        {
-            // End tracking of page
-            var currentpageid = state.currentpageid;
-            x_endPageTracking(false, -1);
+        var currentpageid = state.currentpageid;
+        x_endPageTracking(false, -1);
 
-            state.finishTracking(currentpageid);
-        }
+        state.finishTracking(currentpageid);
     }
     terminateCommunication();
 }
