@@ -265,7 +265,7 @@
 	</completionGroup>
 
 	<tracking type="group" label="Tracking" optional="true" tooltip="Properties relating to tracked projects (e.g. using SCORM or xAPI)">
-		<trackingMode optional="true" label="Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full_first" />
+		<trackingMode optional="true" label="Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full" />
 		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal fraction or percentage" placeholder="e.g. 55%"/>
         <forceTrackingMode label="Force Tracking Mode Behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracked projects. This will change the behaviour of some page types, e.g. the restart button will be disabled on Quiz pages and labels will stick on drag and drop exercises, even if they are placed incorrectly" />
 		<restartOptions label="Restart Session" type="ComboBox" options="Restart session if possible,Ask to restart session,Do not restart session" data="restart,ask,do_not_restart" defaultValue="ask" optional="true" tooltip="Restart the session if restart xAPI information is available" />

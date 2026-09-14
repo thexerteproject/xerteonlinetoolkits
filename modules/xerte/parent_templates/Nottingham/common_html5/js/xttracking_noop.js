@@ -55,7 +55,7 @@ function NoopTrackingState()
 	this.initialised = false;
     this.trackingmode = "full";
     this.mode = "normal";
-    this.scoremode = 'first';
+    this.scoremode = 'last';
     this.nrpages = 0;
     this.toCompletePages = new Array();
     this.completedPages = new Array();
@@ -305,6 +305,11 @@ function NoopTrackingState()
     }
 
 
+    function attemptRecorded(sit)
+    {
+        return sit != null && sit.result !== undefined && sit.result !== 'unknown';
+    }
+
     function pageCompleted(sit)
     {
         var sits = this.findAllInteractions(sit.page_nr);
@@ -346,8 +351,11 @@ function NoopTrackingState()
     	var sit = this.findInteraction(page_nr, ia_nr);
     	if (sit != null) {
             if (ia_nr != -1) {
-                this.verifyExitInteractionParameters(sit, result, learneroptions, learneranswer, feedback);
-                sit.exitInteraction(result, learneranswer, learneroptions, feedback);
+                // first pass keeps the first recorded attempt / last pass always stores the most recent
+                if (this.scoremode != 'first' || !attemptRecorded(sit)) {
+                    this.verifyExitInteractionParameters(sit, result, learneroptions, learneranswer, feedback);
+                    sit.exitInteraction(result, learneranswer, learneroptions, feedback);
+                }
             }
             sit.exit();
         }
@@ -390,10 +398,10 @@ function NoopTrackingState()
     function setPageScore(page_nr, score)
     {
     	var sit = state.findPage(page_nr);
-        if (sit != null && (state.scoremode != 'first' || sit.count <= 1))
+        if (sit != null && (state.scoremode != 'first' || sit.scoreTracked !== true))
         {
             sit.score = score;
-            sit.count++;
+            sit.scoreTracked = true;
         }
     }
 
@@ -973,6 +981,7 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
     this.nrinteractions = 0;
     this.weighting = 0.0;
     this.score = 0.0;
+    this.scoreTracked = false;
     this.result = 'unknown';
     this.correctOptions = [];
     this.correctAnswers = [];
@@ -997,6 +1006,7 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
         this.nrinteractions = data.nrinteractions;
         this.weighting = data.weighting;
         this.score = data.score;
+        this.scoreTracked = data.scoreTracked === true;
         this.result = data.result;
         this.correctOptions = data.correctOptions;
         this.correctAnswers = data.correctAnswers;
@@ -1409,6 +1419,11 @@ function XTResults(fullcompletion) {
 
         }
         else if (results.mode == "full-results") {
+            // details of interaction are only needed if an attempt has been made
+            if (state.interactions[i].result === undefined || state.interactions[i].result === "unknown") {
+                continue;
+            }
+
             var subinteraction = {};
 						let judge = true;
             var learnerAnswer, correctAnswer;
@@ -1502,7 +1517,7 @@ function XTResults(fullcompletion) {
                 judge = judge && subinteraction.judge;
                 results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
             }
-						results.interactions[nrofquestions - 1].judge = judge;
+            results.interactions[nrofquestions - 1].judge = judge;
         }
     }
     results.completion = completion;

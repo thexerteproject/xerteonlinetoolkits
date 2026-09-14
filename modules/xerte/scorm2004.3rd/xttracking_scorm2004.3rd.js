@@ -68,6 +68,7 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
     this.nrinteractions = 0;
     this.weighting = 0.0;
     this.score = 0.0;
+    this.scoreTracked = false;
     this.result = 'unknown';
     this.complete = false;
     this.correctOptions = "";
@@ -99,6 +100,7 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
         this.nrinteractions = jsonObj.nrinteractions;
         this.weighting = jsonObj.weighting;
         this.score = jsonObj.score;
+        this.scoreTracked = jsonObj.scoreTracked === true;
         this.result = jsonObj.result;
         this.complete = jsonObj.complete;
         this.correctOptions = jsonObj.correctOptions;
@@ -144,7 +146,7 @@ function ScormTrackingState()
     this.currentid = "";
     this.currentpageid = "";
     this.trackingmode = "full";
-    this.scoremode = 'first';
+    this.scoremode = 'last';
     this.nrpages = 0;
     this.toCompletePages = new Array();
     this.completedPages = new Array();
@@ -154,6 +156,7 @@ function ScormTrackingState()
     this.lo_type = "pages only";
     this.lo_passed = -1.0;
     this.page_timeout = 0;
+    this.page_completion = "attempt";
     this.lo_completed = "unknown";
     this.finished = false;
     this.interactions = new Array();
@@ -191,6 +194,11 @@ function ScormTrackingState()
     this.verifyEnterInteractionParameters = verifyEnterInteractionParameters;
     this.verifyExitInteractionParameters = verifyExitInteractionParameters;
 
+    function attemptRecorded(sit)
+    {
+        return sit != null && sit.result !== undefined && sit.result !== 'unknown';
+    }
+
     function pageCompleted(sit)
     {
         var sits = this.findAllInteractions(sit.page_nr);
@@ -198,9 +206,19 @@ function ScormTrackingState()
         {
             return false;
         }
-        if (sit.ia_type=="page" && sit.duration < this.page_timeout)
-        {
-            return false;
+        if (sit.ia_type=="page") {
+            if (sit.duration < this.page_timeout) {
+                // time for page completion hasn't been reached
+                return false;
+            }
+        } else if (this.page_completion !== "view") {
+            for (let i=0; i<sits.length; i++) {
+                const interaction = this.interactions[sits[i]];
+                if (interaction.result === undefined || interaction.result === "unknown") {
+                    // interaction has not been attempted
+                    return false;
+                }
+            }
         }
         return true;
     }
@@ -417,29 +435,47 @@ function ScormTrackingState()
         {
             this.verifyExitInteractionParameters(sit, result, learneroptions, learneranswer, feedback);
 
-            if (this.scoremode == 'first' && sit.count > 1)
-                return;
+            var updateAttemptData = true;
+            if (ia_nr >= 0) {
+                // first pass keeps the first recorded attempt / last pass always stores the most recent
+                updateAttemptData = (this.scoremode != 'first' || !attemptRecorded(sit));
+            }
 
-            // Record this action
-            var id = makeId(sit.page_nr, sit.ia_nr, sit.ia_type, sit.ia_name);
-            var currnrinteractions = this.scorm_nr_interactions();
-            var index = this.id_to_interactionidx(id);
-            var interaction = 'cmi.interactions.' + index + '.';
+            if (ia_nr < 0 || updateAttemptData) {
+                sit.learnerOptions = learneroptions;
+                sit.learnerAnswers = learneranswer;
+                sit.result = result;
+                sit.answerfeedback = feedback;
+            }
 
-            sit.learnerOptions = learneroptions;
-            sit.learnerAnswers = learneranswer;
-            sit.result = result;
-            sit.answerfeedback = feedback;
+            var writeCmi = (ia_nr >= 0 && updateAttemptData) ||
+                (ia_nr < 0 && (this.scoremode != 'first' || sit.idx < 0));
 
-            if (!this.trackingmode != 'none'
+            if (writeCmi && !this.trackingmode != 'none'
                 && ((sit.ia_nr < 0 && (this.trackingmode!='full' || sit.nrinteractions == 0))
                 || (sit.ia_nr >= 0 && this.trackingmode == 'full')))
             {
-                var res = setValue(interaction + 'id', id);
-                sit.idx = index;
-                res = setValue(interaction + 'timestamp', this.formatDate(sit.start));
-                res = setValue(interaction + 'description', sit.ia_name);
-                res = setValue(interaction + 'latency', this.formatDuration(sit.duration));
+                // Record this action
+                var id = makeId(sit.page_nr, sit.ia_nr, sit.ia_type, sit.ia_name);
+                var nrInteractions = parseInt(this.scorm_nr_interactions(), 10);
+                if (isNaN(nrInteractions)) {
+                    nrInteractions = 0;
+                }
+                var index = this.id_to_interactionidx(id);
+                var isNew = (index >= nrInteractions);
+                var interaction = 'cmi.interactions.' + index + '.';
+                var res;
+
+                if (isNew) {
+                    res = setValue(interaction + 'id', id);
+                    sit.idx = index;
+                    res = setValue(interaction + 'timestamp', this.formatDate(sit.start));
+                    res = setValue(interaction + 'description', sit.ia_name);
+                    res = setValue(interaction + 'latency', this.formatDuration(sit.duration));
+                } else {
+                    sit.idx = index;
+                }
+
                 var psit = this.findPage(sit.page_nr);
                 if (psit != null)
                 {
@@ -451,6 +487,13 @@ function ScormTrackingState()
                     var pweighting = 1.0;
                     var nrinteractions = 1.0;
                 }
+
+                var scormType = '';
+                var scormCanswer = '';
+                var scormLanswer = '';
+                var scormResult = '';
+                var scormWeighting = Math.round(pweighting/nrinteractions*100)/100;
+
                 switch (sit.ia_type)
                 {
                     case 'match':
@@ -467,41 +510,29 @@ function ScormTrackingState()
                                 entry.source = "";
                             scormAnswerArray.push(entry.source.replace(/ /g, "_") + "[.]" + entry.target.replace(/ /g, "_"));
                         }
-                        var scorm_lanswer = scormAnswerArray.join('[,]');
-
-                        // Do the same for the answer pattern
                         var scormCorrectArray = [];
-                        var i=0;
                         for (i=0; i<sit.correctOptions.length; i++)
                         {
                             // Create ascii characters from option number and ignore answer string
-                            var entry = sit.correctOptions[i];
+                            entry = sit.correctOptions[i];
                             scormCorrectArray.push(entry.source.replace(/ /g, "_") + "[.]" + entry.target.replace(/ /g, "_"));
                         }
-                        var scorm_canswer = scormCorrectArray.join('[,]');
-                        res = setValue(interaction + 'type', 'matching');
-                        res = setValue(interaction + 'correct_responses.0.pattern', scorm_canswer);
-                        res = setValue(interaction + 'weighting', Math.round(pweighting/nrinteractions*100)/100);
-                        res = setValue(interaction + 'learner_response', scorm_lanswer);
-                        res = setValue(interaction + 'result', (result.success ? 'correct' : 'incorrect'));
+                        scormType = 'matching';
+                        scormCanswer = scormCorrectArray.join('[,]');
+                        scormLanswer = scormAnswerArray.join('[,]');
+                        scormResult = (result.success ? 'correct' : 'incorrect');
                         break;
                     case 'multiplechoice':
                         // We have an options as an array of numbers
                         // and we have corresponding array of answers strings
                         // Construct answers like a:Answerstring
-                        var scormAnswerArray = [];
-                        var i=0;
+                        scormAnswerArray = [];
                         for (i=0; i<learneroptions.length; i++)
                         {
                             // Create ascii characters from option number and ignore answer string
-                            var entry = String.fromCharCode(parseInt(learneroptions[i])+96);
-                            scormAnswerArray.push(entry);
+                            scormAnswerArray.push(String.fromCharCode(parseInt(learneroptions[i])+96));
                         }
-                        var scorm_lanswer = scormAnswerArray.join('[,]');
-
-                        // Do the same for the answer pattern
-                        var scormCorrectArray = [];
-                        var i=0;
+                        scormCorrectArray = [];
                         for (i=0; i<sit.correctOptions.length; i++)
                         {
                             // Create ascii characters from option number and ignore answer string
@@ -512,26 +543,23 @@ function ScormTrackingState()
                             }
                             scormCorrectArray.push(entry);
                         }
-                        var scorm_canswer = scormCorrectArray.join('[,]');
-                        res = setValue(interaction + 'type', 'choice');
-                        res = setValue(interaction + 'correct_responses.0.pattern', scorm_canswer);
-                        res = setValue(interaction + 'weighting', Math.round(pweighting/nrinteractions*100)/100);
-                        res = setValue(interaction + 'learner_response', scorm_lanswer);
-                        res = setValue(interaction + 'result', (result.success ? 'correct' : 'incorrect'));
+                        scormType = 'choice';
+                        scormCanswer = scormCorrectArray.join('[,]');
+                        scormLanswer = scormAnswerArray.join('[,]');
+                        scormResult = (result.success ? 'correct' : 'incorrect');
                         break;
                     case 'numeric':
-                        res = setValue(interaction + 'type', 'numeric');
-                        res = setValue(interaction + 'correct_responses.0.pattern', '100');
+                        scormType = 'numeric';
+                        scormCanswer = '100';
                         if (ia_nr <0)  // Page mode
                         {
-                            res = setValue(interaction + 'weighting', Math.round(sit.weighting * 100) / 100);
-                            res = setValue(interaction + 'learner_response', sit.score);
-                            res = setValue(interaction + 'result', Math.round(sit.score * 100) / 100);
+                            scormWeighting = Math.round(sit.weighting * 100) / 100;
+                            scormLanswer = sit.score;
+                            scormResult = Math.round(sit.score * 100) / 100;
                         }
                         else { // Interaction mode
-                            res = setValue(interaction + 'weighting', Math.round(pweighting/nrinteractions*100)/100);
-                            res = setValue(interaction + 'learner_response', sit.learnerAnswers);
-                            res = setValue(interaction + 'result', Math.round(sit.learnerAnswers * 100) / 100);
+                            scormLanswer = sit.learnerAnswers;
+                            scormResult = Math.round(sit.learnerAnswers * 100) / 100;
                         }
                         break;
                     case 'text':
@@ -546,25 +574,28 @@ function ScormTrackingState()
                             sit.correctAnswers = siti.correctAnswers;
                             sit.learnerAnswers = siti.learnerAnswers;
                         }
-                        res = setValue(interaction + 'type', 'fill-in');
-                        res = setValue(interaction + 'correct_responses.0.pattern', sit.correctAnswers);
-                        res = setValue(interaction + 'weighting', Math.round(pweighting/nrinteractions*100)/100);
-                        res = setValue(interaction + 'learner_response', sit.learnerAnswers);
-                        if (sit.ia_type == 'text') {
-                            res = setValue(interaction + 'result', 'neutral');
-                        }
-                        else {
-                            res = setValue(interaction + 'result', (result.success ? 'correct' : 'incorrect'));
-                        }
+                        scormType = 'fill-in';
+                        scormCanswer = sit.correctAnswers;
+                        scormWeighting = Math.round(pweighting/nrinteractions*100)/100;
+                        scormLanswer = sit.learnerAnswers;
+                        scormResult = (sit.ia_type == 'text') ? 'neutral' : (result.success ? 'correct' : 'incorrect');
                         break;
                     case 'page':
                     default:
-                        res = setValue(interaction + 'type', 'other');
-                        res = setValue(interaction + 'correct_responses.0.pattern', SCORM2004_VIEWED);
-                        res = setValue(interaction + 'weighting', '0.0');
-                        res = setValue(interaction + 'learner_response', SCORM2004_VIEWED);
-                        res = setValue(interaction + 'result', 'neutral');
+                        scormType = 'other';
+                        scormCanswer = SCORM2004_VIEWED;
+                        scormWeighting = '0.0';
+                        scormLanswer = SCORM2004_VIEWED;
+                        scormResult = 'neutral';
                 }
+
+                if (isNew) {
+                    res = setValue(interaction + 'type', scormType);
+                    res = setValue(interaction + 'correct_responses.0.pattern', scormCanswer);
+                    res = setValue(interaction + 'weighting', scormWeighting);
+                }
+                res = setValue(interaction + 'learner_response', scormLanswer);
+                res = setValue(interaction + 'result', scormResult);
             }
             if (sit.ia_nr < 0)
                 this.pages_visited++;
@@ -1460,6 +1491,9 @@ function XTSetOption(option, value)
             // Page timeout in seconds
             state.page_timeout = Number(value) * 1000;
             break;
+        case "page_completion":
+            state.page_completion = value;
+            break;
     }
 }
 
@@ -1560,9 +1594,10 @@ function XTSetPageScore(page_nr, score)
     if (state.scormmode == 'normal')
     {
         var sit = state.findPage(page_nr);
-        if (sit != null && (state.scoremode != 'first' || sit.count < 1))
+        if (sit != null && (state.scoremode != 'first' || sit.scoreTracked !== true))
         {
             sit.score = score;
+            sit.scoreTracked = true;
         }
     }
 }
@@ -1711,6 +1746,10 @@ function XTResults(fullcompletion) {
 
         }
         else if (results.mode == "full-results") {
+            // details of interaction are only needed if an attempt has been made
+            if (state.interactions[i].result === undefined || state.interactions[i].result === "unknown") {
+                continue;
+            }
             var subinteraction = {};
 
             var learnerAnswer, correctAnswer;

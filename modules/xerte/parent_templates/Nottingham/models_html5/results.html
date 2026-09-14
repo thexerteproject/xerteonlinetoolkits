@@ -178,6 +178,7 @@
         fullcompletion = true;
       }
       xtresults = XTResults(fullcompletion);
+
       var altnormalrow = false;
       var altfullrow = false;
       $("#averageScore").html(xtresults.averageScore + "%");
@@ -315,7 +316,7 @@
         // are specific results available? If so, the details column might be included
         let interactiveToken, interactiveTokenTxt;
         if (xtresults.mode == 'full-results') {
-          if (x.type != 'page') {
+          if (x.type != 'page' && x.subinteractions.length > 0) {
             interactiveToken = '<a href="#details' + index + '"><i class="fas fa-circle blue" title="' + detailsTooltip + '"><span class="ui-helper-hidden-accessible">' + detailsTooltip + '</span></i></a>';
             interactiveTokenTxt = "details";
           } else {
