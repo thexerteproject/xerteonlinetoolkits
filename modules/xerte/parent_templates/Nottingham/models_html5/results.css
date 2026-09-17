@@ -126,3 +126,8 @@ fieldset {
 #general_summary td:first-child {
 	padding-left: 8px !important;
 }
+
+#fullResults th,
+#questionScores th.nameCol {
+	text-align: left;
+}

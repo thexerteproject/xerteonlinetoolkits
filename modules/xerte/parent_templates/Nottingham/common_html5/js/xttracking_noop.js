@@ -102,7 +102,6 @@ function NoopTrackingState()
 
     function initialise()
     {
-
     }
 
     function setVars(data)
@@ -112,6 +111,7 @@ function NoopTrackingState()
         state.lo_type = data.lo_type;
         state.lo_passed = data.lo_passed;
         state.lo_completed = data.lo_completed;
+        state.start = data.start;
         state.completedPages = data.completedPages;
         state.toCompletePages = data.toCompletePages;
 
@@ -343,6 +343,11 @@ function NoopTrackingState()
             this.verifyEnterInteractionParameters(ia_type, ia_name, correctoptions, correctanswer, feedback);
             interaction.enterInteraction(correctanswer, correctoptions);
             this.interactions.push(interaction);
+        } else {
+            var sit = this.findInteraction(page_nr, ia_nr);
+            if (sit != null) {
+                sit.start = new Date();
+            }
         }
     }
 
@@ -483,6 +488,7 @@ function NoopTrackingState()
     function enterPage(page_nr, ia_nr, ia_type, ia_name)
     {
         var sit = this.findCreate(page_nr, ia_nr, ia_type, ia_name);
+        sit.start = new Date();
         return sit;
     }
 
@@ -1018,17 +1024,16 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
     {
         this.end = new Date();
         var duration = this.end.getTime() - this.start.getTime();
+        this.start = this.end;
         if (duration > 100)
         {
             this.duration += duration;
             this.count++;
             return true;
         }
-        else
-        {
+        else {
             return false;
         }
-
     }
 
     function enterInteraction(correctAnswers, correctOptions)
@@ -1546,6 +1551,7 @@ function XTGetData() {
         lo_type: state.lo_type,
         lo_passed: state.lo_passed,
         lo_completed: state.lo_completed,
+        start: state.start,
         completedPages: state.completedPages,
         toCompletePages: state.toCompletePages,
         interactions: state.interactions

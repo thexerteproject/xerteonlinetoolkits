@@ -3,7 +3,7 @@
         <newNodes>
             <results><![CDATA[<results name="Enter Page Title" text="" resultmode="full-results"
              panelWidth="Full" panelWidthCustom="50" align="Left" panelStyle="false" removeTxt="false"
-            generalResultsTxt="Results summary" givenameTxt="Your name" averageTxt="Score" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Detailed results" globalResultsTxt="Page overview" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Interactivity results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Complete" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter name for PDF" userNamePrompt="Name: " okButtonTxt="Ok" durationSecondsTxt="s"/>]]></results>
+            generalResultsTxt="Results summary" givenameTxt="Your name" averageTxt="Score" completionTxt="Completion" startTimeTxt="Start Time" durationTxt="Duration" interactivityResultsTxt="Detailed results" globalResultsTxt="Page overview" nameTxt="Name" scoreTxt="Score" weightingTxt="Weighting" completedTxt="Completed" detailsTxt="Details" specificResultsTxt="Interactivity results" yourAnswerTxt="Your answer" correctAnswerTxt="Correct answer" downloadPdfTxt="Download PDF File" correctTooltip="Correct" inCorrectTooltip="Incorrect" completeTooltip="Complete" inCompleteTooltip="Incomplete" NACompleteTooltip="Not applicable" detailsTooltip="Details available" noDetailsTooltip="No details available" userNameDialogTitle="Enter name for PDF" userNamePrompt="Name: " okButtonTxt="Ok"/>]]></results>
         </newNodes>
     </pageWizard>
 
@@ -96,7 +96,6 @@
         <userNameDialogTitle label="User name dialog title" type="TextInput" wysiwyg="false" language="true" />
         <userNamePrompt label="User name prompt" type="TextInput" wysiwyg="false" language="true" />
         <okButtonTxt label="Ok button text" type="TextInput" wysiwyg="false" language="true" />
-        <durationSecondsTxt label="Duration seconds text" defaultValue="s" type="TextInput" wysiwyg="false" language="true" mandatory="true" />
 
         <newNodes>
           <feedback><![CDATA[<feedback name="Enter Feedback Title" minScore="0" maxScore="50" feedbackTxt="" />]]></feedback>
