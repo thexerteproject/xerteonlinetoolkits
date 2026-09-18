@@ -65,8 +65,6 @@
 
         <scope label="Results scope" type="ComboBox" options="All pages,Pages up to this page,Pages within this chapter" data="all,before,chapter" defaultValue="all" optional="true" tooltip="Specify which pages are displayed on the page and considered in score and completion calculations. Useful when a project contains multiple results pages, for example at the end of each chapter."/>
 
-        <!--<fullcompletion label="Full Completion" type="Checkbox" defaultValue="false" optional="true" tooltip="Show completion based on full project" deprecated="This property is deprecated" />-->
-
         <pdfOptions type="group" label="PDF Options" optional="true">
             <disableexportpdf label="Disable PDF Export" type="Checkbox" optional="true" defaultValue="false" conditionTrigger="true"/>
             <givename label="Name Prompt" type="Checkbox" defaultValue="false" optional="true" tooltip="Ask learner for their name so that it can be included in the PDF" condition="disableexportpdf!='true'"/>

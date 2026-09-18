@@ -17,6 +17,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+	// ** add a reset button for answer button style questions
  
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -125,12 +127,8 @@
         }
 
         this.leavePage = function() {
-			// no answers have been submitted but a selection has been made
-			// auto submit answer on leaving the page
-			if ($(x_currentPageXML).children().length > 0 && x_currentPageState.checked === false && $("#optionHolder input:checked").length > 0) {
-				this.showFeedBackandTrackScore(true);
-			}
-        }
+
+		}
 
         this.showFeedBackandTrackScore = function(newAttempt) {
             let answerFeedback = "",
@@ -372,10 +370,11 @@
         }
 
 		this.init = function() {
+
 			// reload a saved state if it already exists, otherwise create a fresh state ready for data to be added on page setup
 			x_currentPageState = x_createPageState("state");
 
-			// is this a brand new attempt at this activity - no previous state loaded?
+			// is this a new attempt at this activity - no previous state loaded?
 			// some setup won't need to be done if state data has been loaded
 			const newAttempt = x_currentPageState.reinstate !== true;
 			//console.log("new attempt: " + newAttempt);

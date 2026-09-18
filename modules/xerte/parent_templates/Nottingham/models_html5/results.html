@@ -18,10 +18,6 @@
  * limitations under the License.
  */
 
-  // ** change the start time / duration for when just a limited selection of pages are included
-  // ** score is off and shows 100% if no activity attempted
-  // ** another option to have score calculated on all pages interactions rather than just a limited selection of them
-
   // pageChanged & sizeChanged functions are needed in every model file
   // other functions for model should also be in here to avoid conflicts
   var results = new function() {
@@ -211,6 +207,8 @@
 
       let scoreToDisplay = xtresults.averageScore;
       let completionToDisplay = xtresults.completion;
+      let durationToDisplay = xtresults.totalDuration;
+      let startTimeToDisplay = xtresults.start;
 
       // adjust this score & completion % if the results page is only showing data from a limited set of pages
       if (includePages.length > 0) {
@@ -228,20 +226,30 @@
         completionToDisplay = completedPages !== 0 ? Math.round((completedPages / toCompletePages) * 100) : 0;
 
         // calculate score from the weighting of pages within includePages array only
+        // calculate start time & duration from the pages within includePages array only
         let totalWeight = 0;
         let weightedScore = 0;
+        let totalDuration = 0;
+        let startTime;
         includePages.forEach(function(page_nr) {
           const sit = state.findPage(page_nr);
-          if (sit != null && sit.weighting > 0) {
-            totalWeight += sit.weighting;
-            weightedScore += sit.score * sit.weighting;
+          if (sit != null) {
+            if (sit.weighting > 0) {
+              totalWeight += sit.weighting;
+              weightedScore += sit.score * sit.weighting;
+            }
+            if (sit.duration > 0) {
+              totalDuration += sit.duration;
+              if (sit.firstEntered != undefined && (startTime == undefined || sit.firstEntered.getTime() < startTime)) {
+                startTime = sit.firstEntered.getTime();
+              }
+            }
           }
         });
         scoreToDisplay = totalWeight > 0 ? Math.round((weightedScore / totalWeight) * 100) / 100 : 100;
+        durationToDisplay = Math.round(totalDuration / 1000);
+        startTimeToDisplay = startTime !== undefined ? new Date(startTime).toLocaleString() : "-";
       }
-
-      $("#totalDuration").html(results.secondsTOHHMMSS(xtresults.totalDuration));
-      $("#startTime").html(xtresults.start);
 
       // add page text unless it's set to be removed (deal with this here rather than just in xenith as feedback text may be added even if removeTxt is true)
       if ((x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") && ((x_currentPageXML.getAttribute("panelWidth") !== "Full" && x_currentPageXML.getAttribute("panelWidth") != undefined) || x_currentPageXML.getAttribute("removeTxt") !== "true")) {
@@ -272,7 +280,7 @@
             }
           }
           if (showFb != false && this.getAttribute('minDuration') != undefined) {
-            if ((($.isNumeric(this.getAttribute('minDuration')) && Math.floor(xtresults.totalDuration) >= Number(this.getAttribute('minDuration'))) || !$.isNumeric(this.getAttribute('minDuration'))) && (($.isNumeric(this.getAttribute('maxDuration')) && Math.floor(xtresults.totalDuration) <= Number(this.getAttribute('maxDuration'))) || !$.isNumeric(this.getAttribute('maxDuration')))) {
+            if ((($.isNumeric(this.getAttribute('minDuration')) && Math.floor(durationToDisplay) >= Number(this.getAttribute('minDuration'))) || !$.isNumeric(this.getAttribute('minDuration'))) && (($.isNumeric(this.getAttribute('maxDuration')) && Math.floor(durationToDisplay) <= Number(this.getAttribute('maxDuration'))) || !$.isNumeric(this.getAttribute('maxDuration')))) {
               showFb = true;
             } else {
               showFb = false;
@@ -321,12 +329,12 @@
       if (x_currentPageXML.getAttribute('generalStartTime') == 'false') {
         $('#startTimeTxt').parent('tr').remove();
       } else {
-        $('#startTime').html(xtresults.start);
+        $('#startTime').html(startTimeToDisplay);
       }
       if (x_currentPageXML.getAttribute('generalDuration') == 'false') {
         $('#durationTxt1').parent('tr').remove();
       } else {
-        $("#totalDuration").html(results.secondsTOHHMMSS(xtresults.totalDuration));
+        $("#totalDuration").html(results.secondsTOHHMMSS(durationToDisplay));
       }
 
       // remove whole general results table if empty

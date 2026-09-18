@@ -981,6 +981,7 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
     this.ia_type = ia_type;
     this.ia_name = ia_name;
     this.start = new Date();
+    this.firstEntered = new Date();
     this.end = this.start;
     this.count = 0;
     this.duration = 0;
@@ -1006,6 +1007,7 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
         this.ia_type = data.ia_type;
         this.ia_name = data.ia_name;
         this.start = new Date(data.start);
+        this.firstEntered = new Date(data.firstEntered);
         this.end = new Date(data.end);
         this.count = data.count;
         this.duration = data.duration;
