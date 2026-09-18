@@ -1348,42 +1348,12 @@ function XTTerminate()
     }
 }
 
-function XTResults(fullcompletion) {
-    var completion = 0;
-    var nrcompleted = 0;
-    var nrvisited = 0;
-    var completed;
-
-    $.each(state.completedPages, function (i, completed) {
-        // indices not defined will be visited anyway.
-        // In that case 'completed' will be undefined
-        if (completed) {
-            nrcompleted++;
-            nrvisited++;
-        } else {
-            nrvisited++;
-        }
-        //if (typeof(completed) != "undefined") {
-       //     nrvisited++;
-       // }
-    })
-
-    // ** check whether this does anything? full completion option has been deprecated but perhaps this should still work for existing projects?
-    if (nrcompleted != 0) {
-        if (!fullcompletion) {
-            completion = Math.round((nrcompleted / nrvisited) * 100);
-        }
-        else {
-            completion = Math.round((nrcompleted / state.toCompletePages.length) * 100);
-        }
-    }
-    else {
-        completion = 0;
-    }
+function XTResults() {
+    const nrcompleted = state.completedPages.filter(Boolean).length;
+    const completion = nrcompleted > 0 ? Math.round((nrcompleted / state.toCompletePages.length) * 100) : 0;
 
     var results = {};
     results.mode = x_currentPageXML.getAttribute("resultmode");
-
 
     var score = 0,
         nrofquestions = 0,
