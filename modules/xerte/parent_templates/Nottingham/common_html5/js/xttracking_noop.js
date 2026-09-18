@@ -1359,12 +1359,16 @@ function XTResults(fullcompletion) {
         // In that case 'completed' will be undefined
         if (completed) {
             nrcompleted++;
-        }
-        if (typeof(completed) != "undefined") {
+            nrvisited++;
+        } else {
             nrvisited++;
         }
+        //if (typeof(completed) != "undefined") {
+       //     nrvisited++;
+       // }
     })
 
+    // ** check whether this does anything? full completion option has been deprecated but perhaps this should still work for existing projects?
     if (nrcompleted != 0) {
         if (!fullcompletion) {
             completion = Math.round((nrcompleted / nrvisited) * 100);
@@ -1380,6 +1384,7 @@ function XTResults(fullcompletion) {
     var results = {};
     results.mode = x_currentPageXML.getAttribute("resultmode");
 
+
     var score = 0,
         nrofquestions = 0,
         totalWeight = 0,
@@ -1393,6 +1398,7 @@ function XTResults(fullcompletion) {
         if (state.interactions[i].ia_nr < 0 || state.interactions[i].nrinteractions > 0) {
 
             var interaction = {};
+            interaction.page_nr = state.interactions[i].page_nr;
             interaction.score = Math.round(state.interactions[i].score);
             interaction.title = state.interactions[i].ia_name;
             interaction.type = state.interactions[i].ia_type;
@@ -1530,7 +1536,8 @@ function XTResults(fullcompletion) {
     results.nrofquestions = nrofquestions;
     results.averageScore = Math.round(state.getdScaledScore() * 10000.0)/100.0;
     results.totalDuration = Math.round(totalDuration / 1000);
-    results.start = state.start.toLocaleString();
+
+    results.start = new Date(state.start).toLocaleString();
 
     //$.ajax({
     //    type: "POST",

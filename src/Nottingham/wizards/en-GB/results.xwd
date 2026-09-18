@@ -15,7 +15,7 @@
         <name label="Page Title" type="TextInput" wysiwyg="true"/>
         <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="(panelWidth!='Full'&amp;&amp;panelWidth!=undefined)||removeTxt!='true'" defaultValue="" mandatory="true"/>
 
-        <resultmode label="Results Mode" type="ComboBox" options="Minimal,Normal,Full" data="minimal-results,normal-results,full-results" conditionTrigger="true"/>
+        <resultmode label="Results Mode" type="ComboBox" options="Minimal,Normal,Full" data="minimal-results,normal-results,full-results" conditionTrigger="true" tooltip="Determines the level of information shown on the page. 'Minimal' will only show the results summary, 'normal' will also display the page overview, and 'full' will also show the interactivity results. Add the 'customise results' optional property for further customisation."/>
 
         <layoutGroup label="Page Layout" type="group">
             <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Full" conditionTrigger="true" mandatory="true"/>
@@ -48,6 +48,9 @@
                 <specificCorrect label="Correct answer" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" optional="true"/>
                 <specificCheck label="Tick/Cross" type="Checkbox" defaultValue="true" condition="resultmode=='full-results'" optional="true"/>
             </specificResults>
+
+            <pageOrder label="Display pages" type="ComboBox" options="In order,In order viewed" data="order,viewed" defaultValue="order" condition="resultmode!='minimal-results'" optional="true" tooltip="Determines whether details shown on the page are in the order the pages were viewed or in the order that pages appear in the project, e.g. page 1, page 2 etc."/>
+
         </customiseResults>
 
         <textTopGroup label="Text Above Panel" type="group" optional="true">
@@ -60,7 +63,9 @@
             <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'&amp;&amp;panelWidth!=undefined"/>
         </textBelowGroup>
 
-        <fullcompletion label="Full Completion" type="Checkbox" defaultValue="false" optional="true" tooltip="Show completion based on full project" />
+        <scope label="Results scope" type="ComboBox" options="All pages,Pages up to this page,Pages within this chapter" data="all,before,chapter" defaultValue="all" optional="true" tooltip="Specify which pages are displayed on the page and considered in score and completion calculations. Useful when a project contains multiple results pages, for example at the end of each chapter."/>
+
+        <!--<fullcompletion label="Full Completion" type="Checkbox" defaultValue="false" optional="true" tooltip="Show completion based on full project" deprecated="This property is deprecated" />-->
 
         <pdfOptions type="group" label="PDF Options" optional="true">
             <disableexportpdf label="Disable PDF Export" type="Checkbox" optional="true" defaultValue="false" conditionTrigger="true"/>

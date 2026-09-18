@@ -264,20 +264,28 @@
 		<trackingPageTimeout label="Required viewing time (seconds)" type="NumericStepper" min="0" max="1000" step="1" defaultValue="0" optional="true" tooltip="The number of seconds each page that does not contain a task has to be viewed before it is marked as complete. Use with caution." />
 	</completionGroup>
 
-	<tracking type="group" label="Tracking" optional="true" tooltip="Properties relating to tracked projects (e.g. using SCORM or xAPI)">
-		<trackingMode optional="true" label="Mode" width="250" type="ComboBox" options="Full tracking of first pass,Minimal tracking of first pass,Full tracking of last pass,Minimal tracking of last pass,No tracking" data="full_first,minimal_first,full,minimal,none" defaultValue="full" />
-		<trackingPassed optional="true" label="Passing Score" width="250" type="TextInput" defaultValue="55%" tooltip="Passing score as a decimal fraction or percentage" placeholder="e.g. 55%"/>
-        <forceTrackingMode label="Force Tracking Mode Behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracked projects. This will change the behaviour of some page types, e.g. the restart button will be disabled on Quiz pages and labels will stick on drag and drop exercises, even if they are placed incorrectly" />
-		<restartOptions label="Restart Session" type="ComboBox" options="Restart session if possible,Ask to restart session,Do not restart session" data="restart,ask,do_not_restart" defaultValue="ask" optional="true" tooltip="Restart the session if restart xAPI information is available" />
-		
-		<saveSessionGroup type="group" label="Save Session Button" optional="true" tooltip="Options related to the Save Session button which is shown when a project is tracked, or when force tracking mode is on.">
-			<hideSaveSession label="Hide Button" type="CheckBox" defaultValue="false" conditionTrigger="true" optional="true" />
-			<saveSessionLabel label="Tooltip (Save)" type="TextInput" defaultValue="Save Session" condition="hideSaveSession!='true'" optional="true"/>
-			<closeSessionLabel label="Tooltip (Close)" type="TextInput" defaultValue="Close Session" condition="hideSaveSession!='true'" optional="true"/>
-			<saveSessionIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" condition="hideSaveSession!='true'" optional="true" tooltip="Override the default icon used on the Save Session button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
-			<saveSessionIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-save" condition="hideSaveSession!='true'&amp;&amp;saveSessionIc=='true'" optional="true"/>
+	<trackingOptions label="Tracking options" type="group" optional="true" tooltip="Properties relating to the tracking of this project (e.g. using SCORM or xAPI) and the information displayed on the results page">
+
+		<trackingMode label="Tracking level" type="ComboBox" options="Full,Minimal,None" data="full,minimal,none" defaultValue="full" conditionTrigger="true" optional="true" tooltip="Specify the level of detail tracked"/>
+		<!--<trackingAttempt label="Attempt tracked" type="ComboBox" options="First,Last,Highest" data="first,last,highest" defaultValue="last" condition="trackingMode!='none'" optional="true" tooltip="The attempt that is scored, when more than one attempt is allowed"/>-->
+
+		<forceTrackingMode label="Force Tracking Mode Behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracked projects. This will change the behaviour of some page types, e.g. only a single attempt of activities will be allowed" deprecated="This property is deprecated and has been replaced by 'Simulate tracking mode' which only applies tracking mode when previewing, and by the attempts options which allow you to control whether multiple attempts of activities are allowed." />
+		<simulateTrackingMode label="Simulate tracking mode" type="CheckBox" defaultValue="false" condition="trackingMode!='none'" optional="true" tooltip="Simulate tracking mode behaviour when previewing. Use to test projects that will be tracked (e.g. using SCORM or xAPI)"/>
+
+		<xAPIOnly label="xAPI settings" type="group" optional="true" tooltip="Options only used when with xAPI tracking">
+			<trackingPassed label="Pass score" type="TextInput" defaultValue="55%" condition="trackingMode!='none'" optional="true" tooltip="Passing score as a decimal, fraction or percentage" placeholder="e.g. 55%"/>
+			<restartOptions label="Restart session" type="ComboBox" options="If possible,Ask to start,Never" data="restart,ask,do_not_restart" defaultValue="ask" condition="trackingMode!='none'" optional="true" tooltip="Restart the session if restart xAPI information is available"/>
+		</xAPIOnly>
+
+		<saveSessionGroup label="Save session button" type="group" optional="true" tooltip="Options related to the Save Session button displayed on the footer bar when the project is tracked">
+			<hideSaveSession label="Hide button" type="CheckBox" defaultValue="false" conditionTrigger="true" condition="trackingMode!='none'" optional="true" tooltip="Never show the Save Session button"/>
+			<saveSessionLabel label="Tooltip (save)" type="TextInput" defaultValue="Save session" condition="trackingMode!='none'&amp;&amp;hideSaveSession!='true'" optional="true" tooltip="The tooltip for the button when used to save the current session"/>
+			<closeSessionLabel label="Tooltip (close)" type="TextInput" defaultValue="Close session" condition="trackingMode!='none'&amp;&amp;hideSaveSession!='true'" optional="true" tooltip="The tooltip for the button when used to close the current session"/>
+			<saveSessionIc label="Customise button icon" type="CheckBox" defaultValue="false" conditionTrigger="true" condition="trackingMode!='none'&amp;&amp;hideSaveSession!='true'" optional="true" tooltip="Override the default icon used on the Save Session button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
+			<saveSessionIcon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-save" condition="trackingMode!='none'&amp;&amp;hideSaveSession!='true'&amp;&amp;saveSessionIc=='true'" optional="true" tooltip="Specify the icon used on the Save Session button"/>
 		</saveSessionGroup>
-	</tracking>
+
+	</trackingOptions>
 	
 	<meta type="group" label="Metadata" optional="true" tooltip="The metadata for this project used, for example, when shared using oai-pmh">
 		<explanation label="Note: to share this project using oai-pmh, you need to give your assent and the fields 'Category' and 'Education level' need to be filled in." type="info" condition="oai_pmh_available" optional="true"/>

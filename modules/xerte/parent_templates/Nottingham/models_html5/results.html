@@ -18,6 +18,8 @@
  * limitations under the License.
  */
 
+  // ** score is off and shows 100% if no activity attempted
+
   // pageChanged & sizeChanged functions are needed in every model file
   // other functions for model should also be in here to avoid conflicts
   var results = new function() {
@@ -172,22 +174,48 @@
       }
 
       // should completion % be based on whole LO?
+      // this can be used to have a results page part way through a project which only shows results of pages up to that point
+      // ** full completion has been deprecated - check whether this does anything. it doesn't seem to
       var fullcompletion = false;
       if (x_currentPageXML.getAttribute("fullcompletion") == 'true') {
         fullcompletion = true;
       }
       xtresults = XTResults(fullcompletion);
 
-      var altnormalrow = false;
-      var altfullrow = false;
-      $("#averageScore").html(xtresults.averageScore + "%");
-      $("#completion").html(xtresults.completion + "%");
+      // default is to display pages in page order (page 1, page 2 etc.) with standalone pages at end
+      // by default the interactions array contains the pages in the order they were viewed
+      if (x_currentPageXML.getAttribute("pageOrder") != "viewed") {
+        // sort pages into the order they appear in the project
+        xtresults.interactions.sort((a, b) => a.page_nr - b.page_nr);
+
+        // move any standalone pages to the end
+        const standalonePages = xtresults.interactions.filter(i => !x_normalPages.includes(i.page_nr));
+        const normalPages = xtresults.interactions.filter(i => x_normalPages.includes(i.page_nr));
+        xtresults.interactions = normalPages.concat(standalonePages);
+      }
+
+      // this page can be set to show results from a limited set of pages
+      let includePages = [];
+      if (x_currentPageXML.getAttribute("scope") != undefined && x_currentPageXML.getAttribute("scope") != "all") {
+        if (x_currentPageXML.getAttribute("scope") == "chapter") {
+          // only include results of pages in the same chapter as this page
+          if (x_currentPageXML.getAttribute("chapterIndex") != undefined) {
+            includePages = x_chapters[x_currentPageXML.getAttribute("chapterIndex")].pages;
+          }
+        } else {
+          // only include pages that come before this page
+          for (let i = 0; i < x_currentPage; i++) {
+            // if this is a normal page then ignore standalone pages that are before it
+            // if this is a standalone page just include all pages (standalone or normal) that are before it
+            if ($.inArray(x_currentPage, x_normalPages) === -1 || $.inArray(i, x_normalPages) > -1) {
+              includePages.push(i);
+            }
+          }
+        }
+      }
 
       $("#totalDuration").html(results.secondsTOHHMMSS(xtresults.totalDuration));
       $("#startTime").html(xtresults.start);
-      var detailstables = 0;
-      var firstnormalrow = true;
-      var detailstable = $("<table class='details header shaded'>");
 
       // add page text unless it's set to be removed (deal with this here rather than just in xenith as feedback text may be added even if removeTxt is true)
       if ((x_currentPageXML.getAttribute("text") != undefined && x_currentPageXML.getAttribute("text") != "") && ((x_currentPageXML.getAttribute("panelWidth") !== "Full" && x_currentPageXML.getAttribute("panelWidth") != undefined) || x_currentPageXML.getAttribute("removeTxt") !== "true")) {
@@ -254,15 +282,45 @@
       }
 
       // set up the general results table
+
+      // work out the correct score & completion % if the results page is only showing data from a limited set of pages
+      let scoreToDisplay = xtresults.averageScore;
+      let completionToDisplay = xtresults.completion;
+      if (includePages.length > 0 && (x_currentPageXML.getAttribute('generalAverage') !== 'false' || x_currentPageXML.getAttribute('generalCompletion') !== 'false')) {
+        const completionInfo = [];
+        const scoreInfo = [];
+        xtresults.interactions.forEach(function(x) {
+          // ** will this need to take weighting & completion not required into account?
+          // ** also ignore results pages
+          if (x.type !== 'result' && $.inArray(x.page_nr, includePages) > -1) {
+            console.log(x);
+            //if (!completionNotRequired) { // ** how to do this? or should I use some of this? : ((!showzeroweight && (x.judge == undefined || x.judge)) && (x.completed == undefined || x.completed == "true") && x.weighting == 0) ||
+              // ** is weighting also for completion?
+              completionInfo.push(x.completed);
+            //}
+
+            if (x.weighting > 0) {
+              scoreInfo.push({ score: x.score, weighting: x.weighting });
+            }
+            // need to look at judge / weighting / completion not required options?
+          }
+        });
+        // ** now calculate the %
+        /*if () {
+          scoreToDisplay = ?;
+          completionToDisplay = ?;
+        */}
+      }
+
       if (x_currentPageXML.getAttribute('generalAverage') == 'false') {
         $('#averageTxt').parent('tr').remove();
       } else {
-        $("#averageScore").html(xtresults.averageScore + "%");
+        $("#averageScore").html(scoreToDisplay + "%");
       }
       if (x_currentPageXML.getAttribute('generalCompletion') == 'false') {
         $('#completionTxt').parent('tr').remove();
       } else {
-        $("#completion").html(xtresults.completion + "%");
+        $("#completion").html(completionToDisplay + "%");
       }
       if (x_currentPageXML.getAttribute('generalStartTime') == 'false') {
         $('#startTimeTxt').parent('tr').remove();
@@ -308,7 +366,9 @@
 
       xtresults.interactions.forEach(function(x, index) {
         // don't show pages where weighting is zero, unless show pages with 0 tracking weight is on
-        if (x.type == 'result' || ((!showzeroweight && (x.judge == undefined || x.judge)) && (x.completed == undefined || x.completed == "true") && x.weighting == 0)) {
+        if (x.type == 'result' ||
+                ((!showzeroweight && (x.judge == undefined || x.judge)) && (x.completed == undefined || x.completed == "true") && x.weighting == 0) ||
+                (includePages.length > 0 && $.inArray(x.page_nr, includePages) === -1)) {
           return;
         }
 
