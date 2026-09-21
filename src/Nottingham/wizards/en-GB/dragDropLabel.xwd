@@ -37,6 +37,7 @@
         </labelPosOnImgGroup>
     </labelPosGroup>
 
+    <attemptsAllowed label="Attempts allowed" type="ComboBox" options="Single,Multiple" data="single,multiple" defaultValue="multiple" optional="true" tooltip="Specify whether multiple attempts of this activity are allowed"/>
     <attempts label="Attempts" type="NumericStepper" min="1" max="99" step="1" defaultValue="1" optional="true" condition="judge!='false'&amp;&amp;(markEnd=='true'||(markEnd==undefined&amp;&amp;interactivity=='Match')||answers=='true'||feedback!=undefined)" tooltip="Attempts allowed before feedback and correct answers are given"/>
     <answers label="Show Answers" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="judge!='false'" tooltip="Show a button to display the correct answers after the specified number of attempts have been made. The activity will be locked from further attempts once the correct answers have been viewed."/>
 

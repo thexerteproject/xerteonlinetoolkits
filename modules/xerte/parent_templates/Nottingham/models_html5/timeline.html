@@ -119,7 +119,7 @@
 							}
 
 							// disable if tracked or answer is correct
-							if ($correctTarget.is($thisTarget) || XTGetMode() == "normal") {
+							if ($correctTarget.is($thisTarget) || !x_multipleAttemptsAllowed()) {
 								$this
 									.draggable("disable")
 									.off("keypress click");
@@ -137,14 +137,14 @@
 						} else {
 							if (correct == 0) {
 								// all wrong
-								if (XTGetMode() == "normal") {
+								if (!x_multipleAttemptsAllowed()) {
 									$feedback.html('<p>' + x_currentPageXML.getAttribute("allWrongTracking") + '</p>');
 								} else {
 									$feedback.html('<p>' + x_currentPageXML.getAttribute("allWrong") + '</p>');
 								}
 							} else {
 								// some correct
-								if (XTGetMode() == "normal") {
+								if (!x_multipleAttemptsAllowed()) {
 									$feedback.html('<p>' + x_currentPageXML.getAttribute("scoreTracking").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) + '</p>');
 								} else {
 									$feedback.html('<p>' + x_currentPageXML.getAttribute("score").replace("{i}", correct).replace("{n}", $("#labelHolder .label").length) + '</p>');
@@ -152,7 +152,7 @@
 							}
 
 							// if there's no other feedback to use - add the main feedback
-							if ($feedback.find('p').html() == "" || XTGetMode() == "normal") {
+							if ($feedback.find('p').html() == "" || !x_multipleAttemptsAllowed()) {
 								$feedback.append(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 							}
 						}

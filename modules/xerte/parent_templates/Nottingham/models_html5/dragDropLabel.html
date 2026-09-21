@@ -174,6 +174,7 @@
 
             numAttempts = 0;
             judge = x_currentPageXML.getAttribute("judge") !== "false";
+            // ** does attemptsAllowed work well with this "attempts" option?
             allowedAttempts = judge && x_currentPageXML.getAttribute("attempts") != undefined && Number(x_currentPageXML.getAttribute("attempts")) > 0 ? Number(x_currentPageXML.getAttribute("attempts")) : 0;
 
             // whether drag & drop was marked at end (labels able to be dropped incorrectly) was previously determined by interactivity property (describe = false & match = true)
@@ -784,7 +785,7 @@
             $pageContents.data("selectedLabel", "");
 
             // these variables all determine what happens now
-            const trackMode = XTGetMode() == "normal";
+            const singleAttempt = !x_multipleAttemptsAllowed();
             const totalLabels = $("#targetHolder .target").length;
             const labelsPlaced = $("#targetHolder .target.ui-droppable-disabled").length;
 
@@ -793,8 +794,8 @@
             const l_answer = [];
             const l_feedback = [];
 
-            // answers will be submitted if in tracking mode & all labels are placed, or at least one label is placed when tracking mode is off
-            if ((trackMode && labelsPlaced == totalLabels && isAttempt !== false) || (!trackMode && labelsPlaced > 0) || forceLock === true || !markAtEnd) {
+            // answers will be submitted if just one attempt allowed & all labels are placed, or at least one label is placed when multiple attempts are allowed
+            if ((singleAttempt && labelsPlaced == totalLabels && isAttempt !== false) || (!singleAttempt && labelsPlaced > 0) || forceLock === true || !markAtEnd) {
                 let correct = 0;
 
                 if (isAttempt !== false && markAtEnd) {
@@ -841,8 +842,8 @@
                             l_feedback.push("incorrect");
 
                             if (isAttempt !== false) {
-                                if (!trackMode && (allowedAttempts === 0 || numAttempts < allowedAttempts) && forceLock !== true) {
-                                    // reset label position as not in tracking mode & it's not final attempt
+                                if (!singleAttempt && (allowedAttempts === 0 || numAttempts < allowedAttempts) && forceLock !== true) {
+                                    // reset label position as more than one attempt allowed & it's not final attempt
                                     dragDropLabel.revertPosition($this, true);
 
                                 } else if (!$this.hasClass("incorrect") && (($this.data("target") !== undefined && $this.data("target") !== "") || forceLock === true)) {
@@ -880,8 +881,8 @@
                         $feedback.html('<div class="fbS"><p>' + feedback.submittedFb + '</p></div>');
                     }
 
-                    // feedback shown when tracking mode is on (only 1 attempt allowed), if all correct or if max. no. attempts reached
-                    if ((trackMode && markAtEnd) || (judge && correct === totalLabels) || numAttempts >= allowedAttempts) {
+                    // feedback shown when only 1 attempt allowed or if all correct or if max. no. attempts reached
+                    if ((singleAttempt && markAtEnd) || (judge && correct === totalLabels) || numAttempts >= allowedAttempts) {
                         // show general feedback
                         if (feedback.generalFb !== false) {
                             $feedback.append('<div class="fbG">' + x_addLineBreaks(feedback.generalFb) + '</div>');
@@ -912,9 +913,9 @@
                             $("#showBtn").show();
                         }
 
-                        // prevent further attempts - because tracking mode on (only 1 attempt allowed), all labels correctly placed or max. no. attempts reached
+                        // prevent further attempts - because only 1 attempt allowed or all labels correctly placed or max. no. attempts reached
                         // if max. no. attempts is not set (0), feedback will show after 1st attempt but activity will not be locked
-                        if ((trackMode && markAtEnd) || (judge && correct === totalLabels) || (allowedAttempts > 0 && markAtEnd) || forceLock) {
+                        if ((singleAttempt && markAtEnd) || (judge && correct === totalLabels) || (allowedAttempts > 0 && markAtEnd) || forceLock) {
                             this.lockFurtherAttempts();
 
                         } else if (judge && markAtEnd) {
@@ -991,7 +992,7 @@
                 XTSetPageScore(x_currentPage, totalLabels === 0 ? 100 : correct * 100 / totalLabels, x_currentPageXML.getAttribute("trackinglabel"));
 
             } else if (isAttempt !== false) {
-                // at least a partial attempt (or full attempt if in tracking mode) must have been made before it's marked
+                // at least a partial attempt (or full attempt if single attempt allowed) must have been made before it's marked
                 $("#feedback").html('<div class="fbIncomplete"><p>' + x_addLineBreaks(x_currentPageXML.getAttribute("incomplete") != undefined && x_currentPageXML.getAttribute("incomplete").trim() != "" ? x_currentPageXML.getAttribute("incomplete") : "Complete the exercise.") + '</p></div>');
 
                 $("#labelHolder .label.selected").removeClass("selected");

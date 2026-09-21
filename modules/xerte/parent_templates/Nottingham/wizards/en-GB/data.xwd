@@ -260,19 +260,24 @@
 	<styles optional="true" type="script" height="200" label="Styles" tooltip="Add bespoke CSS to this project"/>
 	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true" tooltip="Add JavaScript to this project. The code will run after the project interface has been set up but before any pages have loaded."/>
 
+  	<attemptsAllowed label="Attempts allowed" type="ComboBox" options="Single,Multiple" data="single,multiple" defaultValue="multiple" conditionTrigger="true" optional="true" tooltip="Specify whether multiple attempts at each activity are allowed. This can be overridden via optional properties on individual pages."/>
+
 	<completionGroup label="Page completion" type="group" optional="true" tooltip="Properties relating to how the completion of pages is recorded. Completion is used on the progress bar, results page and when tracked via SCORM or xAPI. These can be overridden via optional properties on individual pages.">
+		<!-- ** is it correct that tracked projects with no interaction are always completed on view? what about videos? -->
 		<completionOn label="Complete on" type="ComboBox" options="Page view,Task attempt" data="view,attempt" defaultValue="attempt" optional="true" tooltip="The criteria that need to be met before each page is marked as complete. Pages that do not contain a task where responses can be submitted will always be completed on page view."/>
 		<trackingPageTimeout label="Required viewing time (seconds)" type="NumericStepper" min="0" max="1000" step="1" defaultValue="0" optional="true" tooltip="The number of seconds each page that does not contain a task has to be viewed before it is marked as complete. Use with caution."/>
 	</completionGroup>
 
+	  <!-- ** look at whether these are actually only relevant to tracked rather than results page - change tooltips if so -->
+	  <!-- ** trackingMode is referenced in xttracking_noop.js too -->
 	<trackingOptions label="Tracking options" type="group" optional="true" tooltip="Properties relating to the tracking of this project (e.g. using SCORM or xAPI) and the information displayed on the results page">
 
 		<trackingMode label="Tracking level" type="ComboBox" options="Full,Minimal,None" data="full,minimal,none" defaultValue="full" conditionTrigger="true" optional="true" tooltip="Specify the level of detail tracked"/>
-		<!--<trackingAttempt label="Attempt tracked" type="ComboBox" options="First,Last,Highest" data="first,last,highest" defaultValue="last" condition="trackingMode!='none'" optional="true" tooltip="The attempt that is scored, when more than one attempt is allowed"/>-->
 
-		<forceTrackingMode label="Force Tracking Mode Behaviour" type="CheckBox" defaultValue="false" optional="true" tooltip="Force tracking mode behaviour, even in non-tracked projects. This will change the behaviour of some page types, e.g. only a single attempt of activities will be allowed" deprecated="This property is deprecated and has been replaced by 'Simulate tracking mode' which only applies tracking mode when previewing, and by the attempts options which allow you to control whether multiple attempts of activities are allowed."/>
+		<forceTrackingMode label="Force Tracking Mode Behaviour" type="CheckBox" defaultValue="false" condition="attemptsAllowed==undefined" optional="true" tooltip="Force tracking mode behaviour, even in non-tracked projects. This will change the behaviour of some page types, e.g. only a single attempt of activities will be allowed" deprecated="This property is deprecated and has been replaced by 'Simulate tracking mode' which only applies tracking mode when previewing, and by the attempts options which allow you to control whether multiple attempts of activities are allowed."/>
 		<simulateTrackingMode label="Simulate tracking mode" type="CheckBox" defaultValue="false" condition="trackingMode!='none'" optional="true" tooltip="Simulate tracking mode behaviour when previewing. Use to test projects that will be tracked (e.g. using SCORM or xAPI)"/>
 
+		<!-- ** is this correct that these are only relevant to xAPI tracking? -->
 		<xAPIOnly label="xAPI settings" type="group" optional="true" tooltip="Options only used when with xAPI tracking">
 			<trackingPassed label="Pass score" type="TextInput" defaultValue="55%" condition="trackingMode!='none'" optional="true" tooltip="Passing score as a decimal, fraction or percentage" placeholder="e.g. 55%"/>
 			<restartOptions label="Restart session" type="ComboBox" options="If possible,Ask to start,Never" data="restart,ask,do_not_restart" defaultValue="ask" condition="trackingMode!='none'" optional="true" tooltip="Restart the session if restart xAPI information is available"/>
@@ -3209,6 +3214,7 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here"/>
+    <attemptsAllowed label="Attempts allowed" type="ComboBox" options="Single,Multiple" data="single,multiple" defaultValue="multiple" optional="true" tooltip="Specify whether multiple attempts of this activity are allowed"/>
     <attempts label="Attempts" type="NumericStepper" min="1" max="99" step="1" defaultValue="1" mandatory="true" condition="judge!='false'" tooltip="Attempts allowed before feedback and correct answers are given"/>
     <answers label="Show Answers" type="CheckBox" defaultValue="false" mandatory="true" condition="judge!='false'" tooltip="Show the correct answers after the maximum number of attempts have been made"/>
 
@@ -5468,7 +5474,8 @@
 	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that the text field where they should respond is labelled and the label is spoken to the screenreader user. e.g. Answer."/>
 	
 	<showCorrectness label="Mark Answers" type="checkBox" optional="true" defaultValue="false" tooltip="Mark answer as correct or incorrect."/>
-	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
+    <attemptsAllowed label="Attempts allowed" type="ComboBox" options="Single,Multiple" data="single,multiple" defaultValue="multiple" optional="true" tooltip="Specify whether multiple attempts of this activity are allowed"/>
+    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
 	<tt type="group" label="Timed Text" optional="true">
 		<timedText label="File" type="Media" defaultValue="" placeholder="Select a timed text file" optional="true"/>
@@ -6344,6 +6351,7 @@
         </labelPosOnImgGroup>
     </labelPosGroup>
 
+    <attemptsAllowed label="Attempts allowed" type="ComboBox" options="Single,Multiple" data="single,multiple" defaultValue="multiple" optional="true" tooltip="Specify whether multiple attempts of this activity are allowed"/>
     <attempts label="Attempts" type="NumericStepper" min="1" max="99" step="1" defaultValue="1" optional="true" condition="judge!='false'&amp;&amp;(markEnd=='true'||(markEnd==undefined&amp;&amp;interactivity=='Match')||answers=='true'||feedback!=undefined)" tooltip="Attempts allowed before feedback and correct answers are given"/>
     <answers label="Show Answers" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" condition="judge!='false'" tooltip="Show a button to display the correct answers after the specified number of attempts have been made. The activity will be locked from further attempts once the correct answers have been viewed."/>
 
@@ -7172,6 +7180,7 @@
 
 	<dropDownSort label="Drop Down Menu Option Sort" options="Alphabetic,Random" type="ComboBox" data="alphabetic,random" defaultValue="alphabetic" condition="interactivity=='Drop Down Menu'" width="100" optional="true"/>
 
+    <attemptsAllowed label="Attempts allowed" type="ComboBox" options="Single,Multiple" data="single,multiple" defaultValue="multiple" optional="true" tooltip="Specify whether multiple attempts of this activity are allowed"/>
     <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 	<judge label="Mark Answer" optional="true" condition="interactivity=='Fill in Blank'" conditionTrigger="true" type="CheckBox" defaultValue="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result."/>
     <noise label="Distractors" type="TextInput" height="50" optional="true" wysiwyg="false" defaultValue="" placeholder="Enter a list of distractor words separated by spaces" tooltip="A list of incorrect words to be used in Drop Down Menu or Drag Drop exercises"/>
@@ -7473,6 +7482,8 @@
 	<resetBtnTxt label="Reset Button Label" type="TextInput" wysiwyg="true" language="true"/>
 
 	<url label="CSV File" type="Media" optional="true"/>
+
+  	<attemptsAllowed label="Attempts allowed" type="ComboBox" options="Single,Multiple" data="single,multiple" defaultValue="multiple" optional="true" tooltip="Specify whether multiple attempts of this activity are allowed"/>
     <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 	<judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result."/>
 
@@ -9036,6 +9047,8 @@
     <findShowNum label="Restrict Number of Selections" type="CheckBox" defaultValue="true" mandatory="true" condition="interactivity=='find2'" tooltip="When checked, the correct number of selections must be made for each group before answers can be checked"/>
 	<highlight label="Underline Text" type="CheckBox"/>
 	<panelWidth label="Panel Width" options="Small,Medium,Large,Full" type="ComboBox" data="small,medium,large,full"/>
+
+	<attemptsAllowed label="Attempts allowed" type="ComboBox" options="Single,Multiple" data="single,multiple" defaultValue="multiple" optional="true" tooltip="Specify whether multiple attempts of this activity are allowed"/>
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="interactivity=='find2'||interactivity=='mcq'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
     <findOptions type="group" label="Distractors" optional="true" condition="interactivity=='find'||interactivity=='find2'">
@@ -11039,6 +11052,7 @@
         <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
+    <attemptsAllowed label="Attempts allowed" type="ComboBox" options="Single,Multiple" data="single,multiple" defaultValue="multiple" optional="true" tooltip="Specify whether multiple attempts of this activity are allowed"/>
     <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
@@ -14873,6 +14887,7 @@
         <movieSize label="Size" type="textInput" defaultValue="" placeholder="e.g. 320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
     </videoInfo>
 
+    <attemptsAllowed label="Attempts allowed" type="ComboBox" options="Single,Multiple" data="single,multiple" defaultValue="multiple" optional="true" tooltip="Specify whether multiple attempts of this activity are allowed"/>
     <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 	<scorePos label="Score Position" options="Above Feedback,Below Feedback" type="ComboBox" data="Above,Below" defaultValue="Below" width="120" optional="true"/>
 	
@@ -15252,8 +15267,6 @@
         </textBelowGroup>
 
         <scope label="Results scope" type="ComboBox" options="All pages,Pages up to this page,Pages within this chapter" data="all,before,chapter" defaultValue="all" optional="true" tooltip="Specify which pages are displayed on the page and considered in score and completion calculations. Useful when a project contains multiple results pages, for example at the end of each chapter."/>
-
-        <!--<fullcompletion label="Full Completion" type="Checkbox" defaultValue="false" optional="true" tooltip="Show completion based on full project" deprecated="This property is deprecated" />-->
 
         <pdfOptions type="group" label="PDF Options" optional="true">
             <disableexportpdf label="Disable PDF Export" type="Checkbox" optional="true" defaultValue="false" conditionTrigger="true"/>
@@ -18058,6 +18071,7 @@
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="true" conditionTrigger="true" condition="panelWidth=='Full'||panelWidth==undefined"/>
     </layoutGroup>
 
+    <attemptsAllowed label="Attempts allowed" type="ComboBox" options="Single,Multiple" data="single,multiple" defaultValue="multiple" optional="true" tooltip="Specify whether multiple attempts of this activity are allowed"/>
     <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
     <markEnd label="Require Answer" type="CheckBox" defaultValue="true" optional="true" tooltip="Require all labels to have been placed on targets before answers can be submitted"/>
     <judge label="Mark Answer" type="CheckBox" defaultValue="true" optional="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result."/>
@@ -18712,6 +18726,7 @@
         <qfButton type="quickfillbutton" optional="true"/>
     </QFGroup>
 
+    <attemptsAllowed label="Attempts allowed" type="ComboBox" options="Single,Multiple" data="single,multiple" defaultValue="multiple" optional="true" tooltip="Specify whether multiple attempts of this activity are allowed"/>
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
     <newNodes>

@@ -120,7 +120,7 @@
 					}
 				});
 
-				const readyToMark = (XTGetMode() != "normal" && x_currentPageXML.getAttribute('markEnd') != 'true' && labelOffTarget != $("#labelHolder .label").length) || labelOffTarget == 0;
+				const readyToMark = (x_multipleAttemptsAllowed() && x_currentPageXML.getAttribute('markEnd') != 'true' && labelOffTarget != $("#labelHolder .label").length) || labelOffTarget == 0;
 				if (readyToMark) {
 					this.finishTracking();
 				}
@@ -161,6 +161,7 @@
 					label: btnLabel
 				})
 				.click(function() {
+					// ** does attemptsAllowed work well with these maxAttemptsHint & maxAttempts options?
 					// max no. attempts before hint & before correct answers & feedback shown
 					// if no maxAttempts is set, it's an older project that only has max no. before hint - these will always allow you to keep trying until all correct, unless in tracking mode
 					const maxAttemptsHint = x_currentPageXML.getAttribute("maxAttempts") ? x_currentPageXML.getAttribute("maxAttempts") : 2;
@@ -199,9 +200,9 @@
 							textMatch.finishTracking();
 						}
 
-					} else if ((XTGetMode() != "normal" && x_currentPageXML.getAttribute('markEnd') != 'true' && labelOffTarget != $("#labelHolder .label").length) || labelOffTarget == 0) {
+					} else if ((x_multipleAttemptsAllowed() && x_currentPageXML.getAttribute('markEnd') != 'true' && labelOffTarget != $("#labelHolder .label").length) || labelOffTarget == 0) {
 						// mark activity now
-						// either because it's complete or it doesn't matter that it's not complete as not in tracking mode & require answer is off
+						// either because it's complete or it doesn't matter that it's not complete as more than one attempt allowed & require answer is off
 						let correct = 0;
 
 						// check each label to see if correctly placed
@@ -226,8 +227,8 @@
 								// incorrect or not all placed on a target
 								allCorrect = false;
 
-								if (XTGetMode() == "normal" || (maxAttempts != undefined && numAttempts >= maxAttempts) || numAttempts < maxAttemptsHint || ($currentTarget != "" && ($currentTarget.data("hint") == undefined || $currentTarget.data("hint") == ""))) {
-									// show cross if in tracking mode, reached max attempts or no hint / not reached max before hint
+								if (!x_multipleAttemptsAllowed() || (maxAttempts != undefined && numAttempts >= maxAttempts) || numAttempts < maxAttemptsHint || ($currentTarget != "" && ($currentTarget.data("hint") == undefined || $currentTarget.data("hint") == ""))) {
+									// show cross if no further attempts allowed or no hint / not reached max before hint
 									if ($(this).data("currentTarget") != "") {
 										$this.find(".labelTxt").append('<span class="tick"><span class="ui-helper-hidden-accessible"> ' + crossTxt + '</span><span class="fa fa-fw fa-x-cross"></span></span>');
 										$this.addClass("incorrect");
@@ -257,8 +258,8 @@
 								}
 							}
 
-							// disable labels & their targets if placed correctly or if tracking mode is on
-							if ($this.data("target").is($currentTarget) || XTGetMode() == "normal") {
+							// disable labels & their targets if placed correctly or if only a single attempt allowed
+							if ($this.data("target").is($currentTarget) || !x_multipleAttemptsAllowed()) {
 								$this
 									.draggable("disable")
 									.off("click keypress focusin focusout");
@@ -281,9 +282,9 @@
 
 						let showFb = false;
 
-						// completed (all correct or in tracking mode) or max attempts reached
+						// completed (all correct) or max attempts reached
 						// check whether incorrectly placed labels should be disabled
-						if (allCorrect == true || XTGetMode() == "normal" || numAttempts >= maxAttempts || (maxAttempts == undefined && numAttempts >= maxAttemptsHint)) {
+						if (allCorrect == true || !x_multipleAttemptsAllowed() || numAttempts >= maxAttempts || (maxAttempts == undefined && numAttempts >= maxAttemptsHint)) {
 							showFb = true;
 
 							// reveal / hide the show answers button
@@ -316,7 +317,7 @@
 
 						// always show the score feedback
 						let wrongFeedback, scoreFeedback;
-						if (XTGetMode() != "normal" && $("#button").is(":visible")) {
+						if (x_multipleAttemptsAllowed() && $("#button").is(":visible")) {
 							// includes 'try again' at end so only use if this is possible
 							wrongFeedback = x_currentPageXML.getAttribute("allWrong");
 							scoreFeedback = x_currentPageXML.getAttribute("score");

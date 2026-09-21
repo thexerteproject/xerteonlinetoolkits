@@ -18,6 +18,10 @@
 	 * limitations under the License.
 	 */
 
+	// ** x_lockFurtherAttempts doesn't work properly
+	// ** you can always click submit button even if no answer typed in
+	// ** you can always retype a new answer in the box even after submitted (but submit button is disabled so can't resubmit)
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var dictation = new function() {
@@ -42,7 +46,7 @@
 				$pageContents.data("mediaElement").setCurrentTime($pageContents.data("captionInfo")[$pageContents.data("current")].start);
 			}
 
-			if (XTGetMode() != "normal") {
+			if (x_multipleAttemptsAllowed()) {
 				showBtnTxt = x_currentPageXML.getAttribute("showText") != undefined && x_currentPageXML.getAttribute("showText") != "" ? x_currentPageXML.getAttribute("showText") : "Show Answer";
 			}
 			else {
@@ -156,7 +160,7 @@
 
             this.initTracking();
 
-			if (XTGetMode() != "normal") {
+			if (x_multipleAttemptsAllowed()) {
 				showBtnTxt = x_currentPageXML.getAttribute("showText") != undefined && x_currentPageXML.getAttribute("showText") != "" ? x_currentPageXML.getAttribute("showText") : "Show Answer";
 			}
 			else {
@@ -288,8 +292,7 @@
 					dictation.sortCaptions();
 				});
 
-            if (XTGetMode() == "normal")
-            {
+			if (!x_multipleAttemptsAllowed()) {
                 $("#restartBtn").hide();
             }
 

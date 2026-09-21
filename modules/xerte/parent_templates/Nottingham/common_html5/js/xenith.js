@@ -823,6 +823,8 @@ x_projectDataLoaded = function(xmlData) {
 			XTSetOption('templateName', x_params.name);
 
 			if (x_params.trackingMode != undefined) {
+				// ** this option has changed so that tracking mode only relates to full, minimal, none rather than first vs. last pass
+				// ** implications of this? what does this even do? is it only relevant to actual tracked projects rather than results page?
 				XTSetOption('tracking-mode', x_params.trackingMode);
 			}
 
@@ -846,9 +848,6 @@ x_projectDataLoaded = function(xmlData) {
 			}
 			if (x_params.completionOn != undefined) {
 				XTSetOption('page_completion', x_params.completionOn);
-			}
-			if (x_params.forceTrackingMode != undefined) {
-				XTSetOption('force_tracking_mode', x_params.forceTrackingMode);
 			}
 			if (typeof x_embed == "undefined") {
 				x_embed = false;
@@ -2089,15 +2088,16 @@ function x_continueSetUp1() {
 			}
 		}
 
-		// only add the save session button when the project is being tracked & saving is possible (not in browse or review mode), or if force tracking mode is on
+		// only add the save session button when the project is being tracked & saving is possible (not in browse or review mode), or if simulate tracking mode is on
+		// simulate tracking mode option currently just means the save session button is shown when it would not normally if project is not tracked
+		// this only works in preview as it has no way of actually saving in non-tracked projects
 		if (x_params["hideSaveSession"] !== "true" && !xot_offline &&
 			((XTTrackingSystem().indexOf("SCORM") >= 0 && XTGetMode() !== "review" && XTGetMode() !== "browse") ||
 				XTTrackingSystem() === "xAPI" ||
 				(typeof lti_enabled != "undefined" && lti_enabled) ||
-				x_params.forceTrackingMode === "true")) {
-
+				(x_params.simulateTrackingMode === "true" && window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") > -1))
+		) {
 			XENITH.SAVESESSION.init();
-
 		}
 
 		// If this LO is being tracked and is part of the install (not SCORM) keep session open
@@ -2362,13 +2362,14 @@ function x_continueSetUp2() {
 		XTInitialise(x_params.category); // initialise here, because of XTStartPage in next function
 		// Set course, module and resume options AFTER XTInitialise
 		// Display warning if this is a SCORM object and the tracking mode is NOT 'normal'
-		console.log("SCORM mode:", XTGetMode());
-
-		if (XTTrackingSystem().indexOf('SCORM') >= 0 && XTGetMode() != 'normal' && x_urlParams.lightboxState !== "1") {
-			var scorm_alert_default = "Please note: SCORM mode is '{0}'. This means that your progress, interactions and results from this viewing will not be tracked or saved. For tracking you should start a new attempt.";
-			var scorm_alert_lang = x_getLangInfo(x_languageData.find("scormTrackingAlert")[0], "warning", scorm_alert_default);
-			scorm_alert_lang = scorm_alert_lang.replace("{0}", XTGetMode());
-			alert(scorm_alert_lang);
+		if (XTTrackingSystem().indexOf('SCORM') >= 0) {
+			console.log("SCORM mode:", XTGetMode());
+			if (XTGetMode() != 'normal' && x_urlParams.lightboxState !== "1") {
+				var scorm_alert_default = "Please note: SCORM mode is '{0}'. This means that your progress, interactions and results from this viewing will not be tracked or saved. For tracking you should start a new attempt.";
+				var scorm_alert_lang = x_getLangInfo(x_languageData.find("scormTrackingAlert")[0], "warning", scorm_alert_default);
+				scorm_alert_lang = scorm_alert_lang.replace("{0}", XTGetMode());
+				alert(scorm_alert_lang);
+			}
 		}
 		if (x_params.course != undefined && x_params.course != "") {
 			XTSetOption('course', x_params.course);
@@ -2377,11 +2378,12 @@ function x_continueSetUp2() {
 			XTSetOption('module', x_params.module);
 		}
 
-		// only one attempt allowed when project is tracked
-		// normal mode - project is incomplete but still being worked through
-		// review mode - project has been completed & is viewed again (no saves possible)
-		// browse mode - project is being previewed (no saves possible)
-		if (XTGetMode() == "normal" || XTGetMode() == "review"/* || XTGetMode() == "browse"*/) {
+		// old, now deprecated, force tracking mode option used to restrict interactions to a single attempt as this is what all tracked projects used to do
+		// this is now defined separately in attemptsAllowed property
+		// for backwards compatibility, if force tracking mode is on, force single attempt only (in tracked & untracked projects)
+		// also prevent further attempts when completed SCORM package (in review mode) is viewed as any changes won't be saved
+		if ((x_params.attemptsAllowed === "single" || (x_params.attemptsAllowed == undefined && x_params.forceTrackingMode === "true")) ||
+			(XTTrackingSystem().indexOf('SCORM') >= 0 && XTGetMode() == 'review')) {
 			x_lockFurtherAttempts = true;
 		}
 
@@ -3356,8 +3358,7 @@ function x_changePageStep3() {
 		// Use a clean text version of the page title
         var label = $('<div>').html(pageTitle).text();
         if (!XENITH.PAGEMENU.isThisMenu()) {
-			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
-			{
+			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "") {
 				label = x_currentPageXML.getAttribute("trackinglabel");
 			}
 			XTEnterPage(x_currentPage, label, x_currentPageXML.getAttribute("grouping"));
@@ -3984,6 +3985,11 @@ function checkChapterViewed(pageIndex) {
 			}
 		}
 	}
+}
+
+// determines whether a page allows a single or multiple attempts
+function x_multipleAttemptsAllowed() {
+	return (!x_lockFurtherAttempts && x_currentPageXML.getAttribute("attemptsAllowed") !== "single") || x_currentPageXML.getAttribute("attemptsAllowed") === "multiple";
 }
 
 //convert picker color to #value
@@ -6638,6 +6644,7 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 // When in header bar, progress markers can be used to indicate pages, chapters or milestones
 // Milestone is an optional property that can be added to individual pages
 var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
+	// ** add some animations for the bar moving?
 	// declare local variables
 	let progressBar = false;
 	let progressBarPosition = "footer";
@@ -6664,7 +6671,6 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 	function init() {
 		// don't create a progress bar for standalone pages opening in a lightbox
 		if (!x_pageInfo[x_startPage.ID].standalone || x_pages[x_startPage.ID].getAttribute('linkTarget') == "same") {
-
 			if (((x_params.progressBar != undefined && x_params.progressBar != "") || x_params.progressBarType == 'true') && x_params.hideFooter != "true") {
 				// add optional progress bar to the footer bar
 				// x_params.progressBar is deprecated but will still work for older projects that still use this
@@ -6729,7 +6735,11 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			$pbHolder = $('<div id="x_headerProgress">');
 
 			if (progressBarPosition == "header1") {
-				$pbHolder.insertAfter($x_headerBlock.find(".x_icon"));
+				if ($x_headerBlock.find(".x_icon").length > 0) {
+					$pbHolder.insertAfter($x_headerBlock.find(".x_icon"));
+				} else {
+					$x_headerBlock.prepend($pbHolder);
+				}
 				$x_headerBlock.addClass('pbAbove');
 			} else if (progressBarPosition == "header2") {
 				$pbHolder.appendTo($x_headerBlock);
@@ -7080,6 +7090,10 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 	// a new page has been viewed - update the progress bar
 	function update(page, target) {
+		// ** use completionOn to determine whether this should be updated on attempt or view?
+		// ** completion not required does not affect the progress bar - should it?
+        // ** perhaps view not required should also be an option
+
 		if (progressBar) {
 			let update = true;
 
@@ -8379,9 +8393,9 @@ var XENITH = (function ($, parent) { var self = parent.SAVESESSION = {};
 
 		const $closeText = $("#closingText");
 
-		if ((XTTrackingSystem().indexOf("SCORM") >= 0 && XTGetMode() !== "review" && XTGetMode() !== "browse") ||
-				XTTrackingSystem() === "xAPI" ||
+		if (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" ||
 				(typeof lti_enabled != "undefined" && lti_enabled)) {
+			// ** not sure this is right when scorm in in review or browse mode, but message in else would also not be right
 
 			const lti_only = (typeof lti_enabled != "undefined" && lti_enabled && XTTrackingSystem() !=="xAPI");
 

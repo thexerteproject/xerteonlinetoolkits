@@ -70,11 +70,11 @@
 				l_judge = false;
 			}
 
-			if ((XTGetMode() == "normal" && $("#initHolder .label").length > 0) || $("#categoryHolder .category .label").length == 0) {
-				// exercise is being tracked & is not complete or not tracked but no labels placed - prompt to complete before marking
+			if ((!x_multipleAttemptsAllowed() && $("#initHolder .label").length > 0) || $("#categoryHolder .category .label").length == 0) {
+				// only one attempt allowed & is not complete or no labels placed - prompt to complete before marking
 				$("#feedback").html('<p>' + x_addLineBreaks(x_currentPageXML.getAttribute("incomplete") != undefined && x_currentPageXML.getAttribute("incomplete") != "" ? x_currentPageXML.getAttribute("incomplete") : "Please complete the exercise.") + '</p>');
 
-			} else if (XTGetMode() !== "normal" || isAttempt !== false) {
+			} else if (x_multipleAttemptsAllowed() || isAttempt !== false) {
 				if (isAttempt !== false) {
 					$pageContents.data("attemptsMade", $pageContents.data("attemptsMade")+1);
 				}
@@ -114,8 +114,8 @@
 						l_feedback.push("incorrect");
 						l_option.result = false;
 
-						// disable label as tracked & only allowed one attempt
-						if (XTGetMode() == "normal" && isAttempt !== false) {
+						// disable label as only one attempt allowed
+						if (!x_multipleAttemptsAllowed && isAttempt !== false) {
 							$this.addClass("disabled");
 						}
 					}
@@ -146,8 +146,8 @@
 						}
 					}
 
-					// show other feedback if max. no. attempts reached, all are correct or if tracked so only one attempt allowed
-					if ($pageContents.data("attemptsMade") >= $pageContents.data("attemptsAllowed") || XTGetMode() == "normal" || (l_judge && l_correct == totaloptions)) {
+					// show other feedback if max. no. attempts reached, all are correct or if only one attempt allowed
+					if ($pageContents.data("attemptsMade") >= $pageContents.data("attemptsAllowed") || !x_multipleAttemptsAllowed || (l_judge && l_correct == totaloptions)) {
 						// general feedback
 						if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != "") {
 							$feedback.append('<div class="fbG">' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + '</div>');
@@ -206,7 +206,9 @@
 		this.init = function() {
 			$pageContents = $("#pageContents");
 			$pageContents.data({
-				"attemptsAllowed": x_currentPageXML.getAttribute("judge") !== "false" && x_currentPageXML.getAttribute("attempts") != undefined && $.isNumeric(x_currentPageXML.getAttribute("attempts").trim()) ? Number(x_currentPageXML.getAttribute("attempts").trim()) : 1,
+				// ** check that existing attempts option works well with new attemptsAllowed option
+				// ** "attempts" is mandatory & "attemptsAllowed" is not - both are new & not in current release so I can change how either of them work
+				"attemptsAllowed": !x_multipleAttemptsAllowed() ? 1 : x_currentPageXML.getAttribute("judge") !== "false" && x_currentPageXML.getAttribute("attempts") != undefined && $.isNumeric(x_currentPageXML.getAttribute("attempts").trim()) ? Number(x_currentPageXML.getAttribute("attempts").trim()) : 1,
 				"attemptsMade": 0
 			});
 

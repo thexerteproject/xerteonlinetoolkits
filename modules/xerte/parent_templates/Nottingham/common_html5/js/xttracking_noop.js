@@ -64,7 +64,6 @@ function NoopTrackingState()
     this.lo_completed = 0;
     this.lo_passed = -1;
     this.page_timeout = 0;
-    this.forcetrackingmode = false;
     this.page_completion = "attempt";
     this.debug = false;
 
@@ -1089,26 +1088,19 @@ function XTLogin(login, passwd)
     return true;
 }
 
-function XTGetMode(extended)
+function XTGetMode()
 {
-    if (state.forcetrackingmode === 'true') {
+    // ** I don't think this is necessary anymore as only used in SCORM tracking
+    /*if (state.single_attempt) {
         if (state.trackingmode !== "none") {
-            if (extended != null && (extended == true || extended == 'true')) {
-                if (state.scoremode == "first")
-                    return "normal";
-                else
-                    return "normal-last";
-            }
-            else {
-                return "normal";
-            }
+            return "normal";
         }
         else {
             return "tracking";
         }
     }
     else
-        return "";
+        return "";*/
 }
 
 function XTStartPage()
@@ -1142,7 +1134,7 @@ function XTSetOption(option, value)
                 }
             }
             break;
-        case "tracking-mode":
+        case "tracking-mode": // ** is this used anywhere?
             switch(value)
             {
                 case 'full_first':
@@ -1180,9 +1172,6 @@ function XTSetOption(option, value)
         case "page_timeout":
             // Page timeout in seconds
             state.page_timeout = Number(value) * 1000;
-            break;
-        case "force_tracking_mode":
-            state.forcetrackingmode = value;
             break;
         case "page_completion":
             state.page_completion = value;

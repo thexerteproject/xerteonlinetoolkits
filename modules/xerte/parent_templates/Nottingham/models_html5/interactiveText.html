@@ -18,6 +18,8 @@
  * limitations under the License.
  */
 
+	// ** a second attempt is never allowed in find (mark at end) mode
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var interactiveText = new function() {
@@ -887,13 +889,11 @@
 
 								$("#qNum").html($pageContents.data("phrases").mcqFeedback);
 
-								if (XTGetMode() == "normal")
-								{
+								if (!x_multipleAttemptsAllowed()) {
 									$(this)
 										.button("disable").hide()
 										.data("state", 2);
-								}
-								else {
+								} else {
 									$(this)
 										.button({"label": $pageContents.data("phrases").mcqBtnTxt3})
 										.data("state", 2);
@@ -904,7 +904,7 @@
 							} else {
 								interactiveText.createQ();
 							}
-						} else if (XTGetMode() != "normal") { // restart
+						} else if (x_multipleAttemptsAllowed()) { // restart
 							interactiveText.createQuiz();
 						}
 					});

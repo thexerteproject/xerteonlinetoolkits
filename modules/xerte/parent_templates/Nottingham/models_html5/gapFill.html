@@ -57,8 +57,10 @@
 			finished = $pageContents.data('finished');
 			score = $pageContents.data('score');
 			attempts = $pageContents.data('attempts');
-			
-			if (XTGetMode() == "normal") { this.isTracked = true; }
+
+			if (!x_multipleAttemptsAllowed()) {
+				this.singleAttemptAllowed = true;
+			}
 			
 			$pageContents.find("#hint").remove();
 		}
@@ -143,11 +145,11 @@
 			// get the delimiter used to mark up the gaps in the gap fill text
 			delimiter = x_currentPageXML.getAttribute("answerDelimiter") != undefined && x_currentPageXML.getAttribute("answerDelimiter") != "" ? x_currentPageXML.getAttribute("answerDelimiter")  : ",";
 
-			// is project in tracking mode? if so, only one attempt is possible
-			if(XTGetMode() == "normal") {
-                this.isTracked = true;
+			// behaviour of labels & feedback will depend on whether multiple attempts are allowed
+			if (!x_multipleAttemptsAllowed()) {
+                this.singleAttemptAllowed = true;
             } else {
-				this.isTracked = false;
+				this.singleAttemptAllowed = false;
 			}
 
 			$("#mainText").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
@@ -482,7 +484,7 @@
 			}
 
 			// mark immediately
-			if ((x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false") && !this.isTracked && judge) {
+			if ((x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false") && !this.singleAttemptAllowed && judge) {
 				$("#submitBtn, #showBtn").remove();
 				
 				$targetHolder.find("input")
@@ -694,7 +696,7 @@
 			}
 
 			// mark immediately (can only drop labels on correct targets)
-			if (!this.isTracked && (x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false")) {
+			if (!this.singleAttemptAllowed && (x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false")) {
                 $("#submitBtn").hide();
 				$("#feedbackTxt").prepend("<div id='tryAgain' aria-live='polite'></div>");
 
@@ -832,7 +834,7 @@
 			this.setUpTargetListeners($targetHolder.find(".target"));
 
 			// allow labels to be dragged back to the target holder unless mark at end is off (as not needed as will only be placed on correct targets)
-			if (this.isTracked || x_currentPageXML.getAttribute("markEnd") == "true") {
+			if (this.singleAttemptAllowed || x_currentPageXML.getAttribute("markEnd") == "true") {
 				$("#labelHolder").droppable({
 					drop: function (event, ui) {
 						gapFill.dropLabel($(this), ui.draggable)
@@ -935,7 +937,7 @@
 			// if mark at end is off - labels can only be dropped on correct targets
 			for (i=0; i<$("#targetHolder .target").length; i++) {
 				$("#targetHolder .target:eq(" + i + ")").droppable({
-					accept:	(!this.isTracked && (x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false")) ?
+					accept:	(!this.singleAttemptAllowed && (x_currentPageXML.getAttribute("markEnd") == undefined || x_currentPageXML.getAttribute("markEnd") == "false")) ?
 						$("#labelHolder .label").filter(function() {
 							return $(this).data("answer") == $("#targetHolder .target:eq(" + i + ")").data("answer");
 						}) : $("#labelHolder .label")
@@ -982,7 +984,7 @@
 				gapFill.setUpTargetListeners(prevHolder);
 
 				// sort any score changes caused by removing from previous target
-				if (this.isTracked || x_currentPageXML.getAttribute("markEnd") == "true") {
+				if (this.singleAttemptAllowed || x_currentPageXML.getAttribute("markEnd") == "true") {
 					if ($thisLabel.data("answer") == prevHolder.data("answer")) {
 						score--;
 						$thisLabel.add(prevHolder).data("correct", false);
@@ -1006,7 +1008,7 @@
 						.css("opacity", 0);
 
 				// sort any score changes caused by moving to current target
-				if (this.isTracked || x_currentPageXML.getAttribute("markEnd") == "true") {
+				if (this.singleAttemptAllowed || x_currentPageXML.getAttribute("markEnd") == "true") {
 					if ($thisLabel.data("answer") == $thisTarget.data("answer")) {
 						score++;
 						$thisLabel.add($thisTarget).data("correct", true);
@@ -1044,7 +1046,7 @@
 					left: $thisTarget.position().left - $thisLabel.data("leftOffset")
 				});
 
-				if(x_currentPageXML.getAttribute("markEnd") == "true" || this.isTracked) {
+				if(x_currentPageXML.getAttribute("markEnd") == "true" || this.singleAttemptAllowed) {
 					// prevent label from being tabbed to while hidden
 					$thisLabel.data("prevHolder", $thisTarget);
 					$thisLabel.removeAttr("tabindex");
@@ -1059,7 +1061,7 @@
 				labelAnswers[$thisTarget.data("answer")] = $thisLabel.data("answer");
 
 				// if marking is done immediately (so can only drop on correct targets), show feedback immediately when all labels have been placed
-				if (!this.isTracked && (x_currentPageXML.getAttribute("markEnd") != "true" && $targetHolder.find(".target:not(.ui-droppable-disabled)").length == 0)) {
+				if (!this.singleAttemptAllowed && (x_currentPageXML.getAttribute("markEnd") != "true" && $targetHolder.find(".target:not(.ui-droppable-disabled)").length == 0)) {
 					$("#labelHolder").hide();
 					$("#feedbackTxt #txt").html(x_addLineBreaks(x_currentPageXML.getAttribute("feedback")));
 					gapFill.audioFbResize(true);
@@ -1132,7 +1134,7 @@
 			if ($selectedLabel != undefined && $selectedLabel != "") {
 				const $tempLabel = $selectedLabel.clone();
 				$tempLabel.find(".sr-only").remove();
-				if ($(this).is($("#labelHolder")) || answerData[$(this).data("index")].indexOf($tempLabel.html()) != -1 || (x_currentPageXML.getAttribute("markEnd") != undefined && x_currentPageXML.getAttribute("markEnd") != "false") || gapFill.isTracked) {
+				if ($(this).is($("#labelHolder")) || answerData[$(this).data("index")].indexOf($tempLabel.html()) != -1 || (x_currentPageXML.getAttribute("markEnd") != undefined && x_currentPageXML.getAttribute("markEnd") != "false") || gapFill.singleAttemptAllowed) {
 					// drop label: either because mark at end is on so labels can be dropped on any target or target is correct one
 					gapFill.dropLabel($(this), $selectedLabel);
 
@@ -1228,8 +1230,8 @@
 				
 			// an attempt (even if partial) has been made
 			} else {
-				// mark exercise (unless force tracking mode is on & exercise is incomplete)
-				if ($targetHolder.find('select option:selected[value=" "]').parent().length == 0 || !this.isTracked) {
+				// mark exercise (unless just one attempt allowed & exercise is incomplete)
+				if ($targetHolder.find('select option:selected[value=" "]').parent().length == 0 || !this.singleAttemptAllowed) {
 					var wrong = 0,
 						correct,
 						result,
@@ -1265,8 +1267,8 @@
 							wrong++;
 							correct = false;
 
-							// only one attempt allowed if tracking on - prevent further attempts
-							if (gapFill.isTracked) {
+							// only one attempt allowed - prevent further attempts
+							if (gapFill.singleAttemptAllowed) {
 								$this
 									.attr("disabled", "disabled")
 									.addClass('incorrect')
@@ -1317,11 +1319,11 @@
 							});
 						}
 						
-						// show feedback - might be different if tracking on/off
+						// show feedback - might be different depending on whether a single or multiple attempts are allowed
 						var gapFillWrong = x_addLineBreaks(x_currentPageXML.getAttribute("gapFillWrong") != undefined && x_currentPageXML.getAttribute("gapFillWrong") != "" ? x_currentPageXML.getAttribute("gapFillWrong") : "You have not filled any gaps correctly. Try again."),
 							gapFillPartWrong = x_addLineBreaks(x_currentPageXML.getAttribute("gapFillPartWrong") != undefined && x_currentPageXML.getAttribute("gapFillPartWrong") != "" ? x_currentPageXML.getAttribute("gapFillPartWrong") : "Your correct answers are shown in green. Try again with those you have got wrong.");
 						
-						if (this.isTracked) {
+						if (this.singleAttemptAllowed) {
 							gapFillWrong = x_addLineBreaks(x_currentPageXML.getAttribute("gapFillWrongTracking") != undefined && x_currentPageXML.getAttribute("gapFillWrongTracking") != "" ? x_currentPageXML.getAttribute("gapFillWrongTracking") : "You have not filled any gaps correctly.");
 							gapFillPartWrong = x_addLineBreaks(x_currentPageXML.getAttribute("gapFillPartWrongTracking") != undefined && x_currentPageXML.getAttribute("gapFillPartWrongTracking") != "" ? x_currentPageXML.getAttribute("gapFillPartWrongTracking") : "Your correct answers are shown in green.");
 
@@ -1363,9 +1365,9 @@
 				}
 				
 			// an attempt (even if partial) has been made
-			} else if (x_currentPageXML.getAttribute("markEnd") == "true" || this.isTracked || !judge) {
-				// mark exercise (unless force tracking mode is on & exercise is incomplete)
-				if ($targetHolder.find("input").filter(function() { return $(this).val() == ""; }).length == 0 || !this.isTracked) {
+			} else if (x_currentPageXML.getAttribute("markEnd") == "true" || this.singleAttemptAllowed || !judge) {
+				// mark exercise (unless just one attempt is allowed & exercise is incomplete)
+				if ($targetHolder.find("input").filter(function() { return $(this).val() == ""; }).length == 0 || !this.singleAttemptAllowed) {
 					// show the 'show answers' button if correct no. attempts have been made
 					if (x_currentPageXML.getAttribute("showHint") != "false" && judge) {
 						attempts++;
@@ -1415,8 +1417,8 @@
 							$this.attr("incorrect", "incorrect");
 							wrong++;
 
-							// only one attempt allowed if being tracked
-							if (gapFill.isTracked) {
+							// only one attempt allowed
+							if (gapFill.singleAttemptAllowed) {
 								$this
 									.attr({
 										"readonly": "readonly",
@@ -1439,11 +1441,11 @@
 
 					gapFill.finishTracking();
 					
-					// show feedback - might be different if tracking on/off
+					// show feedback - might be different depending on whether a single or multiple attempts are allowed
 					var gapFillWrong = x_addLineBreaks(x_currentPageXML.getAttribute("gapFillWrong") != undefined && x_currentPageXML.getAttribute("gapFillWrong") != "" ? x_currentPageXML.getAttribute("gapFillWrong") : "You have not filled any gaps correctly. Try again."),
 						gapFillPartWrong = x_addLineBreaks(x_currentPageXML.getAttribute("gapFillPartWrong") != undefined && x_currentPageXML.getAttribute("gapFillPartWrong") != "" ? x_currentPageXML.getAttribute("gapFillPartWrong") : "Your correct answers are shown in green. Try again with those you have got wrong.");
 					
-					if (this.isTracked) {
+					if (this.singleAttemptAllowed) {
 						gapFillWrong = x_addLineBreaks(x_currentPageXML.getAttribute("gapFillWrongTracking") != undefined && x_currentPageXML.getAttribute("gapFillWrongTracking") != "" ? x_currentPageXML.getAttribute("gapFillWrongTracking") : "You have not filled any gaps correctly.");
 						gapFillPartWrong = x_addLineBreaks(x_currentPageXML.getAttribute("gapFillPartWrongTracking") != undefined && x_currentPageXML.getAttribute("gapFillPartWrongTracking") != "" ? x_currentPageXML.getAttribute("gapFillPartWrongTracking") : "Your correct answers are shown in green.");
 						
@@ -1473,8 +1475,7 @@
 						}
 						x_pageContentsUpdated();
 
-						// only one attempt allowed if being tracked
-						if (this.isTracked) {
+						if (this.singleAttemptAllowed) {
 							$("#submitBtn").hide();
 							$("#showBtn").show();
 						}
@@ -1501,8 +1502,8 @@
 				
 			// an attempt (even if partial) has been made
 			} else {
-				// mark exercise (unless force tracking mode is on & exercise is incomplete)
-				if ($targetHolder.find(".target:not(.ui-droppable-disabled)").length == 0 || !this.isTracked) {
+				// mark exercise (unless only single attempt allowed & exercise is incomplete)
+				if ($targetHolder.find(".target:not(.ui-droppable-disabled)").length == 0 || !this.singleAttemptAllowed) {
 					// add correct styling & ticks to correctly filled targets
 					$("#targetHolder .target").filter(function () { return $(this).data("correct") == true && !$(this).hasClass("correct"); })
 						.addClass("correct")
@@ -1553,8 +1554,8 @@
 					XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, feedback);
 					gapFill.finishTracking();
 					
-					if (!this.isTracked) {
-						// not tracked - reset incorrect labels/targets so you can try again
+					if (!this.singleAttemptAllowed) {
+						// multiple attempts allowed - reset incorrect labels/targets so you can try again
 						$incorrectTargets.each(function() {
 							if ($(this).data("width") != undefined) {
 								$(this).width($(this).data("width"));
@@ -1649,7 +1650,7 @@
 		// drag drop mode: ensure labels on targets are in correct position even though hidden
 		// this is important so they can be dragged off targets if needed
 		this.dragDropPosition = function() {
-			if (x_currentPageXML.getAttribute("markEnd") == "true" || this.isTracked) {
+			if (x_currentPageXML.getAttribute("markEnd") == "true" || this.singleAttemptAllowed) {
 				// update initial position of the labels within the labelHolder div
 				$("#labelHolder .label").each(function() {
 					const $thisLabel = $(this);
