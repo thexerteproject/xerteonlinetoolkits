@@ -18,9 +18,9 @@
 	 * limitations under the License.
 	 */
 
-	// ** x_lockFurtherAttempts doesn't work properly
+	// ** multiple / single attempts code doesn't work properly
 	// ** you can always click submit button even if no answer typed in
-	// ** you can always retype a new answer in the box even after submitted (but submit button is disabled so can't resubmit)
+	// ** you can always retype a new answer in the box even after submitted (but submit button is disabled so can't resubmit)s
 
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -264,7 +264,6 @@
                         dictation.finishTracking();
 						$("#restartBtn").button("enable");
 					}
-
 				});
 
 			$("#nextBtn")

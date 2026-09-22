@@ -152,11 +152,6 @@
         };
 
         this.leavePage = function() {
-            if ($("#targetHolder .target").length > 0) {
-                // submit answers but don't count this as a proper attempt
-                this.showFeedBackandTrackResults(false);
-            }
-
             $pageContents.data({
                 "judge": judge,
                 "allowedAttempts": allowedAttempts,

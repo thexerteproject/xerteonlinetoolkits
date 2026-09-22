@@ -105,26 +105,6 @@
 		
 		this.leavePage = function() {
 			$pageContents.data("numAttempts", numAttempts);
-
-			if ($("#categoryHolder .label").length > 0) {
-				// submit answers but don't count this as a proper attempt
-				this.showFeedBackandTrackScore(false);
-			}
-
-			if ($(x_currentPageXML).children().length > 0) {
-				// are any labels not on a target?
-				let labelOffTarget = 0;
-				$("#labelHolder .label").each(function () {
-					if ($(this).data("currentTarget") == "") {
-						labelOffTarget++;
-					}
-				});
-
-				const readyToMark = (x_multipleAttemptsAllowed() && x_currentPageXML.getAttribute('markEnd') != 'true' && labelOffTarget != $("#labelHolder .label").length) || labelOffTarget == 0;
-				if (readyToMark) {
-					this.finishTracking();
-				}
-			}
         }
 		
 		this.init = function() {

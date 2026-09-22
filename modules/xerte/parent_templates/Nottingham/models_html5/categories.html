@@ -49,11 +49,6 @@
 		}
 
         this.leavePage = function() {
-            if ($("#categoryHolder .label").length > 0) {
-				// submit answers but don't count this as a proper attempt
-                this.showFeedBackandTrackScore(false);
-            }
-
 			$pageContents.data("totaloptions", totaloptions);
         }
 
@@ -115,7 +110,7 @@
 						l_option.result = false;
 
 						// disable label as only one attempt allowed
-						if (!x_multipleAttemptsAllowed && isAttempt !== false) {
+						if (!x_multipleAttemptsAllowed() && isAttempt !== false) {
 							$this.addClass("disabled");
 						}
 					}

@@ -67,9 +67,6 @@
 		};
 		
 		this.leavePage = function() {
-			if ($(x_currentPageXML).children().length > 0 && $("#pageContents").data("tracked") !== true && !this.checkComplete()) {
-				this.finishTracking();
-			}
         };
 		
 		this.init = function() {

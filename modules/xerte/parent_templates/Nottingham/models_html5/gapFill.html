@@ -77,22 +77,6 @@
 				'score': score,
 				'attempts': attempts
 			});
-
-			// auto submit answers
-			if (finished == false) {
-				if(x_currentPageXML.getAttribute("interactivity") == "Drag Drop")
-				{
-					this.dragDropSubmit(true);
-				}
-				else if(x_currentPageXML.getAttribute("interactivity") == "Fill in Blank")
-				{
-					this.fillInSubmit(true);
-				}
-				else if (x_currentPageXML.getAttribute("interactivity") == "Drop Down Menu")
-				{
-					this.dropDownSubmit(true);
-				}
-			}
         };
 		
 		// function called every time the size of the LO is changed

@@ -17,6 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var grid = new function() {
@@ -34,9 +35,6 @@
 		this.pageChanged = function() {
 			labelData = $("#pageContents").data("labelData");
 			$pageContents = $("#pageContents");
-			$("#checkBtn").show();
-			$(".ui-draggable").draggable("enable");
-			this.removeFocus();
 		}
 
 		// function called every time the size of the LO is changed
@@ -259,10 +257,6 @@
 
         this.leavePage = function()
         {
-            if (!this.checked)
-            {
-                this.showFeedBackandTrackScore();
-            }
         };
 
         this.showFeedBackandTrackScore = function()
