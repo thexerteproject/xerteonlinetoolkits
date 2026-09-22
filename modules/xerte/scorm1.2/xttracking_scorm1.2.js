@@ -145,7 +145,7 @@ function ScormTrackingState()
     this.trackingmode = "full";
     this.skipcomments = false;
     this.skipinteractions = false;
-    this.scoremode = "first";
+    this.scoremode = "last";
     this.nrpages = 0;
     this.toCompletePages = new Array();
     this.completedPages = new Array();
@@ -1403,32 +1403,8 @@ function XTLogin(login, passwd)
     return true;
 }
 
-function XTGetMode(extended)
+function XTGetMode()
 {
-    if (state.scormmode == "normal")
-    {
-        if (state.currentpageid)
-        {
-            var sit=state.find(state.currentpageid);
-            if (state.trackingmode !== 'none') {
-                if (extended != null && (extended == true || extended == 'true'))
-                {
-                    if (state.scoremode == 'first')
-                        return "normal";
-                    else
-                        return "normal_last";
-                }
-                else {
-                    return "normal";
-                }
-            }
-            else
-            {
-                return "normal";
-            }
-        }
-        return "normal";
-    }
     return state.scormmode;
 }
 
@@ -1479,24 +1455,25 @@ function XTSetOption(option, value)
         case "tracking-mode":
             switch(value)
             {
-                case 'full_first':
-                    state.trackingmode = 'full';
-                    state.scoremode = 'first';
-                    break;
-                case 'minimal_first':
-                    state.trackingmode = 'minimal';
-                    state.scoremode = 'first';
-                    break;
                 case 'full':
                     state.trackingmode = 'full';
-                    state.scoremode = 'last';
                     break;
                 case 'minimal':
                     state.trackingmode = 'minimal';
-                    state.scoremode = 'last';
                     break;
                 case 'none':
                     state.trackingmode = 'none';
+                    break;
+            }
+            break;
+        case "score-mode":
+            switch(value)
+            {
+                case 'single':
+                    state.scoremode = 'first';
+                    break;
+                case 'multiple':
+                    state.scoremode = 'last';
                     break;
             }
             break;

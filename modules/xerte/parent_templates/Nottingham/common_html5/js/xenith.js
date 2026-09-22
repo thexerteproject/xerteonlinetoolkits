@@ -823,9 +823,13 @@ x_projectDataLoaded = function(xmlData) {
 			XTSetOption('templateName', x_params.name);
 
 			if (x_params.trackingMode != undefined) {
-				// ** this option has changed so that tracking mode only relates to full, minimal, none rather than first vs. last pass
-				// ** implications of this? what does this even do? is it only relevant to actual tracked projects rather than results page?
-				XTSetOption('tracking-mode', x_params.trackingMode);
+				// options used to be: full_first minimal_first full minimal none
+				// now it's just full minimal none as attemptsAllowed deals with whether the first (single attempt) or last (multiple attempts) pass is tracked
+
+				// full = tracking of each interaction on a page
+				// minimal = page level info tracked with no tracking of individual interactions
+				// none = no tracking of individual pages, just completion, score & viewed pages?
+				XTSetOption('tracking-mode', x_params.trackingMode === "full_first" ? "full" : x_params.trackingMode === "minimal_first" ? "minimal" : x_params.trackingMode);
 			}
 
 			if (x_params.trackingPassed != undefined) {
@@ -2088,18 +2092,6 @@ function x_continueSetUp1() {
 			}
 		}
 
-		// only add the save session button when the project is being tracked & saving is possible (not in browse or review mode), or if simulate tracking mode is on
-		// simulate tracking mode option currently just means the save session button is shown when it would not normally if project is not tracked
-		// this only works in preview as it has no way of actually saving in non-tracked projects
-		if (x_params["hideSaveSession"] !== "true" && !xot_offline &&
-			((XTTrackingSystem().indexOf("SCORM") >= 0 && XTGetMode() !== "review" && XTGetMode() !== "browse") ||
-				XTTrackingSystem() === "xAPI" ||
-				(typeof lti_enabled != "undefined" && lti_enabled) ||
-				(x_params.simulateTrackingMode === "true" && window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") > -1))
-		) {
-			XENITH.SAVESESSION.init();
-		}
-
 		// If this LO is being tracked and is part of the install (not SCORM) keep session open
 		if (XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled)) {
 			x_KeepAlive();
@@ -2364,6 +2356,9 @@ function x_continueSetUp2() {
 		// Display warning if this is a SCORM object and the tracking mode is NOT 'normal'
 		if (XTTrackingSystem().indexOf('SCORM') >= 0) {
 			console.log("SCORM mode:", XTGetMode());
+			// normal mode - project is incomplete & still being worked through
+			// review mode - project has been completed & is viewed again (no saves possible)
+			// browse mode - project is being previewed (no saves possible)
 			if (XTGetMode() != 'normal' && x_urlParams.lightboxState !== "1") {
 				var scorm_alert_default = "Please note: SCORM mode is '{0}'. This means that your progress, interactions and results from this viewing will not be tracked or saved. For tracking you should start a new attempt.";
 				var scorm_alert_lang = x_getLangInfo(x_languageData.find("scormTrackingAlert")[0], "warning", scorm_alert_default);
@@ -2378,13 +2373,26 @@ function x_continueSetUp2() {
 			XTSetOption('module', x_params.module);
 		}
 
+		// only add the save session button when the project is being tracked & saving is possible (not in browse or review mode), or if simulate tracking mode is on
+		// simulate tracking mode option currently just means the save session button is shown when it would not normally if project is not tracked
+		// this only works in preview as it has no way of actually saving in non-tracked projects
+		if (x_params["hideSaveSession"] !== "true" && !xot_offline && x_urlParams.lightboxState !== "1" &&
+			((XTTrackingSystem().indexOf("SCORM") >= 0 && XTGetMode() === "normal") ||
+				XTTrackingSystem() === "xAPI" ||
+				(typeof lti_enabled != "undefined" && lti_enabled) ||
+				(x_params.simulateTrackingMode === "true" && window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") > -1))
+		) {
+			XENITH.SAVESESSION.init();
+		}
+
 		// old, now deprecated, force tracking mode option used to restrict interactions to a single attempt as this is what all tracked projects used to do
 		// this is now defined separately in attemptsAllowed property
-		// for backwards compatibility, if force tracking mode is on, force single attempt only (in tracked & untracked projects)
-		// also prevent further attempts when completed SCORM package (in review mode) is viewed as any changes won't be saved
-		if ((x_params.attemptsAllowed === "single" || (x_params.attemptsAllowed == undefined && x_params.forceTrackingMode === "true")) ||
-			(XTTrackingSystem().indexOf('SCORM') >= 0 && XTGetMode() == 'review')) {
+		if (x_params.attemptsAllowed === "single" || // project optional property has changed multiple attempts to single attempt only
+			(x_params.attemptsAllowed == undefined && x_params.forceTrackingMode === "true") || // now deprecated forceTrackingMode is being used (lock for backwards compatibility)
+			(x_params.attemptsAllowed == undefined && (x_params.trackingMode === "full_first" || x_params.trackingMode === "minimal_first")  && (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))) || // old version of tracking mode is being used in a tracked project that specifies the first attempt is tracked
+			(XTTrackingSystem().indexOf('SCORM') >= 0 && XTGetMode() == 'review')) { // completed project being viewed in SCORM review mode (changes won't be saved so lock further attempts)
 			x_lockFurtherAttempts = true;
+			XTSetOption('score-mode', "single");
 		}
 
 		// Restart if we're NOT navigating to a standalone page
@@ -3361,6 +3369,7 @@ function x_changePageStep3() {
 			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "") {
 				label = x_currentPageXML.getAttribute("trackinglabel");
 			}
+			XTSetOption("score-mode", x_multipleAttemptsAllowed() ? "multiple" : "single");
 			XTEnterPage(x_currentPage, label, x_currentPageXML.getAttribute("grouping"));
 		}
 
@@ -3487,6 +3496,7 @@ function x_changePageStep3() {
 				{
 				grouping = x_currentPageXML.getAttribute("grouping");
 			}
+			XTSetOption("score-mode", x_multipleAttemptsAllowed() ? "multiple" : "single");
 			XTEnterPage(x_currentPage, label, grouping);
 
 			var modelfile = x_pageInfo[x_currentPage].type;
@@ -3989,7 +3999,14 @@ function checkChapterViewed(pageIndex) {
 
 // determines whether a page allows a single or multiple attempts
 function x_multipleAttemptsAllowed() {
-	return (!x_lockFurtherAttempts && x_currentPageXML.getAttribute("attemptsAllowed") !== "single") || x_currentPageXML.getAttribute("attemptsAllowed") === "multiple";
+	/* multiple attempts not allowed if:
+		- SCORM in review mode (as project has already been completed)
+		- single attempt set at project level & not overridden by page option
+		- single attempt set at page level
+	 */
+	return (XTTrackingSystem().indexOf('SCORM') >= 0 && XTGetMode() == 'review') ? false :
+		(!x_lockFurtherAttempts && x_currentPageXML.getAttribute("attemptsAllowed") !== "single") ||
+		x_currentPageXML.getAttribute("attemptsAllowed") === "multiple";
 }
 
 //convert picker color to #value
@@ -6644,7 +6661,6 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 // When in header bar, progress markers can be used to indicate pages, chapters or milestones
 // Milestone is an optional property that can be added to individual pages
 var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
-	// ** add some animations for the bar moving?
 	// declare local variables
 	let progressBar = false;
 	let progressBarPosition = "footer";
@@ -7090,9 +7106,12 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 	// a new page has been viewed - update the progress bar
 	function update(page, target) {
-		// ** use completionOn to determine whether this should be updated on attempt or view?
-		// ** completion not required does not affect the progress bar - should it?
-        // ** perhaps view not required should also be an option
+		/* TODO **
+		 - currently the progress bar % is always calcualted on page view
+		 - completion not required does not have an affect on what is shown on progress bar
+		 - new option for view not required?
+		 - animation for bar moving?
+		*/
 
 		if (progressBar) {
 			let update = true;
@@ -8395,8 +8414,6 @@ var XENITH = (function ($, parent) { var self = parent.SAVESESSION = {};
 
 		if (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" ||
 				(typeof lti_enabled != "undefined" && lti_enabled)) {
-			// ** not sure this is right when scorm in in review or browse mode, but message in else would also not be right
-
 			const lti_only = (typeof lti_enabled != "undefined" && lti_enabled && XTTrackingSystem() !=="xAPI");
 
 			let closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("trackingCloseTxt")[0], "label", "<p>Do you want to save this session and continue later?</p>");

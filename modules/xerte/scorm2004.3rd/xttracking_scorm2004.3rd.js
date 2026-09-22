@@ -213,7 +213,7 @@ function ScormTrackingState()
         setValue('cmi.score.raw', this.getRawScore());
         setValue('cmi.score.min', this.getMinScore());
         setValue('cmi.score.max', this.getMaxScore());
-        setValue('cmi.exit', 'suspend');
+        setValue('cmi.exit', 'suspend'); // this no longer gets set to normal when completed as this means review mode shows reset project as moodle doesn't send suspend data to projects in review
         setValue('cmi.suspend_data', suspend_str);
     }
 
@@ -474,7 +474,7 @@ function ScormTrackingState()
             var writeCmi = (ia_nr >= 0 && updateAttemptData) ||
                 (ia_nr < 0 && (this.scoremode != 'first' || sit.idx < 0));
 
-            if (writeCmi && !this.trackingmode != 'none'
+            if (writeCmi && this.trackingmode != 'none'
                 && ((sit.ia_nr < 0 && (this.trackingmode!='full' || sit.nrinteractions == 0))
                 || (sit.ia_nr >= 0 && this.trackingmode == 'full')))
             {
@@ -1371,35 +1371,8 @@ function XTLogin(login, passwd)
     return true;
 }
 
-function XTGetMode(extended)
+function XTGetMode()
 {
-    if (state.scormmode == "normal")
-    {
-        if (state.currentpageid)
-        {
-            var sit=state.find(state.currentpageid);
-            if (sit != null)
-            {
-                if (state.trackingmode !== 'none') {
-                    if (extended != null && (extended == true || extended == 'true'))
-                    {
-                        if (state.scoremode == 'first')
-                            return "normal";
-                        else
-                            return "normal_last";
-                    }
-                    else {
-                        return "normal";
-                    }
-                }
-                else
-                {
-                    return "normal";
-                }
-            }
-        }
-        return "normal";
-    }
     return state.scormmode;
 }
 
@@ -1456,24 +1429,25 @@ function XTSetOption(option, value)
         case "tracking-mode":
             switch(value)
             {
-                case 'full_first':
-                    state.trackingmode = 'full';
-                    state.scoremode = 'first';
-                    break;
-                case 'minimal_first':
-                    state.trackingmode = 'minimal';
-                    state.scoremode = 'first';
-                    break;
                 case 'full':
                     state.trackingmode = 'full';
-                    state.scoremode = 'last';
                     break;
                 case 'minimal':
                     state.trackingmode = 'minimal';
-                    state.scoremode = 'last';
                     break;
                 case 'none':
                     state.trackingmode = 'none';
+                    break;
+            }
+            break;
+        case "score-mode":
+            switch(value)
+            {
+                case 'single':
+                    state.scoremode = 'first';
+                    break;
+                case 'multiple':
+                    state.scoremode = 'last';
                     break;
             }
             break;

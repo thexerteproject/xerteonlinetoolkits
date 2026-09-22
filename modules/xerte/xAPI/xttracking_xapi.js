@@ -58,7 +58,7 @@ function XApiTrackingState() {
     this.currentpageid = "";
     this.trackingmode = "full";
     this.forcetrackingmode = false;
-    this.scoremode = 'first';
+    this.scoremode = 'last';
     this.nrpages = 0;
     this.toCompletePages = new Array();
     this.completedPages = new Array();
@@ -1261,7 +1261,7 @@ function XApiInteractionTracking(page_nr, ia_nr, ia_type, ia_name) {
             // ALWAYS save the xapi statement
             // if (state.scoremode != 'first' || this.count <= 1) {
 
-            if (!state.trackingmode != 'none' && ((this.ia_nr < 0 && (state
+            if (state.trackingmode != 'none' && ((this.ia_nr < 0 && (state
                     .trackingmode != 'full' || this.nrinteractions ==
                 0)) || (this.ia_nr >= 0 && state.trackingmode ==
                 'full'))) {
@@ -2442,19 +2442,8 @@ function XTLogin(login, passwd) {
     return true;
 }
 
-function XTGetMode(extended) {
-    if (state.forcetrackingmode === 'true')
-    {
-        if (extended != null && (extended == true || extended == 'true'))
-        {
-            return state.mode;
-        }
-        else {
-            return "normal";
-        }
-    }
-    else
-        return "";
+function XTGetMode() {
+    return state.mode;
 }
 
 function XTStartPage() {
@@ -2501,29 +2490,28 @@ function XTSetOption(option, value) {
             break;
         case "tracking-mode":
             switch (value) {
-                case 'full_first':
-                    state.trackingmode = "full";
-                    state.scoremode = "first";
-                    state.mode = "normal";
-                    break;
-                case 'minimal_first':
-                    state.trackingmode = "minimal";
-                    state.scoremode = "first";
-                    state.mode = "normal";
-                    break;
                 case 'full':
                     state.trackingmode = "full";
-                    state.scoremode = "last";
                     state.mode = "normal";
                     break;
                 case 'minimal':
                     state.trackingmode = "minimal";
-                    state.scoremode = "last";
                     state.mode = "normal";
                     break;
                 case 'none':
                     state.trackingmode = "none";
                     state.mode = "no-tracking";
+                    break;
+            }
+            break;
+        case "score-mode":
+            switch(value)
+            {
+                case 'single':
+                    state.scoremode = 'first';
+                    break;
+                case 'multiple':
+                    state.scoremode = 'last';
                     break;
             }
             break;

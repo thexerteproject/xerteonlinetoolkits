@@ -1090,17 +1090,7 @@ function XTLogin(login, passwd)
 
 function XTGetMode()
 {
-    // ** I don't think this is necessary anymore as only used in SCORM tracking
-    /*if (state.single_attempt) {
-        if (state.trackingmode !== "none") {
-            return "normal";
-        }
-        else {
-            return "tracking";
-        }
-    }
-    else
-        return "";*/
+    return "normal";
 }
 
 function XTStartPage()
@@ -1134,32 +1124,28 @@ function XTSetOption(option, value)
                 }
             }
             break;
-        case "tracking-mode": // ** is this used anywhere?
+        case "tracking-mode":
             switch(value)
             {
-                case 'full_first':
-                    state.trackingmode = "full";
-                    state.scoremode = "first";
-                    //state.mode = "normal";
-                    break;
-                case 'minimal_first':
-                	state.trackingmode = "minimal";
-                	state.scoremode = "first";
-                	//state.mode = "normal";
-                    break;
                 case 'full':
                 	state.trackingmode = "full";
-                	state.scoremode = "last";
-                	//state.mode = "normal";
                     break;
                 case 'minimal':
                 	state.trackingmode = "minimal";
-                	state.scoremode = "last";
-                	//state.mode = "normal";
                     break;
                 case 'none':
                 	state.trackingmode = "none";
-                	//state.mode = "no-tracking";
+                    break;
+            }
+            break;
+        case "score-mode":
+            switch(value)
+            {
+                case 'single':
+                    state.scoremode = 'first';
+                    break;
+                case 'multiple':
+                    state.scoremode = 'last';
                     break;
             }
             break;
