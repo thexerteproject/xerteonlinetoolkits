@@ -33,9 +33,7 @@ export class XerteBrowseMedia extends Plugin {
 				tooltip: true
 			} );
 			view.on( 'execute', () => {
-				const prev = window.__xerteCke5FilePickerResolve;
-				window.__xerteCke5FilePickerResolve = url => {
-					window.__xerteCke5FilePickerResolve = prev || null;
+				browseMedia( browseUrl ).then( url => {
 					if ( !url ) {
 						return;
 					}
@@ -55,12 +53,35 @@ export class XerteBrowseMedia extends Plugin {
 							}
 						}
 					} );
-				};
-				window.open( browseUrl, 'XerteBrowseMedia', 'height=600,width=800' );
+				} );
 			} );
 			return view;
 		} );
 	}
+}
+
+export function browseMedia( browseUrl ) {
+	return new Promise( resolve => {
+		const previous = window.__xerteCke5FilePickerResolve;
+		let finished = false;
+		let timer;
+		const finish = url => {
+			if ( finished ) return;
+			finished = true;
+			clearInterval( timer );
+			window.__xerteCke5FilePickerResolve = previous || null;
+			resolve( url || null );
+		};
+		window.__xerteCke5FilePickerResolve = finish;
+		const popup = window.open( browseUrl, 'XerteBrowseMedia', 'height=600,width=800' );
+		if ( !popup ) {
+			finish( null );
+			return;
+		}
+		timer = setInterval( () => {
+			if ( popup.closed ) finish( null );
+		}, 500 );
+	} );
 }
 
 function escapeHtml( s ) {

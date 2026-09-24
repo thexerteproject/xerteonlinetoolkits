@@ -73,6 +73,14 @@
 			'&uploadURL=' + encodeURIComponent(u);
 	}
 
+	function defaultUploadAudioUrl() {
+		var u = typeof rlourlvariable !== 'undefined' ? rlourlvariable : '';
+		if (u.endsWith('/')) u = u.slice(0, -1);
+		return 'editor/uploadAudio.php?mode=record&uploadPath=' +
+			encodeURIComponent(typeof rlopathvariable !== 'undefined' ? rlopathvariable : '') +
+			'&uploadURL=' + encodeURIComponent(u);
+	}
+
 	function mapLegacyToolbarItem(item) {
 		var map = {
 			Undo: 'undo',
@@ -179,6 +187,7 @@
 				]
 			},
 			xerteUploadUrl: user.uploadUrl || defaultUploadUrl(),
+			xerteUploadAudioUrl: user.uploadAudioUrl || defaultUploadAudioUrl(),
 			xerteBrowseMediaUrl: user.browseMediaUrl || browseUrlForCke5(user.filebrowserBrowseUrl) || browseUrl('media')
 		};
 		if (user.toolbar) {

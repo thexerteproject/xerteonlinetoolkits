@@ -58,6 +58,7 @@ import { Mention } from '@ckeditor/ckeditor5-mention';
 import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
 import { XerteUploadAdapter } from './plugins/xerte-upload-adapter.js';
 import { XerteBrowseMedia } from './plugins/xerte-browse-media.js';
+import { XerteAudio } from './plugins/xerte-audio.js';
 import { XerteMathJaxSnippet } from './plugins/xerte-mathjax-snippet.js';
 import { XertePageLink } from './plugins/xerte-page-link.js';
 import { XerteMarkWord } from './plugins/xerte-mark-word.js';
@@ -80,7 +81,7 @@ const toolbarItems = [
 	'textPartLanguage', '|',
 	'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'code', 'removeFormat', '|',
 	'specialCharacters', 'emoji', 'fontAwesome', 'horizontalLine', 'xerteMathJax', 'xerteRubyText', '|',
-	'link', 'xotlink', 'insertImage', 'xerteBrowseMedia', 'mediaEmbed', 'insertTable', 'autocolumns', 'blockQuote', 'codeBlock', '|',
+	'link', 'xotlink', 'insertImage', 'xerteBrowseMedia', 'xerteAudio', 'mediaEmbed', 'insertTable', 'autocolumns', 'blockQuote', 'codeBlock', '|',
 	'alignment', '|',
 	'bulletedList', 'numberedList', 'outdent', 'indent', '|',
 	'xotMarkWord', 'markTag'
@@ -177,6 +178,7 @@ const xerteBuiltinPlugins = [
 	HtmlEmbed,
 	XerteUploadAdapter,
 	XerteBrowseMedia,
+	XerteAudio,
 	XerteMathJaxSnippet,
 	XertePageLink,
 	XerteMarkWord,
@@ -346,6 +348,7 @@ const xerteDefaultConfig = {
 		showPreviews: true
 	},
 	xerteUploadUrl: '',
+	xerteUploadAudioUrl: '',
 	xerteBrowseMediaUrl: ''
 };
 
