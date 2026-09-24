@@ -17,5 +17,5 @@
  * limitations under the License.
  */
 
-var SCORM_LEFT_PAGE = "Left page";
-var SCORM_ENTERED_PAGE = "Entererd page";
+var SCORM_LEFT_PAGE = "Exited page";
+var SCORM_ENTERED_PAGE = "Entered page";

@@ -269,6 +269,7 @@ function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $langua
 
 
 	$tracking = "<script type=\"text/javascript\" src=\"apiwrapper_2004.3rd.js?version=" . $version . "\"></script>\n";
+	$tracking .= "<script type=\"text/javascript\" src=\"lz-string.min.js?version=" . $version . "\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"xttracking_scorm2004.3rd.js?version=" . $version . "\"></script>\n";
     $tracking .= "<script type=\"text/javascript\" src=\"languages/js/en-GB/xttracking_scorm2004.3rd.js?version=" . $version . "\"></script>\n";
     if (file_exists($dir_path . "languages/js/" . $language . "/xttracking_scorm2004.3rd.js"))

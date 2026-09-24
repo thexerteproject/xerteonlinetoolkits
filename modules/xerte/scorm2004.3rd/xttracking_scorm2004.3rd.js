@@ -87,17 +87,19 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
         this.ia_nr = jsonObj.ia_nr;
         this.ia_type = jsonObj.ia_type;
         this.ia_name = jsonObj.ia_name;
-        this.firstEntered = new Date(jsonObj.firstEntered);
-        this.duration = jsonObj.duration;
         this.nrinteractions = jsonObj.nrinteractions;
         this.weighting = jsonObj.weighting;
         this.score = jsonObj.score;
         this.scoreTracked = jsonObj.scoreTracked === true;
         this.result = jsonObj.result;
-        this.correctOptions = jsonObj.correctOptions;
-        this.correctAnswers = jsonObj.correctAnswers;
-        this.learnerOptions = jsonObj.learnerOptions;
-        this.learnerAnswers = jsonObj.learnerAnswers;
+
+        // these may not have been restored if no results page
+        this.firstEntered = jsonObj.firstEntered != undefined ? new Date(jsonObj.firstEntered) : new Date();
+        this.duration = jsonObj.duration != undefined ? jsonObj.duration : 0;
+        this.correctOptions = jsonObj.correctOptions != undefined ? jsonObj.correctOptions : "";
+        this.correctAnswers = jsonObj.correctAnswers != undefined ? jsonObj.correctAnswers : [];
+        this.learnerOptions = jsonObj.learnerOptions != undefined ? jsonObj.learnerOptions : [];
+        this.learnerAnswers = jsonObj.learnerAnswers != undefined ? jsonObj.learnerAnswers : [];
 
         this.id = makeId(this.page_nr, this.ia_nr, this.ia_type, this.ia_name);
         this.page_ref = this.page_nr + 1;
@@ -186,10 +188,11 @@ function ScormTrackingState()
 
     function storeSuspendData()
     {
-        this.pageHistory = x_pageHistory;
+        this.pageHistory = x_pageHistory; // ** is this dropping the final page? so it resumes a page too soon?
         this.pagesViewed = x_pagesViewed();
 
         setValue('cmi.success_status', this.getSuccessStatus());
+        console.log("success status: " + this.getSuccessStatus()); // ** success status doesn't seem to always be set correctly
         setValue('cmi.score.scaled', this.getScaledScore());
         setValue('cmi.score.raw', this.getRawScore());
         setValue('cmi.score.min', this.getMinScore());
@@ -197,28 +200,46 @@ function ScormTrackingState()
         setValue('cmi.exit', 'suspend'); // this no longer gets set to normal when completed as this means review mode shows reset project as moodle doesn't send suspend data to projects in review
 
         // try to minimise the amount of data sent in suspend_data
+        // only store that data required to later restore project
         this.pageStates = x_pageStates;
+
+        // if project contains a results page, store extra data only required to restore the results page too
+        let resultsPage = false;
+        x_pages.each(function() {
+            if (this.nodeName === "results") {
+                resultsPage = true;
+                return false;
+            }
+        });
+
         const requiredInteractions = this.interactions.map(function (sit) {
-            return {
+            const interactionObject = {
                 page_nr: sit.page_nr,
                 ia_nr: sit.ia_nr,
                 ia_type: sit.ia_type,
                 ia_name: sit.ia_name,
-                firstEntered: sit.firstEntered,
-                duration: sit.duration,
                 nrinteractions: sit.nrinteractions,
                 weighting: sit.weighting,
                 score: sit.score,
                 scoreTracked: sit.scoreTracked,
-                result: sit.result,
-                correctOptions: sit.correctOptions,
-                correctAnswers: sit.correctAnswers,
-                learnerOptions: sit.learnerOptions,
-                learnerAnswers: sit.learnerAnswers
-            };
+                result: sit.result
+            }
+
+            if (resultsPage) {
+                $.extend(interactionObject, {
+                    firstEntered: sit.firstEntered,
+                    duration: sit.duration,
+                    correctOptions: sit.correctOptions,
+                    correctAnswers: sit.correctAnswers,
+                    learnerOptions: sit.learnerOptions,
+                    learnerAnswers: sit.learnerAnswers
+                });
+            }
+
+            return interactionObject;
         });
 
-        const requiredData = { // only store that data required to later restore project
+        const requiredData = {
             currentpageid: this.currentpageid,
             completedPages: this.completedPages,
             firstEntered: this.firstEntered,
@@ -227,14 +248,16 @@ function ScormTrackingState()
             pagesViewed: this.pagesViewed,
             pageHistory: this.pageHistory
         };
-        var suspend_str = JSON.stringify(requiredData);
-        console.log("SCORM suspend_data length: " + suspend_str.length); // ** TODO zip this to minimise size
-        setValue('cmi.suspend_data', suspend_str);
+
+        const suspend_str = JSON.stringify(requiredData);
+        const compressed = compressSuspendData(suspend_str);
+        console.log("SCORM suspend_data raw/compressed: " + suspend_str.length + "/" + compressed.length);
+        setValue('cmi.suspend_data', compressed);
 
         this.end = new Date();
-        var duration = this.end.getTime() - this.start.getTime();
+        const duration = this.end.getTime() - this.start.getTime();
         setValue('cmi.session_time', this.formatDuration(duration));
-        var completionStatus = this.getCompletionStatus();
+        const completionStatus = this.getCompletionStatus();
         setValue('cmi.completion_status', completionStatus);
 
         persistData();
@@ -843,10 +866,10 @@ function ScormTrackingState()
     {
         if (getValue('cmi.entry') == 'resume')
         {
-            var suspend_str = getValue('cmi.suspend_data');
+            const suspend_str = getValue('cmi.suspend_data');
             if (suspend_str.length > 0)
             {
-                this.setVars(suspend_str);
+                this.setVars(decompressSuspendData(suspend_str));
             }
         }
     }
@@ -1797,4 +1820,15 @@ function XTResults() {
     results.start = state.firstEntered.toLocaleString();
 
     return results;
+}
+
+function compressSuspendData(str) {
+    return "Z1:" + LZString.compressToBase64(str);
+}
+function decompressSuspendData(str) {
+    if (str.indexOf("Z1:") === 0) {
+        const data = LZString.decompressFromBase64(str.substring(3));
+        return data == null ? "" : LZString.decompressFromBase64(str.substring(3));
+    }
+    return str;
 }

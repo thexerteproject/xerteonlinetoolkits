@@ -18,5 +18,5 @@
  */
 
 var SCORM2004_VIEWED = "viewed";
-var SCORM2004_LEFT_PAGE = "Left page";
-var SCORM2004_ENTERED_PAGE = "Entererd page";
+var SCORM2004_LEFT_PAGE = "Exited page";
+var SCORM2004_ENTERED_PAGE = "Entered page";
