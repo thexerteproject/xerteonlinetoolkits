@@ -176,7 +176,7 @@
   <saveSession label="Save Session" description="Save session and stop tracking" tooltip="Save Session" tooltip_ltionly="Stop Session">
   	  <closeButton label="" description="Close"/>
 	  <trackingCloseTxt label="&lt;p&gt;Do you want to save this session and continue later?&lt;/p&gt;"/>
-	  <closeTxt label="&lt;p&gt;Your session has been saved. You can now close the browser window or browser tab.&lt;/p&gt;"/>
+	  <closeTxt label="&lt;p&gt;Your session has been saved. You can now exit the activity or close the browser window or tab.&lt;/p&gt;"/>
 	  <closeTxtEmbedded label="&lt;p&gt;Your session has been saved. You will need to refresh or revisit this page to access the session again.&lt;/p&gt;"/>
 	  <btnLabelTxt label="Save session"/>
 	  <trackingCloseTxtLtiOnly label="&lt;p&gt;Do you want to end this session and send your grade to the LMS?&lt;/p&gt;"/>

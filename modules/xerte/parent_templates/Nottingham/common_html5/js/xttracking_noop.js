@@ -105,11 +105,6 @@ function NoopTrackingState()
 
     function setVars(data)
     {
-        state.currentid = data.currentid;
-        state.currentpageid = data.currentpageid;
-        state.lo_type = data.lo_type;
-        state.lo_passed = data.lo_passed;
-        state.lo_completed = data.lo_completed;
         state.start = data.start;
         state.completedPages = data.completedPages;
         state.toCompletePages = data.toCompletePages;
@@ -982,7 +977,6 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
     this.start = new Date();
     this.firstEntered = new Date();
     this.end = this.start;
-    this.count = 0;
     this.duration = 0;
     this.nrinteractions = 0;
     this.weighting = 0.0;
@@ -1005,10 +999,7 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
         this.ia_nr = data.ia_nr;
         this.ia_type = data.ia_type;
         this.ia_name = data.ia_name;
-        this.start = new Date(data.start);
         this.firstEntered = new Date(data.firstEntered);
-        this.end = new Date(data.end);
-        this.count = data.count;
         this.duration = data.duration;
         this.nrinteractions = data.nrinteractions;
         this.weighting = data.weighting;
@@ -1029,7 +1020,6 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
         if (duration > 100)
         {
             this.duration += duration;
-            this.count++;
             return true;
         }
         else {
@@ -1483,32 +1473,38 @@ function XTResults() {
     results.nrofquestions = nrofquestions;
     results.averageScore = Math.round(state.getdScaledScore() * 10000.0)/100.0;
     results.totalDuration = Math.round(totalDuration / 1000);
-
     results.start = new Date(state.start).toLocaleString();
-
-    //$.ajax({
-    //    type: "POST",
-    //    url: window.location.href,
-    //    data: {
-    //        grade: results.averageScore / 100
-    //    }
-    //});
 
     return results;
 }
 
 // returns data required for restoring results pages - this will be saved to localStorage
 function XTGetData() {
+    const requiredInteractions = state.interactions.map(function (sit) {
+        return {
+            page_nr: sit.page_nr,
+            ia_nr: sit.ia_nr,
+            ia_type: sit.ia_type,
+            ia_name: sit.ia_name,
+            firstEntered: sit.firstEntered,
+            duration: sit.duration,
+            nrinteractions: sit.nrinteractions,
+            weighting: sit.weighting,
+            score: sit.score,
+            scoreTracked: sit.scoreTracked,
+            result: sit.result,
+            correctOptions: sit.correctOptions,
+            correctAnswers: sit.correctAnswers,
+            learnerOptions: sit.learnerOptions,
+            learnerAnswers: sit.learnerAnswers
+        };
+    });
+
     return {
-        currentid: state.currentid,
-        currentpageid: state.currentpageid,
-        lo_type: state.lo_type,
-        lo_passed: state.lo_passed,
-        lo_completed: state.lo_completed,
         start: state.start,
         completedPages: state.completedPages,
         toCompletePages: state.toCompletePages,
-        interactions: state.interactions
+        interactions: requiredInteractions
     }
 }
 

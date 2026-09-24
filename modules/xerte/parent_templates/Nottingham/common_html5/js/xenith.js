@@ -298,6 +298,7 @@ x_projectDataLoaded = function(xmlData) {
 								try {
 									x_pageStates = allData.state;
 									pagesViewed = allData.viewed;
+									x_pageHistory = allData.history;
 
 									// extra data may have been stored to allow results pages to be restored
 									if (allData.trackingData !== undefined) {
@@ -3013,7 +3014,8 @@ function x_leavePage(page, lightbox) {
 				version: x_params.saveTimeStamp,
 				date: Date.now(),
 				state: x_pageStates,
-				viewed: x_pagesViewed()
+				viewed: x_pagesViewed(),
+				history: x_pageHistory
 			};
 
 			// if project contains a results page, store data required to restore the results page too
@@ -3137,7 +3139,9 @@ function x_changePageStep2(x_gotoPage) {
         }
     }
 
-	x_pageHistory.push(x_currentPage);
+	if (x_currentPage !== x_pageHistory[x_pageHistory.length-1]) {
+		x_pageHistory.push(x_currentPage);
+	}
 
 	// need to reset whether the header / footer bars are shown as this can change between normal & standalone pages
 	var headerHidden = false, footerHidden = false;
@@ -7107,7 +7111,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 	// a new page has been viewed - update the progress bar
 	function update(page, target) {
 		/* TODO **
-		 - currently the progress bar % is always calcualted on page view
+		 - currently the progress bar % is always calculated on page view
 		 - completion not required does not have an affect on what is shown on progress bar
 		 - new option for view not required?
 		 - animation for bar moving?
@@ -8436,15 +8440,15 @@ var XENITH = (function ($, parent) { var self = parent.SAVESESSION = {};
 				XTTerminate();
 				$('#x_footerRight button').button("disable");
 				$('#closeBtn').hide();
+				$(".featherlight-content").addClass("closeTextEmbed");
 				if (typeof x_params["embed"] != "undefined") {
-					$(".featherlight-content").addClass("closeTextEmbed");
 					closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("closeTxtEmbedded")[0], "label", "<p>Your session has been saved. You will need to refresh or revisit this page to access the session again.</p>");
 					if (lti_only) {
 						closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("closeTxtEmbeddedLtiOnly")[0], "label", "<p>Your session has ended. You will need to refresh or revisit this page if you would like to restart.</p>");
 					}
 					$closeText.html(closeHtml)
 				} else {
-					closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("closeTxt")[0], "label", "<p>Your session has been saved. You can now close the browser window or browser tab.</p>");
+					closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("closeTxt")[0], "label", "<p>Your session has been saved. You can now exit the activity or close the browser window or tab.</p>");
 					if (lti_only) {
 						closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("closeTxtLtiOnly")[0], "label", "<p>Your session has been stopped. You can now close the browser window or browser tab.</p>")
 					}

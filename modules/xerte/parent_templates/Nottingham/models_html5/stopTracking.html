@@ -32,7 +32,7 @@
 		}
 		
 		this.init = function() {
-			const $closeText = $("#closingText");
+			const $closeText = $("#stopTrackingClosingText");
             if (x_currentPageXML.childNodes[0] !== undefined) {
                 $closeText.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
             }
@@ -51,20 +51,20 @@
             if (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))
             {
                 // tracked
-                $("#closeBtn").button({
+                $("#stopTrackingBtn").button({
                     label: x_currentPageXML.getAttribute("buttonLbl") != null ? x_currentPageXML.getAttribute("buttonLbl") : "Close and finish tracking of this session"
                 }).click(function(){
                     // Disable all the buttons and menu
                     XTTerminate();
                     $('#x_footerRight button').button("disable");
-                    $('#closeBtn').hide();
+                    $('#stopTrackingBtn').hide();
                     $closeText.html(x_addLineBreaks(x_currentPageXML.getAttribute('textAfter')));
                 });
             }
             else
             {
                 // not being tracked so just show the confirmation message
-                $('#closeBtn').hide();
+                $('#stopTrackingBtn').hide();
                 $closeText.html(x_addLineBreaks(x_currentPageXML.getAttribute('textAfter')));
             }
 
@@ -83,8 +83,8 @@
 
     <div id="infoHolder" class="splitScreen_B">
         <div class="panelContent panel">
-            <div id="closingText"></div>
-            <div class="center"><button id="closeBtn"></button></div>
+            <div id="stopTrackingClosingText"></div>
+            <div class="center"><button id="stopTrackingBtn"></button></div>
         </div>
     </div>
 
