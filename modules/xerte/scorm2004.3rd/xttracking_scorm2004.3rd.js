@@ -104,6 +104,7 @@ function ScormInteractionTracking(page_nr, ia_nr, ia_type, ia_name)
         this.id = makeId(this.page_nr, this.ia_nr, this.ia_type, this.ia_name);
         this.page_ref = this.page_nr + 1;
         this.ia_ref = this.ia_nr + 1;
+        this.state = "exited";
     }
 
     function exit()
@@ -188,11 +189,10 @@ function ScormTrackingState()
 
     function storeSuspendData()
     {
-        this.pageHistory = x_pageHistory; // ** is this dropping the final page? so it resumes a page too soon?
+        this.pageHistory = x_pageHistory;
         this.pagesViewed = x_pagesViewed();
 
         setValue('cmi.success_status', this.getSuccessStatus());
-        console.log("success status: " + this.getSuccessStatus()); // ** success status doesn't seem to always be set correctly
         setValue('cmi.score.scaled', this.getScaledScore());
         setValue('cmi.score.raw', this.getRawScore());
         setValue('cmi.score.min', this.getMinScore());
@@ -252,6 +252,7 @@ function ScormTrackingState()
         const suspend_str = JSON.stringify(requiredData);
         const compressed = compressSuspendData(suspend_str);
         console.log("SCORM suspend_data raw/compressed: " + suspend_str.length + "/" + compressed.length);
+        console.log(suspend_str);
         setValue('cmi.suspend_data', compressed);
 
         this.end = new Date();
@@ -1414,10 +1415,14 @@ function XTStartPage()
             var currentid = state.currentpageid;
             state.currentpageid = "";
             var sit = state.find(currentid);
-            if (sit != null)
+            if (sit != null) {
+                if ($.inArray(sit.page_nr, x_normalPages) == -1) {
+                    return x_pageHistory[x_pageHistory.length - 1];
+                }
                 return sit.page_nr;
-            else
+            } else {
                 return -1;
+            }
         }
         else
         {
@@ -1513,9 +1518,9 @@ function XTEnterPage(page_nr, page_name, grouping)
             result = setValue(comment + 'comment', commentText);
             result = setValue(comment + 'location', sit.page_ref);
             result = setValue(comment + 'timestamp', state.formatDate(new Date()));
+            result = persistData();
         }
         state.currentpageid = sit.id;
-        // not calling persistData here anymore - this will be sent on page exit instead
     }
 }
 
@@ -1596,6 +1601,22 @@ function XTSetPageScore(page_nr, score)
         {
             sit.score = score;
             sit.scoreTracked = true;
+
+            if (sit.ia_type != "result") {
+                for (var i=0; i<state.toCompletePages.length; i++) {
+                    if (state.toCompletePages[i] == page_nr) {
+                        if (!state.completedPages[i]) {
+                            state.completedPages[i] = state.pageCompleted(sit);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            setValue('cmi.success_status', state.getSuccessStatus());
+            setValue('cmi.score.scaled', state.getScaledScore());
+            setValue('cmi.score.raw', state.getRawScore());
+            state.storeSuspendData();
         }
     }
 }
