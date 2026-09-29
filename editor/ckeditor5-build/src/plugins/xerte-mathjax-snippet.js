@@ -17,12 +17,12 @@ export class XerteMathJaxSnippet extends Plugin {
 		editor.ui.componentFactory.add( 'xerteMathJax', locale => {
 			const view = new ButtonView( locale );
 			view.set( {
-				label: 'MathJax',
+				label: editor.t( 'MathJax' ),
 				icon: IconHtml,
 				tooltip: true
 			} );
 			view.on( 'execute', () => {
-				const tex = window.prompt( 'LaTeX / math (wrapped in span.mathjax)', '' );
+				const tex = window.prompt( editor.t( 'LaTeX / math (wrapped in span.mathjax)' ), '' );
 				if ( tex === null ) {
 					return;
 				}

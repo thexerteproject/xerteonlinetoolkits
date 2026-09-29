@@ -51,15 +51,15 @@ export class XerteUploadAdapter extends Plugin {
 // The legacy audio endpoint accepts a data URL rather than the image endpoint's
 // multipart `upload` field. Keep both transports here and return a plain URL.
 export function uploadAudio( file, endpoint, options = {} ) {
-	const lang = options.lang || {};
+	const t = options.t || ( value => value );
 	const name = options.filename || file.name || 'audio.webm';
 	const extension = ( options.extension || name.split( '.' ).pop() ).toLowerCase();
 	if ( ![ 'm4a', 'mp3', 'mp4', 'ogg', 'wav', 'webm' ].includes( extension ) ) {
-		throw new Error( lang.invalidAudioFile || 'Choose an M4A, MP3, MP4, OGG, WAV or WebM audio file.' );
+		throw new Error( t( 'Choose an M4A, MP3, MP4, OGG, WAV or WebM audio file.' ) );
 	}
 	return new Promise( ( resolve, reject ) => {
 		const reader = new FileReader();
-		reader.onerror = () => reject( new Error( lang.readFailed || 'Could not read the audio file.' ) );
+		reader.onerror = () => reject( new Error( t( 'Could not read the audio file.' ) ) );
 		reader.onload = async () => {
 			try {
 				const data = new FormData();
@@ -70,7 +70,7 @@ export function uploadAudio( file, endpoint, options = {} ) {
 				data.append( 'extension', extension );
 				const response = await fetch( endpoint, { method: 'POST', body: data } );
 				const result = await response.json();
-				if ( !response.ok || result.status !== 'success' || !result.url ) throw new Error( result.message || lang.uploadFailed || 'Audio upload failed.' );
+				if ( !response.ok || result.status !== 'success' || !result.url ) throw new Error( result.message || t( 'Audio upload failed.' ) );
 				resolve( result.url );
 			} catch ( error ) { reject( error ); }
 		};

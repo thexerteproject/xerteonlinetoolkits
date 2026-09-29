@@ -31,7 +31,7 @@ export class XerteMarkTag extends Plugin {
 			const button = new ButtonView( locale );
 
 			button.set( {
-				label: 'Marked Text',
+				label: editor.t( 'Marked Text' ),
 				icon: IconMarker,
 				isToggleable: true,
 				tooltip: true

@@ -61,8 +61,6 @@ import { XerteBrowseMedia } from './plugins/xerte-browse-media.js';
 import { XerteAudio } from './plugins/xerte-audio.js';
 import { XerteRecorder } from './plugins/xerte-recorder.js';
 import '../../js/vendor/ckeditor5/lang/en.js';
-
-const xerteRecorderEnglish = globalThis.XerteCKEditor5Languages.en.xerteRecorder;
 import { XerteMathJaxSnippet } from './plugins/xerte-mathjax-snippet.js';
 import { XertePageLink } from './plugins/xerte-page-link.js';
 import { XerteMarkWord } from './plugins/xerte-mark-word.js';
@@ -347,7 +345,6 @@ const xerteDefaultConfig = {
 	},
 	xerteUploadUrl: '',
 	xerteUploadAudioUrl: '',
-	xerteRecorderLanguage: xerteRecorderEnglish,
 	xerteBrowseMediaUrl: ''
 };
 

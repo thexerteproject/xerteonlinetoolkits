@@ -57,17 +57,17 @@ function selectedText( editor ) {
 	return text;
 }
 
-function editRuby( baseText, rubyText ) {
+function editRuby( baseText, rubyText, t ) {
 	return new Promise( resolve => {
 		const overlay = document.createElement( 'div' );
 		overlay.style.cssText = 'position:fixed;inset:0;z-index:100000;background:#0008;display:flex;align-items:center;justify-content:center';
 		const dialog = document.createElement( 'div' );
 		dialog.setAttribute( 'role', 'dialog' );
 		dialog.setAttribute( 'aria-modal', 'true' );
-		dialog.setAttribute( 'aria-label', 'Phonetic Guide / Ruby Text' );
+		dialog.setAttribute( 'aria-label', t( 'Phonetic Guide / Ruby Text' ) );
 		dialog.style.cssText = 'background:white;color:#222;padding:20px;border-radius:6px;box-shadow:0 12px 32px #0004;width:min(360px,90vw);font:14px Arial,sans-serif';
 		const title = document.createElement( 'h2' );
-		title.textContent = 'Phonetic Guide / Ruby Text';
+		title.textContent = t( 'Phonetic Guide / Ruby Text' );
 		title.style.cssText = 'font-size:18px;margin:0 0 16px';
 		dialog.appendChild( title );
 
@@ -84,10 +84,10 @@ function editRuby( baseText, rubyText ) {
 			return field;
 		}
 
-		const base = input( 'Text', baseText );
-		const pronunciation = input( 'Pronunciation (shown above)', rubyText );
+		const base = input( t( 'Text' ), baseText );
+		const pronunciation = input( t( 'Pronunciation (shown above)' ), rubyText );
 		const previewLabel = document.createElement( 'div' );
-		previewLabel.textContent = 'Preview';
+		previewLabel.textContent = t( 'Preview' );
 		previewLabel.style.cssText = 'margin:18px 0 8px;color:#555';
 		dialog.appendChild( previewLabel );
 		const preview = document.createElement( 'div' );
@@ -102,10 +102,10 @@ function editRuby( baseText, rubyText ) {
 		actions.style.cssText = 'display:flex;justify-content:flex-end;gap:8px;margin-top:18px';
 		const cancel = document.createElement( 'button' );
 		cancel.type = 'button';
-		cancel.textContent = 'Cancel';
+		cancel.textContent = t( 'Cancel' );
 		const save = document.createElement( 'button' );
 		save.type = 'button';
-		save.textContent = 'Insert';
+		save.textContent = t( 'Insert' );
 		for ( const button of [ cancel, save ] ) {
 			button.style.cssText = 'padding:8px 12px;cursor:pointer';
 			actions.appendChild( button );
@@ -174,20 +174,21 @@ export class XerteRubyText extends Plugin {
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'xerteRubyText',
 			view: ( modelElement, { writer } ) => toWidget( rubyView( writer, modelElement ), writer, {
-				label: 'Ruby text'
+				label: editor.t( 'Ruby text' )
 			} )
 		} );
 
 		editor.ui.componentFactory.add( 'xerteRubyText', locale => {
 			const button = new ButtonView( locale );
-			button.set( { label: 'Ruby', withText: true, tooltip: true } );
+			button.set( { label: editor.t( 'Ruby' ), withText: true, tooltip: true } );
 			button.on( 'execute', async () => {
 				const existing = editor.model.document.selection.getSelectedElement();
 				const ruby = existing && existing.is( 'element', 'xerteRubyText' ) ? existing : null;
 				const selectionRange = editor.model.document.selection.getFirstRange();
 				const values = await editRuby(
 					ruby ? ruby.getAttribute( 'baseText' ) : selectedText( editor ),
-					ruby ? ruby.getAttribute( 'rubyText' ) : ''
+					ruby ? ruby.getAttribute( 'rubyText' ) : '',
+					editor.t
 				);
 				if ( !values ) {
 					return;

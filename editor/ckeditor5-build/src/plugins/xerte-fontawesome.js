@@ -48,7 +48,7 @@ function viewAttributesFromModel( modelElement ) {
 	return attributes;
 }
 
-function createIconView( modelElement, writer, editing = false ) {
+function createIconView( modelElement, writer, editing = false, t = value => value ) {
 	const iconAttributes = viewAttributesFromModel( modelElement );
 	// The hidden text preserves the accessible output produced by Xerte's CKEditor 4 plugin.
 	iconAttributes['aria-hidden'] = 'true';
@@ -61,7 +61,7 @@ function createIconView( modelElement, writer, editing = false ) {
 		}, [ writer.createText( title ) ] ) );
 	}
 	const wrapper = writer.createContainerElement( 'span', { class: 'fav2' }, children );
-	return editing ? toWidget( wrapper, writer, { label: title || 'Font Awesome icon' } ) : wrapper;
+	return editing ? toWidget( wrapper, writer, { label: title || t( 'Font Awesome icon' ) } ) : wrapper;
 }
 
 function styleWithColour( style, colour ) {
@@ -83,7 +83,7 @@ function input( type, value ) {
 	return element;
 }
 
-function openPicker( initial ) {
+function openPicker( initial, t ) {
 	return new Promise( resolve => {
 		const overlay = document.createElement( 'div' );
 		overlay.className = 'xerte-fontawesome-overlay';
@@ -91,13 +91,16 @@ function openPicker( initial ) {
 		const dialog = document.createElement( 'div' );
 		dialog.setAttribute( 'role', 'dialog' );
 		dialog.setAttribute( 'aria-modal', 'true' );
-		dialog.setAttribute( 'aria-label', 'Insert Font Awesome icon' );
+		dialog.setAttribute( 'aria-label', t( 'Insert Font Awesome icon' ) );
 		dialog.style.cssText = 'width:720px;max-width:94vw;max-height:90vh;overflow:auto;background:#fff;border-radius:8px;padding:18px;font:14px Segoe UI,Arial,sans-serif;box-shadow:0 12px 36px #0005;';
-		dialog.innerHTML = '<h2 style="margin:0 0 12px;font-size:19px">Font Awesome icon</h2>';
+		const heading = document.createElement( 'h2' );
+		heading.style.cssText = 'margin:0 0 12px;font-size:19px';
+		heading.textContent = t( 'Font Awesome icon' );
+		dialog.appendChild( heading );
 
 		const search = input( 'search', '' );
-		search.placeholder = 'Search icons';
-		search.setAttribute( 'aria-label', 'Search icons' );
+		search.placeholder = t( 'Search icons' );
+		search.setAttribute( 'aria-label', t( 'Search icons' ) );
 		const grid = document.createElement( 'div' );
 		grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:5px;height:280px;overflow:auto;margin:10px 0;border:1px solid #ddd;padding:8px;';
 		let chosenClass = initial.iconClass || 'fas fa-star';
@@ -128,13 +131,13 @@ function openPicker( initial ) {
 		const colour = input( 'color', initial.colour || '#000000' );
 		const size = document.createElement( 'select' );
 		size.style.cssText = 'width:100%;padding:7px;';
-		[ '', 'fa-xs', 'fa-sm', 'fa-lg', 'fa-2x', 'fa-3x', 'fa-4x', 'fa-5x', 'fa-10x' ].forEach( value => size.add( new Option( value || 'Normal', value ) ) );
+		[ '', 'fa-xs', 'fa-sm', 'fa-lg', 'fa-2x', 'fa-3x', 'fa-4x', 'fa-5x', 'fa-10x' ].forEach( value => size.add( new Option( value || t( 'Normal' ), value ) ) );
 		size.value = initial.size || '';
 		const rotation = document.createElement( 'select' );
 		rotation.style.cssText = 'width:100%;padding:7px;';
-		[ '', 'fa-rotate-90', 'fa-rotate-180', 'fa-rotate-270' ].forEach( value => rotation.add( new Option( value ? value.replace( 'fa-rotate-', '' ) + '\u00b0' : 'Normal', value ) ) );
+		[ '', 'fa-rotate-90', 'fa-rotate-180', 'fa-rotate-270' ].forEach( value => rotation.add( new Option( value ? value.replace( 'fa-rotate-', '' ) + '\u00b0' : t( 'Normal' ), value ) ) );
 		rotation.value = initial.rotation || '';
-		[ [ 'Description', title ], [ 'Colour', colour ], [ 'Size', size ], [ 'Rotation', rotation ] ].forEach( pair => {
+		[ [ t( 'Description' ), title ], [ t( 'Colour' ), colour ], [ t( 'Size' ), size ], [ t( 'Rotation' ), rotation ] ].forEach( pair => {
 			const label = document.createElement( 'label' );
 			label.textContent = pair[ 0 ];
 			label.style.fontWeight = '600';
@@ -146,7 +149,7 @@ function openPicker( initial ) {
 		const options = document.createElement( 'div' );
 		options.style.cssText = 'display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;';
 		const checks = {};
-		[ [ 'spin', 'Spin' ], [ 'pulse', 'Pulse' ], [ 'fw', 'Fixed width' ], [ 'border', 'Border' ], [ 'flip-horizontal', 'Flip horizontal' ], [ 'flip-vertical', 'Flip vertical' ] ].forEach( pair => {
+		[ [ 'spin', t( 'Spin' ) ], [ 'pulse', t( 'Pulse' ) ], [ 'fw', t( 'Fixed width' ) ], [ 'border', t( 'Border' ) ], [ 'flip-horizontal', t( 'Flip horizontal' ) ], [ 'flip-vertical', t( 'Flip vertical' ) ] ].forEach( pair => {
 			const label = document.createElement( 'label' );
 			const checkbox = document.createElement( 'input' );
 			checkbox.type = 'checkbox';
@@ -162,10 +165,10 @@ function openPicker( initial ) {
 		const cleanup = result => { document.removeEventListener( 'keydown', keydown, true ); overlay.remove(); resolve( result ); };
 		const keydown = event => { if ( event.key === 'Escape' ) cleanup( null ); };
 		const cancel = document.createElement( 'button' );
-		cancel.type = 'button'; cancel.textContent = 'Cancel'; cancel.style.cssText = 'padding:8px 14px;';
+		cancel.type = 'button'; cancel.textContent = t( 'Cancel' ); cancel.style.cssText = 'padding:8px 14px;';
 		cancel.addEventListener( 'click', () => cleanup( null ) );
 		const ok = document.createElement( 'button' );
-		ok.type = 'button'; ok.textContent = initial.editing ? 'Update' : 'Insert'; ok.style.cssText = 'padding:8px 14px;background:#2563eb;color:#fff;border:1px solid #2563eb;';
+		ok.type = 'button'; ok.textContent = initial.editing ? t( 'Update' ) : t( 'Insert' ); ok.style.cssText = 'padding:8px 14px;background:#2563eb;color:#fff;border:1px solid #2563eb;';
 		ok.addEventListener( 'click', () => {
 			let classes = chosenClass.split( /\s+/ ).filter( value => !/^fa-(xs|sm|lg|\d+x|spin|pulse|fw|border|flip-horizontal|flip-vertical|rotate-(?:90|180|270))$/.test( value ) );
 			if ( size.value ) classes.push( size.value );
@@ -202,7 +205,7 @@ async function editFontAwesomeIcon( editor, existing = selectedIcon( editor ) ) 
 		colour: style.match( /color:\s*(#[0-9a-f]{6})/i )?.[ 1 ] || '#000000',
 		size: currentClass.match( /\bfa-(?:xs|sm|lg|\d+x)\b/ )?.[ 0 ] || '',
 		rotation: currentClass.match( /\bfa-rotate-(?:90|180|270)\b/ )?.[ 0 ] || ''
-	} );
+	}, editor.t );
 	if ( !result ) return;
 	editor.model.change( writer => {
 		if ( existing ) {
@@ -241,7 +244,7 @@ class XerteFontAwesomeEditing extends Plugin {
 		} );
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'fontAwesomeIcon',
-			view: ( modelElement, { writer } ) => createIconView( modelElement, writer, true )
+			view: ( modelElement, { writer } ) => createIconView( modelElement, writer, true, editor.t )
 		} );
 	}
 }
@@ -263,7 +266,7 @@ class XerteFontAwesomeUI extends Plugin {
 		} );
 		editor.ui.componentFactory.add( 'fontAwesome', locale => {
 			const button = new ButtonView( locale );
-			button.set( { label: 'Insert Font Awesome', icon: TOOLBAR_ICON, tooltip: true } );
+			button.set( { label: editor.t( 'Insert Font Awesome' ), icon: TOOLBAR_ICON, tooltip: true } );
 			button.on( 'execute', () => editFontAwesomeIcon( editor ) );
 			return button;
 		} );

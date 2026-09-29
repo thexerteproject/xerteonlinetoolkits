@@ -257,19 +257,19 @@ export class XerteContextMenu extends Plugin {
 			const hasText = selectionHasText( savedSelectionRanges, editor );
 			const editLink = savedPageLink;
 
-			addItem( menuEl, 'Cut', ranges => cutOrCopy( editor, 'cut', ranges ), hasText );
-			addItem( menuEl, 'Copy', ranges => cutOrCopy( editor, 'copy', ranges ), hasText );
-			addItem( menuEl, 'Paste', ranges => pasteClipboard( editor, ranges ) );
+			addItem( menuEl, editor.t( 'Cut' ), ranges => cutOrCopy( editor, 'cut', ranges ), hasText );
+			addItem( menuEl, editor.t( 'Copy' ), ranges => cutOrCopy( editor, 'copy', ranges ), hasText );
+			addItem( menuEl, editor.t( 'Paste' ), ranges => pasteClipboard( editor, ranges ) );
 
 			const sep = document.createElement( 'li' );
 			sep.className = 'xerte-ctx-sep';
 			menuEl.appendChild( sep );
 
-			addItem( menuEl, editLink ? 'Edit Xerte Page Link' : 'Xerte Page Link', () => runXertePageLink( editor, editLink ) );
-			addItem( menuEl, 'Mark Word', () => {
+			addItem( menuEl, editLink ? editor.t( 'Edit Xerte Page Link' ) : editor.t( 'Xerte Page Link' ), () => runXertePageLink( editor, editLink ) );
+			addItem( menuEl, editor.t( 'Mark Word' ), () => {
 				runXerteMarkWord( editor, savedSelectionRanges, savedSelectionText );
 			}, hasText, true );
-			addItem( menuEl, 'Autocolumns', () => runAutocolumnsDialog( editor ) );
+			addItem( menuEl, editor.t( 'Autocolumns' ), () => runAutocolumnsDialog( editor ) );
 
 			menuEl.style.left = clientX + 'px';
 			menuEl.style.top = clientY + 'px';

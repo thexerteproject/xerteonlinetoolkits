@@ -52,13 +52,13 @@ function syncView( writer, div, settings ) {
 	}
 }
 
-function audioView( model, writer, editing ) {
+function audioView( model, writer, editing, t = value => value ) {
 	const settings = { ...defaults, ...model.getAttribute( 'audioSettings' ) };
 	const div = writer.createContainerElement( 'div', { class: 'ckeditor-html5-audio' } );
 	const audio = writer.createEmptyElement( 'audio', editing ? { 'data-cke-ignore-events': 'true' } : {} );
 	writer.insert( writer.createPositionAt( div, 0 ), audio );
 	syncView( writer, div, settings );
-	return editing ? toWidget( div, writer, { label: 'Audio', hasSelectionHandle: true } ) : div;
+	return editing ? toWidget( div, writer, { label: t( 'Audio' ), hasSelectionHandle: true } ) : div;
 }
 
 export class InsertXerteAudioCommand extends Command {
@@ -104,7 +104,7 @@ export class XerteAudio extends Plugin {
 			model: 'xerteAudio', view: ( model, { writer } ) => audioView( model, writer, false )
 		} );
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
-			model: 'xerteAudio', view: ( model, { writer } ) => audioView( model, writer, true )
+			model: 'xerteAudio', view: ( model, { writer } ) => audioView( model, writer, true, editor.t )
 		} );
 		for ( const pipeline of [ 'dataDowncast', 'editingDowncast' ] ) {
 			editor.conversion.for( pipeline ).add( dispatcher => {
@@ -117,7 +117,7 @@ export class XerteAudio extends Plugin {
 		}
 		editor.ui.componentFactory.add( 'xerteAudio', locale => {
 			const button = new ButtonView( locale );
-			button.set( { label: 'Audio', withText: true, tooltip: true } );
+			button.set( { label: editor.t( 'Audio' ), withText: true, tooltip: true } );
 			button.bind( 'isEnabled' ).to( editor.commands.get( 'insertXerteAudio' ), 'isEnabled' );
 			button.on( 'execute', () => openAudioDialog( editor ) );
 			return button;
@@ -126,15 +126,16 @@ export class XerteAudio extends Plugin {
 }
 
 function openAudioDialog( editor ) {
+	const t = editor.t;
 	const initial = { ...defaults, ...editor.commands.get( 'insertXerteAudio' ).value };
 	const overlay = document.createElement( 'div' );
 	overlay.style.cssText = 'position:fixed;inset:0;z-index:2147483645;background:#0008;display:flex;align-items:center;justify-content:center;padding:20px';
 	const form = document.createElement( 'form' );
 	form.setAttribute( 'role', 'dialog' );
-	form.setAttribute( 'aria-label', 'Audio properties' );
+	form.setAttribute( 'aria-label', t( 'Audio properties' ) );
 	form.style.cssText = 'background:#fff;color:#222;max-width:95vw;width:480px;padding:20px;border-radius:8px;font:14px Arial,sans-serif';
 	const heading = document.createElement( 'h2' );
-	heading.textContent = 'Audio';
+	heading.textContent = t( 'Audio' );
 	form.appendChild( heading );
 	function field( text, input ) {
 		const label = document.createElement( 'label' );
@@ -143,42 +144,42 @@ function openAudioDialog( editor ) {
 		form.appendChild( label );
 		return input;
 	}
-	const url = field( 'URL', document.createElement( 'input' ) );
+	const url = field( t( 'URL' ), document.createElement( 'input' ) );
 	url.type = 'url'; url.required = true; url.value = initial.src; url.style.width = '100%';
 	const browse = document.createElement( 'button' );
-	browse.type = 'button'; browse.textContent = 'Browse server';
+	browse.type = 'button'; browse.textContent = t( 'Browse server' );
 	browse.disabled = !editor.config.get( 'xerteBrowseMediaUrl' );
 	browse.onclick = async () => {
 		const chosen = await browseMedia( editor.config.get( 'xerteBrowseMediaUrl' ) );
 		if ( chosen ) url.value = chosen;
 	};
 	form.appendChild( browse );
-	const file = field( 'Upload audio', document.createElement( 'input' ) );
+	const file = field( t( 'Upload audio' ), document.createElement( 'input' ) );
 	file.type = 'file'; file.accept = 'audio/*,.mp3,.ogg,.wav,.webm';
 	file.disabled = !editor.config.get( 'xerteUploadAudioUrl' );
-	const align = field( 'Alignment', document.createElement( 'select' ) );
+	const align = field( t( 'Alignment' ), document.createElement( 'select' ) );
 	for ( const value of alignments ) {
 		const option = document.createElement( 'option' ); option.value = value; option.textContent = value;
 		align.appendChild( option );
 	}
 	align.value = initial.align;
-	const autoplay = field( 'Autoplay (browser may block it)', document.createElement( 'input' ) );
+	const autoplay = field( t( 'Autoplay (browser may block it)' ), document.createElement( 'input' ) );
 	autoplay.type = 'checkbox'; autoplay.checked = initial.autoplay;
-	const noDownload = field( 'Hide download control (browser dependent)', document.createElement( 'input' ) );
+	const noDownload = field( t( 'Hide download control (browser dependent)' ), document.createElement( 'input' ) );
 	noDownload.type = 'checkbox'; noDownload.checked = initial.noDownload;
-	const title = field( 'Advisory title', document.createElement( 'input' ) );
+	const title = field( t( 'Advisory title' ), document.createElement( 'input' ) );
 	title.type = 'text'; title.value = initial.title; title.style.width = '100%';
 	const status = document.createElement( 'div' ); status.setAttribute( 'role', 'alert' ); form.appendChild( status );
-	const cancel = document.createElement( 'button' ); cancel.type = 'button'; cancel.textContent = 'Cancel';
+	const cancel = document.createElement( 'button' ); cancel.type = 'button'; cancel.textContent = t( 'Cancel' );
 	cancel.onclick = () => overlay.remove();
-	const save = document.createElement( 'button' ); save.type = 'submit'; save.textContent = 'Save';
+	const save = document.createElement( 'button' ); save.type = 'submit'; save.textContent = t( 'Save' );
 	form.append( cancel, save );
 	form.onsubmit = async event => {
 		event.preventDefault();
 		save.disabled = true;
 		try {
 			let src = url.value.trim();
-			if ( file.files.length ) src = await uploadAudio( file.files[ 0 ], editor.config.get( 'xerteUploadAudioUrl' ) );
+			if ( file.files.length ) src = await uploadAudio( file.files[ 0 ], editor.config.get( 'xerteUploadAudioUrl' ), { t } );
 			editor.execute( 'insertXerteAudio', {
 				src, align: align.value, autoplay: autoplay.checked,
 				noDownload: noDownload.checked, title: title.value

@@ -141,10 +141,10 @@ export class XerteLineHeight extends Plugin {
 
 			addListToDropdown( dropdown, items, {
 				role: 'menu',
-				ariaLabel: 'Line Height'
+				ariaLabel: editor.t( 'Line Height' )
 			} );
 			dropdown.buttonView.set( {
-				label: 'Line Height',
+				label: editor.t( 'Line Height' ),
 				icon: LINE_HEIGHT_ICON,
 				tooltip: true
 			} );

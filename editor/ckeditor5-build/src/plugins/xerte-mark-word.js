@@ -97,7 +97,7 @@ export class XerteMarkWord extends Plugin {
 		editor.ui.componentFactory.add( 'xotMarkWord', locale => {
 			const view = new ButtonView( locale );
 			view.set( {
-				label: 'Mark Word',
+				label: editor.t( 'Mark Word' ),
 				icon: IconPencil,
 				tooltip: true
 			} );

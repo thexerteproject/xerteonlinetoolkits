@@ -28,7 +28,7 @@ export class XerteBrowseMedia extends Plugin {
 		editor.ui.componentFactory.add( 'xerteBrowseMedia', locale => {
 			const view = new ButtonView( locale );
 			view.set( {
-				label: 'Browse server',
+				label: editor.t( 'Browse server' ),
 				icon: IconBrowseFiles,
 				tooltip: true
 			} );

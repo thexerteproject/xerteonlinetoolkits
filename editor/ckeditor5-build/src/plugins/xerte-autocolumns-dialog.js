@@ -98,7 +98,7 @@ export class XerteAutocolumns extends Plugin {
 		const editor = this.editor;
 		editor.ui.componentFactory.add( 'autocolumns', locale => {
 			const button = new ButtonView( locale );
-			button.set( { label: 'Autocolumns', icon: IconTableColumn, tooltip: true } );
+			button.set( { label: editor.t( 'Autocolumns' ), icon: IconTableColumn, tooltip: true } );
 			button.on( 'execute', () => {
 				runAutocolumnsDialog( editor ).catch( error => console.error( '[XerteAutocolumns]', error ) );
 			} );
@@ -125,8 +125,8 @@ export class XerteAutocolumns extends Plugin {
 					viewAttributes( modelElement.getAttribute( 'autocolumnsSettings' ) || DEFAULT_SETTINGS ) );
 				writer.insert( writer.createPositionAt( inner, 0 ), writer.createSlot() );
 				writer.insert( writer.createPositionAt( outer, 0 ),
-					toWidgetEditable( inner, writer, { label: 'Autocolumns content' } ) );
-				return toWidget( outer, writer, { label: 'Autocolumns', hasSelectionHandle: true } );
+					toWidgetEditable( inner, writer, { label: editor.t( 'Autocolumns content' ) } ) );
+				return toWidget( outer, writer, { label: editor.t( 'Autocolumns' ), hasSelectionHandle: true } );
 			}
 		} );
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
@@ -179,7 +179,7 @@ function findAutocolumnsElement( selection ) {
 	return null;
 }
 
-function chooseAutocolumnsFromModal( initialSettings, canRemove ) {
+function chooseAutocolumnsFromModal( initialSettings, canRemove, t ) {
 	return new Promise( resolve => {
 		const settings = { ...DEFAULT_SETTINGS, ...initialSettings };
 
@@ -191,7 +191,7 @@ function chooseAutocolumnsFromModal( initialSettings, canRemove ) {
 		modal.style.cssText = 'background:#fff;border:1px solid #e5e7eb;border-radius:12px;width:480px;max-width:92vw;padding:18px;font-family:Segoe UI,Arial,sans-serif;';
 
 		const title = document.createElement( 'div' );
-		title.textContent = 'Autocolumn Settings';
+		title.textContent = t( 'Autocolumn Settings' );
 		title.style.cssText = 'font-weight:700;font-size:17px;margin-bottom:14px;';
 		modal.appendChild( title );
 
@@ -212,7 +212,7 @@ function chooseAutocolumnsFromModal( initialSettings, canRemove ) {
 		columnsInput.max = '5';
 		columnsInput.value = String( settings.columns );
 		columnsInput.style.cssText = 'width:100%;padding:8px;box-sizing:border-box;';
-		addField( 'Number of columns', columnsInput );
+		addField( t( 'Number of columns' ), columnsInput );
 
 		const spacingInput = document.createElement( 'input' );
 		spacingInput.type = 'number';
@@ -220,31 +220,31 @@ function chooseAutocolumnsFromModal( initialSettings, canRemove ) {
 		spacingInput.step = '0.1';
 		spacingInput.value = String( settings.columnSpacing );
 		spacingInput.style.cssText = 'width:100%;padding:8px;box-sizing:border-box;';
-		addField( 'Spacing between columns', spacingInput );
+		addField( t( 'Spacing between columns' ), spacingInput );
 
 		const rulerStyle = document.createElement( 'select' );
 		rulerStyle.style.cssText = 'width:100%;padding:8px;box-sizing:border-box;';
 		[ 'none', 'solid', 'double', 'dotted', 'dashed' ].forEach( style => {
 			const opt = document.createElement( 'option' );
 			opt.value = style;
-			opt.textContent = style;
+			opt.textContent = t( style );
 			rulerStyle.appendChild( opt );
 		} );
 		rulerStyle.value = settings.rulerStyle;
-		addField( 'Line style', rulerStyle );
+		addField( t( 'Line style' ), rulerStyle );
 
 		const thicknessInput = document.createElement( 'input' );
 		thicknessInput.type = 'number';
 		thicknessInput.min = '0';
 		thicknessInput.value = String( settings.rulerThickness );
 		thicknessInput.style.cssText = 'width:100%;padding:8px;box-sizing:border-box;';
-		addField( 'Line thickness (px)', thicknessInput );
+		addField( t( 'Line thickness (px)' ), thicknessInput );
 
 		const colourInput = document.createElement( 'input' );
 		colourInput.type = 'color';
 		colourInput.value = settings.rulerColour.startsWith( '#' ) ? settings.rulerColour : '#000000';
 		colourInput.style.cssText = 'width:100%;height:40px;padding:4px;box-sizing:border-box;';
-		addField( 'Line colour', colourInput );
+		addField( t( 'Line colour' ), colourInput );
 
 		const buttonRow = document.createElement( 'div' );
 		buttonRow.style.cssText = 'display:flex;justify-content:flex-end;gap:8px;margin-top:16px;';
@@ -260,7 +260,7 @@ function chooseAutocolumnsFromModal( initialSettings, canRemove ) {
 		if ( canRemove ) {
 			const removeBtn = document.createElement( 'button' );
 			removeBtn.type = 'button';
-			removeBtn.textContent = 'Remove';
+			removeBtn.textContent = t( 'Remove' );
 			removeBtn.style.cssText = 'padding:9px 14px;margin-right:auto;border:1px solid #dc2626;background:#fff;color:#dc2626;cursor:pointer;';
 			removeBtn.addEventListener( 'click', () => cleanup( { remove: true } ) );
 			buttonRow.appendChild( removeBtn );
@@ -268,12 +268,12 @@ function chooseAutocolumnsFromModal( initialSettings, canRemove ) {
 
 		const cancelBtn = document.createElement( 'button' );
 		cancelBtn.type = 'button';
-		cancelBtn.textContent = 'Cancel';
+		cancelBtn.textContent = t( 'Cancel' );
 		cancelBtn.style.cssText = 'padding:9px 14px;border:1px solid #d1d5db;background:#fff;cursor:pointer;';
 
 		const okBtn = document.createElement( 'button' );
 		okBtn.type = 'button';
-		okBtn.textContent = 'OK';
+		okBtn.textContent = t( 'OK' );
 		okBtn.style.cssText = 'padding:9px 14px;border:1px solid #2563eb;background:#2563eb;color:#fff;cursor:pointer;';
 
 		const onKeyDown = event => {
@@ -310,7 +310,7 @@ export async function runAutocolumnsDialog( editor ) {
 	const savedRange = selection.getFirstRange()?.clone();
 	const existing = findAutocolumnsElement( selection );
 	const initialSettings = existing ? parseAutocolumnsSettings( existing ) : DEFAULT_SETTINGS;
-	const result = await chooseAutocolumnsFromModal( initialSettings, !!existing );
+	const result = await chooseAutocolumnsFromModal( initialSettings, !!existing, editor.t );
 	if ( !result ) {
 		return;
 	}

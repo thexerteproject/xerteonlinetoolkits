@@ -212,10 +212,6 @@
 		user = user || {};
 		var requestedLang = loadedLanguages && loadedLanguages.requestedLanguage || selectedLanguageCode();
 		var lang = loadedLanguages && loadedLanguages.uiLanguage || requestedLang;
-		var xerteLanguages = window.XerteCKEditor5Languages;
-		var xerteLanguage = xerteLanguages && (xerteLanguages[requestedLang] || xerteLanguages.en);
-		var recorderLanguage = user.xerteRecorderLanguage ||
-			(xerteLanguage && xerteLanguage.xerteRecorder);
 		var base = {
 			language: {
 				ui: lang,
@@ -232,7 +228,6 @@
 			},
 			xerteUploadUrl: user.uploadUrl || defaultUploadUrl(),
 			xerteUploadAudioUrl: user.uploadAudioUrl || defaultUploadAudioUrl(),
-			xerteRecorderLanguage: recorderLanguage,
 			xerteBrowseMediaUrl: user.browseMediaUrl || browseUrlForCke5(user.filebrowserBrowseUrl) || browseUrl('media')
 		};
 		if (user.toolbar) {
