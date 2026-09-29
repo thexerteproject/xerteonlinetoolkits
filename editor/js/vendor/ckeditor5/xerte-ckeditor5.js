@@ -4,6 +4,9 @@
  */
 (function (window, $) {
 	'use strict';
+	var bridgeScript = document.currentScript;
+	var languageAssetBase = bridgeScript && bridgeScript.src ?
+		bridgeScript.src.replace(/xerte-ckeditor5\.js(?:\?.*)?$/, '') : 'editor/js/vendor/ckeditor5/';
 
 	window.__xerteCke5Instances = window.__xerteCke5Instances || {};
 	window.__xerteCke5Shims = window.__xerteCke5Shims || {};
@@ -79,6 +82,45 @@
 		return 'editor/uploadAudio.php?mode=record&uploadPath=' +
 			encodeURIComponent(typeof rlopathvariable !== 'undefined' ? rlopathvariable : '') +
 			'&uploadURL=' + encodeURIComponent(u);
+	}
+
+	function selectedLanguageCode() {
+		if (typeof language !== 'undefined' && language && language.$code) {
+			return String(language.$code).toLowerCase().split(/[-_]/)[0];
+		}
+		return 'en';
+	}
+
+	window.__xerteCke5LanguagePromises = window.__xerteCke5LanguagePromises || {};
+	function loadOptionalLanguageScript(key, url) {
+		if (window.__xerteCke5LanguagePromises[key]) {
+			return window.__xerteCke5LanguagePromises[key];
+		}
+		window.__xerteCke5LanguagePromises[key] = new Promise(function (resolve) {
+			var script = document.createElement('script');
+			script.src = url;
+			script.onload = function () { resolve(true); };
+			script.onerror = function () { resolve(false); };
+			document.head.appendChild(script);
+		});
+		return window.__xerteCke5LanguagePromises[key];
+	}
+
+	function loadSelectedLanguages(lang) {
+		if (lang === 'en') {
+			return Promise.resolve({ requestedLanguage: lang, uiLanguage: lang });
+		}
+		return Promise.all([
+			loadOptionalLanguageScript('ckeditor:' + lang,
+				languageAssetBase + 'translations/' + lang + '.js'),
+			loadOptionalLanguageScript('xerte:' + lang,
+				languageAssetBase + 'lang/' + lang + '.js')
+		]).then(function (loaded) {
+			return {
+				requestedLanguage: lang,
+				uiLanguage: loaded[0] ? lang : 'en'
+			};
+		});
 	}
 
 	function mapLegacyToolbarItem(item) {
@@ -166,12 +208,14 @@
 		return flat.length ? { items: flat, shouldNotGroupWhenFull: false } : null;
 	}
 
-	function mergeEditorConfig(user) {
+	function mergeEditorConfig(user, loadedLanguages) {
 		user = user || {};
-		var lang = 'en';
-		if (typeof language !== 'undefined' && language && language.$code) {
-			lang = String(language.$code).substr(0, 2);
-		}
+		var requestedLang = loadedLanguages && loadedLanguages.requestedLanguage || selectedLanguageCode();
+		var lang = loadedLanguages && loadedLanguages.uiLanguage || requestedLang;
+		var xerteLanguages = window.XerteCKEditor5Languages;
+		var xerteLanguage = xerteLanguages && (xerteLanguages[requestedLang] || xerteLanguages.en);
+		var recorderLanguage = user.xerteRecorderLanguage ||
+			(xerteLanguage && xerteLanguage.xerteRecorder);
 		var base = {
 			language: {
 				ui: lang,
@@ -188,6 +232,7 @@
 			},
 			xerteUploadUrl: user.uploadUrl || defaultUploadUrl(),
 			xerteUploadAudioUrl: user.uploadAudioUrl || defaultUploadAudioUrl(),
+			xerteRecorderLanguage: recorderLanguage,
 			xerteBrowseMediaUrl: user.browseMediaUrl || browseUrlForCke5(user.filebrowserBrowseUrl) || browseUrl('media')
 		};
 		if (user.toolbar) {
@@ -437,12 +482,15 @@
 		if (!Editor || typeof Editor.create !== 'function') {
 			throw new Error('XerteCKEditor5 editor class not available');
 		}
-		var cfg = mergeEditorConfig(userConfig || {});
 		var initialMetrics = {
 			width: domEl && domEl.getBoundingClientRect ? domEl.getBoundingClientRect().width : 0,
 			height: domEl && domEl.getBoundingClientRect ? domEl.getBoundingClientRect().height : 0
 		};
-		return Editor.create(domEl, cfg).then(function (editor) {
+		var lang = selectedLanguageCode();
+		return loadSelectedLanguages(lang).then(function (loadedLanguages) {
+			var cfg = mergeEditorConfig(userConfig || {}, loadedLanguages);
+			return Editor.create(domEl, cfg);
+		}).then(function (editor) {
 			var id = domEl.id;
 			window.__xerteCke5Instances[id] = editor;
 			window.__xerteCke5SourceElements[id] = domEl;

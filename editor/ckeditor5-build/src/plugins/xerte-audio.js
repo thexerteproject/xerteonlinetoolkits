@@ -55,7 +55,7 @@ function syncView( writer, div, settings ) {
 function audioView( model, writer, editing ) {
 	const settings = { ...defaults, ...model.getAttribute( 'audioSettings' ) };
 	const div = writer.createContainerElement( 'div', { class: 'ckeditor-html5-audio' } );
-	const audio = writer.createEmptyElement( 'audio' );
+	const audio = writer.createEmptyElement( 'audio', editing ? { 'data-cke-ignore-events': 'true' } : {} );
 	writer.insert( writer.createPositionAt( div, 0 ), audio );
 	syncView( writer, div, settings );
 	return editing ? toWidget( div, writer, { label: 'Audio', hasSelectionHandle: true } ) : div;

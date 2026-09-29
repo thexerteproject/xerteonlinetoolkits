@@ -37,6 +37,8 @@ export default {
 	plugins: [
 		new CKEditorTranslationsPlugin( {
 			language: 'en',
+			additionalLanguages: [ 'cs', 'de', 'el', 'es', 'fr', 'it', 'ja', 'nb', 'nl', 'pl', 'pt', 'ru', 'tr', 'uk' ],
+			outputDirectory: 'translations',
 			includeCorePackageTranslations: true
 		} )
 	],
