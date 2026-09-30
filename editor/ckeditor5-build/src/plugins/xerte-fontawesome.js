@@ -211,8 +211,13 @@ async function editFontAwesomeIcon( editor, existing = selectedIcon( editor ) ) 
 		if ( existing ) {
 			// The icon's classes, title and style live on children of the editing-view
 			// wrapper. Replacing the object makes CKEditor run the element converters
-			// again and keeps the data and editing views in sync.
-			const replacement = writer.createElement( 'fontAwesomeIcon', result );
+			// again and keeps the data and editing views in sync. Preserve attributes
+			// owned by other features, such as link and lightbox settings.
+			const existingAttributes = Object.fromEntries( existing.getAttributes() );
+			const replacement = writer.createElement( 'fontAwesomeIcon', {
+				...existingAttributes,
+				...result
+			} );
 			writer.insert( replacement, writer.createPositionBefore( existing ) );
 			writer.remove( existing );
 			writer.setSelection( replacement, 'on' );

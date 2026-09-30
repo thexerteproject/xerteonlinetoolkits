@@ -73,6 +73,7 @@ import { XerteLineHeight } from './plugins/xerte-line-height.js';
 import { XerteRubyText } from './plugins/xerte-ruby-text.js';
 import { XerteMediaEmbedRoundTrip } from './plugins/xerte-media-embed-roundtrip.js';
 import { XerteMediaResize } from './plugins/xerte-media-resize.js';
+import { XerteLightbox } from './plugins/xerte-lightbox.js';
 
 const toolbarItems = [
 	'undo', 'redo', '|',
@@ -177,6 +178,7 @@ const xerteBuiltinPlugins = [
 	MediaEmbed,
 	XerteMediaEmbedRoundTrip,
 	XerteMediaResize,
+	XerteLightbox,
 	HtmlEmbed,
 	XerteUploadAdapter,
 	XerteBrowseMedia,
@@ -291,7 +293,7 @@ const xerteDefaultConfig = {
 		contentToolbar: tableToolbar
 	},
 	link: {
-		toolbar: [ 'linkPreview', '|', 'xerteEditPageLink', 'editLink', 'linkProperties', 'unlink' ],
+		toolbar: [ 'linkPreview', '|', 'xerteEditPageLink', 'xerteLightbox', 'editLink', 'linkProperties', 'unlink' ],
 		decorators: {
 			openInNewTab: {
 				mode: 'automatic',
