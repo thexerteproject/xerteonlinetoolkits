@@ -183,7 +183,7 @@
 	  <closeTxtLtiOnly label="&lt;p&gt;Your session has been stopped. You can now close the browser window or browser tab.&lt;/p&gt;"/>
 	  <closeTxtEmbeddedLtiOnly label="&lt;p&gt;Your session has ended. You will need to refresh or revisit this page if you would like to restart.&lt;/p&gt;"/>
 	  <btnLabelTxtLTiOnly label="End session"/>
-	  <closeTxtNoTracking label="&lt;p&gt;It is not possible to save your progress as this project is not being tracked.&lt;/p&gt;&lt;p&gt;You are seeing the save button as 'force tracking mode' is turned on to simulate the behaviour of a tracked project.&lt;/p&gt;"/>
+	  <closeTxtNoTracking label="&lt;p&gt;It is not possible to save your progress as this project is not being tracked.&lt;/p&gt;&lt;p&gt;You are seeing the save button as 'simulate tracking mode' is turned on to mimic the behaviour of a tracked project.&lt;/p&gt;"/>
   </saveSession>
 
   <localStorage today="Restore previous session from today at {x}?" day1="Restore previous session from {x} day ago?" day2="Restore previous session from {x} days ago?" error="Session could not be restored"/>

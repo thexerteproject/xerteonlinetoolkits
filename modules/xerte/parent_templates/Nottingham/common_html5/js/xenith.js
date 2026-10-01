@@ -254,48 +254,48 @@ x_projectDataLoaded = function(xmlData) {
 
 			// resolve promise if the page isn't a standalone page loading in a lightbox as no pageState data will be received later
 			if (x_urlParams.lightboxState !== "1") {
-				if (XTTrackingSystem().indexOf("SCORM") < 0 && XTTrackingSystem() !== "xAPI" && (typeof lti_enabled === "undefined" || !lti_enabled)) {
+				if (XTTrackingSystem().indexOf("SCORM") < 0 && XTTrackingSystem() !== "xAPI" && (typeof lti_enabled === "undefined" || !lti_enabled) && x_params.saveProgress != "false") {
 					// project is not being tracked
 					// browser may have some local storage data which will allow previous page state to be recreated
 					const savedData = localStorage.getItem("xerte_" + x_TemplateId + "_state");
 					if (savedData !== null) {
-						const allData = JSON.parse(savedData);
+						try {
+							const allData = JSON.parse(savedData);
 
-						// only attempt to restore if the previous session data was from the same saved version of this project
-						// the project xml will contain a timestamp of when it was last saved & this needs to match the version saved in localstorage data
-						if (x_params.saveTimeStamp === allData.version) {
-							// inform user of when the session data was stored & ask if they want to restore it
-							const savedDate = new Date(allData.date);
-							const now = new Date();
+							// only attempt to restore if the previous session data was from the same saved version of this project
+							// the project xml will contain a timestamp of when it was last saved & this needs to match the version saved in localstorage data
+							if (x_params.saveTimeStamp === allData.version) {
+								// inform user of when the session data was stored & ask if they want to restore it
+								const savedDate = new Date(allData.date);
+								const now = new Date();
 
-							let restoreMessage;
-							if (savedDate.getFullYear() === now.getFullYear() && savedDate.getMonth() === now.getMonth() && savedDate.getDate() === now.getDate()) {
-								// saved earlier today
-								const time = savedDate.toLocaleTimeString([], {
-									hour: "numeric",
-									minute: "2-digit"
-								});
-								restoreMessage = x_getLangInfo(x_languageData.find("localStorage")[0], "today", "Restore previous session from today at {x}?");
-								restoreMessage = restoreMessage.replace("{x}", time);
+								let restoreMessage;
+								if (savedDate.getFullYear() === now.getFullYear() && savedDate.getMonth() === now.getMonth() && savedDate.getDate() === now.getDate()) {
+									// saved earlier today
+									const time = savedDate.toLocaleTimeString([], {
+										hour: "numeric",
+										minute: "2-digit"
+									});
+									restoreMessage = x_getLangInfo(x_languageData.find("localStorage")[0], "today", "Restore previous session from today at {x}?");
+									restoreMessage = restoreMessage.replace("{x}", time);
 
-							} else {
-								// saved on a previous day
-								const daysAgo = Math.floor(
-									(new Date(now.getFullYear(), now.getMonth(), now.getDate()) -
-										new Date(savedDate.getFullYear(), savedDate.getMonth(), savedDate.getDate()))
-									/ (1000 * 60 * 60 * 24)
-								);
-								if (daysAgo === 1) {
-									restoreMessage = x_getLangInfo(x_languageData.find("localStorage")[0], "day1", "Restore previous session from {x} day ago?");
 								} else {
-									restoreMessage = x_getLangInfo(x_languageData.find("localStorage")[0], "day2", "Restore previous session from {x} days ago?");
+									// saved on a previous day
+									const daysAgo = Math.floor(
+										(new Date(now.getFullYear(), now.getMonth(), now.getDate()) -
+											new Date(savedDate.getFullYear(), savedDate.getMonth(), savedDate.getDate()))
+										/ (1000 * 60 * 60 * 24)
+									);
+									if (daysAgo === 1) {
+										restoreMessage = x_getLangInfo(x_languageData.find("localStorage")[0], "day1", "Restore previous session from {x} day ago?");
+									} else {
+										restoreMessage = x_getLangInfo(x_languageData.find("localStorage")[0], "day2", "Restore previous session from {x} days ago?");
+									}
+									restoreMessage = restoreMessage.replace("{x}", daysAgo);
 								}
-								restoreMessage = restoreMessage.replace("{x}", daysAgo);
-							}
 
-							if (confirm(restoreMessage)) {
-								// restore state
-								try {
+								if (confirm(restoreMessage)) {
+									// restore state
 									x_pageStates = allData.state;
 									pagesViewed = allData.viewed;
 									x_pageHistory = allData.history;
@@ -304,15 +304,15 @@ x_projectDataLoaded = function(xmlData) {
 									if (allData.trackingData !== undefined) {
 										XTRestoreData(allData.trackingData);
 									}
-
-								} catch (e) {
+								} else {
+									// delete saved data
 									localStorage.removeItem("xerte_" + x_TemplateId + "_state");
-									alert(x_getLangInfo(x_languageData.find("localStorage")[0], "error", "Session could not be restored"));
 								}
-							} else {
-								// delete saved data
-								localStorage.removeItem("xerte_" + x_TemplateId + "_state");
 							}
+
+						} catch (e) {
+							localStorage.removeItem("xerte_" + x_TemplateId + "_state");
+							alert(x_getLangInfo(x_languageData.find("localStorage")[0], "error", "Session could not be restored"));
 						}
 					}
 				}
@@ -3002,7 +3002,7 @@ function x_leavePage(page, lightbox) {
 	}
 
 	// save state data to local storage if project is not tracked
-	if (XTTrackingSystem().indexOf("SCORM") < 0 && XTTrackingSystem() !== "xAPI" && (typeof lti_enabled === "undefined" || !lti_enabled)) {
+	if (XTTrackingSystem().indexOf("SCORM") < 0 && XTTrackingSystem() !== "xAPI" && (typeof lti_enabled === "undefined" || !lti_enabled) && x_params.saveProgress != "false") {
 		// only save current state if there is some useful data to save
 		// each model file should set state.saveToLocalStorage to true if there is useful data to save for the page (this is generally if an attempt has been made)
 		let saveToLocalStorage = x_pageStates.some(pageState =>
@@ -6165,6 +6165,10 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 
 	// function checks the viewed pages in the TOC
 	function tickViewed() {
+		/* TODO **
+		 - currently the table of contents ticks are always added on page view - this should change when a page is complete on attempt not view
+		 - completion not required does not have an affect on what is ticked - should it?
+		*/
 		if (x_params.pageTick !== "false") {
 			// tick all pages which have been viewed
 			$menuItems.find(".menuItem").each(function(i) {
@@ -6173,7 +6177,7 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 			});
 
 			// tick all chapters that don't contain any unviewed pages
-			$menuItems.find(".chapterHolder").each(function(i) {
+			$menuItems.find(".chapterHolder").each(function() {
 				if ($(this).find(".menuItem .notvisited").length == 0) {
 					$(this).find('.chapterItem i').removeClass('notvisited').attr("aria-hidden", "false");
 				}
@@ -8461,7 +8465,7 @@ var XENITH = (function ($, parent) { var self = parent.SAVESESSION = {};
 			$("#closeBtn").remove();
 			$("#saveSessionInfo").addClass("noBtn");
 
-			const closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("closeTxtNoTracking")[0], "label", "<p>It is not possible to save your progress as this project is not being tracked.</p><p>You are seeing the save button as 'force tracking mode' is turned on to simulate the behaviour of a tracked project.</p>")
+			const closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("closeTxtNoTracking")[0], "label", "<p>It is not possible to save your progress as this project is not being tracked.</p><p>You are seeing the save button as 'simulate tracking mode' is turned on to mimic the behaviour of a tracked project.</p>")
 			$closeText.html(closeHtml);
 		}
 	}

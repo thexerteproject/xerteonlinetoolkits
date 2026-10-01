@@ -48,17 +48,24 @@
             // set up split screen layout
             XENITH.SPLITSCREEN.init({"attributes": attributes});
 
-            if (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled))
-            {
-                // tracked
+            if (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled) ||
+                (x_params.simulateTrackingMode === "true" && window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1, window.location.pathname.length).indexOf("preview") > -1)) {
+
+                // tracked or in simulate tracking mode
                 $("#stopTrackingBtn").button({
                     label: x_currentPageXML.getAttribute("buttonLbl") != null ? x_currentPageXML.getAttribute("buttonLbl") : "Close and finish tracking of this session"
                 }).click(function(){
-                    // Disable all the buttons and menu
-                    XTTerminate();
-                    $('#x_footerRight button').button("disable");
+                    if (XTTrackingSystem().indexOf("SCORM") >= 0 || XTTrackingSystem() === "xAPI" || (typeof lti_enabled != "undefined" && lti_enabled)) {
+                        XTTerminate();
+                        $closeText.html(x_addLineBreaks(x_currentPageXML.getAttribute('textAfter')));
+                        // Disable all the buttons and menu
+                        $('#x_footerRight button').button("disable");
+                    } else {
+                        const closeHtml = x_getLangInfo(x_languageData.find("saveSession").find("closeTxtNoTracking")[0], "label", "<p>It is not possible to save your progress as this project is not being tracked.</p><p>You are seeing the save button as 'simulate tracking mode' is turned on to mimic the behaviour of a tracked project.</p>")
+                        $closeText.html(closeHtml);
+                    }
+
                     $('#stopTrackingBtn').hide();
-                    $closeText.html(x_addLineBreaks(x_currentPageXML.getAttribute('textAfter')));
                 });
             }
             else

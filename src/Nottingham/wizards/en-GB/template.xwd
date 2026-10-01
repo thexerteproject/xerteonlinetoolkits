@@ -285,6 +285,8 @@
 		</saveSessionGroup>
 
 	</trackingOptions>
+
+	  <saveProgress label="Save progress" type="CheckBox" defaultValue="true" tooltip="Save learner progress in the browser and restore it when the project is reopened or refreshed. Turn off to prevent learner data from being stored locally - the project will always start a new session." optional="true"/>
 	
 	<meta type="group" label="Metadata" optional="true" tooltip="The metadata for this project used, for example, when shared using oai-pmh">
 		<explanation label="Note: to share this project using oai-pmh, you need to give your assent and the fields 'Category' and 'Education level' need to be filled in." type="info" condition="oai_pmh_available" optional="true"/>
