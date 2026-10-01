@@ -228,7 +228,8 @@
 			},
 			xerteUploadUrl: user.uploadUrl || defaultUploadUrl(),
 			xerteUploadAudioUrl: user.uploadAudioUrl || defaultUploadAudioUrl(),
-			xerteBrowseMediaUrl: user.browseMediaUrl || browseUrlForCke5(user.filebrowserBrowseUrl) || browseUrl('media')
+			xerteBrowseMediaUrl: user.browseMediaUrl || browseUrlForCke5(user.filebrowserBrowseUrl) || browseUrl('media'),
+			xerteMathJaxLib: user.mathJaxLib || 'offline/js/mathjax/MathJax.js?config=TeX-MML-AM_HTMLorMML-full'
 		};
 		if (user.toolbar) {
 			var toolbar = normalizeToolbar(user.toolbar);

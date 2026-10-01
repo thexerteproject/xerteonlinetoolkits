@@ -347,7 +347,8 @@ const xerteDefaultConfig = {
 	},
 	xerteUploadUrl: '',
 	xerteUploadAudioUrl: '',
-	xerteBrowseMediaUrl: ''
+	xerteBrowseMediaUrl: '',
+	xerteMathJaxLib: 'offline/js/mathjax/MathJax.js?config=TeX-MML-AM_HTMLorMML-full'
 };
 
 export class XerteClassicEditor extends ClassicEditor {}
