@@ -152,6 +152,21 @@
 			FontAwesome: 'fontAwesome',
 			HorizontalRule: 'horizontalLine',
 			Mathjax: 'xerteMathJax',
+			rubytext: 'xerteRubyText',
+			RubyText: 'xerteRubyText',
+			html5audio: 'xerteAudio',
+			Audio: 'xerteAudio',
+			xotrecorder: 'xerteRecorder',
+			Recorder: 'xerteRecorder',
+			xotcolumns: 'autocolumns',
+			Autocolumns: 'autocolumns',
+			oembed: 'mediaEmbed',
+			Oembed: 'mediaEmbed',
+			Emoji: 'emoji',
+			ShowBlocks: 'showBlocks',
+			Maximize: 'fullscreen',
+			Styles: 'style',
+			Blockquote: 'blockQuote',
 			Link: 'link',
 			xotlink: 'xotlink',
 			Image: 'insertImage',
@@ -165,7 +180,29 @@
 			Mark: 'markTag',
 			markTag: 'markTag'
 		};
-		return map[item] || null;
+		var ckeditor5Items = {
+			undo: 1, redo: 1, findAndReplace: 1, sourceEditing: 1, showBlocks: 1, fullscreen: 1,
+			htmlEmbed: 1, heading: 1, style: 1, fontSize: 1, fontFamily: 1, fontColor: 1,
+			fontBackgroundColor: 1, lineHeight: 1, textPartLanguage: 1, bold: 1, italic: 1,
+			underline: 1, strikethrough: 1, subscript: 1, superscript: 1, code: 1, removeFormat: 1,
+			specialCharacters: 1, emoji: 1, fontAwesome: 1, horizontalLine: 1, xerteMathJax: 1,
+			xerteRubyText: 1, link: 1, xotlink: 1, insertImage: 1, xerteBrowseMedia: 1,
+			xerteAudio: 1, xerteRecorder: 1, mediaEmbed: 1, insertTable: 1, autocolumns: 1,
+			blockQuote: 1, codeBlock: 1, alignment: 1, bulletedList: 1, numberedList: 1,
+			outdent: 1, indent: 1, xotMarkWord: 1, markTag: 1
+		};
+		return map[item] || (ckeditor5Items[item] ? item : null);
+	}
+
+	var warnedToolbarItems = {};
+	function warnUnknownToolbarItem(item) {
+		if (!item || warnedToolbarItems[item]) {
+			return;
+		}
+		warnedToolbarItems[item] = true;
+		if (window.console && typeof window.console.warn === 'function') {
+			window.console.warn('[Xerte CKEditor 5] No toolbar mapping exists for CKEditor 4 item "' + item + '".');
+		}
 	}
 
 	function normalizeToolbar(toolbar) {
@@ -173,19 +210,44 @@
 			return null;
 		}
 		if (!Array.isArray(toolbar) && toolbar.items && Array.isArray(toolbar.items)) {
-			return toolbar;
-		}
-		if (Array.isArray(toolbar) && toolbar.length && typeof toolbar[0] === 'string') {
-			return toolbar;
+			var normalizedItems = normalizeToolbar(toolbar.items);
+			if (!normalizedItems) {
+				return null;
+			}
+			var normalizedObject = {};
+			for (var option in toolbar) {
+				if (toolbar.hasOwnProperty(option)) {
+					normalizedObject[option] = toolbar[option];
+				}
+			}
+			normalizedObject.items = normalizedItems.items;
+			return normalizedObject;
 		}
 		var flat = [];
 		function pushMapped(raw) {
-			var mapped = mapLegacyToolbarItem(String(raw));
+			if (raw === '|') {
+				if (flat.length && flat[flat.length - 1] !== '|') {
+					flat.push('|');
+				}
+				return;
+			}
+			var item = String(raw);
+			var mapped = mapLegacyToolbarItem(item);
 			if (mapped && flat.indexOf(mapped) === -1) {
 				flat.push(mapped);
+			} else if (!mapped) {
+				warnUnknownToolbarItem(item);
 			}
 		}
 		if (Array.isArray(toolbar)) {
+			if (!toolbar.length) {
+				return { items: [], shouldNotGroupWhenFull: false };
+			}
+			if (typeof toolbar[0] === 'string') {
+				for (var h = 0; h < toolbar.length; h++) {
+					pushMapped(toolbar[h]);
+				}
+			}
 			for (var i = 0; i < toolbar.length; i++) {
 				var group = toolbar[i];
 				if (Array.isArray(group)) {
@@ -206,6 +268,58 @@
 			flat.pop();
 		}
 		return flat.length ? { items: flat, shouldNotGroupWhenFull: false } : null;
+	}
+
+	function normalizeToolbarGroups(groups) {
+		if (!Array.isArray(groups)) {
+			return null;
+		}
+		var groupItems = {
+			mode: [ 'sourceEditing' ],
+			clipboard: [ 'undo', 'redo' ],
+			undo: [ 'undo', 'redo' ],
+			find: [ 'findAndReplace' ],
+			spellchecker: [],
+			basicstyles: [ 'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript' ],
+			cleanup: [ 'removeFormat' ],
+			links: [ 'link', 'xotlink' ],
+			styles: [ 'heading', 'style', 'fontFamily', 'fontSize' ],
+			colors: [ 'fontColor', 'fontBackgroundColor' ],
+			insert: [ 'insertImage', 'xerteBrowseMedia', 'xerteAudio', 'xerteRecorder', 'mediaEmbed',
+				'insertTable', 'specialCharacters', 'fontAwesome', 'horizontalLine', 'xerteMathJax' ],
+			list: [ 'bulletedList', 'numberedList' ],
+			indent: [ 'outdent', 'indent' ],
+			blocks: [ 'blockQuote', 'codeBlock' ],
+			align: [ 'alignment' ],
+			bidi: [ 'textPartLanguage' ]
+		};
+		var result = [];
+		function append(items) {
+			for (var i = 0; i < items.length; i++) {
+				if (result.indexOf(items[i]) === -1) {
+					result.push(items[i]);
+				}
+			}
+		}
+		for (var i = 0; i < groups.length; i++) {
+			var descriptor = groups[i] || {};
+			var names = descriptor.groups && descriptor.groups.length ? descriptor.groups : [ descriptor.name ];
+			var before = result.length;
+			for (var j = 0; j < names.length; j++) {
+				if (groupItems[names[j]]) {
+					append(groupItems[names[j]]);
+				} else if (names[j]) {
+					warnUnknownToolbarItem('group:' + names[j]);
+				}
+			}
+			if (result.length > before && i < groups.length - 1) {
+				result.push('|');
+			}
+		}
+		while (result.length && result[result.length - 1] === '|') {
+			result.pop();
+		}
+		return result.length ? { items: result, shouldNotGroupWhenFull: false } : null;
 	}
 
 	function mergeEditorConfig(user, loadedLanguages) {
@@ -235,6 +349,11 @@
 			var toolbar = normalizeToolbar(user.toolbar);
 			if (toolbar) {
 				base.toolbar = toolbar;
+			}
+		} else if (user.toolbarGroups) {
+			var groupedToolbar = normalizeToolbarGroups(user.toolbarGroups);
+			if (groupedToolbar) {
+				base.toolbar = groupedToolbar;
 			}
 		}
 		if (user.height) {
