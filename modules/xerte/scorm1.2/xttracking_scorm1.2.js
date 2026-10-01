@@ -1812,6 +1812,7 @@ function XTResults() {
                         matchSub.correct = (learnerAnswer === correctAnswer);
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
+                        matchSub.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
                         results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
                     }
                     break;
@@ -1847,6 +1848,7 @@ function XTResults() {
                 subinteraction.correct = state.interactions[i].result.success;
                 subinteraction.learnerAnswer = learnerAnswer;
                 subinteraction.correctAnswer = correctAnswer;
+                subinteraction.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
                 results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
             }
         }
