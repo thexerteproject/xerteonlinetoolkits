@@ -308,11 +308,23 @@ const xerteDefaultConfig = {
 	language: {
 		ui: 'en',
 		textPartLanguage: [
-			{ title: 'English', languageCode: 'en' },
-			{ title: 'Dutch', languageCode: 'nl' },
-			{ title: 'German', languageCode: 'de' },
-			{ title: 'French', languageCode: 'fr' },
-			{ title: 'Spanish', languageCode: 'es' },
+			{ title: 'English (en-GB)', languageCode: 'en-GB' },
+			{ title: 'Nederlands (nl-NL)', languageCode: 'nl-NL' },
+			{ title: 'Vlaams (nl-BE)', languageCode: 'nl-BE' },
+			{ title: 'Français (fr-FR)', languageCode: 'fr-FR' },
+			{ title: 'Español (es-ES)', languageCode: 'es-ES' },
+			{ title: 'Czech (cs-CZ)', languageCode: 'cs-CZ' },
+			{ title: 'Cymraeg (cy-GB)', languageCode: 'cy-GB' },
+			{ title: 'Polish (pl-PL)', languageCode: 'pl-PL' },
+			{ title: 'Russian (ru-RU)', languageCode: 'ru-RU' },
+			{ title: 'Norsk bokmål (nb-NO)', languageCode: 'nb-NO' },
+			{ title: 'Italiano (it-IT)', languageCode: 'it-IT' },
+			{ title: 'Japanese (ja-JP)', languageCode: 'ja-JP' },
+			{ title: 'Portugues (pt-BR)', languageCode: 'pt-BR' },
+			{ title: 'Deutsch (de-DE)', languageCode: 'de-DE' },
+			{ title: 'Türkçe (tr-TR)', languageCode: 'tr-TR' },
+			{ title: 'Українська (uk-UA)', languageCode: 'uk-UA' },
+			{ title: 'Ελληνικά (el-GR)', languageCode: 'el-GR' },
 			{ title: 'Arabic', languageCode: 'ar', textDirection: 'rtl' },
 			{ title: 'Hebrew', languageCode: 'he', textDirection: 'rtl' }
 		]

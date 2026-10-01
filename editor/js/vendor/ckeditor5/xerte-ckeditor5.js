@@ -91,6 +91,62 @@
 		return 'en';
 	}
 
+	function supportedTextPartLanguages() {
+		var fallback = [
+			{ code: 'en-GB', name: 'English (en-GB)' },
+			{ code: 'nl-NL', name: 'Nederlands (nl-NL)' },
+			{ code: 'nl-BE', name: 'Vlaams (nl-BE)' },
+			{ code: 'fr-FR', name: 'Français (fr-FR)' },
+			{ code: 'es-ES', name: 'Español (es-ES)' },
+			{ code: 'cs-CZ', name: 'Czech (cs-CZ)' },
+			{ code: 'cy-GB', name: 'Cymraeg (cy-GB)' },
+			{ code: 'pl-PL', name: 'Polish (pl-PL)' },
+			{ code: 'ru-RU', name: 'Russian (ru-RU)' },
+			{ code: 'nb-NO', name: 'Norsk bokmål (nb-NO)' },
+			{ code: 'it-IT', name: 'Italiano (it-IT)' },
+			{ code: 'ja-JP', name: 'Japanese (ja-JP)' },
+			{ code: 'pt-BR', name: 'Portugues (pt-BR)' },
+			{ code: 'de-DE', name: 'Deutsch (de-DE)' },
+			{ code: 'tr-TR', name: 'Türkçe (tr-TR)' },
+			{ code: 'uk-UA', name: 'Українська (uk-UA)' },
+			{ code: 'el-GR', name: 'Ελληνικά (el-GR)' }
+		];
+		var configured = Array.isArray(window.installed_languages) && window.installed_languages.length ?
+			window.installed_languages.slice() : fallback.slice();
+		var rtlLanguages = { ar: 1, dv: 1, fa: 1, he: 1, ps: 1, ur: 1 };
+		var additionalSupportedLanguages = [
+			{ code: 'ar', name: 'Arabic' },
+			{ code: 'he', name: 'Hebrew' }
+		];
+		var configuredCodes = {};
+		configured.forEach(function (item) {
+			if (item && item.code) {
+				configuredCodes[String(item.code).toLowerCase()] = true;
+			}
+		});
+		additionalSupportedLanguages.forEach(function (item) {
+			if (!configuredCodes[item.code.toLowerCase()]) {
+				configured.push(item);
+			}
+		});
+
+		return configured.reduce(function (result, item) {
+			if (!item || !item.code) {
+				return result;
+			}
+			var code = String(item.code);
+			var language = {
+				title: item.name ? String(item.name) : code,
+				languageCode: code
+			};
+			if (rtlLanguages[code.toLowerCase().split(/[-_]/)[0]]) {
+				language.textDirection = 'rtl';
+			}
+			result.push(language);
+			return result;
+		}, []);
+	}
+
 	window.__xerteCke5LanguagePromises = window.__xerteCke5LanguagePromises || {};
 	function loadOptionalLanguageScript(key, url) {
 		if (window.__xerteCke5LanguagePromises[key]) {
@@ -330,15 +386,7 @@
 			language: {
 				ui: lang,
 				content: lang,
-				textPartLanguage: [
-					{ title: 'English', languageCode: 'en' },
-					{ title: 'Dutch', languageCode: 'nl' },
-					{ title: 'German', languageCode: 'de' },
-					{ title: 'French', languageCode: 'fr' },
-					{ title: 'Spanish', languageCode: 'es' },
-					{ title: 'Arabic', languageCode: 'ar', textDirection: 'rtl' },
-					{ title: 'Hebrew', languageCode: 'he', textDirection: 'rtl' }
-				]
+				textPartLanguage: supportedTextPartLanguages()
 			},
 			xerteUploadUrl: user.uploadUrl || defaultUploadUrl(),
 			xerteUploadAudioUrl: user.uploadAudioUrl || defaultUploadAudioUrl(),
