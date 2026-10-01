@@ -100,7 +100,7 @@
 
 	define ("PROJECT_INFO_RSS_SYNDICATION_SYNDICATIONENABLED" , "Syndication is enabled");
 
-	define("PROJECT_INFO_LTI_PUBLISHED" , "LTI: The project is published as an LTI 1.1 tool");
+	define("PROJECT_INFO_LTI_PUBLISHED" , "LTI: The project is published as an LTI tool");
 
 	define("PROJECT_INFO_XAPI_PUBLISHED", "xAPI: xAPI is enabled for this project through the following link:");
 
