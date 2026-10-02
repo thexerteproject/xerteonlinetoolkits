@@ -7,6 +7,7 @@ import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
 import { browseMedia } from './xerte-browse-media.js';
 import { uploadAudio } from './xerte-upload-adapter.js';
+import AudioIcon from '../icons/audio.svg';
 
 const defaults = { src: '', align: 'center', autoplay: false, noDownload: false, title: '' };
 const alignments = new Set( [ 'none', 'left', 'center', 'right' ] );
@@ -117,7 +118,7 @@ export class XerteAudio extends Plugin {
 		}
 		editor.ui.componentFactory.add( 'xerteAudio', locale => {
 			const button = new ButtonView( locale );
-			button.set( { label: editor.t( 'Audio' ), withText: true, tooltip: true } );
+			button.set( { label: editor.t( 'Audio' ), icon: AudioIcon, tooltip: true } );
 			button.bind( 'isEnabled' ).to( editor.commands.get( 'insertXerteAudio' ), 'isEnabled' );
 			button.on( 'execute', () => openAudioDialog( editor ) );
 			return button;

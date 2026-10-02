@@ -5,6 +5,7 @@
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { toWidget } from '@ckeditor/ckeditor5-widget';
+import RubyIcon from '../icons/ruby.svg';
 
 function textContent( node ) {
 	if ( node.is( '$text' ) ) {
@@ -180,7 +181,7 @@ export class XerteRubyText extends Plugin {
 
 		editor.ui.componentFactory.add( 'xerteRubyText', locale => {
 			const button = new ButtonView( locale );
-			button.set( { label: editor.t( 'Ruby' ), withText: true, tooltip: true } );
+			button.set( { label: editor.t( 'Ruby' ), icon: RubyIcon, tooltip: true } );
 			button.on( 'execute', async () => {
 				const existing = editor.model.document.selection.getSelectedElement();
 				const ruby = existing && existing.is( 'element', 'xerteRubyText' ) ? existing : null;

@@ -4,7 +4,7 @@
  */
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import { IconHtml } from 'ckeditor5/src/icons.js';
+import MathIcon from '../icons/math.svg';
 import { toWidget } from '@ckeditor/ckeditor5-widget';
 import { normalizeMathJaxInput, parseMathJaxValue, serializeMathJaxValue } from './xerte-mathjax-utils.js';
 
@@ -152,7 +152,7 @@ export class XerteMathJaxSnippet extends Plugin {
 
 		editor.ui.componentFactory.add( 'xerteMathJax', locale => {
 			const button = new ButtonView( locale );
-			button.set( { label: editor.t( 'Math' ), icon: IconHtml, tooltip: true } );
+			button.set( { label: editor.t( 'Math' ), icon: MathIcon, tooltip: true } );
 			button.on( 'execute', async () => {
 				const selected = editor.model.document.selection.getSelectedElement();
 				const equation = selected && selected.is( 'element', 'xerteMathJax' ) ? selected : null;

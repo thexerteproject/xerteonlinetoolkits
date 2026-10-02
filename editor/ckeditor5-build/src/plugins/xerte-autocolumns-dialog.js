@@ -5,7 +5,7 @@
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { Widget, toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
-import { IconTableColumn } from 'ckeditor5/src/icons.js';
+import AutocolumnsIcon from '../icons/autocolumns.svg';
 
 const DEFAULT_SETTINGS = {
 	columns: 2,
@@ -98,7 +98,7 @@ export class XerteAutocolumns extends Plugin {
 		const editor = this.editor;
 		editor.ui.componentFactory.add( 'autocolumns', locale => {
 			const button = new ButtonView( locale );
-			button.set( { label: editor.t( 'Autocolumns' ), icon: IconTableColumn, tooltip: true } );
+			button.set( { label: editor.t( 'Autocolumns' ), icon: AutocolumnsIcon, tooltip: true } );
 			button.on( 'execute', () => {
 				runAutocolumnsDialog( editor ).catch( error => console.error( '[XerteAutocolumns]', error ) );
 			} );

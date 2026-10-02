@@ -478,13 +478,20 @@
 			// replaces the textarea prevents the editor (and its table cell) shrinking.
 			root.style.minWidth = '0';
 			var updateToolbarPanelWidth = function () {
+				var toolbar = editor.ui && editor.ui.view && editor.ui.view.toolbar;
+				var toolbarElement = toolbar && toolbar.element;
+				if (toolbarElement && toolbarElement.closest('.ck-fullscreen__main-wrapper')) {
+					// Fullscreen moves the toolbar out of the editor root. Do not keep the
+					// original wizard-panel width as its max-width in the new container.
+					toolbar.maxWidth = undefined;
+					return;
+				}
 				var width = Math.floor(root.getBoundingClientRect().width);
 				if (width > 0) {
 					root.style.setProperty('--xerte-editor-width', width + 'px');
 					// CKEditor's grouping engine listens to maxWidth changes directly.
 					// Setting it on the ToolbarView makes the three-dot (extended toolbar options) calculation use
 					// the middle-pane width instead of the toolbar's intrinsic width.
-					var toolbar = editor.ui && editor.ui.view && editor.ui.view.toolbar;
 					if (toolbar) {
 						toolbar.maxWidth = width + 'px';
 					}
@@ -494,6 +501,12 @@
 			if (window.ResizeObserver) {
 				editor.__xerteToolbarResizeObserver = new ResizeObserver(updateToolbarPanelWidth);
 				editor.__xerteToolbarResizeObserver.observe(root);
+			}
+			var fullscreenCommand = editor.commands && editor.commands.get('toggleFullscreen');
+			if (fullscreenCommand) {
+				editor.listenTo(fullscreenCommand, 'change:value', function () {
+					window.requestAnimationFrame(updateToolbarPanelWidth);
+				});
 			}
 		}
 	}

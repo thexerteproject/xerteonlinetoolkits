@@ -6,6 +6,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { XerteAudio } from './xerte-audio.js';
 import { uploadAudio } from './xerte-upload-adapter.js';
+import RecorderIcon from '../icons/recorder.svg';
 
 const MIME_TYPES = [
 	{ type: 'audio/webm;codecs=opus', extension: 'webm' },
@@ -35,7 +36,7 @@ export class XerteRecorder extends Plugin {
 		const editor = this.editor;
 		editor.ui.componentFactory.add( 'xerteRecorder', locale => {
 			const button = new ButtonView( locale );
-			button.set( { label: editor.t( 'Record audio' ), withText: true, tooltip: true } );
+			button.set( { label: editor.t( 'Record audio' ), icon: RecorderIcon, tooltip: true } );
 			button.bind( 'isEnabled' ).to( editor.commands.get( 'insertXerteAudio' ), 'isEnabled', enabled =>
 				enabled && !!window.MediaRecorder && !!navigator.mediaDevices?.getUserMedia &&
 				!!editor.config.get( 'xerteUploadAudioUrl' ) );
