@@ -15,3 +15,17 @@ Organisations should:
 
 Source for the bundle build lives under editor/ckeditor5-build/ (see package.json
 for exact package versions and the GPL applies to those dependencies).
+
+axe-core
+========
+
+This bundle also contains axe-core, an accessibility testing engine maintained
+by Deque Systems, Inc. axe-core is licensed under the Mozilla Public License
+2.0 and its license includes the Exhibit B "Incompatible With Secondary
+Licenses" notice. Bundled third-party components also carry their own MIT or
+ISC terms.
+
+The exact axe-core version is recorded in
+editor/ckeditor5-build/package-lock.json. Source, the MPL-2.0 license, and the
+third-party license notices are available at:
+https://github.com/dequelabs/axe-core

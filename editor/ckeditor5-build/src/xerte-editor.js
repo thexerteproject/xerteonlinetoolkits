@@ -74,11 +74,12 @@ import { XerteRubyText } from './plugins/xerte-ruby-text.js';
 import { XerteMediaEmbedRoundTrip } from './plugins/xerte-media-embed-roundtrip.js';
 import { XerteMediaResize } from './plugins/xerte-media-resize.js';
 import { XerteLightbox } from './plugins/xerte-lightbox.js';
+import { XerteAccessibilityChecker } from './plugins/xerte-accessibility-checker.js';
 
 const toolbarItems = [
 	'undo', 'redo', '|',
 	'findAndReplace', '|',
-	'sourceEditing', 'showBlocks', 'fullscreen', 'htmlEmbed', '|',
+	'sourceEditing', 'showBlocks', 'accessibilityChecker', 'fullscreen', 'htmlEmbed', '|',
 	'heading', 'style', '|',
 	'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'lineHeight', '|',
 	'textPartLanguage', '|',
@@ -179,6 +180,7 @@ const xerteBuiltinPlugins = [
 	XerteMediaEmbedRoundTrip,
 	XerteMediaResize,
 	XerteLightbox,
+	XerteAccessibilityChecker,
 	HtmlEmbed,
 	XerteUploadAdapter,
 	XerteBrowseMedia,

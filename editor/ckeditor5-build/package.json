@@ -49,14 +49,15 @@
     "@ckeditor/ckeditor5-paragraph": "^47.6.1",
     "@ckeditor/ckeditor5-paste-from-office": "^47.6.1",
     "@ckeditor/ckeditor5-remove-format": "^47.6.1",
-    "@ckeditor/ckeditor5-source-editing": "^47.6.1",
     "@ckeditor/ckeditor5-show-blocks": "47.6.1",
+    "@ckeditor/ckeditor5-source-editing": "^47.6.1",
     "@ckeditor/ckeditor5-special-characters": "^47.6.1",
     "@ckeditor/ckeditor5-style": "^47.6.1",
     "@ckeditor/ckeditor5-table": "^47.6.1",
     "@ckeditor/ckeditor5-theme-lark": "^47.6.1",
     "@ckeditor/ckeditor5-ui": "^47.6.1",
     "@ckeditor/ckeditor5-upload": "^47.6.1",
-    "@ckeditor/ckeditor5-widget": "^47.6.1"
+    "@ckeditor/ckeditor5-widget": "^47.6.1",
+    "axe-core": "^4.11.0"
   }
 }
