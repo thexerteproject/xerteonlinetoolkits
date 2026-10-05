@@ -442,6 +442,8 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         $page_content = str_replace("%LASTUPDATED%", $row['date_modified'], $page_content);
 		$page_content = str_replace("%DATECREATED%", $row['date_created'], $page_content);
 		$page_content = str_replace("%NUMPLAYS%", $row['number_of_uses'], $page_content);
+		$page_content = str_replace("%SAVEPROGRESS%", $xerte_toolkits_site->save_progress_default, $page_content);
+        $page_content = str_replace("%SAVEPROGRESSINFO%", json_encode((string) $xerte_toolkits_site->save_progress_info, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP), $page_content);
 
 		if ($x_embed)
         {

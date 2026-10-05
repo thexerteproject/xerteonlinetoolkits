@@ -25,7 +25,6 @@
  * To change this template use File | Settings | File Templates.
  */
 
-
 function makeId(page_nr, ia_nr, ia_type, ia_name)
 {
     var tmpid = 'urn:x-xerte:p-' + (page_nr + 1);
@@ -53,15 +52,12 @@ function makeId(page_nr, ia_nr, ia_type, ia_name)
 function NoopTrackingState()
 {
 	this.initialised = false;
-    this.trackingmode = "full";
-    this.mode = "normal";
     this.scoremode = 'last';
     this.nrpages = 0;
     this.toCompletePages = new Array();
     this.completedPages = new Array();
     this.start = new Date();
     this.interactions = new Array();
-    this.lo_completed = 0;
     this.lo_passed = -1;
     this.page_timeout = 0;
     this.page_completion = "attempt";
@@ -72,19 +68,11 @@ function NoopTrackingState()
     this.setVars = setVars;
     this.getCompletionStatus = getCompletionStatus;
     this.getCompletionPercentage = getCompletionPercentage;
-    this.getSuccessStatus = getSuccessStatus;
     this.getdScaledScore = getdScaledScore;
     this.getdScaledCompletionWeightedScore = getdScaledCompletionWeightedScore;
     this.getdRawScore = getdRawScore;
-    this.getdRawCompletionWeightedScore = getdRawCompletionWeightedScore;
     this.getdMinScore = getdMinScore;
     this.getdMaxScore = getdMaxScore;
-    this.getScaledScore = getScaledScore;
-    this.getScaledCompletionWeightedScore = getScaledCompletionWeightedScore;
-    this.getRawScore = getRawScore;
-    this.getRawCompletionWeightedScore = getRawCompletionWeightedScore;
-    this.getMinScore = getMinScore;
-    this.getMaxScore = getMaxScore;
     this.setPageType = setPageType;
     this.setPageScore = setPageScore;
     this.enterInteraction = enterInteraction;
@@ -97,7 +85,6 @@ function NoopTrackingState()
     this.verifyResult = verifyResult;
     this.verifyEnterInteractionParameters = verifyEnterInteractionParameters;
     this.verifyExitInteractionParameters = verifyExitInteractionParameters;
-
 
     function initialise()
     {
@@ -128,10 +115,6 @@ function NoopTrackingState()
                 completed = false;
                 break;
             }
-            //if( i == state.completedPages.length-1 && state.completedPages[i] == true)
-            //{
-            //completed = true;
-            //
         }
 
         if (completed)
@@ -163,48 +146,13 @@ function NoopTrackingState()
         return (completedpages / this.completedPages.length) * 100.0;
     }
 
-    function getSuccessStatus()
-    {
-        if (this.lo_type != "pages only")
-        {
-            if (state.getScaledScore() > (this.lo_passed / 100))
-            {
-                return "passed";
-            }
-            else
-            {
-                return "failed";
-            }
-        }
-        else
-        {
-            if (getCompletionStatus() == 'completed')
-            {
-                return "passed";
-            }
-            else
-            {
-                return "unknown";
-            }
-        }
-    }
-
     function getdScaledScore()
     {
         return this.getdRawScore() / (this.getdMaxScore() - this.getdMinScore());
     }
 
-    function getScaledScore()
-    {
-        return Math.round(this.getdScaledScore()*100)/100 + "";
-    }
-
     function getdScaledCompletionWeightedScore(){
         return this.getdScaledScore() * (this.getCompletionPercentage() / 100.0);
-    }
-
-    function getScaledCompletionWeightedScore(){
-        return Math.round(this.getdScaledCompletionWeightedScore() * 100) / 100 + "";
     }
 
     function getdRawScore()
@@ -251,19 +199,6 @@ function NoopTrackingState()
         }
     }
 
-    function getRawScore()
-    {
-        return Math.round(this.getdRawScore()*100)/100 + "";
-    }
-
-    function getdRawCompletionWeightedScore(){
-        return getdRawScore() * (getCompletionPercentage() / 100.0);
-    }
-
-    function getRawCompletionWeightedScore(){
-        return Math.round(getdRawCompletionWeightedScore() * 100) / 100 + "";
-    }
-
     function getdMinScore()
     {
         if (this.lo_type == "pages only")
@@ -274,11 +209,6 @@ function NoopTrackingState()
         {
             return 0.0;
         }
-    }
-
-    function getMinScore()
-    {
-        return this.getdMinScore() + "";
     }
 
     function getdMaxScore()
@@ -292,12 +222,6 @@ function NoopTrackingState()
             return 100.0;
         }
     }
-
-    function getMaxScore()
-    {
-        return this.getdMaxScore() + "";
-    }
-
 
     function attemptRecorded(sit)
     {
@@ -1073,11 +997,6 @@ function XTTrackingSystem()
     return "";
 }
 
-function XTLogin(login, passwd)
-{
-    return true;
-}
-
 function XTGetMode()
 {
     return "normal";
@@ -1086,16 +1005,6 @@ function XTGetMode()
 function XTStartPage()
 {
     return -1;
-}
-
-function XTGetUserName()
-{
-    return "";
-}
-
-function XTNeedsLogin()
-{
-    return false;
 }
 
 function XTSetOption(option, value)
@@ -1114,20 +1023,6 @@ function XTSetOption(option, value)
                 }
             }
             break;
-        case "tracking-mode":
-            switch(value)
-            {
-                case 'full':
-                	state.trackingmode = "full";
-                    break;
-                case 'minimal':
-                	state.trackingmode = "minimal";
-                    break;
-                case 'none':
-                	state.trackingmode = "none";
-                    break;
-            }
-            break;
         case "score-mode":
             switch(value)
             {
@@ -1138,9 +1033,6 @@ function XTSetOption(option, value)
                     state.scoremode = 'last';
                     break;
             }
-            break;
-        case "completed":
-        	state.lo_completed = value;
             break;
         case "objective_passed":
         	state.lo_passed = Number(value) * 100;
@@ -1226,6 +1118,7 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, co
 
 function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
 {
+    x_currentPageState.saveToLocalStorage = true; // as an answer has been submitted, there is now useful data that might be able to be reinstated from local storage if project is refreshed
 	state.exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback);
 }
 
@@ -1243,25 +1136,6 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callba
     };
     var JSONGraphArray = [JSONGraph, JSONGraph2];
     callback(JSONGraphArray);
-}
-function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
-{
-    return "";
-}
-
-function XTGetInteractionCorrectAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
-{
-    return "";
-}
-
-function XTGetInteractionLearnerAnswer(page_nr, ia_nr, ia_type, ia_name)
-{
-    return "";
-}
-
-function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
-{
-    return "";
 }
 
 function XTTerminate()
@@ -1361,7 +1235,9 @@ function XTResults() {
             }
 
             results.interactions[nrofquestions] = interaction;
-            totalDuration += state.interactions[i].duration;
+            if (state.interactions[i].ia_type != "result") {
+                totalDuration += state.interactions[i].duration;
+            }
             nrofquestions++;
             totalWeight += state.interactions[i].weighting;
 

@@ -254,7 +254,9 @@ x_projectDataLoaded = function(xmlData) {
 
 			// resolve promise if the page isn't a standalone page loading in a lightbox as no pageState data will be received later
 			if (x_urlParams.lightboxState !== "1") {
-				if (XTTrackingSystem().indexOf("SCORM") < 0 && XTTrackingSystem() !== "xAPI" && (typeof lti_enabled === "undefined" || !lti_enabled) && x_params.saveProgress != "false") {
+				if (XTTrackingSystem().indexOf("SCORM") < 0 && XTTrackingSystem() !== "xAPI" &&
+					(typeof lti_enabled === "undefined" || !lti_enabled) &&
+					(x_params.saveProgress != undefined ? x_params.saveProgress === "true" : x_saveProgress !== "false")) {
 					// project is not being tracked
 					// browser may have some local storage data which will allow previous page state to be recreated
 					const savedData = localStorage.getItem("xerte_" + x_TemplateId + "_state");
@@ -315,6 +317,9 @@ x_projectDataLoaded = function(xmlData) {
 							alert(x_getLangInfo(x_languageData.find("localStorage")[0], "error", "Session could not be restored"));
 						}
 					}
+
+					// ** info for users set in management pages needs to be surfaced somewhere
+					console.log(x_saveProgressInfo);
 				}
 
 				x_resolvePageStateReady();
@@ -3002,7 +3007,9 @@ function x_leavePage(page, lightbox) {
 	}
 
 	// save state data to local storage if project is not tracked
-	if (XTTrackingSystem().indexOf("SCORM") < 0 && XTTrackingSystem() !== "xAPI" && (typeof lti_enabled === "undefined" || !lti_enabled) && x_params.saveProgress != "false") {
+	if (XTTrackingSystem().indexOf("SCORM") < 0 && XTTrackingSystem() !== "xAPI" &&
+		(typeof lti_enabled === "undefined" || !lti_enabled) &&
+		(x_params.saveProgress != undefined ? x_params.saveProgress === "true" : x_saveProgress !== "false")) {
 		// only save current state if there is some useful data to save
 		// each model file should set state.saveToLocalStorage to true if there is useful data to save for the page (this is generally if an attempt has been made)
 		let saveToLocalStorage = x_pageStates.some(pageState =>

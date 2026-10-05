@@ -307,7 +307,13 @@ if(is_user_permitted("system")){
 
     echo "</div>";
 
+    echo "<div class=\"template\" id=\"saveprogressdetails\"><p>" . MANAGEMENT_SITE_SAVEPROGRESS . " <button type=\"button\" class=\"xerte_button\" id=\"saveprogressdetails_btn\" onclick=\"javascript:templates_display('saveprogressdetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"saveprogressdetails_child\">";
 
+    echo "<p>" . MANAGEMENT_SITE_SAVEPROGRESS_GLOBALDISABLE . "<form><textarea id=\"site_saveprogress_globaldisable\">" . $row['save_progress_default'] . "</textarea></form></p>";
+
+    echo "<p>" . MANAGEMENT_SITE_SAVEPROGRESS_INFO . "<form><textarea id=\"site_saveprogress_info\">" . htmlspecialchars($row['save_progress_info']) . "</textarea></form></p>";
+
+    echo "</div>";
 
     echo "<div class=\"template\" id=\"ltidetails\"><p>" . MANAGEMENT_SITE_LTI . " <button type=\"button\" class=\"xerte_button\" id=\"ltidetails_btn\" onclick=\"javascript:templates_display('ltidetails')\">" . MANAGEMENT_VIEW . "</button></p></div><div class=\"template_details\" id=\"ltidetails_child\">";
 

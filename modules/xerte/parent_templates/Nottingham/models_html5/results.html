@@ -238,11 +238,13 @@
               totalWeight += sit.weighting;
               weightedScore += sit.score * sit.weighting;
             }
-            if (sit.duration > 0) {
+
+            if (sit.ia_type != "result" && sit.duration > 0) {
               totalDuration += sit.duration;
-              if (sit.firstEntered != undefined && (startTime == undefined || sit.firstEntered.getTime() < startTime)) {
-                startTime = sit.firstEntered.getTime();
-              }
+            }
+            if (sit.firstEntered != undefined && !isNaN(sit.firstEntered.getTime()) &&
+                    (startTime == undefined || sit.firstEntered.getTime() < startTime)) {
+              startTime = sit.firstEntered.getTime();
             }
           }
         });

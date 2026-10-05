@@ -261,12 +261,13 @@ function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $langua
 	$scorm_html_page_content = str_replace("%USE_URL%", "var use_url=true;", $scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%GLOBALHIDESOCIAL%", $xerte_toolkits_site->globalhidesocial, $scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%GLOBALSOCIALAUTH%", $xerte_toolkits_site->globalsocialauth, $scorm_html_page_content);
+	$scorm_html_page_content = str_replace("%SAVEPROGRESS%", $xerte_toolkits_site->save_progress_default, $scorm_html_page_content);
+	$scorm_html_page_content = str_replace("%SAVEPROGRESSINFO%", json_encode((string) $xerte_toolkits_site->save_progress_info, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP), $scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%PLUGINS%", 'var plugins=' . json_encode($plugins), $scorm_html_page_content);
 
 	// Check popcorn mediasite and peertube config files
 	$popcorn_config = popcorn_config($template_path . $common_folder . '/', $version, $common_folder . '/');
 	$scorm_html_page_content = str_replace("%POPCORN_CONFIG%", $popcorn_config, $scorm_html_page_content);
-
 
 	$tracking = "<script type=\"text/javascript\" src=\"apiwrapper_2004.3rd.js?version=" . $version . "\"></script>\n";
 	$tracking .= "<script type=\"text/javascript\" src=\"lz-string.min.js?version=" . $version . "\"></script>\n";

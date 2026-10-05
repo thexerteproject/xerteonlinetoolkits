@@ -630,6 +630,8 @@ function update_site() {
 			site_xapi_dashboard_period: document.getElementById("site_xapi_dashboard_period").value,
 			globalhidesocial: document.getElementById("site_socialicon_globaldisable").value,
 			globalsocialauth: document.getElementById("site_socialicon_globalauthorauth").value,
+			save_progress_default: document.getElementById("site_saveprogress_globaldisable").value,
+			save_progress_info: document.getElementById("site_saveprogress_info").value,
 			//default_theme_xerte: document.getElementById("default_theme_xerte").value,
 			//default_theme_site: document.getElementById("default_theme_site").value
 		},

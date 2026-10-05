@@ -267,6 +267,8 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
     $buffer = str_replace("%USE_URL%", "var use_url=true;", $buffer);
     $buffer = str_replace("%GLOBALHIDESOCIAL%", $xerte_toolkits_site->globalhidesocial, $buffer);
     $buffer = str_replace("%GLOBALSOCIALAUTH%", $xerte_toolkits_site->globalsocialauth, $buffer);
+    $buffer = str_replace("%SAVEPROGRESS%", $xerte_toolkits_site->save_progress_default, $buffer);
+    $buffer = str_replace("%SAVEPROGRESSINFO%", json_encode((string) $xerte_toolkits_site->save_progress_info, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP), $buffer);
     $buffer = str_replace("%PLUGINS%", 'var plugins=' . json_encode($plugins), $buffer);
 
     // Check popcorn mediasite and peertube config files
@@ -345,6 +347,8 @@ function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, 
     $scorm_html_page_content = str_replace("%USE_URL%", "var use_url=true;", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%GLOBALHIDESOCIAL%", $xerte_toolkits_site->globalhidesocial, $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%GLOBALSOCIALAUTH%", $xerte_toolkits_site->globalsocialauth, $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%SAVEPROGRESS%", $xerte_toolkits_site->save_progress_default, $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%SAVEPROGRESSINFO%", json_encode((string) $xerte_toolkits_site->save_progress_info, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP), $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%PLUGINS%", 'var plugins=' . json_encode($plugins), $scorm_html_page_content);
 
     // Check popcorn mediasite and peertube config files

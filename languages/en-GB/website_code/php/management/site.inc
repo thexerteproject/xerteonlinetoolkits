@@ -191,11 +191,17 @@
 
   define("MANAGEMENT_SITE_XAPI_DASHBOARD_ALLOWED_URLS", "xAPI dashboard urls to show (seperated by commas)");
 
-define("MANAGEMENT_SITE_SOCIALICONS","Social Icons settings (prevent the use of cookies).");
+define("MANAGEMENT_SITE_SOCIALICONS","Social Icons settings (prevent the use of cookies)");
 
-define("MANAGEMENT_SITE_SOCIALICONS_GLOBALDISABLE","Disable social icons by default (prevent the use of cookies).");
+define("MANAGEMENT_SITE_SOCIALICONS_GLOBALDISABLE","Disable social icons by default (prevent the use of cookies)");
 
-define("MANAGEMENT_SITE_SOCIALICONS_ALLOWOVERRIDE","Allow authors to enable social icons.");
+define("MANAGEMENT_SITE_SOCIALICONS_ALLOWOVERRIDE","Allow authors to enable social icons");
+
+define("MANAGEMENT_SITE_SAVEPROGRESS","Browser local storage settings");
+
+define("MANAGEMENT_SITE_SAVEPROGRESS_GLOBALDISABLE","Save learner progress by default in browser local storage. Authors can override this for individual projects.");
+
+define("MANAGEMENT_SITE_SAVEPROGRESS_INFO","Local storage information available to learners");
 
 
 define("LTI_TOGGLE","View");

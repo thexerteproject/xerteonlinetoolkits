@@ -100,6 +100,8 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
     $xapi_html_page_content = str_replace("%USE_URL%", "var use_url=true;", $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%GLOBALHIDESOCIAL%", $xerte_toolkits_site->globalhidesocial, $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%GLOBALSOCIALAUTH%", $xerte_toolkits_site->globalsocialauth, $xapi_html_page_content);
+    $xapi_html_page_content = str_replace("%SAVEPROGRESS%", $xerte_toolkits_site->save_progress_default, $xapi_html_page_content);
+    $xapi_html_page_content = str_replace("%SAVEPROGRESSINFO%", json_encode((string) $xerte_toolkits_site->save_progress_info, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP), $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%PLUGINS%", 'var plugins=' . json_encode($plugins), $xapi_html_page_content);
 
     // Check popcorn mediasite and peertube config files

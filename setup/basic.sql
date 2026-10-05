@@ -180,6 +180,8 @@ CREATE TABLE `$sitedetails` (
   `tsugi_dir` text,
   `globalhidesocial` char(255) DEFAULT 'false',
   `globalsocialauth` char(255) DEFAULT 'true',
+  `save_progress_default` char(255) DEFAULT 'true',
+  `save_progress_info` text,
   `default_theme_xerte` char(255) DEFAULT 'xot1',
   `default_theme_site` char(255) DEFAULT 'default',
   `default_theme_decision` char(255) DEFAULT 'default',
