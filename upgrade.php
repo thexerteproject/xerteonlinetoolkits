@@ -1802,11 +1802,6 @@ function upgrade_57()
         $error2 = _db_add_field('sitedetails', 'save_progress_info', 'text', '', 'save_progress_default');
         $error2_returned = true;
         $table = table_by_key('sitedetails');
-        $save_progress_info_default = '<h1>Project progress storage</h1><p>To help you this Xerte stores information about your progress through this project in your web browser. This may include pages you have viewed and answers you have submitted. This information is stored locally in your browser so that you can resume the project if you refresh the page or return to it later. The stored data is not something that you or anyone else can read, it is just used to help you resume if required.</p><p>This information remains in your browser and is not transmitted to or accessible by the Xerte server or the project author. It is used solely to provide the project-resumption functionality.</p><p>When saved progress for this project is found in your browser, you will always be asked whether you want to restore the project to its previous state. If you choose not to restore it, the project will be shown in its original state and the previous session\'s data will be deleted.</p><h2>Limitations of project progress storage</h2><p>This information is not stored permanently and cannot be accessed across devices, or other browsers on the same device. If you later view this project on another device, or another browser, or if your browser deletes the locally stored data, Xerte will not be able to restore your previous progress.</p>';
-        db_query(
-            "UPDATE `$table` SET save_progress_info = ? WHERE site_id = 1 AND (save_progress_info IS NULL OR save_progress_info = '')",
-            array($save_progress_info_default)
-        );
 
         if (($error1 === false)) {
             $error1_returned = false;

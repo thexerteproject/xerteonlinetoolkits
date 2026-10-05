@@ -201,7 +201,7 @@ define("MANAGEMENT_SITE_SAVEPROGRESS","Browser local storage settings");
 
 define("MANAGEMENT_SITE_SAVEPROGRESS_GLOBALDISABLE","Save learner progress by default in browser local storage. Authors can override this for individual projects.");
 
-define("MANAGEMENT_SITE_SAVEPROGRESS_INFO","Local storage information available to learners");
+define("MANAGEMENT_SITE_SAVEPROGRESS_INFO","Local storage information available to learners (this will use the text set in the language files unless different text is set here)");
 
 
 define("LTI_TOGGLE","View");
