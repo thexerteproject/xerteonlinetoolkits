@@ -89,11 +89,6 @@
 		};
 
         this.leavePage = function() {
-			// ** need to stop this auto submitting & just have the warning option instead
-			// ** or does this get left here?
-            if ($pageContents.data('tracked') != true) {
-                this.finishTracking();
-            }
 			$pageContents.data("docData", docData);
 
 			// show a warning on leaving the page if the current response hasn't been downloaded
