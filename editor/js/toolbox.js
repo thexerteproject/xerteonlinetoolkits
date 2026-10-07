@@ -436,7 +436,7 @@ var EDITOR = (function ($, parent) {
         var hiddenIcon = getExtraTreeIcon(key, "hidden", xmlData[0].getAttribute("hidePage") == "true" || xmlData[0].getAttribute("hideContent") == "true", xmlData[0].getAttribute("hidePage") == "true" ? language.hidePage.$tooltip : language.hideContent.$tooltip);
         var passwordIcon = getExtraTreeIcon(key, "password", xmlData[0].getAttribute("password") != undefined && xmlData[0].getAttribute("password") != '');
         var standaloneIcon = getExtraTreeIcon(key, "standalone", xmlData[0].getAttribute("linkPage") == "true" || xmlData[0].getAttribute("linkPageChapter") == "true");
-        var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true" && parent_id == 'treeroot');
+        var unmarkIcon = getExtraTreeIcon(key, "unmark", xmlData[0].getAttribute("unmarkForCompletion") == "true");
 		var advancedIcon = getExtraTreeIcon(key, "advanced", simple_mode && parent_id == 'treeroot' && template_sub_pages.indexOf(lo_data[key].attributes.nodeName) == -1);
 		var milestoneIcon = getExtraTreeIcon(key, "milestone", xmlData[0].getAttribute("milestone") == "true");
 
