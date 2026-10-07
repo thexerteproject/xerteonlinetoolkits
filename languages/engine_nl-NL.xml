@@ -156,7 +156,7 @@
  	<warning suppress="Dit bericht niet meer tonen" continue="Toch verder gaan" review="Bekijk de bronnen"/>
   </resources>
 
-	<screenReaderInfo label="Screenreader informatie" newWindow="Deze link opent een nieuw venster" thisWindow="Deze link opent in het huidige venster" dialog="Deze knop opent een dialoog venster" >
+	<screenReaderInfo label="Screenreader informatie" newWindow="Deze link opent een nieuw venster" shortNewWindow="opent in nieuw venster" thisWindow="Deze link opent in het huidige venster" dialog="Deze knop opent een dialoog venster" >
       <buttonNav description="Deze pagina bevat een serie met knoppen waarbij iedere knop andere informatie bevat. Gebruik the tab toets om de huidige knop te kiezen en de pijltjes toetsen om tussen de knoppen te navigeren. Als een knop is geselcteerd, zal de tab toets navigeren naar de content van die knop." click="Klik om informatie te bekijken"/>
 	  <tabNav description="Deze pagina bevat tabs waarbij iedere tab andere informatie bevat. Gebruik the tab toets om de huidige tab te kiezen en de pijltjes toetsen om tussen de tabs te navigeren. Als een tab is geselcteerd, zal de tab toets navigeren naar de content van die tab."/>
 	  <accNav description="Deze pagina bevat accordeon tabs waarbij iedere tab andere informatie bevat. Gebruik the tab toets om de huidige tab te kiezen en de pijltjes toetsen om tussen de tabs te navigeren. Als een tab is geselcteerd, zal de tab toets navigeren naar de content van die tab."/>
