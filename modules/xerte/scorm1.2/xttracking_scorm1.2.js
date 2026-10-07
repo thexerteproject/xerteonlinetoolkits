@@ -154,7 +154,6 @@ function ScormTrackingState()
     this.findPage = findPage;
     this.findInteraction = findInteraction;
     this.findAllInteractions = findAllInteractions;
-    this.countInteractions = countInteractions;
     this.enter = enter;
     this.exit = exit;
     this.exitInteraction = exitInteraction;
@@ -318,19 +317,6 @@ function ScormTrackingState()
         return tmpinteractions;
     }
 
-    function countInteractions(page_nr)
-    {
-        var count = 0;
-        var id = makeId(page_nr, -1, 'page', "");
-        var i=0;
-        for (i=0; i<this.interactions.length; i++)
-        {
-            if (this.interactions[i].page_nr == page_nr && this.interactions[i].ia_nr >=0)
-                count++;
-        }
-        return count;
-    }
-
     function enter(page_nr, ia_nr, ia_type, ia_name)
     {
         var sit = this.findcreate(page_nr, ia_nr, ia_type, ia_name);
@@ -374,11 +360,11 @@ function ScormTrackingState()
     function formatTime(d)
     {
         // Build a string of the form hh:mm:ss
-        var twoDigitHours = d.getHours()+1+"";
+        var twoDigitHours = d.getHours()+"";
         if (twoDigitHours.length==1) twoDigitHours = "0"+twoDigitHours;
-        var twoDigitMinutes = d.getMinutes()+1+"";
+        var twoDigitMinutes = d.getMinutes()+"";
         if (twoDigitMinutes.length==1) twoDigitMinutes = "0"+twoDigitMinutes;
-        var twoDigitSeconds = d.getSeconds()+1+"";
+        var twoDigitSeconds = d.getSeconds()+"";
         if (twoDigitSeconds.length==1) twoDigitSeconds = "0"+twoDigitSeconds;
 
         return twoDigitHours + ':' + twoDigitMinutes + ':' + twoDigitSeconds;
@@ -433,7 +419,7 @@ function ScormTrackingState()
         return count;
     }
 
-    function exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback, force)
+    function exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback)
     {
         var sit = this.findInteraction(page_nr, ia_nr);
         if (sit == null) {
@@ -486,7 +472,7 @@ function ScormTrackingState()
                 if (isNew) {
                     res = setValue(interaction + 'id', id);
                     sit.idx = index;
-                    res = setValue(interaction + 'time', this.formatDate(sit.start));
+                    res = setValue(interaction + 'time', this.formatTime(sit.start));
                     res = setValue(interaction + 'latency', this.formatDuration(sit.duration));
                 } else {
                     sit.idx = index;
@@ -1422,11 +1408,6 @@ function XTTrackingSystem()
     return "SCORM 1.2";
 }
 
-function XTLogin(login, passwd)
-{
-    return true;
-}
-
 function XTGetMode()
 {
     return state.scormmode;
@@ -1456,17 +1437,6 @@ function XTStartPage()
     {
         return -1;
     }
-}
-
-function XTGetUserName()
-{
-    var result = String(getValue("cmi.core.student_name"));
-    return result;
-}
-
-function XTNeedsLogin()
-{
-    return false;
 }
 
 function XTSetOption(option, value)
@@ -1549,7 +1519,7 @@ function XTExitPage(page_nr)
 {
     if (state.scormmode == 'normal')
     {
-        state.exitInteraction(page_nr, -1, {score:0, success:true}, "", "", "", false);
+        state.exitInteraction(page_nr, -1, {score:0, success:true}, "", "", "");
     }
 }
 
@@ -1649,7 +1619,6 @@ function XTEnterInteraction(page_nr, ia_nr, ia_type, ia_name, correctoptions, co
         var sit = state.enter(page_nr, ia_nr, ia_type, ia_name);
         sit.correctOptions = correctoptions;
         sit.correctAnswers = correctanswer;
-        //sit.currentid = sit.id;
     }
 }
 
@@ -1657,7 +1626,7 @@ function XTExitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer
 {
     if (state.scormmode == 'normal')
     {
-        return state.exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback, false);
+        return state.exitInteraction(page_nr, ia_nr, result, learneroptions, learneranswer, feedback);
     }
 }
 
@@ -1666,26 +1635,6 @@ function XTGetInteractionScore(page_nr, ia_nr, ia_type, ia_name, full_id, callba
     callback(null);
     return 0;
 }
-function XTGetInteractionCorrectAnswer(page_nr, ia_nr, ia_type, ia_name)
-{
-    return "";
-}
-
-function XTGetInteractionCorrectAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
-{
-    return "";
-}
-
-function XTGetInteractionLearnerAnswer(page_nr, ia_nr, ia_type, ia_name)
-{
-    return "";
-}
-
-function XTGetInteractionLearnerAnswerFeedback(page_nr, ia_nr, ia_type, ia_name)
-{
-    return "";
-}
-
 
 function XTTerminate()
 {
@@ -1697,8 +1646,7 @@ function XTTerminate()
         var currentpageid = state.currentpageid;
         x_endPageTracking(false, -1);
 
-        // This code is probably obsolete, leave it in to allow for more testing
-        state.finishTracking(currentpageid, false);
+        state.finishTracking(currentpageid);
         doLMSFinish();
     }
 }

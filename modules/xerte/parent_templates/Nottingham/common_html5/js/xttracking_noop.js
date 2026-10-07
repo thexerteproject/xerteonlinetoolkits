@@ -58,7 +58,6 @@ function NoopTrackingState()
     this.completedPages = new Array();
     this.start = new Date();
     this.interactions = new Array();
-    this.lo_passed = -1;
     this.page_timeout = 0;
     this.page_completion = "attempt";
     this.debug = false;
@@ -342,26 +341,10 @@ function NoopTrackingState()
         if (ia_type != "page" && ia_type != "result")
         {
             this.lo_type = "interactive";
-            if (this.lo_passed == -1)
-            {
-                this.lo_passed = 55;
-            }
         }
 
         this.interactions.push(sit);
         return sit;
-    }
-
-    function find(id)
-    {
-        var i=0;
-        for (i=0; i<this.interactions.length; i++)
-        {
-            if (this.interactions[i].id == id)
-                return this.interactions[i];
-        }
-
-        return null;
     }
 
     function findPage(page_nr)
@@ -962,7 +945,6 @@ function NoopTracking(page_nr, ia_nr, ia_type, ia_name)
     	this.learnerAnswers = learnerAnswers;
         this.learnerOptions = learnerOptions;
         this.result = result;
-        this.feedback = feedback;
     }
 
 }
@@ -1033,9 +1015,6 @@ function XTSetOption(option, value)
                     state.scoremode = 'last';
                     break;
             }
-            break;
-        case "objective_passed":
-        	state.lo_passed = Number(value) * 100;
             break;
         case "page_timeout":
             // Page timeout in seconds
@@ -1143,26 +1122,8 @@ function XTTerminate()
     if (!state.finished) {
         // End tracking of page
         x_endPageTracking(false, -1);
-
-        // This code is probably obsolete, leave it in to allow for more testing
-        var currentpageid = "";
+        
         state.finished = true;
-        if (state.currentid) {
-            var sit = state.find(currentid);
-            // there is still an interaction open, close it
-            if (sit != null) {
-                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
-            }
-        }
-        if (state.currentpageid) {
-            currentpageid = state.currentpageid;
-            var sit = state.find(currentpageid);
-            // there is still an interaction open, close it
-            if (sit != null) {
-                state.exitInteraction(sit.page_nr, sit.ia_nr, false, "", "", "", false);
-            }
-
-        }
         if (typeof lti_enabled !== 'undefined' && lti_enabled) {
             // Send ajax request to store grade through LTI to gradebook
             var url = window.location.href;
