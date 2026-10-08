@@ -142,7 +142,7 @@ $_SESSION['admin'] = true;
         flush();
         // Check OS
         $os = php_uname('s');
-        if ($mode !== "update" && $os === "Windows")
+        if ($mode !== "update" && stripos($os, 'Windows') === 0)
         {
             echo "<span style='color:#F41F15;'>Using https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe</span> <br>\n";
             $yturl = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
@@ -317,12 +317,12 @@ $_SESSION['admin'] = true;
         echo "Installing ffmpeg package<br>\n";
         flush();
         // Windows
-        if ($os == "Windows") {
+        if (stripos($os, 'Windows') === 0) {
             $zip = new ZipArchive;
             $res = $zip->open($ffmpeg_pkg);
             if ($res === TRUE) {
                 // extract it to the path we determined above
-                $res = $zip->extractTo($xerte_toolkits_site->root_file_path . "/.");
+                $res = $zip->extractTo($xerte_toolkits_site->root_file_path . "/yt-dlp/");
                 if ($res === false) {
                     echo "<span style='color:#F41F15;'>Failed to extract " . $ffmpeg_pkg . ": " . x_clean_input($zip->getStatusString()) . "</span><br>\n";
                     echo "Aborting!<br>";

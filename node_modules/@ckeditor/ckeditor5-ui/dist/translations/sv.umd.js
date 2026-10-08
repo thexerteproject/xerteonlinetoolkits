@@ -1,0 +1,11 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+( e => {
+const { [ 'sv' ]: { dictionary, getPluralForm } } = {"sv":{"dictionary":{"Rich Text Editor":"Rich Text-editor","Edit block":"Redigera block","Click to edit block":"Klicka för att redigera blocket","Drag to move":"Dra för att flytta","Next":"Nästa","Previous":"Föregående","Editor toolbar":"Redigeringsverktygsfält","Dropdown toolbar":"Rullgardinsverktygsfält","Dropdown menu":"Rullgardinsmeny","Black":"Svart","Dim grey":"Dunkelgrå","Grey":"Grå","Light grey":"Ljusgrå","White":"Vit","Red":"Röd","Orange":"Orange","Yellow":"Gul","Light green":"Ljusgrön","Green":"Grön","Aquamarine":"Akvamarin","Turquoise":"Turkos","Light blue":"Ljusblå","Blue":"Blå","Purple":"Lila","Editor block content toolbar":"Verktygsfält vid block av innehåll","Editor contextual toolbar":"Ordbehandlarens kontextuella verktygsfält","HEX":"HEX","No results found":"Inga resultat hittades","No searchable items":"Inga sökbara objekt","Editor dialog":"Ordbehandlardialog","Close":"Stäng","Help Contents. To close this dialog press ESC.":"Hjälpinnehåll. Tryck på ESC för att stänga dialogrutan.","Below, you can find a list of keyboard shortcuts that can be used in the editor.":"Nedan hittar du en lista med kortkommandon som kan användas i redigeraren.","(may require <kbd>Fn</kbd>)":"(kan kräva <kbd>Fn</kbd>)","Accessibility":"Tillgänglighet","Accessibility help":"Hjälp med tillgänglighet","Press %0 for help.":"Tryck på %0 för hjälp.","Move focus in and out of an active dialog window":"Flytta fokus till och från en aktiv dialogruta","MENU_BAR_MENU_FILE":"Fil","MENU_BAR_MENU_EDIT":"Ändra","MENU_BAR_MENU_VIEW":"Visa","MENU_BAR_MENU_INSERT":"Infoga","MENU_BAR_MENU_FORMAT":"Format","MENU_BAR_MENU_TOOLS":"Verktyg","MENU_BAR_MENU_HELP":"Hjälp","MENU_BAR_MENU_TEXT":"Text","MENU_BAR_MENU_FONT":"Teckensnitt","Editor menu bar":"Menyfält för redigeraren","Please enter a valid color (e.g. \"ff0000\").":"Ange en giltig färg (t.ex. \"ff0000\")."},getPluralForm(n){return (n != 1);}}};
+e[ 'sv' ] ||= { dictionary: {}, getPluralForm: null };
+e[ 'sv' ].dictionary = Object.assign( e[ 'sv' ].dictionary, dictionary );
+e[ 'sv' ].getPluralForm = getPluralForm;
+} )( window.CKEDITOR_TRANSLATIONS ||= {} );

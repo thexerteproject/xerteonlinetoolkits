@@ -10,12 +10,12 @@
     <navigation type="ComboBox" options="Linear,Historic" data="Linear,Historic" label="Navigation" width="170"/>
 
     <mediaImage optional="true" type="media" label="Media Image"/>
-    <mediaTranscript optional="true" type="media" label="Media Transcript"/>
-    <media optional="true" type="media" label="Media File"/>
+    <mediaTranscript optional="true" type="media" label="Media Transcript" enableImgSHTool="false"/>
+    <media optional="true" type="media" label="Media File" enableImgSHTool="false"/>
 	
-    <nfo label="Help File" type="media" optional="true"/>
+    <nfo label="Help File" type="media" optional="true" enableImgSHTool="false"/>
     <glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" rendererOptions="none,none" defaultValue="term|definition" optional="true"/>
-    <controller label="Custom Interface" type="media" optional="true"/>
+    <controller label="Custom Interface" type="media" optional="true" enableImgSHTool="false"/>
     <authorSupport label="Add Author Support" type="Checkbox" defaultValue="true" optional="true"/>
 
 	
@@ -65,7 +65,7 @@
 
   <projDisplay menuItem="Advanced Display" max="1" remove="true">
     <name type="TextInput" wysiwyg="true" label="Display Settings"/>
-    <stylesheet type="Media" label="Stylesheet"/>	
+    <stylesheet type="Media" label="Stylesheet" enableImgSHTool="false"/>
 	<borderWidth type="NumericStepper" min="0" max="10" step="1" label="Border Width" width="100" defaultValue="2"  />
 	<borderColour type="ColourPicker" label="Border Colour" defaultValue="0x456287" />
 

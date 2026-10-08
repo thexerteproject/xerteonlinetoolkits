@@ -30,7 +30,27 @@ if(is_user_admin()) {
     $database_id = database_connect("ai and image settings updated", "ai and image settings update failed");
 
     $vendors = [];
+
+    // keep new ai settings fields separate so existing vendor parsing is not disrupted
+    $ai_settings_options = [];
+    $ai_settings_defaults = [];
+
     foreach ($form_state as $key=>$value){
+
+        // ai settings options fields
+        if (strpos($key, 'ai_settings_options_') === 0) {
+            $setting_key = substr($key, strlen('ai_settings_options_'));
+            $ai_settings_options[$setting_key] = $value;
+            continue;
+        }
+
+        // ai settings default fields
+        if (strpos($key, 'ai_settings_default_') === 0) {
+            $setting_key = substr($key, strlen('ai_settings_default_'));
+            $ai_settings_defaults[$setting_key] = $value;
+            continue;
+        }
+
         $parts = explode('_', $key);
 
         // type = first part
@@ -78,8 +98,62 @@ if(is_user_admin()) {
         $res = db_query_one($query, [$enabled, $sub_options_json, $preferred_model, $vendor, $type]);
         if ($res === false) {
             echo MANAGEMENT_AI_FAIL . " Database error.";
+            exit;
         }
     }
+
+    // save ai settings options rows
+    foreach ($ai_settings_options as $setting_key => $option_values) {
+
+        // normalise comma-separated values before saving
+        $normalised_values = array_filter(array_map(function($item) {
+            $item = trim($item);
+            $item = strtolower($item);
+            $item = preg_replace('/\s+/', '_', $item);
+            $item = preg_replace('/_+/', '_', $item);
+            return trim($item, '_');
+        }, explode(',', $option_values)));
+
+        $normalised_values = implode(',', array_unique($normalised_values));
+
+        $query = "UPDATE " . $xerte_toolkits_site->database_table_prefix . "ai_settings_options
+          SET option_values = ?
+          WHERE setting_key = ?";
+
+        $res = db_query_one($query, [$normalised_values, $setting_key]);
+        if ($res === false) {
+            echo MANAGEMENT_AI_FAIL . " Database error.";
+            exit;
+        }
+    }
+
+    // save global ai settings defaults
+    if (!empty($ai_settings_defaults)) {
+
+        $set_parts = [];
+        $params = [];
+
+        foreach ($ai_settings_defaults as $setting_key => $setting_value) {
+            $set_parts[] = "`" . $setting_key . "` = ?";
+            $params[] = $setting_value;
+        }
+
+        if (!empty($set_parts)) {
+            $query = "UPDATE " . $xerte_toolkits_site->database_table_prefix . "ai_settings
+              SET " . implode(', ', $set_parts) . "
+              WHERE scope_type = ? AND scope_id = ?";
+
+            $params[] = 'global';
+            $params[] = 0;
+
+            $res = db_query_one($query, $params);
+            if ($res === false) {
+                echo MANAGEMENT_AI_FAIL . " Database error.";
+                exit;
+            }
+        }
+    }
+
     echo MANAGEMENT_AI_SUCCESS;
 }
 ?>

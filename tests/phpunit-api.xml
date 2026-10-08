@@ -1,0 +1,16 @@
+<phpunit
+    colors="true"
+    bootstrap="bootstrap_api.php"
+    backupGlobals="false"
+    backupStaticAttributes="false"
+    beStrictAboutChangesToGlobalState="false"
+    cacheResult="false"
+    failOnRisky="true"
+    failOnWarning="true"
+    verbose="true"
+>
+    <testsuite name="API v1">
+        <directory>./Api</directory>
+    </testsuite>
+</phpunit>
+

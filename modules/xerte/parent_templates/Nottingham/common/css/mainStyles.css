@@ -1,0 +1,1988 @@
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* MAIN XOT CSS DOCUMENT */
+/* these styles are loaded into every XOT project - regardless of theme used */
+/* changing css in this file may cause problems in functionality */
+/* to rebrand your version of XOT, change the css files in themes/Nottingham/default/... */
+
+@import url("editorstyles.css");
+
+body {
+	font-family: Arial, sans-serif;
+	margin: 0px;
+}
+
+p {
+    padding: 0.3em;
+    margin: 0;
+}
+
+h1 {
+	font-size:	1em;
+	margin:		0px;
+}
+
+h2 {
+	font-size:	1.2em;
+	margin:		5px 0px 0px;
+}
+
+h3 {
+	font-size:	1em;
+	margin:		0px;
+	padding-left: 0.3em;
+    padding-right: 0.3em;
+}
+
+h4, h5 {
+	font-size: 1em;
+}
+
+ul, ol {
+	overflow: hidden;
+}
+
+a {
+	word-wrap: break-word;
+}
+
+.optionTxt p {
+	padding-top: 0;
+}
+
+#x_mainHolder {
+	width:		800px;
+	height:		600px;
+	position:	absolute;
+	z-index:	-3;
+	border:		1px solid black;
+	box-sizing: border-box;
+}
+
+#x_mainHolder.noBorder {
+	border: 0;
+}
+
+#x_mainHolder.x_verticalCentre:not(.x_noVerticalCentre) #x_pageHolder,
+#x_pageHolder.x_verticalCentre {
+	display: flex;
+	justify-content: safe center;
+	flex-direction: column;
+}
+
+#x_headerBlock {
+	color:			#FFFFFF;
+	background:		#010101;
+	width:			100%;
+	height:			auto;
+	position:		absolute;
+	top:			0px;
+	overflow-y: auto;
+}
+
+#x_headerBlock div, #x_pageDiv {
+	padding:	10px;
+}
+
+.innerPage {
+	visibility: hidden;
+}
+
+#x_headerBlock img {
+	max-height: 200px;
+}
+
+#x_pageTitle {
+	vertical-align: middle;
+}
+
+#x_pageHolder {
+	width:		100%;
+	overflow:	auto;
+	position:	absolute;
+	top:		0;
+	bottom:		0;
+}
+
+#x_mobileScroll {
+	z-index:	99999;
+}
+
+#x_background {
+	width:		100%;
+	position:	absolute;
+	top:		0;
+	bottom:		0;
+	z-index:	-10;
+}
+
+#x_background img, #x_bgDarken  {
+	width:		100%;
+	height:		100%;
+	position:	absolute;
+}
+
+#x_bgDarken  {
+	background-color: black;
+}
+
+#x_footerBlock {
+	color:			#FFFFFF;
+	background:		#010101;
+	font-size:		1em;
+	width:			100%;
+	position:		absolute;
+	bottom:			0px;
+	z-index:		10;
+}
+
+#x_footerBg {
+	position:			absolute;
+	width:				100%;
+	height:				100%;
+	z-index:			-1;
+	background-repeat:	repeat-x;
+}
+
+.noFocus {
+	border: 2px solid transparent;
+}
+
+.focusBorder {
+	border-color: orange;
+}
+
+.bgDarken {
+	background-color: black;
+}
+
+.x_floatLeft {
+	float:		left;
+}
+
+.x_floatRight {
+	float:		right;
+}
+
+button.ui-button-icon-only {
+	height: 2.4em; /* so height & width are the same in responsive projects - 2.4em matches width set in jquery-ui css) */
+}
+
+#x_pageHolder button:disabled {
+	cursor: 	default;
+	opacity:	0.5;
+	filter:		alpha(opacity=50); /* For IE8 and earlier */
+}
+
+#x_footerBlock .x_floatLeft, #x_footerBlock .x_floatRight, #x_headerBlock .x_floatLeft {
+	padding:	3px;
+}
+
+#x_footerBlock .x_floatLeft button, #x_footerBlock .x_floatRight button {
+	height:		40px;
+	min-height: 1.4em;
+	width: 1.4em;
+	cursor:		pointer;
+	padding: 	0 41px 0 0;
+	/* override JQuery UI css from buttons on footer */
+	border:		0px; -moz-border-radius-topleft: 0px; -webkit-border-top-left-radius: 0px; -khtml-border-top-left-radius: 0px; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px;
+}
+
+#x_prevBtn, #x_nextBtn {
+	padding: 	0 43px 0 0;
+}
+
+#x_footerBlock .x_floatLeft button {
+	margin-right:	3px;
+}
+
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist, .ui-icon.x_home, .ui-icon.x_saveSession, .ui-icon.x_projectIntro, .ui-icon.x_resourceIcon {
+	height:					40px;
+	background-position:	center;
+}
+
+.ui-icon.x_help, .ui-icon.x_info, .ui-icon.x_colourChanger, .ui-icon.x_glossary, .ui-icon.x_maximise, .ui-icon.x_minimise, .ui-icon.x_media, .ui-icon.x_home, .ui-icon.x_saveSession, .ui-icon.x_projectIntro, .ui-icon.x_resourceIcon {
+	width:	41px;
+	min-width: 1.4em;
+}
+
+.ui-icon.x_next, .ui-icon.x_prev, .ui-icon.x_prev_hist {
+	width:	43px;
+}
+
+#x_prevBtn {
+	/* removes automatic spacing added between inline-block elements */
+	margin-right:	-4px;
+}
+
+#x_menuBtn {
+	margin-right:	-1px;
+}
+
+#x_pageNo {
+	vertical-align:	top;
+	text-align:		center;
+	display:		inline-block;
+	padding:		10px 5px 0px;
+	margin-right:	-5px;
+	height:			30px;
+	width:			4em;
+	z-index:		100;
+}
+
+#x_pageControls {
+	display:	inline-block;
+}
+
+/* NVDA screenreader reads all buttons in one block without doing this (so you can't easily choose which to select) */
+#x_footerBlock button {
+	display:block;
+	float:	left;
+}
+#x_footerBlock  #x_prevBtn, #x_footerBlock #x_nextBtn {
+	display:	inline-block;
+	float:		none;
+}
+
+.spinner { background-image: url("../spinner.gif"); width: 32px; height: 32px; }
+
+#x_footerBlock .ui-button-icon-only .ui-icon, #x_footerBlock .ui-button-text-icon-primary .ui-icon, #x_footerBlock .ui-button-text-icon-secondary .ui-icon, #x_footerBlock .ui-button-text-icons .ui-icon, #x_footerBlock .ui-button-icons-only .ui-icon {
+	position:	absolute;
+	top:		0;
+	margin-top:	0px;
+}
+#x_footerBlock .ui-button-icon-only .ui-icon {
+	left:			0;
+	margin-left:	0px;
+}
+
+#x_footerBlock .ui-state-default {									background: 50% 50% repeat-x; }
+#x_footerBlock .ui-state-hover, #x_footerBlock .ui-state-focus {	background: 50% 50% repeat-x; }
+#x_footerBlock .ui-state-active {									background: 50% 50% repeat-x; }
+
+/* override JQuery UI css for dialog box */
+.ui-dialog .ui-widget-header {
+	border: 		1px solid #666666;
+	background: 	#2d2a2a url(smoothness/images/ui-bg_highlight-soft_75_2d2a2a_1x100.png) 50% 50% repeat-x;
+	color: 			#ffffff;
+	font-weight: 	bold;
+}
+
+.ui-widget {
+	font-size: 1em;
+}
+
+.ui-dialog .ui-dialog-content {
+	padding:	4px 0px 0px 0px;
+	overflow-x:	hidden;
+}
+
+.ui-dialog-titlebar-close {
+	background: 	#dadada url(smoothness/images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x;
+}
+
+.ui-dialog .ui-dialog-titlebar-close {
+	width: 1.5em;
+	height: 1.5em;
+	float: right;
+	position: relative;
+	margin: 0;
+	right: -0.5em;
+	top: -0.1em;
+}
+
+.ui-dialog button.ui-dialog-titlebar-close.ui-button-icon-only .ui-icon[class*=" fa-"] {
+	margin-left: -0.4em;
+	margin-top: -0.5em;
+}
+
+/* standard link style - overrides the way links are styled on tab navigator */
+.ui-tabs-panel a:link, .ui-accordion-content a:link			{ color:	#0000FF; }
+.ui-tabs-panel a:visited, .ui-accordion-content a:visited	{ color:	#800080; }
+.ui-tabs-panel a:hover, .ui-accordion-content a:hover		{ color:	#FF0000; }
+.ui-tabs-panel a:active, .ui-accordion-content a:active		{ color:	#FF0000; }
+
+
+/* GLOSSARY */
+
+#x_pageDiv span.x_glossary {
+	font-weight:		bold;
+	text-decoration:	none;
+	color:				#010101;
+	border-bottom:		1px dotted;
+}
+
+#x_pageDiv span.x_glossary:link, #x_pageDiv span.x_glossary:visited, #x_pageDiv span.x_glossary:hover, #x_pageDiv span.x_glossary:active {
+	color:	#010101;
+}
+
+#x_glossaryHover {
+	position: fixed;
+	display:			none;
+	max-width:			200px;
+}
+
+.x_tooltip {
+	position:			absolute;
+	border:				1px solid #333;
+	background-color:	#161616;
+	border-radius:		4px;
+	padding:			2px 5px;
+	color:				#fff;
+}
+
+
+/* STYLES FOR PAGE MODEL CONTENTS */
+/* don't change styles that start with x_ in page models as they will change interface css */
+
+.leftAlign {
+	text-align:	left;
+}
+
+.centerAlign {
+	text-align:	center;
+}
+
+.rightAlign {
+	text-align:	right;
+}
+
+img {
+	vertical-align:	bottom;
+}
+
+
+span.cke_image_nocaption[align="left"],
+span.cke_image_nocaption[style*="float: left"],
+span.cke_image_nocaption[style*="float:left"]
+{
+    margin: 5px 15px 0px 0px;
+}
+
+div[align="left"] figure,
+div[style*="float: left"] figure,
+div[style*="float:left"] figure
+{
+    margin: 5px 15px 0px 0px;
+}
+
+img[align="left"],
+img[style*="float: left"],
+img[style*="float:left"]
+{
+    margin: 5px 25px 5px 0px;
+}
+
+figure[align="left"],
+figure[style*="float: left"],
+figure[style*="float:left"]
+{
+    margin: 5px 15px 5px 0px;
+}
+
+span.cke_image_nocaption[align="right"],
+span.cke_image_nocaption[style*="float: right"],
+span.cke_image_nocaption[style*="float:right"]{
+    margin: 5px 0px 5px 15px;
+}
+
+div[align="right"] figure,
+div[style*="float: right"] figure,
+div[style*="float:right"] figure{
+    margin: 5px 0px 5px 15px;
+}
+
+img[align="right"],
+img[style*="float: right"],
+img[style*="float:right"]{
+    margin: 5px 0px 5px 15px;
+}
+
+figure[align="right"],
+figure[style*="float: right"],
+figure[style*="float:right"]{
+    margin: 5px 0px 5px 15px;
+}
+
+img.centre {
+	display:		block;
+    margin-left:	auto;
+    margin-right:	auto;
+}
+
+.panel {
+	padding:			10px;
+	background-color:	white;
+	border:				1px solid #ffffff;
+	-moz-box-shadow:    2px 2px 5px #888888;
+	-webkit-box-shadow: 2px 2px 5px #888888;
+	box-shadow:         2px 2px 5px #888888;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=135, Color='#888888')"; /* for IE 8 */
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=5, Direction=135, Color='#888888'); /* for IE 5.5-7 */
+}
+
+.inline {
+	display:	inline-block;
+	margin:		0 20px 20px;
+}
+
+.panel.inline {
+	display:	inline-block;
+	margin:		0 20px 20px;
+}
+
+.shadow {
+	padding:			10px;
+	background-color:	white;
+	border:				1px solid #ffffff;
+	-moz-box-shadow:    1px 1px 3px #888888;
+	-webkit-box-shadow: 1px 1px 3px #888888;
+	box-shadow:         1px 1px 3px #888888;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=3, Direction=135, Color='#888888')"; /* for IE 8 */
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=3, Direction=135, Color='#888888'); /* for IE 5.5-7 */
+}
+
+audio {
+	display:	block;
+	margin-top:	10px;
+}
+
+.ckeditor-html5-audio audio {
+	display: inline;
+}
+
+.highlight {
+	background-image:	url("../highlight.png");
+}
+
+.highlightDark {
+	background-image:	url("../highlight_dark.png");
+}
+
+.transparent {
+	background-image:	url("../transparent.png");
+}
+
+.hidden {
+	opacity:	0;
+	filter:		alpha(opacity = 0);
+}
+
+.alert {
+	font-weight:	bold;
+	color:			red;
+}
+
+h2 .alert {
+	display: block;
+	font-size: 0.5em;
+}
+
+.alertBorder {
+	border: 1px solid red;
+}
+
+fieldset.noStyle {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	min-width: 0;
+}
+
+fieldset.noStyle legend {
+	display: table;
+}
+
+/* TABLE STYLES */
+
+#x_pageDiv table,
+table#x_resourceTable {
+	border-collapse:	collapse;
+}
+
+#x_pageDiv table td, #x_pageDiv table th {
+	padding:		10px;
+	vertical-align:	top;
+}
+
+table tr.shaded {
+	background:	#E3FFD6;
+}
+
+/* BORDER STYLES */
+table.full td,
+table.full th {
+	border:	1px solid #333333;
+	border:	1px solid #333333;
+}
+table.simple {
+	border-top:		2px solid #333333;
+	border-bottom:	2px solid #333333;
+}
+table.horizontal tr {
+	border-bottom:	1px solid #333333;
+}
+table.horizontal tbody tr:last-child {
+	border-bottom:	0px;
+}
+table.vertical td,
+table.vertical th {
+	border-right:	1px solid #333333;
+}
+table.vertical td:last-child,
+table.vertical th:last-child {
+	border-right:	0px;
+}
+table.outside {
+	border:	1px solid #333333;
+}
+
+table.glossary {
+	width:			100%;
+	border-collapse:collapse;
+}
+
+table.glossary td {
+	padding:		5px;
+	vertical-align:	top;
+}
+
+table.glossary tr td:first-child {
+	font-weight:	bold;
+}
+
+table.glossary tr {
+	background:	#FFFFFF;
+}
+
+table.glossary tr td:first-child {
+	border-right:	1px solid #EEEEEE;
+}
+
+table.glossary tr.shaded {
+	background:	#EEEEEE;
+}
+
+table.glossary tr.shaded td:first-child {
+	border-right:	1px solid #FFFFFF;
+}
+
+/* HEADER / FOOTER STYLES */
+
+table.header thead tr:first-child,
+table.header tr.header,
+table.header :not(tbody) > tr:first-child {
+	font-weight:	bold;
+}
+table.footer tr:last-child {
+	font-weight:	bold;
+}
+
+table.header.shaded thead tr:first-child,
+table.header.shaded tr.header,
+table.header.shaded :not(tbody) > tr:first-child {
+	background:	#F2F2F2;
+}
+table.footer.shaded tr:last-child {
+	background:	#F2F2F2;
+}
+table.headerCol.shaded td.header {
+	background:	#F2F2F2;
+}
+
+table.header.simple tr.header,
+table.header.simple thead tr:first-child,
+table.header.simple :not(tbody) > tr:first-child {
+	border-bottom:	1px solid #333333;
+}
+table.footer.simple tbody tr:last-child,
+table.footer.simple :not(thead) tr:last-child {
+	border-top:	1px solid #333333;
+}
+table.headerCol.simple td:first-child,
+table.headerCol.simple th:first-child {
+	border-right: 1px solid #333333;
+}
+
+/* SPECIFIC IE FIXES */
+
+.lt-ie8 #x_pageNo {
+    display:inline;
+}
+
+.lt-ie8 #x_pageControls {
+    display:inline;
+}
+
+/* CSS BUTTON ADDITIONS */
+#x_colourChangerBtn {
+	margin-right:	-1px;
+}
+
+
+/* ALLOW FONT AWESOME ICONS TO BE USED INSTEAD OF JQUERY UI ICONS */
+.ui-icon[class*=" fa-"] {
+    background: none repeat scroll 0 0 transparent;
+    text-indent: 0; 
+    margin-top: -0.5em;
+}
+
+.ui-icon.fa, .ui-icon.fas, .ui-icon.fa, .ui-icon.fab {
+	overflow: visible;
+}
+
+.ui-icon.icon-large {
+    margin-top: -0.75em;
+}
+
+.ui-button-icon-only .ui-icon[class*=" fa-"] {
+    margin-left: -7px;
+}
+
+.ui-accordion-header-icon.ui-icon[class*=" fa-"] {
+	width: auto;
+	height: auto;
+	margin-top: -0.5em;
+}
+
+button.ui-button-icon-only .ui-icon[class*=" fa-"] {
+	width: auto;
+	height: auto;
+	margin-left: -0.3em;
+	margin-top: -0.45em;
+}
+
+button.ui-button-icon-only .ui-icon.fa-x-refresh {
+	margin-left: -0.5em;
+}
+
+/*styling for optional show/hider footer tools*/
+#x_footerChevron{
+    cursor: pointer;
+    color: white;
+	background: none;
+	border: none;
+	height:45px;
+	min-height: 1.4em;
+	font-size: 14px !important;
+	width:25px !important;
+}
+
+#x_footerBlock #x_footerChevron i {
+	font-size: 1.3em;
+}
+
+#x_footerShowHide{
+    float:left;
+}
+
+/* --PROGRESS BAR---------------- */
+#x_footerProgress {
+	box-sizing: border-box;
+	margin: auto;
+	width: 20%;
+	text-align: center;
+}
+#x_headerBlock #x_headerProgress {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	margin: 0;
+	padding: 10px;
+}
+#x_headerBlock #x_headerProgress.progressMarkers {
+	padding: 15px 20px 15px;
+}
+#x_headerBlock #x_headerProgress div:not(.pbTxt),
+#x_headerBlock #x_headerProgress .progressMarker {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+/* -- pb between headers -- */
+#x_headerBlock.pbBetween #x_headerProgress,
+#x_headerBlock.pbBetween #x_headerProgress.progressMarkers {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+/* -- pb below header -- */
+#x_mainHolder #x_headerBlock.pbBelow #x_headerProgress {
+	padding: 0 10px 10px 10px;
+}
+#x_mainHolder:not(.x_mobile) #x_headerBlock.pbBelow #x_headerProgress {
+	/*float: left;*/
+}
+#x_mainHolder #x_headerBlock.pbBelow #x_headerProgress.progressMarkers {
+	padding: 0 20px 15px;
+}
+
+/* the whole bar */
+.pbContainer {
+	width: 100%;
+	height: 6px;
+	margin: auto;
+	margin-top: .5em;
+	background-color: #fff;
+}
+#x_headerProgress .pbContainer {
+	border-radius: 10px;
+	position: relative;
+}
+#x_mainHolder:not(.x_mobile) #x_headerBlock #x_headerProgress .pbTxt + .pbContainer {
+	margin-top: -1.2em;
+}
+#x_mainHolder:not(.x_mobile) #x_headerBlock #x_headerProgress.progressMarkers .pbTxt + .pbContainer {
+	margin-top: -1.1em;
+}
+
+/* the highlighted parts of the bar */
+.pbBar {
+	text-align: right;
+	padding-right: 2px;
+	line-height: 6px;
+	color: #ffffff;
+	width: 0;
+	font-size: 8px;
+	background-color: #2196F3;
+	height: 100%;
+	box-sizing: border-box;
+}
+.pbBarContainer {
+	width: 100%;
+}
+#x_headerProgress .pbBar:first-of-type {
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+#x_headerProgress.complete .pbBar:last-of-type, .pbBar.sub:last-of-type {
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+#x_headerProgress .pbBar.sub {
+	position: absolute;
+}
+
+/* the text next to the progress bar */
+.pbTxt {
+	font-size: max(.8em, 10px);
+	text-align: center;
+	padding-top: .5em;
+}
+#x_mainHolder #x_headerProgress .pbTxt {
+	font-size: 1em;
+	text-align: left;
+}
+#x_mainHolder:not(.x_mobile) #x_headerProgress .pbTxt {
+	display: inline-block;
+	padding: 0 10px 5px;
+}
+#x_headerProgress.progressMarkers .pbTxt {
+	padding: 0 5px 10px;
+}
+#x_mainHolder.x_mobile #x_headerProgress .pbTxt {
+	padding: 0 0 10px 0;
+}
+/* -- pb between headers -- */
+#x_headerBlock.pbBetween #x_headerProgress .pbTxt {
+	padding-left: 0;
+}
+/* -- pb above header -- */
+#x_headerBlock.pbAbove #x_headerProgress.progressMarkers .pbTxt {
+	margin-top: -5px;
+}
+
+/* progress markers on the progress bar */
+#x_headerProgress .progressMarker {
+	width: 20px;
+	height: 20px;
+	border: 6px solid #fff;
+	background: black;
+	border-radius: 20px;
+	position: absolute;
+}
+#x_headerProgress .progressMarker.complete {
+	border-color: #2196F3;
+}
+.pbMarkerContainer {
+	position: absolute;
+	top: -7px;
+	left: 0;
+	right: 0;
+}
+
+
+/* --PASSWORD PROTECTION BLOCK-------------------------------------------------------------- */
+.x_pswdInfo {
+	margin-bottom: 1em;
+}
+
+#x_pagePswd {
+	margin-left: .5em;
+	margin-right: .5em;
+}
+
+.vault-door-dial #x_pagePswd {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.x_pswdInput.old input#x_pagePswd {
+	margin-right: .5em;
+	margin-bottom: .5em;
+}
+
+.x_pswdInput #x_pagePswdBtn.old {
+	margin-left: .5em;
+	margin-right: .5em;
+	margin-top: .5em;
+}
+
+.x_pswdBlock:not(.old) .x_pswdInfo,
+.x_pswdBlock.centered .x_pswdInput {
+	text-align: center;
+}
+
+.x_pswdBlock:not(.centered) .x_pswdInput:not(.old) {
+	width: 90vmin;
+	max-width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.x_pswdBlock:not(.old) {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+#x_pagePswdBtn:active, #x_pagePswdBtn:hover, #x_pagePswdBtn:focus {
+	text-decoration: underline;
+	background-color: #0088cc;
+}
+
+.x_pswdError {
+	margin-top: 1em;
+	font-size: 0.9em;
+	color: #c0392b;
+}
+
+:not(.old) .x_pswdError {
+	text-align: center;
+}
+
+.x_pswdInput.old {
+	margin-top: 1em;
+	padding: 0.3em;
+}
+
+input#x_pagePswd.old {
+	margin-bottom: 0;
+}
+
+.vault {
+	width: 50%;
+	aspect-ratio: 1/1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #707070;
+	border-radius: 5%;
+}
+
+.numeric {
+	aspect-ratio:1/1.25;
+	border-radius: 20px;
+}
+
+.vault-door-frame {
+	width: 94%;
+	height: 94%;
+	background-color: #808080;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+}
+
+.vault-door {
+	width: 94%;
+	height: 94%;
+	background-color: #909090;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	border-radius: 50%;
+	position: relative;
+}
+
+.numeric .vault-door, .numeric .vault-door-frame{
+	border-radius: 20px;
+}
+
+.numeric .vault-door{
+	display: grid;
+	padding: 5%;
+	box-sizing: border-box;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(6, 1fr);
+	grid-template-areas:
+		"input  input  input "
+		"one    two    three "
+		"four   five   six   "
+		"seven  eight  nine  "
+		"unused zero   reset "
+		"button button button";
+}
+
+.vault-door-dial{
+	width: 30%;
+	height: 30%;
+	background-color: #A0A0A0;
+	border-radius: 50%;
+	position: relative;
+}
+
+.vault-door-dial-inside{
+	position: absolute;
+	transform: translate(-50%, -50%);
+	top: 50%;
+	left: 50%;
+	width: 80%;
+	height: 80%;
+	border-radius: 50%;
+	background-color: #909090;
+}
+
+.vault-door-dial-rod{
+	background-color: #A0A0A0;
+	position: absolute;
+	top: 5%;
+	left: 45%;
+	width: 10%;
+	height: 90%;
+	rotate: z 45deg;
+}
+.vault-door-dial-rod.rotated{
+	rotate: z -45deg;
+}
+
+.vault:not(.numeric) input{
+	position: absolute;
+	transform: translate(-50%, -50%);
+	top: 50%;
+	left: 50%;
+	width: 300%;
+}
+.vault input{
+	background-color: #00000000;
+	border: 2px solid #ffffff40;
+	z-index: 2;
+	font-size: 3.5vmin;
+}
+
+.vault .numberbtn, .vault #resetbtn, .vault input {
+	color: black;
+	text-align: center;
+	font-weight: bold;
+}
+
+.vault input:focus, .vault input:hover {
+	border: 2px solid #ffffff;
+	outline: none;
+}
+
+.vault:not(.numeric) button#x_pagePswdBtn {
+	position: absolute;
+	top: 70%;
+	width: 70%;
+}
+
+.vault button {
+	background-color: #808080;
+	border: 2px solid #505050 !important;
+}
+
+.vault button:not(#x_pagePswdBtn) {
+	font-size: 1.5em;
+	border-radius: 0px;
+	height: calc(100% - 1px);
+	margin: 1px;
+}
+
+.vault button:disabled:not(#x_pagePswdBtn) {
+	opacity: 1;
+}
+
+.vault button:hover:enabled, .vault button:focus:enabled {
+	background-color: #bdbdbd;
+	border-color: #4A4A4A;
+}
+
+/* Specifically for grayscale handling on IE browsers */
+body > svg
+{
+	width: 0px;
+	height: 0px;
+}
+
+textarea {
+	padding: 0.5em;
+}
+
+.lightBoxCaption {
+	margin: 5px 0;
+}
+
+figure {
+	margin: 0;
+}
+
+/* Render CKEditor 5 image styles outside the editor. */
+figure.image {
+	display: table;
+	clear: both;
+	text-align: center;
+	margin: .9em auto;
+	min-width: 50px;
+}
+
+figure.image img {
+	display: block;
+	margin: 0 auto;
+	max-width: 100%;
+	min-width: 100%;
+	height: auto;
+}
+
+figure.image.image_resized {
+	max-width: 100%;
+	display: block;
+	box-sizing: border-box;
+}
+
+figure.image.image_resized img {
+	width: 100%;
+}
+
+img.image-inline {
+	max-width: 100%;
+}
+
+img.image_resized {
+	height: auto;
+}
+
+figure.image.image-style-side {
+	float: right;
+	margin-left: 1.5em;
+	max-width: 50%;
+}
+
+figcaption {
+	margin-top: .2em;
+	margin-bottom: 0;
+}
+
+figcaption:first-child {
+	margin-bottom: .2em;
+	margin-top: 0;
+}
+
+/*#pageContents and #adaptiveContentMain not usually an actionable item so hide focus border*/
+#pageContents:focus,#adaptiveContentMain:focus{
+	outline:none;
+}
+
+/* --INTERFACE BUTTONS WITH CUSTOM FONT AWESOME ICONS SET IN EDITOR-------------------------------------------------------------- */
+
+#x_footerBlock .x_floatLeft button.customIconBtn, #x_footerBlock .x_floatRight button.customIconBtn {
+	font-size: 1.9em;
+	width: 1.5em;
+}
+
+button.customIconBtn:after {
+	content: none !important;
+}
+
+#x_footerBlock > div:not(#x_pageNarration) button.customIconBtn .ui-button-icon-primary {
+	display: block;
+}
+.x_responsive #x_footerBlock > div:not(#x_pageNarration) button.customIconBtn .ui-button-icon-primary:before,
+#x_footerBlock button.customIconBtn .ui-button-icon-primary:before {
+/* 	icons used in themes are generally 1.9em with font-family: FontAwesome
+	icons selected in editor icon picker use font-family "Font Awesome 5 Free" which appears larger - this reduces the customIcons to match theme icon size */
+	font-size: .9em;
+}
+
+#x_footerBlock button.customIconBtn .ui-icon, #x_mainHolder.x_mobile #x_footerBlock button:not(.imgIconBtn) .ui-icon {
+    left: 50%;
+    transform: translate(-50%, 25%);
+}
+
+#x_footerBlock button:not(.customIconBtn):not(.imgIconBtn) .ui-icon {
+	text-indent: 0;
+	margin-top: 15%;
+}
+
+/* --PROJECT & PAGE INTRODUCTION-------------------------------------------------------------- */
+
+#x_introH1 {
+	padding: 0.3em;
+}
+
+#x_introStartBtn {
+	float: right;
+}
+
+#x_introH1.x_introImgH1 {
+	background: inherit;
+	position: absolute;
+	padding-right: 1em;
+}
+
+#x_introStartBtn.x_introImgBtn {
+	position: absolute;
+	bottom: 10px;
+	right: 35px;
+}
+
+@media only screen and (max-width: 1024px) {
+	#x_introStartBtn.x_introImgBtn {
+		right: 20px;
+	}
+}
+
+.featherlight-content.pageIntroVideo.max,
+.featherlight-content.resourceVideo.max,
+.featherlight-content.splashVideo.max {
+	width: 90vw;
+	height: 90vh;
+}
+
+.featherlight-content.pageIntroVideo.hidden,
+.featherlight-content.resourceVideo.hidden,
+.featherlight-content.splashVideo.hidden {
+	opacity: 0;
+}
+
+.featherlight-content.pageIntroVideo.youTube .mejs-layers, .featherlight-content.pageIntroVideo.youTube .mejs-controls,
+.featherlight-content.resourceVideo.youTube .mejs-layers, .featherlight-content.resourceVideo.youTube .mejs-controls,
+.featherlight-content.splashVideo.youTube .mejs-layers, .featherlight-content.splashVideo.youTube .mejs-controls {
+	display: none;
+}
+
+.featherlight .featherlight-content.pageIntroVideo.max.youTube iframe,
+.featherlight .featherlight-content.resourceVideo.max.youTube iframe,
+.featherlight .featherlight-content.splashVideo.max.youTube iframe {
+	width: 100%;
+}
+
+.featherlight:has(.featherlight-content.splashVideo), .featherlight .featherlight-content.splashVideo {
+	background: white;
+	overflow: hidden;
+}
+
+#x_headerBlock #x_pageIntroBtn {
+	font-family: FontAwesome, sans-serif;
+	width: 1em;
+	height: 1em;
+	color: white;
+	background: none;
+	border: none;
+	border-radius: .5em;
+	margin-left: .2em;
+	/*margin-bottom: .1em;*/
+	vertical-align: middle;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg {
+	color: black;
+	background-color: white;
+	margin-left: .5em;
+}
+
+#x_headerBlock #x_pageIntroBtn .ui-button-icon-primary {
+	position: relative;
+	margin: auto;
+	left: auto;
+	top: -.2em;
+	font-size: 0.7em;
+}
+
+#x_headerBlock #x_pageIntroBtn.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.ui-state-active {
+	color: #FF9900;
+}
+
+#x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-hover, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-button.ui-state-focus, #x_headerBlock #x_pageIntroBtn.pageIntroBg.ui-state-active {
+	color: black;
+	background-color: #FF9900;
+}
+
+/* --LIGHTBOX-------------------------------------------------------------- */
+
+.featherlight.lightboxSmall .featherlight-content {
+	width: 50%;
+	height: 50%;
+	max-width: none;
+	max-height: none;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.featherlight.lightboxMedium .featherlight-content {
+	width: 70%;
+	height: 70%;
+	max-width: none;
+	max-height: none;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.featherlight.lightboxLarge .featherlight-content {
+	width: 90%;
+	height: 90%;
+	max-width: none;
+	max-height: none;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.featherlight.lightboxFull .featherlight-content {
+	width: 100%;
+	height: 100%;
+	max-width: none;
+	max-height: none;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.featherlight:not(.lightboxAuto) #x_introHolder {
+	top: 25px;
+	bottom: 25px;
+	left: 25px;
+	right: 25px;
+	overflow: auto;
+	position: absolute;
+	display: flex;
+}
+
+.featherlight #x_introTxt {
+	margin: auto;
+}
+
+/* FONT AWESOME BUTTON ICONS */
+
+/* chevron */
+.fa-x-next:before { content: "\f054"; }
+.fa-x-prev:before { content: "\f053"; }
+.fa-x-next-circle:before { content: "\f138"; } /* circle versions are used in multiple perspectives & thumbnail viewer pages */
+.fa-x-prev-circle:before { content: "\f137"; }
+
+/* Media */
+.fa-x-play:before   { content: "\f04b"; }
+.fa-x-pause:before  { content: "\f04c"; }
+.fa-x-mute:before   { content: "\f028"; }
+.fa-x-unmute:before { content: "\f6a9"; }
+
+.fa-x-close:before { content: "\f00d"; }
+.fa-x-refresh:before { content: "\f021"; }
+.fa-x-acc-hide:before { content: "\f0da"; }
+.fa-x-acc-show:before { content: "\f0d7"; }
+.fa-x-btn-hide:before { content: "\f0d8"; } /* btn-hide/show used on transcript buttons */
+.fa-x-btn-show:before { content: "\f0d7"; }
+.fa-x-zoom-in:before { content: "\f00e"; }
+.fa-x-zoom-out:before { content: "\f010"; }
+.fa-x-download:before { content: "\f019"; }
+.fa-x-copy:before { content:"\f0c5" }
+.fa-x-info-circle:before { content:"\f05a" }
+.fa-x-circle:before { content:"\f111" }
+.fa-x-circle-o:before { content:"\f10c" }
+
+/* decision tree overview icons */
+.fa-x-info:before { content:"\f129" }
+.fa-x-question:before { content:"\f128" }
+.fa-x-lightbulb:before { content:"\f0eb" }
+
+.fa-x-tick-circle:before { content:"\f058"} /* used for visited ticks in table of contents */
+
+/* marking on interactivity pages */
+.fa-x-tick:before { font-family: FontAwesome; content: "\f00c"; color: #62c562; }
+.fa-x-cross:before { content: "\f00d"; color: #ff0000; }
+
+/* Just the colour */
+.fa-x-tick {
+	font-family: FontAwesome; content: "\f00c"; color: #62c562;
+}
+.fa-x-cross {
+	content: "\f00d"; color: #ff0000;
+}
+
+/* Media */
+.fa-x-play:before { content: "\f04b"; }
+.fa-x-pause:before { content: "\f04c"; }
+.fa-x-mute:before { content: "\f028"; }
+.fa-x-unmute:before { content: "\f6a9"; }
+
+/*class for hidden screenreader only content*/
+/*same styles also added to jquery hidden class as otherwise they still have a width that can cause unexpected scroll bars*/
+.sr-only,
+.ui-helper-hidden-accessible {
+	position:absolute;
+	left:-10000px;
+	top:-1000px;
+	width:1px;
+	height:1px;
+	overflow:hidden;
+}
+
+.wcagLogo{
+	float: right;
+}
+a:focus .wcagLogo {
+	outline: -webkit-focus-ring-color auto 1px;
+}
+
+/*fix button and text issue with footer narration controls in some themes*/
+#x_footerBlock .mejs-controls .mejs-button button {
+    font-size: 0 !important;
+    height: 16px !important;
+    width: 16px !important;
+}
+
+.audioTranscript .mejs-container .mejs-controls {
+	box-sizing: border-box;
+	padding-right: 31px;
+}
+
+.audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn {
+	height: 100%;
+	position: absolute;
+	right: 5px;
+}
+
+.audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn button, #x_footerBlock .audioTranscript .mejs-container .mejs-controls .audioTranscriptBtn button {
+	font-family: "Font Awesome 5 Free";
+	background-image: none;
+	font-size: 15px !important;
+	color: #eee;
+}
+
+.featherlight iframe {
+	height: 85vh;
+	width: 85vw;
+}
+
+.featherlight-content {
+	max-width: 95vw;
+}
+
+.x_homePageLink, .x_homePageLink:visited, .x_homePageLink:hover, .x_homePageLink:focus {
+	color: inherit;
+	text-decoration: none;
+}
+
+.skip-link {
+	background: #000000;
+	color: #ffffff;
+	font-weight: 700;
+	left: 50%;
+	padding: 4px;
+	position: absolute;
+	transform: translateY(-100%);
+	transition: transform 0.3s;
+}
+.skip-link a, .skip-link a:visited{
+	color:#ffffff !important;
+}
+
+.skip-link:focus {
+	transform: translateY(0%);
+	color:#ffffff !important;
+}
+
+#x_embed_overlay.embed-overlay-inactive {
+	display: none;
+}
+
+#x_embed_overlay.embed-overlay {
+	position: fixed;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	background-color: rgba(0,0,0,0.3);
+	color: #ffffff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 4em;
+}
+
+/* circleBtn only used on flashCards page at the moment but could be used elsewhere too to better style buttons that only have font awesome icon on (no text) */
+.circleBtn.ui-button .ui-button-text, .circleBtn.ui-button .ui-button-icon-primary, .circleBtn.ui-button .ui-button-icon-secondary {
+	color: white;
+}
+
+.circleBtn.ui-button {
+	border-radius: 100%;
+}
+
+.circleBtn.ui-button {
+	background: #555;
+	border-color: #555;
+}
+
+.circleBtn.ui-button.ui-state-hover, .circleBtn.ui-button.ui-state-focus, .circleBtn.ui-button.ui-state-active {
+	background: #FF9900;
+	border-color: #FF9900;
+}
+
+.circleBtn.ui-button-icon-only {
+	height: 2.4em;
+}
+
+
+/* --SIDE BAR-------------------------------------------------------------- */
+
+#x_sideBar {
+	height: 100%;
+	position: absolute;
+	background-color: #ccc;
+	box-shadow: inset 0 0.5em 1.5em rgb(0 0 0 / 10%), inset 0 0.125em 0.5em rgb(0 0 0 / 50%);
+}
+
+.sb_right #x_sideBar {
+	right: 0;
+}
+
+#x_sideBarToggleBtn {
+	width: 100%;
+	height: 30px;
+	font-size: 20px;
+	background: none;
+	border: none;
+	border-color: #666;
+	border-style: solid;
+	border-top-width: 0;
+	border-left-width: 0;
+	border-right-width: 0;
+	border-bottom-width: 1px;
+	border-radius: 0;
+	color: #212121;
+	display: block;
+}
+
+#x_sideBar.toggleSide #x_sideBarToggleBtn {
+	width: 30px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	right: 0;
+	border-top-width: 0;
+	border-bottom-width: 0;
+	border-right-width: 0;
+	border-left-width: 1px;
+	margin: 0;
+}
+
+.sb_right #x_sideBar.toggleSide #x_sideBarToggleBtn {
+	right: auto;
+	left: 0;
+	border-left-width: 0;
+	border-right-width: 1px;
+}
+
+#x_sideBarToggleBtn:hover, #x_sideBarToggleBtn:focus, #x_sideBarToggleBtn:active {
+	color: white;
+	background-color: #212121;
+}
+
+.sb_left #x_sideBarToggleBtn .ui-button-icon-primary {
+	text-align: right;
+	right: 5px;
+	margin-left: -1em;
+}
+
+.sb_right #x_sideBarToggleBtn .ui-button-icon-primary {
+	text-align: left;
+	left: 13px;
+}
+
+#x_sideBar #x_sideBarToggleBtn .ui-button-icon-primary {
+	top: 15px;
+}
+
+#x_sideBarBtnHolder, #x_sideBarTocHolder {
+	box-sizing: border-box;
+	padding-top: 1em;
+	padding-bottom: 1em;
+	padding-left: 15px;
+	padding-right: 15px;
+	overflow: auto;
+}
+
+.sb_left #x_sideBar.toggleSide #x_sideBarBtnHolder, .sb_left #x_sideBar.toggleSide #x_sideBarTocHolder {
+	margin-right: 30px;
+}
+
+.sb_right #x_sideBar.toggleSide #x_sideBarBtnHolder, .sb_right #x_sideBar.toggleSide #x_sideBarTocHolder {
+	margin-left: 30px;
+}
+
+#x_sideBar #x_sideBarLogo {
+	margin: 0 .2em 1em;
+}
+
+#x_sideBar #x_sideBarLogo img {
+	max-width: 100%;
+}
+
+#x_sideBar #x_sideBarBtnHolder button {
+	color: #212121;
+	background: none;
+	border: none;
+	border-radius: 0px;
+	display: block;
+	height: auto !important;
+	width: 100%;
+}
+
+#x_sideBar #x_sideBarBtnHolder button:not(.customIconBtn) .ui-icon {
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+	text-indent: 0;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(.customIconBtn) .ui-icon {
+	float: left;
+	margin-top: .4em;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button {
+	width: auto !important;
+	margin: 0 auto 1em auto;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button {
+	box-sizing: border-box;
+	text-align: left;
+	padding: 1em 5px 1em;
+	margin-bottom: 0;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:not(:last-child) {
+	border-bottom: 1px solid #666;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button.ui-button-icon-only {
+	width: auto;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button span.ui-button-text {
+	display: inline-block;
+}
+
+#x_sideBar #x_sideBarBtnHolder button span.ui-icon {
+	position: static;
+	box-sizing: border-box;
+	margin-top: 0;
+	margin-left: 0;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button span.ui-icon {
+	width: 20px;
+	height: 20px;
+	font-size: 15px;
+	vertical-align: bottom;
+	margin-right: 10px;
+	text-align: center;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button.ui-button-icon-only span.ui-icon {
+	margin-right: 0;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button span.ui-icon {
+	border: 1px solid #212121;
+	border-radius: 35px;
+	width: 70px;
+	height: 70px;
+	padding-top: 16px;
+	font-size: 34px;
+	margin: 0 auto;
+}
+
+#x_sideBar #x_sideBarBtnHolder button span.ui-button-text {
+	font-size: 1em;
+	padding: 0;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button.ui-button-icon-only span.ui-button-text {
+	display: inline-block;
+}
+
+#x_sideBar.sideBarSmall #x_sideBarBtnHolder button:hover, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:focus, #x_sideBar.sideBarSmall #x_sideBarBtnHolder button:active {
+	background-color: #212121;
+	color: white;
+}
+
+#x_sideBar.sideBarLarge #x_sideBarBtnHolder button:hover span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:focus span.ui-icon, #x_sideBar.sideBarLarge #x_sideBarBtnHolder button:active span.ui-icon {
+	background-color: #212121;
+	color: white;
+}
+
+#x_sideBar #x_sideBarBtnHolder {
+	overflow-x: hidden;
+}
+
+[data-cke-editorplaceholder]::before {
+	padding: 0.3em;
+}
+
+
+/* page menu - moved from menu.css as the page model is no longer always loaded */
+#menuItems .menuItem, #menuItems .chapterItem {
+	width: 100%;
+	display: block;
+	margin-bottom: 5px;
+	text-align: left;
+	box-sizing: border-box;
+	overflow: auto;
+}
+
+#menuItems .chapterItem a {
+	padding-right: 1em;
+}
+
+#menuItems .chapterPageHolder .menuItem:last-of-type {
+	margin-bottom: 0;
+}
+
+#menuItems {
+	width: 100%;
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+#menuItems .menuItem.current {
+	border: 2px solid #FF9900;
+}
+
+#menuItems .menuItem.current, #menuItems .chapterItem.current {
+	font-weight: bold;
+}
+
+#menuItems .menuItem .notvisited:not(.beforeText), #menuItems .chapterItem .notvisited:not(.beforeText) {
+	display: none;
+}
+
+#menuItems .menuItem .notvisited.beforeText:before, #menuItems .chapterItem .notvisited.beforeText:before {
+	content:"\f111";
+	font-weight: 300;
+	opacity: .1;
+}
+
+#menuItems .chapterHolder .chapterPageHolder {
+	padding: .1em;
+	box-sizing: border-box;
+	margin-bottom: 5px;
+}
+
+#menuItems .chapterHolder .chapterPageHolder .menuItem {
+	margin-right: 0;
+}
+
+#menuItems .chapterItem.ui-accordion-header-active {
+	margin-bottom: 0;
+}
+
+#menuItems .ui-accordion .ui-accordion-header .ui-icon {
+	left: 0.3em;
+}
+
+#tocMenuLightBox {
+	height: 99%;
+}
+
+#tocMenuLightBox #menuItems {
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+/* make sure ticks are aligned whether ticks are for chapters or pages (inside or outside of chapters) */
+#menuItems .menuItem .viewTick:not(.beforeText),
+#menuItems .chapterItem .viewTick:not(.beforeText) {
+	float: right;
+	margin-top: 0.2em;
+}
+
+#menuItems .chapterItem .viewTick:not(.beforeText) {
+	padding-right: .1em;
+}
+
+#menuItems > .menuItem .viewTick:not(.beforeText) {
+	padding-right: .1em;
+}
+
+#menuItems .chapterPageHolder .menuItem .viewTick.beforeText {
+	margin-left: -.1em;
+}
+
+/* accessibility options dialog / lightbox */
+#x_colourChanger #colourChangerHolder {
+	padding: 0 5px;
+}
+
+#x_colourChanger .optionGroup {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+#x_colourChanger #colourChangerOptions input {
+	float: left;
+	display: block;
+}
+
+#x_colourChanger #colourChangerOptions label {
+	position: relative;
+	margin-left: 2em;
+	display: block;
+}
+
+#x_colourChanger #colourChangerOptions label p {
+	padding-top: 0;
+}
+
+#x_colourChanger .checkGroup {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+/* --RESOURCES-------------------------------------------------------------- */
+
+/* page resources button & lightbox */
+#x_headerBlock #x_pageResourcesBtn {
+	float: right;
+	padding: 0;
+	margin: 0 0 5px 10px;
+	font-size: min(1.5em, 30px);
+}
+
+#x_pageResourcesBtn.ui-button-icon-only {
+	width: 2em;
+	height: 1.5em;
+}
+
+#x_pageResourcesBtn.ui-button-icon-only .ui-icon {
+	margin-left: -.65em;
+}
+
+#x_pageResourcesBtn:not(.ui-button-icon-only) .ui-button-text {
+	font-size: .5em;
+	padding-left: 4em;
+}
+
+#x_pageResourcesBtn .resourceNumber {
+	background: black;
+	color: white;
+	width: .8em;
+	height: .8em;
+	border-radius: 1em;
+	position: absolute;
+	top: .1em;
+	right: .1em;
+	padding: 0;
+}
+
+#x_pageResourcesBtn .resourceNumber .resourceNumberTxt {
+	padding: 0;
+	font-size: .5em;
+	margin-top: .2em;
+}
+
+#x_resourceHeader {
+	margin-bottom: .5em;
+}
+
+#x_resources p {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+#x_resourceTable {
+	width: 100%;
+	margin-top: .5em;
+}
+
+#x_resourceTable tr {
+	border-color: #ccc;
+}
+
+#x_resourceTable th,
+#x_resourceTable td {
+	padding: .2em .4em .2em 0;
+}
+
+#x_resourceTable th:last-of-type,
+#x_resourceTable td:last-of-type {
+	padding-right: 0;
+}
+
+#x_resourceTable th {
+	vertical-align: bottom;
+}
+
+#x_resourceTable .completeCell,
+#x_resourceTable th.actionCell {
+	text-align: center;
+}
+
+#x_resourceTable td.actionCell {
+	text-wrap: nowrap;
+}
+
+#x_resourceTable td.titleCell .resourceLinkHolder,
+#x_resourceTable td.actionCell .actionBtnHolder {
+	display: flex;
+	align-items: center;
+}
+
+.resourceIcon {
+	border: 1px solid #ccc;
+	padding: .5em;
+	margin-right: 1em;
+	box-sizing: content-box !important;
+	flex-shrink: 0;
+}
+
+.actionCell .ui-button-icon-only .ui-icon[class*=" fa-"] {
+	margin-left: -.5em;
+	margin-top: -.5em;
+	overflow: visible;
+}
+
+.resourceViewBtn + .resourceDownloadBtn {
+	margin-left: .2em;
+}
+
+.resourceDownloadBtn {
+	width: 2.4em;
+	height: 2.4em;
+}
+
+.resourceLink, .resourceLink:visited, .resourceLink:focus,
+.resourceDownloadBtn, .resourceDownloadBtn:visited, .resourceDownloadBtn:focus {
+	color: #000;
+}
+
+button.resourceLink {
+	background: none;
+	border: none;
+	padding: 0;
+	text-decoration: underline;
+	cursor: pointer;
+	text-align: left;
+}
+
+#suppressWarningCheck, #suppressWarningBtnHolder {
+	margin-top: 1em;
+}
+
+.resourceContinueBtn {
+	margin-right: .5em;
+}
+
+/* split screen layout used in lots of page models */
+.splitScreen {
+	display: flex;
+	column-gap: 1em;
+	width: 100%;
+}
+
+.splitScreen.small .left { flex: 0 0 calc(20% - .5em); } /* using calc to exclude 1/2 of column-gap */
+.splitScreen.small .right {	flex: 0 1 calc(80% - .5em); }
+.splitScreen.medium2 .left { flex: 0 0 calc(30% - .5em); }
+.splitScreen.medium2 .right { flex: 0 1 calc(70% - .5em); }
+.splitScreen.medium .left {	flex: 0 0 calc(40% - .5em); }
+.splitScreen.medium .right { flex: 0 1 calc(60% - .5em); }
+.splitScreen.large .left { flex: 0 1 calc(60% - .5em); }
+.splitScreen.large .right { flex: 0 0 calc(40% - .5em); }
+.splitScreen.xlarge .left { flex: 0 1 calc(80% - .5em); }
+.splitScreen.xlarge .right { flex: 0 0 calc(20% - .5em); }
+
+/* add padding between text & panels when stacked vertically */
+.textTopHolder + .splitScreen,
+.textTopHolder + .splitScreen_A,
+.splitScreen + .textBottomHolder,
+.splitScreen .splitScreen_B .textTopHolder + .panelContent,
+.splitScreen .splitScreen_B .panelContent + .textBottomHolder,
+.splitScreen_A + .splitScreen_B.full,
+.splitScreen_B.full .textTopHolder + .panelContent,
+.splitScreen_B.full .textBottomHolder,
+.splitScreen_B.full + .textBottomHolder {
+	margin-top: 1em;
+}
+
+#x_mainHolder.x_verticalCentrePanel:not(.x_noVerticalCentre):not(.x_noVerticalCentrePanel) #x_pageHolder:not(.x_scrolling) .splitScreen_A,
+#x_mainHolder.x_verticalCentrePanel:not(.x_noVerticalCentre):not(.x_noVerticalCentrePanel) #x_pageHolder:not(.x_scrolling) .splitScreen_B,
+#x_pageHolder.x_verticalCentrePanel:not(.x_scrolling) .splitScreen_A,
+#x_pageHolder.x_verticalCentrePanel:not(.x_scrolling) .splitScreen_B {
+	display: flex;
+	justify-content: safe center;
+	flex-direction: column;
+}
+
+#x_pageHolder {
+	container-name: x_pageHolder;
+	container-type: inline-size;
+}
+
+@container x_pageHolder (max-width: 480px) {
+	/* split screen layout used in lots of page models - stack vertically on smaller screens */
+	.splitScreen {
+		flex-direction: column;
+		row-gap: 1em;
+	}
+
+	.splitScreen.small .left,
+	.splitScreen.small .right,
+	.splitScreen.medium2 .left,
+	.splitScreen.medium2 .right,
+	.splitScreen.medium .left,
+	.splitScreen.medium .right,
+	.splitScreen.large .left,
+	.splitScreen.large .right,
+	.splitScreen.xlarge .left,
+	.splitScreen.xlarge .right { flex: 0 0 100%; }
+
+	.splitScreen.custom .left,
+	.splitScreen.custom .right {
+		flex: 0 0 100% !important;
+	}
+
+	.splitScreen_B:not(.fullPanelH) .panelContent {
+		height: auto !important;
+	}
+}

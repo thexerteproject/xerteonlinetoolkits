@@ -1,0 +1,5 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+export default {"nl":{"dictionary":{"Bookmark":"Bladwijzer","Edit bookmark":"Bladwijzer bewerken","Remove bookmark":"Bladwijzer verwijderen","Bookmark name":"Naam van de bladwijzer","Enter the bookmark name without spaces.":"Voer de naam van de bladwijzer in zonder spaties.","Bookmark must not be empty.":"Bladwijzer mag niet leeg zijn.","Bookmark name cannot contain space characters.":"Naam van de bladwijzer mag geen spaties bevatten.","Bookmark name already exists.":"Naam van de bladwijzer bestaat al.","bookmark widget":"bladwijzer widget","Bookmark toolbar":"Bladwijzerwerkbalk","Bookmarks":"Bladwijzers","No bookmarks available.":"Geen bladwijzers beschikbaar.","Scroll to bookmark":"Scroll naar bladwijzer"},getPluralForm(n){return (n != 1);}}}

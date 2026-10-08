@@ -24,8 +24,45 @@ var EDITOR = (function ($, parent) {
     // Create the tree object and refer locally to it as 'my'
     var my = parent.tree = {},
         toolbox = parent.toolbox,
-        defaultLanguage = false,
+        // Initialize defaults from user preferences if available
+        defaultLanguage = (function() {
+            if (typeof user_preferences !== 'undefined' && user_preferences && typeof user_has_preferences !== 'undefined' && user_has_preferences) {
+                var editorShowLanguage = user_preferences.editor_show_language;
+                return (editorShowLanguage !== undefined && editorShowLanguage !== null && 
+                       editorShowLanguage !== false && editorShowLanguage !== 'false' && 
+                       editorShowLanguage !== 0 && editorShowLanguage !== '0');
+            }
+            return false;
+        })(),
         defaultAdvanced = false,
+        // Store toolbar and groups defaults for later use
+        defaultToolbar = (function() {
+            if (typeof user_preferences !== 'undefined' && user_preferences && typeof user_has_preferences !== 'undefined' && user_has_preferences) {
+                var editorShowToolbar = user_preferences.editor_show_toolbar;
+                return (editorShowToolbar !== undefined && editorShowToolbar !== null && 
+                       editorShowToolbar !== false && editorShowToolbar !== 'false' && 
+                       editorShowToolbar !== 0 && editorShowToolbar !== '0');
+            }
+            return false;
+        })(),
+        defaultExpandGroups = (function() {
+            if (typeof user_preferences !== 'undefined' && user_preferences && typeof user_has_preferences !== 'undefined' && user_has_preferences) {
+                var editorExpandGroups = user_preferences.editor_expand_groups;
+                return (editorExpandGroups !== undefined && editorExpandGroups !== null && 
+                       editorExpandGroups !== false && editorExpandGroups !== 'false' && 
+                       editorExpandGroups !== 0 && editorExpandGroups !== '0');
+            }
+            return false;
+        })(),
+        defaultExpandTree = (function() {
+            if (typeof user_preferences !== 'undefined' && user_preferences && typeof user_has_preferences !== 'undefined' && user_has_preferences) {
+                var editorExpandTree = user_preferences.editor_expand_tree;
+                return (editorExpandTree !== undefined && editorExpandTree !== null && 
+                       editorExpandTree !== false && editorExpandTree !== 'false' && 
+                       editorExpandTree !== 0 && editorExpandTree !== '0');
+            }
+            return false;
+        })()
 
 
     // Called once document is ready
@@ -43,11 +80,12 @@ var EDITOR = (function ($, parent) {
     {
         var now = new Date().getTime();
         setTimeout(function(){
+            var apiBase = (typeof rest_api_url !== 'undefined' && rest_api_url) ? rest_api_url : 'website_code/api/v1/index.php';
             $.ajax({
                 type: "GET",
-                url: "website_code/php/keepalive.php" + "?t=" + now,
+                url: apiBase + "?route=session/keepalive&t=" + now,
                 dataType: "json",
-                success: function (data) {
+                success: function (resp) {
                     keepalive();
                 }
             })
@@ -291,7 +329,19 @@ var EDITOR = (function ($, parent) {
                 .attr('type',  'checkbox')
                 .attr('title', value.tooltip)
                 .prop('disabled', value.disabled)
-                .on('change', value.click)
+                .on('change', value.click);
+
+            // Initialize checkbox state from defaults set at module level
+            if (value.id === 'language_cb') {
+                checkbox.prop('checked', defaultLanguage);
+            } else if (value.id === 'toolbar_cb') {
+                checkbox.prop('checked', defaultToolbar);
+            } else if (value.id === 'groups_cb') {
+                checkbox.prop('checked', defaultExpandGroups);
+            } else {
+                // Default to false for other checkboxes
+                checkbox.prop('checked', false);
+            }
 
             checkboxes.append(checkbox);
             var span = $('<label>')
@@ -302,6 +352,39 @@ var EDITOR = (function ($, parent) {
             checkboxes.append(span);
         });
         $('#checkbox_holder').append(checkboxes);
+        
+        // Now trigger the handlers to apply the initial state
+        // Use setTimeout to ensure checkboxes are in DOM and handlers are attached, and after any code that might reset them
+        setTimeout(function() {
+            // Always trigger handlers to apply the state (they read the checkbox state)
+            var languageCb = $('#language_cb');
+            if (languageCb.length) {
+                // Re-apply preference in case it was reset by other code
+                languageCb.prop('checked', defaultLanguage);
+                showLanguage();
+            }
+            
+            var toolbarCb = $('#toolbar_cb');
+            if (toolbarCb.length) {
+                // Re-apply preference in case it was reset
+                toolbarCb.prop('checked', defaultToolbar);
+                showToolbar();
+            }
+            
+            var groupsCb = $('#groups_cb');
+            if (groupsCb.length) {
+                // Re-apply preference in case it was reset
+                groupsCb.prop('checked', defaultExpandGroups);
+                expandGroups();
+            }
+            
+            var expandTreeCb = $('#expand_tree');
+            if (expandTreeCb.length) {
+                // Re-apply preference in case it was reset
+                expandTreeCb.prop('checked', defaultExpandTree);
+                expandTree();
+            }
+        }, 500);
     },
 
 
@@ -344,9 +427,9 @@ var EDITOR = (function ($, parent) {
             }
         }
         var new_tab = clickevent.ctrlKey;
-        upload_url ??= "editor/upload.php";
+        var apiBase = (typeof rest_api_url !== 'undefined' && rest_api_url) ? rest_api_url : 'website_code/api/v1/index.php';
         var ajax_call = $.ajax({
-                url: upload_url,
+                url: apiBase + "?route=learning-objects/save",
                 data: {
                     fileupdate: 0, //0= preview->preview.xml
                     filename: previewxmlurl,
@@ -392,9 +475,9 @@ var EDITOR = (function ($, parent) {
     		return;
     	}
         var json = build_json("treeroot");
-        upload_url ??= "editor/upload.php";
+        var apiBase = (typeof rest_api_url !== 'undefined' && rest_api_url) ? rest_api_url : 'website_code/api/v1/index.php';
         var ajax_call = $.ajax({
-                url: upload_url,
+                url: apiBase + "?route=learning-objects/save",
                 data: {
                     fileupdate: 1, // 1=publish -> data.xml
                     filename: dataxmlurl,
@@ -465,9 +548,9 @@ var EDITOR = (function ($, parent) {
     		return;
     	}
         var json = build_json("treeroot");
-        upload_url ??= "editor/upload.php";
+        var apiBase = (typeof rest_api_url !== 'undefined' && rest_api_url) ? rest_api_url : 'website_code/api/v1/index.php';
         var ajax_call = $.ajax({
-                url: upload_url,
+                url: apiBase + "?route=learning-objects/save",
                 data: {
                     fileupdate: 0, // 1=publish -> data.xml
                     filename: previewxmlurl,
@@ -763,12 +846,25 @@ var EDITOR = (function ($, parent) {
 
     // Refresh the page when a new node is selected
     buildPage = function (key, scrollPos, scrollToId, expandedGroups) {
-        // Cleanup all current CKEDITOR instances!
-        for(name in CKEDITOR.instances)
-        {
-            CKEDITOR.instances[name].destroy(true);
+        // Cleanup all current CKEDITOR instances. CKEditor 5 destroy is async; wait before
+        // replacing #mainPanel or a late callback can clear __xerteCke5Instances for reused ids (e.g. textarea_1).
+        var destroyPromises = [];
+        var ckeIds = [];
+        for (var ckeName in CKEDITOR.instances) {
+            if (CKEDITOR.instances.hasOwnProperty(ckeName)) {
+                ckeIds.push(ckeName);
+            }
         }
-
+        for (var ci = 0; ci < ckeIds.length; ci++) {
+            var ckeInst = CKEDITOR.instances[ckeIds[ci]];
+            if (ckeInst && typeof ckeInst.destroy === 'function') {
+                var ckeDestroy = ckeInst.destroy(true);
+                if (ckeDestroy && typeof ckeDestroy.then === 'function') {
+                    destroyPromises.push(ckeDestroy);
+                }
+            }
+        }
+        var runBuildPageBody = function () {
         var attributes = lo_data[key]['attributes'];
 
         // Get the node name
@@ -859,6 +955,12 @@ var EDITOR = (function ($, parent) {
                 toolbox.displayParameter('#mainPanel .wizard', node_options['name'], attribute_name, node_options['name'][0].value.defaultValue, key);
             }
         }
+
+        // Inline Quick Fill panel — resolve from node_options.all (never mutated by getGroups)
+        if (key !== 'treeroot') {
+            toolbox.showInlineQFGroup(key, node_name, menu_options);
+        }
+
         if (advanced_mode || key!='treeroot' || !simple_lo_page) {
 			
 			function getGroups(options) {
@@ -1136,22 +1238,31 @@ var EDITOR = (function ($, parent) {
                 }
             }
 
+            //Used to make layout optional properties panel top-level title dynamic, since it switches depending on which table(s) are present
+            var optionaltitle = language.optionalPropHTML ? language.optionalPropHTML.$label : "Optional Properties";
+            var assistantTitle = language.optionalAssistantPropHTML && language.optionalAssistantPropHTML.$general ? language.optionalAssistantPropHTML.$general : "Assistants";
+
             if (tableLightbox.find("tr").length > 0) {
-                var tablerow = $('<tr>')
-                    .append('<td class="optPropTitle">' + (language.optionalAssistantPropHTML && language.optionalAssistantPropHTML.$general ? language.optionalAssistantPropHTML.$general : "Assistants") + '</td>');
-                //tableLightbox.prepend(tablerow);
+                $("#optional_title").html(assistantTitle);
                 html.append(tableLightbox);
+            } else {
+                $("#optional_title").html(optionaltitle);
             }
 
             if (table.find("tr").length > 0) {
-                var optionaltitlerow = $('<tr>')
-                    .append('<td class="optMainTitle">' + (language.optionalPropHTML ? language.optionalPropHTML.$label : "Optional Properties") + '</td>');
-                if (menu_options.menu != undefined) {
-                    var tablerow = $('<tr>')
-                        .append('<td class="optPropTitle">' + menu_options.menuItem + '</td>');
-                    table.prepend(tablerow);
+                if (tableLightbox.find("tr").length > 0) {
+                    var optionaltitlerow = $('<tr>')
+                        .append('<td class="optMainTitle">' + (language.optionalPropHTML ? language.optionalPropHTML.$label : "Optional Properties") + '</td>');
+
+                    if (menu_options.menu != undefined) {
+                        var tablerow = $('<tr>')
+                            .append('<td class="optPropTitle">' + menu_options.menuItem + '</td>');
+                        table.prepend(tablerow);
+                    }
+
+                    table.prepend(optionaltitlerow);
                 }
-                table.prepend(optionaltitlerow);
+
                 html.append(table);
             }
 
@@ -1366,6 +1477,7 @@ var EDITOR = (function ($, parent) {
 
         toolbox.convertTextAreas();
         toolbox.convertTextInputs();
+        toolbox.sizeInlineQFPanel($('#mainPanel .qf-inline-row'));
         toolbox.convertColorPickers();
 		toolbox.convertIconPickers();
         toolbox.convertDataGrids();
@@ -1419,6 +1531,12 @@ var EDITOR = (function ($, parent) {
 				$(this).parents('.wizardattribute')[0].remove();
 			}
 		});
+        };
+        if (destroyPromises.length) {
+            Promise.all(destroyPromises).then(runBuildPageBody, runBuildPageBody);
+        } else {
+            runBuildPageBody();
+        }
     },
 
 	groupSetUp = function(group, attributes, node_options, key) {
@@ -1826,18 +1944,25 @@ var EDITOR = (function ($, parent) {
                 var tree = $.jstree.reference("#treeview");
                 // Show wait icon
                 $('body').css("cursor", "wait");
-                console.log("Start Quick Fill process, please wait...");
+                // Debug: console.log("Start Quick Fill process, please wait...");
+                var apiBase = (typeof rest_api_url !== 'undefined' && rest_api_url) ? rest_api_url : 'website_code/api/v1/index.php';
                 $.ajax({
-                    url: "editor/quickfill/quickfillAPI.php",
+                    url: apiBase + "?route=editor/quickfill",
                     type: "POST",
+                    dataType: "json",
                     data: {
                         type: node_type,
                         parameters: parameters,
                     },
-                    success: function(data) {
+                    success: function(resp) {
+                        var payload = (resp && resp.ok === true && resp.data) ? resp.data : resp;
                         try {
-                            xml_to_xerte_content(data, event.data.key, 'last', tree, parent);
+                            // xml_to_xerte_content still has the legacy Quick Fill setup/contract:
+                            // a JSON string containing { status, result }. jQuery has
+                            // already decoded the REST response, so re-encode its payload.
+                            xml_to_xerte_content(JSON.stringify(payload), event.data.key, 'last', tree, parent);
                             $.featherlight.close();
+                            resolve(payload);
                         } catch (error) {
                             console.log('Error occurred in success callback:', error);
                             reject(error);
@@ -1846,6 +1971,7 @@ var EDITOR = (function ($, parent) {
                     error: function(jqXHR, textStatus, errorThrown) {
                         // Handle any errors from the AJAX request and reject the promise
                         console.error("AJAX request failed:", textStatus, errorThrown);
+                        $('body').css("cursor", "default");
                         reject(new Error(`AJAX error: ${textStatus}`)); // Reject with an error
                     }
                 });
@@ -1913,7 +2039,11 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
             success: function(data_json) {
 								image_preview.find(".img_search_loading").remove();
 								let header = $("<h1>" + language.imageSelection.title + "</h1>");
-								image_data = JSON.parse(data_json);
+								image_data = typeof data_json === "string" ? JSON.parse(data_json) : data_json;
+								if (image_data.status === "error") {
+									image_preview.text(language.imageSelection.retrievalError || "An error occurred while retrieving image results.");
+									return;
+								}
 								image_preview.append(header);
 								let image_preview_images = $("<div class=\"image_preview_images\"></div>");
 								image_preview.append(image_preview_images);
@@ -1983,7 +2113,8 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
                                     let container = $('<div class="img_search_container"></div>');
                                     image_preview_images.append(container);
                                     container.append(select_input).append(label);
-                                    // Enlarge button. Prevent the label/checkbox from toggling on click
+
+                                    //Button to enlarge the image
                                     let enlarge_button = $(
                                         '<button title="' + language.imageSelection.imgEnlargeCornerBtn + '" type="button" class="enlarge_button">' +
                                         '<i class="fa fa-lg fa-search xerte-icon"></i>' +
@@ -1994,6 +2125,29 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
                                         $.featherlight({image:image_url});
                                     });
 
+                                    //Button to copy the credits/copyright information for a specific image
+                                    let copy_credits_button = $(
+                                        '<button title="'+ language.imageSelection.imgCopyrightToClipboardBtn +'" type="button" class="copy_credits_button">' +
+                                        '<i class="fa fa-copyright xerte-icon"></i>' +
+                                        '</button>'
+                                    ).on("click", function (e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+
+                                        navigator.clipboard.writeText(image_data.credits[i]).then(function () {
+                                            let copied_notice = $('<span class="copied_notice">'+ language.imageSelection.imgCopyrightToClipboardNotice +'</span>');
+
+                                            frame.append(copied_notice);
+
+                                            setTimeout(function () {
+                                                copied_notice.fadeOut(200, function () {
+                                                    $(this).remove();
+                                                });
+                                            }, 1500);
+                                        });
+                                    });
+
+                                    frame.append(copy_credits_button);
                                     frame.append(enlarge_button);
 
 										image.on("load", function () {
@@ -2013,12 +2167,12 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
             error: function(xhr, status, error) {
                 console.error("Error retrieving image results:", error);
 								image_preview.find(".img_search_loading").remove();
-								image_preview.text("an error occurred");
+								image_preview.text(language.imageSelection.retrievalError || "An error occurred while retrieving image results.");
             },
             complete: function() {
                 // This function runs after the AJAX request completes (whether success or error)
                 $('body').css("cursor", "default");
-                console.log("Image API request completed.");
+                // Debug: console.log("Image API request completed.");
             }
         });
         },
@@ -2265,7 +2419,13 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
         $('.ui-layout-west .footer').append(buttons);
 
         // add a checkbox that expands / collapses all pages / nested items in the tree
-        $('<span id="tree_checks"><input id="expand_tree" type="checkbox" title="' + language.chkExpandTree.$tooltip + '"><label id="expand_tree_label" for="expand_tree" class="enabled">' + language.chkExpandTree.$label + '</label></span>').prependTo(buttons);
+        var expandTreeCheckbox = $('<input id="expand_tree" type="checkbox" title="' + language.chkExpandTree.$tooltip + '">');
+        // Initialize checkbox state from defaultExpandTree
+        expandTreeCheckbox.prop('checked', defaultExpandTree);
+        
+        var expandTreeLabel = $('<label id="expand_tree_label" for="expand_tree" class="enabled">' + language.chkExpandTree.$label + '</label>');
+        $('<span id="tree_checks"></span>').append(expandTreeCheckbox).append(expandTreeLabel).prependTo(buttons);
+        
         $('#expand_tree').on("change", function() {
             expandTree();
         });
@@ -2281,7 +2441,6 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
     my.refresh_workspaceMerge = refresh_workspaceMerge;
     my.build_json = build_json;
     my.savepreviewasync = savepreviewasync;
-
 
     return parent;
 

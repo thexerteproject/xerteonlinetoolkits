@@ -1,0 +1,11 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+( e => {
+const { [ 'no' ]: { dictionary, getPluralForm } } = {"no":{"dictionary":{"Emoji":"Emoji","Show all emoji...":"Vis alle emojiene...","Find an emoji (min. 2 characters)":"Finn en emoji (min. 2 tegn)","No emojis were found matching \"%0\".":"Ingen emojier ble funnet som samsvarer med «%0».","Keep on typing to see the emoji.":"Fortsett å skrive for å se emojien.","The query must contain at least two characters.":"Spørringen må inneholde minst to tegn.","Smileys & Expressions":"Smileys og uttrykk","Gestures & People":"Gester og mennesker","Animals & Nature":"Dyr og natur","Food & Drinks":"Mat og drikke","Travel & Places":"Reise og steder","Activities":"Aktiviteter","Objects":"Gjenstander","Symbols":"Symboler","Flags":"Flagg","Select skin tone":"Velg hudfarge","Default skin tone":"Standard hudfarge","Light skin tone":"Lys hudfarge","Medium Light skin tone":"Medium lys hudfarge","Medium skin tone":"Medium hudfarge","Medium Dark skin tone":"Middels mørk hudfarge","Dark skin tone":"Mørk hudfarge","Emoji picker":"Emoji-velger"},getPluralForm(n){return (n != 1);}}};
+e[ 'no' ] ||= { dictionary: {}, getPluralForm: null };
+e[ 'no' ].dictionary = Object.assign( e[ 'no' ].dictionary, dictionary );
+e[ 'no' ].getPluralForm = getPluralForm;
+} )( window.CKEDITOR_TRANSLATIONS ||= {} );

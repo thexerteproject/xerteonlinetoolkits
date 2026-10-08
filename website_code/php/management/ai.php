@@ -27,6 +27,7 @@ require("management_library.php");
 require_once("vendor_option_component.php");
 
 if (is_user_admin()) {
+    global $xerte_toolkits_site;
     $assumedVendorConfigPath = "../../../vendor_config.php";
     if (!is_file($assumedVendorConfigPath)) {
         echo '<div class="admin_guide_error_ref">';
@@ -74,6 +75,9 @@ if (is_user_admin()) {
     }
     echo '<div class="admin_guide_ref">';
     echo MANAGEMENT_AI_ADMIN_GUIDE_MESSAGE . ' <p><a href="' . MANAGEMENT_AI_ADMIN_GUIDE_URL . '" target="_blank" rel="noopener noreferrer">' . MANAGEMENT_AI_ADMIN_GUIDE_URL . '</a></p>';
+    echo '<div>';
+    echo '<div class="ethical_statement_ref">';
+    echo MANAGEMENT_AI_ETHICAL_STATEMENT_MESSAGE . ' <p><a href="' . MANAGEMENT_AI_ETHICAL_STATEMENT_URL . '" target="_blank" rel="noopener noreferrer">' . MANAGEMENT_AI_ETHICAL_STATEMENT_URL . '</a></p>';
     echo '<div>';
 
     $lister = new ModelLister(20);
@@ -165,6 +169,208 @@ if (is_user_admin()) {
 
     }
 
+// load ai settings options
+$ai_settings_options_rows = db_query(
+    "SELECT setting_key, option_values
+       FROM " . $xerte_toolkits_site->database_table_prefix . "ai_settings_options
+      ORDER BY id ASC"
+);
+
+// load global ai settings row
+$ai_settings_global = db_query_one(
+    "SELECT *
+       FROM " . $xerte_toolkits_site->database_table_prefix . "ai_settings
+      WHERE scope_type = ? AND scope_id = ?",
+    ['global', 0]
+);
+
+// read ai_settings columns dynamically
+$ai_settings_columns = [];
+$columns_query = db_query(
+    "SHOW COLUMNS FROM " . $xerte_toolkits_site->database_table_prefix . "ai_settings"
+);
+
+if (is_array($columns_query)) {
+    foreach ($columns_query as $column) {
+        if (!isset($column['Field'])) {
+            continue;
+        }
+
+        $field_name = $column['Field'];
+
+        if ($field_name === 'id' || $field_name === 'scope_type' || $field_name === 'scope_id') {
+            continue;
+        }
+
+        $ai_settings_columns[] = $field_name;
+    }
+}
+
+// build quick lookup for options rows
+$ai_settings_options_lookup = [];
+if (is_array($ai_settings_options_rows)) {
+    foreach ($ai_settings_options_rows as $row) {
+        $ai_settings_options_lookup[$row['setting_key']] = $row['option_values'];
+    }
+}
+
+// build ai model options from enabled ai vendors in management_helper
+$ai_model_options = [];
+
+$ai_vendors = db_query(
+    "SELECT vendor, label, enabled, sub_options
+       FROM " . $xerte_toolkits_site->database_table_prefix . "management_helper
+      WHERE type = ? AND enabled = ?",
+    ['ai', 1]
+);
+
+if (is_array($ai_vendors)) {
+    foreach ($ai_vendors as $vendor_row) {
+
+        $sub_options = [];
+        if (!empty($vendor_row['sub_options'])) {
+            $decoded = json_decode($vendor_row['sub_options']);
+            if (is_object($decoded)) {
+                $sub_options = $decoded;
+            }
+        }
+
+        $needs_key = !empty($sub_options->needs_key);
+        $has_key = !empty($sub_options->has_key);
+
+        if ($needs_key && !$has_key) {
+            continue;
+        }
+
+        if (!empty($vendor_row['vendor'])) {
+            $ai_model_options[] = [
+                'value' => $vendor_row['vendor'],
+                'label' => !empty($vendor_row['label']) ? $vendor_row['label'] : $vendor_row['vendor']
+            ];
+        }
+    }
+}
+?>
+
+<hr />
+
+<h2>
+    <?php
+    echo MANAGEMENT_AI_ADMIN_OPTIONS_AND_DEFAULTS_HEADING;
+    ?>
+</h2>
+
+    <div class="ai-settings-options-section">
+        <p>
+        <?php
+        // needs language var connection
+        echo MANAGEMENT_AI_ADMIN_OPTIONS_DESCRIPTION;
+        ?>
+        </p>
+        <?php if (is_array($ai_settings_options_rows)) { ?>
+            <?php foreach ($ai_settings_options_rows as $row) { ?>
+                <?php
+                $setting_key = $row['setting_key'];
+                $option_values = $row['option_values'];
+                ?>
+                <p>
+                    <?php
+                    $lang_constant_name = 'MANAGEMENT_AI_ADMIN_OPTIONS_' . strtoupper($setting_key);
+                    echo constant($lang_constant_name);
+                    ?>
+                </p>
+                <form>
+                <textarea
+                        id="ai_settings_options_<?php echo htmlspecialchars($setting_key); ?>"
+                        name="ai_settings_options_<?php echo htmlspecialchars($setting_key); ?>"
+                        rows="3"
+                        cols="80"
+                        style="width: 95%;"
+                ><?php echo htmlspecialchars($option_values); ?></textarea>
+                </form>
+            <?php } ?>
+        <?php } ?>
+    </div>
+
+    <div class="ai-settings-defaults-section">
+        <h3>
+            <?php
+            echo MANAGEMENT_AI_ADMIN_DEFAULTS_HEADING;
+            ?>
+        </h3>
+
+        <p>
+            <?php
+            echo MANAGEMENT_AI_ADMIN_DEFAULTS_DESCRIPTION;
+            ?>
+        </p>
+
+        <?php foreach ($ai_settings_columns as $field_name) { ?>
+            <?php
+            $selected_value = isset($ai_settings_global[$field_name]) ? $ai_settings_global[$field_name] : '';
+
+            $field_options = [];
+
+            if ($field_name === 'ai_model') {
+                $field_options = $ai_model_options;
+            } else if (isset($ai_settings_options_lookup[$field_name])) {
+                $field_options = array_filter(array_map('trim', explode(',', $ai_settings_options_lookup[$field_name])));
+            }
+            ?>
+
+            <p>
+                <?php
+                $lang_constant_name = 'MANAGEMENT_AI_ADMIN_DEFAULT_' . strtoupper($field_name);
+                echo constant($lang_constant_name);
+                ?>
+
+                <select
+                        id="ai_settings_default_<?php echo htmlspecialchars($field_name); ?>"
+                        name="ai_settings_default_<?php echo htmlspecialchars($field_name); ?>"
+                        style="padding: 0.4em 0.15em;"
+                >
+                    <?php foreach ($field_options as $option_item) { ?>
+                        <?php
+                        if ($field_name === 'ai_model') {
+                            $option_value = $option_item['value'];
+                            $option_label = $option_item['label'];
+                        } else {
+                            $option_value = $option_item;
+                            $option_label = $option_item;
+                        }
+                        ?>
+                        <option
+                                value="<?php echo htmlspecialchars($option_value); ?>"
+                                <?php echo ($selected_value === $option_value ? 'selected="selected"' : ''); ?>
+                        >
+                            <?php
+                            if ($field_name === 'ai_model') {
+                                echo htmlspecialchars($option_label);
+                            } else {
+                                $choice_constant = '';
+
+                                if ($field_name === 'reading_level') {
+                                    $choice_constant = 'MANAGEMENT_AI_ADMIN_OPTIONS_CHOICES_READING_LEVEL_' . strtoupper($option_value);
+                                } else if ($field_name === 'education_level') {
+                                    $choice_constant = 'MANAGEMENT_AI_ADMIN_OPTIONS_EDUCATION_LEVEL_' . strtoupper($option_value);
+                                } else if ($field_name === 'tone_and_style') {
+                                    $choice_constant = 'MANAGEMENT_AI_ADMIN_OPTIONS_TONE_AND_STYLE_' . strtoupper($option_value);
+                                }
+
+                                if ($choice_constant !== '' && defined($choice_constant)) {
+                                    echo htmlspecialchars(constant($choice_constant));
+                                } else {
+                                    echo htmlspecialchars($option_value);
+                                }
+                            }
+                            ?>
+                        </option>
+                    <?php } ?>
+                </select>
+            </p>
+        <?php } ?>
+    </div>
+    <?php
 } else {
 
     management_fail();

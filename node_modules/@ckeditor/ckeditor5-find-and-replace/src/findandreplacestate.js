@@ -1,0 +1,93 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+import { ObservableMixin, Collection } from 'ckeditor5/src/utils.js';
+/**
+ * The object storing find and replace plugin state for a given editor instance.
+ */
+export class FindAndReplaceState extends /* #__PURE__ */ ObservableMixin() {
+    /**
+     * Creates an instance of the state.
+     */
+    constructor(model) {
+        super();
+        this.set('results', new Collection());
+        this.set('highlightedResult', null);
+        this.set('highlightedOffset', 0);
+        this.set('searchText', '');
+        this.set('replaceText', '');
+        this.set('lastSearchCallback', null);
+        this.set('matchCase', false);
+        this.set('matchWholeWords', false);
+        this.results.on('change', (eventInfo, { removed, index }) => {
+            if (Array.from(removed).length) {
+                let highlightedResultRemoved = false;
+                model.change(writer => {
+                    for (const removedResult of removed) {
+                        if (this.highlightedResult === removedResult) {
+                            highlightedResultRemoved = true;
+                        }
+                        if (model.markers.has(removedResult.marker.name)) {
+                            writer.removeMarker(removedResult.marker);
+                        }
+                    }
+                });
+                if (highlightedResultRemoved) {
+                    const nextHighlightedIndex = index >= this.results.length ? 0 : index;
+                    this.highlightedResult = this.results.get(nextHighlightedIndex);
+                }
+            }
+        });
+        this.on('change:highlightedResult', () => {
+            this.refreshHighlightOffset(model);
+        });
+    }
+    /**
+     * Cleans the state up and removes markers from the model.
+     */
+    clear(model) {
+        this.searchText = '';
+        model.change(writer => {
+            if (this.highlightedResult) {
+                const oldMatchId = this.highlightedResult.marker.name.split(':')[1];
+                const oldMarker = model.markers.get(`findResultHighlighted:${oldMatchId}`);
+                if (oldMarker) {
+                    writer.removeMarker(oldMarker);
+                }
+            }
+            [...this.results].forEach(({ marker }) => {
+                writer.removeMarker(marker);
+            });
+        });
+        this.results.clear();
+    }
+    /**
+     * Refreshes the highlight result offset based on it's index within the result list.
+     */
+    refreshHighlightOffset(model) {
+        const { highlightedResult, results } = this;
+        if (highlightedResult) {
+            this.highlightedOffset = sortSearchResultsByMarkerPositions(model, [...results]).indexOf(highlightedResult) + 1;
+        }
+        else {
+            this.highlightedOffset = 0;
+        }
+    }
+}
+/**
+ * Sorts search results by marker positions. Make sure that the results are sorted in the same order as they appear in the document
+ * to avoid issues with the `find next` command. Apparently, the order of the results in the state might be different than the order
+ * of the markers in the model.
+ *
+ * @internal
+ */
+export function sortSearchResultsByMarkerPositions(model, results) {
+    const sortMapping = { before: -1, same: 0, after: 1, different: 1 };
+    // `compareWith` doesn't play well with multi-root documents, so we need to sort results by root name first
+    // and then sort them within each root. It prevents "random" order of results when the document has multiple roots.
+    // See more: https://github.com/ckeditor/ckeditor5/pull/17292#issuecomment-2442084549
+    return model.document.getRootNames().flatMap(rootName => results
+        .filter(result => result.marker.getStart().root.rootName === rootName)
+        .sort((a, b) => sortMapping[a.marker.getStart().compareWith(b.marker.getStart())]));
+}

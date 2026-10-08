@@ -1,0 +1,12 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+:root{
+	--ck-content-highlight-marker-yellow:hsl(60, 97%, 73%);
+	--ck-content-highlight-marker-green:hsl(120, 93%, 68%);
+	--ck-content-highlight-marker-pink:hsl(345, 96%, 73%);
+	--ck-content-highlight-marker-blue:hsl(201, 97%, 72%);
+	--ck-content-highlight-pen-red:hsl(0, 85%, 49%);
+	--ck-content-highlight-pen-green:hsl(112, 100%, 27%);
+}

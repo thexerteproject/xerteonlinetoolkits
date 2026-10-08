@@ -1,0 +1,25 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+:root{
+	--ck-mention-list-max-height:300px;
+}
+
+.ck.ck-mentions{
+	max-height:var(--ck-mention-list-max-height);
+
+	overflow-y:auto;
+	overflow-x:hidden;
+
+	overscroll-behavior:contain;
+}
+
+.ck.ck-mentions > .ck-list__item{
+		overflow:hidden;
+		flex-shrink:0;
+	}
+
+div.ck.ck-balloon-panel.ck-mention-balloon{
+	z-index:calc( var(--ck-z-dialog) + 1);
+}

@@ -33,6 +33,10 @@ final class ModelLister
             return $this->listAnthropicModels($apiKey, $typeProperty);
         }
 
+        if ($vendor === 'gemini') {
+            return $this->listGeminiModels($apiKey, $typeProperty);
+        }
+
         throw new InvalidArgumentException("Unsupported vendor: " . $vendorName);
     }
 
@@ -118,6 +122,120 @@ final class ModelLister
 
         // Prefer "id" as identifier; display_name is useful but not for routing calls.
         return $this->pluckStrings($allItems, $typeProperty, array('id', 'display_name'));
+    }
+
+    private function listGeminiModels($apiKey, $typeProperty)
+    {
+        $baseUrl =
+            'https://generativelanguage.googleapis.com/v1beta/models';
+
+        $headers = array(
+            'x-goog-api-key: ' . $apiKey,
+            'Accept: application/json',
+        );
+
+        $allItems = array();
+        $pageToken = null;
+
+        do {
+            $query = array(
+                'pageSize' => 1000,
+            );
+
+            if ($pageToken !== null && $pageToken !== '') {
+                $query['pageToken'] = $pageToken;
+            }
+
+            $url = $baseUrl . '?' . http_build_query($query);
+            $json = $this->httpGetJson($url, $headers);
+
+            $pageItems = array();
+
+            if (
+                isset($json['models']) &&
+                is_array($json['models'])
+            ) {
+                $pageItems = $json['models'];
+            }
+
+            foreach ($pageItems as $item) {
+                if (!is_array($item)) {
+                    continue;
+                }
+
+                /*
+                 * Exclude embedding-only and other non-generative
+                 * models from the normal Gemini model selector.
+                 */
+                if (
+                    !isset($item['supportedGenerationMethods']) ||
+                    !is_array($item['supportedGenerationMethods']) ||
+                    !in_array(
+                        'generateContent',
+                        $item['supportedGenerationMethods'],
+                        true
+                    )
+                ) {
+                    continue;
+                }
+
+                /*
+                 * Gemini returns:
+                 *
+                 *     models/gemini-3.6-flash
+                 *
+                 * The Interactions payload uses:
+                 *
+                 *     gemini-3.6-flash
+                 */
+                if (
+                    isset($item['name']) &&
+                    is_string($item['name'])
+                ) {
+                    $modelId = $item['name'];
+
+                    if (strpos($modelId, 'models/') === 0) {
+                        $modelId = substr(
+                            $modelId,
+                            strlen('models/')
+                        );
+                    }
+
+                    /*
+                     * Add an ID field so this provider behaves like
+                     * OpenAI, Anthropic and Mistral when the default
+                     * $typeProperty is "id".
+                     */
+                    $item['id'] = $modelId;
+                } elseif (
+                    isset($item['baseModelId']) &&
+                    is_string($item['baseModelId'])
+                ) {
+                    $item['id'] = $item['baseModelId'];
+                }
+
+                $allItems[] = $item;
+            }
+
+            $pageToken = isset($json['nextPageToken'])
+                ? (string)$json['nextPageToken']
+                : null;
+
+        } while (
+            $pageToken !== null &&
+            $pageToken !== ''
+        );
+
+        return $this->pluckStrings(
+            $allItems,
+            $typeProperty,
+            array(
+                'id',
+                'baseModelId',
+                'name',
+                'displayName',
+            )
+        );
     }
 
     private function getApiKey($xerte_toolkits_site, $vendor)

@@ -1,0 +1,153 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/**
+ * @module engine/model/operation/insertoperation
+ */
+import { Operation } from './operation.js';
+import { ModelPosition } from '../position.js';
+import { ModelNodeList } from '../nodelist.js';
+import { MoveOperation } from './moveoperation.js';
+import { _insert, _normalizeNodes } from './utils.js';
+import { ModelText } from '../text.js';
+import { ModelElement } from '../element.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+/**
+ * Operation to insert one or more nodes at given position in the model.
+ */
+export class InsertOperation extends Operation {
+    /**
+     * Position of insertion.
+     *
+     * @readonly
+     */
+    position;
+    /**
+     * List of nodes to insert.
+     *
+     * @readonly
+     */
+    nodes;
+    /**
+     * Flag deciding how the operation should be transformed. If set to `true`, nodes might get additional attributes
+     * during operational transformation. This happens when the operation insertion position is inside of a range
+     * where attributes have changed.
+     */
+    shouldReceiveAttributes;
+    /**
+     * Creates an insert operation.
+     *
+     * @param position Position of insertion.
+     * @param nodes The list of nodes to be inserted.
+     * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
+     * can be applied or `null` if the operation operates on detached (non-document) tree.
+     */
+    constructor(position, nodes, baseVersion) {
+        super(baseVersion);
+        this.position = position.clone();
+        this.position.stickiness = 'toNone';
+        this.nodes = new ModelNodeList(_normalizeNodes(nodes));
+        this.shouldReceiveAttributes = false;
+    }
+    /**
+     * @inheritDoc
+     */
+    get type() {
+        return 'insert';
+    }
+    /**
+     * Total offset size of inserted nodes.
+     */
+    get howMany() {
+        return this.nodes.maxOffset;
+    }
+    /**
+     * @inheritDoc
+     */
+    get affectedSelectable() {
+        return this.position.clone();
+    }
+    /**
+     * Creates and returns an operation that has the same parameters as this operation.
+     */
+    clone() {
+        const nodes = new ModelNodeList([...this.nodes].map(node => node._clone(true)));
+        const insert = new InsertOperation(this.position, nodes, this.baseVersion);
+        insert.shouldReceiveAttributes = this.shouldReceiveAttributes;
+        return insert;
+    }
+    /**
+     * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
+     */
+    getReversed() {
+        const graveyard = this.position.root.document.graveyard;
+        const gyPosition = new ModelPosition(graveyard, [0]);
+        return new MoveOperation(this.position, this.nodes.maxOffset, gyPosition, this.baseVersion + 1);
+    }
+    /**
+     * @inheritDoc
+     * @internal
+     */
+    _validate() {
+        const targetElement = this.position.parent;
+        if (!targetElement || targetElement.maxOffset < this.position.offset) {
+            /**
+             * Insertion position is invalid.
+             *
+             * @error insert-operation-position-invalid
+             */
+            throw new CKEditorError('insert-operation-position-invalid', this);
+        }
+    }
+    /**
+     * @inheritDoc
+     * @internal
+     */
+    _execute() {
+        // What happens here is that we want original nodes be passed to writer because we want original nodes
+        // to be inserted to the model. But in InsertOperation, we want to keep those nodes as they were added
+        // to the operation, not modified. For example, text nodes can get merged or cropped while Elements can
+        // get children. It is important that InsertOperation has the copy of original nodes in intact state.
+        const originalNodes = this.nodes;
+        this.nodes = new ModelNodeList([...originalNodes].map(node => node._clone(true)));
+        _insert(this.position, originalNodes);
+    }
+    /**
+     * @inheritDoc
+     */
+    toJSON() {
+        const json = super.toJSON();
+        json.position = this.position.toJSON();
+        json.nodes = this.nodes.toJSON();
+        return json;
+    }
+    /**
+     * @inheritDoc
+     */
+    static get className() {
+        return 'InsertOperation';
+    }
+    /**
+     * Creates `InsertOperation` object from deserialized object, i.e. from parsed JSON string.
+     *
+     * @param json Deserialized JSON object.
+     * @param document Document on which this operation will be applied.
+     */
+    static fromJSON(json, document) {
+        const children = [];
+        for (const child of json.nodes) {
+            if (child.name) {
+                // If child has name property, it is an Element.
+                children.push(ModelElement.fromJSON(child));
+            }
+            else {
+                // Otherwise, it is a Text node.
+                children.push(ModelText.fromJSON(child));
+            }
+        }
+        const insert = new InsertOperation(ModelPosition.fromJSON(json.position, document), children, json.baseVersion);
+        insert.shouldReceiveAttributes = json.shouldReceiveAttributes;
+        return insert;
+    }
+}

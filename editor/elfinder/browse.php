@@ -65,6 +65,8 @@ $mode = 'standalone';
 if (isset($_REQUEST['mode']) && x_clean_input($_REQUEST['mode'])=='cke') {
     $mode = 'cke';
     $funcNum = x_clean_input($_REQUEST['CKEditorFuncNum']);
+} else if (isset($_REQUEST['mode']) && x_clean_input($_REQUEST['mode'])=='cke5') {
+    $mode = 'cke5';
 }
 
 $lang = "en";
@@ -104,10 +106,10 @@ if (isset($_SESSION["lti_enabled"]) && $_SESSION["lti_enabled"]) {
 		<!-- jQuery and jQuery UI (REQUIRED) -->
         <link rel="stylesheet" type="text/css" href="../../editor/css/jquery-ui.css">
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="../../editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+        <script src="../../modules/common/js/jquery-1.9.1.min.js"></script>
+        <script>window.jQuery || document.write('<script src=\"../../editor/js/vendor/jquery-1.9.1.min.js\"><\/script>')</script>
         <?php if (preg_match('~MSIE|Internet Explorer~i', $_SERVER['HTTP_USER_AGENT']) || (strpos($_SERVER['HTTP_USER_AGENT'], 'Trident/7.0; rv:11.0') !== false)) { ?>
-            <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+            <script type="text/javascript" src="../../editor/js/vendor/jquery.ui-1.10.4.js"></script>
         <?php }else{ ?>
             <script type="text/javascript" src="../../editor/js/vendor/jquery.ui-1.10.4.js"></script>
         <?php } ?>
@@ -208,6 +210,18 @@ if (isset($_SESSION["lti_enabled"]) && $_SESSION["lti_enabled"]) {
                 ?>
                     getFileCallback : function(file) {
                         window.opener.CKEDITOR.tools.callFunction(funcNum, file.url);
+                        window.close();
+                    }
+                <?php
+                }
+                else if ($mode=='cke5')
+                {
+                ?>
+                    getFileCallback : function(file) {
+                        if (window.opener && typeof window.opener.__xerteCke5FilePickerResolve === 'function') {
+                            window.opener.__xerteCke5FilePickerResolve(file.url);
+                            window.opener.__xerteCke5FilePickerResolve = null;
+                        }
                         window.close();
                     }
                 <?php

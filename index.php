@@ -127,14 +127,14 @@ $version = getVersion();
     <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js"></script>
     <script type="text/javascript" src="editor/js/vendor/jstree.js?version=<?php echo $version;?>"></script>
     <script type="text/javascript" src="website_code/scripts/plotly-latest.min.js?version=<?php echo $version;?>"></script>
-    <script type="text/javascript" src="modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.min.js?version=<?php echo $version;?>"></script>
-    <script type="text/javascript" src="modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.gallery.min.js?version=<?php echo $version;?>"></script>
+    <script type="text/javascript" src="modules/common/js/featherlight/featherlight.min.js?version=<?php echo $version;?>"></script>
+    <script type="text/javascript" src="modules/common/js/featherlight/featherlight.gallery.min.js?version=<?php echo $version;?>"></script>
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
-    <!-- link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>" -->
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css">
+    <!-- link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>" -->
+    <link rel="stylesheet" type="text/css" href="modules/common/fontawesome-6.6.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="modules/common/fontawesome-6.6.0/css/v4-shims.min.css">
+    <link rel="stylesheet" type="text/css" href="modules/common/fontawesome-6.6.0/css/v5-font-face.min.css">
 
     <link href="website_code/styles/bootstrap.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/nv.d3.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
@@ -143,8 +143,8 @@ $version = getVersion();
     <link href="website_code/styles/jquery-ui-layout.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/xerte_buttons.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
     <link href="website_code/styles/frontpage.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
-    <link rel="stylesheet" href="modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.min.css?version=<?php echo $version;?>" />
-    <link rel="stylesheet" href="modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.gallery.min.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" href="modules/common/js/featherlight/featherlight.min.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" href="modules/common/js/featherlight/featherlight.gallery.min.css?version=<?php echo $version;?>" />
 
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
@@ -161,14 +161,45 @@ $version = getVersion();
     {
         $languagecodevar = "var language_code = \"en-GB\"";
     }
+    // Check if authmech exists, if not create it
+    if (!isset($authmech)) {
+        $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+    }
+    
+    // Prepare user preferences for JavaScript (always reload from DB when supported)
+    $user_preferences_json = "{}";
+    $user_has_preferences = "false";
+
+    if ($authmech->hasUserPreferences() && !empty($_SESSION['toolkits_logon_id']) && isset($_SESSION['toolkits_logon_username'])) {
+        $user_has_preferences = "true";
+        $pref_row = db_query_one(
+            "SELECT preference FROM {$xerte_toolkits_site->database_table_prefix}logindetails WHERE username = ?",
+            array($_SESSION['toolkits_logon_username'])
+        );
+        if (!empty($pref_row) && isset($pref_row['preference']) && $pref_row['preference'] !== '') {
+            $preferences = json_decode($pref_row['preference'], true);
+            $_SESSION['toolkits_preferences'] = is_array($preferences) ? $preferences : array();
+        } else {
+            $_SESSION['toolkits_preferences'] = array();
+        }
+        $user_preferences_json = json_encode($_SESSION['toolkits_preferences']);
+    } elseif (isset($_SESSION['toolkits_preferences']) && is_array($_SESSION['toolkits_preferences'])) {
+        $user_preferences_json = json_encode($_SESSION['toolkits_preferences']);
+    }
+    
     echo "
         <script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS
             var site_url = \"{$xerte_toolkits_site->site_url}\";
+            var rest_api_url = \"{$xerte_toolkits_site->site_url}website_code/api/v1/index.php\";
             var site_apache = \"{$xerte_toolkits_site->apache}\";
             var properties_ajax_php_path = \"website_code/php/properties/\";
             var management_ajax_php_path = \"website_code/php/management/\";
             var ajax_php_path = \"website_code/php/\";
             {$languagecodevar};
+            var user_preferences = {$user_preferences_json};
+            var user_has_preferences = {$user_has_preferences};
+            var INDEX_CHANGE_PASSWORD = " . json_encode(INDEX_CHANGE_PASSWORD) . ";
+            var INDEX_MY_PREFERENCES = " . json_encode(INDEX_MY_PREFERENCES) . ";
         </script>";
     ?>
     <script type="text/javascript" language="javascript" src="website_code/scripts/validation.js?version=<?php echo $version;?>"></script>
@@ -177,7 +208,7 @@ $version = getVersion();
     _include_javascript_file("website_code/scripts/screen_display.js?version=" . $version);
     _include_javascript_file("website_code/scripts/ajax_management.js?version=" . $version);
     _include_javascript_file("website_code/scripts/folders.js?version=" . $version);
-    _include_javascript_file("website_code/scripts/template_management.js?version" . $version);
+    _include_javascript_file("website_code/scripts/template_management.js?version=" . $version);
     _include_javascript_file("website_code/scripts/logout.js?version=" . $version);
     _include_javascript_file("website_code/scripts/import.js?version=" . $version);
     _include_javascript_file("website_code/scripts/functions.js?version=" . $version);
@@ -336,35 +367,60 @@ Folder popup is the div that appears when creating a new folder
             </div>
 
            <div class="userbar">
-                <?PHP //echo "&nbsp;&nbsp;&nbsp;" . INDEX_LOGGED_IN_AS . " " .;
-                echo $_SESSION['toolkits_firstname'] . " " . $_SESSION['toolkits_surname'] ?>
-               <?PHP
-                // only on Db:
-                if ($authmech->canManageUser($jsscript)){
-                    echo '
-                    <div class="settingsDropdown">
-                        <button onclick="changepasswordPopup()" title=" ' . INDEX_CHANGE_PASSWORD . ' " class="xerte_workspace_button settingsButton"><i class="fa fa-cog xerte-icon"></i></button>
-                        <!-- <div id="settings" class="settings-content">
-                            <button class="xerte_button" onclick="changepasswordPopup()">' . INDEX_CHANGE_PASSWORD . '</button>
-                            <button class="xerte_button">Placeholder</button>
-                            <button class="xerte_button">Placeholder</button>
-                            <button class="xerte_button">Placeholder</button>
-                        </div> -->
+                <?php display_language_userbar(); ?>
+
+                <div class="userbar-item userbar-user">
+                    <div class="userbar-dropdown user-dropdown">
+                        <button type="button" class="userbar-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                            <span class="userbar-dropdown-label"><?php echo htmlspecialchars($_SESSION['toolkits_firstname']); ?></span>
+                            <i class="fa fa-chevron-down userbar-chevron" aria-hidden="true"></i>
+                        </button>
+                        <div class="userbar-dropdown-menu userbar-user-menu" id="user-menu" role="menu">
+                            <ul class="userbar-dropdown-list" id="user-menu-items">
+                                <?php if ($authmech->canManageUser($jsscript)) { ?>
+                                <li role="none">
+                                    <button type="button" role="menuitem" class="userbar-dropdown-item userbar-user-item" onclick="changepasswordPopup('details')">
+                                        <i class="fa-solid fa-key userbar-user-item-icon" aria-hidden="true"></i>
+                                        <span class="userbar-user-item-label"><?php echo INDEX_CHANGE_PASSWORD; ?></span>
+                                    </button>
+                                </li>
+                                <?php } ?>
+                                <li role="none">
+                                    <button type="button" role="menuitem" class="userbar-dropdown-item userbar-user-item" onclick="changepasswordPopup('preferences')">
+                                        <i class="fa-solid fa-sliders userbar-user-item-icon" aria-hidden="true"></i>
+                                        <span class="userbar-user-item-label"><?php echo INDEX_MY_PREFERENCES; ?></span>
+                                    </button>
+                                </li>
+                                <?php if (userHasAdminRights()) { ?>
+                                <li role="none">
+                                    <button type="button" role="menuitem" class="userbar-dropdown-item userbar-user-item" onclick="javascript:elevate('management.php')">
+                                        <i class="fa-solid fa-screwdriver-wrench userbar-user-item-icon" aria-hidden="true"></i>
+                                        <span class="userbar-user-item-label"><?php echo INDEX_TO_MANAGEMENT; ?></span>
+                                    </button>
+                                </li>
+                                <?php } ?>
+                                <?php if ($xerte_toolkits_site->authentication_method != "Guest") { ?>
+                                <li role="none">
+                                    <button type="button" role="menuitem" class="userbar-dropdown-item userbar-user-item userbar-user-item--logout"
+                                            onclick="javascript:logout(<?php echo($xerte_toolkits_site->authentication_method == "Saml2" ? "true" : "false"); ?>)">
+                                        <i class="fa-solid fa-right-from-bracket userbar-user-item-icon" aria-hidden="true"></i>
+                                        <span class="userbar-user-item-label"><?php echo INDEX_BUTTON_LOGOUT; ?></span>
+                                    </button>
+                                </li>
+                                <?php } ?>
+                            </ul>
+                        </div>
                     </div>
-                ';
-                }
-                if (getRolesFromUser($_SESSION['toolkits_logon_id'])) {
-                    echo '<button onclick="javascript:elevate(\'management.php\')" title=" ' . INDEX_TO_MANAGEMENT . ' " class="xerte_workspace_button "><i class="fas fa-tools xerte-icon"></i></button>';
-                }
 
-               ?>
-
-               <div style="display: inline-block"><?php display_language_selectionform("general", false); ?></div>
-               <?PHP if($xerte_toolkits_site->authentication_method != "Guest") {
-               ?><button title="<?PHP echo INDEX_BUTTON_LOGOUT; ?>" type="button" class="xerte_workspace_button"
-                        onclick="javascript:logout(<?php echo($xerte_toolkits_site->authentication_method == "Saml2" ? "true" : "false"); ?>)">
-                    <i class="fa fa-sign-out xerte-icon"></i><!--<?PHP echo INDEX_BUTTON_LOGOUT; ?>-->
-                </button><?PHP } ?>
+                    <button type="button"
+                            class="userbar-profile-btn"
+                            title="<?php echo htmlspecialchars(INDEX_LOGGED_IN_AS . ' ' . $_SESSION['toolkits_firstname']); ?>"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                            aria-controls="user-menu">
+                        <i class="fa fa-user" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
             <div style="clear:both;"></div>
             <div class="separator"></div>
@@ -419,7 +475,7 @@ Folder popup is the div that appears when creating a new folder
 				<div class="sorter">
 					<form name="sorting" style="float:left;margin:7px 5px 5px 10px;">
 						<i class="fa  fa-sort xerte-icon"></i>&nbsp;<label for="sort-selector"><?PHP echo INDEX_SORT; ?></label>
-						<select id="sort-selector" name="type" onChange="refresh_workspace()">>
+						<select id="sort-selector" name="type" onChange="refresh_workspace(); save_user_preference('sort_type', this.value);">
 							<option value="alpha_up"><?PHP echo INDEX_SORT_A; ?></option>
 							<option value="alpha_down"><?PHP echo INDEX_SORT_Z; ?></option>
 							<option value="date_down" selected><?PHP echo INDEX_SORT_NEW; ?></option>
@@ -494,7 +550,7 @@ Folder popup is the div that appears when creating a new folder
 				<?php echo $xerte_toolkits_site->copyright; ?> <i class="fa fa-info-circle" aria-hidden="true" style="color:#f86718; cursor: help;" title="<?PHP $vtext = "version.txt";$lines = file($vtext);echo $lines[0];?>"></i>
 			</p>
 			<div class="footerlogos">
-				<a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.2AA-blue.png" border="0" alt="<?php echo INDEX_WCAG_LOGO_ALT; ?>"></a><a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0" alt="<?php echo INDEX_OSI_LOGO_ALT; ?>"></a><a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0" alt="<?php echo INDEX_APEREO_LOGO_ALT; ?>"></a><a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0" alt="<?php echo INDEX_XERTE_LOGO_ALT; ?>"></a>
+                <a href="https://xot.xerte.org.uk/play_653" target="_blank" title="Xerte AI Ethical Use and Transparency Statement https://xot.xerte.org.uk/play_653"><img src="website_code/images/XerteFooterAILogo.png" border="0" alt="<?php echo INDEX_XERTE_AI_LOGO_ALT; ?>"></a><a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.2AA-blue.png" border="0" alt="<?php echo INDEX_WCAG_LOGO_ALT; ?>"></a><a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0" alt="<?php echo INDEX_OSI_LOGO_ALT; ?>"></a><a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0" alt="<?php echo INDEX_APEREO_LOGO_ALT; ?>"></a><a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0" alt="<?php echo INDEX_XERTE_LOGO_ALT; ?>"></a>
 			</div>
 		</footer>
         <div style="clear:both;"></div>
@@ -504,6 +560,9 @@ Folder popup is the div that appears when creating a new folder
 <script>
     $(document).ready(function () {
         setupMainLayout();
+        if (typeof load_user_preferences === 'function') {
+            load_user_preferences(); // Load preferences before refreshing workspace
+        }
         refresh_workspace();
     });
 </script>

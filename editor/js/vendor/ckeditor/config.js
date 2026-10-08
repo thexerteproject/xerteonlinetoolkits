@@ -38,13 +38,13 @@ CKEDITOR.editorConfig = function( config ) {
 
     config.uploadUrl = '';
 
-    config.contentsCss = ['modules/xerte/parent_templates/Nottingham/common_html5/css/smoothness/jquery-ui-1.8.18.custom.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/css/editorstyles.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/css/mainStyles.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css',
-		'modules/xerte/parent_templates/Nottingham/common_html5/css/fonts.css'
+    config.contentsCss = ['modules/xerte/parent_templates/Nottingham/common/css/smoothness/jquery-ui-1.8.18.custom.css',
+        'modules/xerte/parent_templates/Nottingham/common/css/editorstyles.css',
+        'modules/xerte/parent_templates/Nottingham/common/css/mainStyles.css',
+        'modules/xerte/parent_templates/Nottingham/common/fontawesome-6.6.0/css/all.min.css',
+        'modules/xerte/parent_templates/Nottingham/common/fontawesome-6.6.0/css/v4-shims.min.css',
+        'modules/xerte/parent_templates/Nottingham/common/fontawesome-6.6.0/css/v5-font-face.min.css',
+		'modules/xerte/parent_templates/Nottingham/common/css/fonts.css'
     ];
 
     //Somehow the greek alphabet misses out the OMega

@@ -1,0 +1,11 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+( e => {
+const { [ 'da' ]: { dictionary, getPluralForm } } = {"da":{"dictionary":{"Rich Text Editor":"Wysiwyg editor","Edit block":"Redigér blok","Click to edit block":"Klik for at redigere blok","Drag to move":"Træk for at flytte","Next":"Næste","Previous":"Forrige","Editor toolbar":"Editor værktøjslinje","Dropdown toolbar":"Dropdown værktøjslinje","Dropdown menu":"Rullemenu","Black":"Sort","Dim grey":"Dunkel grå","Grey":"Grå","Light grey":"Lys grå","White":"Hvid","Red":"Rød","Orange":"Orange","Yellow":"Gyl","Light green":"Lys grøn","Green":"Grøn","Aquamarine":"Marineblå","Turquoise":"Turkis","Light blue":"Lys blå","Blue":"Blå","Purple":"Lilla","Editor block content toolbar":"Redigeringskasse indholdsværktøjslinje","Editor contextual toolbar":"Kontekstuel værktøjslinje til redigeringsprogram","HEX":"Hex","No results found":"Ingen resultater blev fundet","No searchable items":"Ingen søgbare artikler","Editor dialog":"Editor-dialog","Close":"Luk","Help Contents. To close this dialog press ESC.":"Hjælpeindhold. Tryk ESC for at lykke denne dialog.","Below, you can find a list of keyboard shortcuts that can be used in the editor.":"Nedenfor kan du finde en liste over tastaturgenveje, der kan bruges i editoren.","(may require <kbd>Fn</kbd>)":"(kan kræve <kbd>Fn</kbd>)","Accessibility":"Tilgængelighed","Accessibility help":"Tilgængelighedshjælp","Press %0 for help.":"Tryk %0 for at få hjælp.","Move focus in and out of an active dialog window":"Flyt fokus ind og ud af et aktivt dialogvindue","MENU_BAR_MENU_FILE":"Fil","MENU_BAR_MENU_EDIT":"Rediger","MENU_BAR_MENU_VIEW":"Vis","MENU_BAR_MENU_INSERT":"Indsæt","MENU_BAR_MENU_FORMAT":"Format","MENU_BAR_MENU_TOOLS":"Værktøjer","MENU_BAR_MENU_HELP":"Hjælp","MENU_BAR_MENU_TEXT":"Tekst","MENU_BAR_MENU_FONT":"Font","Editor menu bar":"Editor menulinje","Please enter a valid color (e.g. \"ff0000\").":"Indtast venligst en gyldig farve (f.eks. \"ff0000"},getPluralForm(n){return (n != 1);}}};
+e[ 'da' ] ||= { dictionary: {}, getPluralForm: null };
+e[ 'da' ].dictionary = Object.assign( e[ 'da' ].dictionary, dictionary );
+e[ 'da' ].getPluralForm = getPluralForm;
+} )( window.CKEDITOR_TRANSLATIONS ||= {} );

@@ -1,0 +1,24 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+.ck.ck-placeholder,
+.ck .ck-placeholder{
+	position:relative;
+}
+.ck.ck-placeholder::before, .ck .ck-placeholder::before{
+		position:absolute;
+		left:0;
+		right:0;
+		content:attr(data-placeholder);
+		pointer-events:none;
+	}
+.ck.ck-read-only .ck-placeholder::before{
+		display:none;
+	}
+.ck.ck-reset_all .ck-placeholder{
+	position:relative;
+}
+.ck.ck-editor__editable span[data-ck-unsafe-element]{
+	display:none;
+}

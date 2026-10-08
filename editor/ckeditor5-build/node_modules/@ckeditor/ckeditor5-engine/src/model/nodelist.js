@@ -1,0 +1,244 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/**
+ * @module engine/model/nodelist
+ */
+import { ModelNode } from './node.js';
+import { CKEditorError, spliceArray } from '@ckeditor/ckeditor5-utils';
+/**
+ * Provides an interface to operate on a list of {@link module:engine/model/node~ModelNode nodes}. `NodeList` is used internally
+ * in classes like {@link module:engine/model/element~ModelElement Element}
+ * or {@link module:engine/model/documentfragment~ModelDocumentFragment ModelDocumentFragment}.
+ */
+export class ModelNodeList {
+    /**
+     * Nodes contained in this node list.
+     */
+    _nodes = [];
+    /**
+     * This array maps numbers (offsets) to node that is placed at that offset.
+     *
+     * This array is similar to `_nodes` with the difference that one node may occupy multiple consecutive items in the array.
+     *
+     * This array is needed to quickly retrieve a node that is placed at given offset.
+     */
+    _offsetToNode = [];
+    /**
+     * Creates a node list.
+     *
+     * @internal
+     * @param nodes Nodes contained in this node list.
+     */
+    constructor(nodes) {
+        if (nodes) {
+            this._insertNodes(0, nodes);
+        }
+    }
+    /**
+     * Iterable interface.
+     *
+     * Iterates over all nodes contained inside this node list.
+     */
+    [Symbol.iterator]() {
+        return this._nodes[Symbol.iterator]();
+    }
+    /**
+     * Number of nodes contained inside this node list.
+     */
+    get length() {
+        return this._nodes.length;
+    }
+    /**
+     * Sum of {@link module:engine/model/node~ModelNode#offsetSize offset sizes} of all nodes contained inside this node list.
+     */
+    get maxOffset() {
+        return this._offsetToNode.length;
+    }
+    /**
+     * Gets the node at the given index. Returns `null` if incorrect index was passed.
+     */
+    getNode(index) {
+        return this._nodes[index] || null;
+    }
+    /**
+     * Gets the node at the given offset. Returns `null` if incorrect offset was passed.
+     */
+    getNodeAtOffset(offset) {
+        return this._offsetToNode[offset] || null;
+    }
+    /**
+     * Returns an index of the given node or `null` if given node does not have a parent.
+     *
+     * This is an alias to {@link module:engine/model/node~ModelNode#index}.
+     */
+    getNodeIndex(node) {
+        return node.index;
+    }
+    /**
+     * Returns the offset at which given node is placed in its parent or `null` if given node does not have a parent.
+     *
+     * This is an alias to {@link module:engine/model/node~ModelNode#startOffset}.
+     */
+    getNodeStartOffset(node) {
+        return node.startOffset;
+    }
+    /**
+     * Converts index to offset in node list.
+     *
+     * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `model-nodelist-index-out-of-bounds` if given index is less
+     * than `0` or more than {@link #length}.
+     */
+    indexToOffset(index) {
+        if (index == this._nodes.length) {
+            return this.maxOffset;
+        }
+        const node = this._nodes[index];
+        if (!node) {
+            /**
+             * Given index cannot be found in the node list.
+             *
+             * @error model-nodelist-index-out-of-bounds
+             */
+            throw new CKEditorError('model-nodelist-index-out-of-bounds', this);
+        }
+        return this.getNodeStartOffset(node);
+    }
+    /**
+     * Converts offset in node list to index.
+     *
+     * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `model-nodelist-offset-out-of-bounds` if given offset is less
+     * than `0` or more than {@link #maxOffset}.
+     */
+    offsetToIndex(offset) {
+        if (offset == this._offsetToNode.length) {
+            return this._nodes.length;
+        }
+        const node = this._offsetToNode[offset];
+        if (!node) {
+            /**
+             * Given offset cannot be found in the node list.
+             *
+             * @error model-nodelist-offset-out-of-bounds
+             * @param {number} offset The offset value.
+             * @param {module:engine/model/nodelist~ModelNodeList} nodeList Stringified node list.
+             */
+            throw new CKEditorError('model-nodelist-offset-out-of-bounds', this, {
+                offset,
+                nodeList: this
+            });
+        }
+        return this.getNodeIndex(node);
+    }
+    /**
+     * Inserts given nodes at given index.
+     *
+     * @internal
+     * @param index Index at which nodes should be inserted.
+     * @param nodes Nodes to be inserted.
+     */
+    _insertNodes(index, nodes) {
+        const nodesArray = [];
+        // Validation.
+        for (const node of nodes) {
+            if (!(node instanceof ModelNode)) {
+                /**
+                 * Trying to insert an object which is not a Node instance.
+                 *
+                 * @error model-nodelist-insertnodes-not-node
+                 */
+                throw new CKEditorError('model-nodelist-insertnodes-not-node', this);
+            }
+            nodesArray.push(node);
+        }
+        let offset = this.indexToOffset(index);
+        // Splice nodes array and offsets array into the nodelist.
+        spliceArray(this._nodes, nodesArray, index);
+        spliceArray(this._offsetToNode, makeOffsetsArray(nodesArray), offset);
+        // Refresh indexes and offsets for nodes inside this node list. We need to do this for all inserted nodes and all nodes after them.
+        for (let i = index; i < this._nodes.length; i++) {
+            this._nodes[i]._index = i;
+            this._nodes[i]._startOffset = offset;
+            offset += this._nodes[i].offsetSize;
+        }
+    }
+    /**
+     * Removes one or more nodes starting at the given index.
+     *
+     * @internal
+     * @param indexStart Index of the first node to remove.
+     * @param howMany Number of nodes to remove.
+     * @returns Array containing removed nodes.
+     */
+    _removeNodes(indexStart, howMany = 1) {
+        if (howMany == 0) {
+            return [];
+        }
+        // Remove nodes from this nodelist.
+        let offset = this.indexToOffset(indexStart);
+        const nodes = this._nodes.splice(indexStart, howMany);
+        const lastNode = nodes[nodes.length - 1];
+        const removedOffsetSum = lastNode.startOffset + lastNode.offsetSize - offset;
+        this._offsetToNode.splice(offset, removedOffsetSum);
+        // Reset index and start offset properties for the removed nodes -- they do not have a parent anymore.
+        for (const node of nodes) {
+            node._index = null;
+            node._startOffset = null;
+        }
+        for (let i = indexStart; i < this._nodes.length; i++) {
+            this._nodes[i]._index = i;
+            this._nodes[i]._startOffset = offset;
+            offset += this._nodes[i].offsetSize;
+        }
+        return nodes;
+    }
+    /**
+     * Removes children nodes provided as an array. These nodes do not need to be direct siblings.
+     *
+     * This method is faster than removing nodes one by one, as it recalculates offsets only once.
+     *
+     * @internal
+     * @param nodes Array of nodes.
+     */
+    _removeNodesArray(nodes) {
+        if (nodes.length == 0) {
+            return;
+        }
+        for (const node of nodes) {
+            node._index = null;
+            node._startOffset = null;
+        }
+        this._nodes = this._nodes.filter(node => node.index !== null);
+        this._offsetToNode = this._offsetToNode.filter(node => node.index !== null);
+        let offset = 0;
+        for (let i = 0; i < this._nodes.length; i++) {
+            this._nodes[i]._index = i;
+            this._nodes[i]._startOffset = offset;
+            offset += this._nodes[i].offsetSize;
+        }
+    }
+    /**
+     * Converts `NodeList` instance to an array containing nodes that were inserted in the node list. Nodes
+     * are also converted to their plain object representation.
+     *
+     * @returns `NodeList` instance converted to `Array`.
+     */
+    toJSON() {
+        return this._nodes.map(node => node.toJSON());
+    }
+}
+/**
+ * Creates an array of nodes in the format as in {@link module:engine/model/nodelist~ModelNodeList#_offsetToNode}, i.e. one node will
+ * occupy multiple items if its offset size is greater than one.
+ */
+function makeOffsetsArray(nodes) {
+    const offsets = [];
+    let index = 0;
+    for (const node of nodes) {
+        for (let i = 0; i < node.offsetSize; i++) {
+            offsets[index++] = node;
+        }
+    }
+    return offsets;
+}

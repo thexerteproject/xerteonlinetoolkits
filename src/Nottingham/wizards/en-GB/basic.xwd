@@ -125,13 +125,13 @@
 			<wcagHide label="Hide Logo &amp; Link" type="Checkbox" conditionTrigger='true' defaultValue="false" condition="accessibilityHide!='true'" optional="true"/>
 			<wcagAlt label="Logo Description" type="TextInput" defaultValue="WCAG WAI-AA logo" condition="accessibilityHide!='true'&amp;&amp;wcagHide=='false'" optional="true"/>
 			<wcagLinkTitle label="Link Tooltip" type="TextInput" defaultValue="View the Xerte accessibility statement" condition="accessibilityHide!='true'&amp;&amp;wcagHide=='false'" optional="true"/>
-			<wcagLink type="Media" label="Accessibility Statement Link" tooltip="Add a URL or browse to a file to link to your own accessibility statement. Leave empty to link to the accessibility statement on xerte.org.uk." condition="accessibilityHide!='true'&amp;&amp;wcagHide=='false'" optional="true" />
+			<wcagLink type="Media" label="Accessibility Statement Link" tooltip="Add a URL or browse to a file to link to your own accessibility statement. Leave empty to link to the accessibility statement on xerte.org.uk." condition="accessibilityHide!='true'&amp;&amp;wcagHide=='false'" enableImgSHTool="false" optional="true" />
 		</wcagGroup>
 		<accessibilityHide type="CheckBox" label="Hide Button" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Use this option with caution! Although you can hide the Accessibility Options button from the project interface, think carefully before you do this. The accessibility options allow learners to easily change the look of the project to suit their needs and links to information on the accessibility of Xerte."/>
 	</accessibilityGroup>
 	
 	<helpGroup type="group" label="Help File" optional="true" tooltip="Add a Help button to the footer tools, which opens a file or URL when clicked">
-		<nfo label="File" type="media" optional="true" placeholder="Select a file (e.g. PDF) or enter a URL"/>
+		<nfo label="File" type="media" optional="true" placeholder="Select a file (e.g. PDF) or enter a URL" enableImgSHTool="false"/>
 		<helpTarget type="ComboBox" label="Open in" defaultValue="new" options="New window,Lightbox" data="new,lightbox" tooltip="Where the help file will open - by default it will open in a new browser tab/window" optional="true"/>
 		<helpLabel label="Tooltip" type="TextInput" defaultValue="Help" optional="true" tooltip="The tooltip description for the Help button"/>
 		<helpIc type="CheckBox" label="Customise Button Icon" defaultValue="false" conditionTrigger="true" optional="true" tooltip="Override the default icon used on the Help File button. When checked, you will see a further option allowing you to select the icon used. When left unchecked, the image/icon will be that specified by the theme."/>
@@ -142,11 +142,11 @@
 		<introType type="ComboBox" label="Content Type" defaultValue="text" options="Text,Image,Video,URL,File" data="text,image,video,url,file" conditionTrigger="true" optional="true" tooltip="The type of content used as an introduction for this project"/>
 		<intro label="Text" type="TextArea" height="100" defaultValue="" condition="introType=='text'||introType==undefined" optional="true"/>
 		<introImg label="Image" type="media" height="100" defaultValue="" condition="introType=='image'" optional="true" placeholder="Select an image"/>
-		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code"/>
+		<introVideo label="Video" type="media" height="100" defaultValue="" condition="introType=='video'" optional="true" placeholder="Select a video file or enter a URL/embed code" enableImgSHTool="false"/>
 		<introTip label="Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility" condition="introType=='image'||introType=='video'" optional="true"/>
 		<introCaption label="Caption" type="TextInput" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" condition="introType=='image'" optional="true" tooltip="Optional: add a caption below the image"/>
 		<introURL label="URL" type="TextInput" defaultValue="" condition="introType=='url'" optional="true" placeholder="Enter a URL"/>
-		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)"/>
+		<introFile label="File" type="media" height="100" defaultValue="" condition="introType=='file'" optional="true" placeholder="Select a file (e.g. PDF)" enableImgSHTool="false"/>
 		<introTitle type="CheckBox" label="Include Title" defaultValue="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include the project title above the introduction"/>
 		<introBtn type="CheckBox" label="Start Button" defaultValue="true" conditionTrigger="true" condition="introType=='text'||introType==undefined||introType=='image'" optional="true" tooltip="Include a 'start' button below the introduction that closes the lightbox when clicked"/>
 		<introBtnTxt label="Start Button Text" type="TextInput" defaultValue="Get Started" condition="introBtn=='true'&amp;&amp;(introType=='text'||introType==undefined||introType=='image')" wysiwyg="true" optional="true"/>
@@ -195,7 +195,7 @@
 	</resourceGroup>
 
 	<splashScreenGroup label="Video Splash Screen" type="group" optional="true" tooltip="Add a short, full screen 'splash' video that is shown and auto-played when the project first loads">
-	  <splashVideo label="File" type="media" defaultValue="" optional="true" placeholder="Select a video file"/>
+	  <splashVideo label="File" type="media" defaultValue="" optional="true" placeholder="Select a video file" enableImgSHTool="false"/>
 	  <splashShow label="Show" type="ComboBox" defaultValue="first" options="When project loads on first page only,When project loads on any page" data="first,always" optional="true" tooltip="Determines whether the splash screen is shown everytime the project loads (even if the first page shown is not page one) or only when the first page shown is page one."/>
 	  <splashBg type="ColourPicker" label="Background Colour" defaultValue="" optional="true"/>
 	</splashScreenGroup>
@@ -255,7 +255,7 @@
 		<backgroundGrey optional="true" type="CheckBox" label="Greyscale" defaultValue="false" tooltip="Add a filter to change the image from colour to greyscale"/>
 	</bg>
 	
-	<stylesheet optional="true" type="Media" label="Stylesheet" tooltip="Upload a CSS file to customise this project" placeholder="Select a CSS file"/>
+	<stylesheet optional="true" type="Media" label="Stylesheet" tooltip="Upload a CSS file to customise this project" placeholder="Select a CSS file" enableImgSHTool="false"/>
 	<styles optional="true" type="script" height="200" label="Styles" tooltip="Add bespoke CSS to this project"/>
 	<script label="Script" type="script" height="200" defaultValue="// JavaScript / jQuery" optional="true" tooltip="Add JavaScript to this project. The code will run after the project interface has been set up but before any pages have loaded."/>
 	
@@ -323,13 +323,12 @@
 
 	  <baseAISettingsGroup type="group" label="Base AI Generation Settings" tooltip="These settings adjust the outputs for any AI generation you make in the different pages of this learning object. While these settings will be used as a baseline, they can be overwritten in each individual page if you see the need." lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))" optional="true">
 		  <baseAiSelector label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" conditionTrigger="true" optional="true"/>
-		  <baseRange label="Reading Level" type="comboBox" tooltip="The estimated age, grade, education, or other qualifier used by the AI to determine the appropriate reading level and linguistic complexity of the generated language. Examples include students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, or A2 level Dutch speakers, etc." options="Beginner A1,Beginner A2,Intermediate B1,Intermediate B2,Advanced C1,Advanced C2,Custom" defaultValue="Intermediate, B2" data="Beginner A1,Beginner A2,Intermediate B1,Intermediate B2,Advanced C1,Advanced C2,custom" conditionTrigger="true" optional="true"/>
-		  <baseRangeCustom label="Custom Reading Level" type="TextInput" defaultValuePh="Intermediate English B2" placeholder="Enter reading level. Defaults to 'Intermediate English, B2'" condition="baseRange=='custom'" optional="true"/>
-		  <baseEduLevel label="Education Level" type="comboBox" tooltip="The education level for which the content is intended. Examples: University students, HBO students in the Netherlands, Middle school students who have already learned the basics, etc." options="Middle School,High School,MBO,HBO,University,Masters,PhD,Custom" defaultValue="HBO" data="Middle School,High School,
-		  MBO,HBO,University,Masters,PhD,custom" conditionTrigger="true" optional="true"/>
-		  <baseEduLevelCustom label="Custom Education Level" type="TextInput" defaultValuePH="University" placeholder="Enter educational level. Defaults to 'University.'" condition="baseEduLevel=='custom'" optional="true"/>
-		  <baseTone label="Tone and Style" type="comboBox" tooltip = "Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive (as well as combinations of these). Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." options="Formal,Semi-formal,Informal,active,passive,Custom" defaultValue="Semi-formal" data="Formal,Semi-formal,Informal,active,passive,custom" conditionTrigger="true" optional="true"/>
-		  <baseToneCustom label="Custom Tone and Style" type="TextInput" defaultValuePH="Semi-formal" placeholder="Enter an indicator of tone. Defaults to 'Semi-formal.'" condition="baseTone=='custom'" optional="true"/>
+		  <baseRange label="Reading Level" type="comboBox_base_settings_rl" tooltip="The estimated age, grade, education, or other qualifier used by the AI to determine the appropriate reading level and linguistic complexity of the generated language. Examples include students aged 12-16, grade 7 students in the Netherlands, university graduates, office workers in the education field, or A2 level Dutch speakers, etc." conditionTrigger="true" optional="true"/>
+		  <baseRangeCustom label="Custom Reading Level" type="TextInput" defaultValuePh="Intermediate B2" placeholder="Enter reading level." condition="baseRange=='custom'" optional="true"/>
+		  <baseEduLevel label="Education Level" type="comboBox_base_settings_el" tooltip="The education level for which the content is intended. Examples: University students, Bachelors students in the Netherlands, Middle school students who have already learned the basics, etc." conditionTrigger="true" optional="true"/>
+		  <baseEduLevelCustom label="Custom Education Level" type="TextInput" defaultValuePH="Vocational" placeholder="Enter educational level." condition="baseEduLevel=='custom'" optional="true"/>
+		  <baseTone label="Tone and Style" type="comboBox_base_settings_ts" tooltip = "Adjusts the tone and style of the generated content. Possibilities include: formal, semi-formal, informal, semi-informal, active, passive (as well as combinations of these). Additional modifiers are possible, but may result in less consistent content. Examples: 'Semi-formal teaching, active voice', 'formal, passive voice, usage instructions'." conditionTrigger="true" optional="true"/>
+		  <baseToneCustom label="Custom Tone and Style" type="TextInput" defaultValuePH="Semi-formal" placeholder="Enter an indicator of tone." condition="baseTone=='custom'" optional="true"/>
 		  <closeBtn type="lightboxclosebutton" optional="true"/>
 	  </baseAISettingsGroup>
 
@@ -364,10 +363,10 @@
 	<resume label="Enable Resuming" type="CheckBox" defaultValue="false" optional="true" deprecated="This property is deprecated as the resume functionality is now available automatically"/>
 	
 	<mediaFile type="group" label="Media" optional="true" deprecated="This property is deprecated and no longer supported">
-		<media optional="true" type="media" label="File" defaultValue="Select an audio or video file"/>
+		<media optional="true" type="media" label="File" defaultValue="Select an audio or video file" enableImgSHTool="false"/>
 		<mediaImage optional="true" type="media" label="Image (Audio only)" defaultValue="Select an Image"/>
 		<mediaImageTip optional="true" label="Image Description" type="TextInput" defaultValue="" placeholder="Enter a description for accessibility"/>
-		<mediaTranscript optional="true" type="media" label="Transcript" defaultValue="Select a Timed Text Transcript File"/>
+		<mediaTranscript optional="true" type="media" label="Transcript" defaultValue="Select a Timed Text Transcript File" enableImgSHTool="false"/>
 		<mediaTiming optional="true" type="ComboBox" options="Current Caption Only,Keep Previous Captions,Show All Captions" data="current,previous,all" label="Caption Timing" defaultValue="current" width="175"/>
 		<mediaPosition optional="true" type="ComboBox" options="Below,Right,Subtitle - Top,Subtitle - Bottom" data="below,right,top,bottom" label="Caption Position" defaultValue="below" width="175"/>
 		<mediaAlign optional="true" type="ComboBox" options="Left,Centre,Right" data="left,center,right" label="Caption Align" defaultValue="left" width="100"/>

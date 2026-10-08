@@ -1,0 +1,592 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-content-color-image-caption-background: hsl(0, 0%, 97%);
+	--ck-content-color-image-caption-text: hsl(0, 0%, 20%);
+	--ck-color-image-caption-highlighted-background: hsl(52deg 100% 50%);
+}
+
+/* Content styles */
+.ck-content .image > figcaption {
+	display: table-caption;
+	caption-side: bottom;
+	word-break: normal;
+	overflow-wrap: anywhere;
+	break-before: avoid;
+	color: var(--ck-content-color-image-caption-text);
+	background-color: var(--ck-content-color-image-caption-background);
+	padding: .6em;
+	font-size: .75em;
+	outline-offset: -1px;
+
+	/* Improve placeholder rendering in high-constrast mode (https://github.com/ckeditor/ckeditor5/issues/14907). */
+}
+@media (forced-colors: active) {
+.ck-content .image > figcaption {
+		background-color: unset;
+		color: unset;
+}
+	}
+
+/* Editing styles */
+@media (forced-colors: none) {
+		.ck.ck-editor__editable .image > figcaption.image__caption_highlighted {
+		animation: ck-image-caption-highlight .6s ease-out;
+		}
+	}
+@media (prefers-reduced-motion: reduce) {
+.ck.ck-editor__editable .image > figcaption.image__caption_highlighted {
+		animation: none;
+}
+	}
+
+@keyframes ck-image-caption-highlight {
+	0% {
+		background-color: var(--ck-color-image-caption-highlighted-background);
+	}
+
+	100% {
+		background-color: var(--ck-content-color-image-caption-background);
+	}
+}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/* Preserve aspect ratio of the resized image after introducing image height attribute. */
+.ck-content img.image_resized {
+	height: auto;
+}
+
+.ck-content .image.image_resized {
+	max-width: 100%;
+	/*
+	The `<figure>` element for resized images must not use `display:table` as browsers do not support `max-width` for it well.
+	See https://stackoverflow.com/questions/4019604/chrome-safari-ignoring-max-width-in-table/14420691#14420691 for more.
+	Fortunately, since we control the width, there is no risk that the image will look bad.
+	*/
+	display: block;
+	box-sizing: border-box;
+}
+
+.ck-content .image.image_resized img {
+		/* For resized images it is the `<figure>` element that determines the image width. */
+		width: 100%;
+	}
+
+.ck-content .image.image_resized > figcaption {
+		/* The `<figure>` element uses `display:block`, so `<figcaption>` also has to. */
+		display: block;
+	}
+
+/* The resized inline image nested in the table should respect its parent size.
+	See https://github.com/ckeditor/ckeditor5/issues/9117. */
+
+.ck.ck-editor__editable td .image-inline.image_resized img, .ck.ck-editor__editable th .image-inline.image_resized img {
+			max-width: 100%;
+		}
+
+[dir="ltr"] .ck.ck-button.ck-button_with-text.ck-resize-image-button .ck-button__icon {
+	margin-right: var(--ck-spacing-standard);
+}
+
+[dir="rtl"] .ck.ck-button.ck-button_with-text.ck-resize-image-button .ck-button__icon {
+	margin-left: var(--ck-spacing-standard);
+}
+
+.ck.ck-dropdown .ck-button.ck-resize-image-button .ck-button__label {
+	width: 4em;
+}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-content-image-style-spacing: 1.5em;
+	--ck-content-inline-image-style-spacing: calc(var(--ck-content-image-style-spacing) / 2);
+}
+
+/* See: https://github.com/ckeditor/ckeditor5/issues/16317 */
+
+/* Provides a minimal side margin for the left and right aligned images, so that the user has a visual feedback
+		confirming successful application of the style if image width exceeds the editor's size.
+		See https://github.com/ckeditor/ckeditor5/issues/9342 */
+
+.ck-content .image.image-style-block-align-left,
+		.ck-content .image.image-style-block-align-right {
+			max-width: calc(100% - var(--ck-content-image-style-spacing));
+		}
+
+/* Allows displaying multiple floating images in the same line.
+		See https://github.com/ckeditor/ckeditor5/issues/9183#issuecomment-804988132 */
+
+.ck-content .image.image-style-align-left,
+		.ck-content .image.image-style-align-right {
+			clear: none;
+		}
+
+.ck-content .image.image-style-side {
+			float: right;
+			margin-left: var(--ck-content-image-style-spacing);
+			max-width: 50%;
+		}
+
+.ck-content .image.image-style-align-left {
+			float: left;
+			margin-right: var(--ck-content-image-style-spacing);
+		}
+
+.ck-content .image.image-style-align-right {
+			float: right;
+			margin-left: var(--ck-content-image-style-spacing);
+		}
+
+.ck-content .image.image-style-block-align-right {
+			margin-right: 0;
+			margin-left: auto;
+		}
+
+.ck-content .image.image-style-block-align-left {
+			margin-left: 0;
+			margin-right: auto;
+		}
+
+.ck-content .image-style-align-center {
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+.ck-content .image-style-align-left {
+		float: left;
+		margin-right: var(--ck-content-image-style-spacing);
+	}
+
+.ck-content .image-style-align-right {
+		float: right;
+		margin-left: var(--ck-content-image-style-spacing);
+	}
+
+/* Simulates margin collapsing with the preceding paragraph, which does not work for the floating elements. */
+
+.ck-content p + .image.image-style-align-left,
+	.ck-content p + .image.image-style-align-right,
+	.ck-content p + .image.image-style-side {
+		margin-top: 0;
+	}
+
+.ck-content .image-inline.image-style-align-left,
+		.ck-content .image-inline.image-style-align-right {
+			margin-top: var(--ck-content-inline-image-style-spacing);
+			margin-bottom: var(--ck-content-inline-image-style-spacing);
+		}
+
+.ck-content .image-inline.image-style-align-left {
+			margin-right: var(--ck-content-inline-image-style-spacing);
+		}
+
+.ck-content .image-inline.image-style-align-right {
+			margin-left: var(--ck-content-inline-image-style-spacing);
+		}
+
+/* The button should display as a regular drop-down if the action button
+	is forced to fire the same action as the arrow button. */
+
+.ck.ck-splitbutton.ck-splitbutton_flatten:hover > .ck-splitbutton__action:not(.ck-disabled),
+			.ck.ck-splitbutton.ck-splitbutton_flatten.ck-splitbutton_open > .ck-splitbutton__action:not(.ck-disabled),
+			.ck.ck-splitbutton.ck-splitbutton_flatten:hover > .ck-splitbutton__arrow:not(.ck-disabled),
+			.ck.ck-splitbutton.ck-splitbutton_flatten.ck-splitbutton_open > .ck-splitbutton__arrow:not(.ck-disabled),
+			.ck.ck-splitbutton.ck-splitbutton_flatten:hover > .ck-splitbutton__arrow:not(.ck-disabled):not(:hover),
+			.ck.ck-splitbutton.ck-splitbutton_flatten.ck-splitbutton_open > .ck-splitbutton__arrow:not(.ck-disabled):not(:hover) {
+				background-color: var(--ck-color-button-on-background);
+			}
+
+.ck.ck-splitbutton.ck-splitbutton_flatten:hover > .ck-splitbutton__action:not(.ck-disabled)::after, .ck.ck-splitbutton.ck-splitbutton_flatten.ck-splitbutton_open > .ck-splitbutton__action:not(.ck-disabled)::after, .ck.ck-splitbutton.ck-splitbutton_flatten:hover > .ck-splitbutton__arrow:not(.ck-disabled)::after, .ck.ck-splitbutton.ck-splitbutton_flatten.ck-splitbutton_open > .ck-splitbutton__arrow:not(.ck-disabled)::after, .ck.ck-splitbutton.ck-splitbutton_flatten:hover > .ck-splitbutton__arrow:not(.ck-disabled):not(:hover)::after, .ck.ck-splitbutton.ck-splitbutton_flatten.ck-splitbutton_open > .ck-splitbutton__arrow:not(.ck-disabled):not(:hover)::after {
+					display: none;
+				}
+
+.ck.ck-splitbutton.ck-splitbutton_flatten.ck-splitbutton_open:hover > .ck-splitbutton__action:not(.ck-disabled),
+			.ck.ck-splitbutton.ck-splitbutton_flatten.ck-splitbutton_open:hover > .ck-splitbutton__arrow:not(.ck-disabled),
+			.ck.ck-splitbutton.ck-splitbutton_flatten.ck-splitbutton_open:hover > .ck-splitbutton__arrow:not(.ck-disabled):not(:hover) {
+				background-color: var(--ck-color-button-on-hover-background);
+			}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-editor__editable .image,
+	.ck.ck-editor__editable .image-inline {
+		position: relative;
+	}
+
+/* Upload progress bar. */
+
+.ck.ck-editor__editable .image .ck-progress-bar,
+	.ck.ck-editor__editable .image-inline .ck-progress-bar {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck-image-upload-complete-icon {
+	display: block;
+	position: absolute;
+
+	/*
+	 * Smaller images should have the icon closer to the border.
+	 * Match the icon position with the linked image indicator brought by the link image feature.
+	 */
+	top: min(var(--ck-spacing-medium), 6%);
+	right: min(var(--ck-spacing-medium), 6%);
+	border-radius: 50%;
+	z-index: 1;
+}
+
+.ck-image-upload-complete-icon::after {
+		content: "";
+		position: absolute;
+	}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck .ck-upload-placeholder-loader {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	top: 0;
+	left: 0;
+}
+
+.ck .ck-upload-placeholder-loader::before {
+		content: '';
+		position: relative;
+	}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck-content .image {
+		display: table;
+		clear: both;
+		text-align: center;
+
+		/* Make sure there is some space between the content and the image. Center image by default. */
+		/* The first value should be equal to --ck-spacing-large variable if used in the editor context
+	 	to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
+		margin: 0.9em auto;
+
+		/* Make sure the caption will be displayed properly (See: https://github.com/ckeditor/ckeditor5/issues/1870). */
+		min-width: 50px;
+	}
+
+.ck-content .image img {
+			/* Prevent unnecessary margins caused by line-height (see #44). */
+			display: block;
+
+			/* Center the image if its width is smaller than the content's width. */
+			margin: 0 auto;
+
+			/* Make sure the image never exceeds the size of the parent container (ckeditor/ckeditor5-ui#67). */
+			max-width: 100%;
+
+			/* Make sure the image is never smaller than the parent container (See: https://github.com/ckeditor/ckeditor5/issues/9300). */
+			min-width: 100%;
+
+			/* Keep proportions of the block image if the height is set and the image is wider than the editor width.
+			See https://github.com/ckeditor/ckeditor5/issues/14542. */
+			height: auto;
+		}
+
+.ck-content .image-inline {
+		/*
+		 * Normally, the .image-inline would have "display: inline-block" and "img { width: 100% }" (to follow the wrapper while resizing).
+		 * Unfortunately, together with "srcset", it gets automatically stretched up to the width of the editing root.
+		 * This strange behavior does not happen with inline-flex.
+		 */
+		display: inline-flex;
+
+		/* While being resized, don't allow the image to exceed the width of the editing root. */
+		max-width: 100%;
+
+		/* This is required by Safari to resize images in a sensible way. Without this, the browser breaks the ratio. */
+		align-items: flex-start;
+
+		/* When the picture is present it must act as a flex container to let the img resize properly */
+	}
+
+.ck-content .image-inline picture {
+			display: flex;
+		}
+
+/* When the picture is present, it must act like a resizable img. */
+
+.ck-content .image-inline picture,
+		.ck-content .image-inline img {
+			/* This is necessary for the img to span the entire .image-inline wrapper and to resize properly. */
+			flex-grow: 1;
+			flex-shrink: 1;
+
+			/* Prevents overflowing the editing root boundaries when an inline image is very wide. */
+			max-width: 100%;
+		}
+
+/*
+	 * Inhertit the content styles padding of the <figcaption> in case the integration overrides `text-align: center`
+	 * of `.image` (e.g. to the left/right). This ensures the placeholder stays at the padding just like the native
+	 * caret does, and not at the edge of <figcaption>.
+	 */
+
+.ck.ck-editor__editable .image > figcaption.ck-placeholder::before {
+		padding-left: inherit;
+		padding-right: inherit;
+
+		/*
+		 * Make sure the image caption placeholder doesn't overflow the placeholder area.
+		 * See https://github.com/ckeditor/ckeditor5/issues/9162.
+		 */
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+/*
+	 * See https://github.com/ckeditor/ckeditor5/issues/15115.
+	 */
+
+.ck.ck-editor__editable .image {
+		z-index: 1;
+
+		/*
+		 * Make sure the selected image always stays on top of its siblings.
+		 * See https://github.com/ckeditor/ckeditor5/issues/9108.
+		 */
+	}
+
+.ck.ck-editor__editable .image.ck-widget_selected {
+			z-index: 2;
+		}
+
+/*
+	 * See https://github.com/ckeditor/ckeditor5/issues/15115.
+	 */
+
+.ck.ck-editor__editable .image-inline {
+		z-index: 1;
+
+		/*
+		 * Make sure the selected inline image always stays on top of its siblings.
+		 * See https://github.com/ckeditor/ckeditor5/issues/9108.
+		 */
+	}
+
+.ck.ck-editor__editable .image-inline.ck-widget_selected {
+			z-index: 2;
+
+			/*
+			 * Make sure the native browser selection style is not displayed.
+			 * Inline image widgets have their own styles for the selected state and
+			 * leaving this up to the browser is asking for a visual collision.
+			 */
+		}
+
+.ck.ck-editor__editable .image-inline.ck-widget_selected ::selection {
+				display: none;
+			}
+
+/* Keep proportions of the inline image if the height is set and the image is wider than the editor width.
+	See https://github.com/ckeditor/ckeditor5/issues/14542. */
+
+.ck.ck-editor__editable .image-inline img {
+		height: auto;
+	}
+
+/* The inline image nested in the table should have its original size if not resized.
+	See https://github.com/ckeditor/ckeditor5/issues/9117. */
+
+.ck.ck-editor__editable td .image-inline img, .ck.ck-editor__editable th .image-inline img {
+			max-width: none;
+		}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-editor__editable img.image_placeholder {
+		background-size: 100% 100%;
+	}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-image-insert-url {
+	width: 400px;
+	padding: var(--ck-spacing-large) var(--ck-spacing-large) 0;
+}
+
+.ck.ck-image-insert-url .ck-image-insert-url__action-row {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck-vertical-form .ck-button::after {
+		content: "";
+		width: 0;
+		position: absolute;
+		right: -1px;
+		top: -1px;
+		bottom: -1px;
+		z-index: 1;
+	}
+
+.ck-vertical-form .ck-button:focus::after {
+		display: none;
+	}
+
+@media screen and (max-width: 600px) {
+			.ck.ck-responsive-form .ck-button::after {
+				content: "";
+				width: 0;
+				position: absolute;
+				right: -1px;
+				top: -1px;
+				bottom: -1px;
+				z-index: 1;
+			}
+
+			.ck.ck-responsive-form .ck-button:focus::after {
+				display: none;
+			}
+	}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-form-default-width: 340px;
+}
+
+.ck.ck-form {
+	padding: 0 0 var(--ck-spacing-large);
+}
+
+.ck.ck-form.ck-form_default-width {
+		width: var(--ck-form-default-width);
+	}
+
+.ck.ck-form:focus {
+		outline: none;
+	}
+
+.ck.ck-form .ck.ck-input-text,
+	.ck.ck-form .ck.ck-input-number {
+		min-width: 100%;
+		width: 0;
+	}
+
+.ck.ck-form .ck.ck-dropdown {
+		min-width: 100%;
+	}
+
+.ck.ck-form .ck.ck-dropdown .ck-dropdown__button:not(:focus) {
+				border: 1px solid var(--ck-color-base-border);
+			}
+
+.ck.ck-form .ck.ck-dropdown .ck-dropdown__button .ck-button__label {
+				width: 100%;
+			}
+
+/* Default `ck-responsive-form` customization when it lies next to `ck-form` class */
+
+@media screen and (max-width: 600px) {
+
+.ck.ck-form.ck-responsive-form .ck.ck-form__row.ck-form__row_with-submit {
+					flex-direction: column;
+					align-items: stretch;
+					padding: 0;
+			}
+	}
+
+@media screen and (max-width: 600px) {
+
+.ck.ck-form.ck-responsive-form .ck.ck-form__row.ck-form__row_with-submit > .ck {
+						margin: var(--ck-spacing-large) var(--ck-spacing-large) 0;
+				}
+	}
+
+@media screen and (max-width: 600px) {
+
+.ck.ck-form.ck-responsive-form .ck.ck-form__row.ck-form__row_with-submit .ck-button_with-text {
+						justify-content: center;
+				}
+	}
+
+@media screen and (max-width: 600px) {
+
+.ck.ck-form.ck-responsive-form .ck.ck-form__row.ck-form__row_large-bottom-padding {
+					padding-bottom: var(--ck-spacing-large);
+			}
+	}
+
+[dir="ltr"] .ck.ck-form.ck-responsive-form > :not(:first-child) {
+				margin-left: 0;
+			}
+
+[dir="rtl"] .ck.ck-form.ck-responsive-form > :not(:last-child) {
+				margin-left: 0;
+			}
+
+/* End of `ck-responsive-form` customization */
+
+/*# sourceMappingURL=index.css.map */

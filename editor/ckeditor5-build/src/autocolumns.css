@@ -1,0 +1,12 @@
+.ck-content div.autocolumns {
+	column-fill: balance;
+	min-height: 2.5em;
+	outline: 1px dashed #aaa;
+	outline-offset: 3px;
+}
+
+.ck-content div.autocolumns1 { column-count: 1; }
+.ck-content div.autocolumns2 { column-count: 2; }
+.ck-content div.autocolumns3 { column-count: 3; }
+.ck-content div.autocolumns4 { column-count: 4; }
+.ck-content div.autocolumns5 { column-count: 5; }

@@ -1,0 +1,12 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-character-grid {
+	max-width: 100%;
+
+	& .ck-character-grid__tiles {
+		display: grid;
+	}
+}

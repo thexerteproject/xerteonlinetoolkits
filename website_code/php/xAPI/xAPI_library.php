@@ -67,7 +67,7 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
     $language_ISO639_1code = substr($language, 0, 2);
     if ($parent_name == "Nottingham")
     {
-        $common_folder = "common_html5/";
+        $common_folder = "common/";
     }
     else
     {
@@ -93,7 +93,7 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
     $xapi_html_page_content = str_replace("%THEMEPATH%", "themes/" . $template_name . "/",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%OFFLINESCRIPTS%", "",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%OFFLINEINCLUDES%", "",$xapi_html_page_content);
-    $xapi_html_page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $xapi_html_page_content);
+    $xapi_html_page_content = str_replace("%MATHJAXPATH%", "offline/js/mathjax/", $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%LASTUPDATED%", $date_modified, $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%DATECREATED%", $date_created, $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%NUMPLAYS%", 0, $xapi_html_page_content);

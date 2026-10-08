@@ -36,7 +36,7 @@
 		<name label="Media Panel Title" type="TextInput" wysiwyg="true"/>
 		
 		<mediaGroup type="group" label="Media" tooltip="Add video or audio (file or YouTube/Vimeo URL)">
-			<media label="File" type="media" placeholder="Select a video or audio file"/>
+			<media label="File" type="media" placeholder="Select a video or audio file" enableImgSHTool="false"/>
 			<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
 		</mediaGroup>
@@ -184,7 +184,7 @@
 	<synchMediaPlus menuItem="Media" icon="icFilm" remove="true">
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<mediaGroup type="group" label="Media">
-			<media label="File" type="media"/>
+			<media label="File" type="media" enableImgSHTool="false"/>
 			<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
 		</mediaGroup>

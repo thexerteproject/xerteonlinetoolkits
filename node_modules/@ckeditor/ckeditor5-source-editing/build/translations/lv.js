@@ -1,0 +1,1 @@
+!function(o){const i=o.lv=o.lv||{};i.dictionary=Object.assign(i.dictionary||{},{"Show source":"Rādīt avotu"})}(window.CKEDITOR_TRANSLATIONS||(window.CKEDITOR_TRANSLATIONS={}));

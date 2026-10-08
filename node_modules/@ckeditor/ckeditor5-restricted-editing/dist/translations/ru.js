@@ -1,0 +1,5 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+export default {"ru":{"dictionary":{"Enable editing":"Разрешить редактирование","Previous editable region":"Предыдущий редактируемый регион","Next editable region":"Следующий редактируемый регион","Navigate editable regions":"Навигация по редактируемым регионам","Disable inline editing":"Отключить встроенное редактирование","Enable inline editing":"Включить встроенное редактирование","Disable block editing":"Отключить блочное редактирование","Enable block editing":"Включить блочное редактирование","Disable editing":"Отключить редактирование"},getPluralForm(n){return (n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2);}}}

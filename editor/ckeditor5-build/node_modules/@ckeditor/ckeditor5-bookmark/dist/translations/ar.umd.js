@@ -1,0 +1,11 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+( e => {
+const { [ 'ar' ]: { dictionary, getPluralForm } } = {"ar":{"dictionary":{"Bookmark":"إشارة مرجعية","Edit bookmark":"تحرير الإشارة المرجعية","Remove bookmark":"إزالة الإشارة المرجعية","Bookmark name":"اسم الإشارة المرجعية","Enter the bookmark name without spaces.":"أدخل اسم الإشارة المرجعية بدون مسافات.","Bookmark must not be empty.":"لا يجب أن تكون الإشارة المرجعية فارغة.","Bookmark name cannot contain space characters.":"لا يمكن أن يحتوي اسم الإشارة المرجعية على مسافة.","Bookmark name already exists.":"اسم الإشارة المرجعية موجود بالفعل.","bookmark widget":"أداة الإشارة المرجعية","Bookmark toolbar":"شريط أدوات الإشارة المرجعية","Bookmarks":"الإشارات المرجعية","No bookmarks available.":"لا توجد إشارات مرجعية متاحة.","Scroll to bookmark":"مرر إلى الإشارة المرجعية"},getPluralForm(n){return (n == 0 ? 0 : n == 1 ? 1 : n == 2 ? 2 : n % 100 >= 3 && n % 100 <= 10 ? 3 : n % 100 >= 11 ? 4 : 5);}}};
+e[ 'ar' ] ||= { dictionary: {}, getPluralForm: null };
+e[ 'ar' ].dictionary = Object.assign( e[ 'ar' ].dictionary, dictionary );
+e[ 'ar' ].getPluralForm = getPluralForm;
+} )( window.CKEDITOR_TRANSLATIONS ||= {} );

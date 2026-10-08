@@ -223,6 +223,26 @@ class XerteXWDBuilder
 			}
 			if (count($orgnode) == 1)
 			{
+				// when replacing, only merge common nodes marked scope="all"
+				global $basicPageXML;
+				$node = dom_import_simplexml($node);
+
+				foreach ($basicPageXML->children() as $child) {
+					$child = dom_import_simplexml($child);
+					$scope = $child->getAttribute('scope');
+
+					if ($scope == 'all') {
+						// avoid duplicates
+						$exists = $node->getElementsByTagName($child->nodeName);
+						if ($exists->length == 0) {
+							$importedChild = $node->ownerDocument->importNode($child, true);
+							$node->appendChild($importedChild);
+						}
+					}
+				}
+
+				$node = simplexml_import_dom($node);
+
 				printf("    Model " . $node->getName() . " is updated/replaced.\n");
 				$this->replaceChildNode($orgnode[0], $node);
 			}

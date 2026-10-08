@@ -172,7 +172,7 @@ For example, try this sentence: \"An artist paints a beautiful, serene landscape
         $text = trim(isset($resp['content']) ? $resp['content'] : '');
         // Be forgiving: strip code fences if present
         $text = preg_replace('/^```json|```$/m', '', $text);
-        $decoded = json_decode($text);
+        $decoded = json_decode($text, true);
         if (!$decoded) {
             return (object)['status' => 'error', 'message' => 'Failed to parse JSON from AI response.', 'raw' => $text];
         }

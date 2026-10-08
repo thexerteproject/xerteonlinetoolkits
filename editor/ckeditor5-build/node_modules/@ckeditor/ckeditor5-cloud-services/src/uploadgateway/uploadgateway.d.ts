@@ -1,0 +1,47 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/**
+ * @module cloud-services/uploadgateway/uploadgateway
+ */
+import { FileUploader } from './fileuploader.js';
+import type { InitializedToken } from '../token/token.js';
+/**
+ * UploadGateway abstracts file uploads to CKEditor Cloud Services.
+ */
+export declare class UploadGateway {
+    /**
+     * CKEditor Cloud Services access token.
+     */
+    private readonly _token;
+    /**
+     * CKEditor Cloud Services API address.
+     */
+    private readonly _apiAddress;
+    /**
+     * Creates `UploadGateway` instance.
+     *
+     * @param token Token used for authentication.
+     * @param apiAddress API address.
+     */
+    constructor(token: InitializedToken, apiAddress: string);
+    /**
+     * Creates a {@link module:cloud-services/uploadgateway/fileuploader~FileUploader} instance that wraps
+     * file upload process. The file is being sent at a time when the
+     * {@link module:cloud-services/uploadgateway/fileuploader~FileUploader#send} method is called.
+     *
+     * ```ts
+     * const token = await Token.create( 'https://token-endpoint' );
+     * new UploadGateway( token, 'https://example.org' )
+     * 	.upload( 'FILE' )
+     * 	.onProgress( ( data ) => console.log( data ) )
+     * 	.send()
+     * 	.then( ( response ) => console.log( response ) );
+     * ```
+     *
+     * @param {Blob|String} fileOrData A blob object or a data string encoded with Base64.
+     * @returns {module:cloud-services/uploadgateway/fileuploader~FileUploader} Returns `FileUploader` instance.
+     */
+    upload(fileOrData: string | Blob): FileUploader;
+}

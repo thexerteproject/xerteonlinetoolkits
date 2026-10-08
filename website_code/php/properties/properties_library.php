@@ -182,18 +182,6 @@ function properties_display($xerte_toolkits_site, $template_id, $change, $msgtyp
 
     }
 	
-	if(is_user_creator_or_coauthor($template_id) || is_user_permitted("projectadmin")){
-		
-		if(function_exists("display_property_engines")){
-			
-			echo "<br/>";
-			
-			display_property_engines($change,$msgtype);
-
-		}
-		
-	}
-	
 	echo "</div>";
 
 }
@@ -600,17 +588,7 @@ function project_info($template_id){
 
     include "../../../modules/" . $row['template_framework'] . "/module_functions.php";
 
-    $info .=  PROJECT_INFO_RUNTIME  . ": ";
-
-    if (get_default_engine($template_id) == 'flash')
-    {
-        $info .=  "<span class='warning'><i class='fa fa-exclamation-triangle' title='" . PROPERTIES_LIBRARY_FLASH_WARNING . "' style='height: 14px;'></i> ";
-        $info .=  PROPERTIES_LIBRARY_DEFAULT_FLASH . "</span><br/>";
-    }
-    else
-    {
-        $info .=  PROPERTIES_LIBRARY_DEFAULT_HTML5 . "<br/>";
-    }
+    $info .=  PROJECT_INFO_RUNTIME  . ": " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "<br/>";
 
     if(template_access_settings($template_id)!='Private'){
 

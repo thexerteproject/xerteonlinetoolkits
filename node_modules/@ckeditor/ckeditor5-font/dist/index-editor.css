@@ -1,0 +1,10 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+:root{
+	--ck-content-font-size-tiny:0.7em;
+	--ck-content-font-size-small:0.85em;
+	--ck-content-font-size-big:1.4em;
+	--ck-content-font-size-huge:1.8em;
+}

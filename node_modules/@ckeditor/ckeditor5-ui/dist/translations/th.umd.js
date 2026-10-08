@@ -1,0 +1,11 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+( e => {
+const { [ 'th' ]: { dictionary, getPluralForm } } = {"th":{"dictionary":{"Rich Text Editor":"โปรแกรมแก้ไข Rich Text","Edit block":"แก้ไขบล็อก","Click to edit block":"คลิกเพื่อแก้ไขบล็อก","Drag to move":"ลากเพื่อย้าย","Next":"ถัดไป","Previous":"ก่อนหน้า","Editor toolbar":"แถบเครื่องมือแก้ไข","Dropdown toolbar":"แถบเครื่องมือแบบเลื่อนลง","Dropdown menu":"เมนูแบบเลื่อนลง","Black":"สีดำ","Dim grey":"สีเทาเข้ม","Grey":"สีเทา","Light grey":"สีเทาอ่อน","White":"สีขาว","Red":"สีแดง","Orange":"สีส้ม","Yellow":"สีเหลือง","Light green":"สีเขียวอ่อน","Green":"สีเขียว","Aquamarine":"พลอยสีฟ้า","Turquoise":"สีเขียวขุ่น","Light blue":"สีฟ้า","Blue":"สีน้ำเงิน","Purple":"สีม่วง","Editor block content toolbar":"แถบเครื่องมือแก้ไขบล็อกเนื้อหา","Editor contextual toolbar":"แถบเครื่องมือแก้ไขข้อความ","HEX":"HEX","No results found":"ไม่พบผลลัพธ์","No searchable items":"ไม่มีรายการที่สามารถค้นหาได้","Editor dialog":"การสนทนาของบรรณาธิการ","Close":"ปิด","Help Contents. To close this dialog press ESC.":"เนื้อหาความช่วยเหลือ หากต้องการปิดกล่องโต้ตอบนี้ ให้กดปุ่ม ESC","Below, you can find a list of keyboard shortcuts that can be used in the editor.":"ด้านล่างนี้ คุณจะพบกับรายการแป้นพิมพ์ลัดที่สามารถใช้ในตัวแก้ไขได้","(may require <kbd>Fn</kbd>)":"(อาจจำเป็นต้องมี <kbd>Fn</kbd>)","Accessibility":"การเข้าถึง","Accessibility help":"ความช่วยเหลือการเข้าถึง","Press %0 for help.":"กด %0 เพื่อความช่วยเหลือ","Move focus in and out of an active dialog window":"ย้ายโฟกัสเข้าและออกจากกล่องโต้ตอบที่ใช้งานอยู่","MENU_BAR_MENU_FILE":"ไฟล์","MENU_BAR_MENU_EDIT":"แก้ไข","MENU_BAR_MENU_VIEW":"ดู","MENU_BAR_MENU_INSERT":"แทรก","MENU_BAR_MENU_FORMAT":"รูปแบบ","MENU_BAR_MENU_TOOLS":"เครื่องมือ","MENU_BAR_MENU_HELP":"ช่วยเหลือ","MENU_BAR_MENU_TEXT":"ข้อความ","MENU_BAR_MENU_FONT":"แบบอักษร","Editor menu bar":"แถบเมนูตัวแก้ไข","Please enter a valid color (e.g. \"ff0000\").":"โปรดป้อนสีที่ถูกต้อง (เช่น \"ff0000\")"},getPluralForm(n){return 0;}}};
+e[ 'th' ] ||= { dictionary: {}, getPluralForm: null };
+e[ 'th' ].dictionary = Object.assign( e[ 'th' ].dictionary, dictionary );
+e[ 'th' ].getPluralForm = getPluralForm;
+} )( window.CKEDITOR_TRANSLATIONS ||= {} );

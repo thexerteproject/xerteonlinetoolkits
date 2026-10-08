@@ -1,0 +1,11 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+( e => {
+const { [ 'fr' ]: { dictionary, getPluralForm } } = {"fr":{"dictionary":{"Emoji":"Émoji","Show all emoji...":"Afficher tous les émojis...","Find an emoji (min. 2 characters)":"Trouver un émoji (min. deux caractères)","No emojis were found matching \"%0\".":"Aucun émoji correspondant à « %0 » n'a été trouvé.","Keep on typing to see the emoji.":"Continuez à taper pour voir l'émoji.","The query must contain at least two characters.":"La requête doit contenir au moins deux caractères.","Smileys & Expressions":"Smileys et expressions","Gestures & People":"Gestes et personnes","Animals & Nature":"Animaux et nature","Food & Drinks":"Nourriture et boissons","Travel & Places":"Voyages et lieux","Activities":"Activités","Objects":"Objets","Symbols":"Symboles","Flags":"Drapeaux","Select skin tone":"Sélectionner la teinte de peau","Default skin tone":"Teinte de peau par défaut","Light skin tone":"Teint clair","Medium Light skin tone":"Teint moyennement clair","Medium skin tone":"Teint moyen","Medium Dark skin tone":"Teint moyennement foncé","Dark skin tone":"Teint foncé","Emoji picker":"Sélecteur d'émojis"},getPluralForm(n){return (n <= -2 || n >= 2);}}};
+e[ 'fr' ] ||= { dictionary: {}, getPluralForm: null };
+e[ 'fr' ].dictionary = Object.assign( e[ 'fr' ].dictionary, dictionary );
+e[ 'fr' ].getPluralForm = getPluralForm;
+} )( window.CKEDITOR_TRANSLATIONS ||= {} );

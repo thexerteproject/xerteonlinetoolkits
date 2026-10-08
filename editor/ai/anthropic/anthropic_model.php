@@ -2,7 +2,7 @@
 class anthropic_model {
 	public $context;
 	public $chat_url = "https://api.anthropic.com/v1/messages";
-	public $model = "claude-haiku-4-5-20251001";
+	public $model = "claude-opus-4-8";
 	public $temperature = 0.2;
 	public $max_tokens = 4096;
 	public $learning_prompt;
@@ -55,7 +55,7 @@ class anthropic_model {
 		return [
 			"model" => $this->model,
 			"max_tokens" => $this->max_tokens,
-			"temperature" => $this->temperature,
+			//"temperature" => $this->temperature, - no longer necessary for newer anthropic models
 			"messages" => [
 				["role" => "user", "content" => $this->learning_prompt],
 				["role" => "assistant", "content" => $this->object],

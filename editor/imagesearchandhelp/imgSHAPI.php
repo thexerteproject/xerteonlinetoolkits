@@ -8,6 +8,7 @@ if(!isset($_SESSION['toolkits_logon_id'])) {
 }
 
 ob_start();
+try {
 $query = x_clean_input($_POST["query"]);
 $api = x_clean_input(isset($_POST['api']) ? $_POST['api'] : 'pexels');
 $textApi = x_clean_input(isset($_POST['textApi']) ? $_POST['textApi'] : 'mistral');
@@ -28,13 +29,32 @@ require_once(dirname(__FILE__) . "/" . "BaseApi.php");
 require_once(dirname(__FILE__) . "/Apis/" . $api ."Api.php");
 
 //get the user-set preferred model for text generation, if any
-$providerPreferredModel = $managementSettings['ai']['preferred_model'];
+$providerPreferredModel = $managementSettings['ai']['active_vendors'][$textApi]['preferred_model'];
 
 //dynamically initiate correct api class
 $api_type = $api . 'Api';
 $imgshApi = new $api_type($textApi, $providerPreferredModel);
 
 $result = $imgshApi->sh_request($query, $url, $interpretPrompt, $overrideSettings, $settings, $language);
+
+if (!is_object($result)) {
+    throw new UnexpectedValueException('The image provider returned an invalid response.');
+}
+
+if (isset($result->status) && $result->status === 'error') {
+    error_log('Image provider request failed: ' . (isset($result->message) ? $result->message : 'Unknown provider error'));
+    ob_end_clean();
+    header('Content-Type: application/json');
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'The image request could not be completed.',
+    ]);
+    exit;
+}
+
+if (!isset($result->paths) || !is_array($result->paths)) {
+    throw new UnexpectedValueException('The image provider response did not contain an image list.');
+}
 
 $no_credits_vendors = ['dalle2', 'dalle3', 'gpt1'];
 $hotlink_vendors = ['unsplash'];
@@ -57,11 +77,27 @@ for($i = 0; $i < count($result->paths); $i++){
             $credits = $result->creditPaths[$i];
         }
 
-        $_SESSION["paths_img_search"][] = $full_path;
-
         $result->credits[] = file_get_contents($credits);
     }
+    $_SESSION["paths_img_search"][] = $full_path;
 }
 ob_end_clean();
+header('Content-Type: application/json');
 echo json_encode($result);
+} catch (Throwable $e) {
+    if (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    error_log(
+        'Image search request failed: ' . get_class($e) . ': ' . $e->getMessage()
+        . ' in ' . $e->getFile() . ':' . $e->getLine() . PHP_EOL
+        . $e->getTraceAsString()
+    );
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'The image request could not be completed.',
+    ]);
+}
 

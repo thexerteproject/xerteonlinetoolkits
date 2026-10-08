@@ -1243,7 +1243,7 @@ abstract class BaseRAG
             if(!(realpath($path))){
                 $path = normalize_path(urldecode(rtrim($this->encodingDirectory, '/\\') . '/' . ltrim($file, '/\\')));
             }
-            $file = $path;
+            $file = html_entity_decode($path, ENT_QUOTES | ENT_HTML5, 'UTF-8');
             $matched = false;
             foreach ($corpusData['hashes'] as $hash => $entry) {
                 $entrySource = isset($entry['metaData']['source'])

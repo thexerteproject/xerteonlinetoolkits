@@ -163,7 +163,7 @@ try {
     $transcriptionKey = $xerte_toolkits_site->{$managementSettings['transcription']['key_name']};
 
     $provider = $managementSettings['transcription']['active_vendor'];
-    $preferredTranscriptionModel = $managementSettings['transcription']['preferred_model'];
+    $preferredTranscriptionModel = $managementSettings['transcription']['active_vendors'][$provider]['preferred_model'];
     $cfgTranscribe = [
         'api_key' => $transcriptionKey,
         'basedir' => $baseDir,
@@ -176,7 +176,7 @@ try {
 
     $encodingKey = $xerte_toolkits_site->{$managementSettings['encoding']['key_name']};
     $provider = $managementSettings['encoding']['active_vendor'];
-    $preferredEncodingModel = $managementSettings['encoding']['preferred_model'];
+    $preferredEncodingModel = $managementSettings['encoding']['active_vendors'][$provider]['preferred_model'];
     $cfg = [
             'api_key' => $encodingKey,
             'encoding_directory' => $baseDir,

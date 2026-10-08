@@ -92,6 +92,150 @@ function getWizardfile($langcode)
     return $wizardFile;
 }
 
+function getLanguageAbbreviation($langcode)
+{
+    $parts = explode('-', $langcode);
+    return strtoupper($parts[0]);
+}
+
+function getLanguageFlagCountryCode($langcode)
+{
+    $map = array(
+        'en-GB' => 'GB',
+        'nl-NL' => 'NL',
+        'nl-BE' => 'BE',
+        'fr-FR' => 'FR',
+        'es-ES' => 'ES',
+        'cs-CZ' => 'CZ',
+        'cy-GB' => 'GB',
+        'pl-PL' => 'PL',
+        'ru-RU' => 'RU',
+        'nb-NO' => 'NO',
+        'it-IT' => 'IT',
+        'ja-JP' => 'JP',
+        'pt-BR' => 'BR',
+        'de-DE' => 'DE',
+        'tr-TR' => 'TR',
+        'uk-UA' => 'UA',
+        'el-GR' => 'GR',
+    );
+
+    if (isset($map[$langcode])) {
+        return $map[$langcode];
+    }
+
+    $parts = explode('-', $langcode);
+    return strtoupper(isset($parts[1]) ? $parts[1] : $parts[0]);
+}
+
+function getLanguageFlagEmoji($langcode)
+{
+    $country = getLanguageFlagCountryCode($langcode);
+    if (strlen($country) !== 2) {
+        return '';
+    }
+
+    $first = 0x1F1E6 + ord($country[0]) - ord('A');
+    $second = 0x1F1E6 + ord($country[1]) - ord('A');
+
+    return mb_chr($first) . mb_chr($second);
+}
+
+function getLanguageFlagHtml($langcode)
+{
+    $country = strtolower(getLanguageFlagCountryCode($langcode));
+    $flagPath = dirname(__FILE__) . "/../images/flags/{$country}.svg";
+
+    if (is_file($flagPath)) {
+        return '<img src="website_code/images/flags/' . htmlspecialchars($country) . '.svg" alt="" class="userbar-lang-flag-img" width="28" height="20">';
+    }
+
+    return '<span class="userbar-lang-flag" aria-hidden="true">' . getLanguageFlagEmoji($langcode) . '</span>';
+}
+
+function getLanguageDisplayLabel($langcode, $fullName)
+{
+    $labels = array(
+        'en-GB' => 'English - UK',
+        'nl-NL' => 'Nederlands - NL',
+        'nl-BE' => 'Vlaams - BE',
+        'fr-FR' => 'Français - FR',
+        'es-ES' => 'Español - ES',
+        'cs-CZ' => 'Czech - CZ',
+        'cy-GB' => 'Cymraeg - UK',
+        'pl-PL' => 'Polish - PL',
+        'ru-RU' => 'Russian - RU',
+        'nb-NO' => 'Norsk bokmål - NO',
+        'it-IT' => 'Italiano - IT',
+        'ja-JP' => 'Japanese - JP',
+        'pt-BR' => 'Portugues - BR',
+        'de-DE' => 'Deutsch - DE',
+        'tr-TR' => 'Türkçe - TR',
+        'uk-UA' => 'Українська - UA',
+        'el-GR' => 'Ελληνικά - GR',
+    );
+
+    if (isset($labels[$langcode])) {
+        return $labels[$langcode];
+    }
+
+    if (preg_match('/^(.+?)\s*\(/', $fullName, $matches)) {
+        $parts = explode('-', $langcode);
+        $region = strtoupper(isset($parts[1]) ? $parts[1] : $parts[0]);
+        if ($langcode === 'en-GB') {
+            $region = 'UK';
+        }
+        return trim($matches[1]) . ' - ' . $region;
+    }
+
+    return $fullName;
+}
+
+function getCurrentLanguageCode()
+{
+    if (isset($_SESSION['toolkits_language'])) {
+        return $_SESSION['toolkits_language'];
+    }
+    return 'en-GB';
+}
+
+function display_language_userbar()
+{
+    $languages = getLanguages();
+    $current = getCurrentLanguageCode();
+    $currentAbbr = getLanguageAbbreviation($current);
+    ?>
+    <div class="userbar-item userbar-language">
+        <i class="fa fa-globe userbar-globe-icon" aria-hidden="true"></i>
+        <div class="userbar-dropdown language-dropdown">
+            <button type="button" class="userbar-dropdown-toggle" aria-haspopup="true" aria-expanded="false" aria-label="<?PHP echo LANGUAGE_PROMPT; ?>">
+                <span class="userbar-dropdown-label"><?php echo htmlspecialchars($currentAbbr); ?></span>
+                <i class="fa fa-chevron-down userbar-chevron" aria-hidden="true"></i>
+            </button>
+            <div class="userbar-dropdown-menu" role="menu">
+                <form action="" method="POST" class="general userbar-language-form">
+                    <input type="hidden" name="language" id="language-input" value="<?php echo htmlspecialchars($current); ?>">
+                    <ul class="userbar-dropdown-list">
+                        <?php foreach ($languages as $key => $value) {
+                            $active = ($key === $current) ? ' active' : '';
+                            $label = getLanguageDisplayLabel($key, $value->name);
+                            $flag = getLanguageFlagHtml($key);
+                            ?>
+                            <li role="none">
+                                <button type="button" role="menuitem" class="userbar-dropdown-item userbar-language-item<?php echo $active; ?>" data-language="<?php echo htmlspecialchars($key); ?>">
+                                    <?php echo $flag; ?>
+                                    <span class="userbar-lang-label"><?php echo htmlspecialchars($label); ?></span>
+                                </button>
+                            </li>
+                        <?php } ?>
+                    </ul>
+                </form>
+            </div>
+        </div>
+    </div>
+    <?php
+}
+
 function display_language_selectionform($formclass, $showLabel)
 {
 	$cssClass = $showLabel == false ? "sr-only" : "";

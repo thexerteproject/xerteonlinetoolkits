@@ -1,0 +1,19 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/**
+ * Removes the `<google-sheets-html-origin>` tag wrapper added by Google Sheets to a copied content.
+ *
+ * @param documentFragment element `data.content` obtained from clipboard
+ * @internal
+ */
+export function removeGoogleSheetsTag(documentFragment, writer) {
+    for (const child of documentFragment.getChildren()) {
+        if (child.is('element', 'google-sheets-html-origin')) {
+            const childIndex = documentFragment.getChildIndex(child);
+            writer.remove(child);
+            writer.insertChild(childIndex, child.getChildren(), documentFragment);
+        }
+    }
+}

@@ -1,0 +1,21 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/**
+ * @module bookmark/utils
+ */
+/**
+ * Returns `true` if the bookmark id is valid; otherwise, returns `false`.
+ *
+ * @internal
+ */
+export function isBookmarkIdValid(id) {
+    if (!id || typeof id !== 'string') {
+        return false;
+    }
+    if (/\s/.test(id)) {
+        return false;
+    }
+    return true;
+}

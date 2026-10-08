@@ -40,12 +40,12 @@
 
 	<meta name="viewport" id="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=10.0, initial-scale=1.0" />
 
-	<link rel="stylesheet" href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/css/smoothness/jquery-ui-1.8.18.custom.css?version=unstable - installed from github" type="text/css" />
-	<link rel="stylesheet" href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/css/mainStyles.css?version=unstable - installed from github" type="text/css" />
-	<link rel="stylesheet" href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/mediaelementplayer.min.css?version=unstable - installed from github" />
+	<link rel="stylesheet" href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/css/smoothness/jquery-ui-1.8.18.custom.css?version=unstable - installed from github" type="text/css" />
+	<link rel="stylesheet" href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/css/mainStyles.css?version=unstable - installed from github" type="text/css" />
+	<link rel="stylesheet" href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/mediaelement/mediaelementplayer.min.css?version=unstable - installed from github" />
 	
-	<link href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=unstable - installed from github" rel="stylesheet">
-    <link href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/font-awesome/css/font-awesome.min.css?version=unstable - installed from github" rel="stylesheet">
+    <link href="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/font-awesome-4.3.0/css/font-awesome.min.css" rel="stylesheet">
 	<script>
 		var username = "";
 	</script>
@@ -59,7 +59,7 @@
 
 		<div id="x_mobileScroll">
 			<div id="x_headerBlock" role="banner">
-				<img class="x_icon" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/logo.png"/>
+				<img class="x_icon" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/logo.png"/>
 				<div>
 					<h1> </h1>
 					<h2 aria-live="assertive"> </h2>
@@ -93,20 +93,20 @@
 
     
 
-    <script src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/jquery-1.9.1.min.js"></script>
+    <script src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/js/jquery-1.9.1.min.js"></script>
 
-	<!-- <script>window.jQuery || document.write('<script src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/jquery-1.7.1.min.js"><\/script>')</script> -->
-    <!-- <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/jquery-ui-1.8.18.custom.min.js"></script> -->
-    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/jquery-ui-1.10.4.min.js"></script>
+	<!-- <script>window.jQuery || document.write('<script src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/js/jquery-1.7.1.min.js"><\/script>')</script> -->
+    <!-- <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/js/jquery-ui-1.8.18.custom.min.js"></script> -->
+    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/js/jquery-ui-1.10.4.min.js"></script>
 
-    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/jquery.ui.touch-punch.min.js?version=unstable - installed from github"></script>			<!-- allows jQuery components to work on touchscreen devices -->
-    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/imageLens.js?version=unstable - installed from github"></script>							<!-- for creating magnifiers on images -->
-	<script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/gray-gh-pages/js/jquery.gray.min.js?version=unstable - installed from github"></script>	<!-- for greyscale on images -->
-    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/mediaelement-and-player.js?version=unstable - installed from github"></script>	<!-- for audio & video players -->
-    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/mediaPlayer.js?version=unstable - installed from github"></script>
-    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/swfobject.js"></script>
-	<script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/xenith.js?version=unstable - installed from github"></script>
-	<script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common_html5/js/chart.js?version=unstable - installed from github"></script>
+    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/js/jquery.ui.touch-punch.min.js?version=unstable - installed from github"></script>			<!-- allows jQuery components to work on touchscreen devices -->
+    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/js/imageLens.js?version=unstable - installed from github"></script>							<!-- for creating magnifiers on images -->
+	<script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/js/gray-gh-pages/js/jquery.gray.min.js?version=unstable - installed from github"></script>	<!-- for greyscale on images -->
+    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/mediaelement/mediaelement-and-player.js?version=unstable - installed from github"></script>	<!-- for audio & video players -->
+    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/js/mediaPlayer.js?version=unstable - installed from github"></script>
+    <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/js/swfobject.js"></script>
+	<script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/js/xenith.js?version=unstable - installed from github"></script>
+	<script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/parent_templates/Nottingham/common/js/chart.js?version=unstable - installed from github"></script>
 
     <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte/xAPI/xttracking_xapi.js?version=unstable - installed from github"></script>
 <script type="text/javascript" src="https://server.tor.nl/~tom/xapi/modules/xerte//xAPI/tincan.js?"></script>

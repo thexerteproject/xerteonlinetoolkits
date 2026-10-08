@@ -1,0 +1,11 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+( e => {
+const { [ 'ja' ]: { dictionary, getPluralForm } } = {"ja":{"dictionary":{"Emoji":"絵文字","Show all emoji...":"すべての絵文字を表示...","Find an emoji (min. 2 characters)":"絵文字を検索（2文字以上）","No emojis were found matching \"%0\".":"「%0」に一致する絵文字は見つかりませんでした。","Keep on typing to see the emoji.":"絵文字を表示するには入力を続けてください。","The query must contain at least two characters.":"検索語句は2文字以上入力してください。","Smileys & Expressions":"スマイリーと表情","Gestures & People":"ジェスチャーと人物","Animals & Nature":"動物と自然","Food & Drinks":"食べ物と飲み物","Travel & Places":"旅行と場所","Activities":"アクティビティ","Objects":"物","Symbols":"記号","Flags":"国旗","Select skin tone":"肌の色を選択","Default skin tone":"デフォルトの肌の色","Light skin tone":"明るい肌の色","Medium Light skin tone":"やや明るい肌の色","Medium skin tone":"中間の肌の色","Medium Dark skin tone":"やや暗い肌の色","Dark skin tone":"暗い肌の色","Emoji picker":"絵文字ピッカー"},getPluralForm(n){return 0;}}};
+e[ 'ja' ] ||= { dictionary: {}, getPluralForm: null };
+e[ 'ja' ].dictionary = Object.assign( e[ 'ja' ].dictionary, dictionary );
+e[ 'ja' ].getPluralForm = getPluralForm;
+} )( window.CKEDITOR_TRANSLATIONS ||= {} );

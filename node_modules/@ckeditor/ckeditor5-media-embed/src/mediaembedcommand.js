@@ -1,0 +1,71 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+import { Command } from 'ckeditor5/src/core.js';
+import { findOptimalInsertionRange } from 'ckeditor5/src/widget.js';
+import { getSelectedMediaModelWidget, insertMedia } from './utils.js';
+/**
+ * The insert media command.
+ *
+ * The command is registered by the {@link module:media-embed/mediaembedediting~MediaEmbedEditing} as `'mediaEmbed'`.
+ *
+ * To insert media at the current selection, execute the command and specify the URL:
+ *
+ * ```ts
+ * editor.execute( 'mediaEmbed', 'http://url.to.the/media' );
+ * ```
+ */
+export class MediaEmbedCommand extends Command {
+    /**
+     * @inheritDoc
+     */
+    refresh() {
+        const model = this.editor.model;
+        const selection = model.document.selection;
+        const selectedMedia = getSelectedMediaModelWidget(selection);
+        this.value = selectedMedia ? selectedMedia.getAttribute('url') : undefined;
+        this.isEnabled = isMediaSelected(selection) || isAllowedInParent(selection, model);
+    }
+    /**
+     * Executes the command, which either:
+     *
+     * * updates the URL of the selected media,
+     * * inserts the new media into the editor and puts the selection around it.
+     *
+     * @fires execute
+     * @param url The URL of the media.
+     */
+    execute(url) {
+        const model = this.editor.model;
+        const selection = model.document.selection;
+        const selectedMedia = getSelectedMediaModelWidget(selection);
+        if (selectedMedia) {
+            model.change(writer => {
+                writer.setAttribute('url', url, selectedMedia);
+            });
+        }
+        else {
+            insertMedia(model, url, selection, true);
+        }
+    }
+}
+/**
+ * Checks if the media embed is allowed in the parent.
+ */
+function isAllowedInParent(selection, model) {
+    const insertionRange = findOptimalInsertionRange(selection, model);
+    let parent = insertionRange.start.parent;
+    // The model.insertContent() will remove empty parent (unless it is a $root or a limit).
+    if (parent.isEmpty && !model.schema.isLimit(parent)) {
+        parent = parent.parent;
+    }
+    return model.schema.checkChild(parent, 'media');
+}
+/**
+ * Checks if the media object is selected.
+ */
+function isMediaSelected(selection) {
+    const element = selection.getSelectedElement();
+    return !!element && element.name === 'media';
+}

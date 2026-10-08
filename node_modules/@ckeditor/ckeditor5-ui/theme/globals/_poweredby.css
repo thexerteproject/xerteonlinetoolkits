@@ -1,0 +1,84 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	/* where 7.5(px) is the font size of the powered by label and 13(px) is the base font size. */
+	--ck-powered-by-font-size: calc(var(--ck-font-size-base) * 7.5 / 13);
+	/* where 10(px) is the line height of the powered by label and 13(px) is the base font size. */
+	--ck-powered-by-line-height: calc(var(--ck-font-size-base) * 10 / 13);
+	/* where -0.2(px) is the letter spacing of the powered by label and 13(px) is the base font size. */
+	--ck-powered-by-letter-spacing: calc(var(--ck-font-size-base) * -0.2 / 13);
+	--ck-powered-by-padding-vertical: 2px;
+	--ck-powered-by-padding-horizontal: 4px;
+	--ck-powered-by-text-color: hsl(0, 0%, 31%);
+	--ck-powered-by-border-radius: var(--ck-border-radius);
+	--ck-powered-by-background: hsl(0, 0%, 100%);
+	--ck-powered-by-border-color: var(--ck-color-focus-border);
+
+	--ck-powered-by-svg-width: 53;
+	--ck-powered-by-svg-height: 10;
+	--ck-powered-by-icon-width: calc(var(--ck-font-size-base) * var(--ck-powered-by-svg-width) / 13);
+	--ck-powered-by-icon-height: calc(var(--ck-font-size-base) * var(--ck-powered-by-svg-height) / 13);
+}
+
+.ck.ck-balloon-panel.ck-powered-by-balloon {
+	--ck-border-radius: var(--ck-powered-by-border-radius);
+
+	box-shadow: none;
+	background: var(--ck-powered-by-background);
+	min-height: unset;
+	z-index: calc( var(--ck-z-panel) - 1 );
+
+	& .ck.ck-powered-by {
+		line-height: var(--ck-powered-by-line-height);
+
+		& a {
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			opacity: .66;
+			filter: grayscale(80%);
+			line-height: var(--ck-powered-by-line-height);
+			padding: var(--ck-powered-by-padding-vertical) var(--ck-powered-by-padding-horizontal);
+		}
+
+		& .ck-powered-by__label {
+			font-size: var(--ck-powered-by-font-size);
+			letter-spacing: var(--ck-powered-by-letter-spacing);
+			padding-left: 2px;
+			text-transform: uppercase;
+			font-weight: bold;
+			margin-right: 4px;
+			cursor: pointer;
+			line-height: normal;
+			color: var(--ck-powered-by-text-color);
+
+		}
+
+		& .ck-icon {
+			display: block;
+			cursor: pointer;
+			width: var(--ck-powered-by-icon-width);
+			height: var(--ck-powered-by-icon-height);
+		}
+
+		&:hover {
+			& a {
+				filter: grayscale(0%);
+				opacity: 1;
+			}
+		}
+	}
+
+	&[class*="position_inside"] {
+		border-color: transparent;
+	}
+
+	&[class*="position_border"] {
+		border: var(--ck-focus-ring);
+		border-color: var(--ck-powered-by-border-color);
+	}
+}
+

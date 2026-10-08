@@ -19,6 +19,7 @@
  */
 
 require_once("../../../config.php");
+require_once(dirname(__FILE__) . "/../services/TemplatePreviewXmlService.php");
 
 // Check that xml file is stored beneath root of project
 // be VERY paranoid over the path the user is requesting to download.
@@ -26,12 +27,9 @@ require_once("../../../config.php");
 // like 542-tom-Notingham/../database.php or like 542-tom-Notingham/../../../../etc/passwd
 $unsafe_file_path = x_clean_input($_GET['file']);
 
-$full_unsafe_file_path = x_convert_user_area_url_to_path($unsafe_file_path);
-x_check_path_traversal($full_unsafe_file_path, $xerte_toolkits_site->users_file_area_full, "Invalid file specified");
-
-// Make sure we're actually serving an xml file
-if (strtolower(substr($full_unsafe_file_path, -4)) !== '.xml') {
-    echo "Not found!";
+$result = template_preview_xml_load($unsafe_file_path);
+if (!$result['ok']) {
+    echo $result['message'] === 'Not found' ? 'Not found!' : $result['message'];
     exit;
 }
-echo file_get_contents($full_unsafe_file_path);
+echo $result['xml'];

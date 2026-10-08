@@ -30,32 +30,6 @@ require_once(dirname(__FILE__) . '/../../config.php');
 
 function display_property_engines($change,$msgtype){
 
-	echo "<fieldset id=\"engineFS\" class='plainFS'><legend>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE  . "</legend>";
-	
-	$template = strtolower(get_template_type($_POST['template_id']));
-
-    if (get_default_engine($_POST['template_id']) == 'flash')
-    {
-		if ($template != "xerte_rss") {
-			echo "<div><input type=\"radio\" id=\"javascript\" name=\"engine\" value=\"javascript\" onclick=\"javascript:default_engine_toggle()\"><label for=\"javascript\">" . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "</label></div>";
-        	echo "<div><input checked type=\"radio\" id=\"flash\" name=\"engine\" value=\"flash\" onclick=\"javascript:default_engine_toggle()\"><label for=\"flash\">" . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</label></div>";
-		} else {
-			echo "<div><input checked type=\"radio\" id=\"flash\" name=\"engine\" value=\"flash\" ><label for=\"flash\">" . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</label></div>";
-		}
-    }
-    else
-    {
-		echo "<div><input checked type=\"radio\" id=\"javascript\" name=\"engine\" value=\"javascript\" onclick=\"javascript:default_engine_toggle()\"><label for=\"javascript\">" . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "</label></div>";
-		echo "<div><input type=\"radio\" id=\"flash\" name=\"engine\" value=\"flash\" onclick=\"javascript:default_engine_toggle()\"><label for=\"flash\">" . PROPERTIES_LIBRARY_DEFAULT_FLASH . "</label></div>";
-    }
-	
-	if($change && $msgtype=="engine"){
-        echo "<p aria-live='polite' class=\"alert_msg\"><i class='fa fa-exclamation-circle' style='height: 14px; color:#f86718;'></i> " . PROPERTIES_LIBRARY_DEFAULT_ENGINE_CHANGED . "</p>";
-    }
-	
-	echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE_WARNING  . "</p>";
-	echo "</fieldset>";
-
 }
 
 function process_logos($LO_icon_path, $theme_path, $template_path, $page_content) {
@@ -75,8 +49,8 @@ function process_logos($LO_icon_path, $theme_path, $template_path, $page_content
 
     // Lastly check the default location
     foreach($extensions as $ext) {
-        if (file_exists($template_path . 'common_html5/logo.' . $ext)) {
-            return str_replace("%LOGO%", '<img class="x_icon" src="%TEMPLATEPATH%common_html5/logo.'. $ext . '" alt="" />' , $page_content);
+        if (file_exists($template_path . 'common/logo.' . $ext)) {
+            return str_replace("%LOGO%", '<img class="x_icon" src="%TEMPLATEPATH%common/logo.'. $ext . '" alt="" />' , $page_content);
         }
     }
 
@@ -98,18 +72,7 @@ function process_sidebar_logo($theme_path, $page_content) {
 
 function display_publish_engine(){
 	
-	echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE . " ";
-
-    if (get_default_engine($_POST['template_id']) == 'flash')
-    {
-		echo PROPERTIES_LIBRARY_DEFAULT_FLASH;
-    }
-    else
-    {
-		echo PROPERTIES_LIBRARY_DEFAULT_HTML5;
-    }
-	
-	echo "</p>";
+	echo "<p>" . PROPERTIES_LIBRARY_DEFAULT_ENGINE . " " . PROPERTIES_LIBRARY_DEFAULT_HTML5 . "</p>";
 }
 
 function dont_show_template($optional=''){

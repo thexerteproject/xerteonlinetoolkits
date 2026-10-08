@@ -1,0 +1,154 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck-content .media {
+	/* Don't allow floated content overlap the media.
+	https://github.com/ckeditor/ckeditor5-media-embed/issues/53 */
+	clear: both;
+
+	/* Make sure there is some space between the content and the media. */
+	/* The first value should be equal to --ck-spacing-large variable if used in the editor context
+	to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
+	margin: 0.9em 0;
+
+	/* Make sure media is not overriden with Bootstrap default `flex` value.
+	See: https://github.com/ckeditor/ckeditor5/issues/1373. */
+	display: block;
+
+	/* Give the media some minimal width in the content to prevent them
+	from being "squashed" in tight spaces, e.g. in table cells (#44) */
+	min-width: 15em;
+}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck-media__wrapper .ck-media__placeholder {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+.ck-media__wrapper .ck-media__placeholder .ck-media__placeholder__url {
+			/* Otherwise the URL will overflow when the content is very narrow. */
+			max-width: 100%;
+
+			position: relative;
+		}
+
+.ck-media__wrapper .ck-media__placeholder .ck-media__placeholder__url .ck-media__placeholder__url__text {
+				overflow: hidden;
+				display: block;
+			}
+
+.ck-media__wrapper[data-oembed-url*="twitter.com"] .ck-media__placeholder__icon *, .ck-media__wrapper[data-oembed-url*="google.com/maps"] .ck-media__placeholder__icon *, .ck-media__wrapper[data-oembed-url*="goo.gl/maps"] .ck-media__placeholder__icon *, .ck-media__wrapper[data-oembed-url*="maps.google.com"] .ck-media__placeholder__icon *, .ck-media__wrapper[data-oembed-url*="maps.app.goo.gl"] .ck-media__placeholder__icon *, .ck-media__wrapper[data-oembed-url*="facebook.com"] .ck-media__placeholder__icon *, .ck-media__wrapper[data-oembed-url*="instagram.com"] .ck-media__placeholder__icon * {
+			display: none;
+		}
+
+/* Disable all mouse interaction as long as the editor is not read–only.
+   https://github.com/ckeditor/ckeditor5-media-embed/issues/58 */
+.ck-editor__editable:not(.ck-read-only) .ck-media__wrapper > *:not(.ck-media__placeholder) {
+	pointer-events: none;
+}
+
+/* Disable all mouse interaction when the widget is not selected (e.g. to avoid opening links by accident).
+   https://github.com/ckeditor/ckeditor5-media-embed/issues/18 */
+.ck-editor__editable:not(.ck-read-only) .ck-widget:not(.ck-widget_selected) .ck-media__placeholder {
+	pointer-events: none;
+}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck-vertical-form .ck-button::after {
+		content: "";
+		width: 0;
+		position: absolute;
+		right: -1px;
+		top: -1px;
+		bottom: -1px;
+		z-index: 1;
+	}
+
+.ck-vertical-form .ck-button:focus::after {
+		display: none;
+	}
+
+@media screen and (max-width: 600px) {
+			.ck.ck-responsive-form .ck-button::after {
+				content: "";
+				width: 0;
+				position: absolute;
+				right: -1px;
+				top: -1px;
+				bottom: -1px;
+				z-index: 1;
+			}
+
+			.ck.ck-responsive-form .ck-button:focus::after {
+				display: none;
+			}
+	}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-media-form {
+	display: flex;
+	align-items: flex-start;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	width: 400px;
+}
+
+.ck.ck-media-form .ck-labeled-field-view {
+		display: inline-block;
+		width: 100%;
+	}
+
+.ck.ck-media-form .ck-label {
+		display: none;
+	}
+
+.ck.ck-media-form .ck-input {
+		width: 100%;
+	}
+
+@media screen and (max-width: 600px) {
+
+.ck.ck-media-form {
+		flex-wrap: wrap;
+}
+
+		.ck.ck-media-form .ck-labeled-field-view {
+			flex-basis: 100%;
+		}
+
+		.ck.ck-media-form .ck-button {
+			flex-basis: 50%;
+		}
+	}
+
+/*# sourceMappingURL=index.css.map */

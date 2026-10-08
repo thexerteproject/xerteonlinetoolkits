@@ -247,9 +247,14 @@ abstract class AITranscribe {
 
     //use with care uses exec
     protected function exec_chunk($filePath, $segmentSeconds, $pattern) {
-        // build and run the ffmpeg command
+        global $xerte_toolkits_site;
+
+        $ffmpegExe = (stripos(php_uname('s'), 'Windows') === 0) ? 'ffmpeg.exe' : 'ffmpeg';
+        $ffmpegPath = $xerte_toolkits_site->root_file_path . "yt-dlp/bin/" . $ffmpegExe;
+
         $cmd = \sprintf(
-            'ffmpeg -i %s -f segment -segment_time %d -c copy %s 2>&1',
+            '%s -i %s -f segment -segment_time %d -c copy %s 2>&1',
+            $this->customEscapeshellarg($ffmpegPath),
             $this->customEscapeshellarg($filePath),
             $segmentSeconds,
             $this->customEscapeshellarg($pattern)
@@ -260,7 +265,6 @@ abstract class AITranscribe {
             $output = \implode("\n", $outputLines);
             throw new \RuntimeException("FFmpeg split failed (exit code {$returnCode}):\n{$output}");
         }
-
     }
 
 }

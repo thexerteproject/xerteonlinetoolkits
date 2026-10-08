@@ -1,0 +1,138 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+.ck.ck-link-toolbar__preview{
+	display:inline-block;
+}
+
+.ck.ck-link-toolbar__preview .ck-button__label{
+		overflow:hidden;
+	}
+
+.ck.ck-editor__editable figure.image > a::after, .ck.ck-editor__editable a span.image-inline::after{
+			display:block;
+			position:absolute;
+		}
+
+.ck-vertical-form .ck-button::after{
+		content:"";
+		width:0;
+		position:absolute;
+		right:-1px;
+		top:-1px;
+		bottom:-1px;
+		z-index:1;
+	}
+
+.ck-vertical-form .ck-button:focus::after{
+		display:none;
+	}
+
+@media screen and (max-width: 600px){
+			.ck.ck-responsive-form .ck-button::after{
+				content:"";
+				width:0;
+				position:absolute;
+				right:-1px;
+				top:-1px;
+				bottom:-1px;
+				z-index:1;
+			}
+
+			.ck.ck-responsive-form .ck-button:focus::after{
+				display:none;
+			}
+	}
+
+:root{
+	--ck-form-default-width:340px;
+}
+
+.ck.ck-form{
+	padding:0 0 var(--ck-spacing-large);
+}
+
+.ck.ck-form.ck-form_default-width{
+		width:var(--ck-form-default-width);
+	}
+
+.ck.ck-form:focus{
+		outline:none;
+	}
+
+.ck.ck-form .ck.ck-input-text,
+	.ck.ck-form .ck.ck-input-number{
+		min-width:100%;
+		width:0;
+	}
+
+.ck.ck-form .ck.ck-dropdown{
+		min-width:100%;
+	}
+
+.ck.ck-form .ck.ck-dropdown .ck-dropdown__button:not(:focus){
+				border:1px solid var(--ck-color-base-border);
+			}
+
+.ck.ck-form .ck.ck-dropdown .ck-dropdown__button .ck-button__label{
+				width:100%;
+			}
+
+@media screen and (max-width: 600px){
+
+.ck.ck-form.ck-responsive-form .ck.ck-form__row.ck-form__row_with-submit{
+					flex-direction:column;
+					align-items:stretch;
+					padding:0;
+			}
+	}
+
+@media screen and (max-width: 600px){
+
+.ck.ck-form.ck-responsive-form .ck.ck-form__row.ck-form__row_with-submit > .ck{
+						margin:var(--ck-spacing-large) var(--ck-spacing-large) 0;
+				}
+	}
+
+@media screen and (max-width: 600px){
+
+.ck.ck-form.ck-responsive-form .ck.ck-form__row.ck-form__row_with-submit .ck-button_with-text{
+						justify-content:center;
+				}
+	}
+
+@media screen and (max-width: 600px){
+
+.ck.ck-form.ck-responsive-form .ck.ck-form__row.ck-form__row_large-bottom-padding{
+					padding-bottom:var(--ck-spacing-large);
+			}
+	}
+
+[dir="ltr"] .ck.ck-form.ck-responsive-form > :not(:first-child){
+				margin-left:0;
+			}
+
+[dir="rtl"] .ck.ck-form.ck-responsive-form > :not(:last-child){
+				margin-left:0;
+			}
+.ck.ck-link-form .ck-link-form__providers-list{
+		display:flex;
+		flex-direction:column;
+	}
+.ck.ck-link-form .ck-link-form__providers-list .ck-link__button > .ck-button__label{
+				flex-grow:1;
+			}
+.ck.ck-link-form .ck-link__items:empty{
+		display:none;
+	}
+
+.ck.ck-link-providers > .ck-link-providers__list{
+		overflow-x:hidden;
+		overflow-y:auto;
+		overscroll-behavior:contain;
+	}
+
+.ck.ck-link-providers > .ck-link-providers__list .ck-button > .ck-icon{
+				flex-shrink:0;
+			}

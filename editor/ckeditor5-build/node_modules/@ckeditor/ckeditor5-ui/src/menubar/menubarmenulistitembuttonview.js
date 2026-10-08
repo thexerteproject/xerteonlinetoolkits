@@ -1,0 +1,30 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+import { ListItemButtonView } from '../button/listitembuttonview.js';
+import '../../theme/components/menubar/menubarmenulistitembutton.css';
+/**
+ * A menu bar list button view. Buttons like this one execute user actions.
+ */
+export class MenuBarMenuListItemButtonView extends ListItemButtonView {
+    /**
+     * Creates an instance of the menu bar list button view.
+     *
+     * @param locale The localization services instance.
+     */
+    constructor(locale) {
+        super(locale);
+        this.set({
+            withText: true,
+            withKeystroke: true,
+            tooltip: false,
+            role: 'menuitem'
+        });
+        this.extendTemplate({
+            attributes: {
+                class: ['ck-menu-bar__menu__item__button']
+            }
+        });
+    }
+}

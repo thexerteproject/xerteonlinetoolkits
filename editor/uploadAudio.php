@@ -60,6 +60,8 @@ if (isset($_POST['filename']) && isset($_POST['extension'])) {
 
     switch($extension) {
         case "webm":
+        case "m4a":
+        case "mp4":
         case "mp3":
         case "ogg":
         case "wav":

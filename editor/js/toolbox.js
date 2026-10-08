@@ -1,4 +1,4 @@
-/**
+    /**
  * Licensed to The Apereo Foundation under one or more contributor license
  * agreements. See the NOTICE file distributed with this work for
  * additional information regarding copyright ownership.
@@ -653,51 +653,61 @@ var EDITOR = (function ($, parent) {
         return false;
     },
 
-        //Required for resolving xml conditionals for AI or other API-based services, please do not remove
-    vendor_is_available = function (vendorType, vendor = "all") {
-        // Helper: is a single row active?
-        const isRowActive = function (row) {
-            // Must match the type/category
-            if (row.type !== vendorType) {
-                return false;
-            }
+        // Required for resolving xml conditionals for AI or other API-based services, please do not remove
+        vendor_is_available = function (vendorType, vendor = "all") {
+            // Helper: is a single row active?
+            const isRowActive = function (row) {
+                // If vendorType is not "all", the row must match the type/category
+                if (vendorType !== "all" && row.type !== vendorType) {
+                    return false;
+                }
 
-            // Must be enabled
-            if (row.enabled != "1") {
-                return false;
-            }
+                // Must be enabled
+                if (row.enabled != "1") {
+                    return false;
+                }
 
-            // If this vendor doesn't require a key, it's active as-is
-            if (row.needs_key == "0") {
-                return true;
-            }
+                // If this vendor doesn't require a key, it's active as-is
+                if (row.needs_key == "0") {
+                    return true;
+                }
 
-            // If it *does* require a key, check via vendor_options
-            return vendorHasApiKey(vendorType, row.vendor);
-        };
+                // If it does require a key, check via vendor_options
+                return vendorHasApiKey(row.type, row.vendor);
+            };
 
-        // If we're checking a specific vendor in this category
-        if (vendor !== "all") {
-            for (let i = 0; i < management_helper_table.length; i++) {
-                const row = management_helper_table[i];
-                if (row.type === vendorType && row.vendor === vendor) {
+            // If we're checking a specific vendor
+            if (vendor !== "all") {
+                for (let i = 0; i < management_helper_table.length; i++) {
+                    const row = management_helper_table[i];
+
+                    // Match vendor name
+                    if (row.vendor !== vendor) {
+                        continue;
+                    }
+
+                    // If vendorType is specific, row must also match that type
+                    if (vendorType !== "all" && row.type !== vendorType) {
+                        continue;
+                    }
+
                     return isRowActive(row);
                 }
+
+                return false; // no matching row
             }
-            return false; // no matching row
-        }
 
-        // vendor === "all": is there at least one active vendor in this category?
-        for (let i = 0; i < management_helper_table.length; i++) {
-            const row = management_helper_table[i];
+            // vendor === "all": is there at least one active vendor in scope?
+            for (let i = 0; i < management_helper_table.length; i++) {
+                const row = management_helper_table[i];
 
-            if (isRowActive(row)) {
-                return true; // found at least one active vendor
+                if (isRowActive(row)) {
+                    return true; // found at least one active vendor
+                }
             }
-        }
 
-        return false; // none active
-    },
+            return false; // none active
+        },
 
     vendor_has_option = function(option, vendor = "all") {
         if(vendor == "all") {
@@ -1183,6 +1193,23 @@ var EDITOR = (function ($, parent) {
 
     showToolBar = function(show){
         defaultToolBar = show;
+		// CKEditor 5 has no CKEditor 4-style toolbox collapser. Apply the same
+		// preference directly to each classic editor's toolbar container.
+		if (window.__xerteCke5Instances) {
+			Object.keys(window.__xerteCke5Instances).forEach(function(id) {
+				var editor = window.__xerteCke5Instances[id];
+				var view = editor && editor.ui && editor.ui.view;
+				var stickyPanel = view && view.stickyPanel;
+				if (stickyPanel && stickyPanel.element) {
+					stickyPanel.element.style.display = show ? '' : 'none';
+					if (show && view.toolbar) {
+						window.requestAnimationFrame(function() {
+							view.toolbar.fire('change:maxWidth');
+						});
+					}
+				}
+			});
+		}
         /*var tree = $.jstree.reference("#treeview");
         var ids = tree.get_selected();
         var id;
@@ -1865,7 +1892,7 @@ var EDITOR = (function ($, parent) {
             uploadUrl : 'editor/uploadImage.php?mode=dragdrop' + lti_session + '&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
             uploadAudioUrl : 'editor/uploadAudio.php?mode=record' + lti_session + '&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
             mathJaxClass :  'mathjax',
-            mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
+            mathJaxLib :    'offline/js/mathjax/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
             toolbarStartupExpanded : false,
             height : 150,
             resize_enabled: false
@@ -2162,7 +2189,7 @@ var EDITOR = (function ($, parent) {
                 uploadUrl : 'editor/uploadImage.php?mode=dragdrop' + lti_session + '&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
                 uploadAudioUrl : 'editor/uploadAudio.php?mode=record' + lti_session + '&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
                 mathJaxClass :  'mathjax',
-                mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
+                mathJaxLib :    'offline/js/mathjax/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
                 toolbarStartupExpanded : defaultToolBar,
                 codemirror : codemirroroptions,
                 extraAllowedContent: 'style',
@@ -2170,10 +2197,10 @@ var EDITOR = (function ($, parent) {
 				editorplaceholder: options.options.placeholder
             };
 
+            let height = -1;
             if (options.options.height)
             {
-                var height = parseInt(options.options.height) + 20;
-                ckoptions['height'] = height;
+                height = parseInt(options.options.height) + 20;
             }
             if (options.options.type == 'html')
             {
@@ -2184,23 +2211,33 @@ var EDITOR = (function ($, parent) {
             {
                 var ckeditorcontents = $('#'+options.id).data('afterckeditor');
                 $('#'+options.id).ckeditor(function(){
-                		var self = this;
+                	var self = this;
 
                     if (ckeditorcontents) this.setData(ckeditorcontents);
+
+                    if (height > 0)
+                    {
+                        const e = $('#' + options.id).next().find('.ck-editor__editable_inline');
+                        const editor = e[0].ckeditorInstance;
+                        $('#' + options.id).next().find('.ck-editor__editable_inline').css("min-height", height + "px").css("max-height", height + "px");
+                        editor.editing.view.change(writer=>{
+                            writer.setStyle('height', height + 'px', editor.editing.view.document.getRoot());
+                        });
+                    }
 
                     // Editor is ready, attach change event
                     this.on('change', function(){
                         inputChanged(options.id, options.key, options.name, self.getData(), self);
                     });
-										this.on('fileUploadResponse', function(e) {
-											/*self.on('NO-EVENT-WORKS-HERE', function(e) {
-												e.removeListener();
-												inputChanged(options.id, options.key, options.name, self.getData(), self);
-											});*/
-											setTimeout(function () {
-														self.fire('change');
-													}, 1500);
-										});
+                    this.on('fileUploadResponse', function(e) {
+                        /*self.on('NO-EVENT-WORKS-HERE', function(e) {
+                            e.removeListener();
+                            inputChanged(options.id, options.key, options.name, self.getData(), self);
+                        });*/
+                        setTimeout(function () {
+                                    self.fire('change');
+                                }, 1500);
+                    });
                 }, ckoptions);
             }
             else
@@ -2214,7 +2251,7 @@ var EDITOR = (function ($, parent) {
                 });
                 if (options.options.height)
                 {
-                    var height = parseInt(options.options.height) + 20;
+                    height = parseInt(options.options.height) + 20;
                     codemirror.setSize(null,height);
                 }
                 $('.CodeMirror').resizable({
@@ -2256,6 +2293,9 @@ var EDITOR = (function ($, parent) {
             if (options) {
                 $('#'+options.id).ckeditor(function(){
                     // Editor is ready, attach onchange event
+                    if (options.name === 'name') {
+                        sizeInlineQFPanel($('#mainPanel .qf-inline-row'));
+                    }
                     this.on('change', function(){
                         var thisValue = this.getData();
                         thisValue = thisValue.substr(0, thisValue.length-1); // Remove the extra linebreak
@@ -2302,13 +2342,14 @@ var EDITOR = (function ($, parent) {
 						[ 'RemoveFormat'],
                         [ 'Sourcedialog' ]
                     ],
+                    inlineEditor: true,
                     filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
                     filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
                     filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
                     uploadUrl : 'editor/uploadImage.php?mode=dragdrop' + lti_session + '&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
                     uploadAudioUrl : 'editor/uploadAudio.php?mode=record' + lti_session + '&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
                     mathJaxClass :  'mathjax',
-                    mathJaxLib :    'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
+                    mathJaxLib :    'offline/js/mathjax/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
                     //extraPlugins : 'sourcedialog,image3,fontawesome,rubytext,editorplaceholder',
                     extraPlugins : 'sourcedialog,image3,fontawesome,rubytext,editorplaceholder',
                     language : language.$code.substr(0,2),
@@ -2912,20 +2953,120 @@ var EDITOR = (function ($, parent) {
         setAttributeValue(key, [name], [theme.name]);
     }
 
+    getComboboxOptionsForBaseSetting = function (setting_key){
+        let labels = [];
+        let option = [];
+        let default_value = "";
+
+        if (base_ai_options.hasOwnProperty(setting_key)){
+            for (let i = 0; i < base_ai_options[setting_key].length; i++) {
+                let value = base_ai_options[setting_key][i];
+                let label = value;
+                let section = "";
+                let option_key = value.toUpperCase();
+
+                if (setting_key === "reading_level") {
+                    section = "ReadingLevel";
+                } else if (setting_key === "education_level") {
+                    section = "EducationLevel";
+                } else if (setting_key === "tone_and_style") {
+                    section = "ToneAndStyle";
+                }
+
+                try {
+                    if (
+                        section !== "" &&
+                        language &&
+                        language.assistents &&
+                        language.assistents.AIBaseSettingOptions &&
+                        language.assistents.AIBaseSettingOptions[section] &&
+                        language.assistents.AIBaseSettingOptions[section][option_key] &&
+                        language.assistents.AIBaseSettingOptions[section][option_key].$label
+                    ) {
+                        label = language.assistents.AIBaseSettingOptions[section][option_key].$label;
+                    }
+                } catch (e) {
+                    // fall back to raw db value
+                }
+
+                option.push(value);
+                labels.push(label);
+            }
+
+            // append custom option to preserve existing behaviour
+            option.push("custom");
+
+            try {
+                if (
+                    language &&
+                    language.assistents &&
+                    language.assistents.AIBaseSettingOptions &&
+                    language.assistents.AIBaseSettingOptions.Common &&
+                    language.assistents.AIBaseSettingOptions.Common.CUSTOM &&
+                    language.assistents.AIBaseSettingOptions.Common.CUSTOM.$label
+                ) {
+                    labels.push(language.assistents.AIBaseSettingOptions.Common.CUSTOM.$label);
+                } else {
+                    labels.push("custom");
+                }
+            } catch (e) {
+                labels.push("custom");
+            }
+        } else {
+            option.push("NaN");
+
+            try {
+                if (
+                    language &&
+                    language.assistents &&
+                    language.assistents.AIBaseSettingOptions &&
+                    language.assistents.AIBaseSettingOptions.Common &&
+                    language.assistents.AIBaseSettingOptions.Common.NO_OPTIONS_AVAILABLE &&
+                    language.assistents.AIBaseSettingOptions.Common.NO_OPTIONS_AVAILABLE.$label
+                ) {
+                    labels.push(language.assistents.AIBaseSettingOptions.Common.NO_OPTIONS_AVAILABLE.$label);
+                } else {
+                    labels.push("No options available");
+                }
+            } catch (e) {
+                labels.push("No options available");
+            }
+        }
+
+        if (base_ai_defaults.hasOwnProperty(setting_key)) {
+            default_value = base_ai_defaults[setting_key];
+        }
+
+        return [labels, option, default_value];
+    }
+
     getComboboxOptionsForVendor = function (type){
         let labels = [];
         let option = [];
+
         if (vendor_options.hasOwnProperty(type)){
             for (let vendor in vendor_options[type]) {
+                if (!vendorHasApiKey(type, vendor)) {
+                    continue;
+                }
+
                 option.push(vendor);
                 labels.push(vendor_options[type][vendor].label);
             }
         } else {
             //type is not in management helper table
             labels.push("No options available");
-            option.push("NaN")
+            option.push("NaN");
         }
         return [labels,option];
+    }
+
+    //Helper for determining whether a) a user has the ai user role and b) any of the assistant options are available,
+    checkAssistantFeatureStatus = function (){
+        if (vendor_is_available('all', 'all') && hasrole('aiuser')){
+            return true;
+        }
+        return false;
     }
 
     selectChanged = function (id, key, name, value, obj)
@@ -2945,6 +3086,413 @@ var EDITOR = (function ($, parent) {
 
             setAttributeValue(key, [name], [checked.toString()]);
         },
+
+    getQuickFillParameters = function (type, attributes) {
+        switch (type) {
+            case 'quiz':
+                return {
+                    "question": attributes["numberOfQuestions"] || "3",
+                    "option": attributes["numberOfAnswers"] || "4",
+                };
+            case 'tabNavExtra':
+                return {
+                    "topic": attributes["qfTopic"] || "3",
+                    "nestedTab": attributes["qfNestedTab"] || "3",
+                    "nestedPage": attributes["qfNestedPage"] || "5",
+                };
+            case 'columnPage':
+                return {
+                    "nestedColumnPage": attributes["qfNestedColumnPage"] || "3",
+                };
+            case 'audioSlideshow':
+                return {
+                    "synchPoint": attributes["qfSynchPoint"] || "3",
+                };
+            case 'imageSequence':
+                return {
+                    "case": attributes["qfCase"] || "3",
+                    "imgSeries": attributes["qfImgSeries"] || "3",
+                    "singleImg": attributes["qfSingleImg"] || "5",
+                };
+            case 'thumbnailViewer':
+                return {
+                    "thumbnailImage": attributes["qfThumbnailImage"] || "5",
+                };
+            case 'SictTimeline':
+                return {
+                    "timeLineText": attributes["qfTimeLineText"] || "1",
+                    "timelineimage": attributes["qfTimelineimage"] || "1",
+                    "timelinevideo ": attributes["qfTimelinevideo"] || "1",
+                    "timeLineAudio": attributes["qfTimeLineAudio"] || "1",
+                };
+            case 'transcriptReader':
+                return {
+                    "nestedSynch": attributes["qfNestedSynch"] || "3",
+                };
+            case 'flashCards':
+                return {
+                    "card": attributes["qfCard"] || "5",
+                };
+            case 'list':
+                return {
+                    "listItem": attributes["qfListItem"] || "5",
+                };
+            case 'nav':
+                return {
+                    "navPage": attributes["qfNavPage"] || "3",
+                };
+            case 'perspectives':
+                return {
+                    "movie": attributes["qfMovie"] || "1",
+                    "sound": attributes["qfSound"] || "1",
+                    "image": attributes["qfImage"] || "1",
+                    "mpText": attributes["qfMpText"] || "1",
+                };
+            case 'annotatedDiagram':
+                return {
+                    "flexhotspot": attributes["qfFlexhotspot"] || "3",
+                };
+            case 'hotspotGroup':
+                return {
+                    "flexhotspot": attributes["qfFlexhotspot"] || "3",
+                };
+            case 'topXQ':
+                return {
+                    "optionXQ": attributes["qfOptionXQ"] || "5",
+                };
+            case 'buttonSequence':
+                return {
+                    "button": attributes["qfButton"] || "5",
+                };
+            case 'categories':
+                return {
+                    "category": attributes["qfCategory"] || "3",
+                    "item": attributes["qfItem"] || "5",
+                };
+            case 'decision':
+                return {
+                    "resultStep": attributes["qfResultStep"] || "1",
+                    "infoStep": attributes["qfInfoStep"] || "1",
+                    "sliderStep": attributes["qfSliderStep"] || "1",
+                    "sliderStepOption": attributes["qfSliderStepOption"] || "4",
+                    "mcqStep": attributes["qfMcqStep"] || "1",
+                    "mcqStepOption": attributes["qfMcqStepOption"] || "4",
+                };
+            case 'dialog':
+                return {
+                    "dialogStep": attributes["qfDialogStep"] || "5",
+                };
+            case 'dictation':
+                return {
+                    "nestedDictation": attributes["qfNestedDictation"] || "3",
+                };
+            case 'documentation':
+                return {
+                    "page": attributes["qfPage"] || "1",
+                };
+            case 'page':
+                return {
+                    "media": attributes["qfMedia"] || "1",
+                    "selectlist": attributes["qfSelectlist"] || "1",
+                    "selectitem": attributes["qfSelectitem"] || "5",
+                    "description": attributes["qfDescription"] || "1",
+                    "tableDoc": attributes["qfTableDoc"] || "1",
+                    "checkbox": attributes["qfCheckbox"] || "1",
+                    "textArea": attributes["qfTextArea"] || "1",
+                    "textBox": attributes["qfTextBox"] || "1",
+                };
+            case 'section':
+                return {
+                    "media": attributes["qfMedia"] || "1",
+                    "selectlist": attributes["qfSelectlist"] || "1",
+                    "selectitem": attributes["qfSelectitem"] || "5",
+                    "description": attributes["qfDescription"] || "1",
+                    "tableDoc": attributes["qfTableDoc"] || "1",
+                    "checkbox": attributes["qfCheckbox"] || "1",
+                    "textArea": attributes["qfTextArea"] || "1",
+                    "textBox": attributes["qfTextBox"] || "1",
+                };
+            case 'dragDropLabel':
+                return {
+                    "hotspot": attributes["qfHotspot"] || "3",
+                };
+            case 'hotspotImage':
+                return {
+                    "flexhotspot": attributes["qfFlexhotspot"] || "3",
+                };
+            case 'hotSpotQuestion':
+                return {
+                    "QHotSpot": attributes["qfQHotSpot"] || "3",
+                };
+            case 'interactiveText':
+                return {
+                    "group": attributes["qfGroup"] || "5",
+                };
+            case 'ivOverlayPanel':
+                return {
+                    "ivSynchTextPlus": attributes["qfIvSynchTextPlus"] || "3",
+                    "ivSynchMCQ": attributes["qfIvSynchMCQ"] || "1",
+                    "ivSynchMCQOption": attributes["qfIvSynchMCQOption"] || "4",
+                    "ivSynchXot": attributes["qfIvSynchXot"] || "1",
+                    "ivSynchXotChange": attributes["qfIvSynchXotChange"] || "3",
+                };
+            case 'inventory':
+                return {
+                    "invQuestion": attributes["qfInvQuestion"] || "3",
+                    "invOption": attributes["qfInvOption"] || "4",
+                };
+            case 'textMatch':
+                return {
+                    "sentence": attributes["qfSentence"] || "3",
+                };
+            case 'mcq':
+                return {
+                    "option": attributes["qfOption"] || "4",
+                };
+            case 'opinion':
+                return {
+                    "opinionClass": attributes["qfOpinionClass"] || "3",
+                    "opinionQuestion": attributes["qfOpinionQuestion"] || "3",
+                    "opinionOption": attributes["qfOpinionOption"] || "4",
+                };
+            case 'timeline':
+                return {
+                    "timelinedate": attributes["qfTimelinedate"] || "6",
+                };
+            case 'memory':
+                return {
+                    "matchItem": attributes["qfMatchItem"] || "6",
+                };
+            case 'crossword':
+                return {
+                    "wordAndHint": attributes["qfWordAndHint"] || "6",
+                };
+            case 'links':
+                return {
+                    "link": attributes["qfLink"] || "3",
+                };
+            case 'adaptiveContent':
+                return {
+                    "interaction": attributes["qfInteraction"] || "3",
+                    "interactionBlock": attributes["qfInteractionBlock"] || "3",
+                };
+            case 'mediaLesson':
+                return {
+                    "panel": attributes["qfPanel"] || "3",
+                };
+            case 'mediaPanel':
+                return {
+                    "synchXot": attributes["qfSynchXot"] || "1",
+                    "synchXotChange": attributes["qfSynchXotChange"] || "3",
+                    "synchWebpage": attributes["qfSynchWebpage"] || "3",
+                    "synchMCQ": attributes["qfSynchMCQ"] || "1",
+                    "synchMCQOption": attributes["qfSynchMCQOption"] || "4",
+                    "synchSlides": attributes["qfSynchSlides"] || "1",
+                    "synchSlide": attributes["qfSynchSlide"] || "6",
+                    "synchTextPlus": attributes["qfSynchTextPlus"] || "3",
+                    "synchEmpty": attributes["qfSynchEmpty"] || "3",
+                    "synchCue": attributes["qfSynchCue"] || "3",
+                };
+            case 'panel':
+                return {
+                    "synchXot": attributes["qfSynchXot"] || "1",
+                    "synchXotChange": attributes["qfSynchXotChange"] || "3",
+                    "synchWebpage": attributes["qfSynchWebpage"] || "3",
+                    "synchMCQ": attributes["qfSynchMCQ"] || "1",
+                    "synchMCQOption": attributes["qfSynchMCQOption"] || "4",
+                    "synchSlides": attributes["qfSynchSlides"] || "1",
+                    "synchSlide": attributes["qfSynchSlide"] || "6",
+                    "synchTextPlus": attributes["qfSynchTextPlus"] || "3",
+                    "synchEmpty": attributes["qfSynchEmpty"] || "3",
+                    "synchMediaPlus": attributes["qfSynchMediaPlus"] || "3",
+                    "synchCue": attributes["qfSynchCue"] || "3",
+                };
+            default:
+                return undefined;
+        }
+    },
+
+    runQuickFill = async function (key, $button, skipConfirm) {
+        var type = lo_data[key].attributes.nodeName;
+        var parameters = getQuickFillParameters(type, lo_data[key].attributes);
+        if (!parameters) {
+            return;
+        }
+        $button.prop('disabled', true);
+        var confirmMsg = (language.assistents.QuickFillInline && language.assistents.QuickFillInline.$confirm)
+            ? language.assistents.QuickFillInline.$confirm
+            : "The specified nodes will be automatically generated with their default values. Proceed?";
+        if (!skipConfirm && !confirm(confirmMsg)) {
+            $button.prop('disabled', false);
+            return;
+        }
+        try {
+            await quick_fill({data: {key: key}}, type, parameters);
+            if (skipConfirm) {
+                $.featherlight.close();
+                parent.tree.showNodeData(key);
+            }
+        } catch (error) {
+            console.log('Error occurred:', error);
+            alert("Something went wrong. Please try using the quick fill feature again.");
+        } finally {
+            $button.prop('disabled', false);
+        }
+    },
+
+    syncQfLightboxAttributes = function (key, groupName) {
+        var formInputValues = $('#lightbox_' + groupName + ' :input').add($('#lightbox_' + groupName + ' .inlinewysiwyg'));
+        for (var i = 0; i < formInputValues.length; i++) {
+            var input = formInputValues[i];
+            var name = input.name || input.getAttribute('name');
+            if (!name) {
+                continue;
+            }
+            var value;
+            if (input.getAttribute('type') === 'wysiwyg') {
+                value = stripP(input.textContent);
+            } else if (input.type === 'checkbox') {
+                value = String(input.checked);
+            } else {
+                value = input.value;
+            }
+            lo_data[key].attributes[name] = value;
+            setAttributeValue(key, [name], [value]);
+        }
+    },
+
+    showInlineQFGroup = function (key, nodeName, menuOptions) {
+        var node_options = wizard_data[nodeName] && wizard_data[nodeName].node_options;
+        if (!node_options || !node_options.all) {
+            return;
+        }
+
+        var qfGroupDef = null;
+        for (var i = 0; i < node_options.all.length; i++) {
+            var opt = node_options.all[i];
+            if (opt.name === 'QFGroup' && opt.value.type === 'group') {
+                qfGroupDef = opt;
+                break;
+            }
+        }
+        if (!qfGroupDef) {
+            return;
+        }
+
+        displayInlineQFGroup(key, qfGroupDef, menuOptions);
+    },
+
+    findQFGroupOption = function (node_options) {
+        var qfGroup = null;
+
+        for (var i = 0; i < node_options['optional'].length; i++) {
+            var option = node_options['optional'][i];
+            if (option.name === 'QFGroup' && option.value.type === 'group' && option.value.lightbox === 'form') {
+                qfGroup = option;
+                break;
+            }
+        }
+
+        if (!qfGroup) {
+            for (var k = 0; k < node_options['all'].length; k++) {
+                var allOption = node_options['all'][k];
+                if (allOption.name === 'QFGroup' && allOption.value.type === 'group' && allOption.value.lightbox === 'form') {
+                    qfGroup = allOption;
+                    break;
+                }
+            }
+        }
+
+        if (!qfGroup) {
+            return null;
+        }
+
+        if (!qfGroup.value.children || qfGroup.value.children.length === 0) {
+            qfGroup.value.children = [];
+            for (var j = 0; j < node_options['all'].length; j++) {
+                if (node_options['all'][j].value.group === 'QFGroup') {
+                    qfGroup.value.children.push(node_options['all'][j]);
+                }
+            }
+            if (qfGroup.value.children.length === 0) {
+                for (var m = 0; m < node_options['optional'].length; m++) {
+                    if (node_options['optional'][m].value.group === 'QFGroup') {
+                        qfGroup.value.children.push(node_options['optional'][m]);
+                    }
+                }
+            }
+        }
+
+        return qfGroup;
+    },
+
+    displayInlineQFGroup = function (key, qfGroupDef, menuOptions) {
+        if (!qfGroupDef) {
+            return;
+        }
+        if (qfGroupDef.value.condition && !evaluateCondition(qfGroupDef.value.condition, key)) {
+            return;
+        }
+
+        var pageName = (menuOptions.menuItem || qfGroupDef.value.label || '').toLowerCase();
+        var inlineLang = language.assistents.QuickFillInline || {};
+        var title = inlineLang.$title
+            ? inlineLang.$title.replace('{page}', pageName)
+            : qfGroupDef.value.label;
+        var description = qfGroupDef.value.tooltip || inlineLang.$description || '';
+        var btnLabel = inlineLang.$btnlabel || language.assistents.QuickFillBtn.$label;
+
+        var $panel = $('<div class="qf-inline-panel">');
+        var $content = $('<div class="qf-inline-content">');
+        $content.append($('<div class="qf-inline-title">').text(title));
+        if (description) {
+            $content.append($('<div class="qf-inline-description">').text(description));
+        }
+        $panel.append($content);
+
+        var $setupBtn = $('<button type="button" class="qf-inline-setup-btn">')
+            .text(btnLabel)
+            .click({key: key, nodeName: lo_data[key].attributes.nodeName}, function (event) {
+                var nodeName = event.data.nodeName;
+                var all = wizard_data[nodeName].node_options.all;
+                var children = [];
+                for (var c = 0; c < all.length; c++) {
+                    if (all[c].value.group === 'QFGroup') {
+                        children.push(all[c]);
+                    }
+                }
+                triggerRedrawForm('QFGroup', event.data.key, children, 'initialize');
+            });
+        $panel.append($setupBtn);
+
+        var $row = $('<tr class="qf-inline-row wizardattribute">')
+            .append($('<td>').addClass('wizardparameter'))
+            .append($('<td colspan="2">').addClass('wizardvalue').append(
+                $('<div class="wizardvalue_inner">').append($panel)
+            ));
+        $('#mainPanel .wizard').append($row);
+        sizeInlineQFPanel($row);
+    },
+
+    sizeInlineQFPanel = function ($row) {
+        var $nameRow = $('#param_name');
+        if (!$nameRow.length) {
+            return;
+        }
+        var $label = $nameRow.find('td.wizardlabel').first();
+        var $input = $nameRow.find('.wizardvalue_inner .inlinewysiwyg p').first();
+        if (!$input.length) {
+            $input = $nameRow.find('.wizardvalue_inner .ck-editor__editable_inline').first();
+        }
+        if (!$input.length) {
+            $input = $nameRow.find('.wizardvalue_inner .inlinewysiwyg, .wizardvalue_inner input, .wizardvalue_inner textarea, .wizardvalue_inner select').first();
+        }
+        if (!$label.length || !$input.length) {
+            return;
+        }
+        var panelWidth = ($input.offset().left + $input.outerWidth()) - $label.offset().left;
+        $row.find('.qf-inline-panel').css('width', panelWidth + 'px');
+    },
 
         inputChanged = function (id, key, name, value, obj) {
             //console.log('inputChanged : ' + id + ': ' + key + ', ' +  name  + ', ' +  value);
@@ -4620,45 +5168,125 @@ var EDITOR = (function ($, parent) {
     lightboxSetUp = function(group, attributes, node_options, key, formState="") {
 
         let groupChildren = group.value.children;
-        let title  = wizard_data[lo_data[key]['attributes'].nodeName].menu_options.menuItem;
+        let menuOptions = wizard_data[lo_data[key]['attributes'].nodeName].menu_options;
+        let pageLabel = menuOptions.menuItem || group.value.label || '';
+        let pageName = pageLabel.toLowerCase();
+        let isQfGroup = group.name === 'QFGroup';
+        let inlineLang = language.assistents.QuickFillInline || {};
+        let modalLang = language.assistents.QuickFillModal || {};
+        let title = isQfGroup
+            ? (modalLang.$title || inlineLang.$title || group.value.label || '').replace('{page}', pageLabel)
+            : menuOptions.menuItem;
+
         let lightboxHtml = $("<div></div>");
-        let lightboxHeader = $("<div id=\"lb_header\" class=\"header\"></div>");
-        lightboxHeader.append($("<div>").text(title));
+        if (isQfGroup) {
+            lightboxHtml.addClass('qf-lightbox');
+        }
+
         let lightboxBody = $("<form id='lightbox_" + group.name + "' class='lightbox-form'></form>");
-        let lightboxAdvancedCbChecked = "";
-        if (window.showAdvanced && window.showAdvanced[key] && window.showAdvanced[key]['enabled'])
-        {
-            lightboxAdvancedCbChecked = "checked";
-        }
-        let lightboxFooter = $("<div id=\"lb_footer\" class=\"footer\">\n" +
-            "            <div id=\"checkbox_outer\"><table><tr><td id=\"checkbox_holder\">" +
-            "            <input type=\"checkbox\" id=\"lb_advanced_cb\" title='" + language.chkShowAdvanced.$tooltip + "' " + lightboxAdvancedCbChecked + " disabled class='disabled' onchange='lbShowAdvanced(\"" + key + "\")'> <label id=\"lb_advanced_cb_span\" for=\"lb_advanced_cb\" class=\"disabled\">" + language.chkShowAdvanced.$label + "</label>" +
-            "</td></tr></table></div>\n" +
-            "        </div>");
+        let lightboxFooter;
 
-        let lightboxTable = $("<table id='lightboxPanel' class='content'></table>");
-        let lightboxId = "#lightbox_" + group.name;
-        //let name = wizard_data[lo_data[key]['attributes'].nodeName].menu_options.menuItem;
-        //lightboxHtml.append($("<div>").text(name));
+        if (isQfGroup) {
+            var description = modalLang.$description || group.value.tooltip || inlineLang.$description || '';
 
-        //build lightbox form content input by input
-        for (var j = 0; j < groupChildren.length; j++) {
-
-            //rebuild form
-            displayParameter(
-                lightboxId,
-                groupChildren,
-                groupChildren[j].name,
-                formState,
-                key,
-                lightboxTable,
-                group.value.lightbox
+            let lightboxHeader = $("<div class=\"qf-lightbox-header\"></div>");
+            lightboxHeader.append($("<h2 class=\"qf-lightbox-title\">").text(title));
+            lightboxHeader.append(
+                $("<button type=\"button\" class=\"qf-lightbox-close\" aria-label=\"Close\">")
+                    .html('&times;')
+                    .on('click', function () {
+                        $.featherlight.close();
+                    })
             );
+            if (description) {
+                lightboxHeader.append($('<p class="qf-lightbox-description">').text(description));
+            }
+
+            lightboxBody.addClass('qf-lightbox-form');
+            let fieldsContainer = $('<div class="qf-lightbox-fields"></div>');
+            for (var j = 0; j < groupChildren.length; j++) {
+                var child = groupChildren[j];
+                var childType = (child.value.type || '').toLowerCase();
+                if (childType === 'quickfillbutton' || childType === 'info') {
+                    continue;
+                }
+                var fieldName = child.name;
+                var fieldLabel = child.value.label || fieldName;
+                var fieldValue = (formState && formState[fieldName] !== undefined && formState[fieldName] !== '')
+                    ? formState[fieldName]
+                    : (child.value.defaultValue || '');
+                if (typeof fieldValue === 'string' && fieldValue.indexOf('<') >= 0) {
+                    fieldValue = stripP(fieldValue);
+                }
+                var $field = $('<div class="qf-field">');
+                $field.append($('<label>').attr('for', 'qf_' + fieldName).text(fieldLabel));
+                $field.append(
+                    $('<input type="text">')
+                        .attr('id', 'qf_' + fieldName)
+                        .attr('name', fieldName)
+                        .val(fieldValue)
+                );
+                fieldsContainer.append($field);
+            }
+            lightboxBody.append(fieldsContainer);
+
+            var cancelLabel = modalLang.$cancel || 'Cancel';
+            var createLabel = (modalLang.$create || 'Create {page}').replace('{page}', pageName);
+            lightboxFooter = $('<div class="qf-lightbox-footer"></div>');
+            lightboxFooter.append(
+                $('<button type="button" class="qf-lightbox-btn qf-lightbox-btn-cancel">')
+                    .text(cancelLabel)
+                    .on('click', function () {
+                        $.featherlight.close();
+                    })
+            );
+            lightboxFooter.append(
+                $('<button type="button" class="qf-lightbox-btn qf-lightbox-btn-create">')
+                    .text(createLabel)
+                    .on('click', {key: key, group: group.name}, async function (event) {
+                        syncQfLightboxAttributes(event.data.key, event.data.group);
+                        await runQuickFill(event.data.key, $(this), true);
+                    })
+            );
+
+            lightboxHtml.append(lightboxHeader);
+            lightboxHtml.append(lightboxBody);
+            lightboxHtml.append(lightboxFooter);
+        } else {
+            let titleDefault = menuOptions.menuItem;
+            let lightboxHeader = $("<div id=\"lb_header\" class=\"header\"></div>");
+            lightboxHeader.append($("<div>").text(titleDefault));
+
+            let lightboxAdvancedCbChecked = "";
+            if (window.showAdvanced && window.showAdvanced[key] && window.showAdvanced[key]['enabled'])
+            {
+                lightboxAdvancedCbChecked = "checked";
+            }
+            lightboxFooter = $("<div id=\"lb_footer\" class=\"footer\">\n" +
+                "            <div id=\"checkbox_outer\"><table><tr><td id=\"checkbox_holder\">" +
+                "            <input type=\"checkbox\" id=\"lb_advanced_cb\" title='" + language.chkShowAdvanced.$tooltip + "' " + lightboxAdvancedCbChecked + " disabled class='disabled' onchange='lbShowAdvanced(\"" + key + "\")'> <label id=\"lb_advanced_cb_span\" for=\"lb_advanced_cb\" class=\"disabled\">" + language.chkShowAdvanced.$label + "</label>" +
+                "</td></tr></table></div>\n" +
+                "        </div>");
+
+            let lightboxTable = $("<table id='lightboxPanel' class='content'></table>");
+            let lightboxId = "#lightbox_" + group.name;
+
+            for (var k = 0; k < groupChildren.length; k++) {
+                displayParameter(
+                    lightboxId,
+                    groupChildren,
+                    groupChildren[k].name,
+                    formState,
+                    key,
+                    lightboxTable,
+                    group.value.lightbox
+                );
+            }
+            lightboxBody.append(lightboxTable);
+            lightboxHtml.append(lightboxHeader);
+            lightboxHtml.append(lightboxBody);
+            lightboxHtml.append(lightboxFooter);
         }
-        lightboxBody.append(lightboxTable);
-        lightboxHtml.append(lightboxHeader);
-        lightboxHtml.append(lightboxBody);
-        lightboxHtml.append(lightboxFooter);
 
         // ensure global is always present
         window.lightboxCKEditorIds = window.lightboxCKEditorIds || [];
@@ -4680,11 +5308,13 @@ var EDITOR = (function ($, parent) {
         $.featherlight(lightboxHtml, {
             persist: true,
             closeOnClick: false,
-            closeOnEsc: false,
+            closeOnEsc: isQfGroup,
             afterOpen: function(event) {
                 var attributes = lo_data[key]['attributes'];
                 formState = { ...attributes };
-                convertTextInputs();
+                if (!isQfGroup) {
+                    convertTextInputs();
+                }
                 convertDataGrids();
                 convertTreeSelect();
                 convertTextAreas();
@@ -4728,26 +5358,77 @@ var EDITOR = (function ($, parent) {
                 const inheritFieldRaw = groupChildren[input]?.value?.inheritField;
                 const inheritFieldClean = groupChildren[input]?.value?.inheritFieldClean;
 
-                // pick which key to inherit from, and remember whether we must clean
-                let inheritKey;
+                // pick which key/spec to inherit from, and remember whether we must clean
+                let inheritSpec;
                 let shouldClean = false;
 
                 if (inheritFieldRaw !== undefined && inheritFieldRaw !== "") {
-                    inheritKey = inheritFieldRaw;
+                    inheritSpec = inheritFieldRaw;
                 } else if (inheritFieldClean !== undefined && inheritFieldClean !== "") {
-                    inheritKey = inheritFieldClean;
+                    inheritSpec = inheritFieldClean;
                     shouldClean = true;
                 }
 
-                if (inheritKey) {
+                if (inheritSpec) {
                     const groupName = groupChildren[input]?.name;
-
-                    // determine candidate value
                     let value;
-                    if (attributes[inheritKey] !== undefined && attributes[inheritKey] !== null) {
-                        value = attributes[inheritKey];
-                    } else if (lo_attributes[inheritKey] !== undefined && lo_attributes[inheritKey] !== null) {
-                        value = lo_attributes[inheritKey];
+                    const tree = $.jstree.reference("#treeview");
+                    const parts = inheritSpec.split("|").map(p => p.trim()).filter(Boolean);
+
+                    //simple mode: inherit from current context of event
+                    if (parts.length === 1) {
+                        const inheritKey = parts[0];
+
+                        if (attributes[inheritKey] !== undefined && attributes[inheritKey] !== null) {
+                            value = attributes[inheritKey];
+                        } else if (lo_attributes[inheritKey] !== undefined && lo_attributes[inheritKey] !== null) {
+                            value = lo_attributes[inheritKey];
+                        }
+                    }
+
+                    // parent|fieldName (inherit this field from the parent node)
+                    else if (parts[0] === "parent" && parts.length === 2) {
+                        const inheritKey = parts[1];
+                        const parentKey = tree.get_parent(key);
+
+                        if (parentKey && parentKey !== "#" && parentKey !== "treeroot") {
+                            const parentAttrs = lo_data[parentKey]?.attributes;
+                            if (parentAttrs && parentAttrs[inheritKey] !== undefined && parentAttrs[inheritKey] !== null) {
+                                value = parentAttrs[inheritKey];
+                            }
+                        }
+                    }
+
+                    // sibling|nodeType|fieldName (inherit this field from another node under the same parent)
+                    else if (parts[0] === "sibling" && parts.length === 3) {
+                        const siblingType = parts[1];
+                        const inheritKey = parts[2];
+                        const parentKey = tree.get_parent(key);
+
+                        if (parentKey && parentKey !== "#" && parentKey !== "treeroot") {
+                            const parentNode = tree.get_node(parentKey);
+
+                            if (parentNode && parentNode.children) {
+                                for (let i = 0; i < parentNode.children.length; i++) {
+                                    const childKey = parentNode.children[i];
+                                    if (childKey === key) continue;
+
+                                    const childNode = tree.get_node(childKey);
+                                    const childAttrs = lo_data[childKey]?.attributes;
+
+                                    const matchesType =
+                                        (childNode && childNode.type === siblingType) ||
+                                        (childAttrs && childAttrs.nodeName === siblingType);
+
+                                    if (matchesType) {
+                                        if (childAttrs && childAttrs[inheritKey] !== undefined && childAttrs[inheritKey] !== null) {
+                                            value = childAttrs[inheritKey];
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     // clean if requested by inheritFieldClean mode
@@ -5039,9 +5720,13 @@ var EDITOR = (function ($, parent) {
             case 'combobox_image':
             case 'combobox_imagegen':
             case 'combobox_ai':
+            case 'combobox_base_settings_rl': //ai base settings, reading level
+            case 'combobox_base_settings_el': //education level and
+            case 'combobox_base_settings_ts': //tone and style.
             case 'combobox':
-				var id = 'select_' + form_id_offset;
-				form_id_offset++;
+                var id = 'select_' + form_id_offset;
+                form_id_offset++;
+
                 if (options.type.toLowerCase() === 'combobox') {
                     var s_options = options.options.split(',');
                     for (var i = 0; i < s_options.length; i++) {
@@ -5053,6 +5738,30 @@ var EDITOR = (function ($, parent) {
                     } else {
                         s_data = s_options;
                     }
+                } else if (options.type.toLowerCase() === 'combobox_base_settings_rl') {
+                    let base_setting_options = getComboboxOptionsForBaseSetting('reading_level');
+                    s_options = base_setting_options[0];
+                    s_data = base_setting_options[1];
+
+                    if (value === '' && base_setting_options[2] !== '') {
+                        value = base_setting_options[2];
+                    }
+                } else if (options.type.toLowerCase() === 'combobox_base_settings_el') {
+                    let base_setting_options = getComboboxOptionsForBaseSetting('education_level');
+                    s_options = base_setting_options[0];
+                    s_data = base_setting_options[1];
+
+                    if (value === '' && base_setting_options[2] !== '') {
+                        value = base_setting_options[2];
+                    }
+                } else if (options.type.toLowerCase() === 'combobox_base_settings_ts') {
+                    let base_setting_options = getComboboxOptionsForBaseSetting('tone_and_style');
+                    s_options = base_setting_options[0];
+                    s_data = base_setting_options[1];
+
+                    if (value === '' && base_setting_options[2] !== '') {
+                        value = base_setting_options[2];
+                    }
                 } else {
                     let vendor = options.type.split("_");
                     let vendor_options = getComboboxOptionsForVendor(vendor.length >= 2 ? vendor[1] : "");
@@ -5060,11 +5769,11 @@ var EDITOR = (function ($, parent) {
                     s_data = vendor_options[1];
                 }
 
-				html = $('<select>')
-					.attr('id', id)
+                html = $('<select>')
+                    .attr('id', id)
                     .attr('name', name)
-					.change({id:id, key:key, name:name, group:options.group ,trigger:conditionTrigger}, function(event)
-					{
+                    .change({id:id, key:key, name:name, group:options.group ,trigger:conditionTrigger}, function(event)
+                    {
                         //store data in xml
                         selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
                         if (event.data.trigger)
@@ -5077,24 +5786,24 @@ var EDITOR = (function ($, parent) {
                                 triggerRedrawForm(event.data.group, event.data.key, "", "redraw");
                             }
                         }
-					});
+                    });
 
                 if (value == '') {
-					html.append($('<option>').attr('value', '').prop('selected', true));
-				}
-				for (var i=0; i<s_options.length; i++) {
-					var option = $('<option>')
-						.attr('value', s_data[i]);
-					if (s_data[i]==value) {
-						option.prop('selected', true);
-					}
-					option.append(s_options[i]);
-					html.append(option);
-					if (value == '' && html.find('option:selected').index() > 0) {
-						html.find(option).eq(0).remove();
-					}
-				}
-				break;
+                    html.append($('<option>').attr('value', '').prop('selected', true));
+                }
+                for (var i=0; i<s_options.length; i++) {
+                    var option = $('<option>')
+                        .attr('value', s_data[i]);
+                    if (s_data[i]==value) {
+                        option.prop('selected', true);
+                    }
+                    option.append(s_options[i]);
+                    html.append(option);
+                    if (value == '' && html.find('option:selected').index() > 0) {
+                        html.find(option).eq(0).remove();
+                    }
+                }
+                break;
 			case 'text':
 			case 'script':
 			case 'html':
@@ -5913,19 +6622,20 @@ var EDITOR = (function ($, parent) {
 						previewFile(options.label, $(this).closest('tr').find('input')[0].value);
 					})
 					.append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon')));
-
-                if (vendor_is_available('image','all') || (vendor_is_available('imagegen','all') && hasrole('aiuser'))){
-                    btnHolder.append($('<button>')
-                        .attr('id', 'lightboxbutton_' + options.group)
-                        .attr('title', language.compai.$tooltip)
-                        .attr('type', 'button')
-                        .addClass("xerte_button")
-                        .click({id:id, key:key, name:name, group: options.group}, function(event)
-                        {
-                            triggerRedrawForm("imgSearchAndHelpGroup", key, "", "initialize", event.data.name);
-                        })
-                        .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-wand-magic').addClass('xerte-icon')));
-                };
+                if(options?.enableImgSHTool!=="false") {
+                    if (vendor_is_available('image', 'all') || (vendor_is_available('imagegen', 'all') && hasrole('aiuser'))) {
+                        btnHolder.append($('<button>')
+                            .attr('id', 'lightboxbutton_' + options.group)
+                            .attr('title', language.compai.$tooltip)
+                            .attr('type', 'button')
+                            .addClass("xerte_button")
+                            .click({id: id, key: key, name: name, group: options.group}, function (event) {
+                                triggerRedrawForm("imgSearchAndHelpGroup", key, "", "initialize", event.data.name);
+                            })
+                            .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-wand-magic').addClass('xerte-icon')));
+                    }
+                    ;
+                }
 
 				html = $('<div>')
 					.attr('id', 'container_' + id)
@@ -6176,283 +6886,7 @@ var EDITOR = (function ($, parent) {
                     .attr('type', 'button')
                     .html('<i class="fa fa-arrows-rotate"></i> ' + language.assistents.QuickFillBtn.$label)
                     .click({key: key}, async function(event) {
-                        const $btn = $(this);          // the button that was clicked
-                        $(this).prop('disabled', true);
-                        // Build the parameters object based on type. The nodes must match the actual node names of the xml in question.
-                        var parameters;
-                        var type = lo_data[key].attributes.nodeName;
-                        //todo rework same as ai button to prevent huge switch statement
-                        switch (type) {
-                            case 'quiz':
-                                parameters = {
-                                    "question": lo_data[key].attributes["numberOfQuestions"] || "3",
-                                    "option": lo_data[key].attributes["numberOfAnswers"] || "4",
-                                }
-                                break;
-                            case 'tabNavExtra':
-                                parameters = {
-                                    "topic": lo_data[key].attributes["qfTopic"] || "3",
-                                    "nestedTab": lo_data[key].attributes["qfNestedTab"] || "3",
-                                    "nestedPage": lo_data[key].attributes["qfNestedPage"] || "5",
-                                }
-                                break;
-                            case 'columnPage':
-                                parameters = {
-                                    "nestedColumnPage": lo_data[key].attributes["qfNestedColumnPage"] || "3",
-                                }
-                                break;
-                            case 'audioSlideshow':
-                                parameters = {
-                                    "synchPoint": lo_data[key].attributes["qfSynchPoint"] || "3",
-                                }
-                                break;
-                            case 'imageSequence':
-                                parameters = {
-                                    "case": lo_data[key].attributes["qfCase"] || "3",
-                                    "imgSeries": lo_data[key].attributes["qfImgSeries"] || "3",
-                                    "singleImg": lo_data[key].attributes["qfSingleImg"] || "5",
-                                }
-                                break;
-                            case 'thumbnailViewer':
-                                parameters = {
-                                    "thumbnailImage": lo_data[key].attributes["qfThumbnailImage"] || "5",
-                                }
-                                break;
-                            case 'SictTimeline':
-                                parameters = {
-                                    "timeLineText": lo_data[key].attributes["qfTimeLineText"] || "1",
-                                    "timelineimage": lo_data[key].attributes["qfTimelineimage"] || "1",
-                                    "timelinevideo ": lo_data[key].attributes["qfTimelinevideo"] || "1",
-                                    "timeLineAudio": lo_data[key].attributes["qfTimeLineAudio"] || "1",
-                                }
-                                break;
-                            case 'transcriptReader':
-                                parameters = {
-                                    "nestedSynch": lo_data[key].attributes["qfNestedSynch"] || "3",
-                                }
-                                break;
-                            case 'flashCards':
-                                parameters = {
-                                    "card": lo_data[key].attributes["qfCard"] || "5",
-                                }
-                                break;
-                            case 'list':
-                                parameters = {
-                                    "listItem": lo_data[key].attributes["qfListItem"] || "5",
-                                }
-                                break;
-                            case 'nav':
-                                parameters = {
-                                    "navPage": lo_data[key].attributes["qfNavPage"] || "3",
-                                }
-                                break;
-                            case 'perspectives':
-                                parameters = {
-                                    "movie": lo_data[key].attributes["qfMovie"] || "1",
-                                    "sound": lo_data[key].attributes["qfSound"] || "1",
-                                    "image": lo_data[key].attributes["qfImage"] || "1",
-                                    "mpText": lo_data[key].attributes["qfMpText"] || "1",
-                                }
-                                break;
-                            case 'annotatedDiagram':
-                                parameters = {
-                                    "flexhotspot": lo_data[key].attributes["qfFlexhotspot"] || "3",
-                                }
-                                break;
-                            case 'hotspotGroup':
-                                parameters = {
-                                    "flexhotspot": lo_data[key].attributes["qfFlexhotspot"] || "3",
-                                }
-                                break;
-                            case 'topXQ':
-                                parameters = {
-                                    "optionXQ": lo_data[key].attributes["qfOptionXQ"] || "5",
-                                }
-                                break;
-                            case 'buttonSequence':
-                                parameters = {
-                                    "button": lo_data[key].attributes["qfButton"] || "5",
-                                }
-                                break;
-                            case 'categories':
-                                parameters = {
-                                    "category": lo_data[key].attributes["qfCategory"] || "3",
-                                    "item": lo_data[key].attributes["qfItem"] || "5",
-                                }
-                                break;
-                            case 'decision':
-                                parameters = {
-                                    "resultStep": lo_data[key].attributes["qfResultStep"] || "1",
-                                    "infoStep": lo_data[key].attributes["qfInfoStep"] || "1",
-                                    "sliderStep": lo_data[key].attributes["qfSliderStep"] || "1",
-                                    "sliderStepOption": lo_data[key].attributes["qfSliderStepOption"] || "4",
-                                    "mcqStep": lo_data[key].attributes["qfMcqStep"] || "1",
-                                    "mcqStepOption": lo_data[key].attributes["qfMcqStepOption"] || "4",
-                                }
-                                break;
-                            case 'dialog':
-                                parameters = {
-                                    "dialogStep": lo_data[key].attributes["qfDialogStep"] || "5",
-                                }
-                                break;
-                            case 'dictation':
-                                parameters = {
-                                    "nestedDictation": lo_data[key].attributes["qfNestedDictation"] || "3",
-                                }
-                                break;
-                            case 'documentation':
-                                parameters = {
-                                    "page": lo_data[key].attributes["qfPage"] || "1",
-                                }
-                                break;
-                            case 'page': //of documentation
-                                parameters = {
-                                    "media": lo_data[key].attributes["qfMedia"] || "1",
-                                    "selectlist": lo_data[key].attributes["qfSelectlist"] || "1",
-                                    "selectitem": lo_data[key].attributes["qfSelectitem"] || "5",
-                                    "description": lo_data[key].attributes["qfDescription"] || "1",
-                                    "tableDoc": lo_data[key].attributes["qfTableDoc"] || "1",
-                                    "checkbox": lo_data[key].attributes["qfCheckbox"] || "1",
-                                    "textArea": lo_data[key].attributes["qfTextArea"] || "1",
-                                    "textBox": lo_data[key].attributes["qfTextBox"] || "1",
-                                }
-                                break;
-                            case 'section': //of documentation
-                                parameters = {
-                                    "media": lo_data[key].attributes["qfMedia"] || "1",
-                                    "selectlist": lo_data[key].attributes["qfSelectlist"] || "1",
-                                    "selectitem": lo_data[key].attributes["qfSelectitem"] || "5",
-                                    "description": lo_data[key].attributes["qfDescription"] || "1",
-                                    "tableDoc": lo_data[key].attributes["qfTableDoc"] || "1",
-                                    "checkbox": lo_data[key].attributes["qfCheckbox"] || "1",
-                                    "textArea": lo_data[key].attributes["qfTextArea"] || "1",
-                                    "textBox": lo_data[key].attributes["qfTextBox"] || "1",
-                                }
-                                break;
-                            case 'dragDropLabel':
-                                parameters = {
-                                    "hotspot": lo_data[key].attributes["qfHotspot"] || "3",
-                                }
-                                break;
-                            case 'hotspotImage':
-                                parameters = {
-                                    "flexhotspot": lo_data[key].attributes["qfFlexhotspot"] || "3",
-                                }
-                                break;
-                            case 'hotSpotQuestion':
-                                parameters = {
-                                    "QHotSpot": lo_data[key].attributes["qfQHotSpot"] || "3",
-                                }
-                                break;
-                            case 'interactiveText':
-                                parameters = {
-                                    "group": lo_data[key].attributes["qfGroup"] || "5",
-                                }
-                                break;
-                            case 'ivOverlayPanel': //of interactiveVideo
-                                parameters = {
-                                    "ivSynchTextPlus": lo_data[key].attributes["qfIvSynchTextPlus"] || "3",
-                                    "ivSynchMCQ": lo_data[key].attributes["qfIvSynchMCQ"] || "1",
-                                    "ivSynchMCQOption": lo_data[key].attributes["qfIvSynchMCQOption"] || "4",
-                                    "ivSynchXot": lo_data[key].attributes["qfIvSynchXot"] || "1",
-                                    "ivSynchXotChange": lo_data[key].attributes["qfIvSynchXotChange"] || "3",
-                                }
-                                break;
-                            case 'inventory':
-                                parameters = {
-                                    "invQuestion": lo_data[key].attributes["qfInvQuestion"] || "3",
-                                    "invOption": lo_data[key].attributes["qfInvOption"] || "4",
-                                }
-                                break;
-                            case 'textMatch':
-                                parameters = {
-                                    "sentence": lo_data[key].attributes["qfSentence"] || "3",
-                                }
-                                break;
-                            case 'mcq':
-                                parameters = {
-                                    "option": lo_data[key].attributes["qfOption"] || "4",
-                                }
-                                break;
-                            case 'opinion':
-                                parameters = {
-                                    "opinionClass": lo_data[key].attributes["qfOpinionClass"] || "3",
-                                    "opinionQuestion": lo_data[key].attributes["qfOpinionQuestion"] || "3",
-                                    "opinionOption": lo_data[key].attributes["qfOpinionOption"] || "4",
-                                }
-                                break;
-                            case 'timeline':
-                                parameters = {
-                                    "timelinedate": lo_data[key].attributes["qfTimelinedate"] || "6",
-                                }
-                                break;
-                            case 'memory':
-                                parameters = {
-                                    "matchItem": lo_data[key].attributes["qfMatchItem"] || "6",
-                                }
-                                break;
-                            case 'crossword':
-                                parameters = {
-                                    "wordAndHint": lo_data[key].attributes["qfWordAndHint"] || "6",
-                                }
-                                break;
-                            case 'links':
-                                parameters = {
-                                    "link": lo_data[key].attributes["qfLink"] || "3",
-                                }
-                                break;
-                            case 'adaptiveContent':
-                                parameters = {
-                                    "interaction": lo_data[key].attributes["qfInteraction"] || "3",
-                                    "interactionBlock": lo_data[key].attributes["qfInteractionBlock"] || "3",
-                                }
-                                break;
-                            case 'mediaLesson':
-                                parameters = {
-                                    "panel": lo_data[key].attributes["qfPanel"] || "3",
-                                }
-                                break;
-                            case 'mediaPanel': //of mediaLesson
-                                parameters = {
-                                    "synchXot": lo_data[key].attributes["qfSynchXot"] || "1",
-                                    "synchXotChange": lo_data[key].attributes["qfSynchXotChange"] || "3",
-                                    "synchWebpage": lo_data[key].attributes["qfSynchWebpage"] || "3",
-                                    "synchMCQ": lo_data[key].attributes["qfSynchMCQ"] || "1",
-                                    "synchMCQOption": lo_data[key].attributes["qfSynchMCQOption"] || "4",
-                                    "synchSlides": lo_data[key].attributes["qfSynchSlides"] || "1",
-                                    "synchSlide": lo_data[key].attributes["qfSynchSlide"] || "6",
-                                    "synchTextPlus": lo_data[key].attributes["qfSynchTextPlus"] || "3",
-                                    "synchEmpty": lo_data[key].attributes["qfSynchEmpty"] || "3",
-                                    "synchCue": lo_data[key].attributes["qfSynchCue"] || "3",
-                                };
-                                break;
-                            case 'panel': //of mediaLesson
-                                parameters = {
-                                    "synchXot": lo_data[key].attributes["qfSynchXot"] || "1",
-                                    "synchXotChange": lo_data[key].attributes["qfSynchXotChange"] || "3",
-                                    "synchWebpage": lo_data[key].attributes["qfSynchWebpage"] || "3",
-                                    "synchMCQ": lo_data[key].attributes["qfSynchMCQ"] || "1",
-                                    "synchMCQOption": lo_data[key].attributes["qfSynchMCQOption"] || "4",
-                                    "synchSlides": lo_data[key].attributes["qfSynchSlides"] || "1",
-                                    "synchSlide": lo_data[key].attributes["qfSynchSlide"] || "6",
-                                    "synchTextPlus": lo_data[key].attributes["qfSynchTextPlus"] || "3",
-                                    "synchEmpty": lo_data[key].attributes["qfSynchEmpty"] || "3",
-                                    "synchMediaPlus": lo_data[key].attributes["qfSynchMediaPlus"] || "3",
-                                    "synchCue": lo_data[key].attributes["qfSynchCue"] || "3",
-                                };
-                                break;
-                        }
-                        // Show a confirm dialog with a custom message
-                        if (confirm(language.assistents.quickfill.QFConfirmRequest)) {
-                            // User clicked "OK"
-                            try {
-                                await quick_fill(event, type, parameters);
-                            } catch (error) {
-                                console.log('Error occurred:', error);
-                                alert(language.assistents.quickfill.QFError);
-                            }
-                        }
-                        $btn.prop('disabled', false);
+                        await runQuickFill(event.data.key, $(this));
                     });
                 break;
             case 'autotranslatebutton':
@@ -6760,7 +7194,7 @@ var EDITOR = (function ($, parent) {
                         //additional file/snippet stuff here
                         aiSettings['baseUrl'] = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
 
-                        aiSettings['fileUrl'] = constructorObject['file'] ? constructorObject['file'] : null;
+                        aiSettings['fileUrl'] = constructorObject['file'] != null ? constructorObject['file'].trim() : null;
                         delete constructorObject.fileUrl;
 
                         aiSettings['updateLoOnRequest'] = constructorObject['updateLoOnRequest'] !== undefined ? constructorObject['updateLoOnRequest'] : null;
@@ -6779,6 +7213,10 @@ var EDITOR = (function ($, parent) {
                         delete constructorObject.textSnippet;
                         if (aiSettings['textSnippet'] === "Paste or write your snippet here..." || !aiSettings['textSnippet'] || aiSettings['textSnippet'].trim() === "") {
                             aiSettings['textSnippet'] = null;
+                        }
+
+                        if (uploadPrompt==='select'){
+                            aiSettings['fileUrl'] =constructorObject['fileSelection'] ? constructorObject['fileSelection'] : null;
                         }
 
                         // Update bar helpers
@@ -7304,6 +7742,204 @@ var EDITOR = (function ($, parent) {
                     .text('Open AI Settings');
 
                 break;
+            case 'aicontextselector':
+                var id = 'select_' + form_id_offset;
+                form_id_offset++;
+
+                html = $('<select>')
+                    .attr('id', id)
+                    .attr('name', name)
+                    .change({id:id, key:key, name:name, group:options.group, trigger:conditionTrigger}, function(event)
+                    {
+                        // store data in xml
+                        selectChanged(event.data.id, event.data.key, event.data.name, this.value, this);
+
+                        if (event.data.trigger)
+                        {
+                            // no lightbox so redraw entire page
+                            if (mode === "none") {
+                                triggerRedrawPage(event.data.key);
+                            } else {
+                                // lightbox so redraw only the lightbox form
+                                triggerRedrawForm(event.data.group, event.data.key, "", "redraw");
+                            }
+                        }
+                    });
+
+                html.append(
+                    $('<option>')
+                        .attr('value', '')
+                        .prop('selected', value === '')
+                        .text('Loading available files...')
+                );
+
+                (function(selectEl, currentValue) {
+
+                    function fetchAiCorpusForField() {
+                        const baseURL = rlopathvariable.substr(rlopathvariable.indexOf("USER-FILES"));
+                        $('body, .featherlight, .featherlight-content').css("cursor", "wait");
+
+                        return new Promise((resolve, reject) => {
+                            $.ajax({
+                                url: 'editor/ai/rag/getCorpus.php',
+                                method: 'POST',
+                                contentType: 'application/json',
+                                dataType: 'json',
+                                data: JSON.stringify({
+                                    name: "",
+                                    baseURL: baseURL,
+                                    type: "",
+                                    gridId: "",
+                                    format: "json"
+                                }),
+                                success: function(resp) {
+                                    if (!resp || !resp.corpus || !resp.corpus.hashes) {
+                                        reject(new Error('No corpus hashes returned'));
+                                        return;
+                                    }
+                                    resolve(resp.corpus.hashes);
+                                },
+                                error: function(xhr, status, err) {
+                                    console.error('Failed to fetch corpus:', err);
+                                    reject(err);
+                                },
+                                complete: function() {
+                                    $('body, .featherlight, .featherlight-content').css("cursor", "default");
+                                }
+                            });
+                        });
+                    }
+
+                    function normaliseToFileLocation(val) {
+                        if (!val) return '';
+
+                        val = String(val).trim();
+
+                        // already in FileLocation form
+                        if (val.indexOf("FileLocation + '") === 0) {
+                            return val;
+                        }
+
+                        // absolute/local URL -> FileLocation form
+                        if (typeof rlourlvariable !== 'undefined' && val.indexOf(rlourlvariable) === 0) {
+                            var relativePath = val.substring(rlourlvariable.length);
+
+                            // remove leading slash only if present
+                            if (relativePath.charAt(0) === '/') {
+                                relativePath = relativePath.substring(1);
+                            }
+
+                            return "FileLocation + '" + relativePath + "'";
+                        }
+
+                        // fallback if the value already contains the corpus path somewhere
+                        var ragMatch = val.match(/RAG\/corpus\/.+$/);
+                        if (ragMatch && ragMatch[0]) {
+                            return "FileLocation + '" + ragMatch[0] + "'";
+                        }
+
+                        return val;
+                    }
+
+                    function getOptionLabel(hash) {
+                        var metaName = (hash && hash.metaData && hash.metaData.name) ? hash.metaData.name.trim() : '';
+                        var fileName = (hash && hash.files && hash.files.length > 0 && hash.files[0]) ? hash.files[0].trim() : '';
+                        var source = (hash && hash.metaData && hash.metaData.source) ? hash.metaData.source : '';
+
+                        if (metaName !== '') return metaName;
+                        if (fileName !== '') return fileName;
+                        return source;
+                    }
+
+                    function getFallbackLabel(val) {
+                        var normalised = normaliseToFileLocation(val);
+                        var match = normalised.match(/RAG\/corpus\/([^']+)$/);
+
+                        if (match && match[1]) {
+                            return match[1].split('/').pop();
+                        }
+
+                        return normalised;
+                    }
+
+                    fetchAiCorpusForField()
+                        .then(function(hashes) {
+                            selectEl.empty();
+
+                            var seen = {};
+                            var foundCurrentValue = false;
+                            var firstValidValue = '';
+                            var currentValueNormalised = normaliseToFileLocation(currentValue);
+
+                            for (var i = 0; i < hashes.length; i++) {
+                                var hash = hashes[i];
+                                var source = (hash && hash.metaData && hash.metaData.source) ? hash.metaData.source : '';
+
+                                if (!source) {
+                                    continue;
+                                }
+
+                                source = normaliseToFileLocation(source);
+
+                                if (seen[source]) {
+                                    continue;
+                                }
+                                seen[source] = true;
+
+                                var label = getOptionLabel(hash);
+
+                                if (firstValidValue === '') {
+                                    firstValidValue = source;
+                                }
+
+                                var option = $('<option>')
+                                    .attr('value', source)
+                                    .text(label);
+
+                                if (source === currentValueNormalised) {
+                                    option.prop('selected', true);
+                                    foundCurrentValue = true;
+                                }
+
+                                selectEl.append(option);
+                            }
+
+                            if (currentValueNormalised !== '' && !foundCurrentValue) {
+                                selectEl.append(
+                                    $('<option>')
+                                        .attr('value', currentValueNormalised)
+                                        .prop('selected', true)
+                                        .text(getFallbackLabel(currentValueNormalised))
+                                );
+                            } else if (currentValueNormalised === '' && firstValidValue !== '') {
+                                selectEl.val(firstValidValue);
+
+                                // persist the default immediately
+                                selectChanged(id, key, name, firstValidValue, selectEl[0]);
+                            }
+
+                            if (selectEl.children().length === 0) {
+                                selectEl.append(
+                                    $('<option>')
+                                        .attr('value', '')
+                                        .prop('selected', true)
+                                        .text('No files could be returned')
+                                );
+                            }
+                        })
+                        .catch(function(err) {
+                            console.error('Failed to populate aiContextSelector:', err);
+                            selectEl.empty().append(
+                                $('<option>')
+                                    .attr('value', '')
+                                    .prop('selected', true)
+                                    .text('No files could be returned')
+                            );
+                        });
+
+                })(html, value);
+
+                break;
             case 'webpage':  //Not used??
             case 'xerteurl':
 			case 'xertelo':
@@ -7396,17 +8032,19 @@ var EDITOR = (function ($, parent) {
 	};
 
 
-	CKEDITOR.on('dialogDefinition', function(event) {
-		try {
-			var dialogName = event.data.name;
-			var dialogDefinition = event.data.definition;
-			if (dialogName == 'link') {
-				var informationTab = dialogDefinition.getContents('target');
-				var targetField = informationTab.get('linkTargetType');
-				targetField['default'] = '_blank';
-			}
-		} catch(e) {};
-	});
+	if (typeof CKEDITOR !== 'undefined' && CKEDITOR && typeof CKEDITOR.on === 'function') {
+		CKEDITOR.on('dialogDefinition', function(event) {
+			try {
+				var dialogName = event.data.name;
+				var dialogDefinition = event.data.definition;
+				if (dialogName == 'link') {
+					var informationTab = dialogDefinition.getContents('target');
+					var targetField = informationTab.get('linkTargetType');
+					targetField['default'] = '_blank';
+				}
+			} catch(e) {};
+		});
+	}
 
     // Add the functions that need to be public
     my.getExtraTreeIcon = getExtraTreeIcon;
@@ -7418,6 +8056,10 @@ var EDITOR = (function ($, parent) {
     my.evaluateCondition = evaluateCondition;
     my.displayParameter = displayParameter;
 	my.displayGroup = displayGroup;
+    my.displayInlineQFGroup = displayInlineQFGroup;
+    my.showInlineQFGroup = showInlineQFGroup;
+    my.sizeInlineQFPanel = sizeInlineQFPanel;
+    my.findQFGroupOption = findQFGroupOption;
     my.convertTextAreas = convertTextAreas;
     my.convertTextInputs = convertTextInputs;
     my.convertColorPickers = convertColorPickers;

@@ -109,6 +109,11 @@ abstract class Xerte_Authentication_Abstract
         return true;
     }
 
+    public function hasUserPreferences()
+    {
+        return true;
+    }
+
     /**
      * canManageUser
      *

@@ -1,0 +1,171 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+	
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var columnPage = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+		}
+		
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			$(".pageImg img").each(function() {
+				columnPage.scaleImages($(this));
+			});
+		}
+		
+		this.init = function() {
+			// add full width text above &/or below the columns
+			if (x_currentPageXML.getAttribute("header") != undefined && x_currentPageXML.getAttribute("header").trim() != "") {
+				$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("header")));
+			} else {
+				$("#textHolder").remove();
+			}
+
+			if (x_currentPageXML.getAttribute("textBottom") != undefined && x_currentPageXML.getAttribute("textBottom").trim() != "") {
+				$("#textHolder2").html(x_addLineBreaks(x_currentPageXML.getAttribute("textBottom")));
+			} else {
+				$("#textHolder2").remove();
+			}
+
+			// set up columns
+			$(x_currentPageXML).children().each(function() {
+				let $thisColumn = $('<div class="column"></div>').appendTo($("#columnHolder"));
+				
+				let infoString = $('<p>' + x_addLineBreaks(this.getAttribute("text")) + '</p>').length == 1 ? '<p>' + x_addLineBreaks(this.getAttribute("text")) + '</p>' : x_addLineBreaks(this.getAttribute("text")),
+					heading = x_currentPageXML.getAttribute("showTitles") != "true" || this.getAttribute("name") == "" ? "" : '<h3>' + this.getAttribute("name") + '</h3>',
+					url = this.getAttribute("url");
+				
+				if (url != undefined && url != "") {
+					let newString = '<div class="pageImg">';
+					if (this.getAttribute("caption") != undefined && this.getAttribute("caption") != "") {
+						newString += '<figure>';
+					}
+					newString += '<img style="visibility: hidden"  ';
+					if (this.getAttribute("tip") != undefined && this.getAttribute("tip") != "") {
+						newString += 'alt="' + this.getAttribute("tip") + '" ';
+					}
+					newString += ' />';
+					if (this.getAttribute("caption") != undefined && this.getAttribute("caption") != "") {
+						newString += '<figcaption>' + this.getAttribute("caption") + '</figcaption></figure>';
+					}
+					newString += '</div>';
+
+					if (this.getAttribute("align") == "Top") {
+						infoString += newString;
+					} else {
+						infoString = newString + infoString;
+					}
+				}
+				
+				$thisColumn.html(heading + infoString);
+				
+				if ($thisColumn.find(".pageImg").length > 0) {
+					$thisColumn.find(".pageImg img")
+						.one("load", function() {
+							columnPage.scaleImages($(this));
+						})
+						.attr("src", x_evalURL(this.getAttribute("url")))
+						.each(function() { // called if loaded from cache as in some browsers load won't automatically trigger
+							if (this.complete) {
+								$(this).trigger("load");
+							}
+						});
+				}
+			});
+
+			// get the minimum width for the columns - columns will wrap onto a new row rather than be shown smaller than this
+			const minWidth = x_currentPageXML.getAttribute("minWidth") != undefined ? x_currentPageXML.getAttribute("minWidth") : "100";
+
+			// now work out if columns are equal width or whether width % have been set
+			let equal = true;
+			if (x_currentPageXML.getAttribute("columnWidth") != undefined && x_currentPageXML.getAttribute("columnWidth").trim() != "") {
+				const columnWidths = x_currentPageXML.getAttribute("columnWidth").split("/");
+
+				// check all widths are valid & they add up to 100% & they match the no. of columns
+				let count = 0;
+				let cssString = "";
+				for (let i=0; i<columnWidths.length; i++) {
+					if (columnWidths[i].trim() === "" || !$.isNumeric(columnWidths[i])) {
+						columnWidths.splice(i,1);
+						i--;
+					} else {
+						count += Number(columnWidths[i].trim());
+						cssString += "minmax(" + minWidth + "px, " + columnWidths[i].trim() + "fr) ";
+					}
+				}
+
+				// unequal widths
+				if (count === 100 && columnWidths.length === $(".column").length) {
+					equal = false;
+					// without the media query, the columns will not wrap onto new lines when too narrow
+					// unequal width percentages work until columns reach minimum width
+					$("#pageContents").prepend(`<style>
+						#columnHolder {
+							grid-template-columns: ${cssString};
+						}
+
+						@media (max-width: ${Number(minWidth)*columnWidths.length + (Math.ceil(parseFloat($("#columnHolder").css("gap"))) * columnWidths.length-1) + ($("body").width() - $("#columnHolder").width())}px) {
+							#columnHolder {
+								grid-template-columns: repeat(auto-fit, minmax(${minWidth}px, 1fr));
+							}
+						}
+						</style>`);
+				}
+			}
+
+
+			// equal widths - this is simpler, it will wrap to new lines when a column reaches minimum width
+			if (equal === true) {
+				$("#columnHolder").css("grid-template-columns", "repeat(auto-fit, minmax(" + minWidth + "px, 1fr))");
+			}
+
+			// add a panel style if needed
+			if (x_currentPageXML.getAttribute("panelStyle") === "single") {
+				$("#columnHolder").addClass("panel");
+			} else if (x_currentPageXML.getAttribute("panelStyle") === "each") {
+				$("#columnHolder").addClass("panelColumns");
+				$("#columnHolder .column").addClass("panel");
+			}
+			
+			x_pageLoaded();
+		}
+		
+		// function manually scales images - can't use max values in css as it doesn't work on every browser
+		this.scaleImages = function($img) {
+			var firstScale = false;
+			if ($img.data("origSize") == undefined) {
+				firstScale = true;
+			}
+			
+			x_scaleImg($img, $img.parents(".column").width(), $x_pageHolder.height() - (parseInt($x_pageDiv.css("padding-top")) * 2), true, firstScale);
+		}
+	}
+	
+	columnPage.init();
+	
+</script>
+
+<div id="pageContents">
+	<div id="textHolder" class="textTopHolder"></div>
+	<div id="columnHolder"></div>
+	<div id="textHolder2" class="textBottomHolder"></div>
+</div>

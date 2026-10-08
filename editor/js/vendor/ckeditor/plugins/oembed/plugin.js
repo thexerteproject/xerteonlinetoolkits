@@ -1,4 +1,4 @@
-﻿/**
+/**
 * oEmbed Plugin plugin
 * Licensed under the MIT license
 * jQuery Embed Plugin: http://code.google.com/p/jquery-oembed/ (MIT License)
@@ -152,8 +152,8 @@
                     };
 
                     function loadjQueryLibaries() {
-                        if (typeof(jQuery) === 'undefined') {
-                            CKEDITOR.scriptLoader.load('//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js',
+                    if (typeof(jQuery) === 'undefined') {
+                            CKEDITOR.scriptLoader.load('../../modules/common/js/jquery-1.9.1.min.js',
                                 function() {
                                     jQuery.noConflict();
                                     if (typeof(jQuery.fn.oembed) === 'undefined') {

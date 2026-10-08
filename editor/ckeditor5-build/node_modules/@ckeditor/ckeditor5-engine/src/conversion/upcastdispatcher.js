@@ -1,0 +1,470 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/**
+ * @module engine/conversion/upcastdispatcher
+ */
+import { ViewConsumable } from './viewconsumable.js';
+import { ModelRange } from '../model/range.js';
+import { ModelPosition } from '../model/position.js';
+import { ModelSchemaContext } from '../model/schema.js'; // eslint-disable-line no-duplicate-imports
+import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing.js';
+import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
+/**
+ * Upcast dispatcher is a central point of the view-to-model conversion, which is a process of
+ * converting a given {@link module:engine/view/documentfragment~ViewDocumentFragment view document fragment} or
+ * {@link module:engine/view/element~ViewElement view element} into a correct model structure.
+ *
+ * During the conversion process, the dispatcher fires events for all {@link module:engine/view/node~ViewNode view nodes}
+ * from the converted view document fragment.
+ * Special callbacks called "converters" should listen to these events in order to convert the view nodes.
+ *
+ * The second parameter of the callback is the `data` object with the following properties:
+ *
+ * * `data.viewItem` contains a {@link module:engine/view/node~ViewNode view node} or a
+ * {@link module:engine/view/documentfragment~ViewDocumentFragment view document fragment}
+ * that is converted at the moment and might be handled by the callback.
+ * * `data.modelRange` is used to point to the result
+ * of the current conversion (e.g. the element that is being inserted)
+ * and is always a {@link module:engine/model/range~ModelRange} when the conversion succeeds.
+ * * `data.modelCursor` is a {@link module:engine/model/position~ModelPosition position} on which the converter should insert
+ * the newly created items.
+ *
+ * The third parameter of the callback is an instance of {@link module:engine/conversion/upcastdispatcher~UpcastConversionApi}
+ * which provides additional tools for converters.
+ *
+ * You can read more about conversion in the {@glink framework/deep-dive/conversion/upcast Upcast conversion} guide.
+ *
+ * Examples of event-based converters:
+ *
+ * ```ts
+ * // A converter for links (<a>).
+ * editor.data.upcastDispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+ * 	if ( conversionApi.consumable.consume( data.viewItem, { name: true, attributes: [ 'href' ] } ) ) {
+ * 		// The <a> element is inline and is represented by an attribute in the model.
+ * 		// This is why you need to convert only children.
+ * 		const { modelRange } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
+ *
+ * 		for ( let item of modelRange.getItems() ) {
+ * 			if ( conversionApi.schema.checkAttribute( item, 'linkHref' ) ) {
+ * 				conversionApi.writer.setAttribute( 'linkHref', data.viewItem.getAttribute( 'href' ), item );
+ * 			}
+ * 		}
+ * 	}
+ * } );
+ *
+ * // Convert <p> element's font-size style.
+ * // Note: You should use a low-priority observer in order to ensure that
+ * // it is executed after the element-to-element converter.
+ * editor.data.upcastDispatcher.on( 'element:p', ( evt, data, conversionApi ) => {
+ * 	const { consumable, schema, writer } = conversionApi;
+ *
+ * 	if ( !consumable.consume( data.viewItem, { style: 'font-size' } ) ) {
+ * 		return;
+ * 	}
+ *
+ * 	const fontSize = data.viewItem.getStyle( 'font-size' );
+ *
+ * 	// Do not go for the model element after data.modelCursor because it might happen
+ * 	// that a single view element was converted to multiple model elements. Get all of them.
+ * 	for ( const item of data.modelRange.getItems( { shallow: true } ) ) {
+ * 		if ( schema.checkAttribute( item, 'fontSize' ) ) {
+ * 			writer.setAttribute( 'fontSize', fontSize, item );
+ * 		}
+ * 	}
+ * }, { priority: 'low' } );
+ *
+ * // Convert all elements which have no custom converter into a paragraph (autoparagraphing).
+ * editor.data.upcastDispatcher.on( 'element', ( evt, data, conversionApi ) => {
+ * 	// Check if an element can be converted.
+ * 	if ( !conversionApi.consumable.test( data.viewItem, { name: data.viewItem.name } ) ) {
+ * 		// When an element is already consumed by higher priority converters, do nothing.
+ * 		return;
+ * 	}
+ *
+ * 	const paragraph = conversionApi.writer.createElement( 'paragraph' );
+ *
+ * 	// Try to safely insert a paragraph at the model cursor - it will find an allowed parent for the current element.
+ * 	if ( !conversionApi.safeInsert( paragraph, data.modelCursor ) ) {
+ * 		// When an element was not inserted, it means that you cannot insert a paragraph at this position.
+ * 		return;
+ * 	}
+ *
+ * 	// Consume the inserted element.
+ * 	conversionApi.consumable.consume( data.viewItem, { name: data.viewItem.name } ) );
+ *
+ * 	// Convert the children to a paragraph.
+ * 	const { modelRange } = conversionApi.convertChildren( data.viewItem,  paragraph ) );
+ *
+ * 	// Update `modelRange` and `modelCursor` in the `data` as a conversion result.
+ * 	conversionApi.updateConversionResult( paragraph, data );
+ * }, { priority: 'low' } );
+ * ```
+ *
+ * @fires viewCleanup
+ * @fires element
+ * @fires text
+ * @fires documentFragment
+ */
+export class UpcastDispatcher extends /* #__PURE__ */ EmitterMixin() {
+    /**
+     * An interface passed by the dispatcher to the event callbacks.
+     */
+    conversionApi;
+    /**
+     * The list of elements that were created during splitting.
+     *
+     * After the conversion process, the list is cleared.
+     */
+    _splitParts = new Map();
+    /**
+     * The list of cursor parent elements that were created during splitting.
+     *
+     * After the conversion process the list is cleared.
+     */
+    _cursorParents = new Map();
+    /**
+     * The position in the temporary structure where the converted content is inserted. The structure reflects the context of
+     * the target position where the content will be inserted. This property is built based on the context parameter of the
+     * convert method.
+     */
+    _modelCursor = null;
+    /**
+     * The list of elements that were created during the splitting but should not get removed on conversion end even if they are empty.
+     *
+     * The list is cleared after the conversion process.
+     */
+    _emptyElementsToKeep = new Set();
+    /**
+     * Creates an upcast dispatcher that operates using the passed API.
+     *
+     * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi
+     * @param conversionApi Additional properties for an interface that will be passed to events fired
+     * by the upcast dispatcher.
+     */
+    constructor(conversionApi) {
+        super();
+        this.conversionApi = {
+            ...conversionApi,
+            consumable: null,
+            writer: null,
+            store: null,
+            convertItem: (viewItem, modelCursor) => this._convertItem(viewItem, modelCursor),
+            convertChildren: (viewElement, positionOrElement) => this._convertChildren(viewElement, positionOrElement),
+            safeInsert: (modelNode, position) => this._safeInsert(modelNode, position),
+            updateConversionResult: (modelElement, data) => this._updateConversionResult(modelElement, data),
+            // Advanced API - use only if custom position handling is needed.
+            splitToAllowedParent: (modelNode, modelCursor) => this._splitToAllowedParent(modelNode, modelCursor),
+            getSplitParts: modelElement => this._getSplitParts(modelElement),
+            keepEmptyElement: modelElement => this._keepEmptyElement(modelElement)
+        };
+    }
+    /**
+     * Starts the conversion process. The entry point for the conversion.
+     *
+     * @fires element
+     * @fires text
+     * @fires documentFragment
+     * @param viewElement The part of the view to be converted.
+     * @param writer An instance of the model writer.
+     * @param context Elements will be converted according to this context.
+     * @returns Model data that is the result of the conversion process
+     * wrapped in `DocumentFragment`. Converted marker elements will be set as the document fragment's
+     * {@link module:engine/model/documentfragment~ModelDocumentFragment#markers static markers map}.
+     */
+    convert(viewElement, writer, context = ['$root']) {
+        this.fire('viewCleanup', viewElement);
+        // Create context tree and set position in the top element.
+        // Items will be converted according to this position.
+        this._modelCursor = createContextTree(context, writer);
+        // Store writer in conversion as a conversion API
+        // to be sure that conversion process will use the same batch.
+        this.conversionApi.writer = writer;
+        // Create consumable values list for conversion process.
+        this.conversionApi.consumable = ViewConsumable.createFrom(viewElement);
+        // Custom data stored by converter for conversion process.
+        this.conversionApi.store = {};
+        // Do the conversion.
+        const { modelRange } = this._convertItem(viewElement, this._modelCursor);
+        // Conversion result is always a document fragment so let's create it.
+        const documentFragment = writer.createDocumentFragment();
+        // When there is a conversion result.
+        if (modelRange) {
+            // Remove all empty elements that were created while splitting.
+            this._removeEmptyElements();
+            // Move all items that were converted in context tree to the document fragment.
+            const parent = this._modelCursor.parent;
+            const children = parent._removeChildren(0, parent.childCount);
+            documentFragment._insertChild(0, children);
+            // Extract temporary markers elements from model and set as static markers collection.
+            documentFragment.markers = extractMarkersFromModelFragment(documentFragment, writer);
+        }
+        // Clear context position.
+        this._modelCursor = null;
+        // Clear split elements & parents lists.
+        this._splitParts.clear();
+        this._cursorParents.clear();
+        this._emptyElementsToKeep.clear();
+        // Clear conversion API.
+        this.conversionApi.writer = null;
+        this.conversionApi.store = null;
+        // Return fragment as conversion result.
+        return documentFragment;
+    }
+    /**
+     * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#convertItem
+     */
+    _convertItem(viewItem, modelCursor) {
+        const data = { viewItem, modelCursor, modelRange: null };
+        if (viewItem.is('element')) {
+            this.fire(`element:${viewItem.name}`, data, this.conversionApi);
+        }
+        else if (viewItem.is('$text')) {
+            this.fire('text', data, this.conversionApi);
+        }
+        else {
+            this.fire('documentFragment', data, this.conversionApi);
+        }
+        // Handle incorrect conversion result.
+        if (data.modelRange && !(data.modelRange instanceof ModelRange)) {
+            /**
+             * Incorrect conversion result was dropped.
+             *
+             * {@link module:engine/model/range~ModelRange Model range} should be a conversion result.
+             *
+             * @error view-conversion-dispatcher-incorrect-result
+             */
+            throw new CKEditorError('view-conversion-dispatcher-incorrect-result', this);
+        }
+        return { modelRange: data.modelRange, modelCursor: data.modelCursor };
+    }
+    /**
+     * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#convertChildren
+     */
+    _convertChildren(viewItem, elementOrModelCursor) {
+        let nextModelCursor = elementOrModelCursor.is('position') ?
+            elementOrModelCursor : ModelPosition._createAt(elementOrModelCursor, 0);
+        const modelRange = new ModelRange(nextModelCursor);
+        for (const viewChild of Array.from(viewItem.getChildren())) {
+            const result = this._convertItem(viewChild, nextModelCursor);
+            if (result.modelRange instanceof ModelRange) {
+                modelRange.end = result.modelRange.end;
+                nextModelCursor = result.modelCursor;
+            }
+        }
+        return { modelRange, modelCursor: nextModelCursor };
+    }
+    /**
+     * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#safeInsert
+     */
+    _safeInsert(modelNode, position) {
+        // Find allowed parent for element that we are going to insert.
+        // If current parent does not allow to insert element but one of the ancestors does
+        // then split nodes to allowed parent.
+        const splitResult = this._splitToAllowedParent(modelNode, position);
+        // When there is no split result it means that we can't insert element to model tree, so let's skip it.
+        if (!splitResult) {
+            return false;
+        }
+        // Insert element on allowed position.
+        this.conversionApi.writer.insert(modelNode, splitResult.position);
+        return true;
+    }
+    /**
+     * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#updateConversionResult
+     */
+    _updateConversionResult(modelElement, data) {
+        const parts = this._getSplitParts(modelElement);
+        const writer = this.conversionApi.writer;
+        // Set conversion result range - only if not set already.
+        if (!data.modelRange) {
+            data.modelRange = writer.createRange(writer.createPositionBefore(modelElement), writer.createPositionAfter(parts[parts.length - 1]));
+        }
+        const savedCursorParent = this._cursorParents.get(modelElement);
+        // Now we need to check where the `modelCursor` should be.
+        if (savedCursorParent) {
+            // If we split parent to insert our element then we want to continue conversion in the new part of the split parent.
+            //
+            // before: <allowed><notAllowed>foo[]</notAllowed></allowed>
+            // after:  <allowed><notAllowed>foo</notAllowed> <converted></converted> <notAllowed>[]</notAllowed></allowed>
+            data.modelCursor = writer.createPositionAt(savedCursorParent, 0);
+        }
+        else {
+            // Otherwise just continue after inserted element.
+            data.modelCursor = data.modelRange.end;
+        }
+    }
+    /**
+     * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#splitToAllowedParent
+     */
+    _splitToAllowedParent(node, modelCursor) {
+        const { schema, writer } = this.conversionApi;
+        // Try to find allowed parent.
+        let allowedParent = schema.findAllowedParent(modelCursor, node);
+        if (allowedParent) {
+            // When current position parent allows to insert node then return this position.
+            if (allowedParent === modelCursor.parent) {
+                return { position: modelCursor };
+            }
+            // When allowed parent is in context tree (it's outside the converted tree).
+            if (this._modelCursor.parent.getAncestors().includes(allowedParent)) {
+                allowedParent = null;
+            }
+        }
+        if (!allowedParent) {
+            // Check if the node wrapped with a paragraph would be accepted by the schema.
+            if (!isParagraphable(modelCursor, node, schema)) {
+                return null;
+            }
+            return {
+                position: wrapInParagraph(modelCursor, writer)
+            };
+        }
+        // Split element to allowed parent.
+        const splitResult = this.conversionApi.writer.split(modelCursor, allowedParent);
+        // Using the range returned by `model.Writer#split`, we will pair original elements with their split parts.
+        //
+        // The range returned from the writer spans "over the split" or, precisely saying, from the end of the original element (the one
+        // that got split) to the beginning of the other part of that element:
+        //
+        // <limit><a><b><c>X[]Y</c></b><a></limit> ->
+        // <limit><a><b><c>X[</c></b></a><a><b><c>]Y</c></b></a>
+        //
+        // After the split there cannot be any full node between the positions in `splitRange`. The positions are touching.
+        // Also, because of how splitting works, it is easy to notice, that "closing tags" are in the reverse order than "opening tags".
+        // Also, since we split all those elements, each of them has to have the other part.
+        //
+        // With those observations in mind, we will pair the original elements with their split parts by saving "closing tags" and matching
+        // them with "opening tags" in the reverse order. For that we can use a stack.
+        const stack = [];
+        for (const treeWalkerValue of splitResult.range.getWalker()) {
+            if (treeWalkerValue.type == 'elementEnd') {
+                stack.push(treeWalkerValue.item);
+            }
+            else {
+                // There should not be any text nodes after the element is split, so the only other value is `elementStart`.
+                const originalPart = stack.pop();
+                const splitPart = treeWalkerValue.item;
+                this._registerSplitPair(originalPart, splitPart);
+            }
+        }
+        const cursorParent = splitResult.range.end.parent;
+        this._cursorParents.set(node, cursorParent);
+        return {
+            position: splitResult.position,
+            cursorParent
+        };
+    }
+    /**
+     * Registers that a `splitPart` element is a split part of the `originalPart` element.
+     *
+     * The data set by this method is used by {@link #_getSplitParts} and {@link #_removeEmptyElements}.
+     */
+    _registerSplitPair(originalPart, splitPart) {
+        if (!this._splitParts.has(originalPart)) {
+            this._splitParts.set(originalPart, [originalPart]);
+        }
+        const list = this._splitParts.get(originalPart);
+        this._splitParts.set(splitPart, list);
+        list.push(splitPart);
+    }
+    /**
+     * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#getSplitParts
+     */
+    _getSplitParts(element) {
+        let parts;
+        if (!this._splitParts.has(element)) {
+            parts = [element];
+        }
+        else {
+            parts = this._splitParts.get(element);
+        }
+        return parts;
+    }
+    /**
+     * Mark an element that were created during the splitting to not get removed on conversion end even if it is empty.
+     */
+    _keepEmptyElement(element) {
+        this._emptyElementsToKeep.add(element);
+    }
+    /**
+     * Checks if there are any empty elements created while splitting and removes them.
+     *
+     * This method works recursively to re-check empty elements again after at least one element was removed in the initial call,
+     * as some elements might have become empty after other empty elements were removed from them.
+     */
+    _removeEmptyElements() {
+        // For every parent, prepare an array of children (empty elements) to remove from it.
+        // Then, in next step, we will remove all children together, which is faster than removing them one by one.
+        const toRemove = new Map();
+        for (const element of this._splitParts.keys()) {
+            if (element.isEmpty && !this._emptyElementsToKeep.has(element)) {
+                const children = toRemove.get(element.parent) || [];
+                children.push(element);
+                this._splitParts.delete(element);
+                toRemove.set(element.parent, children);
+            }
+        }
+        for (const [parent, children] of toRemove) {
+            parent._removeChildrenArray(children);
+        }
+        if (toRemove.size) {
+            this._removeEmptyElements();
+        }
+    }
+}
+/**
+ * Traverses given model item and searches elements which marks marker range. Found element is removed from
+ * ModelDocumentFragment but path of this element is stored in a Map which is then returned.
+ *
+ * @param modelItem Fragment of model.
+ * @returns List of static markers.
+ */
+function extractMarkersFromModelFragment(modelItem, writer) {
+    const markerElements = new Set();
+    const markers = new Map();
+    // Create ModelTreeWalker.
+    const range = ModelRange._createIn(modelItem).getItems();
+    // Walk through ModelDocumentFragment and collect marker elements.
+    for (const item of range) {
+        // Check if current element is a marker.
+        if (item.is('element', '$marker')) {
+            markerElements.add(item);
+        }
+    }
+    // Walk through collected marker elements store its path and remove its from the ModelDocumentFragment.
+    for (const markerElement of markerElements) {
+        const markerName = markerElement.getAttribute('data-name');
+        const currentPosition = writer.createPositionBefore(markerElement);
+        // When marker of given name is not stored it means that we have found the beginning of the range.
+        if (!markers.has(markerName)) {
+            markers.set(markerName, new ModelRange(currentPosition.clone()));
+            // Otherwise is means that we have found end of the marker range.
+        }
+        else {
+            markers.get(markerName).end = currentPosition.clone();
+        }
+        // Remove marker element from ModelDocumentFragment.
+        writer.remove(markerElement);
+    }
+    return markers;
+}
+/**
+ * Creates model fragment according to given context and returns position in the bottom (the deepest) element.
+ */
+function createContextTree(contextDefinition, writer) {
+    let position;
+    for (const item of new ModelSchemaContext(contextDefinition)) {
+        const attributes = {};
+        for (const key of item.getAttributeKeys()) {
+            attributes[key] = item.getAttribute(key);
+        }
+        const current = writer.createElement(item.name, attributes);
+        if (position) {
+            writer.insert(current, position);
+        }
+        position = ModelPosition._createAt(current, 0);
+    }
+    return position;
+}

@@ -264,9 +264,12 @@
 		<closeWindowWithSelectionsMsg3>Cancel = don't keep any of them.</closeWindowWithSelectionsMsg3>
 		<imageSavedSuccessMsg>Kept images successfully saved to media folder.</imageSavedSuccessMsg>
 		<deletionError>An error occurred. Please double-check the media folder to confirm the status of your kept images.</deletionError>
+		<retrievalError>An error occurred while retrieving image results. Please try again or use a different service.</retrievalError>
 		<noImagesReturnedMsg>No results could be found for your query. Please verify that the given search terms have been spelled correctly and try again, or attempt the same query with a different service.</noImagesReturnedMsg>
 		<imgEnlargeCornerBtn>Enlarge</imgEnlargeCornerBtn>
 		<imgLoadingText>Loading...</imgLoadingText>
+		<imgCopyrightToClipboardBtn>Copy copyright information to clipboard</imgCopyrightToClipboardBtn>
+		<imgCopyrightToClipboardNotice>Copyright credits copied to clipboard!</imgCopyrightToClipboardNotice>
 	</imageSelection>
 	<vendorApi>
 		<missingKey>The selected vendor has no API key installed. Please contact your system administrator</missingKey>
@@ -300,6 +303,8 @@
 	<assistents>
 		<ImgSearchBtn label="Query"/>
 		<QuickFillBtn label="Quick Fill"/>
+		<QuickFillInline title="Quickly set up a {page}" description="Specify how many items you want and the structure will be created for you." btnlabel="Quick Setup" confirm="The specified nodes will be automatically generated with their default values. Proceed?"/>
+		<QuickFillModal title="Quickly set up {page}" description="Choose how many items you want. You can then fill in and adjust everything yourself." cancel="Cancel" create="Create {page}"/>
 		<GenerateSuggestion btnlabel="Suggest" intructionprompt="Regarding what kind of suggestions I'm looking for, see: "/>
 		<AutoTranslateBtn label="Translate"/>
 		<AIBtn label="Generate"/>
@@ -317,6 +322,40 @@
 			<QFConfirmRequest>The specified items will be generated and populated with default values. Do you want to continue?</QFConfirmRequest>
 			<QFError>Something went wrong. Please try using the quick fill feature again.</QFError>
 		</quickfill>
+		<AIBaseSettingOptions>
+			<ReadingLevel>
+				<BEGINNER_A1 label="Beginner A1"/>
+				<BEGINNER_A2 label="Beginner A2"/>
+				<INTERMEDIATE_B1 label="Intermediate B1"/>
+				<INTERMEDIATE_B2 label="Intermediate B2"/>
+				<ADVANCED_C1 label="Advanced C1"/>
+				<ADVANCED_C2 label="Advanced C2"/>
+			</ReadingLevel>
+
+			<EducationLevel>
+				<MIDDLE_SCHOOL label="Middle School"/>
+				<HIGH_SCHOOL label="High School"/>
+				<VOCATIONAL label="Vocational"/>
+				<BACHELORS label="Bachelors"/>
+				<UNIVERSITY label="University"/>
+				<MASTERS label="Masters"/>
+				<PHD label="PhD"/>
+			</EducationLevel>
+
+			<ToneAndStyle>
+				<FORMAL label="Formal"/>
+				<SEMI_FORMAL label="Semi-formal"/>
+				<INFORMAL label="Informal"/>
+				<ACTIVE label="Active"/>
+				<PASSIVE label="Passive"/>
+				<CUSTOM label="Custom"/>
+			</ToneAndStyle>
+
+			<Common>
+				<CUSTOM label="Custom"/>
+				<NO_OPTIONS_AVAILABLE label="No options available"/>
+			</Common>
+		</AIBaseSettingOptions>
 	</assistents>
 	<lightbox>
 		<settingsButton>Open Settings</settingsButton>

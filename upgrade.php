@@ -205,17 +205,17 @@ function _do_cleanup()
         'themes/Nottingham/flatwhite/responsivetext.css',
         'themes/Nottingham/orangepurple/responsivetext.css',
         'themes/Nottingham/sketch/responsivetext.css',
-        'modules/xerte/parent_templates/Nottingham/common_html5/mediaelement/DO NOT CHANGE THESE FILES. USE -src- FOLDER.txt',
+        'modules/xerte/parent_templates/Nottingham/common/mediaelement/DO NOT CHANGE THESE FILES. USE -src- FOLDER.txt',
         'USER-FILES/*/.htaccess',
         'modules/xerte/templates/*/.htaccess',
         'modules/site/templates/*/.htaccess',
         'modules/decision/templates/*/.htaccess',
-        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/*',
-        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/examples/',
-        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/extra/',
-        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/generateData/',
-        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/src/',
-        'modules/xerte/parent_templates/Nottingham/common_html5/js/xapidashboard/wizard/',
+        'modules/xerte/parent_templates/Nottingham/common/js/xapidashboard/*',
+        'modules/xerte/parent_templates/Nottingham/common/js/xapidashboard/examples/',
+        'modules/xerte/parent_templates/Nottingham/common/js/xapidashboard/extra/',
+        'modules/xerte/parent_templates/Nottingham/common/js/xapidashboard/generateData/',
+        'modules/xerte/parent_templates/Nottingham/common/js/xapidashboard/src/',
+        'modules/xerte/parent_templates/Nottingham/common/js/xapidashboard/wizard/',
         'drawing.php',
         'drawingjs.php',
         'modules/xerte/engine/*',
@@ -224,12 +224,13 @@ function _do_cleanup()
         'LTI/*',
         'play_html5.php',
         'play_site.php',
+        'setup/xampp.php',
+        'setup/xampp.txt',
+        'setup/xampp_database.txt',
         'rloObject.js',
         'package.json',
         'package-lock.json',
-        'modules/xerte/parent_templates/Nottingham/common_html5/js/jsPDF/jspdf.min.js',
-        'webctlink.php',
-        'setup/*',
+        'modules/xerte/parent_templates/Nottingham/common/js/jsPDF/jspdf.min.js',
     );
 
     foreach ($filelist as $file)
@@ -1657,9 +1658,6 @@ function upgrade_52()
             return "Adding new extensions to the blacklisted extensions - ok ? false";
         }
     }
-    else{
-        return "Adding new extensions to the blacklisted extensions - NO PREVIOUS EXTENSIONS FOUND!";
-    }
 }
 
 function upgrade_53()
@@ -1771,24 +1769,135 @@ function upgrade_55()
     return $message;
 }
 
-function upgrade_56()
-{
-    $UserGroupsRoleTable = table_by_key("user_group_role");
+function upgrade_56(){
+    if (! _db_field_exists('logindetails', 'preference')) {
+        $error1 = _db_add_field('logindetails', 'preference', 'text', '', 'disabled');
+        $error1_returned = true;
 
+
+        if (($error1 === false)) {
+            $error1_returned = false;
+        }
+
+        return "Logindetails preference field - ok ? " . ($error1_returned ? 'true' : 'false'). "<br>";
+    }
+    else
+    {
+        return "Logindetails preference field already exists - ok ? true". "<br>";
+    }
+}
+
+function upgrade_57()
+{
+    $message = "";
+    if (!_table_exists("ai_settings")) {
+        $table = table_by_key('ai_settings');
+
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS $table (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `scope_type` ENUM('global','user') NOT NULL DEFAULT 'global',
+  `scope_id` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+
+  `ai_model` VARCHAR(255) DEFAULT NULL,
+  `reading_level` VARCHAR(255) DEFAULT NULL,
+  `education_level` VARCHAR(255) DEFAULT NULL,
+  `tone_and_style` VARCHAR(255) DEFAULT NULL,
+
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_scope` (`scope_type`, `scope_id`)
+);");
+
+        $message .= "Creating ai_settings table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        if ($ok) {
+            $insert_ok = _upgrade_db_query("INSERT INTO $table
+  (`scope_type`, `scope_id`, `ai_model`, `reading_level`, `education_level`, `tone_and_style`)
+VALUES
+  ('global', 0, 'Mistral AI', 'intermediate_b1', 'vocational', 'semi_formal');");
+
+            $message .= "Inserting default global ai_settings row - ok ? " . ($insert_ok ? 'true' : 'false') . "<br>";
+        }
+    } else {
+        $message .= "Table ai_settings already exists - ok ? true<br>";
+    }
+
+    return $message;
+}
+
+function upgrade_58()
+{
+    $message = "";
+    if (!_table_exists("ai_settings_options")) {
+        $table = table_by_key('ai_settings_options');
+
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS $table (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `setting_key` VARCHAR(64) NOT NULL,
+  `option_values` TEXT DEFAULT NULL,
+
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_setting_key` (`setting_key`)
+);");
+
+        $message .= "Creating ai_settings_options table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+
+        if ($ok) {
+            $insert_ok = _upgrade_db_query("INSERT INTO $table
+  (`setting_key`, `option_values`) VALUES
+  ('reading_level', 'beginner_a1,beginner_a2,intermediate_b1,intermediate_b2,advanced_c1,advanced_c2'),
+  ('education_level', 'middle_school,high_school,vocational,bachelors,university,masters,phd'),
+  ('tone_and_style', 'formal,semi_formal,informal,active,passive');");
+
+            $message .= "Inserting default ai_settings_options rows - ok ? " . ($insert_ok ? 'true' : 'false') . "<br>";
+        }
+    } else {
+        $message .= "Table ai_settings_options already exists - ok ? true<br>";
+    }
+
+    return $message;
+}
+
+function upgrade_59()
+{
+    $table = table_by_key("management_helper");
+
+    $ok = db_query("
+        UPDATE $table
+        SET `label` = 'GPT Image'
+        WHERE `vendor` = 'gpt1'
+    ");
+
+    return "Updating gpt1 label to GPT Image - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+}
+
+function upgrade_60()
+{
+    $table = table_by_key("management_helper");
+
+    $ok = db_query("
+        INSERT INTO $table
+            (`vendor`, `label`, `type`, `needs_key`, `enabled`, `sub_options`, `preferred_model`)
+        VALUES
+            ('gemini', 'Gemini (Google)', 'ai', 1, 0, '{}', 'gemini-3.6-flash')
+    ");
+
+    return "Adding Gemini to management_helper - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+}
+
+function upgrade_61()
+{
+    $userGroupsRoleTable = table_by_key("user_group_role");
     $message = '';
 
-    if (!_table_exists($UserGroupsRoleTable)) {
-        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$UserGroupsRoleTable` (
-        `groupid` int NOT NULL,
-        `userid` bigint(20) NOT NULL,
-        PRIMARY KEY (`roleid`, `groupid`)
-      )"
-        );
-
+    if (!_table_exists($userGroupsRoleTable)) {
+        $ok = _upgrade_db_query("CREATE TABLE IF NOT EXISTS `$userGroupsRoleTable` (
+          `groupid` int NOT NULL,
+          `userid` bigint(20) NOT NULL,
+          PRIMARY KEY (`userid`, `groupid`)
+        )");
         $message .= "Creating user_group_role table - ok ? " . ($ok ? 'true' : 'false') . "<br>";
-    }
-    else{
-        $message .= "Table user_group_role already exists - ok ? true". "<br>";
+    } else {
+        $message .= "Table user_group_role already exists - ok ? true<br>";
     }
 
     return $message;

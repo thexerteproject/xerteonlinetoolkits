@@ -25,7 +25,6 @@ var EDITOR = (function ($, parent) {
     var my = parent.layout = {},
 
     setup = function () {
-        console.log("Setting up layout...");
         var opentooltip = "Open this pane",
             closetooltip = "Close this pane",
             resizetooltip = "Resize this pane",
@@ -115,7 +114,18 @@ var EDITOR = (function ($, parent) {
                     togglerAlign_closed:    "top",
                     togglerLength_open:     0,
                     slideTrigger_open:      "click",
-                    initClosed:             (screen.width < 1024)
+                    // Determine initial state: use editor_panel_east_open preference if available, otherwise use screen width
+                    initClosed:             (function() {
+                        if (typeof user_preferences !== 'undefined' && user_preferences && typeof user_has_preferences !== 'undefined' && user_has_preferences) {
+                            if (user_preferences.hasOwnProperty('editor_panel_east_open')) {
+                                var editorEastOpen = user_preferences.editor_panel_east_open;
+                                var shouldClose = (editorEastOpen === false || editorEastOpen === 'false' || editorEastOpen === 0 || editorEastOpen === '0');
+                                return shouldClose;
+                            }
+                        }
+                        var screenBased = (screen.width < 1024);
+                        return screenBased;
+                    })()
                     /*
                     fxName:                 "drop",
                     fxSpeed:                "normal",
@@ -131,6 +141,7 @@ var EDITOR = (function ($, parent) {
             };
 
         xerte_layout = $("body").layout( xerte_editor_layout_settings );
+        
         var left_column = "body > .ui-layout-west";
         var right_column = "body > .ui-layout-east";
 
@@ -152,10 +163,15 @@ var EDITOR = (function ($, parent) {
             if (path.substr(path.length-1)=="#") path = path.substr(0,path.length-1);
             if (this.href.substr(this.href.length-1) == "#") this.href = path +"#";
         });
-		
-		//var optionaltitle = language.optionalPropHTML ? language.optionalPropHTML.$label : "Optional Properties";
-        var assistantTitle = language.optionalAssistantPropHTML && language.optionalAssistantPropHTML.$general ? language.optionalAssistantPropHTML.$general : "Assistants"
-		$("#optional_title").html(assistantTitle);
+        //Choose between the two titles dynamically; if any AI vendors are enabled, use the Assistants top-level title on first load (this later changes by page)
+        //otherwise, use the general optional  properties title (the sub-title on table level will be skipped if no active assistants are detected on page level)
+		var optionaltitle = language.optionalPropHTML ? language.optionalPropHTML.$label : "Optional Properties";
+        var assistantTitle = language.optionalAssistantPropHTML && language.optionalAssistantPropHTML.$general ? language.optionalAssistantPropHTML.$general : "Assistants";
+        if (checkAssistantFeatureStatus()){
+            $("#optional_title").html(assistantTitle);
+        } else {
+            $("#optional_title").html(optionaltitle);
+        }
     };
 
     /*
@@ -178,6 +194,11 @@ var EDITOR = (function ($, parent) {
 			var newWidth = $("#mainPanel .ui-jqgrid").parent().width();
 			$("#mainPanel .ui-jqgrid").show();
 			$("#mainPanel .ui-jqgrid table").jqGrid("setGridWidth", newWidth, true);
+		}
+
+		// resize inline Quick Fill panel to match name field width
+		if (parent.toolbox && parent.toolbox.sizeInlineQFPanel && $('#mainPanel .qf-inline-row').length) {
+			parent.toolbox.sizeInlineQFPanel($('#mainPanel .qf-inline-row'));
 		}
     }
     // Create the layout once the document has finished loading

@@ -1,0 +1,96 @@
+{
+  "author": "Keith McKnight <keith@mcknig.ht> (https://keith.mcknig.ht)",
+  "bugs": "https://github.com/syntax-tree/hast-util-to-dom/issues",
+  "contributors": [
+    "Keith McKnight <keith@mcknig.ht> (https://keith.mcknig.ht)",
+    "Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)"
+  ],
+  "dependencies": {
+    "@types/hast": "^3.0.0",
+    "property-information": "^7.0.0",
+    "web-namespaces": "^2.0.0"
+  },
+  "description": "hast utility to transform to the DOM",
+  "devDependencies": {
+    "@types/jsdom": "^21.0.0",
+    "@types/node": "^22.0.0",
+    "@types/w3c-xmlserializer": "^2.0.0",
+    "c8": "^10.0.0",
+    "hastscript": "^9.0.0",
+    "jsdom": "^26.0.0",
+    "prettier": "^3.0.0",
+    "remark-cli": "^12.0.0",
+    "remark-preset-wooorm": "^11.0.0",
+    "type-coverage": "^2.0.0",
+    "typescript": "^5.0.0",
+    "w3c-xmlserializer": "^5.0.0",
+    "xo": "^0.60.0"
+  },
+  "exports": "./index.js",
+  "files": [
+    "index.d.ts.map",
+    "index.d.ts",
+    "index.js",
+    "lib/"
+  ],
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/unified"
+  },
+  "keywords": [
+    "dom",
+    "hast-util",
+    "hast",
+    "html",
+    "rehype",
+    "unist",
+    "utility",
+    "util"
+  ],
+  "license": "ISC",
+  "name": "hast-util-to-dom",
+  "prettier": {
+    "bracketSpacing": false,
+    "semi": false,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "none",
+    "useTabs": false
+  },
+  "remarkConfig": {
+    "plugins": [
+      "remark-preset-wooorm"
+    ]
+  },
+  "repository": "syntax-tree/hast-util-to-dom",
+  "scripts": {
+    "build": "tsc --build --clean && tsc --build && type-coverage",
+    "format": "remark --frail --output --quiet -- . && prettier --log-level warn --write -- . && xo --fix",
+    "test-api": "node --conditions development test/index.js",
+    "test-coverage": "c8 --100 --reporter lcov -- npm run test-api",
+    "test": "npm run build && npm run format && npm run test-coverage"
+  },
+  "sideEffects": false,
+  "typeCoverage": {
+    "atLeast": 100,
+    "strict": true
+  },
+  "type": "module",
+  "version": "4.0.1",
+  "xo": {
+    "overrides": [
+      {
+        "files": [
+          "test/**/*.js"
+        ],
+        "rules": {
+          "no-await-in-loop": "off"
+        }
+      }
+    ],
+    "prettier": true,
+    "rules": {
+      "unicorn/prefer-string-replace-all": "off"
+    }
+  }
+}
