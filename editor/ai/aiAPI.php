@@ -14,7 +14,7 @@ if ($prompt_params !== null) {
 }
 
 $type        = x_clean_input($_POST['type']); // page
-$ai_api      = x_clean_input(isset($_POST['api']) ? $_POST['api'] : 'openai'); // model selection
+$ai_api      = x_clean_input(isset($_POST['api']) ? $_POST['api'] : 'mistral'); // model selection
 $file_url    = x_clean_input(isset($_POST['url']) ? $_POST['url'] : 'None');
 $textSnippet = x_clean_input($_POST['textSnippet']);
 $context     = x_clean_input(isset($_POST['context']) ? $_POST['context'] : 'None');

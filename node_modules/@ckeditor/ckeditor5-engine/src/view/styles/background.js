@@ -1,0 +1,74 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+import { getShorthandStylesValues, isAttachmentStyleValue, isColorStyleValue, isPositionStyleValue, isRepeatStyleValue, isURLStyleValue } from './utils.js';
+/**
+ * Adds a background CSS styles processing rules.
+ *
+ * ```ts
+ * editor.data.addStyleProcessorRules( addBackgroundStylesRules );
+ * ```
+ *
+ * The normalized value is stored as:
+ *
+ * ```ts
+ * const styles = {
+ * 	background: {
+ * 		color,
+ * 		repeat,
+ * 		position,
+ * 		attachment,
+ * 		image
+ * 	}
+ * };
+ * ````
+ *
+ * **Note**: Currently only `'background-color'` longhand value is parsed besides `'background'` shorthand. The reducer also supports only
+ * `'background-color'` value.
+ */
+export function addBackgroundStylesRules(stylesProcessor) {
+    stylesProcessor.setNormalizer('background', getBackgroundNormalizer());
+    stylesProcessor.setNormalizer('background-color', getBackgroundColorNormalizer());
+    stylesProcessor.setReducer('background', getBackgroundReducer());
+    stylesProcessor.setStyleRelation('background', ['background-color']);
+}
+function getBackgroundNormalizer() {
+    return value => {
+        const background = {};
+        const parts = getShorthandStylesValues(value);
+        for (const part of parts) {
+            if (isRepeatStyleValue(part)) {
+                background.repeat = background.repeat || [];
+                background.repeat.push(part);
+            }
+            else if (isPositionStyleValue(part)) {
+                background.position = background.position || [];
+                background.position.push(part);
+            }
+            else if (isAttachmentStyleValue(part)) {
+                background.attachment = part;
+            }
+            else if (isColorStyleValue(part)) {
+                background.color = part;
+            }
+            else if (isURLStyleValue(part)) {
+                background.image = part;
+            }
+        }
+        return {
+            path: 'background',
+            value: background
+        };
+    };
+}
+function getBackgroundColorNormalizer() {
+    return value => ({ path: 'background.color', value });
+}
+function getBackgroundReducer() {
+    return value => {
+        const ret = [];
+        ret.push(['background-color', value.color]);
+        return ret;
+    };
+}

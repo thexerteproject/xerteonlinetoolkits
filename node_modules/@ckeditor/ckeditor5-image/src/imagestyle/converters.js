@@ -1,0 +1,118 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+import isEqual from 'es-toolkit/compat/isEqual';
+import { first } from 'ckeditor5/src/utils.js';
+import { DEFAULT_OPTIONS } from './utils.js';
+/**
+ * @module image/imagestyle/converters
+ */
+/**
+ * Returns a converter for the `imageStyle` attribute. It can be used for adding, changing and removing the attribute.
+ *
+ * @param styles An array containing available image style options.
+ * @returns A model-to-view attribute converter.
+ * @internal
+ */
+export function modelToViewStyleAttribute(styles) {
+    return (evt, data, conversionApi) => {
+        if (!conversionApi.consumable.consume(data.item, evt.name)) {
+            return;
+        }
+        // Check if there is class name associated with given value.
+        const newStyle = getStyleDefinitionByName(data.attributeNewValue, styles);
+        const oldStyle = getStyleDefinitionByName(data.attributeOldValue, styles);
+        const viewElement = conversionApi.mapper.toViewElement(data.item);
+        const viewWriter = conversionApi.writer;
+        if (oldStyle) {
+            viewWriter.removeClass(oldStyle.className, viewElement);
+        }
+        if (newStyle) {
+            viewWriter.addClass(newStyle.className, viewElement);
+        }
+    };
+}
+/**
+ * Returns a view-to-model converter converting image CSS classes to a proper value in the model.
+ *
+ * @param styles Image style options for which the converter is created.
+ * @returns A view-to-model converter.
+ * @internal
+ */
+export function viewToModelStyleAttribute(styles) {
+    // Convert only non–default styles.
+    const nonDefaultStyles = {
+        imageInline: styles.filter(style => !style.isDefault && style.modelElements.includes('imageInline')),
+        imageBlock: styles.filter(style => !style.isDefault && style.modelElements.includes('imageBlock'))
+    };
+    return (evt, data, conversionApi) => {
+        if (!data.modelRange) {
+            return;
+        }
+        const viewElement = data.viewItem;
+        const modelImageElement = first(data.modelRange.getItems());
+        // Run this converter only if an image has been found in the model.
+        // In some cases it may not be found (for example if we run this on a figure with different type than image).
+        if (!modelImageElement) {
+            return;
+        }
+        // ...and the `imageStyle` attribute is allowed for that element, otherwise stop conversion early.
+        if (!conversionApi.schema.checkAttribute(modelImageElement, 'imageStyle')) {
+            return;
+        }
+        // Convert styles one by one.
+        for (const style of nonDefaultStyles[modelImageElement.name]) {
+            // Try to consume class corresponding with the style.
+            if (conversionApi.consumable.consume(viewElement, { classes: style.className })) {
+                // And convert this style to model attribute.
+                conversionApi.writer.setAttribute('imageStyle', style.name, modelImageElement);
+            }
+        }
+        // Normalize float styles (alignLeft, alignRight).
+        normalizeFloatToDefinitionStyle(conversionApi, viewElement, modelImageElement, styles);
+    };
+}
+/**
+ * A helper function that attempts to convert the `float` CSS style into a corresponding `imageStyle` attribute.
+ *
+ * It maps `float: left` and `float: right` to standard alignment styles (e.g. `'alignLeft'`, `'alignRight'`),
+ * but only if the target style definition matches one of the {@link module:image/image/utils~DEFAULT_OPTIONS default options}.
+ */
+function normalizeFloatToDefinitionStyle(conversionApi, viewElement, modelElement, styles) {
+    if (!conversionApi.consumable.test(viewElement, { styles: ['float'] })) {
+        return;
+    }
+    let floatStyleName = null;
+    switch (viewElement.getStyle('float')) {
+        case 'left':
+            floatStyleName = 'alignLeft';
+            break;
+        case 'right':
+            floatStyleName = 'alignRight';
+            break;
+    }
+    if (!floatStyleName) {
+        return;
+    }
+    const definition = getStyleDefinitionByName(floatStyleName, styles);
+    if (!definition) {
+        return;
+    }
+    const builtinDefinition = DEFAULT_OPTIONS[definition.name];
+    if (!isEqual(definition, builtinDefinition)) {
+        return;
+    }
+    conversionApi.writer.setAttribute('imageStyle', floatStyleName, modelElement);
+    conversionApi.consumable.consume(viewElement, { styles: ['float'] });
+}
+/**
+ * Returns the style with a given `name` from an array of styles.
+ */
+function getStyleDefinitionByName(name, styles) {
+    for (const style of styles) {
+        if (style.name === name) {
+            return style;
+        }
+    }
+}

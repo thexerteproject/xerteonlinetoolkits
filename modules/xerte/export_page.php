@@ -22,21 +22,6 @@
 
 	echo "<p>" . XERTE_EXPORT_DESCRIPTION . "</p>";
 
-    if (get_default_engine($_POST['template_id']) == 'javascript')
-    {
-		echo "<fieldset id=\"exportFS\" class=\"plainFS\"><legend>" . XERTE_EXPORT_INTERFACE . "</legend>";
-		echo "<div><input checked=\"true\" type=\"radio\" id=\"html5\" name=\"exportEngine\" value=\"html5\"><label for=\"html5\">" . XERTE_EXPORT_HTML5 . "</label></div>";
-		echo "<div><input type=\"radio\" id=\"flash\" name=\"exportEngine\" value=\"flash\"><label for=\"flash\">" . XERTE_EXPORT_FLASH . "</label></div>";
-		echo "</fieldset>";
-    }
-    else
-    {
-        echo "<fieldset id=\"exportFS\" class=\"plainFS\"><legend>" . XERTE_EXPORT_INTERFACE . "</legend>";
-		echo "<div><input type=\"radio\" id=\"html5\" name=\"exportEngine\" value=\"html5\"><label for=\"html5\">" . XERTE_EXPORT_HTML5 . "</label></div>";
-		echo "<div><input checked=\"true\" type=\"radio\" id=\"flash\" name=\"exportEngine\" value=\"flash\"><label for=\"flash\">" . XERTE_EXPORT_FLASH . "</label></div>";
-		echo "</fieldset>";
-    }
-
     echo "<ol id=\"exportList\" type='1'>";
     echo "<li>" . XERTE_EXPORT_ZIP_TITLE . "<br/>" . XERTE_EXPORT_ZIP . "<br/><button type=\"button\" class=\"xerte_button\" onclick=\"property_tab_download('download_frame', 'html5', 'flash', '" . $xerte_toolkits_site->site_url . url_return("export" , $_POST['template_id']) . "')\"><i class=\"fa fa-download\"></i> " . XERTE_EXPORT_ZIP_LINK . "</button></li>";
     echo "<li>" . XERTE_EXPORT_SCORM_TITLE . "<br/>" . XERTE_EXPORT_SCORM;

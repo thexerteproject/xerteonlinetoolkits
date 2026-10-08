@@ -1,0 +1,446 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var hangman = new function() {
+		let words,
+			currentWord,
+			attemptCount,
+			qNoTxt,
+			imgScale = 1;
+
+		let $clue = $("#clue"),
+			$letters = $("#letters"),
+			$img = $("#img"),
+			$nextBtn = $("#nextBtn"),
+			$resetBtn = $("#resetBtn");
+
+		const imgDimensions = [245,197];
+
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			const $pageContents = $("#pageContents");
+			words = $pageContents.data("words");
+			currentWord = $pageContents.data("currentWord");
+			attemptCount = $pageContents.data("attemptCount");
+			qNoTxt = $pageContents.data("qNoTxt");
+			imgScale = $pageContents.data("imgScale");
+
+			$clue = $("#clue");
+			$letters = $("#letters");
+			$img = $("#img");
+			$nextBtn = $("#nextBtn");
+			$resetBtn = $("#resetBtn");
+
+			// set up listeners again if the current word hasn't been found
+			if ($clue.find(".dash").filter(function () { return $(this).html() == ""; }).length > 0) {
+				this.setUpListener(currentWord);
+			}
+
+		}
+
+		this.leavePage = function() {
+			$("#pageContents").data({
+				"words": words,
+				"currentWord": currentWord,
+				"attemptCount": attemptCount,
+				"qNoTxt": qNoTxt,
+				"imgScale": imgScale
+			});
+		}
+
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
+
+			if (x_browserInfo.mobile == false) {
+				const $panel = $("#pageContents .panelContent");
+				const $game = $("#game");
+
+				// when panel has fixed height set, keep exercise text at bottom of panel by setting height of #game above it
+				if (panelH !== false) {
+					$game.css("min-height", "");
+					const hideBtn = !$nextBtn.is(":visible");
+					$nextBtn.show();
+					$game.css("min-height", x_getAvailableHeight([$panel], [$("#footerInfo")]));
+					if (hideBtn) {
+						$nextBtn.hide();
+					}
+				}
+
+				if ($panel.width() >= imgDimensions[0]) {
+					imgScale = 1;
+				} else {
+					imgScale = $panel.width()/imgDimensions[0];
+				}
+
+				const bgSize = [imgDimensions[0]*imgScale*11, imgDimensions[1]*imgScale];
+				$("#img")
+					.height(imgDimensions[1]*imgScale)
+					.css({
+						"max-width": imgDimensions[0]*imgScale,
+						"background-size": bgSize[0] + 'px ' + bgSize[1] + 'px',
+						"background-position": -(bgSize[0]/11) * attemptCount + "px 0px"
+					});
+			}
+		}
+
+		this.init = function() {
+			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+
+			// send amended data to split screen function
+			const attributes = {
+				panelWidth: x_currentPageXML.getAttribute("panelWidth") != undefined ? x_currentPageXML.getAttribute("panelWidth") : "Large" // default is large not medium for backwards compatibility
+			}
+			// set up split screen layout
+			XENITH.SPLITSCREEN.init({"attributes": attributes});
+
+			$(".panelContent").prepend('<span class="sr-only">' + (x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") != undefined ? x_getLangInfo(x_languageData.find("errorScreenReader")[0], "label") : "This page type is not compatible with screen readers.") +  '</span>');
+
+			$nextBtn
+				.button({
+					label: x_currentPageXML.getAttribute("nextBtnTxt") == undefined ? "Next" : x_currentPageXML.getAttribute("nextBtnTxt")
+					})
+				.click(function() {
+					hangman.loadWord();
+				});
+
+			$resetBtn
+					.button({
+						label: x_currentPageXML.getAttribute("resetBtnTxt") == undefined ? "Reset" : x_currentPageXML.getAttribute("resetBtnTxt")
+					})
+					.click(function() {
+						hangman.createQuiz();
+					});
+
+			// need hidden input for touchscreen otherwise you can't access keyboard to enter letters
+			if (x_browserInfo.touchScreen == true) {
+				const $input = $("<input/>")
+					.appendTo("#textHolder")
+					.css("opacity", 0);
+					
+				$("#clue").click(function() {
+					$input.focus();
+				});
+			}
+
+			this.sizeChanged();
+			this.createQuiz();
+			x_pageLoaded();
+		}
+
+		this.createQuiz = function() {
+			$nextBtn.hide();
+			$resetBtn.hide();
+
+			qNoTxt = x_currentPageXML.getAttribute("quesCount");
+			if (qNoTxt == undefined) {
+				qNoTxt = "Exercise {i} of {n}";
+			}
+
+			words = [];
+
+			// randomise word order
+			let tempWords = $.trim(x_currentPageXML.getAttribute("words").toLowerCase()).split("\n");
+			let length = tempWords.length;
+			for (let i=0; i<length; i++) {
+				const wordNum = Math.floor(Math.random() * tempWords.length);
+				words.push(tempWords[wordNum]);
+				tempWords.splice(wordNum, 1);
+			}
+
+			this.loadWord(true);
+		}
+
+		this.loadWord = function(first) {
+			if (first === true) {
+				currentWord = 0;
+			} else {
+				currentWord++;
+			}
+			attemptCount = 0;
+
+			const $qCount = $("#qCount");
+
+			// reset divs
+			$clue.add($letters).add($qCount).empty();
+
+			const bgSize = [imgDimensions[0]*imgScale*11, imgDimensions[1]*imgScale];
+			$img
+				.width(imgDimensions[0]*imgScale)
+				.height(imgDimensions[1]*imgScale)
+				.css({
+					"background-image": 'url("' + x_templateLocation + 'common/hangman.png' + '")',
+					"background-size": bgSize[0] + 'px' + bgSize[1] + 'px',
+					"background-position": -(bgSize[0]/11) * attemptCount + "px 0px"
+				});
+
+			$nextBtn.hide();
+
+			const thisWord = words[currentWord];
+			let $holderDiv = $clue;
+			const space = thisWord.indexOf(" ");
+
+			// if guesses are restricted to just letters and/or numbers then we don't replace other characters with dashes (they won't need to be guessed)
+			const restrict = x_currentPageXML.getAttribute("restrict") != undefined ? x_currentPageXML.getAttribute("restrict") : "all";
+			let validChar;
+			const regex = restrict == "letter" ? /^[A-Za-z]+$/ : /^[A-Za-z0-9]*$/;
+
+			if (restrict != "all") {
+				validChar = regex.test(thisWord.replace(/\s/g,''));
+			} else {
+				validChar = true;
+			}
+
+			if (space != -1 || validChar === false) {
+				$holderDiv = $('<div class="subWord"></div>').appendTo($clue);
+			}
+
+			for (let i=0; i<thisWord.length; i++) {
+				if (thisWord[i] == " ") { // add spaces
+					$holderDiv.parent().append('<div class="space"></div>');
+					$holderDiv = $('<div class="subWord"></div>').appendTo($holderDiv.parent());
+				} else if (restrict != "all" && regex.test(thisWord[i]) === false) { // add characters that are restricted from guesses (they will be shown from beginning)
+					$holderDiv.parent().append('<div class="space">' + thisWord[i] + '</div>');
+					$holderDiv = $('<div class="subWord"></div>').appendTo($holderDiv.parent());
+				} else { // add dashes for the letters to be guessed
+					$('<div class="dash"></div>').appendTo($holderDiv);
+				}
+			}
+
+			$qCount.html(qNoTxt.replace("{i}", currentWord + 1).replace("{n}", words.length));
+
+			this.setUpListener(currentWord);
+
+			if (x_browserInfo.mobile === true && x_browserInfo.touchScreen === true) {
+				const div = document.getElementById("alphabet");
+				div.innerHTML = '';
+				const alphabet = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+				const numbers = ["0","1","2","3","4","5","6","7","8","9"];
+				if (x_currentPageXML.getAttribute("restrict") != "letter") {
+					$.merge(alphabet,numbers);
+				}
+
+				alphabet.forEach(letter =>{
+					let specialCharacters = false
+
+					for (let i=0; i<thisWord.length; i++) {
+						if (letter.localeCompare(thisWord.charAt(i), x_params.language, {sensitivity: "base"}) === 0) {
+							specialCharacters = true
+						}
+					}
+
+					const button = document.createElement('BUTTON');
+					button.setAttribute("id", letter);
+					button.className = 'alphabet';
+					button.addEventListener("click", function () {
+						const letterID = button.id;
+						const letter = letterID.toLowerCase();
+						if ($.trim(letter) !== "") { // ignore non-character key presses e.g. tab
+							if (thisWord.indexOf(letter.toUpperCase()) !== -1 || thisWord.indexOf(letter.toLowerCase()) !== -1 || specialCharacters === true) { // correct
+								let startIndex = thisWord.indexOf(letter);
+
+								while (startIndex > -1) {
+									$($clue.find(".dash, .space")[startIndex]).html(letter);
+									startIndex = thisWord.indexOf(letter, startIndex + 1);
+									document.getElementById(letterID).disabled = true;
+								}
+
+								for (let i=0; i<thisWord.length; i++) {
+									if (letter.localeCompare(thisWord.charAt(i), x_params.language, { sensitivity: "base" }) === 0) {
+										$($clue.find(".dash, .space")[i]).html(thisWord.charAt(i));
+									}
+								}
+
+								// has the word been completed?
+								if ($clue.find(".dash").filter(function () {
+									return $(this).html() === "";
+								}).length === 0) {
+									if (currentWord < words.length - 1) {
+										$nextBtn.show();
+									} else {
+										$resetBtn.show();
+									}
+									$(this).off("keypress.pageEvent");
+									$x_pageHolder.off("touchend.pageEvent");
+									$(".alphabet").attr('disabled','disabled');
+									$("#textHolder input").val("").blur();
+								}
+
+							} else { // incorrect
+								if ($letters.html().indexOf(letter) === -1) { // new guess
+									attemptCount++;
+
+									document.getElementById(letterID).disabled = true;
+									$img.css("background-position", -245 * attemptCount + "px 0px");
+
+									// max no. wrong attempts reached?
+									if (attemptCount == 10) {
+										if (currentWord < words.length - 1) {
+											$nextBtn.show();
+										} else {
+											$resetBtn.show();
+										}
+
+										$(this).off("keypress.pageEvent");
+										$x_pageHolder.off("touchend.pageEvent");
+										$(".alphabet").attr('disabled','disabled');
+										$("#textHolder input").val("").blur();
+
+										$clue.find(".dash, .space").each(function (i) {
+											if ($(this).hasClass("dash")) {
+												$(this).html(thisWord[i]);
+											}
+										});
+									}
+								}
+							}
+						}
+					});
+					const text = document.createTextNode(letter);
+					button.appendChild(text);
+					div.appendChild(button);
+				})
+			}
+		}
+
+		this.setUpListener = function(thisWordIndex) {
+			const thisWord = words[thisWordIndex];
+
+			$(document).on("keypress.pageEvent", function(e) { // has .pageEvent namespace so it can be removed on page change from xenith.js
+				const charCode = e.charCode || e.keyCode;
+				const char = String.fromCharCode(charCode).toLowerCase();
+
+				// ignore non-character key presses e.g. tab
+				if ($.trim(char) != "") {
+
+					// are guesses restricted to just letters and/or numbers?
+					const restrict = x_currentPageXML.getAttribute("restrict") != undefined ? x_currentPageXML.getAttribute("restrict") : "all";
+					let valid;
+
+					if (restrict != "all") {
+						const regex = restrict == "letter" ? /^[A-Za-z]+$/ : /^[A-Za-z0-9]*$/;
+						valid = regex.test(String.fromCharCode(charCode));
+					} else {
+						valid = true;
+					}
+
+					if (valid) {
+						let specialCharacters = false
+
+						for (let i = 0; i < thisWord.length; i++) {
+							if (char.localeCompare(thisWord.charAt(i), x_params.language, {sensitivity: "base"}) === 0) {
+								specialCharacters = true
+							}
+						}
+
+						if (thisWord.indexOf(char) != -1 || specialCharacters === true) { // correct
+							let startIndex = thisWord.indexOf(char);
+							while (startIndex > -1) {
+								$($clue.find(".dash, .space")[startIndex]).html(char);
+								startIndex = thisWord.indexOf(char, startIndex + 1);
+							}
+
+							for (let i = 0; i < thisWord.length; i++) {
+								if (char.localeCompare(thisWord.charAt(i), x_params.language, {sensitivity: "base"}) === 0) {
+									$($clue.find(".dash, .space")[i]).html(thisWord.charAt(i));
+								}
+							}
+
+							// has the word been completed?
+							if ($clue.find(".dash").filter(function () { return $(this).html() == ""; }).length == 0) {
+								if (thisWordIndex < words.length - 1) {
+									$nextBtn.show();
+								} else {
+									$resetBtn.show();
+								}
+
+								$(this).off("keypress.pageEvent");
+								$x_pageHolder.off("touchend.pageEvent");
+								$("#textHolder input").val("").blur();
+							}
+
+						} else { // incorrect
+							if ($letters.html().indexOf(char) == -1) { // new guess
+								attemptCount++;
+
+								if (attemptCount != 1) {
+									$letters.html($letters.html() + " " + char);
+								} else {
+									$letters.html(char);
+								}
+
+								const bgSize = [imgDimensions[0] * imgScale * 11, imgDimensions[1] * imgScale];
+								$img.css("background-position", -(bgSize[0] / 11) * attemptCount + "px 0px");
+
+								// max no. wrong attempts reached?
+								if (attemptCount == 10) {
+									if (thisWordIndex < words.length - 1) {
+										$nextBtn.show();
+									} else {
+										$resetBtn.show();
+									}
+
+									$(this).off("keypress.pageEvent");
+									$x_pageHolder.off("touchend.pageEvent");
+									$("#textHolder input").val("").blur();
+
+									$clue.find(".dash, .space").each(function (i) {
+										if ($(this).hasClass("dash")) {
+											$(this).html(thisWord[i]);
+										}
+									});
+								}
+							}
+						}
+					}
+				}
+			});
+		}
+	}
+
+	hangman.init();
+
+</script>
+
+
+<div id="pageContents">
+
+	<div id="textHolder" class="splitScreen_A"></div>
+
+	<div id="infoHolder" class="splitScreen_B">
+		<div class="panel panelContent centerAlign">
+			<div id="game">
+				<div id="clue"/>
+				<div id="img"/>
+				<div id="letters"/>
+				<div id="alphabet"/>
+			</div>
+			<div id="footerInfo" class="x_floatRight">
+				<button id="nextBtn"/>
+				<button id="resetBtn"/>
+				<div id="qCount"/>
+			</div>
+		</div>
+	</div>
+
+</div>

@@ -163,11 +163,19 @@ VALUES
     function response_mapping($category, $response, $event, $vendor, $details)
     {
         if ($category === 'genai') {
-            if ($vendor === 'openai') return map_genai_openai($response, $event);
-            elseif ($vendor === 'openaiassistant') return map_genai_openaiassistant($response, $event);
-            elseif ($vendor === 'mistral') return map_genai_mistral($response, $event);
-            elseif ($vendor === 'anthropic') return map_genai_anthropic($response, $event);
-            else                           return map_genai_default($response, $event);
+            if ($vendor === 'openai') {
+                return map_genai_openai($response, $event);
+            } elseif ($vendor === 'openaiassistant') {
+                return map_genai_openaiassistant($response, $event);
+            } elseif ($vendor === 'mistral') {
+                return map_genai_mistral($response, $event);
+            } elseif ($vendor === 'anthropic') {
+                return map_genai_anthropic($response, $event);
+            } elseif ($vendor === 'gemini') {
+                return map_genai_gemini($response, $event);
+            }
+
+            return map_genai_default($response, $event);
         } elseif ($category === 'encoding' || $category === 'embedding') {
             if ($vendor === 'openaienc') return map_encoding_openai($response, $event);
             elseif ($vendor === 'mistralenc') return map_encoding_mistral($response, $event);
@@ -308,6 +316,151 @@ function map_genai_anthropic($res, $ev)
         'output_tokens' => $out,
         'total_tokens'  => $tot
     );
+    return $ev;
+}
+
+function map_genai_gemini($res, $ev)
+{
+    $ev['model'] = array_check($res, 'model');
+    $ev['request_id'] = array_check($res, 'id');
+
+    /*
+     * Gemini interaction statuses include completed, incomplete,
+     * failed and cancelled.
+     */
+    $interactionStatus = array_check($res, 'status');
+
+    if (
+        $interactionStatus === 'failed' ||
+        $interactionStatus === 'cancelled'
+    ) {
+        $ev['status'] = 'error';
+    } elseif ($interactionStatus === 'completed') {
+        $ev['status'] = 'ok';
+    }
+
+    /*
+     * Gemini may return a top-level API error.
+     */
+    $error = array_check($res, 'error');
+
+    if (
+        is_array($error) &&
+        isset($error['message'])
+    ) {
+        $ev['status'] = 'error';
+        $ev['error_message'] = $error['message'];
+    }
+
+    /*
+     * Some failed interactions may expose last_error.
+     */
+    $lastError = array_check($res, 'last_error');
+
+    if (
+        $ev['error_message'] === null &&
+        is_array($lastError) &&
+        isset($lastError['message'])
+    ) {
+        $ev['error_message'] = $lastError['message'];
+    }
+
+    /*
+     * A model_output step may contain its own error object.
+     */
+    $steps = array_check($res, 'steps', array());
+
+    if (
+        $ev['error_message'] === null &&
+        is_array($steps)
+    ) {
+        foreach ($steps as $step) {
+            if (
+                !is_array($step) ||
+                array_check($step, 'type') !== 'model_output'
+            ) {
+                continue;
+            }
+
+            $stepError = array_check($step, 'error');
+
+            if (
+                is_array($stepError) &&
+                isset($stepError['message'])
+            ) {
+                $ev['status'] = 'error';
+                $ev['error_message'] =
+                    $stepError['message'];
+
+                break;
+            }
+        }
+    }
+
+    /*
+     * Gemini Interactions usage field names.
+     */
+    $usage = array_check(
+        $res,
+        'usage',
+        array()
+    );
+
+    $inputTokens = array_check(
+        $usage,
+        'total_input_tokens'
+    );
+
+    $outputTokens = array_check(
+        $usage,
+        'total_output_tokens'
+    );
+
+    $totalTokens = array_check(
+        $usage,
+        'total_tokens'
+    );
+
+    if (
+        $totalTokens === null &&
+        ($inputTokens !== null || $outputTokens !== null)
+    ) {
+        $totalTokens =
+            (int)$inputTokens +
+            (int)$outputTokens;
+    }
+
+    $ev['metrics'] = array(
+        'input_tokens' => $inputTokens,
+        'output_tokens' => $outputTokens,
+        'total_tokens' => $totalTokens
+    );
+
+    /*
+     * Gemini returns an ISO timestamp in "created".
+     */
+    $created = array_check($res, 'created');
+
+    if (
+        is_string($created) &&
+        trim($created) !== ''
+    ) {
+        try {
+            $createdAt = new DateTimeImmutable(
+                $created
+            );
+
+            $ev['occurred_at'] = $createdAt
+                ->setTimezone(new DateTimeZone('UTC'))
+                ->format('c');
+        } catch (Exception $e) {
+            /*
+             * Retain the logger's default timestamp when Gemini's
+             * timestamp cannot be parsed.
+             */
+        }
+    }
+
     return $ev;
 }
 

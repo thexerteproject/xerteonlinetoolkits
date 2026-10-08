@@ -1,0 +1,181 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/**
+ * @module link/utils/automaticdecorators
+ */
+import { toMap, priorities } from 'ckeditor5/src/utils.js';
+/**
+ * Helper class that ties together all {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition} and provides
+ * the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement downcast dispatchers} for them.
+ */
+export class AutomaticLinkDecorators {
+    /**
+     * Stores the definition of {@link module:link/linkconfig~LinkDecoratorAutomaticDefinition automatic decorators}.
+     * This data is used as a source for a downcast dispatcher to create a proper conversion to output data.
+     */
+    _definitions = new Set();
+    /**
+     * A callback that checks if a decorator can be applied to a given element.
+     * Returns `true` if there is a conflict preventing the decorator from being applied.
+     */
+    _conflictChecker;
+    /**
+     * Gives information about the number of decorators stored in the {@link module:link/utils/automaticdecorators~AutomaticLinkDecorators}
+     * instance.
+     */
+    get length() {
+        return this._definitions.size;
+    }
+    /**
+     * Sets a callback that checks if a decorator can be applied to a given element.
+     *
+     * @param checker A function that returns `true` if there is a conflict preventing the decorator from being applied.
+     */
+    setConflictChecker(checker) {
+        this._conflictChecker = checker;
+    }
+    /**
+     * Adds automatic decorator objects or an array with them to be used during downcasting.
+     *
+     * @param item A configuration object of automatic rules for decorating links. It might also be an array of such objects.
+     */
+    add(item) {
+        if (Array.isArray(item)) {
+            item.forEach(item => this._definitions.add(item));
+        }
+        else {
+            this._definitions.add(item);
+        }
+    }
+    /**
+     * Provides the conversion helper used in the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add} method.
+     *
+     * @returns A dispatcher function used as conversion helper in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add}.
+     */
+    getDispatcher() {
+        return dispatcher => {
+            const elementCreator = (item, viewWriter) => {
+                const viewElement = viewWriter.createAttributeElement('a', item.attributes, {
+                    priority: 5
+                });
+                if (item.classes) {
+                    viewWriter.addClass(item.classes, viewElement);
+                }
+                for (const key in item.styles) {
+                    viewWriter.setStyle(key, item.styles[key], viewElement);
+                }
+                viewWriter.setCustomProperty('link', true, viewElement);
+                return viewElement;
+            };
+            const createConverter = (isApplyingConverter) => {
+                return (evt, data, conversionApi) => {
+                    if (!data.attributeKey.startsWith('link')) {
+                        return;
+                    }
+                    // There is only test as this behavior decorates links and
+                    // it is run before dispatcher which actually consumes this node.
+                    // This allows on writing own dispatcher with highest priority,
+                    // which blocks both native converter and this additional decoration.
+                    if (data.attributeKey == 'linkHref' && !conversionApi.consumable.test(data.item, 'attribute:linkHref')) {
+                        return;
+                    }
+                    // Automatic decorators for block links are handled e.g. in LinkImageEditing.
+                    if (!data.item.is('selection') && !conversionApi.schema.isInline(data.item)) {
+                        return;
+                    }
+                    for (const decorator of this._definitions) {
+                        // Check if automatic decorator is matched and does not conflict with any other active manual decorator.
+                        if (decorator.callback(data.item.getAttribute('linkHref')) &&
+                            !this._conflictChecker?.(decorator, data.item) &&
+                            isApplyingConverter) {
+                            if (data.item.is('selection')) {
+                                conversionApi.writer.wrap(conversionApi.writer.document.selection.getFirstRange(), elementCreator(decorator, conversionApi.writer));
+                            }
+                            else {
+                                conversionApi.writer.wrap(conversionApi.mapper.toViewRange(data.range), elementCreator(decorator, conversionApi.writer));
+                            }
+                        }
+                        else {
+                            conversionApi.writer.unwrap(conversionApi.mapper.toViewRange(data.range), elementCreator(decorator, conversionApi.writer));
+                        }
+                    }
+                };
+            };
+            dispatcher.on('attribute', createConverter(false), { priority: priorities.high - 1 });
+            // Apply decorators after all automatic and manual decorators are removed so removing one decorator
+            // won't strip part of the other decorator's attributes, classes or styles.
+            dispatcher.on('attribute', createConverter(true), { priority: priorities.high - 2 });
+        };
+    }
+    /**
+     * Provides the conversion helper used in the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add} method
+     * when linking images.
+     *
+     * @returns A dispatcher function used as conversion helper in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add}.
+     */
+    getDispatcherForLinkedImage() {
+        return dispatcher => {
+            const createConverter = (isApplyingConverter) => {
+                return (evt, data, { writer, mapper }) => {
+                    if (!data.item.is('element', 'imageBlock') || !data.attributeKey.startsWith('link')) {
+                        return;
+                    }
+                    const viewFigure = mapper.toViewElement(data.item);
+                    const linkInImage = Array.from(viewFigure.getChildren())
+                        .find((child) => child.is('element', 'a'));
+                    // It's not guaranteed that the anchor is present in the image block during execution of this dispatcher.
+                    // It might have been removed during the execution of unlink command that runs the image link downcast dispatcher
+                    // that is executed before this one and removes the anchor from the image block.
+                    if (!linkInImage) {
+                        return;
+                    }
+                    for (const decorator of this._definitions) {
+                        const attributes = toMap(decorator.attributes);
+                        if (decorator.callback(data.item.getAttribute('linkHref')) &&
+                            !this._conflictChecker?.(decorator, data.item) &&
+                            isApplyingConverter) {
+                            for (const [key, val] of attributes) {
+                                // Left for backward compatibility. Since v30 decorator should
+                                // accept `classes` and `styles` separately from `attributes`.
+                                if (key === 'class') {
+                                    writer.addClass(val, linkInImage);
+                                }
+                                else {
+                                    writer.setAttribute(key, val, false, linkInImage);
+                                }
+                            }
+                            if (decorator.classes) {
+                                writer.addClass(decorator.classes, linkInImage);
+                            }
+                            for (const key in decorator.styles) {
+                                writer.setStyle(key, decorator.styles[key], linkInImage);
+                            }
+                        }
+                        else {
+                            for (const [key, val] of attributes) {
+                                if (key === 'class') {
+                                    writer.removeClass(val, linkInImage);
+                                }
+                                else {
+                                    writer.removeAttribute(key, val, linkInImage);
+                                }
+                            }
+                            if (decorator.classes) {
+                                writer.removeClass(decorator.classes, linkInImage);
+                            }
+                            for (const key in decorator.styles) {
+                                writer.removeStyle(key, linkInImage);
+                            }
+                        }
+                    }
+                };
+            };
+            dispatcher.on('attribute', createConverter(false), { priority: priorities.high - 1 });
+            // Apply decorators after all automatic and manual decorators are removed so removing one decorator
+            // won't strip part of the other decorator's attributes, classes or styles.
+            dispatcher.on('attribute', createConverter(true), { priority: priorities.high - 2 });
+        };
+    }
+}

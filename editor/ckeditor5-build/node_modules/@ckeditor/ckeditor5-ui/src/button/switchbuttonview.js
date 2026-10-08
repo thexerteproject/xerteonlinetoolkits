@@ -1,0 +1,79 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/**
+ * @module ui/button/switchbuttonview
+ */
+import { View } from '../view.js';
+import { ButtonView } from './buttonview.js';
+import '../../theme/components/button/switchbutton.css';
+/**
+ * The switch button view class.
+ *
+ * ```ts
+ * const view = new SwitchButtonView();
+ *
+ * view.set( {
+ * 	withText: true,
+ * 	label: 'Switch me!'
+ * } );
+ *
+ * view.render();
+ *
+ * document.body.append( view.element );
+ * ```
+ */
+export class SwitchButtonView extends ButtonView {
+    /**
+     * The toggle switch of the button.
+     */
+    toggleSwitchView;
+    /**
+     * @inheritDoc
+     */
+    constructor(locale) {
+        super(locale);
+        this.isToggleable = true;
+        this.toggleSwitchView = this._createToggleView();
+        this.extendTemplate({
+            attributes: {
+                class: 'ck-switchbutton'
+            }
+        });
+    }
+    /**
+     * @inheritDoc
+     */
+    render() {
+        super.render();
+        this.children.add(this.toggleSwitchView);
+    }
+    /**
+     * Creates a toggle child view.
+     */
+    _createToggleView() {
+        const toggleSwitchView = new View();
+        toggleSwitchView.setTemplate({
+            tag: 'span',
+            attributes: {
+                class: [
+                    'ck',
+                    'ck-button__toggle'
+                ]
+            },
+            children: [
+                {
+                    tag: 'span',
+                    attributes: {
+                        class: [
+                            'ck',
+                            'ck-button__toggle__inner'
+                        ]
+                    }
+                }
+            ]
+        });
+        return toggleSwitchView;
+    }
+}

@@ -221,9 +221,21 @@ class MediaHandler {
             $outputPath = $this->mediaPath . '/' . $filename;
         }
 
+        //Get the correct paths for the yt-dlp/ffmpeg combo
+        global $xerte_toolkits_site;
+
+        $ytDlpExe = (stripos(php_uname('s'), 'Windows') === 0) ? 'yt-dlp.exe' : 'yt-dlp';
+        $ytDlpPath = $xerte_toolkits_site->root_file_path . "yt-dlp/" . $ytDlpExe;
+        $ffmpegPath = $xerte_toolkits_site->root_file_path . "yt-dlp/bin";
+
+        $ytDlpCmd = escapeshellarg($ytDlpPath);
+        $ffmpegCmd = escapeshellarg($ffmpegPath);
+
         // Media download
         if ($lang == "") {
-            $command = "yt-dlp -f best -o " . escapeshellarg($outputPath)
+            $command = $ytDlpCmd
+                . " --ffmpeg-location " . $ffmpegCmd
+                . " -f best -o " . escapeshellarg($outputPath)
                 . " " . escapeshellarg($url);
 
             _debug($command);
@@ -237,25 +249,26 @@ class MediaHandler {
             // There's no meaningful return, caller should already know the file name
             return null;
         }
-
         // Subtitles
         // Use base template so yt-dlp can append ".<lang>.<ext>"
         $outTemplate = $outputPath . '.%(ext)s';
-
         // Prefer vtt, fallback to srt
         $subFormat = "vtt/srt";
-
         //Default to english if lang is not found/available or is an unsupported langauge code
         $subLang = $this->xerteLocaleToYtdlpSubLang($lang);
 
         if ($auto) {
-            $command = "yt-dlp --skip-download --write-auto-sub"
+            $command = $ytDlpCmd
+                . " --ffmpeg-location " . $ffmpegCmd
+                . " --skip-download --write-auto-sub"
                 . " --sub-lang " . escapeshellarg($lang)
                 . " --sub-format " . escapeshellarg($subFormat)
                 . " -o " . escapeshellarg($outTemplate)
                 . " " . escapeshellarg($url);
         } else {
-            $command = "yt-dlp --skip-download --write-sub"
+            $command = $ytDlpCmd
+                . " --ffmpeg-location " . $ffmpegCmd
+                . " --skip-download --write-sub"
                 . " --sub-lang " . escapeshellarg($subLang)
                 . " --sub-format " . escapeshellarg($subFormat)
                 . " -o " . escapeshellarg($outTemplate)
@@ -292,6 +305,9 @@ class MediaHandler {
     private function proc_open_ffmpeg($videoFilePath) {
         global $xerte_toolkits_site;
 
+        $ffmpegExe = (stripos(php_uname('s'), 'Windows') === 0) ? 'ffmpeg.exe' : 'ffmpeg';
+        $ffmpegPath = $xerte_toolkits_site->root_file_path . "yt-dlp/bin/" . $ffmpegExe;
+
         if (!isset($_SESSION['toolkits_logon_username']) && php_sapi_name() !== 'cli'){
             die("Session is invalid or expired");
         }
@@ -301,8 +317,8 @@ class MediaHandler {
         $outputFileName = 'output_audio_' . uniqid() . '.mp3';
         $outputAudioPath = dirname($videoFilePath) . '/' . $outputFileName;
 
-        //todo might break on linux, shouldnt
-        $command = "ffmpeg -i " . escapeshellarg($videoFilePath)
+        $command = escapeshellarg($ffmpegPath)
+            . " -i " . escapeshellarg($videoFilePath)
             . " -q:a 0 -map a " . escapeshellarg($outputAudioPath) . " 2>&1";
         _debug($command);
 

@@ -52,8 +52,8 @@ function get_logo_file($LO_icon_path, $theme_path, $template_path) {
 
 	// Lastly check the default location
 	foreach($extensions as $ext) {
-		if (file_exists('../../../' . $template_path . 'common_html5/logo.' . $ext)) {
-			return '../../../' . $template_path . 'common_html5/logo.' . $ext;
+		if (file_exists('../../../' . $template_path . 'common/logo.' . $ext)) {
+			return '../../../' . $template_path . 'common/logo.' . $ext;
 		}
 	}
 
@@ -229,7 +229,7 @@ function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $langua
     $language_ISO639_1code = substr($language, 0, 2);
 	if ($parent_name == "Nottingham")
 	{
-		$common_folder = "common_html5";
+		$common_folder = "common";
 	}
 	else
 	{
@@ -254,7 +254,7 @@ function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $langua
     $scorm_html_page_content = str_replace("%THEMEPATH%", "themes/" . $parent_name . "/",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%OFFLINESCRIPTS%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%OFFLINEINCLUDES%", "",$scorm_html_page_content);
-    $scorm_html_page_content = str_replace("%MATHJAXPATH%", "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/", $scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%MATHJAXPATH%", "offline/js/mathjax/", $scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%LASTUPDATED%", $date_modified, $scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%DATECREATED%", $date_created, $scorm_html_page_content);
 	$scorm_html_page_content = str_replace("%NUMPLAYS%", 0, $scorm_html_page_content);

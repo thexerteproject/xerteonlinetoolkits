@@ -1,0 +1,54 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+.ck-find-result{
+	background:var(--ck-color-highlight-background);
+	color:var(--ck-color-text);
+}
+
+.ck-find-result_selected{
+	background:hsl(29, 100%, 60%);
+}
+
+.ck-vertical-form .ck-button::after{
+		content:"";
+		width:0;
+		position:absolute;
+		right:-1px;
+		top:-1px;
+		bottom:-1px;
+		z-index:1;
+	}
+
+.ck-vertical-form .ck-button:focus::after{
+		display:none;
+	}
+
+@media screen and (max-width: 600px){
+			.ck.ck-responsive-form .ck-button::after{
+				content:"";
+				width:0;
+				position:absolute;
+				right:-1px;
+				top:-1px;
+				bottom:-1px;
+				z-index:1;
+			}
+
+			.ck.ck-responsive-form .ck-button:focus::after{
+				display:none;
+			}
+	}
+
+.ck.ck-find-and-replace-form{
+	max-width:100%;
+}
+
+.ck.ck-find-and-replace-form .ck-find-and-replace-form__inputs, .ck.ck-find-and-replace-form .ck-find-and-replace-form__actions{
+		display:flex;
+	}
+
+.ck.ck-find-and-replace-form .ck-find-and-replace-form__inputs.ck-find-and-replace-form__inputs .ck-results-counter, .ck.ck-find-and-replace-form .ck-find-and-replace-form__actions.ck-find-and-replace-form__inputs .ck-results-counter{
+			position:absolute;
+		}

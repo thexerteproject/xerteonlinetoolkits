@@ -54,7 +54,7 @@
     <controls label="Interactivity" options="Control Bar,Native SWF" type="ComboBox" data="Control Bar,Native SWF" defaultValue="Control Bar" width="100" optional="true" flashonly="true"/>
     <initObject label="Init Object" type="TextArea" height="60" optional="true" flashonly="true" />
     <playNarration label="Auto-Play Narration" type="CheckBox" defaultValue="false" optional="true"/>
-    <narration label="Narration" type="media" optional="true"/>
+    <narration label="Narration" type="media" optional="true" enableImgSHTool="false"/>
     <info><![CDATA[<b>For full details on how to use the Scenario Connector Page. <u><a href="http://xerte.org.uk/docs/xot/help/ScenarioConnectorPageGuide.pdf" target="_blank">Click here</a></u></b>]]></info>
 
 	<newNodes>
@@ -115,8 +115,8 @@
 	<score3WinEndID label="Score 3 Win go to ID" type="TextInput" wysiwyg="true" width="200"/>
 	<score3LoseEndID label="Score 3 Lose go to ID" type="TextInput" wysiwyg="true" width="200"/>
 	
-    <winEffect label="Win Sound File" type="media" optional="true"/>
-    <loseEffect label="Lose Sound File" type="media" optional="true"/>		
+    <winEffect label="Win Sound File" type="media" optional="true" enableImgSHTool="false"/>
+    <loseEffect label="Lose Sound File" type="media" optional="true" enableImgSHTool="false"/>
 	
   </gameSetup>
   
@@ -191,7 +191,7 @@
     <propAction label="Prop Action" options="Carry,Drop,Send to Specified Location,Destroy" type="ComboBox" defaultValue="carry" data="carry,drop,specified,destroy" width="200" optional="true" />
 	<specifiedLoc label="Prop Destination Page ID" type="TextInput" width="200" optional="true" />
 	<destination label="Destination Page ID" type="TextInput" width="200" optional="true" />
-    <soundEffect label="Sound File" type="media" optional="true"/>	
+    <soundEffect label="Sound File" type="media" optional="true" enableImgSHTool="false"/>
  
 	<newNodes>  
   	  <outcomeCondition><![CDATA[<outcomeCondition name="Outcome Condition"  />]]></outcomeCondition>

@@ -1,0 +1,183 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/**
+ * @module minimap/minimap
+ */
+import { Plugin } from 'ckeditor5/src/core.js';
+import { findClosestScrollableAncestor, global } from 'ckeditor5/src/utils.js';
+import { MinimapView } from './minimapview.js';
+import { cloneEditingViewDomRoot, getClientHeight, getDomElementRect, getPageStyles, getScrollable } from './utils.js';
+// @if CK_DEBUG_MINIMAP // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
+import '../theme/minimap.css';
+/**
+ * The content minimap feature.
+ */
+export class Minimap extends Plugin {
+    /**
+     * @inheritDoc
+     */
+    static get pluginName() {
+        return 'Minimap';
+    }
+    /**
+     * @inheritDoc
+     */
+    static get isOfficialPlugin() {
+        return true;
+    }
+    /**
+     * The reference to the view of the minimap.
+     */
+    _minimapView;
+    /**
+     * The DOM element closest to the editable element of the editor as returned
+     * by {@link module:ui/editorui/editorui~EditorUI#getEditableElement}.
+     */
+    _scrollableRootAncestor;
+    /**
+     * The DOM element closest to the editable element of the editor as returned
+     * by {@link module:ui/editorui/editorui~EditorUI#getEditableElement}.
+     */
+    _editingRootElement;
+    /**
+     * @inheritDoc
+     */
+    init() {
+        const editor = this.editor;
+        this._minimapView = null;
+        this._scrollableRootAncestor = null;
+        this.listenTo(editor.ui, 'ready', this._onUiReady.bind(this));
+    }
+    /**
+     * @inheritDoc
+     */
+    destroy() {
+        super.destroy();
+        this._minimapView.destroy();
+        this._minimapView.element.remove();
+    }
+    /**
+     * Initializes the minimap view element and starts the layout synchronization
+     * on the editing view `render` event.
+     */
+    _onUiReady() {
+        const editor = this.editor;
+        // TODO: This will not work with the multi-root editor.
+        const editingRootElement = this._editingRootElement = editor.ui.getEditableElement();
+        this._scrollableRootAncestor = findClosestScrollableAncestor(editingRootElement);
+        // DOM root element is not yet attached to the document.
+        if (!editingRootElement.ownerDocument.body.contains(editingRootElement)) {
+            editor.ui.once('update', this._onUiReady.bind(this));
+            return;
+        }
+        this._initializeMinimapView();
+        this.listenTo(editor.editing.view, 'render', () => {
+            if (editor.state !== 'ready') {
+                return;
+            }
+            this._syncMinimapToEditingRootScrollPosition();
+        });
+        this._syncMinimapToEditingRootScrollPosition();
+    }
+    /**
+     * Initializes the minimap view and attaches listeners that make it responsive to the environment (document)
+     * but also allow the minimap to control the document (scroll position).
+     */
+    _initializeMinimapView() {
+        const editor = this.editor;
+        const locale = editor.locale;
+        const useSimplePreview = editor.config.get('minimap.useSimplePreview');
+        // TODO: Throw an error if there is no `minimap` in config.
+        const minimapContainerElement = editor.config.get('minimap.container');
+        const scrollableRootAncestor = this._scrollableRootAncestor;
+        // TODO: This should be dynamic, the root width could change as the viewport scales if not fixed unit.
+        const editingRootElementWidth = getDomElementRect(this._editingRootElement).width;
+        const minimapContainerWidth = getDomElementRect(minimapContainerElement).width;
+        const minimapScaleRatio = minimapContainerWidth / editingRootElementWidth;
+        const minimapView = this._minimapView = new MinimapView({
+            locale,
+            scaleRatio: minimapScaleRatio,
+            pageStyles: getPageStyles(),
+            extraClasses: editor.config.get('minimap.extraClasses'),
+            useSimplePreview,
+            domRootClone: cloneEditingViewDomRoot(editor)
+        });
+        minimapView.render();
+        // Scrollable ancestor scroll -> minimap position update.
+        minimapView.listenTo(global.document, 'scroll', (evt, data) => {
+            if (scrollableRootAncestor === global.document.body) {
+                if (data.target !== global.document) {
+                    return;
+                }
+            }
+            else if (data.target !== scrollableRootAncestor) {
+                return;
+            }
+            this._syncMinimapToEditingRootScrollPosition();
+        }, { useCapture: true, usePassive: true });
+        // Viewport resize -> minimap position update.
+        minimapView.listenTo(global.window, 'resize', () => {
+            this._syncMinimapToEditingRootScrollPosition();
+        });
+        // Dragging the visible content area -> document (scrollable) position update.
+        minimapView.on('drag', (evt, movementY) => {
+            let movementYPercentage;
+            if (minimapView.scrollHeight === 0) {
+                movementYPercentage = 0;
+            }
+            else {
+                movementYPercentage = movementY / minimapView.scrollHeight;
+            }
+            const absoluteScrollProgress = movementYPercentage *
+                (scrollableRootAncestor.scrollHeight - getClientHeight(scrollableRootAncestor));
+            const scrollable = getScrollable(scrollableRootAncestor);
+            scrollable.scrollBy(0, Math.round(absoluteScrollProgress));
+        });
+        // Clicking the minimap -> center the document (scrollable) to the corresponding position.
+        minimapView.on('click', (evt, percentage) => {
+            const absoluteScrollProgress = percentage * scrollableRootAncestor.scrollHeight;
+            const scrollable = getScrollable(scrollableRootAncestor);
+            scrollable.scrollBy(0, Math.round(absoluteScrollProgress));
+        });
+        minimapContainerElement.appendChild(minimapView.element);
+    }
+    /**
+     * @private
+     */
+    _syncMinimapToEditingRootScrollPosition() {
+        const editingRootElement = this._editingRootElement;
+        const minimapView = this._minimapView;
+        minimapView.setContentHeight(editingRootElement.offsetHeight);
+        const editingRootRect = getDomElementRect(editingRootElement);
+        const scrollableRootAncestorRect = getDomElementRect(this._scrollableRootAncestor);
+        let scrollProgress;
+        // It's possible that at some point elements do not intersect, e.g. when entering the fullscreen mode.
+        // Prevent the minimap from being updated in such case.
+        if (!scrollableRootAncestorRect.getIntersection(editingRootRect)) {
+            return;
+        }
+        // @if CK_DEBUG_MINIMAP // RectDrawer.clear();
+        // @if CK_DEBUG_MINIMAP // RectDrawer.draw( scrollableRootAncestorRect, { outlineColor: 'red' }, 'scrollableRootAncestor' );
+        // @if CK_DEBUG_MINIMAP // RectDrawer.draw( editingRootRect, { outlineColor: 'green' }, 'editingRoot' );
+        // The root is completely visible in the scrollable ancestor.
+        if (scrollableRootAncestorRect.contains(editingRootRect)) {
+            scrollProgress = 0;
+        }
+        else {
+            if (editingRootRect.top > scrollableRootAncestorRect.top) {
+                scrollProgress = 0;
+            }
+            else {
+                scrollProgress = (editingRootRect.top - scrollableRootAncestorRect.top) /
+                    (scrollableRootAncestorRect.height - editingRootRect.height);
+                scrollProgress = Math.max(0, Math.min(scrollProgress, 1));
+            }
+        }
+        // The intersection helps to change the tracker height when there is a lot of padding around the root.
+        // Note: It is **essential** that the height is set first because the progress depends on the correct tracker height.
+        minimapView.setPositionTrackerHeight(scrollableRootAncestorRect.getIntersection(editingRootRect).height);
+        minimapView.setScrollProgress(scrollProgress);
+    }
+}

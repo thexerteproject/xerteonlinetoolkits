@@ -31,6 +31,151 @@ if(typeof(String.prototype.trim) === "undefined")
 	};
 }
 
+function apiV1Url(route) {
+    var base = (typeof rest_api_url !== 'undefined' && rest_api_url) ? rest_api_url : ((typeof site_url !== 'undefined' && site_url) ? (site_url.replace(/\/$/, '') + '/website_code/api/v1/index.php') : 'website_code/api/v1/index.php');
+    return base + '?route=' + encodeURIComponent(route);
+}
+
+function apiUnpack(response) {
+    if (response && response.ok === true && typeof response.data !== 'undefined') {
+        return response.data;
+    }
+    return response;
+}
+
+function escapeHtml(s) {
+    if (s === null || s === undefined) return '';
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function managementApiGet(route, data, onOk, onFail) {
+    return $.ajax({
+        type: 'GET',
+        url: apiV1Url(route),
+        data: data || {},
+        dataType: 'json'
+    }).done(function (res) {
+        if (!res || !res.ok) {
+            if (onFail) onFail(res);
+            return;
+        }
+        if (onOk) onOk(res.data);
+    }).fail(function () {
+        if (onFail) onFail(null);
+    });
+}
+
+function managementApiPost(route, data, onOk, onFail) {
+    return $.ajax({
+        type: 'POST',
+        url: apiV1Url(route),
+        data: data || {},
+        dataType: 'json'
+    }).done(function (res) {
+        if (!res || !res.ok) {
+            if (onFail) onFail(res);
+            return;
+        }
+        if (onOk) onOk(res.data);
+    }).fail(function () {
+        if (onFail) onFail(null);
+    });
+}
+
+function renderTree(nodes, type) {
+    if (!nodes || !nodes.length) return '';
+    var h = '<ul class="mgmtTree">';
+    for (var i = 0; i < nodes.length; i++) {
+        var n = nodes[i];
+        h += '<li>';
+        h += '<span>' + escapeHtml(n.name) + '</span> ';
+        h += '<button type="button" class="xerte_button" onclick="javascript:remove_' + type + '(' + n.id + ')"><i class="fa fa-minus-circle"></i> ' + (typeof MANAGEMENT_LIBRARY_REMOVE_LABEL !== 'undefined' ? MANAGEMENT_LIBRARY_REMOVE_LABEL : 'Remove') + '</button>';
+        if (n.children && n.children.length) {
+            h += renderTree(n.children, type);
+        }
+        h += '</li>';
+    }
+    h += '</ul>';
+    return h;
+}
+
+function managementRenderPanel(d) {
+    if (!d || !d.panel) return '';
+    var h = '<h2>' + escapeHtml(d.title || '') + '</h2>';
+    if (d.panel === 'feeds') {
+        h += '<div class="admin_block"><table class="workspaceProjectsTable"><tr><th>ID</th><th>Name</th><th>RSS</th><th>Export</th><th>Syndication</th><th>Category</th></tr>';
+        for (var i = 0; i < (d.items || []).length; i++) {
+            var it = d.items[i];
+            h += '<tr><td>' + escapeHtml(it.templateId) + '</td><td>' + escapeHtml(it.name) + '</td>';
+            h += '<td>' + (it.rss ? '✓' : '-') + '</td><td>' + (it.export ? '✓' : '-') + '</td><td>' + (it.syndication ? '✓' : '-') + '</td><td>' + escapeHtml(it.category || '') + '</td></tr>';
+        }
+        h += '</table></div>';
+        return h;
+    }
+    if (d.panel === 'licenses') {
+        h += '<div class="admin_block"><p><textarea cols="100" rows="2" id="newlicense"></textarea></p>';
+        h += '<p><button class="xerte_button" type="button" onclick="javascript:new_license();"><i class="fa fa-plus-circle"></i> ' + (typeof MANAGEMENT_LIBRARY_NEW_LABEL !== 'undefined' ? MANAGEMENT_LIBRARY_NEW_LABEL : 'New') + '</button></p></div>';
+        h += '<div class="admin_block"><ul>';
+        for (var j = 0; j < (d.items || []).length; j++) {
+            var li = d.items[j];
+            h += '<li>' + escapeHtml(li.name) + ' <button type="button" class="xerte_button" onclick="javascript:remove_licenses(' + li.id + ')"><i class="fa fa-minus-circle"></i> ' + (typeof MANAGEMENT_LIBRARY_REMOVE_LABEL !== 'undefined' ? MANAGEMENT_LIBRARY_REMOVE_LABEL : 'Remove') + '</button></li>';
+        }
+        h += '</ul></div>';
+        return h;
+    }
+    if (d.panel === 'categories' || d.panel === 'educationlevels' || d.panel === 'grouping' || d.panel === 'course') {
+        var t = (d.panel === 'categories') ? 'category'
+            : (d.panel === 'educationlevels') ? 'educationlevel'
+                : (d.panel === 'grouping') ? 'grouping'
+                    : 'course';
+        var newId = (t === 'category') ? 'newcategory'
+            : (t === 'educationlevel') ? 'neweducationlevel'
+                : (t === 'grouping') ? 'newgrouping'
+                    : 'newcourse';
+        var newFn = (t === 'category') ? 'new_category'
+            : (t === 'educationlevel') ? 'new_educationlevel'
+                : (t === 'grouping') ? 'new_grouping'
+                    : 'new_course';
+        h += '<div class="admin_block"><p><textarea cols="100" rows="2" id="' + newId + '"></textarea></p>';
+        h += '<p><button class="xerte_button" type="button" onclick="javascript:' + newFn + '();"><i class="fa fa-plus-circle"></i> ' + (typeof MANAGEMENT_LIBRARY_NEW_LABEL !== 'undefined' ? MANAGEMENT_LIBRARY_NEW_LABEL : 'New') + '</button></p></div>';
+        h += '<div class="admin_block">' + renderTree(d.tree || [], t) + '</div>';
+        return h;
+    }
+    return h;
+}
+
+function renderGroupMembersFromApi(d) {
+    var i18n = d.i18n || {};
+    var members = d.members || [];
+    var h = '<h3>' + (i18n.headingPrefix || '') + (d.group_name || '') + '</h3>';
+    if (members.length === 0) {
+        h += '<p>' + (i18n.noMembers || '') + '</p>';
+        return h;
+    }
+    var cnt = members.length;
+    if (cnt === 1) {
+        h += '<p>' + (i18n.oneMember || '') + '</p>';
+    } else {
+        h += '<p>' + ((i18n.membersCount || '').replace('{n}', String(cnt))) + '</p>';
+    }
+    h += '<div class="indented">';
+    for (var i = 0; i < members.length; i++) {
+        var row = members[i];
+        var lid = row.login_id;
+        h += '<div class="template" id="' + row.username + '" savevalue="' + lid + '"><p>' + row.firstname + ' ' + row.surname +
+            ' <button type="button" class="xerte_button" id="' + row.username + '_btn" onclick="javascript:templates_display(\'' + row.username + '\')">' + (i18n.toggle || '') + '</button> ' +
+            '<button type="button" class="xerte_button" onclick="javascript:delete_member(\'' + lid + '\', \'group\')"><i class="fa fa-minus-circle"></i> ' + (i18n.removeMember || '') + '</button></p></div>';
+        h += '<div class="template_details" id="' + row.username + '_child">';
+        h += '<p>' + (i18n.usersId || '') + '<form><textarea id="user_id' + lid + '">' + lid + '</textarea></form></p>';
+        h += '<p>' + (i18n.usersFirst || '') + '<form><textarea id="firstname' + lid + '">' + row.firstname + '</textarea></form></p>';
+        h += '<p>' + (i18n.usersKnown || '') + '<form><textarea id="surname' + lid + '">' + row.surname + '</textarea></form></p>';
+        h += '<p>' + (i18n.usersUsername || '') + '<form><textarea id="username' + lid + '">' + row.username + '</textarea></form></p>';
+        h += '</div>';
+    }
+    h += '</div>';
+    return h;
+}
+
 // Function properties ajax send prepare
 //
 // Generic ajax sender for this script
@@ -87,14 +232,9 @@ function upload_template(){
 
 function feeds_list(){
 	function_to_use="feeds";
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/management/syndication.php",
-		data: {no_id: 1},
-	})
-		.done(function(response){
-			management_stateChanged(response);
-		});
+	managementApiGet('management/feeds', {}, function (d) {
+		document.getElementById('admin_area').innerHTML = managementRenderPanel(d);
+	});
 }
 
 // Function remove licenses
@@ -123,15 +263,10 @@ function remove_feed(id,type){
 				synd: 'setfalse'
 			}
 		}
-
-		$.ajax({
-			type: "POST",
-			url: "website_code/php/management/syndication_remove.php",
-			data: data
-		})
-			.done(function(response){
-				management_stateChanged(response);
-			});
+		data.template_id = id;
+		managementApiPost('management/feeds/remove', data, function () {
+			feeds_list();
+		});
 	}
 }
 
@@ -141,14 +276,9 @@ function remove_feed(id,type){
 
 function licenses_list(){
 	function_to_use="licenses";
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/management/licenses.php",
-		data: {no_id: 1},
-	})
-		.done(function(response){
-			management_stateChanged(response);
-		});
+	managementApiGet('management/licenses', {}, function (d) {
+		document.getElementById('admin_area').innerHTML = managementRenderPanel(d);
+	});
 }
 
 // Function remove licenses
@@ -158,14 +288,9 @@ function licenses_list(){
 function remove_licenses(id){
 
 	if (confirm(REMOVE_PROMPT)) {
-		$.ajax({
-			type: "POST",
-			url: "website_code/php/management/remove_license.php",
-			data: {remove: id},
-		})
-			.done(function(response){
-				management_stateChanged(response);
-			});
+		managementApiPost('management/licenses/remove', {remove: id}, function () {
+			licenses_list();
+		});
 	}
 }
 
@@ -175,14 +300,9 @@ function remove_licenses(id){
 
 function categories_list(){
 	function_to_use="categories";
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/management/categories.php",
-		data: {no_id: 1},
-	})
-		.done(function(response){
-			management_stateChanged(response);
-		});
+	managementApiGet('management/categories', {}, function (d) {
+		document.getElementById('admin_area').innerHTML = managementRenderPanel(d);
+	});
 }
 
 // Function educationlevel list
@@ -191,14 +311,9 @@ function categories_list(){
 
 function educationlevel_list(){
 	function_to_use="educationlevel";
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/management/educationlevel.php",
-		data: {no_id: 1},
-	})
-		.done(function(response){
-			management_stateChanged(response);
-		});
+	managementApiGet('management/educationlevels', {}, function (d) {
+		document.getElementById('admin_area').innerHTML = managementRenderPanel(d);
+	});
 }
 
 // Function grouping list
@@ -207,14 +322,9 @@ function educationlevel_list(){
 
 function grouping_list(){
 	function_to_use="grouping";
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/management/grouping.php",
-		data: {no_id: 1},
-	})
-		.done(function(response){
-			management_stateChanged(response);
-		});
+	managementApiGet('management/grouping', {}, function (d) {
+		document.getElementById('admin_area').innerHTML = managementRenderPanel(d);
+	});
 }
 
 // Function course list
@@ -223,14 +333,9 @@ function grouping_list(){
 
 function course_list(){
 	function_to_use="course";
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/management/course.php",
-		data: {no_id: 1},
-	})
-		.done(function(response){
-			management_stateChanged(response);
-		});
+	managementApiGet('management/course', {}, function (d) {
+		document.getElementById('admin_area').innerHTML = managementRenderPanel(d);
+	});
 }
 
 
@@ -240,16 +345,11 @@ function course_list(){
 
 function remove_category(id){
 
-	if (confirm(REMOVE_PROMPT)) {
-		$.ajax({
-			type: "POST",
-			url: "website_code/php/management/remove_category.php",
-			data: {remove: id},
-		})
-			.done(function(response){
-				management_stateChanged(response);
-			});
-	}
+    if (confirm(REMOVE_PROMPT)) {
+		managementApiPost('management/categories/remove', {remove: id}, function () {
+			categories_list();
+		});
+    }
 }
 
 // Function remove educatonlevel
@@ -259,14 +359,9 @@ function remove_category(id){
 function remove_educationlevel(id){
 
 	if (confirm(REMOVE_PROMPT)) {
-		$.ajax({
-			type: "POST",
-			url: "website_code/php/management/remove_educationlevel.php",
-			data: {remove: id},
-		})
-			.done(function(response){
-				management_stateChanged(response);
-			});
+		managementApiPost('management/educationlevels/remove', {remove: id}, function () {
+			educationlevel_list();
+		});
 	}
 }
 function hide_show_children(children, id_prefix){
@@ -279,16 +374,11 @@ function hide_show_children(children, id_prefix){
 
 function remove_grouping(id){
 
-	if (confirm(REMOVE_PROMPT)) {
-		$.ajax({
-			type: "POST",
-			url: "website_code/php/management/remove_grouping.php",
-			data: {remove: id},
-		})
-			.done(function(response){
-				management_stateChanged(response);
-			});
-	}
+    if (confirm(REMOVE_PROMPT)) {
+		managementApiPost('management/grouping/remove', {remove: id}, function () {
+			grouping_list();
+		});
+    }
 }
 
 // Function remove course
@@ -297,16 +387,11 @@ function remove_grouping(id){
 
 function remove_course(id){
 
-	if (confirm(REMOVE_PROMPT)) {
-		$.ajax({
-			type: "POST",
-			url: "website_code/php/management/remove_course.php",
-			data: {remove: id},
-		})
-			.done(function(response){
-				management_stateChanged(response);
-			});
-	}
+    if (confirm(REMOVE_PROMPT)) {
+		managementApiPost('management/course/remove', {remove: id}, function () {
+			course_list();
+		});
+    }
 }
 
 // Function user templates list
@@ -794,35 +879,24 @@ function new_security(){
 // remove a share, and check who did it
 
 function new_category(parentID = ""){
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/management/new_category.php",
-		data: {
-			newcategory: document.getElementById("newcategory").value,
-			parent: parentID
-		},
-	})
-		.done(function (response) {
-			management_stateChanged(response);
-		});
+	managementApiPost('management/categories/new', {
+		newcategory: document.getElementById("newcategory").value,
+		parent: parentID
+	}, function () {
+		categories_list();
+	});
 }
 
 // Function new educationlevel
 //
 // remove a share, and check who did it
 function new_educationlevel(parentID = ""){
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/management/new_educationlevel.php",
-		data: {
-			parent: parentID,
-			educationlevel: document.getElementById("neweducationlevel").value
-
-		},
-	})
-		.done(function (response) {
-			management_stateChanged(response);
-		});
+	managementApiPost('management/educationlevels/new', {
+		parent: parentID,
+		neweducationlevel: document.getElementById("neweducationlevel").value
+	}, function () {
+		educationlevel_list();
+	});
 }
 
 // Function new grouping
@@ -830,16 +904,11 @@ function new_educationlevel(parentID = ""){
 // remove a share, and check who did it
 
 function new_grouping(){
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/management/new_grouping.php",
-		data: {
-			newgrouping: document.getElementById("newgrouping").value
-		},
-	})
-		.done(function (response) {
-			management_stateChanged(response);
-		});
+	managementApiPost('management/grouping/new', {
+		newgrouping: document.getElementById("newgrouping").value
+	}, function () {
+		grouping_list();
+	});
 }
 
 // Function new course
@@ -847,16 +916,11 @@ function new_grouping(){
 // remove a share, and check who did it
 
 function new_course(){
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/management/new_course.php",
-		data: {
-			newcourse: document.getElementById("newcourse").value
-		},
-	})
-		.done(function (response) {
-			management_stateChanged(response);
-		});
+	managementApiPost('management/course/new', {
+		newcourse: document.getElementById("newcourse").value
+	}, function () {
+		course_list();
+	});
 }
 
 // Function new category
@@ -864,16 +928,11 @@ function new_course(){
 // remove a share, and check who did it
 
 function new_license(){
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/management/new_license.php",
-		data: {
-			newlicense: document.getElementById("newlicense").value
-		},
-	})
-		.done(function (response) {
-			management_stateChanged(response);
-		});
+	managementApiPost('management/licenses/new', {
+		newlicense: document.getElementById("newlicense").value
+	}, function () {
+		licenses_list();
+	});
 }
 
 // Function error list
@@ -1437,17 +1496,19 @@ function list_group_members(tag, id=-1){
 	if (group != "") {
 		$.ajax({
 			type: "POST",
-			url: "website_code/php/management/get_group_members.php",
+			url: apiV1Url('management/group-members'),
+			dataType: 'json',
 			data: {
 				group_id: group
 			},
 		})
-			.done(function (response) {
-				list_group_members_stateChanged(response);
-			})
-			.fail(function(){
-				alert(USER_LIST_FAIL);
-			});
+		.done(function (response) {
+			var data = apiUnpack(response);
+			list_group_members_stateChanged(renderGroupMembersFromApi(data));
+		})
+		.fail(function(){
+			alert(USER_LIST_FAIL);
+		});
 	}
 }
 
@@ -1827,13 +1888,14 @@ function template_submit()
 		type: "POST",
 		processData: false,
 		contentType: false,
-		url: "website_code/php/management/upload.php",
+		url: apiV1Url('management/templates/upload'),
 		data: formData
 	})
 		.done(function(response){
 			//$("#upload-button").prop('disabled', false);
 			$("body").css("cursor", "default");
-			alert(response);
+			var d = apiUnpack(response);
+			alert(d && d.message ? d.message : 'Upload complete');
 			// Refresh templates list
 			templates_list();
 		})
@@ -1851,12 +1913,13 @@ function theme_submit(){
 		type: "POST",
 		processData: false,
 		contentType: false,
-		url: "website_code/php/management/upload_theme.php",
+		url: apiV1Url('management/themes/upload'),
 		data: formData
 	})
 		.done(function(response){
 			$("body").css("cursor", "default");
-			alert(response);
+			var d = apiUnpack(response);
+			alert(d && d.message ? d.message : 'Upload complete');
 			themes_list()
 		})
 		.fail(function(response){

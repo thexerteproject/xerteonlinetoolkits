@@ -399,7 +399,46 @@ var EDITOR = (function ($, parent) {
         language_files = (languagecodevariable=='en-GB' ? en_language_files : foreign_language_files);
         $(language_files).each(function() {
             var _this = this;
-            // If _this.u contains getXwd, add parameters for plugin conditions
+            if (typeof wizard_xwd_use_rest_api !== "undefined" && wizard_xwd_use_rest_api && _this.u === xwd_file_url) {
+                var apiBase = (typeof rest_api_url !== "undefined" && rest_api_url) ? rest_api_url : ((typeof site_url !== "undefined" && site_url) ? (site_url.replace(/\/$/, "") + "/website_code/api/v1/index.php") : "website_code/api/v1/index.php");
+                var tsp = template_sub_pages;
+                if (Array.isArray(tsp)) {
+                    tsp = tsp.join(",");
+                }
+                var qp = {
+                    route: "wizard/definition",
+                    template_id: typeof template_id !== "undefined" ? template_id : "",
+                    simple_mode: simple_mode,
+                    disable_advanced: disable_advanced,
+                    simple_lo_page: simple_lo_page,
+                    template_sub_pages: tsp,
+                    languagecode: languagecodevariable,
+                    theme: typeof theme !== "undefined" ? theme : ""
+                };
+                $.ajax({
+                    type: "GET",
+                    url: apiBase + "?" + $.param(qp),
+                    dataType: "json",
+                    success: function (resp) {
+                        _this.loaded = true;
+                        var payload = (resp && resp.ok === true && resp.data) ? resp.data : resp;
+                        var xml = payload && payload.xml !== undefined ? payload.xml : "";
+                        _this.c(xml);
+                    },
+                    error: function (xhr, status, err) {
+                        console.error("Wizard REST load failed", status, err);
+                        // Do not pass an empty document to the XML parser: that only
+                        // obscures the HTTP failure with a secondary attributes error.
+                        var message = "Unable to load the wizard definition.";
+                        if (xhr && xhr.responseJSON && xhr.responseJSON.error && xhr.responseJSON.error.message) {
+                            message += " " + xhr.responseJSON.error.message;
+                        }
+                        alert(message);
+                    }
+                });
+                return;
+            }
+            // Legacy: direct .xwd URL or getXwd.php with query params for plugin conditions
             if (_this.u.indexOf("getXwd") != -1) {
                 _this.u += "?simple_mode=" + simple_mode;
                 _this.u += "&disable_advanced=" + disable_advanced;

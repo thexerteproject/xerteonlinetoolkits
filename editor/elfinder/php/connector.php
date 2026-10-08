@@ -47,6 +47,17 @@ global $rootpath;
 $rootpath = x_clean_input($_REQUEST['uploadDir']);
 $rooturl = x_clean_input($_REQUEST['uploadURL']);
 
+function preventPathTraversal($name)
+{
+    global $rootpath;
+    if (strpos(urldecode($name), '..') !== false) {
+        return false;
+    }
+    x_check_path_traversal_newpath($rootpath . 'media/' . $name, $rootpath, "Invalid file name", "file");
+    return true;
+}
+
+
 // Check uploadDir and check for path traversal
 x_check_path_traversal($rootpath, $xerte_toolkits_site->users_file_area_full, "Invalid upload location", "folder");
 
@@ -106,16 +117,6 @@ function sanitizeName($cmd, $result, $args, $elfinder)
         }
     }
 
-    return true;
-}
-
-function preventPathTraversal($name)
-{
-    global $rootpath;
-    if (strpos(urldecode($name), '..') !== false) {
-        return false;
-    }
-    x_check_path_traversal_newpath($rootpath . 'media/' . $name, $rootpath, "Invalid file name", "file");
     return true;
 }
 

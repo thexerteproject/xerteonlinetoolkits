@@ -89,7 +89,7 @@ function get_themes_list($parent_template, $include_disabled = false, $return_id
         } else {
             switch ($parent_template) {
                 case "Nottingham":
-                    array_unshift($ThemeList, array('enabled' => true, 'name' => "default", 'display_name' => "Xerte Online Toolkits", 'description' => "Xerte Online Toolkits", 'preview' => $xerte_toolkits_site->site_url . "modules/xerte/parent_templates/Nottingham/common_html5/default.jpg", 'imgbtns' => "true"));
+                    array_unshift($ThemeList, array('enabled' => true, 'name' => "default", 'display_name' => "Xerte Online Toolkits", 'description' => "Xerte Online Toolkits", 'preview' => $xerte_toolkits_site->site_url . "modules/xerte/parent_templates/Nottingham/common/default.jpg", 'imgbtns' => "true"));
                     break;
                 case "site":
                     array_unshift($ThemeList, array('enabled' => true, 'name' => "default", 'display_name' => "Default", 'description' => "Default", 'preview' => $xerte_toolkits_site->site_url . "modules/site/parent_templates/site/common/img/default.jpg"));

@@ -21,7 +21,8 @@ abstract class openaiImageApi extends BaseApi
     {
         global $xerte_toolkits_site;
         if (empty($this->rewriteSystemMessage)) {
-            return $query; // no rewrite requested by subclass
+            return $query; // no rewrite requested by subclass; if there is a rewriteSystemMessage defined in the subclass, we assume rewrites are necessary
+            //But some models like the GPT 1 ones rewrite the message by default so there's not much point; adding a system message to the subclass will enable the method
         }
         $chat = new AiChat($xerte_toolkits_site);
         $messages = [
@@ -92,7 +93,7 @@ abstract class openaiImageApi extends BaseApi
         return (object)['status' => 'success'];
     }
 
-    public function sh_request($query, $target, $interpretPrompt, $overrideSettings, $settings, $size = '1024x1024')
+    public function sh_request($query, $target, $interpretPrompt, $overrideSettings, $settings, $language, $size = '1024x1024')
     {
         $downloadedPaths = [];
         // Build exact save path style per subclass

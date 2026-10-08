@@ -294,6 +294,8 @@
 	<assistents>
 		<ImgSearchBtn label="Zoek"/>
 		<QuickFillBtn label="Quick Fill"/>
+		<QuickFillInline title="Snel een {page} opzetten" description="Geef aan hoeveel vragen en antwoorden je wilt, de structuur wordt voor je aangemaakt." btnlabel="Snel opzetten" confirm="De opgegeven onderdelen worden automatisch aangemaakt met standaardwaarden. Doorgaan?"/>
+		<QuickFillModal title="{page} snel opzetten" description="Kies hoeveel vragen en antwoorden je wilt. Je kunt daarna alles zelf invullen en aanpassen." cancel="Annuleren" create="Maak {page} aan"/>
 		<GenerateSuggestion btnlabel="Geef suggestie" intructionprompt="Voor de soorten suggesties, zie: "/>
 		<AutoTranslateBtn label="Vertaal"/>
 		<AIBtn label="Genereer"/>

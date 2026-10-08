@@ -368,16 +368,83 @@ abstract class BaseAiApi
         return $finalPath;
     }
 
-    //A get message array for sorting through different types of $payload structures
-    protected function changeMessage($payload, $new_messages) {
-        //anthropic, mistral and a legacy openAI chat completion
-        if (isset($payload['messages'])) {
+    // A generic message-array handler for the different payload structures.
+    protected function changeMessage($payload, $new_messages)
+    {
+        // Anthropic, Mistral and legacy OpenAI chat completions
+        if (isset($payload['messages']) && is_array($payload['messages'])) {
             array_splice($payload['messages'], 2, 0, $new_messages);
         }
-        //for openAI assistant requests
-        if (isset($payload['thread']['messages'])) {
-            array_splice($payload['thread']['messages'], 2, 0, $new_messages);
+
+        // OpenAI Assistant requests
+        elseif (
+            isset($payload['thread']['messages']) &&
+            is_array($payload['thread']['messages'])
+        ) {
+            array_splice(
+                $payload['thread']['messages'],
+                2,
+                0,
+                $new_messages
+            );
         }
+
+        // Gemini Interactions requests
+        elseif (isset($payload['input']) && is_array($payload['input'])) {
+            $gemini_messages = array();
+
+            foreach ($new_messages as $message) {
+                $role = isset($message['role'])
+                    ? $message['role']
+                    : 'user';
+
+                $content = isset($message['content'])
+                    ? $message['content']
+                    : '';
+
+                /*
+                 * Gemini represents messages as typed interaction steps:
+                 *
+                 * user      => user_input
+                 * assistant => model_output
+                 */
+                $step_type = $role === 'assistant'
+                    ? 'model_output'
+                    : 'user_input';
+
+                /*
+                 * Existing BaseAiApi messages contain a plain string.
+                 * Also accept an already prepared content-block array.
+                 */
+                if (is_array($content)) {
+                    $content_blocks = $content;
+                } else {
+                    $content_blocks = array(
+                        array(
+                            'type' => 'text',
+                            'text' => (string) $content,
+                        ),
+                    );
+                }
+
+                $gemini_messages[] = array(
+                    'type' => $step_type,
+                    'content' => $content_blocks,
+                );
+            }
+
+            /*
+             * Insert after the initial example user/model exchange and
+             * before the final user_input containing the actual prompt.
+             */
+            array_splice(
+                $payload['input'],
+                2,
+                0,
+                $gemini_messages
+            );
+        }
+
         return $payload;
     }
 
@@ -407,7 +474,7 @@ abstract class BaseAiApi
             //When making any prompt, the stand-in for the language must therefore be 'responseLanguage'
             $p['responseLanguage'] = $this->languageName;
 
-            $model_ver = $managementSettings['ai']['preferred_model'];
+            $model_ver = $managementSettings['ai']['active_vendors'][$this->api]['preferred_model'];
 
             $model = load_model($type, $this->api, $model_ver, $context, $subtype);
 

@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-color-table-column-resizer-hover: var(--ck-color-base-active);
+	--ck-table-column-resizer-width: 7px;
+
+	/* The offset used for absolute positioning of the resizer element, so that it is placed exactly above the cell border.
+	   The value is: minus half the width of the resizer decreased additionaly by the half the width of the border (0.5px). */
+	--ck-table-column-resizer-position-offset: calc(var(--ck-table-column-resizer-width) * -0.5 - 0.5px);
+}
+
+.ck-content .table .ck-table-resized {
+	table-layout: fixed;
+}
+
+.ck-content .table td,
+.ck-content .table th {
+	/* To prevent text overflowing beyond its cell when columns are resized by resize handler
+	(https://github.com/ckeditor/ckeditor5/pull/14379#issuecomment-1589460978). */
+	overflow-wrap: break-word;
+}
+
+.ck.ck-editor__editable .table td,
+.ck.ck-editor__editable .table th {
+	/* The resizer element is placed inside each cell, so it must be positioned relatively to the cell. */
+	position: relative;
+}
+
+.ck.ck-editor__editable .table .ck-table-column-resizer {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: var(--ck-table-column-resizer-position-offset);
+	width: var(--ck-table-column-resizer-width);
+	cursor: col-resize;
+	user-select: none;
+	z-index: var(--ck-z-default);
+}
+
+.ck.ck-editor__editable.ck-column-resize_disabled .table .ck-table-column-resizer {
+	display: none;
+}
+
+/* The resizer elements, which are extended to an extremely high height, break the drag & drop feature in Chrome. To make it work again,
+   all resizers must be hidden while the table is dragged. */
+.ck.ck-editor__editable .table[draggable] .ck-table-column-resizer {
+	display: none;
+}
+
+.ck.ck-editor__editable .table .ck-table-column-resizer:hover,
+.ck.ck-editor__editable .table .ck-table-column-resizer__active {
+	background-color: var(--ck-color-table-column-resizer-hover);
+	opacity: 0.25;
+}
+
+.ck.ck-editor__editable[dir=rtl] .table .ck-table-column-resizer {
+	left: var(--ck-table-column-resizer-position-offset);
+	right: unset;
+}

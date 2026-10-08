@@ -1,0 +1,5 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+export default {"hu":{"dictionary":{"Bookmark":"Könyvjelző","Edit bookmark":"Könyvjelző szerkesztése","Remove bookmark":"Könyvjelző törlése","Bookmark name":"Könyvjelző neve","Enter the bookmark name without spaces.":"Írja be a könyvjelző nevét szóközök nélkül.","Bookmark must not be empty.":"A könyvjelző nem lehet üres.","Bookmark name cannot contain space characters.":"A könyvjelző neve nem tartalmazhat szóköz karaktereket.","Bookmark name already exists.":"A könyvjelzőnév már létezik.","bookmark widget":"könyvjelző widget","Bookmark toolbar":"Könyvjelző eszköztár","Bookmarks":"Könyvjelzők","No bookmarks available.":"Nincs könyvjelző","Scroll to bookmark":"Görgetés a könyvjelzőhöz"},getPluralForm(n){return (n != 1);}}}

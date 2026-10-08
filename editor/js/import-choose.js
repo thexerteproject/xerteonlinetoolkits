@@ -18,7 +18,7 @@
  */
 
 function setup() {
-    console.log("Setting up merge layout...");
+    // Debug: console.log("Setting up merge layout...");
     var opentooltip = "Open this pane",
         closetooltip = "Close this pane",
         resizetooltip = "Resize this pane",
@@ -276,8 +276,8 @@ function init_workspace()
         this.text = this.text.replace(/_/g, ' ');
     });
 
-    console.log(node_types);
-    console.log(workspace.items);
+    // Debug: console.log(node_types);
+    // Debug: console.log(workspace.items);
 
     var tree = $.jstree.reference("#workspace");
     if (tree)
@@ -403,8 +403,9 @@ function init()
                 // 1. Save preview
                 $('#loader').show();
                 var json = EDITOR.tree.build_json("treeroot");
+                var apiBase = (typeof rest_api_url !== 'undefined' && rest_api_url) ? rest_api_url : 'website_code/api/v1/index.php';
                 var ajax_call = $.ajax({
-                        url: "editor/upload.php",
+                        url: apiBase + "?route=learning-objects/save",
                         data: {
                             fileupdate: 0, //0= preview->preview.xml
                             filename: previewxmlurl,

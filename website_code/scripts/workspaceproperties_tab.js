@@ -38,10 +38,122 @@
 
 function workspace_ajax_send_prepare(url){
 
-   	xmlHttp.open("post","website_code/php/workspaceproperties/" + url,true);
-	xmlHttp.onreadystatechange=workspace_properties_stateChanged;
-	xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	
+	// Debug: console.warn('workspace_ajax_send_prepare is obsolete');
+}
+
+function workspacePropsApiBase() {
+	return (typeof rest_api_url !== 'undefined' && rest_api_url) ? rest_api_url : 'website_code/api/v1/index.php';
+}
+
+function workspacePropsApiUrl(route) {
+	return workspacePropsApiBase() + '?route=' + encodeURIComponent(route);
+}
+
+function escapeHtml(s) {
+	if (s === null || s === undefined) return '';
+	return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function wsSetPanelHtml(tabId, html, inSubArea) {
+	if (html === '' || html === null || html === undefined) return;
+	if (inSubArea) {
+		$("#sub_dynamic_area .tabPanel").empty().hide();
+		$("#" + tabId).html(html).show();
+		return;
+	}
+	$("#dynamic_area .tabPanel").empty().hide();
+	$("#" + tabId).html(html).show();
+}
+
+function wsApiGet(route, data, onOk, onFail) {
+	return $.ajax({
+		type: 'GET',
+		url: workspacePropsApiUrl(route),
+		data: data || {},
+		dataType: 'json'
+	}).done(function (res) {
+		if (!res || !res.ok) {
+			if (onFail) onFail(res);
+			return;
+		}
+		if (onOk) onOk(res.data);
+	}).fail(function (xhr) {
+		if (onFail) onFail(null);
+	});
+}
+
+function renderProjectsMenu(d) {
+	var h = '<h2 class="header">' + escapeHtml((d && d.tabs && d.tabs.length) ? d.tabs[0].label : '') + '</h2>';
+	h = '<h2 class="header">' + escapeHtml((typeof WORKSPACE_LIBRARY_MY !== 'undefined') ? WORKSPACE_LIBRARY_MY : 'Projects') + '</h2>';
+	h += '<div id="mainContent">';
+	h += '<div id="panelTabs" role="tabList" class="menu_holder">';
+	for (var i = 0; i < d.tabs.length; i++) {
+		var t = d.tabs[i];
+		var tabId = 'tab_' + t.id;
+		var panelId = 'panel_' + t.id;
+		var sel = (t.id === d.defaultTab);
+		h += '<button id="' + tabId + '" type="button" role="tab" aria-controls="' + panelId + '" aria-selected="' + (sel ? 'true' : 'false') + '" class="menu_button' + (sel ? ' tabSelected' : '') + '" onclick="javascript:wsProjectsTabClick(\'' + t.id + '\'); panelTabClicked(\'' + tabId + '\');">' + escapeHtml(t.label) + '</button>';
+	}
+	h += '</div>';
+	h += '<div id="sub_dynamic_area">';
+	for (var j = 0; j < d.tabs.length; j++) {
+		var tt = d.tabs[j];
+		h += '<div id="panel_' + tt.id + '" class="tabPanel" role="tabpanel" aria-labelledby="tab_' + tt.id + '"></div>';
+	}
+	h += '</div></div>';
+	return h;
+}
+
+function renderProjectsTable(d) {
+	var h = '<table class="workspaceProjectsTable">';
+	if (d.caption) {
+		h += '<caption>' + escapeHtml(d.caption) + '</caption>';
+	}
+	h += '<tr>';
+	for (var ci = 0; ci < d.columns.length; ci++) {
+		var c = d.columns[ci];
+		h += '<th' + (c.narrow ? ' class="narrow"' : '') + '>' + escapeHtml(c.label) + '</th>';
+	}
+	h += '</tr>';
+	for (var i = 0; i < d.items.length; i++) {
+		var it = d.items[i];
+		h += '<tr>';
+		for (var cj = 0; cj < d.columns.length; cj++) {
+			var col = d.columns[cj];
+			var val = it[col.id];
+			if (col.id === 'name') {
+				var url = it.previewUrl || it.playUrl || it.peerUrl || null;
+				if (url) {
+					h += '<td><a href="' + escapeHtml(url) + '" target="_blank">' + escapeHtml(val) + (d.i18n && d.i18n.linkWindow ? '<span class="sr-only">(' + escapeHtml(d.i18n.linkWindow) + ')</span>' : '') + '</a></td>';
+				} else {
+					h += '<td>' + escapeHtml(val) + '</td>';
+				}
+			} else if (col.icon) {
+				var on = !!val;
+				h += '<td class="iconCell">' + (on ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>') + '<span class="sr-only">' + escapeHtml(on ? (d.i18n && d.i18n.on ? d.i18n.on : 'on') : (d.i18n && d.i18n.off ? d.i18n.off : 'off')) + '</span></td>';
+			} else if (col.id === 'password' && it.password) {
+				h += '<td>' + escapeHtml(it.password) + (d.i18n && d.i18n.copy ? '<button class="copyBtn" data-copy-value="' + escapeHtml(it.password) + '" onclick="navigator.clipboard.writeText(this.dataset.copyValue);" title="' + escapeHtml(d.i18n.copy) + '"><i class="fa fa-copy"></i><span class="sr-only">' + escapeHtml(d.i18n.copy) + '</span></button>' : '') + '</td>';
+			} else {
+				h += '<td>' + escapeHtml(val === null || val === undefined ? '' : val) + '</td>';
+			}
+		}
+		h += '</tr>';
+	}
+	h += '</table>';
+	return h;
+}
+
+function wsProjectsTabClick(tab) {
+	switch (tab) {
+		case 'my': return my_templates_template();
+		case 'shared': return shared_templates_template();
+		case 'public': return public_templates_template();
+		case 'usage': return usage_templates_template();
+		case 'peer': return peer_templates_template();
+		case 'rss': return rss_templates_template();
+		case 'xml': return xml_templates_template();
+		case 'open': return syndication_templates_template();
+	}
 }
 
  	/**
@@ -77,16 +189,10 @@ function workspace_properties_projects_stateChanged(response, tabId){
 	 */
 
 function workspace_templates_template(){
-	 $.ajax({
-		 type: "POST",
-		 url: "website_code/php/workspaceproperties/workspace_templates_template.php",
-		 data: {
-			 details: 'null'
-		 }
-	 })
-	 .done(function(response){
-		 workspace_properties_stateChanged(response, 'panelProjects');
-	 });
+	wsApiGet('workspaceproperties/projects/menu', {}, function (d) {
+		wsSetPanelHtml('panelProjects', renderProjectsMenu(d), false);
+		wsProjectsTabClick(d.defaultTab || 'my');
+	}, function () {});
 }
 
  /**
@@ -96,16 +202,9 @@ function workspace_templates_template(){
 	 */
 
 function my_templates_template(){
-	 $.ajax({
-		 type: "POST",
-		 url: "website_code/php/workspaceproperties/my_templates_template.php",
-		 data: {
-			 details: 'null'
-		 }
-	 })
-	 .done(function(response){
-		 workspace_properties_projects_stateChanged(response, 'panelMyProjects');
-	 });
+	wsApiGet('workspaceproperties/projects/my', {}, function (d) {
+		wsSetPanelHtml('panel_my', renderProjectsTable(d), true);
+	});
 }
 
  /**
@@ -117,16 +216,9 @@ function my_templates_template(){
 	 */
 
 function shared_templates_template(){
-	 $.ajax({
-		 type: "POST",
-		 url: "website_code/php/workspaceproperties/shared_templates_template.php",
-		 data: {
-			 details: 'null'
-		 }
-	 })
-	 .done(function(response){
-		 workspace_properties_projects_stateChanged(response, 'panelShared');
-	 });
+	wsApiGet('workspaceproperties/projects/shared', {}, function (d) {
+		wsSetPanelHtml('panel_shared', renderProjectsTable(d), true);
+	});
 }
 
  /**
@@ -138,16 +230,9 @@ function shared_templates_template(){
 	 */
 
 function public_templates_template(){
-	 $.ajax({
-		 type: "POST",
-		 url: "website_code/php/workspaceproperties/public_templates_template.php",
-		 data: {
-			 details: 'null'
-		 }
-	 })
-	 .done(function(response){
-		 workspace_properties_projects_stateChanged(response, 'panelPublic');
-	 });
+	wsApiGet('workspaceproperties/projects/public', {}, function (d) {
+		wsSetPanelHtml('panel_public', renderProjectsTable(d), true);
+	});
 }
 
  /**
@@ -159,16 +244,9 @@ function public_templates_template(){
 	 */
 
 function usage_templates_template(){
-	 $.ajax({
-		 type: "POST",
-		 url: "website_code/php/workspaceproperties/usage_templates_template.php",
-		 data: {
-			 details: 'null'
-		 }
-	 })
-	 .done(function(response){
-		 workspace_properties_projects_stateChanged(response, 'panelUsage');
-	 });
+	wsApiGet('workspaceproperties/projects/usage', {}, function (d) {
+		wsSetPanelHtml('panel_usage', renderProjectsTable(d), true);
+	});
 }
 
  /**
@@ -180,16 +258,9 @@ function usage_templates_template(){
 	 */
 
 function rss_templates_template(){
-	 $.ajax({
-		 type: "POST",
-		 url: "website_code/php/workspaceproperties/rss_templates_template.php",
-		 data: {
-			 details: 'null'
-		 }
-	 })
-	 .done(function(response){
-		 workspace_properties_projects_stateChanged(response, 'panelRss');
-	 });
+	wsApiGet('workspaceproperties/projects/rss', {}, function (d) {
+		wsSetPanelHtml('panel_rss', renderProjectsTable(d), true);
+	});
 }
 
 /**
@@ -201,15 +272,8 @@ function rss_templates_template(){
 	 */
 
 function syndication_templates_template(){
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/workspaceproperties/syndication_templates_template.php",
-		data: {
-			details: 'null'
-		}
-	})
-	.done(function(response){
-		workspace_properties_projects_stateChanged(response, 'panelOpen');
+	wsApiGet('workspaceproperties/projects/open', {}, function (d) {
+		wsSetPanelHtml('panel_open', renderProjectsTable(d), true);
 	});
 }
 
@@ -222,15 +286,8 @@ function syndication_templates_template(){
 	 */
 
 function peer_templates_template(){
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/workspaceproperties/peer_templates_template.php",
-		data: {
-			details: 'null'
-		}
-	})
-	.done(function(response){
-		workspace_properties_projects_stateChanged(response, 'panelPeer');
+	wsApiGet('workspaceproperties/projects/peer', {}, function (d) {
+		wsSetPanelHtml('panel_peer', renderProjectsTable(d), true);
 	});
 }
 
@@ -243,15 +300,8 @@ function peer_templates_template(){
 	 */
 
 function xml_templates_template(){
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/workspaceproperties/xml_templates_template.php",
-		data: {
-			details: 'null'
-		}
-	})
-	.done(function(response){
-		workspace_properties_projects_stateChanged(response, 'panelXml');
+	wsApiGet('workspaceproperties/projects/xml', {}, function (d) {
+		wsSetPanelHtml('panel_xml', renderProjectsTable(d), true);
 	});
 }
 
@@ -264,15 +314,13 @@ function xml_templates_template(){
 	 */
 
 function my_properties_template(){
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/workspaceproperties/my_properties_template.php",
-		data: {
-			details: 'null'
-		}
-	})
-	.done(function(response){
-		workspace_properties_stateChanged(response, 'panelProp');
+	wsApiGet('workspaceproperties/my-properties', {}, function (d) {
+		var h = '<h2 class="header">' + escapeHtml(d.heading) + '</h2><div id="mainContent">';
+		h += '<p>' + escapeHtml(d.i18n.nameLabel) + ': ' + escapeHtml(d.user.name) + '</p>';
+		h += '<p>' + escapeHtml(d.i18n.usernameLabel) + ': ' + escapeHtml(d.user.username) + '</p>';
+		h += '<p>' + escapeHtml(d.i18n.lastLoginLabel) + ': ' + escapeHtml(d.user.lastLogin) + '</p>';
+		h += '</div>';
+		wsSetPanelHtml('panelProp', h, false);
 	});
 }
 
@@ -285,15 +333,20 @@ function my_properties_template(){
 	 */
 
 function folder_rss_templates_template(){
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/workspaceproperties/folder_rss_templates_template.php",
-		data: {
-			details: 'null'
+	wsApiGet('workspaceproperties/folder-rss', {}, function (d) {
+		var h = '<h2 class="header">' + escapeHtml(d.heading) + '</h2><div id="mainContent">';
+		h += '<h3>' + escapeHtml(d.i18n.myFeedHeading) + ':</h3><ul class="rssLists">';
+		h += '<li><a href="' + escapeHtml(d.userFeed.url) + '" target="_blank">' + escapeHtml(d.userFeed.name) + '</a><span class="sr-only">' + escapeHtml(d.i18n.linksSrOnly) + '</span></li></ul>';
+		if (d.folderFeeds && d.folderFeeds.length) {
+			h += '<h3>' + escapeHtml(d.i18n.myFolderFeedHeading) + ':</h3><ul class="rssLists">';
+			for (var i = 0; i < d.folderFeeds.length; i++) {
+				var f = d.folderFeeds[i];
+				h += '<li><a href="' + escapeHtml(f.url) + '" target="_blank">' + escapeHtml(f.name) + '</a><span class="sr-only">' + escapeHtml(d.i18n.linksSrOnly) + '</span></li>';
+			}
+			h += '</ul><p>' + escapeHtml(d.i18n.linksNewWindow) + '</p>';
 		}
-	})
-	.done(function(response){
-		workspace_properties_stateChanged(response, 'panelRss');
+		h += '</div>';
+		wsSetPanelHtml('panelRss', h, false);
 	});
 }
 
@@ -327,15 +380,31 @@ function import_templates_template(toolkits_logon_id){
 	 */
 
 function api_template(){
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/workspaceproperties/api_template.php",
-		data: {
-			details: 'null'
+	wsApiGet('workspaceproperties/api-keys', {}, function (d) {
+		var h = '<h2 class="header">' + escapeHtml(d.heading) + '</h2><div id="mainContent">';
+		if (!d.installed) {
+			h += '<p>' + escapeHtml(d.i18n.notInstalled) + '</p></div>';
+			wsSetPanelHtml('panelApi', h, false);
+			return;
 		}
-	})
-	.done(function(response){
-		workspace_properties_stateChanged(response, 'panelApi');
+		if (!d.items || !d.items.length) {
+			h += '<p>' + escapeHtml(d.i18n.noApplications) + '</p></div>';
+			wsSetPanelHtml('panelApi', h, false);
+			return;
+		}
+		for (var i = 0; i < d.items.length; i++) {
+			var it = d.items[i];
+			h += '<p><strong>' + escapeHtml(it.description) + '</strong><br />';
+			h += escapeHtml(d.i18n.keyLabel) + ': ' + escapeHtml(it.key) + '<br />';
+			h += escapeHtml(d.i18n.secretLabel) + ': ' + escapeHtml(it.secret) + '<br />';
+			h += escapeHtml(d.i18n.statusLabel) + ': ' + escapeHtml(it.active ? 'ENABLED' : 'DISABLED') + '<br />';
+			h += escapeHtml(d.i18n.createdLabel) + ' ' + escapeHtml(it.created) + '<br />';
+			h += escapeHtml(d.i18n.modifiedLabel) + ' ' + escapeHtml(it.modified) + '<br />';
+			h += escapeHtml(it.lastUsed ? (d.i18n.lastUsedLabel + ' ' + it.lastUsed) : d.i18n.neverUsed) + '<br />';
+			h += escapeHtml(it.usesCount > 0 ? d.i18n.usedFmt.replace('{x}', it.usesCount) : d.i18n.neverUsed) + '</p>';
+		}
+		h += '</div>';
+		wsSetPanelHtml('panelApi', h, false);
 	});
 
 }

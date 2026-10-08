@@ -1,0 +1,35 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/**
+ * @module show-blocks/showblocks
+ */
+import { Plugin } from 'ckeditor5/src/core.js';
+import { ShowBlocksEditing } from './showblocksediting.js';
+import { ShowBlocksUI } from './showblocksui.js';
+/**
+ * The show blocks feature.
+ *
+ * For a detailed overview, check the {@glink features/show-blocks Show blocks} feature guide.
+ */
+export class ShowBlocks extends Plugin {
+    /**
+     * @inheritDoc
+     */
+    static get pluginName() {
+        return 'ShowBlocks';
+    }
+    /**
+     * @inheritDoc
+     */
+    static get isOfficialPlugin() {
+        return true;
+    }
+    /**
+     * @inheritDoc
+     */
+    static get requires() {
+        return [ShowBlocksEditing, ShowBlocksUI];
+    }
+}

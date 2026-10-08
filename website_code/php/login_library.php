@@ -185,9 +185,9 @@ function login_prompt($messages, $xerte_toolkits_site) {
 
     <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
     <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
-    <!-- link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css" -->
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
+    <!-- link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common/font-awesome-4.3.0/css/font-awesome.min.css" -->
+    <link rel="stylesheet" type="text/css" href="modules/common/fontawesome-6.6.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="modules/common/fontawesome-6.6.0/css/v4-shims.min.css">
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
     {
@@ -272,7 +272,7 @@ function login_prompt($messages, $xerte_toolkits_site) {
 			<?php echo $xerte_toolkits_site->copyright; ?> <i class="fa fa-info-circle" aria-hidden="true" style="color:#f86718; cursor: help;" title="<?PHP $vtext = "version.txt";$lines = file($vtext);echo $lines[0];?>"></i>
 		</p>
 		<div class="footerlogos">
-			<a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.2AA-blue.png" border="0" alt="<?php echo INDEX_WCAG_LOGO_ALT; ?>"></a><a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0" alt="<?php echo INDEX_OSI_LOGO_ALT; ?>"></a><a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0" alt="<?php echo INDEX_APEREO_LOGO_ALT; ?>"></a><a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0" alt="<?php echo INDEX_XERTE_LOGO_ALT; ?>"></a>
+            <a href="https://xot.xerte.org.uk/play_653" target="_blank" title="Xerte AI Ethical Use and Transparency Statement https://xot.xerte.org.uk/play_653"><img src="website_code/images/XerteFooterAILogo.png" border="0" alt="<?php echo INDEX_XERTE_AI_LOGO_ALT; ?>"></a><a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.2AA-blue.png" border="0" alt="<?php echo INDEX_WCAG_LOGO_ALT; ?>"></a><a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0" alt="<?php echo INDEX_OSI_LOGO_ALT; ?>"></a><a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0" alt="<?php echo INDEX_APEREO_LOGO_ALT; ?>"></a><a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0" alt="<?php echo INDEX_XERTE_LOGO_ALT; ?>"></a>
 		</div>
 	</footer>
 </div>
@@ -293,9 +293,9 @@ function login_form($messages, $xerte_toolkits_site)
 
     <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
     <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
-    <!-- link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css" -->
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
+    <!-- link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common/font-awesome-4.3.0/css/font-awesome.min.css" -->
+    <link rel="stylesheet" type="text/css" href="modules/common/fontawesome-6.6.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="modules/common/fontawesome-6.6.0/css/v4-shims.min.css">
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
     {
@@ -394,7 +394,7 @@ function login_form($messages, $xerte_toolkits_site)
 			<?php echo $xerte_toolkits_site->copyright; ?> <i class="fa fa-info-circle" aria-hidden="true" style="color:#f86718; cursor: help;" title="<?PHP $vtext = "version.txt";$lines = file($vtext);echo $lines[0];?>"></i>
 		</p>
 		<div class="footerlogos">
-			<a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.2AA-blue.png" border="0" alt="<?php echo INDEX_WCAG_LOGO_ALT; ?>"></a><a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0" alt="<?php echo INDEX_OSI_LOGO_ALT; ?>"></a><a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0" alt="<?php echo INDEX_APEREO_LOGO_ALT; ?>"></a><a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0" alt="<?php echo INDEX_XERTE_LOGO_ALT; ?>"></a>
+            <a href="https://xot.xerte.org.uk/play_653" target="_blank" title="Xerte AI Ethical Use and Transparency Statement https://xot.xerte.org.uk/play_653"><img src="website_code/images/XerteFooterAILogo.png" border="0" alt="<?php echo INDEX_XERTE_AI_LOGO_ALT; ?>"></a><a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.2AA-blue.png" border="0" alt="<?php echo INDEX_WCAG_LOGO_ALT; ?>"></a><a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0" alt="<?php echo INDEX_OSI_LOGO_ALT; ?>"></a><a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0" alt="<?php echo INDEX_APEREO_LOGO_ALT; ?>"></a><a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0" alt="<?php echo INDEX_XERTE_LOGO_ALT; ?>"></a>
 		</div>
 	</footer>
 </div>
@@ -538,6 +538,22 @@ function login_processing2($firstname = false, $surname = false, $username = fal
           $_SESSION['toolkits_logon_id'] = get_user_id();
 
           update_user_logon_time();
+      }
+
+      /*
+       * Load user preferences from database if the authentication method supports it
+       */
+      if ($authmech->hasUserPreferences() && isset($_SESSION['toolkits_logon_username'])) {
+          $row = db_query_one("SELECT preference FROM {$xerte_toolkits_site->database_table_prefix}logindetails WHERE username = ?", array($_SESSION['toolkits_logon_username']));
+          
+          if (!empty($row) && isset($row['preference']) && !empty($row['preference'])) {
+              // Parse JSON preferences
+              $preferences = json_decode($row['preference'], true);
+              $_SESSION['toolkits_preferences'] = $preferences !== null ? $preferences : array();
+          } else {
+              // Set to empty array if no preferences found
+              $_SESSION['toolkits_preferences'] = array();
+          }
       }
   }
   $msg = "User " . $_SESSION['toolkits_logon_username'] . " logged in successfully from " . $_SERVER['REMOTE_ADDR'];

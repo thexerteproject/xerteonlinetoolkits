@@ -1,0 +1,24 @@
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
+
+/* Generic class that wraps each link balloon view. */
+.ck.ck-link-form {
+	& .ck-link-form__providers-list {
+		display: flex;
+		flex-direction: column;
+
+		& .ck-link__button {
+			& > .ck-button__label {
+				flex-grow: 1;
+			}
+		}
+	}
+
+	& .ck-link__items:empty {
+		display: none;
+	}
+}

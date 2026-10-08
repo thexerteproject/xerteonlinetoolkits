@@ -27,10 +27,10 @@ function sanitizeName($file, &$response)
 {
     $filename = str_replace(' ', '_', $file);
     if ($filename != $file) {
-        $mesg = RENAMED;
+        $mesg = IMAGEUPLOAD_RENAMED;
         $mesg = str_replace('{0}', $file, $mesg);
         $mesg = str_replace('{1}', $filename, $mesg);
-        $response['error'] = $mesg;
+        $response->error = $mesg;
     }
 
    return $filename;
@@ -56,7 +56,7 @@ function sanitizeName($file, &$response)
 if (!isset($_SESSION['toolkits_logon_username']) && !is_user_permitted("projectadmin"))
 {
     _debug("Session is invalid or expired");
-    die("Session is invalid or expired");
+    die(json_encode(array('uploaded' => 0, 'error' => 'Session is invalid or expired')));
 }
 
 $response = new StdClass();
@@ -130,7 +130,7 @@ switch($_FILES['upload']['type'])
         break;
     default:
         $response->uploaded = 0;
-        $response->error = INVALID_FORMAT;
+        $response->error = IMAGEUPLOAD_INVALID_FORMAT;
 
         echo json_encode($response);
         exit(-1);
@@ -159,6 +159,11 @@ $response->fileName = $uploadpath . "media/" . $filename;
 
 // Move file to the correct location
 $res = move_uploaded_file($_FILES['upload']['tmp_name'], $response->fileName);
+if (!$res) {
+    $response->uploaded = 0;
+    $response->error = IMAGEUPLOAD_ERROR . IMAGEUPLOAD_CANT_WRITE;
+    unset($response->url, $response->fileName);
+}
 //_debug("upload: " . print_r($_POST, true));
 
 // _debug("File uploaded: " . print_r($response, true|));

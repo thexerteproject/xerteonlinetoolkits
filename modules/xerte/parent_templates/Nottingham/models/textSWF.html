@@ -1,0 +1,186 @@
+<script type="text/javascript">
+/**
+ * Licensed to The Apereo Foundation under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+
+ * The Apereo Foundation licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at:
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+	// pageChanged & sizeChanged functions are needed in every model file
+	// other functions for model should also be in here to avoid conflicts
+	var textSWF = new function() {
+		// function called every time the page is viewed after it has initially loaded
+		this.pageChanged = function() {
+			var $playBtn = $("#playBtn");
+			if ($playBtn.length > 0) {
+				$playBtn
+					.data("state", "pause")
+					.button({
+						icons: {
+							primary: "ui-icon-pause"
+						},
+						label:			$playBtn.data("pause"),
+						description:	$playBtn.data("pause")
+					});
+				$playBtn.trigger("click");
+			}
+		}
+
+		// function called every time the size of the LO is changed
+		this.sizeChanged = function() {
+			
+		}
+
+		this.init = function() {
+			var $textHolder	= $("#textHolder"),
+				$panel		= $("#pageContents .panel");
+
+			// text align
+			var textAlign = x_currentPageXML.getAttribute("align"); // Left|Right
+			if (textAlign != "Right") {
+				$panel.addClass("x_floatRight");
+			} else if (textAlign == "Right") {
+				$panel.addClass("x_floatLeft");
+			}
+			$textHolder.html(x_addLineBreaks(x_currentPageXML.childNodes[0].nodeValue));
+			
+			if (x_currentPageXML.getAttribute("url").toLowerCase().indexOf(".html") >= 0) {
+				// sets up savedData - it can contain the initObject and any additionally saved data for this customHTML file
+				if (x_pageInfo[x_currentPage].savedData == undefined) {
+					x_pageInfo[x_currentPage].savedData = [];
+				}
+				x_pageInfo[x_currentPage].savedData.push(new Object());
+				
+				if (x_currentPageXML.getAttribute("initObject") != undefined && x_currentPageXML.getAttribute("initObject") != "") {
+					x_pageInfo[x_currentPage].savedData[x_pageInfo[x_currentPage].savedData.length - 1].initObject = x_sortInitObject(x_currentPageXML.getAttribute("initObject"));
+				}
+				
+				$("#pageSWF").remove();
+				
+				if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
+					var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+					if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
+						$panel
+							.width(Number(dimensions[0]))
+							.height(Number(dimensions[1]))
+							.css("overflow", "auto");
+					}
+				}
+				
+				$panel.append('<div class="jsHolder"><div class="customHTMLHolder"></div></div>');
+				$panel.find(".jsHolder").data("savedDataIndex", 0);
+				$panel.find(".customHTMLHolder").load(x_evalURL(x_currentPageXML.getAttribute("url")), x_pageLoaded());
+				
+			} else {
+				$("#pageSWF h3").html(x_getLangInfo(x_languageData.find("errorFlash")[0], "label", "You need to install the Flash Player to view this content."));
+				$("#flashImg").attr("alt", x_getLangInfo(x_languageData.find("errorFlash")[0], "description", "Get the Flash Player"));
+
+				if (x_currentPageXML.getAttribute("controls") != "Native SWF" && x_browserInfo.iOS != true) {
+					var $controls = $('<button id="playBtn"></button>');
+					$controls
+						.data({
+							"state"	:"pause",
+							"play"	:x_getLangInfo(x_languageData.find("movieController").find("playButton")[0], "label", "Play Button"),
+							"pause"	:x_getLangInfo(x_languageData.find("movieController").find("pauseButton")[0], "label", "Pause Button")
+							})
+						.button({
+							icons: {
+								primary: "ui-icon-pause"
+							},
+							label:			$controls.data("pause"),
+							description:	$controls.data("pause"),
+							text:			false
+							})
+						.on("click", function() {
+							var flashMovie = $("#pageContents").data("swf"),
+								$this = $(this);
+							
+							if ($this.data("state") == "play") {
+								flashMovie.Play();
+								$this.data("state", "pause");
+							} else {
+								flashMovie.StopPlay();
+								$this.data("state", "play");
+							}
+							
+							var state = $this.data("state");
+							$this.button({
+								icons: {
+									primary: "ui-icon-" + state
+								},
+								label:			$this.data(state),
+								description:	$this.data(state)
+								})
+							})
+						.load(function() { });
+					
+					$panel.append($controls);
+				}
+				
+				var size = [320,240];
+				if (x_currentPageXML.getAttribute("movieSize") != "" && x_currentPageXML.getAttribute("movieSize") != undefined) {
+					var dimensions = x_currentPageXML.getAttribute("movieSize").split(",");
+					if (Number(dimensions[0]) != 0 && Number(dimensions[1]) != 0) {
+						size = [Number(dimensions[0]), Number(dimensions[1])];
+					}
+				}
+				
+				swfobject.embedSWF(x_evalURL(x_currentPageXML.getAttribute("url")), "pageSWF", size[0], size[1], "9.0.0", x_templateLocation + "common/expressInstall.swf", "", {wmode:"opaque"}, "", function(e) {
+					if (e.success == true) {
+						$("#pageContents").data("swf", x_getSWFRef("pageSWF")); // reference to swf
+						
+						// if using the control bar make sure swf is paused initially
+						if (x_currentPageXML.getAttribute("controls") != "Native SWF" && x_browserInfo.iOS != true) {
+							// swf is supposed to be loaded by now but this won't work without slight delay?
+							setTimeout(function () {
+								$("#playBtn").trigger("click");
+							},100);
+						}
+						
+						$("#pageSWF").attr("title", x_currentPageXML.getAttribute("tip"));
+						
+						// need to add code for calling init function in swf
+						
+					} else { // no Flash
+						$("#playBtn").remove();
+					}
+					
+					x_pageLoaded();
+				});
+			}
+		}
+	}
+
+	textSWF.init();
+
+</script>
+
+
+<div id="pageContents">
+
+	<div id="swfHolder" class="mobileAlign">
+		<div class="panel inline">
+			<div id="pageSWF">
+				<h3 class="alert"></h3>
+				<p><a href="http://www.adobe.com/go/getflashplayer"><img id="flashImg" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif"/></a></p>
+			</div>
+		</div>
+	</div>
+
+	<div id="textHolder">
+
+	</div>
+
+</div>

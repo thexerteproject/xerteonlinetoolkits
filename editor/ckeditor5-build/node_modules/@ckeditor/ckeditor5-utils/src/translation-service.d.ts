@@ -1,0 +1,174 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/**
+ * @module utils/translation-service
+ */
+import type { Translations } from './locale.js';
+import { type ArrayOrItem } from './toarray.js';
+declare global {
+    var CKEDITOR_TRANSLATIONS: Translations;
+}
+/**
+ * Adds translations to existing ones or overrides the existing translations. These translations will later
+ * be available for the {@link module:utils/locale~Locale#t `t()`} function.
+ *
+ * The `translations` is an object which consists of `messageId: translation` pairs. Note that the message ID can be
+ * either constructed from the message string or from the message ID if it was passed
+ * (this happens rarely and mostly for short messages or messages with placeholders).
+ * Since the editor displays only the message string, the message ID can be found either in the source code or in the
+ * built translations for another language.
+ *
+ * ```ts
+ * add( 'pl', {
+ * 	'Cancel': 'Anuluj',
+ * 	'IMAGE': 'obraz', // Note that the `IMAGE` comes from the message ID, while the string can be `image`.
+ * } );
+ * ```
+ *
+ * If the message is supposed to support various plural forms, make sure to provide an array with the singular form and all plural forms:
+ *
+ * ```ts
+ * add( 'pl', {
+ * 	'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ]
+ * } );
+ * ```
+ *
+ * You should also specify the third argument (the `getPluralForm()` function) that will be used to determine the plural form if no
+ * language file was loaded for that language. All language files coming from CKEditor 5 sources will have this option set, so
+ * these plural form rules will be reused by other translations added to the registered languages. The `getPluralForm()` function
+ * can return either a Boolean or a number.
+ *
+ * ```ts
+ * add( 'en', {
+ * 	// ... Translations.
+ * }, n => n !== 1 );
+ * add( 'pl', {
+ * 	// ... Translations.
+ * }, n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2 );
+ * ```
+ *
+ * All translations extend the global `window.CKEDITOR_TRANSLATIONS` object. An example of this object can be found below:
+ *
+ * ```ts
+ * {
+ * 	pl: {
+ * 		dictionary: {
+ * 			'Cancel': 'Anuluj',
+ * 			'Add space': [ 'Dodaj spację', 'Dodaj %0 spacje', 'Dodaj %0 spacji' ]
+ * 		},
+ * 		// A function that returns the plural form index.
+ * 		getPluralForm: n => n == 1 ? 0 : n % 10 >= 2 && n % 10 <= 4 && ( n % 100 < 10 || n % 100 >= 20 ) ? 1 : 2 );
+ * 	}
+ * 	// Other languages.
+ * 	}
+ * ```
+ *
+ * If you cannot import { this function } from this module (e.g. because you use a CKEditor 5 build), you can
+ * still add translations by extending the global `window.CKEDITOR_TRANSLATIONS` object by using a function like
+ * the one below:
+ *
+ * ```ts
+ * function addTranslations( language, translations, getPluralForm ) {
+ * 	if ( !global.window.CKEDITOR_TRANSLATIONS ) {
+ * 		global.window.CKEDITOR_TRANSLATIONS = {};
+ * 	}
+
+ * 	if ( !global.window.CKEDITOR_TRANSLATIONS[ language ] ) {
+ * 		global.window.CKEDITOR_TRANSLATIONS[ language ] = {};
+ * 	}
+ *
+ * 	const languageTranslations = global.window.CKEDITOR_TRANSLATIONS[ language ];
+ *
+ * 	languageTranslations.dictionary = languageTranslations.dictionary || {};
+ * 	languageTranslations.getPluralForm = getPluralForm || languageTranslations.getPluralForm;
+ *
+ * 	// Extend the dictionary for the given language.
+ * 	Object.assign( languageTranslations.dictionary, translations );
+ * }
+ * ```
+ *
+ * @param language Target language.
+ * @param translations An object with translations which will be added to the dictionary.
+ * For each message ID the value should be either a translation or an array of translations if the message
+ * should support plural forms.
+ * @param getPluralForm A function that returns the plural form index (a number).
+ */
+export declare function add(language: string, translations: {
+    readonly [messageId: string]: string | ReadonlyArray<string>;
+}, getPluralForm?: (n: number) => number): void;
+/**
+ * **Note:** This method is internal, use {@link module:utils/locale~Locale#t the `t()` function} instead to translate
+ * the editor UI parts.
+ *
+ * This function is responsible for translating messages to the specified language. It uses translations added perviously
+ * by {@link module:utils/translation-service~add} (a translations dictionary and the `getPluralForm()` function
+ * to provide accurate translations of plural forms).
+ *
+ * When no translation is defined in the dictionary or the dictionary does not exist, this function returns
+ * the original message string or the message plural depending on the number of elements.
+ *
+ * ```ts
+ * translate( 'pl', { string: 'Cancel' } ); // 'Cancel'
+ * ```
+ *
+ * The third optional argument is the number of elements, based on which the single form or one of the plural forms
+ * should be picked when the message is supposed to support various plural forms.
+ *
+ * ```ts
+ * translate( 'en', { string: 'Add a space', plural: 'Add %0 spaces' }, 1 ); // 'Add a space'
+ * translate( 'en', { string: 'Add a space', plural: 'Add %0 spaces' }, 3 ); // 'Add %0 spaces'
+ * ```
+ *
+ * The message should provide an ID using the `id` property when the message strings are not unique and their
+ * translations should be different.
+ *
+ * ```ts
+ * translate( 'en', { string: 'image', id: 'ADD_IMAGE' } );
+ * translate( 'en', { string: 'image', id: 'AN_IMAGE' } );
+ * ```
+ *
+ * @internal
+ * @param language Target language.
+ * @param message A message that will be translated.
+ * @param quantity The number of elements for which a plural form should be picked from the target language dictionary.
+ * @param translations Translations passed in editor config, if not provided use the global `window.CKEDITOR_TRANSLATIONS`.
+ * @returns Translated sentence.
+ */
+export declare function _translate(language: string, message: Message, quantity?: number, translations?: Translations): string;
+/**
+ * Clears dictionaries for test purposes.
+ *
+ * @internal
+ */
+export declare function _clear(): void;
+/**
+ * If array then merge objects which are inside otherwise return given object.
+ *
+ * @internal
+ * @param translations Translations passed in editor config.
+ */
+export declare function _unifyTranslations(translations?: ArrayOrItem<Translations>): Translations | undefined;
+/**
+ * The internationalization message interface. A message that implements this interface can be passed to the `t()` function
+ * to be translated to the target UI language.
+ */
+export interface Message {
+    /**
+     * The message string to translate. Acts as a default translation if the translation for a given language
+     * is not defined. When the message is supposed to support plural forms, the string should be the English singular form of the message.
+     */
+    readonly string: string;
+    /**
+     * The message ID. If passed, the message ID is taken from this property instead of the `message.string`.
+     * This property is useful when various messages share the same message string, for example, the `editor` string in `in the editor`
+     * and `my editor` sentences.
+     */
+    readonly id?: string;
+    /**
+     * The plural form of the message. This property should be skipped when a message is not supposed
+     * to support plural forms. Otherwise it should always be set to a string with the English plural form of the message.
+     */
+    readonly plural?: string;
+}

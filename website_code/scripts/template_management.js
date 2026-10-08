@@ -31,6 +31,19 @@ if (typeof(String.prototype.trim) === "undefined") {
         return String(this).replace(/^\s+|\s+$/g, '');
     };
 }
+
+function apiV1Url(route) {
+    var base = (typeof rest_api_url !== 'undefined' && rest_api_url) ? rest_api_url : ((typeof site_url !== 'undefined' && site_url) ? (site_url.replace(/\/$/, '') + '/website_code/api/v1/index.php') : 'website_code/api/v1/index.php');
+    return base + '?route=' + encodeURIComponent(route);
+}
+
+function apiUnpack(response) {
+    if (response && response.ok === true && typeof response.data !== 'undefined') {
+        return response.data;
+    }
+    return response;
+}
+
 var active_div = "";
 
 var edit_window_open = new Array();
@@ -186,6 +199,85 @@ function toggle(tag) {
 
 }
 
+function normalizeEditorOpenMode(mode) {
+    if (!mode) {
+        return 'popup';
+    }
+    mode = String(mode).trim();
+    if (mode === '_blank') {
+        return '_blank';
+    }
+    if (mode === 'lightbox') {
+        return 'lightbox';
+    }
+    return 'popup';
+}
+
+function normalizeEditorOpenLocation(location) {
+    if (location === '_blank' || location === 'lightbox') {
+        return location;
+    }
+    return 'popup';
+}
+
+function getEditorOpenModePreference() {
+    var prefs = (typeof window.user_preferences !== 'undefined' && window.user_preferences)
+        ? window.user_preferences
+        : ((typeof user_preferences !== 'undefined') ? user_preferences : null);
+    if (prefs) {
+        return normalizeEditorOpenMode(prefs.editor_open_mode);
+    }
+    return 'popup';
+}
+
+function isBrowserEditWindow(editorWindow) {
+    return !!(editorWindow && typeof editorWindow.closed === 'boolean');
+}
+
+function isEditorWindowAlive(editorWindow) {
+    if (!editorWindow) {
+        return false;
+    }
+    if (editorWindow.$content && editorWindow.$content.length) {
+        return $('body .featherlight').length > 0;
+    }
+    if (typeof editorWindow.closed === 'boolean') {
+        return !editorWindow.closed;
+    }
+    return false;
+}
+
+function getEditorOpenLocation(event) {
+    if (event) {
+        if (event.shiftKey) {
+            return 'popup';
+        }
+        if (event.ctrlKey || event.metaKey) {
+            return '_blank';
+        }
+        if (event.altKey) {
+            return 'lightbox';
+        }
+    }
+    return getEditorOpenModePreference();
+}
+
+function openSelectedEditor(event, editType) {
+    var openMode = getEditorOpenLocation(event);
+    editType = editType || 'edithtml';
+
+    if (openMode === '_blank') {
+        var win = edit_window(false, editType, '_blank');
+        if (win) {
+            win.focus();
+        }
+    } else if (openMode === 'lightbox') {
+        edit_window(false, editType, 'lightbox');
+    } else {
+        edit_window(false, editType);
+    }
+}
+
 /**
  *
  * Function edit window
@@ -195,7 +287,7 @@ function toggle(tag) {
  * @author Patrick Lockley
  */
 
-function edit_window(admin, edit, location) {
+function edit_window(admin, edit, openMode) {
 
     if (!admin) {
 
@@ -210,20 +302,31 @@ function edit_window(admin, edit, location) {
 
                 if (node.parent != workspace.recyclebin_id) {
                     window_id = "editwindow" + node.id;
-
-                    window_open = false;
+                    var window_open = false;
+                    var window_open_location = null;
+                    var window_open_index = -1;
+                    var requestedLocation = normalizeEditorOpenLocation(openMode);
 
                     if (typeof(edit_window_open) != 'undefined') {
-
                         for (z = 0; z < edit_window_open.length; z++) {
                             if (("editwindow" + edit_window_open[z].id) == window_id) {
                                 window_open = edit_window_open[z].window;
+                                window_open_location = edit_window_open[z].location || 'popup';
+                                window_open_index = z;
+                                break;
                             }
                         }
                     }
-                    console.log("Window open length: " + window_open.length);
-                    console.log("Window open parent: " + window_open.parent);
-                    if (!window_open || window_open.parent == null) {
+
+                    var canReuseWindow = isEditorWindowAlive(window_open) && window_open_location === requestedLocation;
+
+                    if (!canReuseWindow) {
+                        if (window_open_index >= 0) {
+                            if (isBrowserEditWindow(window_open) && !window_open.closed) {
+                                window_open.close();
+                            }
+                            edit_window_open.splice(window_open_index, 1);
+                        }
 
                         let size = node.editor_size.split(",");
                         let swidth = window.screen.width;
@@ -248,13 +351,16 @@ function edit_window(admin, edit, location) {
                             size[1] = sheight;
 
 
-                        if (location != null) {
-                            if (location === "_blank") {
-                                var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), location);
-                            }
-                            else
-                            {
-                                var NewEditWindow = $.featherlight(
+                        var NewEditWindow;
+
+                        if (requestedLocation === "_blank") {
+                            NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "_blank");
+                        } else if (requestedLocation === "lightbox") {
+                            if (typeof $.featherlight !== 'function') {
+                                console.error("Featherlight is not available; falling back to popup window.");
+                                NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "toolbar=yes,location=yes");
+                            } else {
+                                NewEditWindow = $.featherlight(
                                     {
                                         iframe: site_url + url_return(edit, node.xot_id),
                                         iframeWidth: '95%',
@@ -262,20 +368,17 @@ function edit_window(admin, edit, location) {
                                         beforeClose: function(){
                                             if (typeof this.$content[0].contentWindow.WIZARD_EDITOR != "undefined") {
                                                 this.$content[0].contentWindow.WIZARD_EDITOR.tree.savepreviewasync(false);
-                                                //tree.savepreviewasync(false);
-                                                // Fake path, only id is used
                                                 edit_window_close(node.xot_id + "-");
                                             }
                                         },
                                         closeOnClick: false,
                                     });
                             }
-                        }
-                        else {
+                        } else {
                             if (size.length == 1) {
-                                var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "toolbar=yes,location=yes");
+                                NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "toolbar=yes,location=yes");
                             } else {
-                                var NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "height=" + size[1] + ", width=" +
+                                NewEditWindow = window.open(site_url + url_return(edit, node.xot_id), "editwindow" + node.id, "height=" + size[1] + ", width=" +
                                     size[0] + ",toolbar=yes,location=yes,resizable=yes");
                             }
                         }
@@ -296,20 +399,23 @@ function edit_window(admin, edit, location) {
                             }
                         }
 
-                        NewEditWindow.ajax_handle = xmlHttp;
-                        self.last_reference = self;
-
-                        if (!NewEditWindow.iframe)
-                            NewEditWindow.focus();
+                        if (isBrowserEditWindow(NewEditWindow)) {
+                            NewEditWindow.ajax_handle = xmlHttp;
+                            self.last_reference = self;
+                            if (typeof NewEditWindow.focus === 'function') {
+                                NewEditWindow.focus();
+                            }
+                        }
 
                         edit_window_open.push({
                             id: node.id,
-                            window: NewEditWindow
+                            window: NewEditWindow,
+                            location: requestedLocation
                         });
 
                         return NewEditWindow;
 
-                    } else {
+                    } else if (isBrowserEditWindow(window_open) && typeof window_open.focus === 'function') {
                         window_open.focus();
                     }
 
@@ -500,15 +606,19 @@ function example_window(example_id) {
 
     if (example_id != 0) {
 
+        var apiBase = (typeof rest_api_url !== 'undefined') ? rest_api_url : 'website_code/api/v1/index.php';
         $.ajax({
             type: "POST",
-            url: "website_code/php/properties/screen_size_template.php",
+            url: apiBase + '?route=' + encodeURIComponent('properties/screen-size'),
             data: {
                 tutorial_id: example_id
-            }
+            },
+            dataType: 'json'
         })
-        .done(function (response) {
-            example_stateChanged(response);
+        .done(function (res) {
+            if (res && res.ok && res.data) {
+                example_stateChanged(res.data.width + '~' + res.data.height + '~' + res.data.templateId);
+            }
         });
 
     } else {
@@ -690,18 +800,100 @@ function refresh_workspace() {
     // }
     $.ajax({
         type: "POST",
-        url: "website_code/php/templates/get_templates_sorted.php",
+        url: apiV1Url('workspace/projects-sorted'),
         dataType: 'json',
         data: {
             sort_type: document.sorting.type.value
         }
     })
     .done(function(response){
-        workspace = response;
+        workspace = apiUnpack(response);
         // Clear the project details
         $("#project_information").html("");
         init_workspace();
+        
+        // Save sort preference
+        save_user_preference('sort_type', document.sorting.type.value);
     });
+}
+
+/**
+ * Save a user preference to the database
+ * @param {string} key - The preference key
+ * @param {string} value - The preference value
+ */
+function save_user_preference(key, value) {
+    // Only save if user has preferences capability
+    if (typeof user_has_preferences !== 'undefined' && user_has_preferences) {
+        var saveUrl = apiV1Url('user/preferences');
+
+        $.ajax({
+            type: "POST",
+            url: saveUrl,
+            dataType: 'json',
+            data: {
+                key: key,
+                value: value
+            }
+        })
+        .done(function(response) {
+            var r = apiUnpack(response);
+            if (r && r.success) {
+                // Update user_preferences object in memory
+                if (typeof user_preferences !== 'undefined') {
+                    user_preferences[key] = value;
+                }
+            } else {
+                console.error("Failed to save preference:", r && r.message ? r.message : response);
+            }
+        })
+        .fail(function(xhr, status, error) {
+            var message = xhr.responseJSON && xhr.responseJSON.error
+                ? xhr.responseJSON.error.message
+                : error;
+            console.error("Failed to save preference:", message);
+        });
+    }
+}
+
+/**
+ * Load user preferences and apply them
+ */
+function load_user_preferences() {
+    // This will be set from PHP session
+    if (typeof user_preferences !== 'undefined' && user_preferences) {
+        // Debug: console.log("Loaded user_preferences:", user_preferences);
+
+        // Restore sort selector
+        if (user_preferences.sort_type) {
+            var sortSelector = document.getElementById('sort-selector');
+            if (sortSelector) {
+                sortSelector.value = user_preferences.sort_type;
+            }
+        }
+
+        // Restore east (right) panel state
+        if (typeof xerteinner_layout !== 'undefined' && user_preferences.hasOwnProperty('panel_east_open')) {
+            var eastOpen = user_preferences.panel_east_open;
+            // Debug: console.log("Restoring panel_east_open:", eastOpen);
+            if (eastOpen === false || eastOpen === 'false' || eastOpen === 0 || eastOpen === '0') {
+                xerteinner_layout.close('east');
+            } else {
+                xerteinner_layout.open('east');
+            }
+        }
+
+        // Restore south (bottom) panel state
+        if (typeof xertemain_layout !== 'undefined' && user_preferences.hasOwnProperty('panel_south_open')) {
+            var southOpen = user_preferences.panel_south_open;
+            // Debug: console.log("Restoring panel_south_open:", southOpen);
+            if (southOpen === false || southOpen === 'false' || southOpen === 0 || southOpen === '0') {
+                xertemain_layout.close('south');
+            } else {
+                xertemain_layout.open('south');
+            }
+        }
+    }
 }
 
 function getProjectInformation(user_id, template_id) {
@@ -715,12 +907,13 @@ function getProjectInformation(user_id, template_id) {
     // }
     $.ajax({
         type: "POST",
-        url: "website_code/php/templates/get_template_info.php",
+        url: apiV1Url('templates/info'),
         dataType: 'json',
         data: {user_id: user_id, template_id: template_id},
     })
-    .done(function(info) {
-        document.getElementById('project_information').innerHTML = info.properties;
+    .done(function(response) {
+        var info = apiUnpack(response);
+        document.getElementById('project_information').innerHTML = renderWorkspaceTemplateInfo(info);
         disableReadOnlyButtons(info);
         if (info.fetch_statistics) {
             url = site_url + info.template_id;
@@ -750,6 +943,34 @@ function getProjectInformation(user_id, template_id) {
     {
 
     });
+}
+
+function escapeHtml(s) {
+    if (s === null || s === undefined) return '';
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function renderWorkspaceTemplateInfo(info) {
+    if (!info || !info.panels || !info.panels.project) {
+        return '';
+    }
+    var p = info.panels.project;
+    var h = '<div class="workspace_info">';
+    h += '<h3>' + escapeHtml(p.displayName || '') + '</h3>';
+    h += '<ul class="workspace_info_list">';
+    h += '<li><strong>ID</strong>: ' + escapeHtml(p.templateId) + '</li>';
+    if (p.dateCreated) h += '<li><strong>Created</strong>: ' + escapeHtml(p.dateCreated) + '</li>';
+    if (p.dateModified) h += '<li><strong>Modified</strong>: ' + escapeHtml(p.dateModified) + '</li>';
+    if (p.access) h += '<li><strong>Access</strong>: ' + escapeHtml(p.access) + '</li>';
+    if (p.playUrl) h += '<li><strong>URL</strong>: <a target="_blank" href="' + escapeHtml(p.playUrl) + '">' + escapeHtml(p.playUrl) + '</a></li>';
+    h += '</ul>';
+
+    // Stats placeholder for xAPIDashboard
+    if (info.fetch_statistics) {
+        h += '<div id="graph_' + escapeHtml(info.template_id) + '" class="statistics"><img src="editor/img/loading16.gif"/></div>';
+    }
+    h += '</div>';
+    return h;
 }
 
 function disableReadOnlyButtons(info){
@@ -791,32 +1012,65 @@ function disableReadOnlyButtons(info){
 function getFolderInformation(user_id, folder_id) {
     $.ajax({
         type: "POST",
-        url: "website_code/php/folders/get_folder_info.php",
+        url: apiV1Url('folders/info'),
         data: {folder_id: folder_id},
         dataType: "json",
-        success: function (info) {
-            document.getElementById('project_information').innerHTML = info.properties;
+        success: function (response) {
+            var info = apiUnpack(response);
+            document.getElementById('project_information').innerHTML = renderWorkspaceFolderInfo(info);
             disableReadOnlyButtons(info);
 
         }
     });
 }
 
+function renderWorkspaceFolderInfo(info) {
+    if (!info) return '';
+    var h = '<div class="workspace_info">';
+    h += '<h3>' + escapeHtml(info.name || '') + '</h3>';
+    h += '<ul class="workspace_info_list">';
+    h += '<li><strong>ID</strong>: ' + escapeHtml(info.folder_id) + '</li>';
+    if (info.date_created) h += '<li><strong>Created</strong>: ' + escapeHtml(info.date_created) + '</li>';
+    if (info.date_modified) h += '<li><strong>Modified</strong>: ' + escapeHtml(info.date_modified) + '</li>';
+    h += '</ul></div>';
+    return h;
+}
+
 function getGroupInformation(user_id, group_name, group_id)
 {
     $.ajax({
         type: "POST",
-        url: "website_code/php/groups/get_group_info.php",
+        url: apiV1Url('groups/info'),
         data: {
             group_name: group_name,
             group_id: group_id
         },
         dataType: "json",
-        success: function (info) {
-            document.getElementById('project_information').innerHTML = info.properties;
+        success: function (response) {
+            var info = apiUnpack(response);
+            document.getElementById('project_information').innerHTML = renderWorkspaceGroupInfo(info);
             disableReadOnlyButtons(info);
         }
     });
+}
+
+function renderWorkspaceGroupInfo(info) {
+    if (!info) return '';
+    var h = '<div class="workspace_info">';
+    h += '<h3>' + escapeHtml(info.group_name || '') + '</h3>';
+    h += '<ul class="workspace_info_list">';
+    h += '<li><strong>ID</strong>: ' + escapeHtml(info.group_id) + '</li>';
+    h += '</ul>';
+    if (info.members && info.members.length) {
+        h += '<h4>Members</h4><ul class="group_members">';
+        for (var i = 0; i < info.members.length; i++) {
+            var m = info.members[i];
+            h += '<li>' + escapeHtml(m.firstname) + ' ' + escapeHtml(m.surname) + ' (' + escapeHtml(m.username) + ')</li>';
+        }
+        h += '</ul>';
+    }
+    h += '</div>';
+    return h;
 }
 
 /**

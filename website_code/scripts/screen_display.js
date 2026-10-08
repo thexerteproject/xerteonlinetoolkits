@@ -435,20 +435,7 @@ function button_check(){
                 editbtn.removeAttribute("disabled");
                 editbtn.className = "xerte_workspace_button";
                 editbtn.onclick = function (e) {
-                    if (e.shiftKey) {
-                        edit_window(false, "edithtml");
-                    }
-                    else if (e.ctrlKey) {
-                        win = edit_window(false, "edithtml", "_blank");
-                        win.focus();
-                    }
-                    else if (e.altKey) {
-                        win = edit_window(false, "edithtml", "lightbox");
-                    }
-                    else
-                    {
-                        edit_window(false, "edithtml");
-                    }
+                    openSelectedEditor(e, 'edithtml');
                 };
 
                 previewbtn.removeAttribute("disabled");
@@ -560,7 +547,20 @@ function setupMainLayout()
                 slidable:               true,
                 initClosed:             false,
                 slidable:               false,
-                closable:               true
+                closable:               true,
+                // Save south pane (bottom) open/closed state in user preferences
+                onclose_end: function () {
+                    // Debug: console.log("South pane closed via layout");
+                    if (typeof save_user_preference === 'function') {
+                        save_user_preference('panel_south_open', false);
+                    }
+                },
+                onopen_end: function () {
+                    // Debug: console.log("South pane opened via layout");
+                    if (typeof save_user_preference === 'function') {
+                        save_user_preference('panel_south_open', true);
+                    }
+                }
                 /*
                  fxName:                 "drop",
                  fxSpeed:                "normal",
@@ -635,7 +635,20 @@ function setupMainLayout()
                 slideTrigger_open:      "click",
                 initClosed:             false,
                 closable:               true,
-                resizable:              true
+                resizable:              true,
+                // Save east pane (right) open/closed state in user preferences
+                onclose_end: function () {
+                    // Debug: console.log("East pane closed via layout");
+                    if (typeof save_user_preference === 'function') {
+                        save_user_preference('panel_east_open', false);
+                    }
+                },
+                onopen_end: function () {
+                    // Debug: console.log("East pane opened via layout");
+                    if (typeof save_user_preference === 'function') {
+                        save_user_preference('panel_east_open', true);
+                    }
+                }
                 /*
                 onclose: function()
                 {
@@ -659,7 +672,7 @@ function setupMainLayout()
             }
         };
 
-    console.log("Setting up MainLayout...");
+    // Debug: console.log("Setting up MainLayout...");
 
     xertemain_layout = $("body").layout( xertemain_layout_settings );
     xerteinner_layout = $("#pagecontainer").layout( xerteinner_layout_settings);
@@ -833,8 +846,8 @@ function init_workspace()
         this.text = this.text.replace(/_/g, ' ');
     });
 
-    console.log(node_types);
-    console.log(workspace.items);
+    // Debug: console.log(node_types);
+    // Debug: console.log(workspace.items);
     
     var tree = $.jstree.reference("#workspace");
     if (tree)
@@ -858,7 +871,7 @@ function init_workspace()
             },
             "dnd": {
                 "is_draggable" : function(node) {
-                    console.log('is_draggable called: ', node[0]);
+                    // Debug: console.log('is_draggable called: ', node[0]);
                     if (node[0].type.includes("_group") || (node[0].type.includes("folder_shared") && workspace.nodes[node[0].id].role !== "creator")) {
                         return false;
                     }
@@ -886,8 +899,8 @@ function init_workspace()
         .bind('move_node.jstree',function(event,data)
         {
 
-                console.log(event);
-                console.log(data);
+                // Debug: console.log(event);
+                // Debug: console.log(data);
                 copy_to_folder(data);
 
         });
@@ -948,11 +961,10 @@ function init_workspace()
                     break;
                 default:
 
-
                     tree.deselect_all();
                     tree.select_node(id);
 
-                    edit_window(false, "edithtml");
+                    openSelectedEditor(null, 'edithtml');
 
             }
         });

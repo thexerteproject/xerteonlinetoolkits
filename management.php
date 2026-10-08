@@ -53,7 +53,7 @@ function mgt_page($xerte_toolkits_site, $extra)
 
             <link href="website_code/styles/frontpage.css" media="screen" type="text/css" rel="stylesheet" />
             <link href="website_code/styles/xerte_buttons.css" media="screen" type="text/css" rel="stylesheet" />
-			<!--link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css" -->
+			<!--link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common/font-awesome-4.3.0/css/font-awesome.min.css" -->
 
             <!--
 
@@ -145,7 +145,7 @@ function mgt_page($xerte_toolkits_site, $extra)
 						<?php echo $xerte_toolkits_site->copyright; ?> <i class="fa fa-info-circle" aria-hidden="true" style="color:#f86718; cursor: help;" title="<?PHP $vtext = "version.txt";$lines = file($vtext);echo $lines[0];?>"></i>
 					</p>
 					<div class="footerlogos">
-						<a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.2AA-blue.png" border="0" alt="<?php echo MANAGEMENT_WCAG_LOGO_ALT; ?>"></a><a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0" alt="<?php echo MANAGEMENT_OSI_LOGO_ALT; ?>"></a><a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0" alt="<?php echo MANAGEMENT_APEREO_LOGO_ALT; ?>"></a><a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0" alt="<?php echo MANAGEMENT_XERTE_LOGO_ALT; ?>"></a>
+                        <a href="https://xot.xerte.org.uk/play_653" target="_blank" title="Xerte AI Ethical Use and Transparency Statement https://xot.xerte.org.uk/play_653"><img src="website_code/images/XerteFooterAILogo.png" border="0" alt="<?php echo MANAGEMENT_XERTE_AI_LOGO_ALT; ?>"></a><a href="https://xot.xerte.org.uk/play.php?template_id=214#home" target="_blank" title="Xerte accessibility statement https://xot.xerte.org.uk/play.php?template_id=214"><img src="website_code/images/wcag2.2AA-blue.png" border="0" alt="<?php echo MANAGEMENT_WCAG_LOGO_ALT; ?>"></a><a href="https://opensource.org/" target="_blank" title="Open Source Initiative: https://opensource.org/"><img src="website_code/images/osiFooterLogo.png" border="0" alt="<?php echo MANAGEMENT_OSI_LOGO_ALT; ?>"></a><a href="https://www.apereo.org" target="_blank" title="Apereo: https://www.apereo.org"><img src="website_code/images/apereoFooterLogo.png" border="0" alt="<?php echo MANAGEMENT_APEREO_LOGO_ALT; ?>"></a><a href="https://xerte.org.uk" target="_blank" title="Xerte: https://xerte.org.uk"><img src="website_code/images/xerteFooterLogo.png" border="0" alt="<?php echo MANAGEMENT_XERTE_LOGO_ALT; ?>"></a>
 					</div>
 				</footer>
 			</div>
@@ -206,9 +206,9 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         <link href="website_code/styles/frontpage.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet" />
         <link href="website_code/styles/xerte_buttons.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet" />
         <link href="website_code/styles/management.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet" />
-        <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
-        <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
-        <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css">
+        <link rel="stylesheet" type="text/css" href="modules/common/fontawesome-6.6.0/css/all.min.css">
+        <link rel="stylesheet" type="text/css" href="modules/common/fontawesome-6.6.0/css/v4-shims.min.css">
+        <link rel="stylesheet" type="text/css" href="modules/common/fontawesome-6.6.0/css/v5-font-face.min.css">
 
         <link rel="stylesheet" type="text/css" href="website_code/styles/selectize.css?version=<?php echo $version;?>">
         <?php
@@ -227,6 +227,7 @@ if(isset($_SESSION['toolkits_logon_id'])) {
         <script type="text/javascript">
          <?PHP
          echo "var site_url = \"" . $xerte_toolkits_site->site_url . "\";\n";
+         echo "var rest_api_url = \"" . $xerte_toolkits_site->site_url . "website_code/api/v1/index.php\";\n";
 
          echo "var site_apache = \"" . $xerte_toolkits_site->apache . "\";\n";
          echo "var properties_ajax_php_path = \"website_code/php/properties/\";\n var management_ajax_php_path = \"website_code/php/management/\";\n var ajax_php_path = \"website_code/php/\";\n";

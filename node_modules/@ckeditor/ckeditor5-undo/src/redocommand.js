@@ -1,0 +1,44 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/**
+ * @module undo/redocommand
+ */
+import { UndoRedoBaseCommand } from './basecommand.js';
+/**
+ * The redo command stores {@link module:engine/model/batch~Batch batches} that were used to undo a batch by
+ * {@link module:undo/undocommand~UndoCommand}. It is able to redo a previously undone batch by reversing the undoing
+ * batches created by `UndoCommand`. The reversed batch is transformed by all the batches from
+ * {@link module:engine/model/document~ModelDocument#history history} that happened after the reversed undo batch.
+ *
+ * The redo command also takes care of restoring the {@link module:engine/model/document~ModelDocument#selection document selection}.
+ */
+export class RedoCommand extends UndoRedoBaseCommand {
+    /**
+     * Executes the command. This method reverts the last {@link module:engine/model/batch~Batch batch} added to
+     * the command's stack, applies the reverted and transformed version on the
+     * {@link module:engine/model/document~ModelDocument document} and removes the batch from the stack.
+     * Then, it restores the {@link module:engine/model/document~ModelDocument#selection document selection}.
+     *
+     * @fires execute
+     */
+    execute() {
+        const item = this._stack.pop();
+        const redoingBatch = this.editor.model.createBatch({ isUndo: true });
+        // All changes have to be done in one `enqueueChange` callback so other listeners will not step between consecutive
+        // operations, or won't do changes to the document before selection is properly restored.
+        this.editor.model.enqueueChange(redoingBatch, () => {
+            const lastOperation = item.batch.operations[item.batch.operations.length - 1];
+            const nextBaseVersion = lastOperation.baseVersion + 1;
+            const operations = this.editor.model.document.history.getOperations(nextBaseVersion);
+            this._restoreSelection(item.selection.ranges, item.selection.isBackward, operations);
+            this._undo(item.batch, redoingBatch);
+        });
+        // Firing `revert` event after the change block to make sure that it includes all changes from post-fixers
+        // and make sure that the selection is "stabilized" (the selection range is saved after undo is executed and then
+        // restored on redo, so it is important that the selection range is saved after post-fixers are done).
+        this.fire('revert', item.batch, redoingBatch);
+        this.refresh();
+    }
+}

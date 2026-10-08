@@ -1,0 +1,11 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+( e => {
+const { [ 'ms' ]: { dictionary, getPluralForm } } = {"ms":{"dictionary":{"Numbered List":"Senarai Bernombor","Bulleted List":"Senarai Berbulet","To-do List":"Senarai Untuk Dilakukan","Bulleted list styles toolbar":"Bar capaian gaya senarai berbulet","Numbered list styles toolbar":"Bar alat capaian gaya senarai bernombor","Toggle the disc list style":"Buka gaya senarai cakera","Toggle the circle list style":"Buka gaya senarai bulatan","Toggle the square list style":"Buka gaya senarai petak","Toggle the decimal list style":"Buka gaya senarai titik perpuluhan","Toggle the decimal with leading zero list style":"Buka titik perpuluhan dengan gaya senarai kosong pendahulu","Toggle the lower–roman list style":"Buka gaya senarai roman bawah","Toggle the upper–roman list style":"Buka gaya senarai roman atas","Toggle the lower–latin list style":"Buka gaya senarai latin bawah","Toggle the upper–latin list style":"Buka gaya senarai latin atas","Disc":"Cakera","Circle":"Bula","Square":"Petak","Decimal":"Perpuluhan","Decimal with leading zero":"Perpuluhan dengan kosong pendahulu","Lower–roman":"Roman bawah","Upper-roman":"Roman atas","Lower-latin":"Latin bawah","Upper-latin":"Latin atas","List properties":"Senarai sifat","Start at":"Mula pada","Invalid start index value.":"Nilai indeks permulaan tidak sah.","Start index must be greater than 0.":"Indeks mula hendaklah lebih besar daripada 0.","Reversed order":"Susunan terbalik","Keystrokes that can be used in a list":"Ketukan kekunci yang boleh digunakan dalam senarai","Increase list item indent":"Tingkatkan inden item senarai","Decrease list item indent":"Kurangkan inden item senarai","Entering a to-do list":"Memasukkan senarai tugas untuk dilakukan","Leaving a to-do list":"Meninggalkan senarai tugas untuk dilakukan","Toggle the arabic-indic list style":"Togol gaya senarai Arab-Indic","Arabic-indic":"Arab-Indic"},getPluralForm(n){return 0;}}};
+e[ 'ms' ] ||= { dictionary: {}, getPluralForm: null };
+e[ 'ms' ].dictionary = Object.assign( e[ 'ms' ].dictionary, dictionary );
+e[ 'ms' ].getPluralForm = getPluralForm;
+} )( window.CKEDITOR_TRANSLATIONS ||= {} );

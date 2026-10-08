@@ -1,0 +1,109 @@
+<script type="text/javascript">
+	
+	// EXAMPLE OF HOW TO ACCESS XML FOR THE CURRENT PAGE & HOW TO STORE DATA ABOUT IT FOR LATER
+	// ----------------------------------------------------------------------------------------
+	
+	var pageName = new function() {		
+		
+		this.pageChanged = function() {
+			
+		}
+		
+		this.sizeChanged = function() {
+			
+		}
+		
+		this.init = function() {
+			
+			// GETTING DATA FROM XML & XENITH.JS:
+			// ----------------------------------
+			
+			// Useful vars from xenith.js:
+			
+			x_currentPage;		// index of current page
+			x_currentPageXML;	// all xml for the current page
+			
+			
+			// to get data from x_currentPageXML:
+			// CDATA:
+			x_currentPageXML.childNodes[0].nodeValue;
+			
+			// attribute:
+			x_currentPageXML.getAttribute("text");
+			
+			// nested pages:
+			$(x_currentPageXML).children().length; // returns number of child nodes
+			
+			$(x_currentPageXML).children().each(function(i) { // loops through all child nodes
+				// attribute of nested page:
+				this.getAttribute("text");
+			});
+			
+			// remember to call the global x_addLineBreaks function if you want to keep line breaks in XML attribute data:
+			$("#pageContents").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
+			
+			// remember to eval file paths:
+			eval(x_currentPageXML.getAttribute("url"));
+			
+			
+			// Other vars from xenith.js that might be useful when creating page models:
+			
+			// x_browserInfo is object containing info about browser/device, e.g.:
+			x_browserInfo.iOS;			// true/false
+			x_browserInfo.touchScreen;	// true/false
+			x_browserInfo.mobile;		// true/false
+			x_browserInfo.orientation;	// portrait/landscape
+			
+			
+			
+			// GETTING LANGUAGE DATA
+			// ---------------------
+			
+			// To allow for easy translation, page models should not contain any fixed strings
+			// most strings used in the page should be in the xml data:
+			var submitBtnText = x_currentPageXML.getAttribute("submitBtnText");
+			if (submitBtnText == undefined) {
+				submitBtnText = "Submit"; // fallback string to use if attribute not found
+			}
+			
+			// some strings used on multiple pages are in the main language files in the root of XOT (see languages/engine_en-GB.xml):
+			x_getLangInfo(x_languageData.find("errorBrowser")[0], "label", "Your browser does not fully support this page type");
+			// x_getLangInfo(a, b, c); where a is the node, b is the node attribute and c is the fallback text to use if the data isn't found in the language file.
+			
+			
+			
+			// STORING DATA ABOUT THE PAGE:
+			// ----------------------------
+			
+			// to save data so it is accessible from other pages:
+			x_pageInfo[x_currentPage].savedData = "the data I want to save";
+			
+			// to retrieve data about another page:
+			x_pageInfo[pageIndex].savedData; // where pageIndex is index of page you want data from
+			// see model_html5/modelAnswer.html & model_html5/modelAnswerResults.html for real example of this
+			
+			
+			// to save data so it's still available when this page is returned (after navigating to another page in the LO):
+			// you can use savedData as above or store data against an element on the page:
+			$("#pageContents").data("score", 10); // store data
+			$("#pageContents").data("score");     // retrieve data
+			
+			
+			
+			x_pageLoaded();
+		}
+	}
+	
+	pageName.init();
+	
+</script>
+
+
+<style type="text/css">
+	
+</style>
+
+
+<div id="pageContents">
+	
+</div>

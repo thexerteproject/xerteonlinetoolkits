@@ -1,0 +1,563 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/**
+ * @module engine/conversion/downcastdispatcher
+ */
+import { ModelConsumable } from './modelconsumable.js';
+import { ModelRange } from '../model/range.js';
+import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
+/**
+ * The downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting
+ * to changes in the model and firing a set of events. The callbacks listening to these events are called converters. The
+ * converters' role is to convert the model changes to changes in view (for example, adding view nodes or
+ * changing attributes on view elements).
+ *
+ * During the conversion process, downcast dispatcher fires events basing on the state of the model and prepares
+ * data for these events. It is important to understand that the events are connected with the changes done on the model,
+ * for example: "a node has been inserted" or "an attribute has changed". This is in contrary to upcasting (a view-to-model conversion)
+ * where you convert the view state (view nodes) to a model tree.
+ *
+ * The events are prepared basing on a diff created by the {@link module:engine/model/differ~Differ Differ}, which buffers them
+ * and then passes to the downcast dispatcher as a diff between the old model state and the new model state.
+ *
+ * Note that because the changes are converted, there is a need to have a mapping between the model structure and the view structure.
+ * To map positions and elements during the downcast (a model-to-view conversion), use {@link module:engine/conversion/mapper~Mapper}.
+ *
+ * Downcast dispatcher fires the following events for model tree changes:
+ *
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert`} &ndash;
+ * If a range of nodes was inserted to the model tree.
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove `remove`} &ndash;
+ * If a range of nodes was removed from the model tree.
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute `attribute`} &ndash;
+ * If an attribute was added, changed or removed from a model node.
+ *
+ * For {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert`}
+ * and {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute `attribute`},
+ * the downcast dispatcher generates {@link module:engine/conversion/modelconsumable~ModelConsumable consumables}.
+ * These are used to have control over which changes have already been consumed. It is useful when some converters
+ * overwrite others or convert multiple changes (for example, it converts an insertion of an element and also converts that
+ * element's attributes during the insertion).
+ *
+ * Additionally, downcast dispatcher fires events for {@link module:engine/model/markercollection~Marker marker} changes:
+ *
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker `addMarker`} &ndash; If a marker was added.
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:removeMarker `removeMarker`} &ndash; If a marker was
+ * removed.
+ *
+ * Note that changing a marker is done through removing the marker from the old range and adding it to the new range,
+ * so both of these events are fired.
+ *
+ * Finally, a downcast dispatcher also handles firing events for the {@link module:engine/model/selection model selection}
+ * conversion:
+ *
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:selection `selection`}
+ * &ndash; Converts the selection from the model to the view.
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute `attribute`}
+ * &ndash; Fired for every selection attribute.
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker `addMarker`}
+ * &ndash; Fired for every marker that contains a selection.
+ *
+ * Unlike the model tree and the markers, the events for selection are not fired for changes but for a selection state.
+ *
+ * When providing custom listeners for a downcast dispatcher, remember to check whether a given change has not been
+ * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} yet.
+ *
+ * When providing custom listeners for a downcast dispatcher, keep in mind that you **should not** stop the event. If you stop it,
+ * then the default converter at the `lowest` priority will not trigger the conversion of this node's attributes and child nodes.
+ *
+ * When providing custom listeners for a downcast dispatcher, remember to use the provided
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter view downcast writer} to apply changes to the view document.
+ *
+ * You can read more about conversion in the following guide:
+ *
+ * * {@glink framework/deep-dive/conversion/downcast Downcast conversion}
+ *
+ * An example of a custom converter for the downcast dispatcher:
+ *
+ * ```ts
+ * // You will convert inserting a "paragraph" model element into the model.
+ * downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
+ * 	// Remember to check whether the change has not been consumed yet and consume it.
+ * 	if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+ * 		return;
+ * 	}
+ *
+ * 	// Translate the position in the model to a position in the view.
+ * 	const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+ *
+ * 	// Create a <p> element that will be inserted into the view at the `viewPosition`.
+ * 	const viewElement = conversionApi.writer.createContainerElement( 'p' );
+ *
+ * 	// Bind the newly created view element to the model element so positions will map accordingly in the future.
+ * 	conversionApi.mapper.bindElements( data.item, viewElement );
+ *
+ * 	// Add the newly created view element to the view.
+ * 	conversionApi.writer.insert( viewPosition, viewElement );
+ * } );
+ * ```
+ */
+export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
+    /**
+     * A template for an interface passed by the dispatcher to the event callbacks.
+     *
+     * @internal
+     */
+    _conversionApi;
+    /**
+     * A map of already fired events for a given `ModelConsumable`.
+     */
+    _firedEventsMap;
+    /**
+     * Creates a downcast dispatcher instance.
+     *
+     * @see module:engine/conversion/downcastdispatcher~DowncastConversionApi
+     *
+     * @param conversionApi Additional properties for an interface that will be passed to events fired
+     * by the downcast dispatcher.
+     */
+    constructor(conversionApi) {
+        super();
+        this._conversionApi = { dispatcher: this, ...conversionApi };
+        this._firedEventsMap = new WeakMap();
+    }
+    /**
+     * Converts changes buffered in the given {@link module:engine/model/differ~Differ model differ}
+     * and fires conversion events based on it.
+     *
+     * @fires insert
+     * @fires remove
+     * @fires attribute
+     * @fires addMarker
+     * @fires removeMarker
+     * @fires reduceChanges
+     * @param differ The differ object with buffered changes.
+     * @param markers Markers related to the model fragment to convert.
+     * @param writer The view writer that should be used to modify the view document.
+     */
+    convertChanges(differ, markers, writer) {
+        const refreshedItems = differ.getRefreshedItems();
+        const conversionApi = this._createConversionApi(writer, refreshedItems);
+        // Before the view is updated, remove markers which have changed.
+        for (const change of differ.getMarkersToRemove()) {
+            this._convertMarkerRemove(change.name, change.range, conversionApi);
+        }
+        // Let features modify the change list (for example to allow reconversion).
+        const changes = this._reduceChanges(differ.getChanges(), refreshedItems);
+        // Convert changes that happened on model tree.
+        for (const entry of changes) {
+            if (entry.type === 'insert') {
+                this._convertInsert(ModelRange._createFromPositionAndShift(entry.position, entry.length), conversionApi);
+            }
+            else if (entry.type === 'reinsert') {
+                this._convertReinsert(ModelRange._createFromPositionAndShift(entry.position, entry.length), conversionApi);
+            }
+            else if (entry.type === 'remove') {
+                this._convertRemove(entry.position, entry.length, entry.name, conversionApi);
+            }
+            else {
+                // Defaults to 'attribute' change.
+                this._convertAttribute(entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, conversionApi);
+            }
+        }
+        // Remove mappings for all removed view elements.
+        // Remove these mappings as soon as they are not needed (https://github.com/ckeditor/ckeditor5/issues/15411).
+        conversionApi.mapper.flushDeferredBindings();
+        for (const markerName of conversionApi.mapper.flushUnboundMarkerNames()) {
+            const markerRange = markers.get(markerName).getRange();
+            this._convertMarkerRemove(markerName, markerRange, conversionApi);
+            this._convertMarkerAdd(markerName, markerRange, conversionApi);
+        }
+        // After the view is updated, convert markers which have changed.
+        for (const change of differ.getMarkersToAdd()) {
+            this._convertMarkerAdd(change.name, change.range, conversionApi);
+        }
+        // Verify if all insert consumables were consumed.
+        conversionApi.consumable.verifyAllConsumed('insert');
+    }
+    /**
+     * Starts a conversion of a model range and the provided markers.
+     *
+     * @fires insert
+     * @fires attribute
+     * @fires addMarker
+     * @param range The inserted range.
+     * @param markers The map of markers that should be down-casted.
+     * @param writer The view writer that should be used to modify the view document.
+     * @param options Optional options object passed to `convertionApi.options`.
+     */
+    convert(range, markers, writer, options = {}) {
+        const conversionApi = this._createConversionApi(writer, undefined, options);
+        this._convertInsert(range, conversionApi);
+        for (const [name, range] of markers) {
+            this._convertMarkerAdd(name, range, conversionApi);
+        }
+        // Verify if all insert consumables were consumed.
+        conversionApi.consumable.verifyAllConsumed('insert');
+    }
+    /**
+     * Starts the model selection conversion.
+     *
+     * Fires events for a given {@link module:engine/model/selection~ModelSelection selection} to start the selection conversion.
+     *
+     * @fires selection
+     * @fires addMarker
+     * @fires attribute
+     * @param selection The selection to convert.
+     * @param markers Markers connected with the converted model.
+     * @param writer View writer that should be used to modify the view document.
+     */
+    convertSelection(selection, markers, writer) {
+        const conversionApi = this._createConversionApi(writer);
+        // First perform a clean-up at the current position of the selection.
+        this.fire('cleanSelection', { selection }, conversionApi);
+        // Don't convert selection if it is in a model root that does not have a view root (for now this is only the graveyard root).
+        const modelRoot = selection.getFirstPosition().root;
+        if (!conversionApi.mapper.toViewElement(modelRoot)) {
+            return;
+        }
+        // Now, perform actual selection conversion.
+        const markersAtSelection = Array.from(markers.getMarkersAtPosition(selection.getFirstPosition()));
+        this._addConsumablesForSelection(conversionApi.consumable, selection, markersAtSelection);
+        this.fire('selection', { selection }, conversionApi);
+        if (!selection.isCollapsed) {
+            return;
+        }
+        for (const marker of markersAtSelection) {
+            // Do not fire event if the marker has been consumed.
+            if (conversionApi.consumable.test(selection, 'addMarker:' + marker.name)) {
+                const markerRange = marker.getRange();
+                if (!shouldMarkerChangeBeConverted(selection.getFirstPosition(), marker, conversionApi.mapper)) {
+                    continue;
+                }
+                const data = {
+                    item: selection,
+                    markerName: marker.name,
+                    markerRange
+                };
+                this.fire(`addMarker:${marker.name}`, data, conversionApi);
+            }
+        }
+        for (const key of selection.getAttributeKeys()) {
+            // Do not fire event if the attribute has been consumed.
+            if (conversionApi.consumable.test(selection, 'attribute:' + key)) {
+                const data = {
+                    item: selection,
+                    range: selection.getFirstRange(),
+                    attributeKey: key,
+                    attributeOldValue: null,
+                    attributeNewValue: selection.getAttribute(key)
+                };
+                this.fire(`attribute:${key}:$text`, data, conversionApi);
+            }
+        }
+    }
+    /**
+     * Fires insertion conversion of a range of nodes.
+     *
+     * For each node in the range, {@link #event:insert `insert` event is fired}. For each attribute on each node,
+     * {@link #event:attribute `attribute` event is fired}.
+     *
+     * @fires insert
+     * @fires attribute
+     * @param range The inserted range.
+     * @param conversionApi The conversion API object.
+     * @param options.doNotAddConsumables Whether the ModelConsumable should not get populated
+     * for items in the provided range.
+     */
+    _convertInsert(range, conversionApi, options = {}) {
+        if (!options.doNotAddConsumables) {
+            // Collect a list of things that can be consumed, consisting of nodes and their attributes.
+            this._addConsumablesForInsert(conversionApi.consumable, range);
+        }
+        // Fire a separate insert event for each node and text fragment contained in the range.
+        for (const data of range.getWalker({ shallow: true })) {
+            this._testAndFire('insert', walkerValueToEventData(data), conversionApi);
+        }
+    }
+    /**
+     * Fires conversion of a single node removal. Fires {@link #event:remove remove event} with provided data.
+     *
+     * @param position Position from which node was removed.
+     * @param length Offset size of removed node.
+     * @param name Name of removed node.
+     * @param conversionApi The conversion API object.
+     */
+    _convertRemove(position, length, name, conversionApi) {
+        this.fire(`remove:${name}`, { position, length }, conversionApi);
+    }
+    /**
+     * Starts a conversion of an attribute change on a given `range`.
+     *
+     * For each node in the given `range`, {@link #event:attribute attribute event} is fired with the passed data.
+     *
+     * @fires attribute
+     * @param range Changed range.
+     * @param key Key of the attribute that has changed.
+     * @param oldValue Attribute value before the change or `null` if the attribute has not been set before.
+     * @param newValue New attribute value or `null` if the attribute has been removed.
+     * @param conversionApi The conversion API object.
+     */
+    _convertAttribute(range, key, oldValue, newValue, conversionApi) {
+        // Create a list with attributes to consume.
+        this._addConsumablesForRange(conversionApi.consumable, range, `attribute:${key}`);
+        // Create a separate attribute event for each node in the range.
+        for (const value of range) {
+            const data = {
+                item: value.item,
+                range: ModelRange._createFromPositionAndShift(value.previousPosition, value.length),
+                attributeKey: key,
+                attributeOldValue: oldValue,
+                attributeNewValue: newValue
+            };
+            this._testAndFire(`attribute:${key}`, data, conversionApi);
+        }
+    }
+    /**
+     * Fires re-insertion conversion (with a `reconversion` flag passed to `remove` and `insert` events)
+     * of a range of elements (only elements on the range depth, without children).
+     *
+     * For each node in the range on its depth (without children), {@link #event:insert `insert` event} is fired.
+     * For each attribute on each node, {@link #event:attribute `attribute` event} is fired.
+     *
+     * @fires insert
+     * @fires attribute
+     * @param range The range to reinsert.
+     * @param conversionApi The conversion API object.
+     */
+    _convertReinsert(range, conversionApi) {
+        // Convert the elements - without converting children.
+        const walkerValues = Array.from(range.getWalker({ shallow: true }));
+        // Collect a list of things that can be consumed, consisting of nodes and their attributes.
+        this._addConsumablesForInsert(conversionApi.consumable, walkerValues);
+        // Fire a separate insert event for each node and text fragment contained shallowly in the range.
+        for (const data of walkerValues.map(walkerValueToEventData)) {
+            // For backward compatibility and handlers that does not recognize reconversion.
+            this.fire(`remove:${data.item.is('element') ? data.item.name : '$text'}`, { position: data.range.start, length: data.item.offsetSize, reconversion: true }, conversionApi);
+            // Reinsert the view element.
+            this._testAndFire('insert', { ...data, reconversion: true }, conversionApi);
+        }
+    }
+    /**
+     * Converts the added marker. Fires the {@link #event:addMarker `addMarker`} event for each item
+     * in the marker's range. If the range is collapsed, a single event is dispatched. See the event description for more details.
+     *
+     * @fires addMarker
+     * @param markerName Marker name.
+     * @param markerRange The marker range.
+     * @param conversionApi The conversion API object.
+     */
+    _convertMarkerAdd(markerName, markerRange, conversionApi) {
+        // Do not convert if range is in graveyard.
+        if (markerRange.root.rootName == '$graveyard') {
+            return;
+        }
+        // In markers' case, event name == consumable name.
+        const eventName = `addMarker:${markerName}`;
+        //
+        // First, fire an event for the whole marker.
+        //
+        conversionApi.consumable.add(markerRange, eventName);
+        this.fire(eventName, { markerName, markerRange }, conversionApi);
+        //
+        // Do not fire events for each item inside the range if the range got consumed.
+        // Also consume the whole marker consumable if it wasn't consumed.
+        //
+        if (!conversionApi.consumable.consume(markerRange, eventName)) {
+            return;
+        }
+        //
+        // Then, fire an event for each item inside the marker range.
+        //
+        this._addConsumablesForRange(conversionApi.consumable, markerRange, eventName);
+        for (const item of markerRange.getItems()) {
+            // Do not fire event for already consumed items.
+            if (!conversionApi.consumable.test(item, eventName)) {
+                continue;
+            }
+            const data = { item, range: ModelRange._createOn(item), markerName, markerRange };
+            this.fire(eventName, data, conversionApi);
+        }
+    }
+    /**
+     * Fires the conversion of the marker removal. Fires the {@link #event:removeMarker `removeMarker`} event with the provided data.
+     *
+     * @fires removeMarker
+     * @param markerName Marker name.
+     * @param markerRange The marker range.
+     * @param conversionApi The conversion API object.
+     */
+    _convertMarkerRemove(markerName, markerRange, conversionApi) {
+        // Do not convert if range is in graveyard.
+        if (markerRange.root.rootName == '$graveyard') {
+            return;
+        }
+        this.fire(`removeMarker:${markerName}`, { markerName, markerRange }, conversionApi);
+    }
+    /**
+     * Fires the reduction of changes buffered in the {@link module:engine/model/differ~Differ `Differ`}.
+     *
+     * Features can replace selected {@link module:engine/model/differ~DifferItem `DifferItem`}s with `reinsert` entries to trigger
+     * reconversion. The {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
+     * `DowncastHelpers.elementToStructure()`} is using this event to trigger reconversion.
+     *
+     * @fires reduceChanges
+     */
+    _reduceChanges(changes, refreshedItems) {
+        const data = {
+            changes,
+            refreshedItems
+        };
+        this.fire('reduceChanges', data);
+        return data.changes;
+    }
+    /**
+     * Populates provided {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume from a given range,
+     * assuming that the range has just been inserted to the model.
+     *
+     * @param consumable The consumable.
+     * @param walkerValues The walker values for the inserted range.
+     * @returns The values to consume.
+     */
+    _addConsumablesForInsert(consumable, walkerValues) {
+        for (const value of walkerValues) {
+            const item = value.item;
+            // Add consumable if it wasn't there yet.
+            if (consumable.test(item, 'insert') === null) {
+                consumable.add(item, 'insert');
+                for (const key of item.getAttributeKeys()) {
+                    consumable.add(item, 'attribute:' + key);
+                }
+            }
+        }
+        return consumable;
+    }
+    /**
+     * Populates provided {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume for a given range.
+     *
+     * @param consumable The consumable.
+     * @param range The affected range.
+     * @param type Consumable type.
+     * @returns The values to consume.
+     */
+    _addConsumablesForRange(consumable, range, type) {
+        for (const item of range.getItems()) {
+            consumable.add(item, type);
+        }
+        return consumable;
+    }
+    /**
+     * Populates provided {@link module:engine/conversion/modelconsumable~ModelConsumable} with selection consumable values.
+     *
+     * @param consumable The consumable.
+     * @param selection The selection to create the consumable from.
+     * @param markers Markers that contain the selection.
+     * @returns The values to consume.
+     */
+    _addConsumablesForSelection(consumable, selection, markers) {
+        consumable.add(selection, 'selection');
+        for (const marker of markers) {
+            consumable.add(selection, 'addMarker:' + marker.name);
+        }
+        for (const key of selection.getAttributeKeys()) {
+            consumable.add(selection, 'attribute:' + key);
+        }
+        return consumable;
+    }
+    /**
+     * Tests whether given event wasn't already fired and if so, fires it.
+     *
+     * @fires insert
+     * @fires attribute
+     * @param type Event type.
+     * @param data Event data.
+     * @param conversionApi The conversion API object.
+     */
+    _testAndFire(type, data, conversionApi) {
+        const eventName = getEventName(type, data);
+        const itemKey = data.item.is('$textProxy') ? conversionApi.consumable._getSymbolForTextProxy(data.item) : data.item;
+        const eventsFiredForConversion = this._firedEventsMap.get(conversionApi);
+        const eventsFiredForItem = eventsFiredForConversion.get(itemKey);
+        if (!eventsFiredForItem) {
+            eventsFiredForConversion.set(itemKey, new Set([eventName]));
+        }
+        else if (!eventsFiredForItem.has(eventName)) {
+            eventsFiredForItem.add(eventName);
+        }
+        else {
+            return;
+        }
+        this.fire(eventName, data, conversionApi);
+    }
+    /**
+     * Fires not already fired events for setting attributes on just inserted item.
+     *
+     * @param item The model item to convert attributes for.
+     * @param conversionApi The conversion API object.
+     */
+    _testAndFireAddAttributes(item, conversionApi) {
+        const data = {
+            item,
+            range: ModelRange._createOn(item)
+        };
+        for (const key of data.item.getAttributeKeys()) {
+            data.attributeKey = key;
+            data.attributeOldValue = null;
+            data.attributeNewValue = data.item.getAttribute(key);
+            this._testAndFire(`attribute:${key}`, data, conversionApi);
+        }
+    }
+    /**
+     * Builds an instance of the {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi} from a template and a given
+     * {@link module:engine/view/downcastwriter~ViewDowncastWriter `ViewDowncastWriter`} and options object.
+     *
+     * @param writer View writer that should be used to modify the view document.
+     * @param refreshedItems A set of model elements that should not reuse their
+     * previous view representations.
+     * @param options Optional options passed to `convertionApi.options`.
+     * @return The conversion API object.
+     */
+    _createConversionApi(writer, refreshedItems = new Set(), options = {}) {
+        const conversionApi = {
+            ...this._conversionApi,
+            consumable: new ModelConsumable(),
+            writer,
+            options,
+            convertItem: item => this._convertInsert(ModelRange._createOn(item), conversionApi),
+            convertChildren: element => this._convertInsert(ModelRange._createIn(element), conversionApi, { doNotAddConsumables: true }),
+            convertAttributes: item => this._testAndFireAddAttributes(item, conversionApi),
+            canReuseView: viewElement => !refreshedItems.has(conversionApi.mapper.toModelElement(viewElement))
+        };
+        this._firedEventsMap.set(conversionApi, new Map());
+        return conversionApi;
+    }
+}
+/**
+ * Helper function, checks whether change of `marker` at `modelPosition` should be converted. Marker changes are not
+ * converted if they happen inside an element with custom conversion method.
+ */
+function shouldMarkerChangeBeConverted(modelPosition, marker, mapper) {
+    const range = marker.getRange();
+    const ancestors = Array.from(modelPosition.getAncestors());
+    ancestors.shift(); // Remove root element. It cannot be passed to `model.Range#containsItem`.
+    ancestors.reverse();
+    const hasCustomHandling = ancestors.some(element => {
+        if (range.containsItem(element)) {
+            const viewElement = mapper.toViewElement(element);
+            return !!viewElement.getCustomProperty('addHighlight');
+        }
+    });
+    return !hasCustomHandling;
+}
+function getEventName(type, data) {
+    const name = data.item.is('element') ? data.item.name : '$text';
+    return `${type}:${name}`;
+}
+function walkerValueToEventData(value) {
+    return {
+        item: value.item,
+        range: ModelRange._createFromPositionAndShift(value.previousPosition, value.length)
+    };
+}

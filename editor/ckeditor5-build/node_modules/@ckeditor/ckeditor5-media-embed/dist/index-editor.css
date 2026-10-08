@@ -1,0 +1,96 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+.ck-media__wrapper .ck-media__placeholder{
+		display:flex;
+		flex-direction:column;
+		align-items:center;
+	}
+
+.ck-media__wrapper .ck-media__placeholder .ck-media__placeholder__url{
+			max-width:100%;
+
+			position:relative;
+		}
+
+.ck-media__wrapper .ck-media__placeholder .ck-media__placeholder__url .ck-media__placeholder__url__text{
+				overflow:hidden;
+				display:block;
+			}
+
+.ck-media__wrapper[data-oembed-url*="twitter.com"] .ck-media__placeholder__icon *, .ck-media__wrapper[data-oembed-url*="google.com/maps"] .ck-media__placeholder__icon *, .ck-media__wrapper[data-oembed-url*="goo.gl/maps"] .ck-media__placeholder__icon *, .ck-media__wrapper[data-oembed-url*="maps.google.com"] .ck-media__placeholder__icon *, .ck-media__wrapper[data-oembed-url*="maps.app.goo.gl"] .ck-media__placeholder__icon *, .ck-media__wrapper[data-oembed-url*="facebook.com"] .ck-media__placeholder__icon *, .ck-media__wrapper[data-oembed-url*="instagram.com"] .ck-media__placeholder__icon *{
+			display:none;
+		}
+.ck-editor__editable:not(.ck-read-only) .ck-media__wrapper > *:not(.ck-media__placeholder){
+	pointer-events:none;
+}
+.ck-editor__editable:not(.ck-read-only) .ck-widget:not(.ck-widget_selected) .ck-media__placeholder{
+	pointer-events:none;
+}
+
+.ck-vertical-form .ck-button::after{
+		content:"";
+		width:0;
+		position:absolute;
+		right:-1px;
+		top:-1px;
+		bottom:-1px;
+		z-index:1;
+	}
+
+.ck-vertical-form .ck-button:focus::after{
+		display:none;
+	}
+
+@media screen and (max-width: 600px){
+			.ck.ck-responsive-form .ck-button::after{
+				content:"";
+				width:0;
+				position:absolute;
+				right:-1px;
+				top:-1px;
+				bottom:-1px;
+				z-index:1;
+			}
+
+			.ck.ck-responsive-form .ck-button:focus::after{
+				display:none;
+			}
+	}
+
+.ck.ck-media-form{
+	display:flex;
+	align-items:flex-start;
+	flex-direction:row;
+	flex-wrap:nowrap;
+	width:400px;
+}
+
+.ck.ck-media-form .ck-labeled-field-view{
+		display:inline-block;
+		width:100%;
+	}
+
+.ck.ck-media-form .ck-label{
+		display:none;
+	}
+
+.ck.ck-media-form .ck-input{
+		width:100%;
+	}
+
+@media screen and (max-width: 600px){
+
+.ck.ck-media-form{
+		flex-wrap:wrap;
+}
+
+		.ck.ck-media-form .ck-labeled-field-view{
+			flex-basis:100%;
+		}
+
+		.ck.ck-media-form .ck-button{
+			flex-basis:50%;
+		}
+	}

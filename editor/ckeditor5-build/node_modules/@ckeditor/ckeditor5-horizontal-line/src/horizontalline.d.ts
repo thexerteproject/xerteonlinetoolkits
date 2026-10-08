@@ -1,0 +1,32 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/**
+ * @module horizontal-line/horizontalline
+ */
+import { Plugin } from 'ckeditor5/src/core.js';
+import { Widget } from 'ckeditor5/src/widget.js';
+import { HorizontalLineEditing } from './horizontallineediting.js';
+import { HorizontalLineUI } from './horizontallineui.js';
+/**
+ * The horizontal line feature.
+ *
+ * It provides the possibility to insert a horizontal line into the rich-text editor.
+ *
+ * For a detailed overview, check the {@glink features/horizontal-line Horizontal line feature} documentation.
+ */
+export declare class HorizontalLine extends Plugin {
+    /**
+     * @inheritDoc
+     */
+    static get requires(): readonly [typeof HorizontalLineEditing, typeof HorizontalLineUI, typeof Widget];
+    /**
+     * @inheritDoc
+     */
+    static get pluginName(): "HorizontalLine";
+    /**
+     * @inheritDoc
+     */
+    static get isOfficialPlugin(): true;
+}

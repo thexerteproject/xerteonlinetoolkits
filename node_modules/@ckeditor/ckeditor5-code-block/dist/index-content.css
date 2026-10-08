@@ -1,0 +1,24 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+.ck-content pre{
+	padding:1em;
+	color:hsl(0, 0%, 20.8%);
+	background:hsla(0, 0%, 78%, 0.3);
+	border:1px solid hsl(0, 0%, 77%);
+	border-radius:2px;
+	text-align:left;
+	direction:ltr;
+
+	tab-size:4;
+	white-space:pre-wrap;
+	font-style:normal;
+	min-width:200px;
+}
+
+.ck-content pre code{
+		background:unset;
+		padding:0;
+		border-radius:0;
+	}

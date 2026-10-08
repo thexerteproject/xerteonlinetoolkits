@@ -1,0 +1,749 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/* Ensure that table header text is aligned to the start by default. See https://github.com/ckeditor/ckeditor5/issues/19454. */
+
+.ck-content .table th {
+		text-align: start;
+	}
+
+/* Text alignment of the table header should match the editor settings and override the native browser styling,
+	when content is available outside the editor. See https://github.com/ckeditor/ckeditor5/issues/6638. */
+
+.ck-content[dir="rtl"] .table th {
+		text-align: right;
+	}
+
+.ck-content[dir="ltr"] .table th {
+		text-align: left;
+	}
+
+.ck-content figure.table:not(.layout-table) {
+		display: table;
+	}
+
+.ck-content figure.table:not(.layout-table) > table {
+			width: 100%;
+			height: 100%;
+		}
+
+.ck-content .table:not(.layout-table) {
+		/* Give the table widget some air and center it horizontally */
+		/* The first value should be equal to --ck-spacing-large variable if used in the editor context
+		to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
+		margin: 0.9em auto;
+	}
+
+.ck-content table.table:not(.layout-table),
+	.ck-content figure.table:not(.layout-table) > table {
+		/* The table cells should have slight borders */
+		border-collapse: collapse;
+		border-spacing: 0;
+
+		/* The outer border of the table should be slightly darker than the inner lines.
+		Also see https://github.com/ckeditor/ckeditor5-table/issues/50. */
+		border: 1px double hsl(0, 0%, 70%);
+	}
+
+/* The linter is disabled here because linter is confused when resolving the `table.table:not(.layout-table)`
+			and `figure.table:not(.layout-table) > table` selectors combined with below selectors.
+			There is no need to split it into two large structures with same code just to make linter happy. */
+
+/* stylelint-disable no-descending-specificity */
+
+.ck-content table.table:not(.layout-table) > thead > tr > th, .ck-content figure.table:not(.layout-table) > table > thead > tr > th, .ck-content table.table:not(.layout-table) > tbody > tr > th, .ck-content figure.table:not(.layout-table) > table > tbody > tr > th {
+					font-weight: bold;
+					background: hsla(0, 0%, 0%, 5%);
+				}
+
+.ck-content table.table:not(.layout-table) > thead > tr > td,
+				.ck-content figure.table:not(.layout-table) > table > thead > tr > td,
+				.ck-content table.table:not(.layout-table) > tbody > tr > td,
+				.ck-content figure.table:not(.layout-table) > table > tbody > tr > td,
+				.ck-content table.table:not(.layout-table) > thead > tr > th,
+				.ck-content figure.table:not(.layout-table) > table > thead > tr > th,
+				.ck-content table.table:not(.layout-table) > tbody > tr > th,
+				.ck-content figure.table:not(.layout-table) > table > tbody > tr > th {
+
+					min-width: 2em;
+					padding: 0.4em;
+
+					/* The border is inherited from .ck-editor__nested-editable styles, so theoretically it's not necessary here.
+					However, the border is a content style, so it should use .ck-content (so it works outside the editor).
+					Hence, the duplication. See https://github.com/ckeditor/ckeditor5/issues/6314 */
+					border: 1px solid hsl(0, 0%, 75%);
+					/* Opinionated table content styling: prevents content from shifting
+					 * when Enter is pressed in the first cell.
+					 * See: https://github.com/ckeditor/ckeditor5/pull/18801
+					 */
+				}
+
+.ck-content table.table:not(.layout-table) > thead > tr > td > p:first-of-type, .ck-content figure.table:not(.layout-table) > table > thead > tr > td > p:first-of-type, .ck-content table.table:not(.layout-table) > tbody > tr > td > p:first-of-type, .ck-content figure.table:not(.layout-table) > table > tbody > tr > td > p:first-of-type, .ck-content table.table:not(.layout-table) > thead > tr > th > p:first-of-type, .ck-content figure.table:not(.layout-table) > table > thead > tr > th > p:first-of-type, .ck-content table.table:not(.layout-table) > tbody > tr > th > p:first-of-type, .ck-content figure.table:not(.layout-table) > table > tbody > tr > th > p:first-of-type {
+						margin-top: 0;
+					}
+
+/* Mirrors the rule above for the last paragraph to keep the
+					 * experience consistent with the first paragraph.
+					 *
+					 * Together, these rules prevent margins from appearing when a
+					 * bogus paragraph becomes a real paragraph after it receives line
+					 * height, text alignment, or other block style.
+					 *
+					 * See: https://github.com/ckeditor/ckeditor5/pull/18801
+					 */
+
+.ck-content table.table:not(.layout-table) > thead > tr > td > p:last-of-type, .ck-content figure.table:not(.layout-table) > table > thead > tr > td > p:last-of-type, .ck-content table.table:not(.layout-table) > tbody > tr > td > p:last-of-type, .ck-content figure.table:not(.layout-table) > table > tbody > tr > td > p:last-of-type, .ck-content table.table:not(.layout-table) > thead > tr > th > p:last-of-type, .ck-content figure.table:not(.layout-table) > table > thead > tr > th > p:last-of-type, .ck-content table.table:not(.layout-table) > tbody > tr > th > p:last-of-type, .ck-content figure.table:not(.layout-table) > table > tbody > tr > th > p:last-of-type {
+						margin-bottom: 0;
+					}
+
+@media print {
+		/**
+		 * Sometimes Chrome incorrectly calculates the height of the last table row and some
+		 * of the content overlaps the paragraph that is placed directly after the table. It affects
+		 * the column split mode pagination calculation which causes mismatch between the print mode and
+		 * the preview mode.
+		 *
+		 * This issue happens only if:
+		 *
+		 * 	* The table is inside a figure element.
+		 * 	* The table has `display: table` style set.
+		 * 	* The block element is placed directly after the table.
+		 */
+		.ck-content figure.table:not(.layout-table) {
+			width: fit-content;
+			height: fit-content;
+		}
+
+		/**
+		 * Expanding the table to the full height of the parent container is necessary because tables
+		 * are rendered inside <figure> elements, which is kinda buggy in table height calculation.
+		 * While setting `height: 100%` fixes the issue in the editing mode described here:
+		 * https://github.com/ckeditor/ckeditor5/issues/6186
+		 *
+		 * it's causing another issue with the table height in the print preview mode here:
+		 * https://github.com/ckeditor/ckeditor5/issues/16856
+		 *
+		 * For now, resetting the height to `initial` in the print mode works as a workaround.
+		 */
+		.ck-content figure.table:not(.layout-table) > table {
+			height: initial;
+		}
+}
+
+.ck-editor__editable .ck-table-bogus-paragraph {
+	/*
+	 * Use display:inline-block to force Chrome/Safari to limit text mutations to this element.
+	 * See https://github.com/ckeditor/ckeditor5/issues/6062.
+	 */
+	display: inline-block;
+
+	/*
+	 * Inline HTML elements nested in the span should always be dimensioned in relation to the whole cell width.
+	 * See https://github.com/ckeditor/ckeditor5/issues/9117.
+	 */
+	width: 100%;
+}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-table-cell-properties-form .ck-form__row.ck-table-cell-properties-form__alignment-row {
+			flex-wrap: wrap;
+		}
+
+.ck.ck-table-cell-properties-form .ck-form__row.ck-table-cell-properties-form__alignment-row .ck.ck-toolbar:first-of-type {
+					/* 4 buttons out of 7 (h-alignment + v-alignment) = 0.57 */
+					flex-grow: 0.57;
+				}
+
+.ck.ck-table-cell-properties-form .ck-form__row.ck-table-cell-properties-form__alignment-row .ck.ck-toolbar:last-of-type {
+					/* 3 buttons out of 7 (h-alignment + v-alignment) = 0.43 */
+					flex-grow: 0.43;
+				}
+
+.ck.ck-table-cell-properties-form .ck-form__row.ck-table-cell-properties-form__alignment-row .ck.ck-toolbar .ck-button {
+					flex-grow: 1;
+				}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck-editor__editable.ck-editor__editable_inline > .ck-widget.ck-widget_with-selection-handle.layout-table:first-child {
+				margin-top: var(--ck-spacing-large);
+			}
+
+/*
+			* This value should match with the default margins of the block elements (like .media, .image or .table)
+			* to avoid a content jumping when the fake selection container shows up (See https://github.com/ckeditor/ckeditor5/issues/9825).
+			*/
+
+.ck-editor__editable.ck-editor__editable_inline > .ck-widget.ck-widget_with-selection-handle.layout-table:last-child,
+			
+			.ck-editor__editable.ck-editor__editable_inline > .ck-widget.ck-widget_with-selection-handle.layout-table:nth-last-child(2):has( + .ck-fake-selection-container) {
+				margin-bottom: var(--ck-spacing-large);
+			}
+
+.ck-editor__editable .table.layout-table {
+		display: table;
+		margin: 0;
+
+		/* Widget type around overrides. */
+	}
+
+.ck-editor__editable .table.layout-table.ck-widget:hover {
+				/* To prevent the widget outline from being cut off at the bottom
+				when the next cell or table has a background color, for example. */
+				z-index: var(--ck-z-default);
+			}
+
+.ck-editor__editable .table.layout-table.ck-widget:hover > .ck-widget__selection-handle {
+				opacity: 0.75;
+				visibility: visible;
+			}
+
+.ck-editor__editable .table.layout-table.ck-widget:hover > .ck-widget__selection-handle:hover {
+					opacity: 1;
+				}
+
+/* Because of setting the opacity to 0.75 to the selection handle for the layout table,
+			it overrides the similar selector in widget (specificity is higher),
+			thats why we must override it here also. */
+
+.ck-editor__editable .table.layout-table.ck-widget:has( .ck-widget.table:hover ) > .ck-widget__selection-handle {
+				opacity: 0;
+				visibility: hidden;
+			}
+
+.ck-editor__editable .table.layout-table.ck-widget.ck-widget_selected {
+				/* To prevent the widget outline from being cut off at the bottom
+				when the next cell or table has a background color, for example. */
+				z-index: var(--ck-z-default);
+			}
+
+.ck-content table.table.layout-table,
+	.ck-content figure.table.layout-table {
+		/* Do not reserve space above and below the layout table. */
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+
+.ck-content table.table.layout-table,
+	.ck-content figure.table.layout-table > table {
+		border-spacing: 0;
+	}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-form__row.ck-table-form__action-row .ck-button-save,
+		.ck.ck-form__row.ck-table-form__action-row .ck-button-cancel {
+			justify-content: center;
+		}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-table-form .ck-form__row.ck-table-form__border-row,
+		.ck.ck-table-form .ck-form__row.ck-table-form__background-row,
+		.ck.ck-table-form .ck-form__row.ck-table-form__cell-type-row {
+			flex-wrap: wrap;
+		}
+
+.ck.ck-table-form .ck-form__row.ck-table-form__dimensions-row,
+		.ck.ck-table-form .ck-form__row.ck-table-form__cell-type-row {
+			flex-wrap: wrap;
+			align-items: center;
+		}
+
+.ck.ck-table-form .ck-form__row.ck-table-form__dimensions-row .ck-labeled-field-view, .ck.ck-table-form .ck-form__row.ck-table-form__cell-type-row .ck-labeled-field-view {
+				display: flex;
+				flex-direction: column-reverse;
+				align-items: center;
+			}
+
+.ck.ck-table-form .ck-form__row.ck-table-form__dimensions-row .ck-labeled-field-view .ck.ck-dropdown, .ck.ck-table-form .ck-form__row.ck-table-form__cell-type-row .ck-labeled-field-view .ck.ck-dropdown {
+					flex-grow: 0;
+				}
+
+.ck.ck-table-form .ck-form__row.ck-table-form__dimensions-row .ck-table-form__dimension-operator, .ck.ck-table-form .ck-form__row.ck-table-form__cell-type-row .ck-table-form__dimension-operator {
+				flex-grow: 0;
+			}
+
+/* Ignore labels that work as fieldset legends */
+
+/* Fallback for table dimension operator */
+
+.ck.ck-table-form .ck-form__row > *:not(.ck-label, .ck-table-form__dimension-operator) {
+			flex-grow: 1;
+		}
+
+.ck.ck-table-form .ck.ck-labeled-field-view {
+		/* Allow absolute positioning of the status (error) balloons. */
+		position: relative;
+	}
+
+.ck.ck-table-form .ck.ck-labeled-field-view .ck.ck-labeled-field-view__status {
+			position: absolute;
+			left: 50%;
+			bottom: calc( -1 * var(--ck-table-properties-error-arrow-size) );
+			transform: translate(-50%,100%);
+
+			/* Make sure the balloon status stays on top of other form elements. */
+			z-index: 1;
+
+			/* The arrow pointing towards the field. */
+		}
+
+.ck.ck-table-form .ck.ck-labeled-field-view .ck.ck-labeled-field-view__status::after {
+				content: "";
+				position: absolute;
+				top: calc( -1 * var(--ck-table-properties-error-arrow-size) );
+				left: 50%;
+				transform: translateX( -50% );
+			}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-table-properties-form .ck-form__row.ck-table-properties-form__alignment-row {
+			flex-wrap: wrap;
+			flex-basis: 0;
+			align-content: baseline;
+		}
+
+.ck.ck-table-properties-form .ck-form__row.ck-table-properties-form__alignment-row .ck.ck-toolbar .ck-toolbar__items {
+				flex-wrap: nowrap;
+			}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-content-color-table-caption-background: hsl(0, 0%, 97%);
+	--ck-content-color-table-caption-text: hsl(0, 0%, 20%);
+	--ck-color-table-caption-highlighted-background: hsl(52deg 100% 50%);
+}
+
+/* Content styles */
+.ck-content .table > figcaption,
+.ck-content figure.table > table > caption {
+	display: table-caption;
+	caption-side: top;
+	word-break: normal;
+	overflow-wrap: anywhere;
+	text-align: center;
+	color: var(--ck-content-color-table-caption-text);
+	background-color: var(--ck-content-color-table-caption-background);
+	padding: .6em;
+	font-size: .75em;
+	outline-offset: -1px;
+
+	/* Improve placeholder rendering in high-constrast mode (https://github.com/ckeditor/ckeditor5/issues/14907). */
+}
+@media (forced-colors: active) {
+		.ck-content .table > figcaption, .ck-content figure.table > table > caption {
+		background-color: unset;
+		color: unset;
+		}
+	}
+
+/* Editing styles */
+@media (forced-colors: none) {
+		.ck.ck-editor__editable .table > figcaption.table__caption_highlighted, .ck.ck-editor__editable figure.table > table > caption.table__caption_highlighted {
+			animation: ck-table-caption-highlight .6s ease-out;
+		}
+	}
+.ck.ck-editor__editable .table > figcaption.ck-placeholder::before, .ck.ck-editor__editable figure.table > table > caption.ck-placeholder::before {
+		padding-left: inherit;
+		padding-right: inherit;
+
+		/*
+		 * Make sure the table caption placeholder doesn't overflow the placeholder area.
+		 * See https://github.com/ckeditor/ckeditor5/issues/9162.
+		 */
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+@keyframes ck-table-caption-highlight {
+	0% {
+		background-color: var(--ck-color-table-caption-highlighted-background);
+	}
+
+	100% {
+		background-color: var(--ck-content-color-table-caption-background);
+	}
+}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-color-table-column-resizer-hover: var(--ck-color-base-active);
+	--ck-table-column-resizer-width: 7px;
+
+	/* The offset used for absolute positioning of the resizer element, so that it is placed exactly above the cell border.
+	   The value is: minus half the width of the resizer decreased additionaly by the half the width of the border (0.5px). */
+	--ck-table-column-resizer-position-offset: calc(var(--ck-table-column-resizer-width) * -0.5 - 0.5px);
+}
+
+.ck-content .table .ck-table-resized {
+	table-layout: fixed;
+}
+
+.ck-content .table td,
+.ck-content .table th {
+	/* To prevent text overflowing beyond its cell when columns are resized by resize handler
+	(https://github.com/ckeditor/ckeditor5/pull/14379#issuecomment-1589460978). */
+	overflow-wrap: break-word;
+}
+
+.ck.ck-editor__editable .table td,
+.ck.ck-editor__editable .table th {
+	/* The resizer element is placed inside each cell, so it must be positioned relatively to the cell. */
+	position: relative;
+}
+
+.ck.ck-editor__editable .table .ck-table-column-resizer {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: var(--ck-table-column-resizer-position-offset);
+	width: var(--ck-table-column-resizer-width);
+	cursor: col-resize;
+	user-select: none;
+	z-index: var(--ck-z-default);
+}
+
+.ck.ck-editor__editable.ck-column-resize_disabled .table .ck-table-column-resizer {
+	display: none;
+}
+
+/* The resizer elements, which are extended to an extremely high height, break the drag & drop feature in Chrome. To make it work again,
+   all resizers must be hidden while the table is dragged. */
+.ck.ck-editor__editable .table[draggable] .ck-table-column-resizer {
+	display: none;
+}
+
+.ck.ck-editor__editable .table .ck-table-column-resizer:hover,
+.ck.ck-editor__editable .table .ck-table-column-resizer__active {
+	background-color: var(--ck-color-table-column-resizer-hover);
+	opacity: 0.25;
+}
+
+.ck.ck-editor__editable[dir=rtl] .table .ck-table-column-resizer {
+	left: var(--ck-table-column-resizer-position-offset);
+	right: unset;
+}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-content-table-style-spacing: 1.5em;
+}
+
+.ck.ck-table-properties-form .ck-form__row.ck-table-properties-form__alignment-row {
+			flex-wrap: wrap;
+			flex-basis: 0;
+			align-content: baseline;
+		}
+
+.ck.ck-table-properties-form .ck-form__row.ck-table-properties-form__alignment-row .ck.ck-toolbar .ck-toolbar__items {
+				flex-wrap: nowrap;
+			}
+
+.ck-content .table.table-style-align-left {
+			float: left;
+			margin-right: var(--ck-content-table-style-spacing);
+		}
+
+.ck-content .table.table-style-align-right {
+			float: right;
+			margin-left: var(--ck-content-table-style-spacing);
+		}
+
+.ck-content .table.table-style-align-center {
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+.ck-content .table.table-style-block-align-left {
+			margin-left: 0;
+			margin-right: auto;
+		}
+
+.ck-content .table.table-style-block-align-right {
+			margin-left: auto;
+			margin-right: 0;
+		}
+
+.ck-editor__editable .table.layout-table.table-style-align-center {
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+.ck-editor__editable .table.layout-table.table-style-align-left {
+			margin-right: var(--ck-content-table-style-spacing);
+		}
+
+.ck-editor__editable .table.layout-table.table-style-align-right {
+			margin-left: var(--ck-content-table-style-spacing);
+		}
+
+.ck-editor__editable .table.layout-table.table-style-block-align-left {
+			margin-left: 0;
+			margin-right: auto;
+		}
+
+.ck-editor__editable .table.layout-table.table-style-block-align-right {
+			margin-left: auto;
+			margin-right: 0;
+		}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-form-default-width: 340px;
+}
+
+.ck.ck-form {
+	padding: 0 0 var(--ck-spacing-large);
+}
+
+.ck.ck-form.ck-form_default-width {
+		width: var(--ck-form-default-width);
+	}
+
+.ck.ck-form:focus {
+		outline: none;
+	}
+
+.ck.ck-form .ck.ck-input-text,
+	.ck.ck-form .ck.ck-input-number {
+		min-width: 100%;
+		width: 0;
+	}
+
+.ck.ck-form .ck.ck-dropdown {
+		min-width: 100%;
+	}
+
+.ck.ck-form .ck.ck-dropdown .ck-dropdown__button:not(:focus) {
+				border: 1px solid var(--ck-color-base-border);
+			}
+
+.ck.ck-form .ck.ck-dropdown .ck-dropdown__button .ck-button__label {
+				width: 100%;
+			}
+
+/* Default `ck-responsive-form` customization when it lies next to `ck-form` class */
+
+@media screen and (max-width: 600px) {
+
+.ck.ck-form.ck-responsive-form .ck.ck-form__row.ck-form__row_with-submit {
+					flex-direction: column;
+					align-items: stretch;
+					padding: 0;
+			}
+	}
+
+@media screen and (max-width: 600px) {
+
+.ck.ck-form.ck-responsive-form .ck.ck-form__row.ck-form__row_with-submit > .ck {
+						margin: var(--ck-spacing-large) var(--ck-spacing-large) 0;
+				}
+	}
+
+@media screen and (max-width: 600px) {
+
+.ck.ck-form.ck-responsive-form .ck.ck-form__row.ck-form__row_with-submit .ck-button_with-text {
+						justify-content: center;
+				}
+	}
+
+@media screen and (max-width: 600px) {
+
+.ck.ck-form.ck-responsive-form .ck.ck-form__row.ck-form__row_large-bottom-padding {
+					padding-bottom: var(--ck-spacing-large);
+			}
+	}
+
+[dir="ltr"] .ck.ck-form.ck-responsive-form > :not(:first-child) {
+				margin-left: 0;
+			}
+
+[dir="rtl"] .ck.ck-form.ck-responsive-form > :not(:last-child) {
+				margin-left: 0;
+			}
+
+/* End of `ck-responsive-form` customization */
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-form__row.ck-table-form__action-row {
+		justify-content: flex-end;
+	}
+
+.ck.ck-form__row.ck-table-form__action-row .ck-button-save,
+		.ck.ck-form__row.ck-table-form__action-row .ck-button-cancel {
+			justify-content: center;
+		}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-table-form .ck-form__row.ck-table-form__border-row {
+			flex-wrap: wrap;
+		}
+
+.ck.ck-table-form .ck-form__row.ck-table-form__background-row {
+			flex-wrap: wrap;
+		}
+
+.ck.ck-table-form .ck-form__row.ck-table-form__dimensions-row {
+			flex-wrap: wrap;
+			align-items: center;
+		}
+
+.ck.ck-table-form .ck-form__row.ck-table-form__dimensions-row .ck-labeled-field-view {
+				display: flex;
+				flex-direction: column-reverse;
+				align-items: center;
+			}
+
+.ck.ck-table-form .ck-form__row.ck-table-form__dimensions-row .ck-labeled-field-view .ck.ck-dropdown {
+					flex-grow: 0;
+				}
+
+/* Ignore labels that work as fieldset legends */
+
+/* Fallback for table dimension operator */
+
+.ck.ck-table-form .ck-form__row:not(.ck-table-form__action-row) > *:not(.ck-label, .ck-table-form__dimension-operator) {
+			flex-grow: 1;
+		}
+
+.ck.ck-table-form .ck.ck-labeled-field-view {
+		/* Allow absolute positioning of the status (error) balloons. */
+		position: relative;
+	}
+
+.ck.ck-table-form .ck.ck-labeled-field-view .ck.ck-labeled-field-view__status {
+			position: absolute;
+			left: 50%;
+			bottom: calc( -1 * var(--ck-table-properties-error-arrow-size) );
+			transform: translate(-50%,100%);
+
+			/* Make sure the balloon status stays on top of other form elements. */
+			z-index: 1;
+
+			/* The arrow pointing towards the field. */
+		}
+
+.ck.ck-table-form .ck.ck-labeled-field-view .ck.ck-labeled-field-view__status::after {
+				content: "";
+				position: absolute;
+				top: calc( -1 * var(--ck-table-properties-error-arrow-size) );
+				left: 50%;
+				transform: translateX( -50% );
+			}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-input-color {
+	width: 100%;
+	display: flex;
+	flex-direction: row-reverse;
+}
+
+.ck.ck-input-color > input.ck.ck-input-text {
+		min-width: auto;
+		flex-grow: 1;
+	}
+
+.ck.ck-input-color > div.ck.ck-dropdown {
+		min-width: auto;
+
+		/* This dropdown has no arrow but a color preview instead. */
+	}
+
+.ck.ck-input-color > div.ck.ck-dropdown > .ck-input-color__button .ck-dropdown__arrow {
+			display: none;
+		}
+
+.ck.ck-input-color .ck.ck-input-color__button {
+		/* Resolving issue with misaligned buttons on Safari (see #10589) */
+		display: flex;
+	}
+
+.ck.ck-input-color .ck.ck-input-color__button .ck.ck-input-color__button__preview {
+			position: relative;
+			overflow: hidden;
+		}
+
+.ck.ck-input-color .ck.ck-input-color__button .ck.ck-input-color__button__preview > .ck.ck-input-color__button__preview__no-color-indicator {
+				position: absolute;
+				display: block;
+			}
+
+/*
+ * Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck .ck-insert-table-dropdown__grid {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+/*# sourceMappingURL=index.css.map */

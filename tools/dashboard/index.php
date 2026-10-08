@@ -218,22 +218,22 @@ if(is_numeric($id) || $id == null) {
     <title>Xerte Dashboard</title>
     <link rel="stylesheet" href="../../editor/css/jquery-ui.css">
     <link rel="stylesheet" href="../../editor/js/vendor/themes/default/style.css?version=<?php echo $version;?>" />
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="../../editor/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+    <script src="../../modules/common/js/jquery-1.9.1.min.js"></script>
+    <script>window.jQuery || document.write('<script src=\"../../editor/js/vendor/jquery-1.9.1.min.js\"><\/script>')</script>
     <script type="text/javascript" src="../../editor/js/vendor/jquery.ui-1.10.4.js"></script>
     <script type="text/javascript" src="../../editor/js/vendor/jquery.layout-1.3.0-rc30.79.min.js"></script>
     <script type="text/javascript" src="../../editor/js/vendor/jquery.ui.touch-punch.min.js"></script>
     <script type="text/javascript" src="../../editor/js/vendor/modernizr-latest.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script type="text/javascript" src="../../modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.min.js?version=<?php echo $version;?>"></script>
-    <script type="text/javascript" src="../../modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.gallery.min.js?version=<?php echo $version;?>"></script>
+    <script type="text/javascript" src="../../website_code/scripts/plotly-latest.min.js?version=<?php echo $version;?>"></script>
+    <script type="text/javascript" src="../../modules/common/js/featherlight/featherlight.min.js?version=<?php echo $version;?>"></script>
+    <script type="text/javascript" src="../../modules/common/js/featherlight/featherlight.gallery.min.js?version=<?php echo $version;?>"></script>
     <link rel="icon" href="../../favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon"/>
-    <!-- link rel="stylesheet" type="text/css" href="../../modules/xerte/parent_templates/Nottingham/common_html5/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>"-->
-    <!-- link rel="stylesheet" type="text/css" href="../../modules/xerte/parent_templates/Nottingham/common_html5/font-awesome-4.3.0/css/font-awesome.min.css"-->
-    <link rel="stylesheet" type="text/css" href="../../modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="../../modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
-    <link rel="stylesheet" type="text/css" href="../../modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css">
+    <!-- link rel="stylesheet" type="text/css" href="../../modules/xerte/parent_templates/Nottingham/common/font-awesome/css/font-awesome.min.css?version=<?php echo $version;?>"-->
+    <!-- link rel="stylesheet" type="text/css" href="../../modules/xerte/parent_templates/Nottingham/common/font-awesome-4.3.0/css/font-awesome.min.css"-->
+    <link rel="stylesheet" type="text/css" href="../../modules/common/fontawesome-6.6.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="../../modules/common/fontawesome-6.6.0/css/v4-shims.min.css">
+    <link rel="stylesheet" type="text/css" href="../../modules/common/fontawesome-6.6.0/css/v5-font-face.min.css">
     <link href="../../website_code/styles/bootstrap.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
     <link href="../../website_code/styles/nv.d3.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
     <link href="../../website_code/styles/xapi_dashboard.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
@@ -243,8 +243,8 @@ if(is_numeric($id) || $id == null) {
     <link href="../../website_code/styles/xerte_buttons.css?version=<?php echo $version;?>" media="screen" type="text/css" rel="stylesheet"/>
     <link href="../../website_code/styles/frontpage.css?version=<?php echo $version;?>" media="all" type="text/css" rel="stylesheet"/>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="../../modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.min.css?version=<?php echo $version;?>" />
-    <link rel="stylesheet" href="../../modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.gallery.min.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" href="../../modules/common/js/featherlight/featherlight.min.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" href="../../modules/common/js/featherlight/featherlight.gallery.min.css?version=<?php echo $version;?>" />
 
     <?php
     if (file_exists($xerte_toolkits_site->root_file_path . "branding/branding.css"))
@@ -264,6 +264,7 @@ if(is_numeric($id) || $id == null) {
     echo "
         <script type=\"text/javascript\"> // JAVASCRIPT library for fixed variables\n // management of javascript is set up here\n // SITE SETTINGS
             var site_url = \"{$xerte_toolkits_site->site_url}\";
+            var rest_api_url = \"{$xerte_toolkits_site->site_url}website_code/api/v1/index.php\";
             var site_apache = \"{$xerte_toolkits_site->apache}\";
             var properties_ajax_php_path = \"website_code/php/properties/\";
             var management_ajax_php_path = \"website_code/php/management/\";

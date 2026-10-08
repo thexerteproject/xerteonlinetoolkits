@@ -201,7 +201,7 @@ function _include_javascript_file($file_path) {
     _debug($real_file_path);
     _debug($en_gb_file_path);
     if (file_exists(dirname(__FILE__) . "/" . $en_gb_file_path)) {
-        echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $en_gb_file_path . $url_param . "\"></script>";
+        echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $en_gb_file_path . $url_param . "\"></script>";
     } else {
         // stuff will break at this point.
         //die("Where was $real_file_path?");
@@ -211,7 +211,7 @@ function _include_javascript_file($file_path) {
 
     if ($language != "en-GB") {
         if (file_exists(dirname(__FILE__) . "/" . $real_file_path)) {
-            echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $real_file_path . $url_param . "\"></script>";
+            echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $real_file_path . $url_param . "\"></script>";
         } else {
             // stuff will break at this point.
             //die("Where was $real_file_path?");
@@ -220,7 +220,7 @@ function _include_javascript_file($file_path) {
             }
         }
     }
-    echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $xerte_toolkits_site->site_url . $file_path . $url_param . "\"></script>";
+    echo "<script type=\"text/javascript\" language=\"javascript\" src=\"" . $file_path . $url_param . "\"></script>";
     return true;
 }
 
@@ -490,7 +490,7 @@ function x_check_zip_file($file){
     x_check_zip($zip);
 }
 
-function x_check_path_traversal($path, $expected_path=null, $message=null, $type='file')
+function x_check_path_traversal($path, $expected_path=null, $message=null, $type='file', $soft_fail=false)
 {
     global $xerte_toolkits_site;
     $mesg = ($message != null ? $message : "Path traversal detected!");
@@ -518,6 +518,9 @@ function x_check_path_traversal($path, $expected_path=null, $message=null, $type
     if ($type === 'folder') {
         // Ensure that folder exists for realpath to work
         if (!is_dir($rpath)) {
+            if ($soft_fail) {
+                return false;
+            }
             die($mesg);
         }
     }
@@ -528,12 +531,18 @@ function x_check_path_traversal($path, $expected_path=null, $message=null, $type
     if ($realpath === false || $realpath !== $rpath)
     {
         _debug($mesg);
+        if ($soft_fail) {
+            return false;
+        }
         die($mesg);
     }
     if ($expected_path != null) {
         // Check whether path is as expected
         if (strpos($rpath, $rexpected_path) !== 0) {
             _debug($mesg);
+            if ($soft_fail) {
+                return false;
+            }
             die($mesg);
         }
         if ($expected_path == $xerte_toolkits_site->users_file_area_full) {
@@ -544,6 +553,9 @@ function x_check_path_traversal($path, $expected_path=null, $message=null, $type
                 // It must be different from the users_file_area_full
                 if ($rpath === $xerte_toolkits_site->users_file_area_full) {
                     _debug($mesg);
+                    if ($soft_fail) {
+                        return false;
+                    }
                     die($mesg);
                 }
             }
@@ -553,10 +565,16 @@ function x_check_path_traversal($path, $expected_path=null, $message=null, $type
                 $rpath = substr($rpath, strlen($rexpected_path));
                 if (strpos($rpath, DIRECTORY_SEPARATOR) === false) {
                     _debug($mesg);
+                    if ($soft_fail) {
+                        return false;
+                    }
                     die($mesg);
                 }
             }
         }
+    }
+    if ($soft_fail) {
+        return true;
     }
 }
 

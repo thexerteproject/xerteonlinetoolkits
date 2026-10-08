@@ -1,0 +1,5 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+export default {"bg":{"dictionary":{"Enable editing":"Разреши възможност за редакция ","Previous editable region":"Предишен регион с възможнос за редакция","Next editable region":"Следващ регион с възможност за редакция","Navigate editable regions":"Навигация между региони с възможност за редакция","Disable inline editing":"Деактивирай вграденото редактиране","Enable inline editing":"Активирай вграденото редактиране","Disable block editing":"Деактивирай редактирането на блокове","Enable block editing":"Разреши редактирането на блокове","Disable editing":"Изключи възможност за редакция"},getPluralForm(n){return (n != 1);}}}

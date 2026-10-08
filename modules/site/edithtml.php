@@ -241,6 +241,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
         $lti_session = "";
     }
 
+    $base_ai_options = get_ai_base_settings_options();
+    $base_ai_defaults = get_ai_base_settings_defaults();
     $vendors = get_vendor_settings();
     $corpus_upload_types = array();
     if (array_key_exists('ai', $vendors )){
@@ -274,7 +276,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     <link rel="stylesheet" type="text/css" href="website_code/styles/xerte_buttons.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/css/complex.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/css/fonts.css?version=<?php echo $version;?>" />
-    <link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.min.css?version=<?php echo $version;?>" />
+    <link rel="stylesheet" type="text/css" href="modules/common/js/featherlight/featherlight.min.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/imgareaselect/imgareaselect-default.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/jqgrid/css/ui.jqgrid.css?version=<?php echo $version;?>" />
     <link rel="stylesheet" type="text/css" href="editor/js/vendor/ckeditor/plugins/codemirror/css/codemirror.min.css?version=<?php echo $version;?>" />
@@ -382,11 +384,11 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/jquery.ui.touch-punch.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/modernizr-latest.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jstree.js?version=<?php echo $version;?>"></script>
-<script type="text/javascript" src="editor/js/vendor/ckeditor/ckeditor.js?version=<?php echo $version;?>"></script>
-<script type="text/javascript" src="editor/js/vendor/ckeditor/adapters/jquery.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/ckeditor5/xerte-editor.bundle.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="editor/js/vendor/ckeditor5/xerte-ckeditor5.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jscolor.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/xml2json.min.js?version=<?php echo $version;?>"></script>
-<script type="text/javascript" src="modules/xerte/parent_templates/Nottingham/common_html5/js/featherlight/featherlight.min.js?version=<?php echo $version;?>"></script>
+<script type="text/javascript" src="modules/xerte/parent_templates/Nottingham/common/js/featherlight/featherlight.min.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/imgareaselect/jquery.imgareaselect.js?version=<?php echo $version;?>"></script>
 <script type="text/javascript" src="editor/js/vendor/jqgrid/js/jquery-migrate-1.2.1.js"></script>
 <script type="text/javascript" src="<?php echo $jqgridlangfile; ?>"></script>
@@ -394,12 +396,12 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/vendor/jsep.min.js?version=<?php echo $version;?>"></script>
 <script type="module" src="editor/js/vendor/treeselect/treeselectjs.mjs.js"></script>
 <!-- Load latest font awesome after ckeditor, other wise the latest fontawesome is overruled by the fontawsome plugin of ckeditor -->
-<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/all.min.css">
-<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v4-shims.min.css">
-<link rel="stylesheet" type="text/css" href="modules/xerte/parent_templates/Nottingham/common_html5/fontawesome-6.6.0/css/v5-font-face.min.css">
+<link rel="stylesheet" type="text/css" href="modules/common/fontawesome-6.6.0/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="modules/common/fontawesome-6.6.0/css/v4-shims.min.css">
+<link rel="stylesheet" type="text/css" href="modules/common/fontawesome-6.6.0/css/v5-font-face.min.css">
 
 <!-- load js ai master file -->
-<script type="text/javascript" src="modules/xerte/parent_templates/Nottingham/common_html5/js/ai-master.js"></script>
+<script type="text/javascript" src="modules/xerte/parent_templates/Nottingham/common/js/ai-master.js"></script>
 
 <!-- load exactly the same codemirror scripts as needed by ckeditor -->
 <script type="text/javascript" src="editor/js/vendor/ckeditor/plugins/codemirror/js/codemirror.min.js?version=<?php echo $version;?>"></script>
@@ -429,6 +431,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "upload_path=\"" . $xerte_toolkits_site->flash_upload_path . "\";\n";
     echo "preview_path=\"" . $xerte_toolkits_site->flash_preview_check_path . "\";\n";
     echo "site_url=\"" . $xerte_toolkits_site->site_url . "\";\n";
+    echo "rest_api_url=\"" . $xerte_toolkits_site->site_url . "website_code/api/v1/index.php\";\n";
     echo "category_list=" . json_encode($parsed_categories) . ";\n";
     echo "educationlevel_list=" . json_encode($parsed_educationlevels) . ";\n";
     echo "grouping_list=" . json_encode($grouping) . ";\n";
@@ -438,6 +441,8 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "simple_lo_page=" . ($simple_lo_page ? "true" : "false") . ";\n";
     echo "disable_advanced=" . ($disable_advanced ? "true" : "false") . ";\n";
     echo "vendor_options=" . json_encode($vendors) . ";\n";
+    echo "base_ai_options=" . json_encode($base_ai_options) . ";\n";
+    echo "base_ai_defaults=" . json_encode($base_ai_defaults) . ";\n";
     echo "corpus_upload_types=" . json_encode($corpus_upload_types) . ";\n";
     echo "management_helper_table=" . json_encode($xerte_toolkits_site->management_helper_table) . ";\n";
 
@@ -460,6 +465,29 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     echo "templateframework=\"" . $row_edit['template_framework'] . "\";\n";
     echo "var theme_list_encoded='" . base64_encode(json_encode($ThemeList)) . "';\n";
     echo "var theme_list=JSON.parse(atob(theme_list_encoded));\n";
+
+    // Pass user preferences to JavaScript (similar to index.php)
+    require_once("library/Xerte/Authentication/Factory.php");
+    $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+    
+    $user_preferences_json = "{}";
+    $user_has_preferences = "false";
+    
+    if (isset($_SESSION['toolkits_preferences']) && is_array($_SESSION['toolkits_preferences'])) {
+        $user_preferences_json = json_encode($_SESSION['toolkits_preferences']);
+        if ($authmech->hasUserPreferences()) {
+            $user_has_preferences = "true";
+        }
+    } else {
+        if (isset($authmech) && $authmech->hasUserPreferences()) {
+            $user_has_preferences = "true";
+        }
+    }
+    
+    echo "var user_preferences = {$user_preferences_json};\n";
+    echo "var user_has_preferences = {$user_has_preferences};\n";
+    echo "console.log('Editor: user_preferences loaded:', user_preferences);\n";
+    echo "console.log('Editor: user_has_preferences =', user_has_preferences);\n";
     ?>
 
     function bunload(){

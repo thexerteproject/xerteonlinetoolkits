@@ -60,4 +60,9 @@ class Xerte_Authentication_Guest extends Xerte_Authentication_Abstract
         return false;
     }
 
+    public function hasUserPreferences()
+    {
+        return false;
+    }
+
 }

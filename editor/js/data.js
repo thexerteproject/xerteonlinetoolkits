@@ -68,19 +68,19 @@ var EDITOR = (function ($, parent) {
     {
         if (step == 1)
         {
-            console.log("All language definitions loaded...");
+            // Debug: console.log("All language definitions loaded...");
             step1_languagesloaded = true;
         }
         else if (step == 2)
         {
-            console.log(previewxmlurl +  " is loaded...");
+            // Debug: console.log(previewxmlurl +  " is loaded...");
             step2_xmlloaded = true;
             step2_data = data;
 
         }
         if (step1_languagesloaded && step2_xmlloaded)
         {
-            console.log("Start processing of " + previewxmlurl);
+            // Debug: console.log("Start processing of " + previewxmlurl);
             process_data(step2_data);
         }
 
@@ -91,14 +91,16 @@ var EDITOR = (function ($, parent) {
 
         var _this = this;
         var now = new Date().getTime();
-        let url = "website_code/php/templates/get_template_xml.php?file=" + xmlurl + "&time=" + now;
+        var apiBase = (typeof rest_api_url !== 'undefined' && rest_api_url) ? rest_api_url : 'website_code/api/v1/index.php';
+        let url = apiBase + "?route=preview-xml&file=" + encodeURIComponent(xmlurl) + "&time=" + now;
         $.ajax({
             type: "GET",
             url: url,
-            dataType: "text",
-            success: function (data) {
+            dataType: "json",
+            success: function (resp) {
+                var payload = (resp && resp.ok === true && resp.data) ? resp.data : resp;
+                var data = payload && payload.xml !== undefined ? payload.xml : (typeof resp === 'string' ? resp : '');
                 wait(2, data);
-                //process_data(data);
             }
         });
     };

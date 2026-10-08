@@ -32,6 +32,45 @@ function get_vendor_settings(): array
     return $blocks;
 }
 
+function get_ai_base_settings_options(): array
+{
+    global $xerte_toolkits_site;
+
+    $query = "SELECT setting_key, option_values
+              FROM {$xerte_toolkits_site->database_table_prefix}ai_settings_options
+              ORDER BY id ASC";
+    $res = db_query($query);
+
+    $settings = array();
+
+    if ($res !== false) {
+        foreach ($res as $row) {
+            $values = array_filter(array_map('trim', explode(',', $row['option_values'])));
+            $settings[$row['setting_key']] = $values;
+        }
+    }
+
+    return $settings;
+}
+
+function get_ai_base_settings_defaults(): array
+{
+    global $xerte_toolkits_site;
+
+    $query = "SELECT *
+              FROM {$xerte_toolkits_site->database_table_prefix}ai_settings
+              WHERE scope_type = ? AND scope_id = ?";
+    $res = db_query_one($query, ['global', 0]);
+
+    if ($res === false || empty($res)) {
+        return array();
+    }
+
+    unset($res['id'], $res['scope_type'], $res['scope_id']);
+
+    return $res;
+}
+
 /**
  * Created by PhpStorm.
  * User: tom

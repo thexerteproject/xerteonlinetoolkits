@@ -764,7 +764,7 @@ form.csvUpload input[name=merge] {
 #mainPanel .xerte_button.grid_col_btns,
 #mainPanel .xerte_button.disabled.grid_col_btns,
 #mainPanel input[name=csvUpload],
-#mainPanel input[name=csvDownload]{
+#mainPanel input[name=csvDownload] {
 	font-size: 0.8em;
 }
 
@@ -802,6 +802,7 @@ form.csvUpload input[name=merge] {
 table.wizard, table.wizardgroup_table{
     vertical-align: middle;
     width: 100%;
+	table-layout: fixed;
 }
 
 td.wizardparameter{
@@ -821,6 +822,13 @@ td.wizardlabel {
 }
 
 td.wizardvalue {
+	min-width: 0;
+}
+
+td.wizardvalue .wizardvalue_inner,
+td.wizardvalue .ck-editor {
+	min-width: 0;
+	max-width: 100%;
 }
 
 fieldset.wizardgroup {
@@ -1579,22 +1587,44 @@ div.hotspot360Icon span.icon360Holder .icon360 {
 /* Enlarge/magnify button
    Places this button inside the image frame
 */
-.enlarge_button {
+.enlarge_button,
+.copy_credits_button {
 	position: absolute;
-	right: 8px;
 	bottom: 8px;
 	z-index: 3;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	height: 1.9em;
-	min-width: 1.9em;
-	padding: 0 0.4em;
+	height: 1.75em;
+	min-width: 1.75em;
+	padding: 0 0.35em;
 	background: #fff;
 	border: 0;
 	border-radius: 6px;
 	box-shadow: 0 1px 4px rgba(0,0,0,.2);
 	cursor: pointer;
+	font-size: 0.9em;
+}
+
+.enlarge_button {
+	right: 8px;
+}
+
+.copy_credits_button {
+	right: 3.5em;
+}
+
+.copied_notice {
+	position: absolute;
+	right: 8px;
+	bottom: 3.2em;
+	z-index: 4;
+	padding: 4px 7px;
+	background: #fff;
+	border-radius: 4px;
+	box-shadow: 0 1px 4px rgba(0,0,0,.2);
+	font-size: 0.8em;
+	white-space: nowrap;
 }
 
 /* Keep/Submit button */
@@ -1743,3 +1773,230 @@ div#top_buttons button:last-of-type {margin-left: 20px;}
 .wizardvalue div:first-child {width: 95%!important;}
 
 */
+
+/* Inline Quick Fill panel (QFGroup) */
+#mainPanel .qf-inline-row td.wizardparameter {
+	padding: 0;
+	border: none;
+}
+
+#mainPanel .qf-inline-row td.wizardvalue {
+	padding: 0;
+	border: none;
+	vertical-align: middle;
+}
+
+#mainPanel .qf-inline-row .wizardvalue_inner {
+	width: 100%;
+}
+
+.qf-inline-panel {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	background: #fff5ee;
+	border: 2px solid #f86718;
+	border-radius: 4px;
+	padding: 12px 16px;
+	margin: 4px 0 12px 0;
+	box-sizing: border-box;
+	max-width: 100%;
+}
+
+.qf-inline-content {
+	flex: 1;
+	min-width: 0;
+}
+
+.qf-inline-title {
+	font-weight: bold;
+	font-size: 1.05em;
+	color: #333;
+	margin-bottom: 4px;
+}
+
+.qf-inline-description {
+	color: #555;
+	font-size: 0.9em;
+	line-height: 1.4;
+}
+
+.qf-inline-setup-btn {
+	background: #f86718 !important;
+	color: #fff !important;
+	border: none !important;
+	border-radius: 4px;
+	padding: 10px 24px;
+	font-size: 1em;
+	font-weight: bold;
+	white-space: nowrap;
+	cursor: pointer;
+	flex-shrink: 0;
+}
+
+.qf-inline-setup-btn:hover {
+	background: #e05a10 !important;
+	color: #fff !important;
+}
+
+.qf-inline-setup-btn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* Quick Fill lightbox modal (QFGroup) */
+.featherlight:has(.qf-lightbox) .featherlight-close-icon {
+	display: none;
+}
+
+.featherlight:has(.qf-lightbox) .featherlight-content {
+	padding: 0 !important;
+	border-bottom: none !important;
+	background: transparent !important;
+	overflow: visible;
+	max-width: none !important;
+	min-width: 0 !important;
+}
+
+.qf-lightbox {
+	background: #fff;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+	width: 480px;
+	max-width: calc(100vw - 40px);
+}
+
+.qf-lightbox-header {
+	position: relative;
+	padding: 28px 28px 0;
+	background: #fff;
+}
+
+.qf-lightbox-title {
+	margin: 0 40px 12px 0;
+	padding: 0;
+	font-size: 1.4em;
+	font-weight: bold;
+	color: #222;
+	line-height: 1.3;
+}
+
+.qf-lightbox-close {
+	position: absolute;
+	top: 22px;
+	right: 22px;
+	background: none;
+	border: none;
+	font-size: 1.5em;
+	line-height: 1;
+	cursor: pointer;
+	color: #888;
+	padding: 4px;
+}
+
+.qf-lightbox-close:hover {
+	color: #333;
+}
+
+.qf-lightbox-description {
+	color: #444;
+	font-size: 0.95em;
+	line-height: 1.5;
+	margin: 0 0 24px;
+}
+
+.qf-lightbox-form.lightbox-form {
+	width: auto;
+	max-width: none;
+	max-height: none;
+	overflow: visible;
+	padding: 0 28px;
+	margin: 0;
+}
+
+.qf-lightbox-fields {
+	background: #fff;
+}
+
+.qf-field {
+	margin-bottom: 20px;
+}
+
+.qf-field:last-child {
+	margin-bottom: 8px;
+}
+
+.qf-field label {
+	display: block;
+	font-weight: bold;
+	color: #222;
+	margin-bottom: 8px;
+	font-size: 1em;
+}
+
+.qf-field input {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	padding: 10px 12px;
+	min-height: 42px;
+	font-size: 1em;
+	color: #222;
+}
+
+.qf-field input:focus {
+	outline: none;
+	border-color: #999;
+}
+
+.qf-lightbox-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 16px;
+	padding: 20px 28px 28px;
+	background: #fff;
+	border-top: 1px solid #e5e5e5;
+	margin-top: 16px;
+}
+
+.qf-lightbox-btn {
+	font-size: 1em;
+	padding: 10px 20px;
+	border-radius: 4px;
+	cursor: pointer;
+	font-family: inherit;
+	white-space: nowrap;
+}
+
+.qf-lightbox-btn-cancel {
+	background: #fff;
+	border: 1px solid #ccc;
+	color: #333;
+}
+
+.qf-lightbox-btn-cancel:hover {
+	background: #f7f7f7;
+}
+
+.qf-lightbox-btn-create {
+	background: #f86718;
+	border: none;
+	color: #fff;
+	font-weight: bold;
+}
+
+.qf-lightbox-btn-create:hover {
+	background: #e05a10;
+}
+
+.qf-lightbox-btn-create:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}

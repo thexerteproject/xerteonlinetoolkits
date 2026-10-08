@@ -6,6 +6,7 @@ require_once (str_replace('\\', '/', __DIR__) . "/AiClientInterface.php");
 require_once (str_replace('\\', '/', __DIR__) . "/AnthropicClient.php");
 require_once (str_replace('\\', '/', __DIR__) . "/MistralClient.php");
 require_once (str_replace('\\', '/', __DIR__) . "/OpenAIClient.php");
+require_once (str_replace('\\', '/', __DIR__) . "/GeminiClient.php");
 
 class AiChat
 {
@@ -21,6 +22,9 @@ class AiChat
         }
         if (!empty($site->mistral_key)) {
             $this->clients['mistral'] = new MistralClient($site->mistral_key);
+        }
+        if (!empty($site->gemini_key)) {
+            $this->clients['gemini'] = new GeminiClient($site->gemini_key);
         }
     }
 
