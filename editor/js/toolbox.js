@@ -2183,17 +2183,17 @@ var EDITOR = (function ($, parent) {
             };
             lti_session = lti_session !== "" ? "&" + lti_session : "";
             var ckoptions = {
-                filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
-                filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
-                filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1),
-                uploadUrl : 'editor/uploadImage.php?mode=dragdrop' + lti_session + '&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
-                uploadAudioUrl : 'editor/uploadAudio.php?mode=record' + lti_session + '&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substr(0, rlourlvariable.length-1) ,
+                filebrowserBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=media&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substring(0, rlourlvariable.length-1),
+                filebrowserImageBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=image&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substring(0, rlourlvariable.length-1) ,
+                filebrowserFlashBrowseUrl : 'editor/elfinder/browse.php?mode=cke' + lti_session + '&type=flash&uploadDir='+rlopathvariable+'&uploadURL='+rlourlvariable.substring(0, rlourlvariable.length-1),
+                uploadUrl : 'editor/uploadImage.php?mode=dragdrop' + lti_session + '&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substring(0, rlourlvariable.length-1) ,
+                uploadAudioUrl : 'editor/uploadAudio.php?mode=record' + lti_session + '&uploadPath='+rlopathvariable+'&uploadURL='+rlourlvariable.substring(0, rlourlvariable.length-1) ,
                 mathJaxClass :  'mathjax',
                 mathJaxLib :    'offline/js/mathjax/MathJax.js?config=TeX-MML-AM_HTMLorMML-full',
-                toolbarStartupExpanded : defaultToolBar,
+                //toolbarStartupExpanded : defaultToolBar,
                 codemirror : codemirroroptions,
                 extraAllowedContent: 'style',
-                language : language.$code.substr(0,2),
+                language : language.$code.substring(0,2),
 				editorplaceholder: options.options.placeholder
             };
 
