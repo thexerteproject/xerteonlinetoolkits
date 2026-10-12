@@ -88,7 +88,7 @@
 				$cards.data('scrollingWidth', scrollingWidth);
 
 				// are scroll buttons required?
-				if ($cards[0].scrollWidth > $cards[0].clientWidth) {
+				if (scrollingWidth > $cards[0].clientWidth) {
 					
 					$('.btnHolder').show();
 					btnsShown = true;
