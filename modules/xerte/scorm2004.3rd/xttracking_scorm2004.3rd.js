@@ -845,18 +845,19 @@ function ScormTrackingState()
 
     function finishTracking(currentid)
     {
-        // not doing anything here now as setting completion is now done in storeSuspendData & called on every interaction exit
-        // this reduces the chances of completion not being triggered correctly - sending the data is more likely to fail when called on project exit rather than when the project is still open
-        /*if (this.trackingmode != 'none')
-        {
-            state.currentpageid = currentid;
-            x_pageHistory.splice(x_pageHistory.length - 1, 1);
-            this.storeSuspendData();
-
-            var end = new Date();
-            var duration = end.getTime() - this.start.getTime();
-            setValue('cmi.session_time', this.formatDuration(duration));
-        }*/
+        // storeSuspendData is normally just called on every interaction exit
+        // this reduces the chances of completion not being triggered correctly when it was triggered on finishTracking instead - sending the data is more likely to fail when called on project exit rather than when the project is still open
+        try {
+            // if the current open page is a standalone page in a lightbox, call storeSuspendData anyway as this ensures the correct page is opened on resume (the last viewed normal page)
+            if (parent != self && parent.x_TemplateId != undefined && parent.x_TemplateId == x_TemplateId) {
+                x_pageHistory = parent.x_pageHistory;
+                x_pageStates = parent.x_pageStates;
+                x_pagesViewed = parent.x_pagesViewed;
+                this.currentpageid = currentid;
+                this.storeSuspendData();
+            }
+        } catch (e) {
+        }
     }
 
     function initTracking()
@@ -1408,7 +1409,11 @@ function XTStartPage()
             var sit = state.find(currentid);
             if (sit != null) {
                 if ($.inArray(sit.page_nr, x_normalPages) == -1) {
-                    return x_pageHistory[x_pageHistory.length - 1];
+                    if (x_pageHistory.length > 0) {
+                        return x_pageHistory[x_pageHistory.length - 1];
+                    } else {
+                        return x_normalPages[0];
+                    }
                 }
                 return sit.page_nr;
             } else {

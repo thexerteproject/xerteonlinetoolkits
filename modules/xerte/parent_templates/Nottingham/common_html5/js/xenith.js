@@ -310,6 +310,8 @@ x_projectDataLoaded = function(xmlData) {
 									// delete saved data
 									localStorage.removeItem("xerte_" + x_TemplateId + "_state");
 								}
+							} else {
+								localStorage.removeItem("xerte_" + x_TemplateId + "_state");
 							}
 
 						} catch (e) {
@@ -3039,7 +3041,11 @@ function x_leavePage(page, lightbox) {
 				localData.trackingData = XTGetData();
 			}
 
-			localStorage.setItem("xerte_" + x_TemplateId + "_state", JSON.stringify(localData));
+			try {
+				localStorage.setItem("xerte_" + x_TemplateId + "_state", JSON.stringify(localData));
+			} catch(e) {
+
+			};
 
 		} else {
 			localStorage.removeItem("xerte_" + x_TemplateId + "_state");

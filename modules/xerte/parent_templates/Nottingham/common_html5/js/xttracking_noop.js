@@ -1122,7 +1122,7 @@ function XTTerminate()
     if (!state.finished) {
         // End tracking of page
         x_endPageTracking(false, -1);
-        
+
         state.finished = true;
         if (typeof lti_enabled !== 'undefined' && lti_enabled) {
             // Send ajax request to store grade through LTI to gradebook
