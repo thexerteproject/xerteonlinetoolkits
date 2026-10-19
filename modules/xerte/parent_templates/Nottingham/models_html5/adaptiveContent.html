@@ -352,7 +352,7 @@
                 if (interaction.getAttribute('graphColorScale') != null && interaction.getAttribute('graphColorScale') != "") {
                     colors = interaction.getAttribute('graphColorScale').split(",");
                 }
-
+                datasets[avgDataSet].label = 'Avg:' + datasets[avgDataSet].label;
                 const graph = new DashboardGraphs.HorizontalBarGraphWithAveragesOpinion({
                   classLabels: classtitles,
                   datasets: datasets,

@@ -36371,6 +36371,10 @@ var HorizontalBarGraphWithAveragesOpinionInternal = /*#__PURE__*/ function() {
                     goalAnnotations: this.getGoalAnnotations({
                         options: options,
                         datasets: datasets
+                    }),
+                    goalAnnotationLabel: this.getGoalAnnotationsLabel({
+                        options: options,
+                        datasets: datasets
                     })
                 };
             }
@@ -36410,7 +36414,7 @@ var HorizontalBarGraphWithAveragesOpinionInternal = /*#__PURE__*/ function() {
                 var options = param.options, datasets = param.datasets;
                 var annotations = {};
                 datasets.filter(function(dataset) {
-                    return dataset.label === 'Avg. of all attempts';
+                    return dataset.label !== undefined && dataset.label.indexOf('Avg:') !== -1;
                 }).forEach(function(dataset) {
                     dataset.data.forEach(function(value, i) {
                         annotations["goalLine-".concat(i)] = {
@@ -36425,6 +36429,31 @@ var HorizontalBarGraphWithAveragesOpinionInternal = /*#__PURE__*/ function() {
                     });
                 });
                 return annotations;
+            }
+        },
+        {
+            key: "getGoalAnnotationsLabel",
+            value: /**
+   * Get the label for the goal line
+   *
+   * @param {Object} param - The parameter object.
+   * @param {HorizontalBarGraphWithAveragesOpinionOptions} param.options - Additional options for
+   *                                                                       the bar graph.
+   * @param {ChartDataset<'bar', number[]>[]} param.datasets - The datasets for the bar graph.
+   * @return The dataset for the goal line
+   */ function getGoalAnnotationsLabel(param) {
+                var options = param.options, datasets = param.datasets;
+                var label = '';
+                datasets.filter(function(dataset) {
+                    return dataset.label !== undefined && dataset.label.indexOf('Avg:') !== -1;
+                }).forEach(function(dataset) {
+                    dataset.data.forEach(function(value) {
+                        if (dataset.label !== undefined) {
+                            label = dataset.label.replace('Avg:', '').trim();
+                        }
+                    });
+                });
+                return label;
             }
         }
     ]);
@@ -36551,7 +36580,7 @@ var HorizontalBarGraphWithAveragesOpinion = /*#__PURE__*/ function() {
                 var _HorizontalBarGraphWithAveragesOpinionInternal_getChartData = _horizontal_bar_graph_with_averages_opinion_internal__WEBPACK_IMPORTED_MODULE_0__["default"].getChartData({
                     options: _class_private_field_get(this, _options),
                     datasets: _class_private_field_get(this, _datasets)
-                }), datasets = _HorizontalBarGraphWithAveragesOpinionInternal_getChartData.datasets, goalAnnotations = _HorizontalBarGraphWithAveragesOpinionInternal_getChartData.goalAnnotations;
+                }), datasets = _HorizontalBarGraphWithAveragesOpinionInternal_getChartData.datasets, goalAnnotations = _HorizontalBarGraphWithAveragesOpinionInternal_getChartData.goalAnnotations, goalAnnotationLabel = _HorizontalBarGraphWithAveragesOpinionInternal_getChartData.goalAnnotationLabel;
                 // eslint-disable-next-line no-new
                 new chart_js__WEBPACK_IMPORTED_MODULE_2__.Chart(_class_private_field_get(this, _options).ctx, {
                     type: 'bar',
@@ -36601,7 +36630,8 @@ var HorizontalBarGraphWithAveragesOpinion = /*#__PURE__*/ function() {
                                     generateLabels: function() {
                                         return [
                                             {
-                                                text: 'Group average',
+                                                // Use the label of datasets[1]
+                                                text: goalAnnotationLabel,
                                                 fillStyle: _class_private_field_get(_this, _options).goalColor,
                                                 strokeStyle: _class_private_field_get(_this, _options).goalColor,
                                                 lineWidth: 3,
