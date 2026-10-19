@@ -388,7 +388,7 @@ this.addTrackingOnLeavePage = function(popcornInstance, videoState) {
     // Send the exit verb to XAPI
     XTVideo(x_currentPage, getTrackingLabel()+videoState.trackinglabel, "", "exit", videoState, x_currentPageXML.getAttribute("grouping"));
 
-    if (videoState.mediaData.doNotCloseTracking !== undefined && videoState.mediaData.doNotCloseTracking === true) {
+    if (videoState.mediaData.doNotCloseTracking === undefined || videoState.mediaData.doNotCloseTracking !== true) {
         // Destroy this instance
         if (popcornInstance) {
             removeEvents(popcornInstance);
