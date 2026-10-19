@@ -20,10 +20,14 @@
 	}
 
 	#pageContents .optionTxt {
-		cursor:			pointer;
 		position:		relative;
 		margin-left:	2em;
 		display:		block;
+	}
+
+	#pageContents .optionGroup:not(.answerBtn) input:not([disabled]) + .optionTxt,
+	#pageContents .optionGroup.answerBtn:not(.ui-button-disabled) .optionTxt {
+		cursor: pointer;
 	}
 
 	#pageContents #optionHolder.answerBtn {

@@ -17,8 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-	// ** add a reset button for answer button style questions
  
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -351,6 +349,7 @@
 						for (let i=0; i<$(".optionGroup").length; i++) {
 							$("#option" + i).attr("disabled", "disabled");
 						}
+						$(".optionGroup.answerBtn").button("disable");
 					}
 
 					x_pageContentsUpdated();
