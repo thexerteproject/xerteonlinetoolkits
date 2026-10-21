@@ -200,12 +200,8 @@
 			const $prompt = $("#prompt");
 			if (names.length > 0) {
 
-				let weighting = 1.0;
-				if (x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false') {
-					weighting = 0.0;
-				} else if (x_currentPageXML.getAttribute("trackingWeight") != undefined) {
-					weighting = x_currentPageXML.getAttribute("trackingWeight");
-				}
+				// as there is no correct answer, the score weight will always be zero unless the project level 'scoreTasks' is set to 'all' (by default non-judged tasks do not contribute to the score)
+				const weighting = x_calculateWeight(x_currentPageXML.getAttribute("trackingWeight"), false);
 				XTSetPageType(x_currentPage, 'numeric', names.length, weighting);
 
 				// add all the prompts & text areas to the page
@@ -555,7 +551,7 @@
 
 			$(".answerTxt").each(function(i) {
 				const answerTxt = $(this).val();
-				const correct = answerTxt.trim() != "" || x_currentPageXML.getAttribute("judge") === "false";
+				const correct = answerTxt.trim() != "" || x_currentPageXML.getAttribute("required") !== "true";
 
 				if (correct) {
 					score++;
@@ -564,7 +560,7 @@
 				const result = {
 					success: correct,
 					score: (correct ? 100.0 : 0.0),
-					judge: x_currentPageXML.getAttribute("judge") != "false"
+					judge: false
 				};
 
 				XTExitInteraction(x_currentPage, i, result, [], answerTxt, []);

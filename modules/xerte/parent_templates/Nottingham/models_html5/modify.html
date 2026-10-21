@@ -18,6 +18,9 @@
  * limitations under the License.
  */
 
+// ** add a require answer optional property?
+// ** answerFieldLabel language string isn't used - fixed "Answer" is instead
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var modify = new function() {
@@ -38,12 +41,9 @@
 			const answerHeaderTxt = x_currentPageXML.getAttribute("answerHeaderTxt") == undefined ? "Write your answer here:" : x_currentPageXML.getAttribute("answerHeaderTxt");
 			const feedbackBtnTxt = x_currentPageXML.getAttribute("feedbackBtnTxt") == undefined ? "Submit" : x_currentPageXML.getAttribute("feedbackBtnTxt");
 
-            this.weighting = 1.0;
-            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
-            {
-                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
-            }
-			XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+			// as there is no correct answer, the score weight will always be zero unless the project level 'scoreTasks' is set to 'all' (by default non-judged tasks do not contribute to the score)
+			const weighting = x_calculateWeight(x_currentPageXML.getAttribute("trackingWeight"), false);
+			XTSetPageType(x_currentPage, 'numeric', 1, weighting);
 
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("pageTxt")));
 
@@ -121,10 +121,11 @@
 					}
 					
 					var answerTxt = $("#answerTxt").val();
-					result =
+					const result =
 						{
 							success: (answerTxt.trim() == "" ? false : true),
-							score: (answerTxt.trim() == "" ? 0.0 : 100.0)
+							score: (answerTxt.trim() == "" ? 0.0 : 100.0),
+							judge: false
 						};
 
 					XTExitInteraction(x_currentPage, 0, result, [], answerTxt, []);

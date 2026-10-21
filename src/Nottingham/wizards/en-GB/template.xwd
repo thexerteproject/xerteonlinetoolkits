@@ -12710,9 +12710,9 @@
         <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here" tooltip="The feedback shown below the associated text field after answers have been submitted"/>
     </textArea>
 
-	<judge label="Mark Answer" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result."/>
     <required label="Require Answer" type="CheckBox" optional="true" defaultValue="true" tooltip="Require text to be entered in all text areas before answers can be submitted"/>
-	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" condition="judge!='false'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
+
+    <trackingWeight label="Score Weight" optional="true" type="textInput" defaultValue="1.0" condition="treeroot.scoreTasks=='all'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
     <copyPaste label="Copy Button" type="CheckBox" defaultValue="true" optional="true" tooltip="Include a button that allows users to easily select &amp; copy their responses"/>
 
@@ -13196,7 +13196,7 @@
 
 	<feedback label="Feedback" type="TextArea" height="100" optional="true" placeholder="Enter feedback here"/>
 
-    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
+    <trackingWeight label="Score Weight" optional="true" type="textInput" defaultValue="1.0" condition="treeroot.scoreTasks=='all'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
     <answerHeaderTxt label="Instruction Header" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <feedbackBtnTxt label="Button Label" type="TextInput" wysiwyg="true" language="true"/>
@@ -17881,7 +17881,7 @@
 	<highlight1 label="Highlight Colour" type="ColourPicker" defaultValue="0xFFFF00" tooltip="The background colour used when highlighting text"/>
 	<highlight2 label="Select Colour" type="ColourPicker" defaultValue="0xFFCC00" condition="mode=='Highlight'" tooltip="The background colour used for selected text"/>
 
-	<trackingWeight label="Tracking Score Weight" optional="true" type="TextInput" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
+	<trackingWeight label="Score Weight" optional="true" type="textInput" defaultValue="1.0" condition="treeroot.scoreTasks=='all'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
     <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
             <subject verification="^.+$" label="Subject" type="TextInput" defaultValue="" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated text will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." optional="true"/>

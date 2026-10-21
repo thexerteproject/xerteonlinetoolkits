@@ -70,7 +70,9 @@ var x_languageData  = [],
 		{name: 'pageIntro',			defaultIconClass:'fas fa-info',						custom: 'pageIntroIc',		defaultFA: 'fas fa-info'}					// page introduction
 	],
 	// the page models that contribute to the score - this is used when the score is calculated based on the entire project rather than just viewed pages
-	x_scoredModels = ["topXQ", "categories", "dialog", "dictation", "dragDropLabel", "gapFill", "textHighlight", "hotSpotQuestion", "interactiveTable", "interactiveText", "interactiveVideo", "textMatch", "modelAnswer",	"modify", "mcq", "opinion", "quiz", "grid", "textCorrection", "timeline"],
+	x_scoredModels = ["topXQ", "categories", "dialog", "dictation", "dragDropLabel", "gapFill", "textHighlight", "modelAnswer", "modify",
+		"hotSpotQuestion", "interactiveTable", "interactiveText", "interactiveVideo", "textMatch", "mcq", "opinion", "quiz", "grid", "textCorrection", "timeline"],
+	x_opinionOnlyModels = ["textHighlight", "modelAnswer", "modify"],
 	x_scoredPages = []; // will contain info about all pages in project that are of a type in x_scoredModels
 	// ** missing model types? documentation, mediaLesson, youtube, results
 
@@ -625,38 +627,57 @@ x_projectDataLoaded = function(xmlData) {
 				for (let i=0; i<x_pages.length; i++) { // ** can menu page cause problems? index issues if menu page is added to this array later?
 					if ($.inArray(x_pages[i].nodeName, x_scoredModels) > -1) {
 
-						// if page has a tracking weight of zero then the page does not contribute to the score
-						if (x_pages[i].getAttribute("trackingWeight") === null || Number(x_pages[i].getAttribute("trackingWeight")) !== 0) {
-							// ** need to finish work on all the page models before I can finish this as I need to know that they all have trackingWeight & judge properties
+						// by default, only 'judged' tasks contribute to the score calculations
+						// judged tasks have the user's submitted answer checked against a correct answer (rather than being used to gather opinions)
+						// if scoreTasks == "all", opinion type questions also contribute to score calculations
+						// disregard all pages that can only be opinion only unless scoreTasks == "all"
+						if (x_params.scoreTasks === "all" || $.inArray(x_pages[i].nodeName, x_opinionOnlyModels) === -1) {
 
-							// default tracking weight is 1 when no trackingWeight property added
-							const thisWeight = x_pages[i].getAttribute("trackingWeight") !== null ? Number(x_pages[i].getAttribute("trackingWeight")) : 1.0;
-							// ** use the x_calculateWeight function here instead?
+							// if page has a tracking weight of zero then the page does not contribute to the score
+							if (x_pages[i].getAttribute("trackingWeight") === null || Number(x_pages[i].getAttribute("trackingWeight")) !== 0) {
+								// ** need to finish work on all the page models before I can finish this as I need to know that they all have trackingWeight & judge properties
 
-							// by default, only 'judged' tasks contribute to the score calculations
-							// judged tasks have the user's submitted answer checked against a correct answer (rather than being used to gather opinions)
-							// if scoreTasks == "all", opinion type questions also contribute to score calculations
+								// default tracking weight is 1 when no trackingWeight property added
+								const thisWeight = x_pages[i].getAttribute("trackingWeight") !== null ? Number(x_pages[i].getAttribute("trackingWeight")) : 1.0;
+								// ** use the x_calculateWeight function here instead?
 
-							// there is inconsistency in the name of the xwd property that determines if an activity is judged or not
-							// most pages use 'judge' but there are some other properties that need checking for specific pages
-							let judgeProperty = "judge";
-							let judgeDefault = true;
-							if (x_pages[i].nodeName === "dictation") {
-								judgeProperty = "showCorrectness";
-								judgeDefault = false;
-							} else if (x_pages[i].nodeName === "mcq") {
-								judgeProperty = "markFeedback"; // ** not sure this is the equivalent - quiz also has this on question children
-							}
-							const pageJudge = x_checkIfJudged(x_pages[i].getAttribute(judgeProperty), judgeDefault);
+								// now check whether each page is being judged or not
+								let pageJudge;
+								if ($.inArray(x_pages[i].nodeName, x_opinionOnlyModels) > -1) {
+									// these pages are never judged
+									pageJudge = false;
 
-							// ** other ones to look at edge cases:
-							// ** interactive video child - judge
-							// ** gap fill only when fill in blank
-							// ** check tooltips for these as some of them seem to say they will contribute to the score even if they don't
+								} else {
+									// these pages may have judge turned on / off with mark answers property
+									// there is inconsistency in the name of the xwd property that determines if an activity is judged or not
+									// most pages use 'judge' but there are some other properties that need checking for specific pages
+									let judgeProperty = "judge";
+									let judgeDefault = true;
 
-							if (x_params.scoreTasks === "all" || pageJudge !== false) {
-								const scoreData = { index: i, type: x_pages[i].nodeName, judge: true, weight: thisWeight };
-								x_scoredPages.push(scoreData);
+									if (x_pages[i].nodeName === "dictation") {
+										judgeProperty = "showCorrectness";
+										judgeDefault = false;
+									} else if (x_pages[i].nodeName === "mcq") {
+										judgeProperty = "markFeedback"; // ** not sure this is the equivalent - quiz also has this on question children
+									} else if (x_pages[i].nodeName === "gapFill") {
+										// ** judge only applies in some modes
+									}
+
+									pageJudge = x_checkIfJudged(x_pages[i].getAttribute(judgeProperty), judgeDefault);
+								}
+
+								// ** other ones to look at edge cases:
+								// ** interactive video child - judge
+
+								if (x_params.scoreTasks === "all" || pageJudge !== false) {
+									const scoreData = {
+										index: i,
+										type: x_pages[i].nodeName,
+										judge: pageJudge,
+										weight: thisWeight
+									};
+									x_scoredPages.push(scoreData);
+								}
 							}
 						}
 					}
