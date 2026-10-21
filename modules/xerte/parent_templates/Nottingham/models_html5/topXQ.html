@@ -25,14 +25,13 @@
 			var $pageContents;
             var tickTxt = x_getLangInfo(x_languageData.find("tick")[0], "title") != undefined ? x_getLangInfo(x_languageData.find("tick")[0], "title") : "Correct";
             var crossTxt = x_getLangInfo(x_languageData.find("cross")[0], "title") != undefined ? x_getLangInfo(x_languageData.find("cross")[0], "title") : "Incorrect";
-		    var judge = true;
-		    if(!(x_currentPageXML.getAttribute("judge") == "true" || x_currentPageXML.getAttribute("judge") == undefined)){
-				judge = false;
-			}
+
+            let judge;
 			
 			// function called every time the page is viewed after it has initially loaded
             this.pageChanged = function () {
 				$pageContents = $('#pageContents');
+                judge = x_checkIfJudged(x_currentPageXML.getAttribute("judge"));
             };
 			
             // function called every time the size of the LO is changed
@@ -42,30 +41,7 @@
             };
 
             this.leavePage = function () {
-                // ** need to remove submit on leavePage
-                if (!$pageContents.data('hasExited')) {
-                    topXQ.fillInputs();
-					
-					var checkAnswers = $pageContents.data('checkAnswers');
-					for (var i = 0; i < checkAnswers.length; i++) {
-						topXQ.checkSingleAnswer(i);
-					}
-					
-					var answers = $pageContents.data('answers'),
-						inputs = $pageContents.data('inputs'),
-						doneAnswers = [];
-					
-					for (i = 0; i < inputs.length; i++) {
-						for (k = 0; k < answers.length; k++) {
-							for (j = 0; j < answers[k].options.length; j++) {
-								if (!doneAnswers.includes(k) && inputs[i] === answers[k].options[j].trim()) {
-									doneAnswers.push(k);
-									$("#topXQ-correctAnswer-" + k).addClass("fa").addClass("fa-fw").addClass("fa-long-arrow-left")
-								}
-							}
-						}
-					}
-                }
+
             };
 			
 			this.fillInputs = function() {
@@ -176,16 +152,13 @@
 			
 				$pageContents.data('hasExited', false);
 
-                this.weighting = 1.0;
-				
-                if (x_currentPageXML.getAttribute("trackingWeight") != undefined) {
-                    this.weighting = x_currentPageXML.getAttribute("trackingWeight");
-                }
-				if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
-					this.weighting= 0.0;
-				}
-				let nrInteractions = x_currentPageXML.getAttribute("numberAnswers") == "*"? $(x_currentPageXML).children().length : x_currentPageXML.getAttribute("numberAnswers");
-                XTSetPageType(x_currentPage, 'numeric', nrInteractions, this.weighting);
+                // are submitted answers going to be judged against correct answers or is it collecting opinions only?
+                judge = x_checkIfJudged(x_currentPageXML.getAttribute("judge"));
+
+                const weighting = x_calculateWeight(x_currentPageXML.getAttribute("trackingWeight"), x_currentPageXML.getAttribute("judge"));
+				const nrInteractions = x_currentPageXML.getAttribute("numberAnswers") == "*"? $(x_currentPageXML).children().length : x_currentPageXML.getAttribute("numberAnswers");
+
+                XTSetPageType(x_currentPage, 'numeric', nrInteractions, weighting);
 
                 $("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
 

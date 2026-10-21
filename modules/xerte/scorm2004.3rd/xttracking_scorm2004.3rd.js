@@ -1574,7 +1574,7 @@ function XTVideo(page_nr, name, block_name, verb, videostate, grouping) {
     return;
 }
 
-function XTSetPageScore(page_nr, score)
+function XTSetPageScore(page_nr, score, complete)
 {
     if (state.scormmode == 'normal')
     {
@@ -1582,7 +1582,12 @@ function XTSetPageScore(page_nr, score)
         if (sit != null && (state.scoremode != 'first' || sit.scoreTracked !== true))
         {
             sit.score = score;
-            sit.scoreTracked = true;
+
+            // the complete argument allows for partially completed, single attempt tasks to be scored
+            // it will only lock further score updates once every sub-question has been submitted
+            if (complete !== false) {
+                sit.scoreTracked = true;
+            }
 
             if (sit.ia_type != "result") {
                 for (var i=0; i<state.toCompletePages.length; i++) {
@@ -1703,8 +1708,15 @@ function XTResults() {
             if (state.interactions[i].result === undefined || state.interactions[i].result === "unknown") {
                 continue;
             }
-            var subinteraction = {};
 
+            const pageResult = results.interactions.find(function (interaction) {
+                return interaction.page_nr === state.interactions[i].page_nr;
+            });
+            if (pageResult == null) {
+                continue;
+            }
+
+            var subinteraction = {};
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type) {
                 case "match":
@@ -1756,7 +1768,7 @@ function XTResults() {
                         matchSub.learnerAnswer = learnerAnswer;
                         matchSub.correctAnswer = correctAnswer;
                         matchSub.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
-                        results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
+                        pageResult.subinteractions.push(matchSub);
                     }
                     break;
                 case "text":
@@ -1792,7 +1804,7 @@ function XTResults() {
                 subinteraction.learnerAnswer = learnerAnswer;
                 subinteraction.correctAnswer = correctAnswer;
                 subinteraction.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
-                results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
+                pageResult.subinteractions.push(subinteraction);
             }
         }
     }

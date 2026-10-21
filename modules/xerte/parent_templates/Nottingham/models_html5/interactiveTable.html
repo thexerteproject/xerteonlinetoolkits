@@ -803,7 +803,7 @@
 
 		// track total score - either because all complete or user has moved to a new page
 		this.sendScore = function() {
-			XTSetPageScore(x_currentPage,  ($tableHolder.find(".questionCell.correct").length/$tableHolder.find(".questionCell").length*100), x_currentPageXML.getAttribute("trackinglabel"));
+			XTSetPageScore(x_currentPage,  ($tableHolder.find(".questionCell.correct").length/$tableHolder.find(".questionCell").length*100));
 		}
 	}
 	

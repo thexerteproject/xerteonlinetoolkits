@@ -478,7 +478,7 @@
 				judge: x_currentPageXML.getAttribute("judge") != "false"
             };
             XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
-            XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total, x_currentPageXML.getAttribute("trackinglabel"));
+            XTSetPageScore(x_currentPage, (l_correct * 100.0)/l_total);
 		}
 		
 		this.initTracking = function(){

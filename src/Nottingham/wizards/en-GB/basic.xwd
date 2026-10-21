@@ -266,6 +266,11 @@
 		<trackingPageTimeout label="Required viewing time (seconds)" type="NumericStepper" min="0" max="1000" step="1" defaultValue="0" optional="true" tooltip="The number of seconds each page that does not contain a task has to be viewed before it is marked as complete. Use with caution." />
 	</completionGroup>
 
+	<scoreGroup label="Project score" type="group" optional="true" tooltip="Properties determining how the overall score is calculated for tracked projects (e.g. SCORM or xAPI) and the results page. This does not change how individual tasks are marked. Exclude individual pages from contributing to the project score by setting their 'Score Weight' to 0." info="Select the types of task that contribute to the project score. By default, only tasks marked against a correct answer are counted towards the score and all such tasks in the project are counted to determine the maximum score available.">
+	  <scoreTasks label="Tasks counted" type="ComboBox" options="Only tasks with a correct answer,All tasks (including opinion / survey type tasks)" data="marked,all" defaultValue="marked" optional="true" tooltip="By default only tasks marked against a correct answer count. Opinion and survey tasks are left out of score calculations. Choose 'All tasks' to include unmarked tasks. These tasks are generally scored as 100% once an answer has been submitted."/>
+	  <scoreScope label="Include unviewed tasks" type="CheckBox" defaultValue="true" optional="true" tooltip="By default the maximum score achievable includes every scored task, including ones on pages that have not been viewed yet (these score 0). Uncheck this box to ignore unviewed tasks, so the maximum and achieved scores are based only on what has been viewed so far."/>
+	</scoreGroup>
+
 	<trackingOptions label="Tracking options" type="group" optional="true" tooltip="Properties relating to the tracking of this project (e.g. using SCORM or xAPI)">
 
 		<trackingMode label="Tracking level" type="ComboBox" options="Full,Minimal,None" data="full,minimal,none" defaultValue="full" optional="true" tooltip="Specify the level of detail tracked"/>

@@ -18,44 +18,30 @@
 	 * limitations under the License.
 	 */
 
-	// ** multiple / single attempts code doesn't work properly
-	// ** you can always click submit button even if no answer typed in
-	// ** you can always retype a new answer in the box even after submitted (but submit button is disabled so can't resubmit)s
+	// ** add a require answers option - or should an answer always be required if only single answer allowed?
+	// ** if judge is on and correct answer is submitted, should the answer text be shown? it just repeats the text in textarea
 
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var dictation = new function() {
-		var $pageContents,
-				showBtnTxt,
-				nextBtnTxt,
-				restartBtnTxt,
-				correctText,
-				incorrectText,
-				captionInfo = new Array();
-		
-		//The number of correct answers
-		var correct_answers = 0;
-
-		//The total number of questions answered
-		var total = 0;
+		let $pageContents,
+			captionInfo = [],
+			correct_answers = 0;
 
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
 			$pageContents = $("#pageContents");
+
+			correct_answers = $pageContents.data("correct_answers");
+			captionInfo = $pageContents.data("captionInfo");
+
 			if ($pageContents.data("mediaElement") != undefined) {
 				$pageContents.data("mediaElement").setCurrentTime($pageContents.data("captionInfo")[$pageContents.data("current")].start);
 			}
+		}
 
-			if (x_multipleAttemptsAllowed()) {
-				showBtnTxt = x_currentPageXML.getAttribute("showText") != undefined && x_currentPageXML.getAttribute("showText") != "" ? x_currentPageXML.getAttribute("showText") : "Show Answer";
-			}
-			else {
-				showBtnTxt = x_currentPageXML.getAttribute("trackedShowText") != undefined && x_currentPageXML.getAttribute("trackedShowText") != "" ? x_currentPageXML.getAttribute("trackedShowText") : "Submit";
-			}
-			nextBtnTxt = x_currentPageXML.getAttribute("nextText") != undefined && x_currentPageXML.getAttribute("nextText") != "" ? x_currentPageXML.getAttribute("nextText") : "Next";
-			restartBtnTxt = x_currentPageXML.getAttribute("restartText") != undefined && x_currentPageXML.getAttribute("restartText") != "" ? x_currentPageXML.getAttribute("restartText") : "Restart";
-			correctText = x_currentPageXML.getAttribute("correctText") != undefined && x_currentPageXML.getAttribute("correctText") != "" ? x_currentPageXML.getAttribute("correctText") : "Correct";
-			incorrectText = x_currentPageXML.getAttribute("incorrectText") != undefined && x_currentPageXML.getAttribute("incorrectText") != "" ? x_currentPageXML.getAttribute("incorrectText") : "Incorrect";
+		this.leavePage = function() {
+			$pageContents.data("correct_answers", correct_answers);
 		}
 
 		// function called every time the size of the LO is changed
@@ -80,11 +66,14 @@
 		}
 
 		this.init = function() {
+			correct_answers = 0;
+			captionInfo = [];
+
             $pageContents = $("#pageContents");
 
 			//Add aria-label to answer box
 			var answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel");
-			if (answerFieldLabel === undefined | answerFieldLabel === null) {
+			if (answerFieldLabel === undefined || answerFieldLabel === null) {
 				answerFieldLabel = "Answer";
 			}
 			$pageContents.data("answerFieldLabel", answerFieldLabel);
@@ -158,27 +147,22 @@
 
         this.setup =function() {
 
-            this.initTracking();
-
-			if (x_multipleAttemptsAllowed()) {
-				showBtnTxt = x_currentPageXML.getAttribute("showText") != undefined && x_currentPageXML.getAttribute("showText") != "" ? x_currentPageXML.getAttribute("showText") : "Show Answer";
-			}
-			else {
-				showBtnTxt = x_currentPageXML.getAttribute("trackedShowText") != undefined && x_currentPageXML.getAttribute("trackedShowText") != "" ? x_currentPageXML.getAttribute("trackedShowText") : "Submit";
-			}
-			nextBtnTxt = x_currentPageXML.getAttribute("nextText") != undefined && x_currentPageXML.getAttribute("nextText") != "" ? x_currentPageXML.getAttribute("nextText") : "Next";
-			restartBtnTxt = x_currentPageXML.getAttribute("restartText") != undefined && x_currentPageXML.getAttribute("restartText") != "" ? x_currentPageXML.getAttribute("restartText") : "Restart";
-			correctText = x_currentPageXML.getAttribute("correctText") != undefined && x_currentPageXML.getAttribute("correctText") != "" ? x_currentPageXML.getAttribute("correctText") : "Correct";
-			incorrectText = x_currentPageXML.getAttribute("incorrectText") != undefined && x_currentPageXML.getAttribute("incorrectText") != "" ? x_currentPageXML.getAttribute("incorrectText") : "Incorrect";
+			// Track the dictation page
+			const weighting = x_calculateWeight(x_currentPageXML.getAttribute("trackingWeight"), { value: x_currentPageXML.getAttribute("showCorrectness"), fallback: false });
+			XTSetPageType(x_currentPage, 'numeric', $pageContents.data("captionInfo").length, weighting);
 
 			$("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("text")));
 
 			// set up split screen layout
 			XENITH.SPLITSCREEN.init();
 
+			let btnLabel = x_currentPageXML.getAttribute("trackedShowText") != undefined && x_currentPageXML.getAttribute("trackedShowText") != "" ? x_currentPageXML.getAttribute("trackedShowText") :
+							x_currentPageXML.getAttribute("showText") != undefined && x_currentPageXML.getAttribute("showText") != "" ? x_currentPageXML.getAttribute("showText") : // some very old projects might use showText instead
+							"Submit";
+
 			$("#showBtn")
 				.button({
-					label:	showBtnTxt
+					label: btnLabel
 				})
 				.click(function() {
 					if ($pageContents.data("captionInfo").length <= 1) {
@@ -189,34 +173,47 @@
 						}
 					}
 
-					var feedback;
-					$("#showBtn").button("disable");
-					//Formats the answer to te correct format, so we can compare it with the input to check if it is correct
-
-					var text = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].answer).text().replace(/(\r\n|\n|\r)/gm,"");
-					//Checks if the answer is correct, and if so it adds one to the total of correct answers
-					var answer = $('#answerTxt').val();
-					var correct = false;
-
 					if ($("#pageContents").data("slideIn")) {
 						$("#answer")
-							.html('<div><p>' + $pageContents.data("captionInfo")[$pageContents.data("current")].answer + '</p></div>')
-							.slideDown(function() {
-								// refresh feedback so it is picked up by screen readers now not hidden
-								$("#answer").each(function() {
-									$("#answer").html($("#answer").html());
+								.html('<div><p>' + $pageContents.data("captionInfo")[$pageContents.data("current")].answer + '</p></div>')
+								.slideDown(function() {
+									// refresh feedback so it is picked up by screen readers now not hidden
+									$("#answer").each(function() {
+										$("#answer").html($("#answer").html());
+									});
 								});
-							});
 					} else {
 						$("#answer").html('<div><p>' + $pageContents.data("captionInfo")[$pageContents.data("current")].answer + '</p></div>');
 					}
 
-					if (answer == text) {
-						correct_answers++;
-						correct = true;
-						feedback="Correct";
-						if (x_currentPageXML.getAttribute("showCorrectness") != null && x_currentPageXML.getAttribute("showCorrectness") != "false")
-						{
+					// prevent changes to the answer field
+					if (!x_multipleAttemptsAllowed() || $pageContents.data("captionInfo").length > 1) {
+						$('#answerTxt').prop("disabled", true);
+						$("#showBtn").button("disable");
+					} else if ($pageContents.data("captionInfo").length === 1) {
+						correct_answers = 0;
+					}
+
+					var answer = $('#answerTxt').val();
+					var correct = false;
+					let feedback = "";
+
+					// are submitted answers going to be judged against correct answers or is it collecting opinions only?
+					const judge = x_checkIfJudged(x_currentPageXML.getAttribute("showCorrectness"), false);
+
+					if (judge) {
+						//Formats the answer to te correct format, so we can compare it with the input to check if it is correct
+						var text = $("<div/>").html($pageContents.data("captionInfo")[$pageContents.data("current")].answer).text().replace(/(\r\n|\n|\r)/gm,"");
+
+						const correctText = x_currentPageXML.getAttribute("correctText") != undefined && x_currentPageXML.getAttribute("correctText") != "" ? x_currentPageXML.getAttribute("correctText") : "Correct";
+						const incorrectText = x_currentPageXML.getAttribute("incorrectText") != undefined && x_currentPageXML.getAttribute("incorrectText") != "" ? x_currentPageXML.getAttribute("incorrectText") : "Incorrect";
+
+						//Checks if the answer is correct, and if so it adds one to the total of correct answers
+						if (answer == text) {
+							correct_answers++;
+							correct = true;
+							feedback = "Correct";
+
 							if ($("#pageContents").data("slideIn")) {
 								$("#correct")
 										.html('<p><span class="tick fa fa-fw fa-x-tick"><span class="ui-helper-hidden-accessible" aria-hidden="true">' + x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct") + ' </span></span>' + x_addLineBreaks(" " + correctText) + '</p>')
@@ -229,12 +226,9 @@
 							} else {
 								$("#correct").html('<p><span class="tick fa fa-fw fa-x-tick"><span class="ui-helper-hidden-accessible" aria-hidden="true">' + x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct") + ' </span></span>' + x_addLineBreaks(" " + correctText) + '</p>');
 							}
-						}
-					}
-					else {
-						feedback="Incorrect";
-						if (x_currentPageXML.getAttribute("showCorrectness") != null && x_currentPageXML.getAttribute("showCorrectness") != "false")
-						{
+
+						} else {
+							feedback = "Incorrect";
 							if ($("#pageContents").data("slideIn")) {
 								$("#incorrect")
 										.html('<p><span class="tick fa fa-fw fa-x-cross"><span class="ui-helper-hidden-accessible" aria-hidden="true">' + x_getLangInfo(x_languageData.find("cross")[0], "title", "Incorrect") + ' </span></span>' + x_addLineBreaks(" " + incorrectText) + '</p>')
@@ -247,21 +241,28 @@
 								$("#incorrect").html('<p><span class="tick fa fa-fw fa-x-cross"><span class="ui-helper-hidden-accessible" aria-hidden="true">' + x_getLangInfo(x_languageData.find("cross")[0], "title", "Incorrect") + ' </span></span>' + x_addLineBreaks(" " + incorrectText) + '</p>');
 							}
 						}
+
+					} else {
+						// answer is not being judged so always consider to be correct
+						correct_answers++;
+						correct = true;
 					}
+
 					var result =
 						{
 						    success: correct,
 							score: (correct ? 100.0 : 0.0),
-							judge: x_currentPageXML.getAttribute("showCorrectness") != null && x_currentPageXML.getAttribute("showCorrectness") != "false"
+							judge: judge
 						};
-					XTExitInteraction(x_currentPage, $pageContents.data("current"), result, [], answer, feedback, x_currentPageXML.getAttribute("trackinglabel"));
-					total++;
 
-					if ($pageContents.data("current") + 1 < $pageContents.data("captionInfo").length) {
+					const complete = $pageContents.data("current") + 1 >= $pageContents.data("captionInfo").length
+
+					XTExitInteraction(x_currentPage, $pageContents.data("current"), result, [], answer, feedback, x_currentPageXML.getAttribute("trackinglabel"));
+					XTSetPageScore(x_currentPage, (correct_answers * 100.0)/$pageContents.data("captionInfo").length, complete);
+
+					if (!complete) {
 						$("#nextBtn").button("enable");
 					} else {
-					    //Where done, finish tracking
-                        dictation.finishTracking();
 						$("#restartBtn").button("enable");
 					}
 				});
@@ -287,6 +288,7 @@
 				.click(function() {
 					$(this).button("disable");
 					$("#showBtn").button("enable");
+					correct_answers = 0;
 					
 					dictation.sortCaptions();
 				});
@@ -320,12 +322,14 @@
 		this.loadQ = function() {
 			if ($pageContents.data("captionInfo").length > 1) {
 				$("#count").html(x_currentPageXML.getAttribute("countText").replace("{i}", $pageContents.data("current") + 1).replace("{n}",  $pageContents.data("captionInfo").length));
-				$("#answerTxt").attr("aria-label", $("#count").text() + ": " + $pageContents.data("answerFieldLabel"));
+				$("#answerTxt")
+						.attr("aria-label", $("#count").text() + ": " + $pageContents.data("answerFieldLabel"))
+						.prop("disabled", false);
 			} else {
 				$("#count").remove();
 			}
 
-			if (x_addLineBreaks($pageContents.data("captionInfo")[$pageContents.data("current")].prompt == "")) {
+			if ($pageContents.data("captionInfo")[$pageContents.data("current")].prompt.trim() == "") {
 				$("#prompt").hide();
 			} else {
 				$("#prompt")
@@ -397,20 +401,6 @@
 					}
 				});
 			}
-		}
-		//Stopping the tracking
-		this.finishTracking = function() {
-			XTSetPageScore(x_currentPage, ((correct_answers * 100.0)/total), x_currentPageXML.getAttribute("trackinglabel"));
-		}
-		//Starting the tracking
-		this.initTracking = function() {
-			// Track the dictation page
-			this.weighting = 1.0;
-            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
-            {
-				this.weighting = x_currentPageXML.getAttribute("trackingWeight");
-			}
-			XTSetPageType(x_currentPage, 'numeric', $pageContents.data("captionInfo").length, this.weighting);
 		}
 	}
 

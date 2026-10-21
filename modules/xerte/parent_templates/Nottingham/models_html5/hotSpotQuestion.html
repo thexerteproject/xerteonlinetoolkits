@@ -304,7 +304,7 @@
 							score: setScore
 						}
 						XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
-						XTSetPageScore(x_currentPage, setScore, x_currentPageXML.getAttribute("trackinglabel"));
+						XTSetPageScore(x_currentPage, setScore);
 
 					// activity is incomplete - some incorrect are selected or not all correct are selected (& max attempts not made)
 					}else{

@@ -1462,9 +1462,9 @@
 			var numQs = x_currentPageXML.getAttribute("mcqNumQs") == undefined || x_currentPageXML.getAttribute("mcqNumQs") == "*" ? $pageContents.data("mcqAnswers").length : isNaN(x_currentPageXML.getAttribute("mcqNumQs")) ? $pageContents.data("mcqAnswers").length : Number(x_currentPageXML.getAttribute("mcqNumQs"));
 
 			if (numQs === 0) {
-				XTSetPageScore(x_currentPage, $pageContents.data("mcqScore"), x_currentPageXML.getAttribute("trackinglabel"));
+				XTSetPageScore(x_currentPage, $pageContents.data("mcqScore"));
 			} else {
-				XTSetPageScore(x_currentPage, $pageContents.data("mcqScore") * 100 / numQs, x_currentPageXML.getAttribute("trackinglabel"));
+				XTSetPageScore(x_currentPage, $pageContents.data("mcqScore") * 100 / numQs);
 			}
 		};
 	};

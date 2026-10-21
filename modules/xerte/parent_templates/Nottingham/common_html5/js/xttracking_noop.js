@@ -317,13 +317,18 @@ function NoopTrackingState()
         }
     }
 
-    function setPageScore(page_nr, score)
+    function setPageScore(page_nr, score, complete)
     {
     	var sit = state.findPage(page_nr);
         if (sit != null && (state.scoremode != 'first' || sit.scoreTracked !== true))
         {
             sit.score = score;
-            sit.scoreTracked = true;
+
+            // the complete argument allows for partially completed, single attempt tasks to be scored
+            // it will only lock further score updates once every sub-question has been submitted
+            if (complete !== false) {
+                sit.scoreTracked = true;
+            }
         }
     }
 
@@ -1041,9 +1046,9 @@ function XTSetPageType(page_nr, page_type, nrinteractions, weighting)
 	state.setPageType(page_nr, page_type, nrinteractions, weighting);
 }
 
-function XTSetPageScore(page_nr, score)
+function XTSetPageScore(page_nr, score, complete)
 {
-	state.setPageScore(page_nr, score);
+	state.setPageScore(page_nr, score, complete);
 }
 
 function XTSetPageScoreJSON(page_nr, score)
@@ -1164,8 +1169,6 @@ function XTResults() {
     results.interactions = Array();
 
     for (i = 0; i < state.interactions.length; i++) {
-
-
         score += state.interactions[i].score * state.interactions[i].weighting;
         if (state.interactions[i].ia_nr < 0 || state.interactions[i].nrinteractions > 0) {
 
@@ -1209,8 +1212,15 @@ function XTResults() {
                 continue;
             }
 
+            const pageResult = results.interactions.find(function (interaction) {
+                return interaction.page_nr === state.interactions[i].page_nr;
+            });
+            if (pageResult == null) {
+                continue;
+            }
+
             var subinteraction = {};
-						let judge = true;
+            let judge = true;
             var learnerAnswer, correctAnswer;
             switch (state.interactions[i].ia_type) {
                 case "match":
@@ -1263,7 +1273,7 @@ function XTResults() {
                         matchSub.correctAnswer = correctAnswer;
                         matchSub.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
                         judge &= matchSub.judge;
-                        results.interactions[nrofquestions - 1].subinteractions.push(matchSub);
+                        pageResult.subinteractions.push(matchSub);
                     }
                     break;
                 case "text":
@@ -1300,9 +1310,9 @@ function XTResults() {
                 subinteraction.correctAnswer = correctAnswer;
                 subinteraction.judge = (state.interactions[i].result != null && state.interactions[i].result.judge != null ? state.interactions[i].result.judge : true);
                 judge = judge && subinteraction.judge;
-                results.interactions[nrofquestions - 1].subinteractions.push(subinteraction);
+                pageResult.subinteractions.push(subinteraction);
             }
-            results.interactions[nrofquestions - 1].judge = judge;
+            pageResult.judge = judge;
         }
     }
     results.completion = completion;

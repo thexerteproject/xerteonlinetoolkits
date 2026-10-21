@@ -68,8 +68,12 @@ var x_languageData  = [],
 		{name: 'resource',			defaultIconClass:'fa fa-folder-open',				custom: 'resourceIc',		defaultFA: 'fa fa-folder-open'},			// resources
 		{name: 'intro',				defaultIconClass:'x_projectIntro',					custom: 'introIc',			defaultFA: 'fas fa-info'},					// project introduction
 		{name: 'pageIntro',			defaultIconClass:'fas fa-info',						custom: 'pageIntroIc',		defaultFA: 'fas fa-info'}					// page introduction
-	];
-	
+	],
+	// the page models that contribute to the score - this is used when the score is calculated based on the entire project rather than just viewed pages
+	x_scoredModels = ["topXQ", "categories", "dialog", "dictation", "dragDropLabel", "gapFill", "textHighlight", "hotSpotQuestion", "interactiveTable", "interactiveText", "interactiveVideo", "textMatch", "modelAnswer",	"modify", "mcq", "opinion", "quiz", "grid", "textCorrection", "timeline"],
+	x_scoredPages = []; // will contain info about all pages in project that are of a type in x_scoredModels
+	// ** missing model types? documentation, mediaLesson, youtube, results
+
 // Determine whether offline mode or not
 var xot_offline = !(typeof modelfilestrs === 'undefined');
 var modelfilestrs = modelfilestrs || [];
@@ -609,6 +613,62 @@ x_projectDataLoaded = function(xmlData) {
 				if (chapterIndex != undefined) {
 					x_chapters[chapterIndex].pages.push(i);
 				}
+			}
+
+			/* ** TODO this is all stil WIP and not working yet */
+			// ** this will change existing projects - document this (defaults used to be opinion included and viewed only)
+			// ** should there also be an option to calculate completion only on the pages that have been viewed (makes more sense when completion is on attempt rather than view but could confuse / lock tracked projects) complicates things in tracked projects as they lock on completion
+
+			// by default, all scored pages in the project will contribute to the score calculations
+			// if scoreScope == "false", only viewed pages are counted
+			if (x_params.scoreScope !== "false") {
+				for (let i=0; i<x_pages.length; i++) { // ** can menu page cause problems? index issues if menu page is added to this array later?
+					if ($.inArray(x_pages[i].nodeName, x_scoredModels) > -1) {
+
+						// if page has a tracking weight of zero then the page does not contribute to the score
+						if (x_pages[i].getAttribute("trackingWeight") === null || Number(x_pages[i].getAttribute("trackingWeight")) !== 0) {
+							// ** need to finish work on all the page models before I can finish this as I need to know that they all have trackingWeight & judge properties
+
+							// default tracking weight is 1 when no trackingWeight property added
+							const thisWeight = x_pages[i].getAttribute("trackingWeight") !== null ? Number(x_pages[i].getAttribute("trackingWeight")) : 1.0;
+							// ** use the x_calculateWeight function here instead?
+
+							// by default, only 'judged' tasks contribute to the score calculations
+							// judged tasks have the user's submitted answer checked against a correct answer (rather than being used to gather opinions)
+							// if scoreTasks == "all", opinion type questions also contribute to score calculations
+
+							// there is inconsistency in the name of the xwd property that determines if an activity is judged or not
+							// most pages use 'judge' but there are some other properties that need checking for specific pages
+							let judgeProperty = "judge";
+							let judgeDefault = true;
+							if (x_pages[i].nodeName === "dictation") {
+								judgeProperty = "showCorrectness";
+								judgeDefault = false;
+							} else if (x_pages[i].nodeName === "mcq") {
+								judgeProperty = "markFeedback"; // ** not sure this is the equivalent - quiz also has this on question children
+							}
+							const pageJudge = x_checkIfJudged(x_pages[i].getAttribute(judgeProperty), judgeDefault);
+
+							// ** other ones to look at edge cases:
+							// ** interactive video child - judge
+							// ** gap fill only when fill in blank
+							// ** check tooltips for these as some of them seem to say they will contribute to the score even if they don't
+
+							if (x_params.scoreTasks === "all" || pageJudge !== false) {
+								const scoreData = { index: i, type: x_pages[i].nodeName, judge: true, weight: thisWeight };
+								x_scoredPages.push(scoreData);
+							}
+						}
+					}
+				}
+				// ** might have to look at lti - does it do a score that is score weighted against completion?
+				// ** what about results page tailored feedback - if viewed midway through a project this will be different to currently
+				console.log("score based on whole project");
+				console.log(x_scoredPages);
+			} else {
+				// only viewed pages are included in score calculations
+				console.log("score viewed pages only");
+				console.log("include opinion type tasks: " + x_params.scoreTasks === "all"); // **
 			}
 
 			// will a sidebar need to be built?
@@ -3089,6 +3149,51 @@ function x_closeStandAlonePage(event) {
 	if (x_pageInfo[x_currentPage].type == "connectorMenu") {
 		connectorMenu.checkVisited();
 	}
+}
+
+// function returns the tracking weight for a page
+function x_calculateWeight(weight, judge) {
+	let fallback = 1.0; // default
+	if (weight !== null && typeof weight === 'object') {
+		if (weight.fallback != undefined) {
+			fallback = weight.fallback; // some pages might have a different fallback value
+		}
+		weight = weight.value;
+	}
+	let pageWeight = fallback;
+
+	// pages that aren't judged have zero tracking weight unless this is changed at project level (in project score optional property group)
+	let judgeFallback = true; // default
+	if (judge !== null && typeof judge === 'object') {
+		if (judge.fallback != undefined) {
+			judgeFallback = judge.fallback; // some pages might have a different fallback value (if judge is off by default)
+		}
+		judge = judge.value;
+	}
+	if (!x_checkIfJudged(judge, judgeFallback) && x_params.scoreTasks !== "all") {
+		pageWeight = 0.0;
+
+	} else if (weight !== null && $.isNumeric(weight)) {
+		pageWeight = Number(weight);
+	}
+
+	return pageWeight;
+}
+
+// are submitted answers going to be judged against correct answers or is it collecting opinions only?
+function x_checkIfJudged(judge, fallback) {
+	// judge is true by default but some pages might have a different fallback value
+	let pageJudge = fallback !== undefined ? fallback : true;
+	if (pageJudge) {
+		if (judge === "false" || judge === false) {
+			pageJudge = false;
+		}
+	} else {
+		if (judge === "true" || judge === true) {
+			pageJudge = true;
+		}
+	}
+	return pageJudge;
 }
 
 function x_endPageTracking(pagechange, x_gotoPage) {

@@ -18,6 +18,8 @@
  * limitations under the License.
  */
 
+// ** add feedback string when unjudged, e.g. 'your answers have been submitted'
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var categories = new function() {
@@ -59,11 +61,9 @@
 			const l_feedback = [];
 			let l_total = 0;
 			let l_correct = 0;
-			let l_judge = true;
 
-			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false'){
-				l_judge = false;
-			}
+			// are submitted answers going to be judged against correct answers or is it collecting opinions only?
+			const l_judge = x_checkIfJudged(x_currentPageXML.getAttribute("judge"));
 
 			if ((!x_multipleAttemptsAllowed() && $("#initHolder .label").length > 0) || $("#categoryHolder .category .label").length == 0) {
 				// only one attempt allowed & is not complete or no labels placed - prompt to complete before marking
@@ -142,7 +142,7 @@
 					}
 
 					// show other feedback if max. no. attempts reached, all are correct or if only one attempt allowed
-					if ($pageContents.data("attemptsMade") >= $pageContents.data("attemptsAllowed") || !x_multipleAttemptsAllowed || (l_judge && l_correct == totaloptions)) {
+					if ($pageContents.data("attemptsMade") >= $pageContents.data("attemptsAllowed") || !x_multipleAttemptsAllowed() || (l_judge && l_correct == totaloptions)) {
 						// general feedback
 						if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != "") {
 							$feedback.append('<div class="fbG">' + x_addLineBreaks(x_currentPageXML.getAttribute("feedback")) + '</div>');
@@ -199,11 +199,13 @@
         }
 
 		this.init = function() {
+			const judge = x_checkIfJudged(x_currentPageXML.getAttribute("judge"));
+
 			$pageContents = $("#pageContents");
 			$pageContents.data({
 				// ** check that existing attempts option works well with new attemptsAllowed option
 				// ** "attempts" is mandatory & "attemptsAllowed" is not - both are new & not in current release so I can change how either of them work
-				"attemptsAllowed": !x_multipleAttemptsAllowed() ? 1 : x_currentPageXML.getAttribute("judge") !== "false" && x_currentPageXML.getAttribute("attempts") != undefined && $.isNumeric(x_currentPageXML.getAttribute("attempts").trim()) ? Number(x_currentPageXML.getAttribute("attempts").trim()) : 1,
+				"attemptsAllowed": !x_multipleAttemptsAllowed() ? 1 : judge && x_currentPageXML.getAttribute("attempts") != undefined && $.isNumeric(x_currentPageXML.getAttribute("attempts").trim()) ? Number(x_currentPageXML.getAttribute("attempts").trim()) : 1,
 				"attemptsMade": 0
 			});
 
@@ -213,13 +215,8 @@
 			const correctFeedback = [];
 
             // Track the page
-            let weighting = 1.0;
-            if (x_currentPageXML.getAttribute("trackingWeight") != undefined) {
-                weighting = x_currentPageXML.getAttribute("trackingWeight");
-            }
-			if(x_currentPageXML.getAttribute("judge") != undefined && x_currentPageXML.getAttribute("judge") == 'false') {
-				weighting= 0.0;
-			}
+			const weighting = x_calculateWeight(x_currentPageXML.getAttribute("trackingWeight"), x_currentPageXML.getAttribute("judge"));
+
             XTSetPageType(x_currentPage, 'numeric', 1, weighting);
 
             $("#textHolder")
@@ -235,7 +232,7 @@
 
 			// button will be labelled "Check Answers" or "Submit Answers" depending on whether it is being judged or not
 			let btnLabel = x_currentPageXML.getAttribute("buttonLabel") != undefined ? x_currentPageXML.getAttribute("buttonLabel") : "Check Answers";
-			if (x_currentPageXML.getAttribute("judge") == "false") {
+			if (!judge) {
 				btnLabel = x_currentPageXML.getAttribute("submitButtonLabel") != undefined ? x_currentPageXML.getAttribute("submitButtonLabel") : btnLabel;
 			}
 
@@ -248,7 +245,7 @@
 				});
 
 			// button that reveals correct answers
-			if (x_currentPageXML.getAttribute("answers") == "true" && (x_currentPageXML.getAttribute("judge") == undefined || x_currentPageXML.getAttribute("judge") == "true")) {
+			if (x_currentPageXML.getAttribute("answers") == "true" && judge) {
 				$('<button id="showBtn"/>').prependTo("#btnHolder")
 					.button({
 						label: x_currentPageXML.getAttribute("showAnswersLabel") != undefined ? x_currentPageXML.getAttribute("showAnswersLabel") : "Show Answers"

@@ -324,7 +324,7 @@
 					.draggable("disable")
 					.off("focusin focusout keypress click");
             }
-            XTSetPageScore(x_currentPage, ((correct/numOfQuestions)*100.0), x_currentPageXML.getAttribute("trackinglabel"));
+            XTSetPageScore(x_currentPage, ((correct/numOfQuestions)*100.0));
         };
 
 		this.init = function() {

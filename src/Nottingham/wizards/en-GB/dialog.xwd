@@ -33,8 +33,8 @@
       <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
-    <judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result." />
-	<trackingWeight label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" condition="judge!='false'" defaultValue="1.0" /> 
+    <trackingWeight label="Score Weight" optional="true" type="textInput" defaultValue="1.0" condition="judge!='false'||treeroot.scoreTasks=='all'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
+    <judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect and will not contribute to the project score unless you have changed the 'project score' options at project level to include 'all tasks'."/>
 
     <tryTxt label="Try Again Text" type="TextInput" wysiwyg="true" divider="true" language="true"/>
     <correctTxt label="Correct Text" type="TextInput" wysiwyg="true" language="true"/>
