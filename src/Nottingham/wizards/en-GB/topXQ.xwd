@@ -44,7 +44,7 @@
     </textBelowGroup>
 
     <feedback type="TextArea" height="40" label="Feedback" optional="true" defaultValue="" placeholder="Enter feedback here"/>
-	<showAnswers label="Show Answers" defaultValue="true" type="ComboBox" options="Show all answers,Show other possible answers,Show no answers" data="true,others,false" optional="true" tooltip="Control whether a list of answers (either all possible answers or only those not already found) is shown when activity is complete"/>
+	<showAnswers label="Show Answers" defaultValue="true" type="ComboBox" options="Show all answers,Show other possible answers,Show no answers" data="true,others,false" optional="true" condition="judge!='false'" tooltip="Control whether a list of answers (either all possible answers or only those not already found) is shown when activity is complete"/>
     <answerDelimiter label="Answer Delimiter" type="textInput" defaultValue="," optional="true" tooltip="The character separating the answers"/>
     <amountOfTries label="Attempts" type="TextInput" defaultValue="1" optional="true" condition="judge!='false'" tooltip="Attempts allowed before feedback is given"/>
 
@@ -57,7 +57,7 @@
     <passed label="Correct Text" type="TextInput" wysiwyg="false" language="true"  />
     <failed label="Incorrect Text" type="TextInput" wysiwyg="false" language="true" />
 	<attemptLabel label="Attempt Label" type="TextInput" wysiwyg="false" language="true"/>
-	<noAttemptTxt label="No attempt Text" type="TextInput" wysiwyg="false" language="true" defaultValue="" mandatory="true"/>
+	<noattemptTxt label="No attempt Text" type="TextInput" wysiwyg="false" language="true" defaultValue="" mandatory="true"/>
     <checkBtnTxt label="Check Button Label" type="TextInput" wysiwyg="false" language="true" />
 	<answerFieldLabel label="Answer Field Hidden Aria-Label" type="TextInput" wysiwyg="false" language="true" mandatory="true" defaultValue="Answer" tooltip="This is a hidden label specifically for screen reader users so that each text field is labelled and spoken as Answer 1, Answer 2 etc."/>
 

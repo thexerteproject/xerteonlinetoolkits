@@ -18,8 +18,10 @@
  * limitations under the License.
  */
 
-// ** add a require answer optional property?
-// ** answerFieldLabel language string isn't used - fixed "Answer" is instead
+/* TODO **
+- no require answer option - submit without edit is scored as 100%
+- multiple attempts always allowed
+ */
 
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -58,11 +60,12 @@
 			XENITH.SPLITSCREEN.init({"attributes": attributes});
 
 			if (x_currentPageXML.getAttribute("answer") != undefined && x_currentPageXML.getAttribute("answer") != "") {
+				const feedbackFieldLabel = x_currentPageXML.getAttribute("feedbackLabel") != undefined ? x_currentPageXML.getAttribute("feedbackLabel") : "Feedback";
 				if (x_currentPageXML.getAttribute("answerType") == "false") {
-					var $modelTxt = $('<div id="modelTxt" aria-label="Feedback" aria-live="polite"></div>').insertBefore($('#button'));
+					var $modelTxt = $('<div id="modelTxt" aria-label="' + feedbackFieldLabel + '" aria-live="polite"></div>').insertBefore($('#button'));
 					$modelTxt.html(x_currentPageXML.getAttribute("answer"));
 				} else {
-					var $modelTxt = $('<textarea id="modelTxt" rows="5" readonly aria-label="Feedback" aria-live="polite"></textarea>').insertBefore($('#button'));
+					var $modelTxt = $('<textarea id="modelTxt" rows="5" readonly aria-label="' + feedbackFieldLabel + '" aria-live="polite"></textarea>').insertBefore($('#button'));
 					$modelTxt.html($("<div>").html(x_currentPageXML.getAttribute("answer")).text());
 				}
 			}
@@ -72,11 +75,8 @@
 				modelAnswerTxt = x_currentPageXML.getAttribute("answer");
 			}
 
-			var label = "";
-			if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
-			{
-				label = x_currentPageXML.getAttribute("trackinglabel");
-			}
+			const label = x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "" ? x_currentPageXML.getAttribute("trackinglabel") : $('<div>').html(x_currentPageXML.getAttribute('name')).text();
+
             XTEnterInteraction(x_currentPage, 0, 'text', label, [], modelAnswerTxt, [], x_currentPageXML.getAttribute("grouping"));
 			
 			$("#instruction").html(x_addLineBreaks(x_currentPageXML.getAttribute("instruction")));
@@ -85,6 +85,9 @@
 				$("#initText").remove();
 			} else {
 				$("#initText").html($("<div>").html(x_currentPageXML.getAttribute("text")).text());
+
+				const startLabel = x_currentPageXML.getAttribute("startLabel") != undefined ? x_currentPageXML.getAttribute("startLabel") : "Start text";
+				$("#initText").attr("aria-label", startLabel);
 			}
 			
 			if (x_currentPageXML.getAttribute("feedback") != undefined && x_currentPageXML.getAttribute("feedback") != '') {
@@ -93,8 +96,12 @@
 			}
 			
 			$("#answer").html('<p>' + answerHeaderTxt + '</p>');
+
+			const answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel") != undefined ? x_currentPageXML.getAttribute("answerFieldLabel") : "Answer";
+
 			$("#answerTxt")
 				.html($("<div>").html(x_currentPageXML.getAttribute("prompt")).text())
+				.attr("aria-label", answerFieldLabel)
 				.on('input', function() {
 					$("#button").button("enable");
 
@@ -149,9 +156,9 @@
 	<div id="infoHolder" class="splitScreen_B">
 		<div id="panel" class="panelContent panel">
 			<div id="instruction"></div>
-			<textarea id="initText" rows="5" aria-label="Start text" readonly></textarea>
+			<textarea id="initText" rows="5" readonly></textarea>
 			<div id="answer"></div>
-			<textarea id="answerTxt" aria-label="Answer" rows="5"></textarea>
+			<textarea id="answerTxt" rows="5"></textarea>
 			<button id="button"></button>
 		</div>
 	</div>

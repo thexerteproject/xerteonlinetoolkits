@@ -18,6 +18,11 @@
  * limitations under the License.
  */
 
+/* TODO **
+- when require answer is off, submit without edit is scored as 100%
+- multiple attempts always allowed
+ */
+
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var modelAnswer = new function() {
@@ -230,7 +235,7 @@
 						}
 						string += '<img src="' + x_evalURL(thisImage.url) + '"';
 						if (thisImage.tooltip != undefined && thisImage.tooltip !== "") {
-							string += 'alt="' + thisImage.tooltip + '" ';
+							string += ' alt="' + thisImage.tooltip + '" ';
 						}
 						string += '/>';
 						if (thisImage.caption != undefined && thisImage.caption !== "") {
@@ -350,7 +355,7 @@
 						$(this).data("change", $(this).val().trim() !== '');
 					}
 
-					$("#downloadBtn").hide().button("disable");
+					$("#copyBtn, #downloadBtn").hide().button("disable");
 
 					// if answer is required, only show submit button when something has been typed in every text area
 					if (x_currentPageXML.getAttribute("required") == 'true') {

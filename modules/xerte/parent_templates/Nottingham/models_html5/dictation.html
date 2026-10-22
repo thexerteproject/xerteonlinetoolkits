@@ -18,8 +18,10 @@
 	 * limitations under the License.
 	 */
 
-	// ** add a require answers option - or should an answer always be required if only single answer allowed?
-	// ** if judge is on and correct answer is submitted, should the answer text be shown? it just repeats the text in textarea
+	/* TODO **
+	- no require answer option - submit without edit is scored as 100% (when judge is off)
+	- if judge is on and correct answer is submitted, should the answer text be shown? it just repeats the text in textarea
+	 */
 
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -194,7 +196,7 @@
 						correct_answers = 0;
 					}
 
-					var answer = $('#answerTxt').val();
+					var answer = $('#answerTxt').val().replace(/(\r\n|\n|\r)/gm,"");
 					var correct = false;
 					let feedback = "";
 

@@ -18,9 +18,15 @@
      * limitations under the License.
      */
 
+    /* TODO **
+    - amountOfTries - clash with new single / multiple attempt?
+    - multiple attempts always allowed
+    - no require answer option - submit without answer (when judge is off) is scored as 100%
+     */
+
         // pageChanged & sizeChanged functions are needed in every model file
         // other functions for model should also be in here to avoid conflicts
-    var topXQ = new function () {
+        var topXQ = new function () {
 			
 			var $pageContents;
             var tickTxt = x_getLangInfo(x_languageData.find("tick")[0], "title") != undefined ? x_getLangInfo(x_languageData.find("tick")[0], "title") : "Correct";
@@ -75,11 +81,17 @@
 					answers = $pageContents.data('answers'),
 					checkAnswers = $pageContents.data('checkAnswers'),
 					isCorrect = false;
-				
-				for (j = 0; j < answers.length; j++) {
+
+                for (j = 0; j < answers.length; j++) {
 					for (x = 0; x < answers[j].options.length; x++) {
-						var givenAnswer = x_currentPageXML.getAttribute("caseSensitivity") == "true" || x_currentPageXML.getAttribute("caseSensitivity") == undefined ? inputs[i] : inputs[i].toLowerCase(),
-							correctAnswer = x_currentPageXML.getAttribute("caseSensitivity") == "true" || x_currentPageXML.getAttribute("caseSensitivity") == undefined ? answers[j].options[x].trim() : answers[j].options[x].trim().toLowerCase();
+						let givenAnswer =inputs[i].trim();
+                        let correctAnswer = answers[j].options[x].trim();
+
+                        if (x_currentPageXML.getAttribute("caseSensitivity") === "false") {
+                            givenAnswer = givenAnswer.toLowerCase();
+                            correctAnswer = correctAnswer.toLowerCase();
+                        }
+
 						if (givenAnswer === correctAnswer || !judge) {
 							if (answers[j].counter == 1) {
 								// probably a duplicate that will be marked wrong but continue checking in case more than 1 identical answer is allowed
@@ -128,35 +140,28 @@
 						amountOfCorrect++;
 					}
 				}
-				
-				var amountOfInputs = 0;
-                $('.input-answer').each(function () {
-                    amountOfInputs++;
-                });
 
-				var setScore = 0;
-				if (amountOfInputs === undefined || amountOfInputs === 0) {
-					amountOfInputs = 0;
-				}
+                const amountOfInputs = $('.input-answer').length;
+                let setScore = 0;
 
-				if (amountOfInputs > 0 && amountOfCorrect > 0) {
-					setScore = 100 / amountOfInputs * amountOfCorrect;
-				}
+                if (amountOfInputs > 0 && amountOfCorrect > 0) {
+                    setScore = 100 / amountOfInputs * amountOfCorrect;
+                }
 
 				XTSetPageScore(x_currentPage, setScore);
 			};
 			
             this.init = function () {
-			
 				$pageContents = $('#pageContents');
-			
-				$pageContents.data('hasExited', false);
 
                 // are submitted answers going to be judged against correct answers or is it collecting opinions only?
                 judge = x_checkIfJudged(x_currentPageXML.getAttribute("judge"));
 
                 const weighting = x_calculateWeight(x_currentPageXML.getAttribute("trackingWeight"), x_currentPageXML.getAttribute("judge"));
-				const nrInteractions = x_currentPageXML.getAttribute("numberAnswers") == "*"? $(x_currentPageXML).children().length : x_currentPageXML.getAttribute("numberAnswers");
+				let nrInteractions = $(x_currentPageXML).children().length;
+                if ($.isNumeric(x_currentPageXML.getAttribute("numberAnswers"))) {
+                    nrInteractions = Math.min(nrInteractions, Number(x_currentPageXML.getAttribute("numberAnswers")));
+                }
 
                 XTSetPageType(x_currentPage, 'numeric', nrInteractions, weighting);
 
@@ -205,15 +210,13 @@
 
                 this.optionElements = elements;
                 var j = 0;
-				var amountOfAnswers = x_currentPageXML.getAttribute("numberAnswers");
-                if (amountOfAnswers === "*") {
-                    amountOfAnswers = elements.length;
-                } else if (amountOfAnswers > elements.length) {
-					amountOfAnswers = elements.length;
-				}
+                let amountOfAnswers = elements.length;
+                if ($.isNumeric(x_currentPageXML.getAttribute("numberAnswers"))) {
+                    amountOfAnswers = Math.min(amountOfAnswers, Number(x_currentPageXML.getAttribute("numberAnswers")));
+                }
 				
 				var answerFieldLabel = x_currentPageXML.getAttribute("answerFieldLabel");
-                if (answerFieldLabel === undefined | answerFieldLabel === null) {
+                if (answerFieldLabel == undefined) {
                     answerFieldLabel = "Answer";
                 }
                 for (i = 0; i < amountOfAnswers; i++) {
@@ -243,7 +246,7 @@
                 $pageContents.data('correctOptionsFeedback', correctOptionsFeedback);
 
                 var checkBtnTxt = x_currentPageXML.getAttribute("checkBtnTxt");
-                if (checkBtnTxt === undefined) {
+                if (checkBtnTxt == undefined) {
                     checkBtnTxt = "Submit";
                 }
                 var attempt = 1;
@@ -253,9 +256,9 @@
 						label: checkBtnTxt
 					})
 					.click(function () {
-						if ($('#OptionHolder .input-answer').length == $('#OptionHolder .input-answer').filter(function(){ return !$(this).val(); }).length) {
+						if ($('#OptionHolder .input-answer').length == $('#OptionHolder .input-answer').filter(function(){ return !$(this).val().trim(); }).length) {
                             $("#attempts").find(".noAttempt").remove();
-                            $("#attempts").append('<p class="noAttempt">' + (x_currentPageXML.getAttribute("noAttemptTxt") != undefined ? x_currentPageXML.getAttribute("noAttemptTxt") : "Please attempt the activity") + '</p>');
+                            $("#attempts").append('<p class="noAttempt">' + (x_currentPageXML.getAttribute("noattemptTxt") != undefined ? x_currentPageXML.getAttribute("noattemptTxt") : "Please attempt the activity") + '</p>');
 							
 						} else {
 							var tries;
@@ -272,17 +275,12 @@
                                 $attempts.html("");
                             }
 
-							var blankAnswers = [];
-							let numberAnswers = x_currentPageXML.getAttribute("numberAnswers") == "*"? answers.length : x_currentPageXML.getAttribute("numberAnswers");
+                            let numberAnswers = $(x_currentPageXML).children().length;
+                            if ($.isNumeric(x_currentPageXML.getAttribute("numberAnswers"))) {
+                                numberAnswers = Math.min(numberAnswers, Number(x_currentPageXML.getAttribute("numberAnswers")));
+                            }
 							for (i = 0; i < numberAnswers; i++) {
-								blankAnswers.push("-");
-							}
-							for (i = 0; i < blankAnswers.length; i++) {
-								XTEnterInteraction(x_currentPage, i, "fill-in", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), ""), "", blankAnswers[i], $pageContents.data('correctOptionsFeedback'), x_currentPageXML.getAttribute("grouping"));
-							}
-							
-							if (!$pageContents.data('hasExited')) {
-								$pageContents.data('hasExited', true);
+								XTEnterInteraction(x_currentPage, i, "fill-in", x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("prompt"), ""), "", "-", $pageContents.data('correctOptionsFeedback'), x_currentPageXML.getAttribute("grouping"));
 							}
 
 							showFeedback = function () {
@@ -297,129 +295,121 @@
 									}
 					
 									var amountOfGood = 0;
-									if (x_currentPageXML.getAttribute("caseSensitivity") == "true" || x_currentPageXML.getAttribute("caseSensitivity") == undefined) {
+                                    for (i = 0; i < inputs.length; i++) {
+                                        for (j = 0; j < answers.length; j++) {
+                                            for (x = 0; x < answers[j].options.length; x++) {
+                                                let givenAnswer = inputs[i].trim();
+                                                let correctAnswer = answers[j].options[x].trim();
 
-										for (i = 0; i < inputs.length; i++) {
-											for (j = 0; j < answers.length; j++) {
-												for (x = 0; x < answers[j].options.length; x++) {
+                                                if (x_currentPageXML.getAttribute("caseSensitivity") === "false") {
+                                                    givenAnswer = givenAnswer.toLowerCase();
+                                                    correctAnswer = correctAnswer.toLowerCase();
+                                                }
 
-													var givenAnswer = inputs[i];
-													var correctAnswer = answers[j].options[x].trim();
-													if (givenAnswer === correctAnswer || !judge) {
-														answers[j].counter2++;
-														amountOfGood++;
-														if (answers[j].counter2 > 1) {
-															amountOfGood--;
-														}
-														break;
-													}
-												}
-											}
-										}
-									} else {
-										for (i = 0; i < inputs.length; i++) {
-											var isCorrect = false;
-											for (j = 0; j < answers.length; j++) {
-												for (x = 0; x < answers[j].options.length; x++) {
-
-													var givenAnswer = inputs[i].toLowerCase();
-													var correctAnswer = answers[j].options[x].trim().toLowerCase();
-
-													if (givenAnswer === correctAnswer || !judge) {
-														answers[j].counter2++;
-														amountOfGood++;
-														if (answers[j].counter2 > 1) {
-															amountOfGood--;
-														}
-														break;
-													}
-												}
-											}
-
-										}
-									}
+                                                if (givenAnswer === correctAnswer || !judge) {
+                                                    answers[j].counter2++;
+                                                    amountOfGood++;
+                                                    if (answers[j].counter2 > 1) {
+                                                        amountOfGood--;
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
 									
 									$pageContents.data('answers', answers);
-									
 									if (amountOfGood === inputs.length){
 										return true;
 									}
 								};
 
 								var passedTxt = x_currentPageXML.getAttribute("passed");
-								if (passedTxt === undefined) {
+								if (passedTxt == undefined) {
 									passedTxt = "Well done, you have completed the activity";
 								}
 
 								var failedTxt = x_currentPageXML.getAttribute("failed");
-								if (failedTxt === undefined) {
+								if (failedTxt == undefined) {
 									failedTxt = "Not all of the answers are correct";
 								}
 
-								var passedOrFailed = "";
+                                let passedOrFailed = "";
+                                let passed;
 
-								var passed = AllAnswersCheckt();
-								if (passed === true){
-									passedOrFailed = passedTxt;
-								}else{
-									passedOrFailed = failedTxt;
-								}
-
-								$("#result").html('<p><span id="finalResult"></span>' + passedOrFailed + '</p>');
-
-                                $("#correctAnswer").html('');
-                                // show all answers
-                                if (x_currentPageXML.getAttribute("showAnswers") === "true" || x_currentPageXML.getAttribute("showAnswers") === undefined) {
-                                    var correctAnswersLabel = x_currentPageXML.getAttribute("correctAnswersLabel");
-                                    $("#correctAnswer").append('<h3>' + correctAnswersLabel + '</h3><ul>');
-
-                                    if ($('#correctAnswer ul').has("li").length === 0) {
-                                        for (i = 0; i < answers.length; i++) {
-                                            $("#correctAnswer ul").append("<li>" + answers[i].options + "<span id='topXQ-correctAnswer-" + i + "'></span> </li>");
-                                        }
+                                if (!judge) {
+                                    passedOrFailed = passedTxt;
+                                } else {
+                                    passed = AllAnswersCheckt();
+                                    if (passed === true) {
+                                        passedOrFailed = passedTxt;
+                                    } else {
+                                        passedOrFailed = failedTxt;
                                     }
+                                }
 
-                                    // only show answers that haven't been submitted
-                                } else if (x_currentPageXML.getAttribute("showAnswers") === "others") {
-                                    var otherCorrectAnswersLabel = x_currentPageXML.getAttribute("otherCorrectAnswersLabel") != undefined ? x_currentPageXML.getAttribute("otherCorrectAnswersLabel") : 'Other possible answers';
-                                    $("#correctAnswer").append('<h3>' + otherCorrectAnswersLabel + '</h3><ul>');
+                                $("#result").html('<p><span id="finalResult"></span>' + passedOrFailed + '</p>');
 
-                                    if ($('#correctAnswer ul').has("li").length === 0) {
-                                        for (i=0; i<answers.length; i++) {
-                                            var used = false;
-                                            for (j=0; j<answers[i].options.length; j++) {
-                                                var inputs = $pageContents.data('inputs');
-                                                for (k=0; k<inputs.length; k++) {
-                                                    if (inputs[k] === answers[i].options[j].trim()) {
-                                                        used = true;
-                                                    }
-                                                }
-                                            }
-                                            if (used == false) {
+                                if (judge) {
+                                    // show all answers
+                                    $("#correctAnswer").html('');
+                                    if (x_currentPageXML.getAttribute("showAnswers") === "true") {
+                                        var correctAnswersLabel = x_currentPageXML.getAttribute("correctAnswersLabel");
+                                        $("#correctAnswer").append('<h3>' + correctAnswersLabel + '</h3><ul>');
+
+                                        if ($('#correctAnswer ul').has("li").length === 0) {
+                                            for (i = 0; i < answers.length; i++) {
                                                 $("#correctAnswer ul").append("<li>" + answers[i].options + "<span id='topXQ-correctAnswer-" + i + "'></span> </li>");
                                             }
                                         }
+
+                                        // only show answers that haven't been submitted
+                                    } else if (x_currentPageXML.getAttribute("showAnswers") === "others") {
+                                        var otherCorrectAnswersLabel = x_currentPageXML.getAttribute("otherCorrectAnswersLabel") != undefined ? x_currentPageXML.getAttribute("otherCorrectAnswersLabel") : 'Other possible answers';
+                                        $("#correctAnswer").append('<h3>' + otherCorrectAnswersLabel + '</h3><ul>');
+
+                                        if ($('#correctAnswer ul').has("li").length === 0) {
+                                            for (i = 0; i < answers.length; i++) {
+                                                var used = false;
+                                                for (j = 0; j < answers[i].options.length; j++) {
+                                                    var inputs = $pageContents.data('inputs');
+                                                    for (k = 0; k < inputs.length; k++) {
+                                                        let givenAnswer = inputs[k].trim();
+                                                        let correctAnswer = answers[i].options[j].trim();
+
+                                                        if (x_currentPageXML.getAttribute("caseSensitivity") === "false") {
+                                                            givenAnswer = givenAnswer.toLowerCase();
+                                                            correctAnswer = correctAnswer.toLowerCase();
+                                                        }
+
+                                                        if (givenAnswer === correctAnswer) {
+                                                            used = true;
+                                                        }
+                                                    }
+                                                }
+                                                if (used == false) {
+                                                    $("#correctAnswer ul").append("<li>" + answers[i].options + "<span id='topXQ-correctAnswer-" + i + "'></span> </li>");
+                                                }
+                                            }
+                                        }
+
+                                        if ($("#correctAnswer ul li").length == 0) {
+                                            $('#correctAnswer').empty();
+                                        }
                                     }
 
-                                    if ($("#correctAnswer ul li").length == 0) {
-                                        $('#correctAnswer').empty();
+                                    if (passed) {
+                                        if (passedTxt !== "") {
+                                            $("#finalResult")
+                                                .removeClass("fa-x-cross")
+                                                .addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
+                                        }
+                                    } else if (failedTxt !== "") {
+                                        $("#finalResult")
+                                            .removeClass("fa-x-tick")
+                                            .addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
                                     }
                                 }
-								
-								if(passed=== true){
-									if(passedTxt !== ""){
-										$("#finalResult")
-											.removeClass("fa-x-cross")
-											.addClass("fa").addClass("fa-fw").addClass("fa-x-tick");
-									}
-								}else{
-									if(failedTxt !== ""){
-										$("#finalResult")
-											.removeClass("fa-x-tick")
-											.addClass("fa").addClass("fa-fw").addClass("fa-x-cross");
-									}
-
-								}
 								
 								var mainFeedback = x_currentPageXML.getAttribute("feedback");
 								if (mainFeedback === null) {
@@ -436,7 +426,7 @@
 							var checkAnswers = $pageContents.data('checkAnswers'),
 								wrong = checkAnswers.length;
 
-							if ((attempt < tries && wrong > 0) || tries == undefined) {
+							if ((attempt < tries && wrong > 0) || tries === undefined) {
 								for (var i = 0; i < checkAnswers.length; i++) {
 									if (checkAnswers[i].correct === false) {
 										topXQ.checkSingleAnswer(i);

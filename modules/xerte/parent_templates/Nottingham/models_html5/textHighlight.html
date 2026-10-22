@@ -18,7 +18,10 @@
  * limitations under the License.
  */
 
-// ** when no answer is required, submitting with no attempt scores 100% in notes mode but 0% in highlight mode - need to decide which is right & make consistent
+/* TODO **
+- when require answer is off, submit without edit is scored as 0% - this is different to other pages, need consistency
+- multiple attempts always allowed
+ */
 
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -507,6 +510,9 @@
 									$("#checkBtn").prop('disabled', !textHighlight.notesAttemptMade());
 								}
 
+								// has the text in the notes field been populated with something other than placeholder text?
+								$('#notesTxt').data("change", textHighlight.notesAttemptMade());
+
 								$('#notesTxt').animate({ scrollTop: $('#notesTxt').prop("scrollHeight")}, 1000);
 
 							} else if (selectedTxt == '') {
@@ -607,6 +613,8 @@
 							}
 						});
 					}
+
+					$('#notesTxt').data("change", textHighlight.notesAttemptMade());
 					
 					$('#downloadBtn').hide().button("disable");
 				})

@@ -18,8 +18,12 @@
  * limitations under the License.
  */
 
-// ** no feedback when not judged
-// ** no restart option if multiple attempts are allowed
+/* TODO **
+- attempts before hint clash with new single / multiple attempt?
+- no restart option when multiple attempts are allowed
+- no require answer option - submit without answer (when judge is off) is scored as 100%
+- add feedback option to show when fully complete
+ */
 
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -100,13 +104,7 @@
 					$thisQ.find("label")
 						.html(x_addLineBreaks(this.getAttribute("question")))
 						.attr("for", "answer" + i);
-						
-					var answerFieldLabel = this.getAttribute("answerFieldLabel");
-					if (answerFieldLabel === undefined || answerFieldLabel === null) {
-						answerFieldLabel = "Answer";
-					}
-					//Add aria-label to answer box
-					//$thisQ.find("input").attr({"aria-label" : answerFieldLabel});
+
 					$thisQ.find("input").attr("id", "answer" + i);
 				});
 
@@ -121,192 +119,212 @@
 					"pause":	false
 					})
 				.click(function() {
-					var $this = $(this);
-					if ($this.data("click") == true) {
-						var $pageContents = $("#pageContents"),
-							$feedback = $("#feedback");
-						
-						if ($this.data("state") == 0) { // mark answer
-							// Decode answer
-							var qNo = $pageContents.data("currentQ"),
-								$thisInput = $("#pageContents .question:eq(" + qNo + ") input"),
-								isCorrect = false,
-								correctAnswer = $('<div/>').html($(x_currentPageXML).children()[qNo].getAttribute("answer")).text();
+					const $pageContents = $("#pageContents");
+					const qNo = $pageContents.data("currentQ");
 
-							if (correctAnswer.indexOf(answerDelimeter) != -1) {
-								var splitAnswers = correctAnswer.split(answerDelimeter);
-								for (var i=0; i<splitAnswers.length; i++) {
-									if ($("#pageContents").data("casesensitive")) {
-										if ($.trim($thisInput.val()) == $.trim(splitAnswers[i])) {
-											isCorrect = true;
-											break;
+					if (qNo + 1 <= $(x_currentPageXML).children().length) {
+						var $this = $(this);
+						if ($this.data("click") == true) {
+							const $feedback = $("#feedback");
+
+							if ($this.data("state") == 0) { // mark answer
+								// Decode answer
+								var $thisInput = $("#pageContents .question:eq(" + qNo + ") input"),
+										isCorrect = false,
+										correctAnswer = $('<div/>').html($(x_currentPageXML).children()[qNo].getAttribute("answer")).text();
+
+								if (correctAnswer.indexOf(answerDelimeter) != -1) {
+									var splitAnswers = correctAnswer.split(answerDelimeter);
+									for (var i = 0; i < splitAnswers.length; i++) {
+										if ($("#pageContents").data("casesensitive")) {
+											if ($.trim($thisInput.val()) == $.trim(splitAnswers[i])) {
+												isCorrect = true;
+												break;
+											}
+										} else {
+											if ($.trim($thisInput.val().toLowerCase()) == $.trim(splitAnswers[i]).toLowerCase()) {
+												isCorrect = true;
+												break;
+											}
 										}
 									}
-									else {
-										if ($.trim($thisInput.val().toLowerCase()) == $.trim(splitAnswers[i]).toLowerCase()) {
-											isCorrect = true;
-											break;
-										}
-									}
-								}
-							} else {
-									if ($("#pageContents").data("casesensitive")) {
-										if ($.trim($thisInput.val()) == correctAnswer) {
-											isCorrect = true;
-										}
-									}
-									else {
-										if ($.trim($thisInput.val().toLowerCase()) == correctAnswer.toLowerCase()) {
-											isCorrect = true;
-										}
-									}
-							}
-							let userAnswer = $thisInput.val();
-
-							// are submitted answers going to be judged against correct answers or is it collecting opinions only?
-							const judge = x_checkIfJudged(x_currentPageXML.getAttribute("judge"));
-
-							if (isCorrect == true || !judge) { // correct
-								$thisInput
-									.val($.trim($thisInput.val()))
-									.prop("readonly", true);
-								if(judge) {
-									$thisInput.parent().find(".result")
-										.removeClass("hidden")
-										.parent().find(".tickTxt").html(x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct"));
-								}
-
-								$feedback.html("");
-								$this.focus();
-								if (qNo + 1 != $(x_currentPageXML).children().length) {
-									$this
-										.button({label:	$pageContents.data("nextTxt")})
-										.data("state", 1);
 								} else {
-									if ($("#pageContents").data("slideIn")) {
-										$this.slideUp(200);
+									if ($("#pageContents").data("casesensitive")) {
+										if ($.trim($thisInput.val()) == $.trim(correctAnswer)) {
+											isCorrect = true;
+										}
 									} else {
-										$this.hide();
+										if ($.trim($thisInput.val().toLowerCase()) == $.trim(correctAnswer).toLowerCase()) {
+											isCorrect = true;
+										}
 									}
 								}
-								let result = {
-									success: true,
-									score: 100,
-									judge: judge
-								}
-								XTExitInteraction(x_currentPage, qNo, result, null/* ignored for fill-in*/, userAnswer, null/*not used*/);
-								$pageContents.data("correctAnswers", $pageContents.data("correctAnswers") + 1);
-								XTSetPageScore(x_currentPage, 100 * ($pageContents.data("correctAnswers") / $(x_currentPageXML).children().length), $pageContents.data("currentQ")+1 == $(x_currentPageXML).children().length);
+								let userAnswer = $thisInput.val();
 
-								if(!judge){
-									$feedback.html("");
-									$("#pageContents .question:eq(" + ($pageContents.data("currentQ") + 1) + ")").fadeIn();
-									$this
-										.data({
-											"attempt": 0,
-											"state": 0
-										})
-										.button({ label: $("#pageContents").data("submitTxt") });
+								// are submitted answers going to be judged against correct answers or is it collecting opinions only?
+								const judge = x_checkIfJudged(x_currentPageXML.getAttribute("judge"));
 
-									var qNo = $pageContents.data("currentQ");
-
-									$("#pageContents .question:eq(" + (qNo + 1) + ") input").focus();
-
-
-									if ($(x_currentPageXML).children().length > qNo + 1) {
-										let question = $(x_currentPageXML).children()[qNo + 1];
-										let answers = question.getAttribute("answer").split(answerDelimeter);
-										XTEnterInteraction(x_currentPage, qNo + 1, 'fill-in', question.getAttribute("question"), answers, answers, null /* never used*/, x_currentPageXML.getAttribute("grouping"));
-									}
-									$pageContents.data("currentQ", qNo + 1);
-								}
-							} else { // incorrect
-								$this.data("attempt", $this.data("attempt") + 1);
-								var currentAttempt = $this.data("attempt"),
-									allowedAttempts = x_currentPageXML.getAttribute("attempts");
-								
-								if (allowedAttempts == undefined) {
-									allowedAttempts = 0;
-								}
-								if (currentAttempt == allowedAttempts) { // show hint
-									$feedback.html($(x_currentPageXML).children()[qNo].getAttribute("hint"));
-								} else if (currentAttempt > allowedAttempts || !judge) { // show correct answer
-									$feedback.html($pageContents.data("correctTxt"));
-									var correctAnswer = $('<div/>').html($(x_currentPageXML).children()[qNo].getAttribute("answer")).text();
-									if (correctAnswer.indexOf(answerDelimeter) != -1) {
-										correctAnswer = $.trim(correctAnswer.split(answerDelimeter)[0]);
-									}
+								if (isCorrect == true || !judge) { // correct
 									$thisInput
-										.val(correctAnswer)
-										.prop("readonly", true);
+											.val($.trim($thisInput.val()))
+											.prop("readonly", true);
+									if (judge) {
+										$thisInput.parent().find(".result")
+												.removeClass("hidden")
+												.parent().find(".tickTxt").html(x_getLangInfo(x_languageData.find("tick")[0], "title", "Correct"));
+									}
+
+									$feedback.html("");
+									$this.focus();
 									if (qNo + 1 != $(x_currentPageXML).children().length) {
 										$this
-											.button({label:	$pageContents.data("nextTxt")})
-											.data("state", 1);
-										$feedback.html($feedback.html());
+												.button({label: $pageContents.data("nextTxt")})
+												.data("state", 1);
 									} else {
+										$("#pageContents input#answer" + qNo).unbind("keypress");
+										$pageContents.data("currentQ", qNo + 1);
+
 										if ($("#pageContents").data("slideIn")) {
+											$this.button("disable");
 											$this.slideUp(200);
 										} else {
 											$this.hide();
 										}
 									}
 									let result = {
-										success: false,
-										score: 0,
+										success: true,
+										score: 100,
 										judge: judge
-									};
-									XTExitInteraction(x_currentPage, qNo, result, null/* ignored for fill-in*/, userAnswer, null/*not used*/);
-									if($pageContents.data("currentQ")+1 == $(x_currentPageXML).children().length){
-										XTSetPageScore(x_currentPage, 100 * ($pageContents.data("correctAnswers") / $(x_currentPageXML).children().length));
 									}
-								} else { // another attempt allowed
-									$feedback.html($pageContents.data("tryTxt"));
-								}
-							}
-						} else { // move to next question
-							if ($("#pageContents").data("slideIn")) {
-								$("#pageContents .question:eq(" + ($pageContents.data("currentQ") + 1) + ")").slideDown();
-							} else {
-								$feedback.html("");
-								$("#pageContents .question:eq(" + ($pageContents.data("currentQ") + 1) + ")").fadeIn();
-							}
+									XTExitInteraction(x_currentPage, qNo, result, null/* ignored for fill-in*/, userAnswer, null/*not used*/);
+									$pageContents.data("correctAnswers", $pageContents.data("correctAnswers") + 1);
+									XTSetPageScore(x_currentPage, 100 * ($pageContents.data("correctAnswers") / $(x_currentPageXML).children().length), qNo + 1 == $(x_currentPageXML).children().length);
 
-							$this
-								.data({
-									"attempt":	0,
-									"state":	0
-									})
-								.button({label:	$("#pageContents").data("submitTxt")});
-							
-							var qNo = $pageContents.data("currentQ");
-							$("#pageContents .question:eq(" + (qNo + 1) + ") input").focus();
-							let question = $(x_currentPageXML).children()[qNo+1];
-							let answers = question.getAttribute("answer").split(answerDelimeter);
-							XTEnterInteraction(x_currentPage, qNo+1, 'fill-in', question.getAttribute("question"), answers, answers, null /* never used*/, x_currentPageXML.getAttribute("grouping"));
-							$pageContents.data("currentQ", qNo + 1);
+									if (!judge) {
+										$feedback.html("");
+
+										$("#pageContents input#answer" + qNo).unbind("keypress");
+										$pageContents.data("currentQ", qNo + 1);
+
+										if ($("#pageContents").data("slideIn")) {
+											$("#pageContents .question:eq(" + (qNo + 1) + ")").slideDown();
+										} else {
+											$feedback.html("");
+											$("#pageContents .question:eq(" + (qNo + 1) + ")").fadeIn();
+										}
+
+										$this
+												.data({
+													"attempt": 0,
+													"state": 0
+												})
+												.button({label: $("#pageContents").data("submitTxt")});
+
+										$("#pageContents .question:eq(" + (qNo + 1) + ") input").focus();
+
+										if ($(x_currentPageXML).children().length > qNo + 1) {
+											let question = $(x_currentPageXML).children()[qNo + 1];
+											let answers = question.getAttribute("answer").split(answerDelimeter);
+											XTEnterInteraction(x_currentPage, qNo + 1, 'fill-in', question.getAttribute("question"), answers, answers, null /* never used*/, x_currentPageXML.getAttribute("grouping"));
+										}
+										$pageContents.data("currentQ", qNo + 1);
+									}
+								} else { // incorrect
+									$this.data("attempt", $this.data("attempt") + 1);
+									var currentAttempt = $this.data("attempt"),
+											allowedAttempts = x_currentPageXML.getAttribute("attempts");
+
+									if (allowedAttempts == undefined) {
+										allowedAttempts = 0;
+									}
+									if (currentAttempt == allowedAttempts) { // show hint
+										$feedback.html($(x_currentPageXML).children()[qNo].getAttribute("hint"));
+									} else if (currentAttempt > allowedAttempts || !judge) { // show correct answer
+										$feedback.html($pageContents.data("correctTxt"));
+										var correctAnswer = $('<div/>').html($(x_currentPageXML).children()[qNo].getAttribute("answer")).text();
+										if (correctAnswer.indexOf(answerDelimeter) != -1) {
+											correctAnswer = $.trim(correctAnswer.split(answerDelimeter)[0]);
+										}
+										$thisInput
+												.val(correctAnswer)
+												.prop("readonly", true);
+										if (qNo + 1 != $(x_currentPageXML).children().length) {
+											$this
+													.button({label: $pageContents.data("nextTxt")})
+													.data("state", 1);
+											$feedback.html($feedback.html());
+
+										} else {
+											$("#pageContents input#answer" + qNo).unbind("keypress");
+											$pageContents.data("currentQ", qNo + 1);
+
+											if ($("#pageContents").data("slideIn")) {
+												$this.button("disable");
+												$this.slideUp(200);
+											} else {
+												$this.hide();
+											}
+										}
+										let result = {
+											success: false,
+											score: 0,
+											judge: judge
+										};
+
+										XTExitInteraction(x_currentPage, qNo, result, null/* ignored for fill-in*/, userAnswer, null/*not used*/);
+										XTSetPageScore(x_currentPage, 100 * ($pageContents.data("correctAnswers") / $(x_currentPageXML).children().length), qNo + 1 == $(x_currentPageXML).children().length);
+
+									} else { // another attempt allowed
+										$feedback.html($pageContents.data("tryTxt"));
+									}
+								}
+							} else { // move to next question
+								$("#pageContents input#answer" + qNo).unbind("keypress");
+
+								if ($("#pageContents").data("slideIn")) {
+									$("#pageContents .question:eq(" + (qNo + 1) + ")").slideDown();
+								} else {
+									$feedback.html("");
+									$("#pageContents .question:eq(" + (qNo + 1) + ")").fadeIn();
+								}
+
+								$this
+										.data({
+											"attempt": 0,
+											"state": 0
+										})
+										.button({label: $("#pageContents").data("submitTxt")});
+
+								$("#pageContents .question:eq(" + (qNo + 1) + ") input").focus();
+								let question = $(x_currentPageXML).children()[qNo + 1];
+								let answers = question.getAttribute("answer").split(answerDelimeter);
+								XTEnterInteraction(x_currentPage, qNo + 1, 'fill-in', question.getAttribute("question"), answers, answers, null /* never used*/, x_currentPageXML.getAttribute("grouping"));
+								$pageContents.data("currentQ", qNo + 1);
+							}
 						}
-					}
-					// this is needed as if this is triggered via keypress in IE/Opera it's triggered twice so messes up no. attempts
-					if ($this.data("pause") == true) {
-						$this.data({
-							"click":	false,
-							"pause":	false
-						});
-						setTimeout(function () {
-							$this.data("click", true)
-						}, 1);
+						// this is needed as if this is triggered via keypress in IE/Opera it's triggered twice so messes up no. attempts
+						if ($this.data("pause") == true) {
+							$this.data({
+								"click": false,
+								"pause": false
+							});
+							setTimeout(function () {
+								$this.data("click", true)
+							}, 1);
+						}
 					}
 				});
 
 			$("#pageContents input").keypress(function(e) {
 				if ((e.keyCode ? e.keyCode : e.which) == 13) { // return key
-					$("#submitBtn")
-						.data({
-							"click":	true,
-							"pause":	true
-						})
-						.trigger("click");
+					if (!$("#submitBtn").is(":disabled") && !$("#submitBtn").is(":hidden")) {
+						$("#submitBtn")
+								.data({
+									"click": true,
+									"pause": true
+								})
+								.trigger("click");
+					}
 				}
 			});
 			

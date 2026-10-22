@@ -12,7 +12,7 @@
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
-    <attempts label="Attempts Before Hint" options="0,1,2,3,4" type="ComboBox" width="100" data="0,1,2,3,4"/>
+    <attempts label="Attempts Before Hint" options="0,1,2,3,4" type="ComboBox" width="100" data="0,1,2,3,4" condition="judge!='false'"/>
 
     <layoutGroup label="Page Layout" type="group">
       <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Large" conditionTrigger="true" mandatory="true"/>
@@ -73,17 +73,14 @@
 
   </dialog>
 
-
   <dialogStep menuItem="Question" icon="icComment" remove="true" max="12">
 
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Question" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make questions easier to locate for editing at a later date." />
     <question label="Question" type="TextArea" height="100" placeholder="Enter question text here"/>
-    <answer label="Answer" type="TextInput" wysiwyg="true" tooltip="Where there is more than possible correct answer, list each one separated by a comma"/>
+    <answer label="Answer" type="TextInput" wysiwyg="true" condition="parent.judge!='false'" tooltip="Where there is more than possible correct answer, list each one separated by a comma"/>
     <commentary label="Commentary" type="TextArea" height="100" deprecated="This property is deprecated."/> 
-    <hint label="Hint" type="TextInput" wysiwyg="true"/>
+    <hint label="Hint" type="TextInput" wysiwyg="true" condition="parent.judge!='false'"/>
 
   </dialogStep>
-
-
 
 </wizard>
