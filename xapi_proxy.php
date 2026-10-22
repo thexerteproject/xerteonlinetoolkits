@@ -156,23 +156,24 @@
 //     $enable_jsonp or $enable_native are enabled. Defaults to '/.*/' which
 //     validates all URLs.
 // Check whether $_GET['tsuggisession'] starts with "1"
-if (isset($_GET['tsugisession']) && substr($_GET['tsugisession'], 0, 1)  == 1) {
-    $tsugi_disable_xerte_session = true;
-    require_once("config.php");
-
-    $contents = "";
-
-    // _debug("xapi_proxy: TSUGI session");
-    if (file_exists($xerte_toolkits_site->tsugi_dir)) {
-        require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
-    }
-    session_start();
-}
-else
-{
-    require_once ("config.php");
-    // _debug("xapi_proxy: setting xerte session");
-}
+//if (isset($_GET['tsugisession']) && substr($_GET['tsugisession'], 0, 1)  == 1) {
+//    $tsugi_disable_xerte_session = true;
+//    require_once("config.php");
+//
+//    $contents = "";
+//
+//    // _debug("xapi_proxy: TSUGI session");
+//    if (file_exists($xerte_toolkits_site->tsugi_dir)) {
+//        require_once($xerte_toolkits_site->tsugi_dir . "/config.php");
+//    }
+//    session_start();
+//}
+//else
+//{
+//    require_once ("config.php");
+//    // _debug("xapi_proxy: setting xerte session");
+//}
+require_once("config.php");
 require_once("website_code/php/xAPI/xAPI_library.php");
 
 if (!function_exists('getallheaders')) {
