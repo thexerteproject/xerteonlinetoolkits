@@ -26,6 +26,11 @@ This folder centralises third-party libraries that were previously served from C
     - Nottingham and Site popcorn bundles for PeerTube support
     - Xerte export offline includes (`common/js/peertube/player.min.js`)
 
+- **Popcorn**
+  - Shared runtime, plugins and assets under `js/popcorn/`.
+  - Used by both the Nottingham and Site templates.
+  - Installation-specific Mediasite and PeerTube URL configuration remains in each template's `common/js/popcorn/config/` directory.
+
 - **Plotly**
   - `website_code/scripts/plotly-latest.min.js` (existing local copy, not in this folder)
   - Used by `management.php` and `tools/dashboard/index.php` instead of `https://cdn.plot.ly/plotly-latest.min.js`.

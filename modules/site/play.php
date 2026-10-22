@@ -156,6 +156,7 @@ function show_template($row, $xapi_enabled=false){
     $page_content = str_replace("%XMLFILE%", $string_for_flash_xml, $page_content);
 	$page_content = str_replace("%THEMEPATH%", "themes/" . $row['parent_template'] . "/",$page_content);
 	$page_content = str_replace("%SITEURL%", $xerte_toolkits_site->site_url, $page_content);
+	$page_content = str_replace("%MATHJAXPATH%", "offline/js/mathjax/", $page_content);
 
     $tracking = "";
     foreach($tracking_js_file as $jsfile)

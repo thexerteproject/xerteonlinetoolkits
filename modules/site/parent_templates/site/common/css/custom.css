@@ -815,6 +815,14 @@ h3.contentTitle {
         clear: both;
     }
 
+    /* CKEditor 5 media embeds need a block width for their responsive iframe wrapper. */
+    figure.media {
+        display: block;
+        width: 100%;
+        min-width: 15em;
+        margin: .9em 0;
+    }
+
     figcaption {
         margin-top: .2em;
         margin-bottom: 0;

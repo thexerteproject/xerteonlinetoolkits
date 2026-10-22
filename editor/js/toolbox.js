@@ -26,7 +26,7 @@ var EDITOR = (function ($, parent) {
 
     var my = parent.toolbox = {},
         scrollTop = 0,
-        defaultToolBar = false,
+        defaultToolBar = true,
         jqGridsLastSel = {},
         jqGridsColSel = {},
         jqGrGridData = {},
@@ -1189,40 +1189,6 @@ var EDITOR = (function ($, parent) {
 		if (load != false) {
 			parent.tree.showNodeData(key, false, scrollToId);
 		}
-    },
-
-    showToolBar = function(show){
-        defaultToolBar = show;
-		// CKEditor 5 has no CKEditor 4-style toolbox collapser. Apply the same
-		// preference directly to each classic editor's toolbar container.
-		if (window.__xerteCke5Instances) {
-			Object.keys(window.__xerteCke5Instances).forEach(function(id) {
-				var editor = window.__xerteCke5Instances[id];
-				var view = editor && editor.ui && editor.ui.view;
-				var stickyPanel = view && view.stickyPanel;
-				if (stickyPanel && stickyPanel.element) {
-					stickyPanel.element.style.display = show ? '' : 'none';
-					if (show && view.toolbar) {
-						window.requestAnimationFrame(function() {
-							view.toolbar.fire('change:maxWidth');
-						});
-					}
-				}
-			});
-		}
-        /*var tree = $.jstree.reference("#treeview");
-        var ids = tree.get_selected();
-        var id;
-        if (ids.length>0)
-        {
-            id = ids[0];
-            parent.tree.showNodeData(id, true);
-        }*/
-        $(".cke_toolbox_collapser").each(function(){
-          var min = $(this).hasClass("cke_toolbox_collapser_min");
-          if (show && min || !show && !min)
-            $(this).click();
-        });
     },
 
     onclickJqGridSubmitLocal = function(id, key, name, options, postdata) {
@@ -8067,7 +8033,6 @@ var EDITOR = (function ($, parent) {
     my.convertDataGrids = convertDataGrids;
     my.convertTreeSelect = convertTreeSelect;
     my.resizeDataGrids = resizeDataGrids;
-    my.showToolBar = showToolBar;
     my.getIcon = getIcon;
     my.insertOptionalProperty = insertOptionalProperty;
     my.getPageList = getPageList;

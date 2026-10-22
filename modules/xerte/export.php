@@ -212,18 +212,18 @@ if ($fullArchive) {
             // Extra include files normally loaded dynamically
             $offline_includes .= "   <!-- extra files, normally loaded dynamically -->\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common/js/script.js\"></script>\n";
-            $offline_includes .= "   <script type=\"text/javascript\" src=\"common/js/popcorn/popcorn-complete.js\"></script>\n";
-            $offline_includes .= "   <script type=\"text/javascript\" src=\"common/js/popcorn/plugins/popcorn.textplus.js\"></script>\n";
-            $offline_includes .= "   <script type=\"text/javascript\" src=\"common/js/popcorn/plugins/popcorn.subtitleplus.js\"></script>\n";
-            $offline_includes .= "   <script type=\"text/javascript\" src=\"common/js/popcorn/plugins/popcorn.xot.js\"></script>\n";
-            $offline_includes .= "   <script type=\"text/javascript\" src=\"common/js/popcorn/plugins/popcorn.mediaplus.js\"></script>\n";
-            $offline_includes .= "   <script type=\"text/javascript\" src=\"common/js/popcorn/plugins/popcorn.mcq.js\"></script>\n";
-            $offline_includes .= "   <script type=\"text/javascript\" src=\"common/js/popcorn/plugins/MediasitePlayerIFrameAPI.js\"></script>\n";
-            $offline_includes .= "   <script type=\"text/javascript\" src=\"common/js/popcorn/plugins/MediasitePlayerControls.js\"></script>\n";
-            $offline_includes .= "   <script type=\"text/javascript\" src=\"common/js/popcorn/plugins/popcorn.slides.js\"></script>\n";
-            $offline_includes .= "   <script type=\"text/javascript\" src=\"common/js/popcorn/plugins/popcorn.sortholder.js\"></script>\n";
-            $offline_includes .= "   <script type=\"text/javascript\" src=\"common/js/popcorn/plugins/popcorn.mediaconstructor.js\"></script>\n";
-            $offline_includes .= "   <script type=\"text/javascript\" src=\"common/js/peertube/player.min.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"modules/common/js/popcorn/popcorn-complete.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"modules/common/js/popcorn/plugins/popcorn.textplus.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"modules/common/js/popcorn/plugins/popcorn.subtitleplus.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"modules/common/js/popcorn/plugins/popcorn.xot.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"modules/common/js/popcorn/plugins/popcorn.mediaplus.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"modules/common/js/popcorn/plugins/popcorn.mcq.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"modules/common/js/popcorn/plugins/MediasitePlayerIFrameAPI.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"modules/common/js/popcorn/plugins/MediasitePlayerControls.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"modules/common/js/popcorn/plugins/popcorn.slides.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"modules/common/js/popcorn/plugins/popcorn.sortholder.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"modules/common/js/popcorn/plugins/popcorn.mediaconstructor.js\"></script>\n";
+            $offline_includes .= "   <script type=\"text/javascript\" src=\"modules/common/js/peertube/player.min.js\"></script>\n";
             $offline_includes .= "   <script type=\"text/javascript\" src=\"common/js/timeline/timeline3.js\"></script>\n";
 
 
@@ -274,6 +274,11 @@ if ($fullArchive) {
     }
 
 }
+
+// Include installation-level runtime dependencies using their shared paths.
+export_shared_common_files();
+copy_extra_files();
+
 if (isset($_GET['local'])) {
     if ($_GET['local'] == "true") {
         $string = file_get_contents($dir_path . "/template.xml");

@@ -28,7 +28,7 @@ class MediaHandler {
 
         //update supported hosts with info from supported embedding websites
         $jsPath = str_replace('\\', '/', __DIR__)
-            . "/../../../modules/xerte/parent_templates/Nottingham/common_html5/js/popcorn/config/peertube_urls.js";
+            . "/../../../modules/xerte/parent_templates/Nottingham/common/js/popcorn/config/peertube_urls.js";
 
         $peertubeDomains = $this->getPeertubeDomainsFromJs($jsPath);
 

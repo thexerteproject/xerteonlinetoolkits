@@ -33,7 +33,7 @@ var x_languageData  = [],
     x_inputFocus    = false,
     x_dialogInfo    = [], // (type, built)
     x_browserInfo   = {iOS:false, Android:false, touchScreen:false, mobile:false, orientation:"portrait"}, // holds info about browser/device
-	x_pageHistory   = [], // keeps track of pages visited for historic navigation
+    x_pageHistory   = [], // keeps track of pages visited for historic navigation & also used when standalone chapters are opened so we know what page to return to when they are closed
     x_firstLoad     = true,
     x_fillWindow    = false,
     x_volume        = 1,
@@ -74,64 +74,26 @@ var modelfilestrs = modelfilestrs || [];
 var $x_window, $x_body, $x_head, $x_mainHolder, $x_mobileScroll, $x_headerBlock, $x_pageHolder, $x_helperText, $x_pageDiv, $x_innerPage, $x_footerBlock, $x_footerL,
 	$x_introBtn, $x_helpBtn, $x_pageIntroBtn, $x_pageResourcesBtn, $x_glossaryBtn, $x_menuBtn, $x_colourChangerBtn, $x_saveSessionBtn, $x_prevBtn, $x_pageNo, $x_nextBtn, $x_cssBtn, $x_background;
 
-$(document).keydown(function(e) {
-	// if lightbox open then don't allow page up/down buttons to change the page open in the background
-	// Place lightbox check in a try block, because an exception will be triggered if LO is embedded in an iframe
-	let shownInFeatherlight = false;
-	try
-	{
-		shownInFeatherlight = parent.window.$.featherlight.current();
-	}
-	catch (e)
-	{
-		// Ignore
-	}
-	if (!shownInFeatherlight) {
+$(document)
+	.ready(function () {
+		// if project is in a lightbox, it should be in focus - this means keyboard shortcuts (PgUp/PgDn) will work
+		let shownInFeatherlight = false;
+		try { shownInFeatherlight = parent.window.$.featherlight.current(); } catch (e) {};
+		if (shownInFeatherlight) { window.focus();}
+	})
+	.keydown(function(e) {
 		switch(e.which) {
 			case 33: // PgUp
-				var pageIndex = $.inArray(x_currentPage, x_normalPages);
-				if (pageIndex > -1 && $x_prevBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
-					if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
-						// linear back
-						if (pageIndex > 0) {
-							x_changePage(x_normalPages[pageIndex -1]);
-						}
-						
-					} else {
-						var prevPage = x_pageHistory[x_pageHistory.length-2];
-						x_pageHistory.splice(x_pageHistory.length - 2, 2);
-						
-						// check if history is empty and if so allow normal back navigation and change to normal back button
-						if (prevPage == undefined && x_currentPage > 0) {
-							x_changePage(x_normalPages[pageIndex -1]);
-						} else {
-							x_changePage(prevPage);
-						}
-					}
-				} else if (pageIndex == -1) {
-					// historic back (standalone page)
-					if (history.length > 1 && (x_params.forcePage1 != 'true' || shownInFeatherlight)) {
-						history.go(-1);
-					} else {
-						x_changePage(x_normalPages[0]);
-					}
-				}
+				$x_prevBtn.click();
 				break;
 
 			case 34: // PgDn
-				// if it's a standalone page then nothing will happen
-				var pageIndex = $.inArray(x_currentPage, x_normalPages);
-				if (pageIndex != -1 && $x_nextBtn.is(":enabled") && $x_nextBtn.is(":visible")) {
-					x_changePage(x_normalPages[pageIndex + 1]);
-				}
+				$x_nextBtn.click();
 				break;
 
 			default: return; // exit this handler for other keys
 		}
-	} else {
-		return;
-	}
-});
+	});
 
 $(document).ready(function() {
 	
@@ -232,6 +194,8 @@ x_restorePagesViewed = function(viewed)
 	viewed.forEach(function(item){
 		x_pageInfo[item].viewed = true;
 	});
+
+	checkChapterViewed();
 }
 
 // To be able to check on orientation, and also detect the difference between a mobile and tablet
@@ -279,7 +243,7 @@ x_projectDataLoaded = function(xmlData) {
 	x_pages.each(function (i) {
 		const $this = $(this)
 		if ($this[0].nodeName === "chapter") {
-			$($this.children()).each(function() {
+			$($this.children()).each(function(j) {
 				const $thisChild = $(this);
 				$thisChild[0].setAttribute("chapterIndex", x_chapters.length);
 
@@ -295,10 +259,11 @@ x_projectDataLoaded = function(xmlData) {
 				tempPages.push($thisChild[0]);
 			});
 
-			const chapterInfo = {};
+			const chapterInfo = { pages: [] };
 			for (let i=0; i<$this[0].attributes.length; i++) {
 				chapterInfo[$this[0].attributes[i].name] = $this[0].attributes[i].value;
 			}
+			chapterInfo.viewed = false;
 
 			x_chapters.push(chapterInfo);
 		} else {
@@ -523,6 +488,12 @@ x_projectDataLoaded = function(xmlData) {
 		if (x_pageInfo[i].standalone != true) {
 			x_normalPages.push(i);
 		}
+
+		// add indexes of pages within each chapter to the chapters array
+		const chapterIndex = x_pages[i].getAttribute("chapterIndex");
+		if (chapterIndex != undefined) {
+			x_chapters[chapterIndex].pages.push(i);
+		}
 	}
 
 	// will a sidebar need to be built?
@@ -531,7 +502,7 @@ x_projectDataLoaded = function(xmlData) {
 	
     if (x_normalPages.length < 2) {
         // don't show navigation options if there's only one page
-        $("#x_footerBlock .x_floatRight").remove();
+        $("#x_footerBlock #x_footerRight").hide();
     } else {
         if (x_params.navigation == undefined) {
             x_params.navigation = "Linear";
@@ -924,6 +895,9 @@ function x_setUpThemeBtns(themeInfo, themeChg) {
 			if (btnIcon.customised == true) { $x_menuBtn.addClass("customIconBtn"); } else { $x_menuBtn.removeClass("customIconBtn");  };
 			if (btnIcon.btnImgs == true) { $x_menuBtn.addClass("imgIconBtn"); } else { $x_menuBtn.removeClass("imgIconBtn"); };
 		}
+
+		// header / footer bar may have changed height with theme change
+		x_updateCss();
 	}
 }
 
@@ -1170,7 +1144,7 @@ function x_setUp() {
 			});
 		}
 		if (x_params.hideHeader == "true" && x_params.hideFooter == "true") {
-			$x_mainHolder.css("border", "none");
+			$x_mainHolder.addClass("noBorder");
 		}
 
 		// sets initial size if set in url e.g. display=500,500
@@ -1841,37 +1815,59 @@ function x_continueSetUp1() {
 			})
 			.attr("aria-label", $("#x_prevBtn").attr("title"))
 			.click(function() {
-				var pageIndex = $.inArray(x_currentPage, x_normalPages);
-				if (pageIndex > -1) {
-					if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
-						// linear back
-						if (pageIndex > 0) {
-							x_changePage(x_normalPages[pageIndex -1]);
-						}
+				if ($(this).is(":enabled") && $(this).is(":visible")) {
+					var prevPage = x_pageHistory[x_pageHistory.length - 2];
+					x_pageHistory.splice(x_pageHistory.length - 2, 2);
 
-					} else {
-						var prevPage = x_pageHistory[x_pageHistory.length-2];
-						x_pageHistory.splice(x_pageHistory.length - 2, 2);
+					var pageIndex = $.inArray(x_currentPage, x_normalPages);
+					if (pageIndex > -1) {
+						// normal (not standalone) page
+						if (x_params.navigation != "Historic" && x_params.navigation != "LinearWithHistoric") {
+							// linear back
+							if (pageIndex > 0) {
+								x_changePage(x_normalPages[pageIndex - 1]);
+							}
 
-						// check if history is empty and if so allow normal back navigation and change to normal back button
-						if (prevPage == undefined && x_currentPage > 0) {
-							x_changePage(x_normalPages[pageIndex -1]);
 						} else {
-							x_changePage(prevPage);
+							// check if history is empty and if so allow normal back navigation and change to normal back button
+							if (prevPage == undefined && x_currentPage > 0) {
+								x_changePage(x_normalPages[pageIndex - 1]);
+							} else {
+								x_changePage(prevPage);
+							}
+						}
+					} else if (pageIndex == -1) {
+						// if standalone page is in a chapter, the previous button might need to navigate to the previous page in the chapter
+						const chapterIndex = x_pages[x_currentPage].getAttribute("chapterIndex");
+						if (chapterIndex != undefined && x_chapters[chapterIndex].linkPageChapter == "true" &&
+							x_chapters[chapterIndex].footerHideChapter == "false" &&
+							x_chapters[chapterIndex].pages.length > 1) {
+							if ($.inArray(x_currentPage, x_chapters[chapterIndex].pages) > 0) {
+								const prevPage = x_chapters[chapterIndex].pages[$.inArray(x_currentPage, x_chapters[chapterIndex].pages) - 1];
+								x_changePage(prevPage);
+							} else if (shownInFeatherLight) {
+								parent.window.$.featherlight.current().close();
+							} else if (prevPage == undefined) {
+								x_changePage(x_normalPages[0]);
+							} else {
+								x_changePage(prevPage);
+							}
+						} else {
+							// historic back
+							if (shownInFeatherLight) {
+								parent.window.$.featherlight.current().close();
+							} else if (history.length > 1 && x_params.forcePage1 != 'true') {
+								history.go(-1);
+							} else {
+								x_changePage(x_normalPages[0]);
+							}
 						}
 					}
-				} else if (pageIndex == -1) {
-					// historic back (standalone page)
-					if (history.length > 1 && (x_params.forcePage1 != 'true' || shownInFeatherLight)) {
-						history.go(-1);
-					} else {
-						x_changePage(x_normalPages[0]);
-					}
-				}
 
-				$(this)
-					.removeClass("ui-state-focus")
-					.removeClass("ui-state-hover");
+					$(this)
+						.removeClass("ui-state-focus")
+						.removeClass("ui-state-hover");
+				}
 			});
 
 		if (prevIcon.customised == true) {
@@ -1894,15 +1890,25 @@ function x_continueSetUp1() {
 			})
 			.attr("aria-label", $("#x_nextBtn").attr("title"))
 			.click(function() {
-				// if it's a standalone page then nothing will happen
-				var pageIndex = $.inArray(x_currentPage, x_normalPages);
-				if (pageIndex != -1) {
-					x_changePage(x_normalPages[pageIndex+1]);
-				}
+				if ($(this).is(":enabled") && $(this).is(":visible")) {
+					var pageIndex = $.inArray(x_currentPage, x_normalPages);
+					if (pageIndex != -1) {
+						x_changePage(x_normalPages[pageIndex + 1]);
+					} else {
+						const chapterIndex = x_pages[x_currentPage].getAttribute("chapterIndex");
+						if (chapterIndex != undefined && x_chapters[chapterIndex].linkPageChapter == "true" &&
+							x_chapters[chapterIndex].footerHideChapter == "false" &&
+							x_chapters[chapterIndex].pages.length > 1 &&
+							$.inArray(x_currentPage, x_chapters[chapterIndex].pages) < x_chapters[chapterIndex].pages.length - 1) {
+							const nextPage = x_chapters[chapterIndex].pages[$.inArray(x_currentPage, x_chapters[chapterIndex].pages) + 1];
+							x_changePage(nextPage);
+						}
+					}
 
-				$(this)
-					.removeClass("ui-state-focus")
-					.removeClass("ui-state-hover");
+					$(this)
+						.removeClass("ui-state-focus")
+						.removeClass("ui-state-hover");
+				}
 			});
 
 		if (nextIcon.customised == true) {
@@ -2019,7 +2025,7 @@ function x_continueSetUp1() {
 		XENITH.SIDEBAR.build();
 
 		//add show/hide footer tools
-		if (x_params.footerTools != "none" && x_params.hideFooter != "true" && $x_footerL.find('button').length > 0) {
+		if (x_params.footerTools != "none" && $x_footerL.find('button').length > 0) {
 
 			// labels can now be set in editor but fall back to language file if not set
 			var hideMsg = x_params.hideToolsLabel != undefined && x_params.hideToolsLabel != "" ? x_params.hideToolsLabel : x_getLangInfo(x_languageData.find("footerTools")[0], "hide", "Hide footer tools"),
@@ -2052,6 +2058,10 @@ function x_continueSetUp1() {
 				$('#x_footerBlock .x_floatLeft').hide();
 				$('#x_footerChevron').html('<div class="chevron" id="chevron"><i class="' + showIcon.iconClass + '" aria-hidden="true"></i></div>');
 				$('#x_footerChevron').prop('title', showMsg);
+			}
+
+			if (x_params.hideFooter == "true") {
+				$("#x_footerShowHide").hide().height(0);
 			}
 		}
 
@@ -2403,10 +2413,9 @@ function x_navigateToPage(force, pageInfo, addHistory) { // pageInfo = {type, ID
 						page = x_normalPages[pageIndex + 1];
 					break;
 				case "previous":
+					// won't change if this is a standalone page
 					if (pageIndex != -1 && pageIndex > 0) {
 						page = x_normalPages[pageIndex - 1];
-					} else {
-						// ** it's a standalone page - do historic back
 					}
 					break;
 				case "first":
@@ -2497,11 +2506,20 @@ function x_lookupPage(type, id) {
 function x_checkChapters(type, id) {
 	for (var i=0; i<x_chapters.length; i++)	{
 		if (x_chapters[i][type] == id) {
-			for (let j=0; j<x_pages.length; j++) {
-				// found the chapter - return the index of 1st page within the chapter
-				if (x_pages[j].getAttribute("chapterIndex") == i) {
-					return j;
-					break;
+			if (x_chapters[i].pages.length > 0) {
+				if (x_chapters[i].linkPageChapter == "true") {
+					// it's a standalone chapter so just return the 1st page in chapter
+					return x_chapters[i].pages[0];
+				} else {
+					// it's not a standalone chapter so return the 1st non-standalone page in chapter
+					for (j=0; j<x_chapters[i].pages.length; j++) {
+						if (x_pageInfo[x_chapters[i].pages[j]].standalone != true) {
+							return x_chapters[i].pages[j];
+						}
+					}
+
+					// it only contains standalone pages, so return the 1st page in chapter
+					return x_chapters[i].pages[0];
 				}
 			}
 		}
@@ -2570,7 +2588,7 @@ function x_setUpPagePosition(project) {
 	}
 
 	// set a maximum width and align content horizontally on the screen (centre by default)
-	if ((project && x_params.maxWidth != undefined && x_params.maxWidth != "") || (project !== true && x_currentPageXML.getAttribute("maxWidthToggle") === "true" && x_currentPageXML.getAttribute("maxWidth") != undefined && x_currentPageXML.getAttribute("maxWidth") !== "")) {
+	if ((project && x_params.maxWidth != undefined && x_params.maxWidth != "") || (project !== true && !XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute("maxWidthToggle") === "true" && x_currentPageXML.getAttribute("maxWidth") != undefined && x_currentPageXML.getAttribute("maxWidth") !== "")) {
 		// these pages don't work with max width yet
 		const nonWorkingPages = [];
 
@@ -2613,7 +2631,7 @@ function x_setUpPagePosition(project) {
 			}
 		}
 
-	} else if (project !== true && x_currentPageXML.getAttribute("maxWidthToggle") === "false") {
+	} else if (project !== true && !XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute("maxWidthToggle") === "false") {
 		// this page has max width turned off
 		$("#x_pageDiv").addClass("x_noMaxW");
 	}
@@ -2630,7 +2648,7 @@ function x_setUpPagePosition(project) {
 	} else if (project !== true) {
 		// these pages don't work with vertical centre yet & will break when it's applied - ensure it is always disabled when current page is of one of these types
 		const nonWorkingPages = ['imageSequence', 'mediaLesson', 'morphImages', 'thumbnailViewer', 'SictTimeline', 'perspectives', 'connectorMenu', 'interactiveVideo', 'links'];
-		if (x_currentPageXML.getAttribute("verticalAlign") != undefined && (nonWorkingPages == undefined || nonWorkingPages.indexOf(x_pageInfo[x_currentPage].type) < 0)) {
+		if (!XENITH.PAGEMENU.isThisMenu() && x_currentPageXML.getAttribute("verticalAlign") != undefined && (nonWorkingPages == undefined || nonWorkingPages.indexOf(x_pageInfo[x_currentPage].type) < 0)) {
 			if (x_currentPageXML.getAttribute("verticalAlign") === "true") {
 				// turn on for this page
 				$x_pageHolder.addClass("x_verticalCentre");
@@ -2691,13 +2709,20 @@ function x_changePageApproved(x_gotoPage, addHistory) {
 		pageHash += '|' + ($.isNumeric(x_deepLink) ? Number(x_deepLink) + 1 : x_deepLink);
 	}
 
-	// if this page is already shown in a lightbox then don't try to open another lightbox - load in the existing one
 	// catch error - when in iframe, i.e. in bootstrap or LMS LTI
 	try {
-		if (standAlonePage && x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' &&
-			parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current()) {
-			standAlonePage = false;
-			addHistory = false;
+		if (standAlonePage) {
+			if (x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' &&
+				parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current()) {
+				// if this page is already shown in a lightbox then don't try to open another lightbox - load in the existing one
+				standAlonePage = false;
+				addHistory = false;
+			} else if (x_pages[x_gotoPage].getAttribute('linkTarget') == 'new' && x_pages[x_currentPage].getAttribute('linkTarget') == 'new' &&
+				x_pages[x_gotoPage].getAttribute('chapterIndex') != undefined && x_pages[x_currentPage].getAttribute('chapterIndex') != undefined && x_pages[x_gotoPage].getAttribute('chapterIndex') === x_pages[x_currentPage].getAttribute('chapterIndex')) {
+				// if this page is already show in a new window and is opening another page in a standalone chapter then don't try to open another new window - load in the existing one
+				standAlonePage = false;
+				addHistory = false;
+			}
 		}
 	}
 	catch(e) {}
@@ -2753,6 +2778,7 @@ function x_changePageApproved(x_gotoPage, addHistory) {
 		XENITH.PROGRESSBAR.update(x_gotoPage, "NewWindow");
 
 		x_pageInfo[x_gotoPage].viewedNewWindow = true;
+		checkChapterViewed(x_gotoPage);
 
 	// standalone page opening in lightbox
 	} else {
@@ -2771,6 +2797,7 @@ function x_changePageApproved(x_gotoPage, addHistory) {
 		XENITH.PROGRESSBAR.update(x_gotoPage, "LightBox");
 
 		x_pageInfo[x_gotoPage].viewedLightBox = true;
+		checkChapterViewed(x_gotoPage);
 	}
 
 	// if side bar and on mobile, close sidebar when page changed (as it covers whole of page)
@@ -2806,6 +2833,19 @@ function x_closeStandAlonePage(event) {
 		}
 
 		XTExitPage(standAlonePage);
+	}
+
+	// ensure all pages are marked as viewed if more than one standalone page has been viewed in lightbox (e.g. if it's a standalone chapter with footer bar)
+	for (let i=0; i<this.$content[0].contentWindow.x_pageInfo.length; i++) {
+		if (this.$content[0].contentWindow.x_pageInfo[i].viewed === true) {
+			x_pageInfo[i].viewedLightBox = true;
+		}
+	}
+
+	// see if these viewed pages mean a whole chapter has been viewed
+	checkChapterViewed();
+	if (x_pageInfo[x_currentPage].type == "connectorMenu") {
+		connectorMenu.checkVisited();
 	}
 }
 
@@ -2900,31 +2940,45 @@ function x_changePageStep2(x_gotoPage) {
         }
     }
 
-	if (x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") {
-        x_pageHistory.push(x_currentPage);
-    }
+	x_pageHistory.push(x_currentPage);
 
-	// if it's a standalone page then it's possible that the header or footer bar are hidden
+	// need to reset whether the header / footer bars are shown as this can change between normal & standalone pages
 	var headerHidden = false, footerHidden = false;
-	if (x_pageInfo[x_currentPage].standalone == true) {
-		if (x_currentPageXML.getAttribute('headerHide') == 'true') {
+	if (x_pageInfo[x_currentPage].standalone != true) {
+		// hidden in whole project?
+		if (x_params.hideHeader == "true") {
 			headerHidden = true;
-			$x_headerBlock.hide().height(0);
 		}
-		if (x_currentPageXML.getAttribute('footerHide') == 'true') {
+		if (x_params.hideFooter == "true") {
 			footerHidden = true;
-			// more complex than just hiding all of footer bar in one go as narration may be in there which still needs to show
-			$('#x_footerBlock > div').each(function () {
-				$(this).hide().height(0);
-			});
 		}
 	}
+	if (x_pageInfo[x_currentPage].standalone == true) {
+		// hidden on this standalone page?
+		headerHidden = x_currentPageXML.getAttribute('headerHide') == 'true' ? true : false;
+		footerHidden = x_currentPageXML.getAttribute('footerHide') == 'true' ? true : false;
+	}
 
-	if (headerHidden == false && x_params.hideHeader != "true") {
+	if (headerHidden) {
+		$x_headerBlock.hide().height(0);
+	} else {
 		$x_headerBlock.show().height('auto');
 	}
-	if (footerHidden == false && x_params.hideFooter != "true") {
-		$x_footerBlock.show().height('auto');
+
+	if (footerHidden) {
+		$('#x_footerBlock > div').each(function () {
+			$(this).hide().height(0);
+		});
+	} else {
+		$('#x_footerBlock > div').each(function () {
+			$(this).show().height("auto");
+		});
+	}
+
+	if (headerHidden && footerHidden) {
+		$x_mainHolder.addClass("noBorder");
+	} else {
+		$x_mainHolder.removeClass("noBorder");
 	}
 
     // change page title and add narration / timer before the new page loads so $x_pageHolder margins can be sorted - these often need to be right so page layout is calculated correctly
@@ -3223,7 +3277,7 @@ function x_changePageStep3() {
 		function loadModel() {
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '" class="innerPage"></div>');
 			$x_innerPage = $x_pageDiv.find(".innerPage");
-			$("#x_page" + x_currentPage).css("visibility", "hidden");
+			$x_pageHolder.css("overflow-y", "hidden"); // prevent unnecessary scroll bars caused by sizing not yet being completed
 
 			if (!XENITH.PAGEMENU.isThisMenu()) {
 				// check page text for anything that might need replacing / tags inserting (e.g. glossary words, links...)
@@ -3439,20 +3493,41 @@ function x_setUpPage() {
     $x_mobileScroll.scrollTop(0);
 	
 	const pageIndex = $.inArray(x_currentPage, x_normalPages);
-	const srOnly = '<span class="sr-only">' + x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "Page") + " " + (pageIndex+1) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "of") + " " + x_normalPages.length + '</span>';
-	const notSr = '<span aria-hidden="true">' + (pageIndex+1) + " / " + x_normalPages.length + '</span>';
+	const chapterIndex = !XENITH.PAGEMENU.isThisMenu() ? x_pages[x_currentPage].getAttribute("chapterIndex") : undefined;
+	const standaloneChapter = chapterIndex != undefined && x_chapters[chapterIndex].linkPageChapter == "true";
 
 	if (pageIndex != -1) {
-		$x_pageNo.html(srOnly + notSr);
+		if (x_normalPages.length < 2) {
+			// don't show navigation options if there's only one page
+			$("#x_footerBlock #x_footerRight").hide();
+		} else {
+			const srOnly = '<span class="sr-only">' + x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "Page") + " " + (pageIndex+1) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "of") + " " + x_normalPages.length + '</span>';
+			const notSr = '<span aria-hidden="true">' + (pageIndex+1) + " / " + x_normalPages.length + '</span>';
+			$x_pageNo.html(srOnly + notSr);
+		}
 	} else {
 		// standalone page
-		$x_pageNo
-			.html('')
-			.attr("title", '');
+		// if standalone page is in a chapter, we still might need the page numbers
+		if (standaloneChapter &&
+			x_chapters[chapterIndex].footerHideChapter == "false" &&
+			x_chapters[chapterIndex].pages.length > 1) {
+			const srOnly = '<span class="sr-only">' + x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "Page") + " " + ($.inArray(x_currentPage, x_chapters[chapterIndex].pages)+1) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "of") + " " + x_chapters[chapterIndex].pages.length + '</span>';
+			const notSr = '<span aria-hidden="true">' + ($.inArray(x_currentPage, x_chapters[chapterIndex].pages)+1) + " / " + x_chapters[chapterIndex].pages.length + '</span>';
+			$x_pageNo.html(srOnly + notSr);
+		} else {
+			$x_pageNo
+				.html('')
+				.attr("title", '');
+		}
+
+		if (x_pages[x_currentPage].getAttribute("footerHide") == "false") {
+			$("#x_footerBlock #x_footerRight").show();
+		}
 	}
 
 	if ($x_menuBtn.length > 0) {
-		if (XENITH.PAGEMENU.isThisMenu()) {
+		// don't show the menu button on menu pages or when standalone pages are opening in lightboxes or a new window
+		if (XENITH.PAGEMENU.isThisMenu() || (x_pageInfo[x_currentPage].standalone == true && x_pages[x_currentPage].getAttribute("linkTarget") != "same")) {
 			$x_menuBtn
 				.button("disable")
 				.removeClass("ui-state-focus")
@@ -3461,24 +3536,44 @@ function x_setUpPage() {
 			$x_menuBtn.button("enable");
 		}
 	}
-	
-    if (pageIndex != 0 || ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && x_pageHistory.length > 1)) {
+
+    if (pageIndex > 0 || ((x_params.navigation == "Historic" || x_params.navigation == "LinearWithHistoric") && x_pageHistory.length > 1) || (x_pageInfo[x_currentPage].standalone == true && x_pages[x_currentPage].getAttribute("linkTarget") != "new")) {
         $x_prevBtn.button("enable");
-		
+
     } else {
-        $x_prevBtn
-            .button("disable")
-            .removeClass("ui-state-focus")
-            .removeClass("ui-state-hover");
+		// standalone page
+		// if standalone page is in a chapter, we still might need the prevBtn
+		if (standaloneChapter &&
+			x_chapters[chapterIndex].footerHideChapter == "false" &&
+			x_chapters[chapterIndex].pages.length > 1 &&
+			($.inArray(x_currentPage, x_chapters[chapterIndex].pages) > 0 ||
+			x_chapters[chapterIndex].linkTargetChapter != "new")) {
+			$x_prevBtn.button("enable");
+		} else {
+			$x_prevBtn
+				.button("disable")
+				.removeClass("ui-state-focus")
+				.removeClass("ui-state-hover");
+		}
     }
 
     if (pageIndex != -1 && pageIndex < x_normalPages.length-1) {
         $x_nextBtn.button("enable");
+
     } else {
-        $x_nextBtn
-            .button("disable")
-            .removeClass("ui-state-focus")
-            .removeClass("ui-state-hover");
+		// standalone page
+		// if standalone page is in a chapter, we still might need the nextBtn
+		if (standaloneChapter &&
+			x_chapters[chapterIndex].footerHideChapter == "false" &&
+			x_chapters[chapterIndex].pages.length > 1 &&
+			$.inArray(x_currentPage, x_chapters[chapterIndex].pages) < x_chapters[chapterIndex].pages.length - 1) {
+			$x_nextBtn.button("enable");
+		} else {
+			$x_nextBtn
+				.button("disable")
+				.removeClass("ui-state-focus")
+				.removeClass("ui-state-hover");
+		}
     }
 
 	// navigation buttons can be disabled on a page by page basis
@@ -3574,6 +3669,8 @@ function x_setUpPage() {
 function x_pageLoaded() {
     x_pageInfo[x_currentPage].built = $("#x_page" + x_currentPage);
     x_pageInfo[x_currentPage].viewed = true;
+
+	checkChapterViewed(x_currentPage);
 	
 	// calls function in current theme (if it exists)
 	var pt = x_pageInfo[x_currentPage].type;
@@ -3639,6 +3736,9 @@ function x_pageLoaded() {
 
 	XENITH.VARIABLES.handleSubmitButton();
 
+	// allow scroll bars now that all sizing should be complete
+	$x_pageHolder.css("overflow-y", "auto");
+
     $("#x_page" + x_currentPage)
         .hide()
         .css("visibility", "visible")
@@ -3664,6 +3764,35 @@ function x_pageLoaded() {
 	XENITH.SIDEBAR.pageLoad(true);
 
 	x_checkForScrolling();
+}
+
+// function checks whether all pages in a chapter have been viewed
+function checkChapterViewed(pageIndex) {
+	if (pageIndex == undefined || (x_pageInfo[pageIndex].type != "menu" && x_pages[pageIndex].getAttribute("chapterIndex") != undefined)) {
+		const numChaptersToCheck = pageIndex != undefined ? 1 : x_chapters.length;
+		for (let i=0; i<numChaptersToCheck; i++) {
+			const index = pageIndex != undefined ? x_pages[pageIndex].getAttribute("chapterIndex") : i;
+			if (x_chapters[index].viewed == false) {
+				let allViewed = true;
+				for (let j=0; j<x_chapters[index].pages.length; j++) {
+					const pageIndex = x_chapters[index].pages[j];
+					// if pages are standalone then whether they are viewed may be recorded differently
+					// we only pay attention to these pages when in standalone chapters though as they don't count towards completion in normal chapters
+					if ((x_pageInfo[pageIndex].standalone != true && x_pageInfo[pageIndex].viewed == false) || // page isn't a standalone page & hasn't been viewed
+						(x_pageInfo[pageIndex].standalone == true && x_chapters[index].linkPageChapter == "true" && x_pageInfo[pageIndex].viewed == false && x_pages[pageIndex].getAttribute("linkTarget") == "same") || // page is a standalone page in a standalone chapter opening in same window & hasn't been viewed
+						(x_pageInfo[pageIndex].standalone == true && x_chapters[index].linkPageChapter == "true" && x_pageInfo[pageIndex].viewedLightBox != true && x_pageInfo[pageIndex].viewedNewWindow != true && x_pages[pageIndex].getAttribute("linkTarget") != "same") // page is a standalone page in a standalone chapter opening in lightbox or new window & hasn't been viewed
+					) {
+						allViewed = false;
+						break;
+					}
+				}
+
+				if (allViewed == true) {
+					x_chapters[index].viewed = true;
+				}
+			}
+		}
+	}
 }
 
 //convert picker color to #value
@@ -4122,7 +4251,7 @@ function x_getLangInfo(node, attribute, fallBack) {
 
 // function finds attributes/nodeValues where text may need replacing for things like links / glossary words
 function x_findText(pageXML, exclude, list) {
-    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt", "side1", "side2", "passwordInfo", "passwordError"],
+    var attrToCheck = ["text", "instruction", "instructions", "answer", "description", "prompt", "question", "option", "hint", "feedback", "summary", "intro", "txt", "goals", "audience", "prereq", "howto", "passage", "displayTxt", "side1", "side2", "passwordInfo", "passwordError", "adaptiveContent"],
         i, len;
 	if (pageXML.nodeName == "mcqStepOption") { attrToCheck.push("name"); } // don't include name normally as it's generally only used in titles
 
@@ -4336,7 +4465,7 @@ function x_checkDecimalSeparator(value, forcePeriod) {
 // function called from model pages to scale images - scale, firstScale & setH are optional
 function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
     var $img = $(img);
-    if (scale != false && $img.width() > 0 && $img.height() > 0) {
+    if (scale != false && ($img.data("origSize") != undefined || ($img.width() > 0 && $img.height() > 0))) {
         var imgW = $img.width(),
             imgH = $img.height();
 
@@ -4347,7 +4476,7 @@ function x_scaleImg(img, maxW, maxH, scale, firstScale, setH, enlarge) {
             imgH = $img.data("origSize")[1];
         }
 
-        if (enlarge !== false) {
+        if (enlarge !== true) {
             maxW = Math.min(maxW, imgW);
             maxH = Math.min(maxH, imgH);
         }
@@ -4466,8 +4595,11 @@ function x_getAvailableHeight(excludePadding, excludeHeight, mobile) {
 				if ($.isNumeric(excludeHeight[i])) {
 					// a number has been passed instead of an element - minus this
 					availableH -= excludeHeight[i];
-				} else {
-					availableH -= excludeHeight[i].outerHeight(true);
+				} else if (excludeHeight[i].length > 0) {
+					// uses native javascript instead of jquery height / outerHeight to ensure no numbers rounded down
+					availableH -= excludeHeight[i][0].getBoundingClientRect().height;
+					availableH -= parseFloat(window.getComputedStyle(excludeHeight[i][0]).marginTop);
+					availableH -= parseFloat(window.getComputedStyle(excludeHeight[i][0]).marginBottom);
 				}
 			}
 		}
@@ -5650,6 +5782,11 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 				x_normalPages.splice(i, 1, x_normalPages[i]+1);
 			}
 			x_normalPages.splice(0, 0, 0);
+			for (var i=0; i<x_chapters.length; i++) {
+				for (var j=0; j<x_chapters[i].pages.length; j++) {
+					x_chapters[i].pages.splice(j, 1, x_chapters[i].pages[j] + 1);
+				}
+			}
 
 			pageNumOffset = 1;
 			XENITH.PAGEMENU.menuPage = true;
@@ -5791,47 +5928,47 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 	// not called when the TOC is shown on a menu page
 	function showCurrent() {
 		$menuItems.find(".current").removeClass("current");
-		const $currentItem = $menuItems.find(".menuItem:eq(" + x_normalPages.indexOf(x_currentPage) + ")");
+		if (x_normalPages.indexOf(x_currentPage) > -1) {
+			const $currentItem = $menuItems.find(".menuItem:eq(" + x_normalPages.indexOf(x_currentPage) + ")");
 
-		// expand the chapter accordion if the current page is in a chapter
-		const $thisChapter = $currentItem.parents(".chapterHolder ");
-		if ($thisChapter.length > 0) {
-			// if the TOC is shown in dialog or lightbox, we don't want the chapter accordion animation to be shown
-			if (XENITH.SIDEBAR.sideBarType !== "toc" || x_firstLoad) {
-				$thisChapter.accordion({"animate": 0});
-			}
-
-			$thisChapter.accordion({"active": 0}).find(".chapterItem").addClass("current");
-
-			// if the TOC is shown in dialog or lightbox, reset the chapter accordion animation so it will work if chapter manually opened / closed
-			if (XENITH.SIDEBAR.sideBarType !== "toc" || x_firstLoad) {
-				$thisChapter.accordion({"animate": {}});
-			}
-		}
-
-		// close all other chapters
-		const allChapters = $menuItems.find(".chapterHolder");
-		allChapters.each(function () {
-			if ($thisChapter.length === 0 || !$thisChapter.is($(this))) {
+			// expand the chapter accordion if the current page is in a chapter
+			const $thisChapter = $currentItem.parents(".chapterHolder ");
+			if ($thisChapter.length > 0) {
 				// if the TOC is shown in dialog or lightbox, we don't want the chapter accordion animation to be shown
-				if (XENITH.SIDEBAR.sideBarType !== "toc") {
-					$(this).accordion({"animate": 0});
+				if (XENITH.SIDEBAR.sideBarType !== "toc" || x_firstLoad) {
+					$thisChapter.accordion({"animate": 0});
 				}
 
-				$(this).accordion({"active": false});
+				$thisChapter.accordion({"active": 0}).find(".chapterItem").addClass("current");
 
 				// if the TOC is shown in dialog or lightbox, reset the chapter accordion animation so it will work if chapter manually opened / closed
-				if (XENITH.SIDEBAR.sideBarType !== "toc") {
-					$(this).accordion({"animate": {}});
+				if (XENITH.SIDEBAR.sideBarType !== "toc" || x_firstLoad) {
+					$thisChapter.accordion({"animate": {}});
 				}
 			}
-		});
 
-		$currentItem.addClass("current");
+			// close all other chapters
+			const allChapters = $menuItems.find(".chapterHolder");
+			allChapters.each(function () {
+				if ($thisChapter.length === 0 || !$thisChapter.is($(this))) {
+					if (XENITH.SIDEBAR.sideBarType !== "toc") {
+						$(this).accordion({"animate": 0});
+					}
 
-		// focus on current page button & this will also ensure it's scrolled into view
-		if (XENITH.SIDEBAR.sideBarType !== "toc") {
-			$currentItem.focus();
+					$(this).accordion({"active": false});
+
+					if (XENITH.SIDEBAR.sideBarType !== "toc") {
+						$(this).accordion({"animate": {}});
+					}
+				}
+			});
+
+			$currentItem.addClass("current");
+
+			// focus on current page button & this will also ensure it's scrolled into view
+			if (XENITH.SIDEBAR.sideBarType !== "toc") {
+				$currentItem.focus();
+			}
 		}
 	}
 
@@ -6165,7 +6302,7 @@ var XENITH = (function ($, parent) { var self = parent.SIDEBAR = {};
 	// this sets the initial open max width of sidebar & makes sure that it's still appropriate after resize of screen
 	function setWidth(resize) {
 		// only set the width of the sidebar if it's currently open
-		if ($x_sideBar.data('state') == 'open') {
+		if (sideBar === true && $x_sideBar.data('state') == 'open') {
 
 			// screen has been resized - remove fixed widths so ideal button widths can be recalculated
 			if (resize) {
@@ -7106,8 +7243,8 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 
 		for (let i=0; i<filterMap.length; i++) {
 			const $radio = $('<div class="optionGroup"></div>');
-			$radio.append('<input type="radio" name="colourChangerRadios" id="option' + i + '" value="' + i + '"' + (i===checked ? ' checked="checked"' : '') + '>');
-			$radio.append('<label for="option' + i + '"><p>' + x_getLangInfo(x_languageData.find("colourChanger").find(filterMap[i].name)[0], "label", filterMap[i].default) + '</p></label>');
+			$radio.append('<input type="radio" name="colourChangerRadios" id="colourChanger_option' + i + '" value="' + i + '"' + (i===checked ? ' checked="checked"' : '') + '>');
+			$radio.append('<label for="colourChanger_option' + i + '"><p>' + x_getLangInfo(x_languageData.find("colourChanger").find(filterMap[i].name)[0], "label", filterMap[i].default) + '</p></label>');
 			$colourChangerOptions.append($radio);
 		}
 
@@ -7139,7 +7276,7 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 			// refresh (trigger pageChanged function) or completely rebuild pages of these types
 			// as they involve things like writing text on a canvas (text might not be an appropriate colour after the theme change)
 			const pageTypesRequiringRebuild = ['chart', 'textDrawing'];
-			const pageTypesRequiringRefresh = ['opinion'];
+			const pageTypesRequiringRefresh = ['opinion', 'inventory'];
 
 			// flag built pages of these types as not built yet, so they will be rebuilt when next viewed
 			for (let i=0, len=x_pageInfo.length; i<len; i++) {
@@ -7180,6 +7317,7 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 		const $special_theme_responsive_css = $("#special_theme_responsive_css");
 		const $theme_css = $("#theme_css");
 		const $theme_responsive_css = $("#theme_responsive_css");
+		const $custom_special_theme_css = $("#custom_special_theme_css");
 
 		if (theme !== x_params.theme) {
 			// custom theme in use
@@ -7193,6 +7331,27 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 				$special_theme_responsive_css.attr("href", currentResponsiveThemeURL + ".css");
 				$special_theme_responsive_css.prop("disabled", false);
 			}
+
+			// themes can contain css files only used when a special theme is in use
+			// e.g. when the theme changes layout and the special theme needs to keep these changes
+			const thisAccessibleTheme = x_themePath + x_params.theme + '/accessibility/' + theme + '.css';
+			function fileExists(url) {
+				return fetch(url, { method: "HEAD" })
+					.then(res => res.ok)
+					.catch(() => false);
+			}
+
+			fileExists(thisAccessibleTheme).then(exists => {
+				if (exists) {
+					if ($custom_special_theme_css.length > 0) {
+						$custom_special_theme_css.attr("href", thisAccessibleTheme);
+						$custom_special_theme_css.prop("disabled", false);
+					} else {
+						x_insertCSS(thisAccessibleTheme, function () {
+						}, false, "custom_special_theme_css", true);
+					}
+				}
+			});
 		} else {
 			// default theme in use
 			$special_theme_css.prop("disabled", true);
@@ -7202,6 +7361,11 @@ var XENITH = (function ($, parent) { var self = parent.ACCESSIBILITY = {};
 			// only enable responsive text css files if needed responsive text is currently on
 			if (checkResponsiveTxt()) {
 				$theme_responsive_css.prop("disabled", false);
+			}
+
+			// disable any theme css files that are only used when a special theme is in use
+			if ($custom_special_theme_css.length > 0) {
+				$custom_special_theme_css.prop("disabled", true);
 			}
 		}
 
@@ -7340,7 +7504,10 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 								}
 							}
 
-							if (resource.endsWith(".mp3")) {
+							if (resource.startsWith("http")) {
+								// URL
+								return "url";
+							} else if (resource.endsWith(".mp3")) {
 								// audio
 								return "audio";
 							} else if (resource.endsWith(".png") || resource.endsWith(".jpg") || resource.endsWith(".jpeg") || resource.endsWith(".gif") || resource.endsWith(".svg")) {
@@ -7355,9 +7522,6 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 							} else if (x_isYouTubeVimeo(resource) !== false) {
 								// youtube or vimeo
 								return "videoEmbed";
-							} else if (resource.startsWith("http")) {
-								// URL
-								return "url";
 							} else if (resource.startsWith("<iframe")) {
 								return "iframe";
 							} else {
@@ -7413,9 +7577,9 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 			// add resources btn to the header bar - this might be moved to side bar later if that's where it's supposed to be
 			$x_pageResourcesBtn = $('<button id="x_pageResourcesBtn"></button>').appendTo($('#x_headerBlock h2'));
 
-			let btnLabel = !trackCompletion ? x_getLangInfo(x_languageData.find("resources")[0], "text", "{x} Resources Available") : x_getLangInfo(x_languageData.find("resources")[0], "completeText", "{y}/{x} Resources Complete");
+			let btnLabel = !trackCompletion ? '<span class="multiResource">' + x_getLangInfo(x_languageData.find("resources")[0], "text", "{x} Resources Available") + '</span>' + (x_getLangInfo(x_languageData.find("resources")[0], "textSingle") == undefined ? "" : '<span class="singleResource">' + x_getLangInfo(x_languageData.find("resources")[0], "textSingle") + '</span>') : x_getLangInfo(x_languageData.find("resources")[0], "completeText", "{y}/{x} Resources Complete");
 			btnLabel = btnLabel
-				.replace("{x}", "<span class='totalResourcesNum'></span>")
+				.replace(/{x}/g,"<span class='totalResourcesNum'></span>")
 				.replace("{y}", "<span class='completedResourcesNum'></span>");
 			btnLabel += " <span class='x_resourcesClickTxt'><span class='sr-only'>" + x_params.dialogTxt + "</span></span>";
 
@@ -7689,12 +7853,25 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 			$x_pageResourcesBtn.show();
 			// update the no. resources & no. completed resources
 			$x_pageResourcesBtn.find(".totalResourcesNum").html(resourcesInfo[x_currentPage].length);
+			let title = $x_pageResourcesBtn.find(".ui-button-text").text();
+			if (resourcesInfo[x_currentPage].length == 1 && $x_pageResourcesBtn.find(".singleResource").length > 0) {
+				$x_pageResourcesBtn.find(".singleResource").show();
+				$x_pageResourcesBtn.find(".multiResource").hide();
+				title = $x_pageResourcesBtn.find(".singleResource").text();
+			} else if ($x_pageResourcesBtn.find(".multiResource").length > 0) {
+				$x_pageResourcesBtn.find(".singleResource").hide();
+				$x_pageResourcesBtn.find(".multiResource").show();
+				title = $x_pageResourcesBtn.find(".multiResource").text();
+			}
 			$x_pageResourcesBtn.find(".completedResourcesNum").html(resourcesInfo[x_currentPage].filter((obj) => obj.complete === true).length);
 			$x_pageResourcesBtn.find(".resourceNumberTxt").html(resourcesInfo[x_currentPage].length);
 
 			// button has icon only - need to adjust the button title
 			if (x_params.resourceBtn != "text") {
-				$x_pageResourcesBtn.attr("title", $x_pageResourcesBtn.find(".ui-button-text").text());
+				if ($x_pageResourcesBtn.find(".completedResourcesNum").length > 0) {
+					title = $x_pageResourcesBtn.find(".ui-button-text").text(); // refresh now num completed has been set
+				}
+				$x_pageResourcesBtn.attr("title", title);
 			}
 		} else if (resources == true) {
 			$x_pageResourcesBtn.hide();

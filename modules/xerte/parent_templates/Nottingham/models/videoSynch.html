@@ -78,12 +78,12 @@ var videoSynch = new function() {
 		$infoHolder = $("#infoHolder");
 		$pageContents = $("#pageContents");
 
-		const popLocation = "common/js/popcorn/"
+        const popLocation = x_siteUrl + "modules/common/js/popcorn/"
 		const scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
 		let i = 0;
 		if(!xot_offline) {
 			scriptsToLoad.forEach(function (file) {
-				$.getScript(x_templateLocation + popLocation + file + ".js")
+                $.getScript(popLocation + file + ".js")
 						.done(function () {
 							if (++i >= scriptsToLoad.length)
 								videoSynch.setUp();

@@ -277,15 +277,20 @@ foreach (glob(dirname(__FILE__) . "/modules/**/templates/**/*.info") as $infoFil
                 continue;
             }
             switch (trim(strtolower($attr_data[0]))) {
-                case "editor size" : $templateProperties->editor_size = trim($attr_data[1]);
+                case "editor size" :
+                    $templateProperties->editor_size = trim($attr_data[1]);
                     break;
-                case "preview size" : $templateProperties->preview_size = trim($attr_data[1]);
+                case "preview size" :
+                    $templateProperties->preview_size = trim($attr_data[1]);
                     break;
-                case "preview filename" : $templateProperties->preview_file = trim($attr_data[1]);
+                case "preview filename" :
+                    $templateProperties->preview_file = trim($attr_data[1]);
                     break;
-                case "public filename" : $templateProperties->public_file = trim($attr_data[1]);
+                case "public filename" :
+                    $templateProperties->public_file = trim($attr_data[1]);
                     break;
-                case "supports" : $templateProperties->supports = explode(",", trim($attr_data[1]));
+                case "supports" :
+                    $templateProperties->supports = explode(",", trim($attr_data[1]));
                     break;
             }
         }

@@ -40,7 +40,6 @@
     define("USER_SETTINGS_PANEL_SOUTH", "Show the bar at the bottom");
     define("USER_SETTINGS_EDITOR_PANEL_EAST", "Show the help panel on the right");
     define("USER_SETTINGS_EDITOR_SHOW_LANGUAGE", "Show language options");
-    define("USER_SETTINGS_EDITOR_SHOW_TOOLBAR", "Show edit buttons");
     define("USER_SETTINGS_EDITOR_EXPAND_GROUPS", "Open folders automatically");
     define("USER_SETTINGS_EDITOR_EXPAND_TREE", "Open content structure automatically");
     define("USER_SETTINGS_CANCEL", "Cancel");

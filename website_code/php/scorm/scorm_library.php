@@ -243,6 +243,7 @@ function basic_html5_page_create($id, $type, $parent_name, $lo_name, $date_modif
     $buffer = str_replace("%XMLPATH%", "", $buffer);
     $buffer = str_replace("%XMLFILE%", "template.xml", $buffer);
     $buffer = str_replace("%THEMEPATH%", "themes/" . $parent_name . "/",$buffer);
+    $buffer = str_replace("%SITEURL%", "", $buffer);
 
     if ($offline) {
         // Handle offline variables
@@ -336,6 +337,7 @@ function scorm_html5_page_create($id, $type, $parent_name, $lo_name, $language, 
     $scorm_html_page_content = str_replace("%XMLPATH%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLFILE%", "template.xml", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%THEMEPATH%", "themes/" . $parent_name . "/",$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%SITEURL%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%OFFLINESCRIPTS%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%OFFLINEINCLUDES%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%MATHJAXPATH%", "offline/js/mathjax/", $scorm_html_page_content);
@@ -423,6 +425,43 @@ function export_folder_loop($path, $recursive = true, $ext = NULL, $dest = NULL)
     $x = array_pop($folder_id_array);
 
     closedir($d);
+}
+
+/**
+ * Add installation-level shared runtime files to an export while preserving
+ * their modules/common/... paths. Development/source-only dependencies are
+ * deliberately excluded from generated learning-object packages.
+ */
+function export_shared_common_files() {
+
+    global $xerte_toolkits_site, $file_array;
+
+    $common_root = $xerte_toolkits_site->root_file_path . 'modules/common/';
+    $runtime_paths = array(
+        'css',
+        'highlight',
+        'js',
+        'mediaelement',
+        'fontawesome-6.6.0/css',
+        'fontawesome-6.6.0/webfonts'
+    );
+
+    foreach ($runtime_paths as $runtime_path) {
+        $source_root = $common_root . $runtime_path . '/';
+        if (!is_dir($source_root)) {
+            continue;
+        }
+
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($source_root, FilesystemIterator::SKIP_DOTS)
+        );
+        foreach ($iterator as $file) {
+            if ($file->isFile()) {
+                $relative_path = str_replace('\\', '/', substr($file->getPathname(), strlen($common_root)));
+                array_push($file_array, array($file->getPathname(), 'modules/common/' . $relative_path));
+            }
+        }
+    }
 }
 
 /**

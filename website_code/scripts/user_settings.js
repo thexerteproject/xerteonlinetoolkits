@@ -168,7 +168,6 @@ function populatePreferencesForm($root) {
     $root.find('#panel_south_open').prop('checked', preferenceIsTruthy(prefs.panel_south_open, true));
     $root.find('#editor_panel_east_open').prop('checked', preferenceIsTruthy(prefs.editor_panel_east_open, true));
     $root.find('#editor_show_language').prop('checked', preferenceIsTruthy(prefs.editor_show_language, false));
-    $root.find('#editor_show_toolbar').prop('checked', preferenceIsTruthy(prefs.editor_show_toolbar, false));
     $root.find('#editor_expand_groups').prop('checked', preferenceIsTruthy(prefs.editor_expand_groups, false));
     $root.find('#editor_expand_tree').prop('checked', preferenceIsTruthy(prefs.editor_expand_tree, false));
 
@@ -202,7 +201,6 @@ function savePreferencesFromForm($root) {
         panel_south_open: $root.find('#panel_south_open').is(':checked'),
         editor_panel_east_open: $root.find('#editor_panel_east_open').is(':checked'),
         editor_show_language: $root.find('#editor_show_language').is(':checked'),
-        editor_show_toolbar: $root.find('#editor_show_toolbar').is(':checked'),
         editor_expand_groups: $root.find('#editor_expand_groups').is(':checked'),
         editor_expand_tree: $root.find('#editor_expand_tree').is(':checked'),
         editor_open_mode: $root.find('input[name="editor_open_mode"]:checked').val() || 'popup'
@@ -321,12 +319,6 @@ function bindLegacyPreferencesHandlers() {
         }
     });
 
-    $("#change-password-dialog #editor_show_toolbar").on('change', function() {
-        if (typeof save_user_preference === 'function') {
-            save_user_preference('editor_show_toolbar', $(this).is(':checked'));
-        }
-    });
-
     $("#change-password-dialog #editor_expand_groups").on('change', function() {
         if (typeof save_user_preference === 'function') {
             save_user_preference('editor_expand_groups', $(this).is(':checked'));
@@ -374,11 +366,6 @@ function populateLegacyPreferencesForm($dialog) {
     var editorShowLanguageCheckbox = $dialog.find("#editor_show_language");
     if (editorShowLanguageCheckbox.length) {
         editorShowLanguageCheckbox.prop('checked', preferenceIsTruthy(user_preferences.editor_show_language, false));
-    }
-
-    var editorShowToolbarCheckbox = $dialog.find("#editor_show_toolbar");
-    if (editorShowToolbarCheckbox.length) {
-        editorShowToolbarCheckbox.prop('checked', preferenceIsTruthy(user_preferences.editor_show_toolbar, false));
     }
 
     var editorExpandGroupsCheckbox = $dialog.find("#editor_expand_groups");

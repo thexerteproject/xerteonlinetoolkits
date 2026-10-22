@@ -87,6 +87,10 @@ export_folder_loop($parent_template_path);
 
 copy_parent_files();
 
+// Include installation-level runtime dependencies using their shared paths.
+export_shared_common_files();
+copy_extra_files();
+
 // Copy language files
 export_folder_loop($xerte_toolkits_site->root_file_path . 'languages/', false, '.xml');
 copy_extra_files();
