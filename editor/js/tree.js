@@ -35,16 +35,7 @@ var EDITOR = (function ($, parent) {
             return false;
         })(),
         defaultAdvanced = false,
-        // Store toolbar and groups defaults for later use
-        defaultToolbar = (function() {
-            if (typeof user_preferences !== 'undefined' && user_preferences && typeof user_has_preferences !== 'undefined' && user_has_preferences) {
-                var editorShowToolbar = user_preferences.editor_show_toolbar;
-                return (editorShowToolbar !== undefined && editorShowToolbar !== null && 
-                       editorShowToolbar !== false && editorShowToolbar !== 'false' && 
-                       editorShowToolbar !== 0 && editorShowToolbar !== '0');
-            }
-            return false;
-        })(),
+        // Store group defaults for later use
         defaultExpandGroups = (function() {
             if (typeof user_preferences !== 'undefined' && user_preferences && typeof user_has_preferences !== 'undefined' && user_has_preferences) {
                 var editorExpandGroups = user_preferences.editor_expand_groups;
@@ -321,7 +312,6 @@ var EDITOR = (function ($, parent) {
         $([
             {name:language.chkShowLanguage.$label, tooltip: language.chkShowLanguage.$tooltip, id:'language_cb', disabled: true, click:showLanguage},
             {name:language.chkShowAdvanced.$label, tooltip: language.chkShowAdvanced.$tooltip, id:'advanced_cb', disabled: true, click:showAdvanced},
-            {name:language.chkShowToolbar.$label, tooltip: language.chkShowToolbar.$tooltip, id:'toolbar_cb', disabled: false, click:showToolbar},
             {name:language.chkShowGroups.$label, tooltip: language.chkShowGroups.$tooltip, id:'groups_cb', disabled: false, click:expandGroups}
         ]).each(function(index, value) {
             var checkbox = $('<input>')
@@ -334,8 +324,6 @@ var EDITOR = (function ($, parent) {
             // Initialize checkbox state from defaults set at module level
             if (value.id === 'language_cb') {
                 checkbox.prop('checked', defaultLanguage);
-            } else if (value.id === 'toolbar_cb') {
-                checkbox.prop('checked', defaultToolbar);
             } else if (value.id === 'groups_cb') {
                 checkbox.prop('checked', defaultExpandGroups);
             } else {
@@ -362,13 +350,6 @@ var EDITOR = (function ($, parent) {
                 // Re-apply preference in case it was reset by other code
                 languageCb.prop('checked', defaultLanguage);
                 showLanguage();
-            }
-            
-            var toolbarCb = $('#toolbar_cb');
-            if (toolbarCb.length) {
-                // Re-apply preference in case it was reset
-                toolbarCb.prop('checked', defaultToolbar);
-                showToolbar();
             }
             
             var groupsCb = $('#groups_cb');
@@ -644,10 +625,6 @@ var EDITOR = (function ($, parent) {
         }
     },
 
-
-    showToolbar = function(){
-        parent.toolbox.showToolBar($('#toolbar_cb').prop('checked'));
-    },
 
     expandGroups = function(){
         if ($('#groups_cb').prop('checked')) {

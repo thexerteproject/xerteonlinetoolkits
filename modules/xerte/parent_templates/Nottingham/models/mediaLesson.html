@@ -377,7 +377,7 @@
 				
 		// function loads the popcorn files
 		this.loadPopcorn = function() {
-			$.getScript(x_templateLocation + "common/js/popcorn/popcorn-complete.js")
+            $.getScript(x_siteUrl + "modules/common/js/popcorn/popcorn-complete.js")
 				.done(function() {
 					mediaLesson.loadPlugins();
 				})
@@ -388,11 +388,11 @@
 		this.loadPlugins = function() {
 			var i = 0;
 			plugins.forEach(function (plugin) {
-				var fileLocation = "common/js/popcorn/plugins/popcorn." + plugin;
-				if (jQuery.inArray(plugin, css) != -1) {
-					x_insertCSS(x_templateLocation + fileLocation + ".css");
-				}
-				$.getScript(x_templateLocation + fileLocation + ".js")
+                var fileLocation = "modules/common/js/popcorn/plugins/popcorn." + plugin;
+                if (jQuery.inArray(plugin, css) != -1) {
+                    x_insertCSS(x_siteUrl + fileLocation + ".css");
+                }
+                $.getScript(x_siteUrl + fileLocation + ".js")
 					.done(function(setttings, textStatus){
 						if (++i >= plugins.length) {
 							mediaLesson.setUp();

@@ -91,6 +91,7 @@ global $xerte_toolkits_site, $dir_path, $delete_file_array, $zipfile, $youtube_a
     $xapi_html_page_content = str_replace("%TEMPLATEID%", $id, $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%XMLFILE%","template.xml",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%THEMEPATH%", "themes/" . $template_name . "/",$xapi_html_page_content);
+    $xapi_html_page_content = str_replace("%SITEURL%", "", $xapi_html_page_content);
     $xapi_html_page_content = str_replace("%OFFLINESCRIPTS%", "",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%OFFLINEINCLUDES%", "",$xapi_html_page_content);
     $xapi_html_page_content = str_replace("%MATHJAXPATH%", "offline/js/mathjax/", $xapi_html_page_content);
