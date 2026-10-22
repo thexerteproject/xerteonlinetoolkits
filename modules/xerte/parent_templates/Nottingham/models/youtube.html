@@ -34,12 +34,12 @@
 		};
 
 		this.init = function() {
-			var popLocation = "common/js/popcorn/"
+            var popLocation = x_siteUrl + "modules/common/js/popcorn/"
 			var scriptsToLoad = ["popcorn-complete", "plugins/popcorn.mediaconstructor"];
 			var i = 0;
 			if(!xot_offline) {
 				scriptsToLoad.forEach(function (file) {
-					$.getScript(x_templateLocation + popLocation + file + ".js")
+                    $.getScript(popLocation + file + ".js")
 							.done(function () {
 								if (++i >= scriptsToLoad.length)
 									youtube.setUp();

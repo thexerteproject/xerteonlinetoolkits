@@ -384,7 +384,7 @@
 
         // function loads the popcorn files
         this.loadPopcorn = function() {
-			$.getScript(x_templateLocation + "common/js/popcorn/popcorn-complete.js")
+            $.getScript(x_siteUrl + "modules/common/js/popcorn/popcorn-complete.js")
 				.done(function() {
 					interactiveVideo.loadPlugins();
 				})
@@ -397,12 +397,12 @@
 			var i = 0;
             // First load css files
             css.forEach(function (plugin) {
-                var fileLocation = "common/js/popcorn/plugins/popcorn." + plugin;
-                x_insertCSS(x_templateLocation + fileLocation + ".css");
+                var fileLocation = "modules/common/js/popcorn/plugins/popcorn." + plugin;
+                x_insertCSS(x_siteUrl + fileLocation + ".css");
             });
 			plugins.forEach(function (plugin) {
-				var fileLocation = "common/js/popcorn/plugins/popcorn." + plugin;
-				$.getScript(x_templateLocation + fileLocation + ".js")
+                var fileLocation = "modules/common/js/popcorn/plugins/popcorn." + plugin;
+                $.getScript(x_siteUrl + fileLocation + ".js")
 					.done(function(setttings, textStatus){
 						if (++i >= plugins.length) {
                             interactiveVideo.setUp();

@@ -252,6 +252,7 @@ function scorm2004_html5_page_create($id, $type, $parent_name, $lo_name, $langua
     $scorm_html_page_content = str_replace("%XMLPATH%","",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%XMLFILE%","template.xml",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%THEMEPATH%", "themes/" . $parent_name . "/",$scorm_html_page_content);
+    $scorm_html_page_content = str_replace("%SITEURL%", "", $scorm_html_page_content);
     $scorm_html_page_content = str_replace("%OFFLINESCRIPTS%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%OFFLINEINCLUDES%", "",$scorm_html_page_content);
     $scorm_html_page_content = str_replace("%MATHJAXPATH%", "offline/js/mathjax/", $scorm_html_page_content);

@@ -51,14 +51,17 @@
                 this.loadCss();
 			}
 
-			const popLocation = "common/js/popcorn/"
-            const scriptsToLoad = ["common/js/timeline/timeline3.js", popLocation + "popcorn-complete.js", popLocation + "plugins/popcorn.mediaconstructor.js"];
+            const scriptsToLoad = [
+                x_templateLocation + "common/js/timeline/timeline3.js",
+                x_siteUrl + "modules/common/js/popcorn/popcorn-complete.js",
+                x_siteUrl + "modules/common/js/popcorn/plugins/popcorn.mediaconstructor.js"
+            ];
 			if (xot_offline) {
 				numLoaded = scriptsToLoad.length;
 			}
 
 			if (numLoaded < scriptsToLoad.length) {
-				const fileToLoad = x_templateLocation + scriptsToLoad[numLoaded];
+                const fileToLoad = scriptsToLoad[numLoaded];
 				$.getScript(fileToLoad)
 						.done(function() {
 							numLoaded++;
