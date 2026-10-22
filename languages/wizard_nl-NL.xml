@@ -107,7 +107,7 @@
 		</fileexists>
 	</importMedia>
 	<Alert>
-		<sessionError>Fout: De sessie is verlopen - Log opnieuw in!\nGa terug naar de Xerte werkruimte en ververs de pagina om opnieuw in te loggen.\nAls de editor geslotene wordt zonder opneiuw in te loggen gaan er mogelijk gegevens verloren.</sessionError>
+		<sessionError>Fout: De sessie is verlopen - Log opnieuw in!\nGa terug naar de Xerte werkruimte (in een ander tabblad) en ververs de pagina om opnieuw in te loggen.\nAls de editor gesloten wordt zonder opnieuw in te loggen gaan er mogelijk gegevens verloren.</sessionError>
 		<oklabel>Ok</oklabel>
 		<cancellabel>Annuleer</cancellabel>
 		<nolabel>Nee</nolabel>
