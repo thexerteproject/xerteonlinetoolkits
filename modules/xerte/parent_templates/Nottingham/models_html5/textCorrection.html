@@ -18,8 +18,12 @@
      * limitations under the License.
      */
 
+    /* TODO **
+   - amountOfTries - clash with new single / multiple attempt?
+   - no require answer option - you can never submit without attempt - is this ok? inconsistent with other pages
+    */
+
     var textCorrection = new function() {
-			
 			var $pageContents,
 				$attempts,
 				$answer,
@@ -44,23 +48,19 @@
             };
 
             this.exitTrackTextCorrection = function () {
-                var input = $textArea.val();
-
                 var checkAnswer = false;
-                if(input === $pageContents.data('answer')){
+                if (!$pageContents.data("judge") || this.checkAnswer()) {
                     checkAnswer = true;
                 }
 
-                var result = 0;
+                var result = {
+                    success: checkAnswer,
+                    score: checkAnswer ? 100.0 : 0.0,
+                    judge: $pageContents.data("judge")
+                };
 
-                if(checkAnswer){
-                    result = 100;
-                }else{
-                    result = 0;
-                }
-
-                XTExitInteraction(x_currentPage, 0, result,[], input, []);
-                XTSetPageScore(x_currentPage, result);
+                XTExitInteraction(x_currentPage, 0, result,[], $textArea.val(), []);
+                XTSetPageScore(x_currentPage, result.score);
             };
 
             this.init = function() {
@@ -69,12 +69,7 @@
 				$answer = $("#answer");
 				$textArea = $(".answer textarea");
 
-				$pageContents.data('hasExited', false)
-
-                var weighting = 1.0;
-                if(x_currentPageXML.getAttribute("trackingWeight") != null){
-                    weighting = x_currentPageXML.getAttribute("trackingWeight");
-                }
+                const weighting = x_calculateWeight(x_currentPageXML.getAttribute("trackingWeight"), x_currentPageXML.getAttribute("judge"));
                 XTSetPageType(x_currentPage, "numeric", 1, weighting);
 
                 $("#textHolder").html(x_addLineBreaks(x_currentPageXML.getAttribute("introduction")));
@@ -106,7 +101,7 @@
 
 				//Add aria-label to answer box
 				var answerFieldLabel = x_currentPageXML.getAttribute("answerLabel");
-				if (answerFieldLabel === undefined | answerFieldLabel === null) {
+				if (answerFieldLabel === undefined || answerFieldLabel === null) {
 					answerFieldLabel = "Answer";
 				}
 				$textArea.attr({"aria-label" : answerFieldLabel});
@@ -132,16 +127,24 @@
                     attemptLabel = "Attempts remaining";
                 }
 
-				// no. of tries allowed
-				var amountOfTries = x_currentPageXML.getAttribute("amountOfTries");
+                // are submitted answers going to be judged against correct answers or is it collecting opinions only?
+                const judge = x_checkIfJudged(x_currentPageXML.getAttribute("judge"));
+                $pageContents.data("judge", judge);
 
-				if (amountOfTries !== null && amountOfTries !== undefined) {
-					$pageContents.data('triesLeft', parseInt(amountOfTries));
-					$attempts.html('<p>' + attemptLabel + ": " + amountOfTries + '</p>');
-				} else {
-					$pageContents.data('triesLeft', undefined);
-					$attempts.remove();
-				}
+				// no. of tries allowed
+                if (judge) {
+                    const amountOfTries = x_currentPageXML.getAttribute("amountOfTries");
+                    if (amountOfTries !== null && amountOfTries !== undefined && $.isNumeric(amountOfTries) && amountOfTries > 0) {
+                        $pageContents.data('triesLeft', parseInt(amountOfTries));
+                        $attempts.html('<p>' + attemptLabel + ": " + amountOfTries + '</p>');
+                    } else {
+                        $pageContents.data('triesLeft', undefined);
+                        $attempts.remove();
+                    }
+                } else {
+                    $pageContents.data('triesLeft', undefined);
+                    $attempts.remove();
+                }
 
                 $("#checkButton")
                     .button({ label: checkButtonTxt })
@@ -160,12 +163,6 @@
 						if ($attempts.length > 0) {
 							$attempts.html('<p>' + attemptLabel + ": " + $pageContents.data('triesLeft') + '</p>');
 						}
-                        var label=x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("wrongText"), "");
-                        if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
-                        {
-                            label = x_currentPageXML.getAttribute("trackinglabel");
-                        }
-                        XTEnterInteraction(x_currentPage, 0, "text", label, "",$pageContents.data('answer'), x_currentPageXML.getAttribute("FurtherClarification"));
 
 						var $correctOrNot = $("#correctOrNot");
                         $correctOrNot.html("");
@@ -174,20 +171,22 @@
 							$correctOrNot.append(incompleet);
 
 						} else {
-							if (input == $pageContents.data('answer')) {
-								$correctOrNot.append(correct);
-							}else{
-								$correctOrNot.append(incorrect);
-							}
+                            if ($pageContents.data("judge")) {
+                                if (textCorrection.checkAnswer()) {
+                                    $correctOrNot.append(correct);
+                                } else {
+                                    $correctOrNot.append(incorrect);
+                                }
+                            }
 
 							textCorrection.exitTrackTextCorrection();
-							$pageContents.data('hasExited', true);
 						}
 
-                        if (attemptMade && (input === $pageContents.data('answer') || triesLeft == undefined || triesLeft <= 0)) {
+                        if (attemptMade && (textCorrection.checkAnswer() || triesLeft == undefined || triesLeft <= 0)) {
 							// disable text area when correct answer entered or max tries reached
-							if ((triesLeft != undefined && triesLeft <= 0) || input == $pageContents.data('answer')) {
+							if ((triesLeft != undefined && triesLeft <= 0) || textCorrection.checkAnswer()) {
 								$textArea.attr('readonly','true');
+                                $("#attempts").hide();
 							}
 
 							// feedback
@@ -196,7 +195,7 @@
                             }
 
                             // show the correct answer unless answer entered is correct or show answer optional property is off
-                            if (input !== $pageContents.data('answer')) {
+                            if (!textCorrection.checkAnswer() && $pageContents.data("judge")) {
                                 $answer.html($answer.data("fb"));
                             }
                         }
@@ -238,7 +237,18 @@
                 $("#fbBlock").hide();
                 $("#fbBlock").children().hide();
 
+                var label=x_GetTrackingTextFromHTML(x_currentPageXML.getAttribute("wrongText"), "");
+                if (x_currentPageXML.getAttribute("trackinglabel") != null && x_currentPageXML.getAttribute("trackinglabel") != "")
+                {
+                    label = x_currentPageXML.getAttribute("trackinglabel");
+                }
+                XTEnterInteraction(x_currentPage, 0, "text", label, "",$pageContents.data('answer'), x_currentPageXML.getAttribute("FurtherClarification"));
+
                 x_pageLoaded();
+            }
+
+            this.checkAnswer = function() {
+                return $textArea.val().replace(/(\r\n|\n|\r)/gm,"").trim() === $pageContents.data('answer').replace(/(\r\n|\n|\r)/gm,"").trim();
             }
         };
 
