@@ -18,7 +18,11 @@
  * limitations under the License.
  */
 
-// ** add generateModelState to this page model too
+/* TODO **
+- new option needed to allow correct answer to be shown when answers submitted
+- Mark Answers is called Judge Questions in xwd - need consistency - but Mark Answers feels less clear
+- condition="parent.judge!='false'" - this condition used to be on option > correct but it doesn't work as parent is question not page - add page.x to editor code for this to work
+ */
 
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
@@ -77,12 +81,6 @@
 		};
 
 		this.leavePage = function() {
-			if ($(x_currentPageXML).children().length > 0) {
-				if (!this.tracked) {
-					//this.showFeedBackandTrackResults(); // ** having this means that completion on attempt is triggered too early if final question is viewed but not attempted
-				}
-			}
-
 			$("#pageContents").data({
 				questions: this.questions,
 				currentAnswers: this.currentAnswers,
@@ -102,8 +100,8 @@
 			this.questions = []; // array of questions to use (index)
 			this.myProgress = []; // array of whether each question was answered correctly
 			var numQs = $(x_currentPageXML).children().length;
-			if (x_currentPageXML.getAttribute("numQuestions") != "All" && x_currentPageXML.getAttribute("numQuestions") != undefined && Number(x_currentPageXML.getAttribute("numQuestions")) < numQs) {
-				numQs = Number(x_currentPageXML.getAttribute("numQuestions"));
+			if (x_currentPageXML.getAttribute("numQuestions") != undefined && x_currentPageXML.getAttribute("numQuestions") != "All" && x_currentPageXML.getAttribute("numQuestions") != "*" && $.isNumeric(x_currentPageXML.getAttribute("numQuestions")) && Math.max(1, Number(x_currentPageXML.getAttribute("numQuestions"))) < numQs) {
+				numQs = Math.max(1,Number(x_currentPageXML.getAttribute("numQuestions")));
 			}
 
 			if (x_currentPageXML.getAttribute("order") == "random") {
@@ -123,8 +121,8 @@
 					this.myProgress.push("");
 				}
 			}
-			// Track the quiz page
-            const weighting = x_currentPageXML.getAttribute("trackingWeight") != undefined ? x_currentPageXML.getAttribute("trackingWeight") : 1.0;
+
+			const weighting = x_calculateWeight(x_currentPageXML.getAttribute("trackingWeight"), x_currentPageXML.getAttribute("judge"));
             XTSetPageType(x_currentPage, 'numeric', numQs, weighting);
 
 			this.currentAnswers = [];
@@ -214,13 +212,10 @@
 				}
 
 				var infoString = $thisQ.getAttribute("prompt");
-				
-				if ($thisQ.getAttribute("sound") != undefined && $thisQ.getAttribute("sound") != "") {
-					quiz.loadAudio($("#questionAudio"), $thisQ.getAttribute("sound"), $thisQ.getAttribute("soundTranscript"));
-				} else {
-					$("#questionAudio").empty().hide();
-				}
-				
+
+				const transcript = $thisQ.getAttribute("soundTranscript") != undefined && $thisQ.getAttribute("soundTranscript") != '' ? $thisQ.getAttribute("soundTranscript") : false;
+				quiz.loadAudio($("#questionAudio"), $thisQ.getAttribute("sound"), transcript);
+
 				var url = $thisQ.getAttribute("image");
 				if (url != undefined && url != "") {
 					var newString = "";
@@ -231,7 +226,7 @@
 					}
 					newString += '<img src="' + x_evalURL(url) + '" class="quizImg"';
 					if ($thisQ.getAttribute("tip") != undefined && $thisQ.getAttribute("tip") != "") {
-						newString += 'alt="' + $thisQ.getAttribute("tip") + '"';
+						newString += ' alt="' + $thisQ.getAttribute("tip") + '"';
 					}
 					newString += ' />';
 					if ($thisQ.getAttribute("caption") != undefined && $thisQ.getAttribute("caption") != "") {
@@ -346,8 +341,10 @@
 			}
 		}
 
-
 		this.isCorrect = function(currentQuestion) {
+			const judge = x_checkIfJudged(x_currentPageXML.getAttribute("judge"));
+			let judgeOverride = judge;
+
 			var selected = $("#optionHolder input:checked"),
 					correct = true,
 					l_options = [],
@@ -355,43 +352,47 @@
 					l_feedback = [],
 					l_selectedOptions = [];
 
-			var correctCounter = 0;
-			var currentQuestionsChildren = $($(x_currentPageXML).children()[this.questions[this.currentQ]]).children();
+			const currentQuestionsChildren = $($(x_currentPageXML).children()[this.questions[this.currentQ]]).children();
 
-			for(i = 0; i < currentQuestionsChildren.length; i++)
-			{
-				if(currentQuestionsChildren[i].getAttribute("correct") == 'true')
-				{
-					correctCounter++;
+			let correctCounter = 0;
+			if (judge) {
+				for (i = 0; i < currentQuestionsChildren.length; i++) {
+					if (currentQuestionsChildren[i].getAttribute("correct") == 'true') {
+						correctCounter++;
+					}
 				}
-			}
-
-			if(selected.length == 0 && correctCounter != 0)
-			{
+				if (selected.length == 0 && correctCounter > 0) {
+					correct = false;
+				} else if (correctCounter === 0) {
+					// a question with no correct answers, within a judged quiz, will be treated as a non-judged question
+					judgeOverride = false;
+				}
+			} else if (selected.length == 0) {
+				// if judge is off, any submitted answer will be marked as correct
 				correct = false;
 			}
 
 			// get feedback for selected options and check if they are correct
 			for (var i=0; i<selected.length; i++) {
 				var optionIndex = $(selected[i]).parents(".optionGroup").index(),
-						selectedOption = quiz.currentAnswers[this.currentQ][optionIndex];
+					selectedOption = quiz.currentAnswers[this.currentQ][optionIndex];
 
-				if (correct != false && selectedOption.correct == "true") {
-					correct = true;
-				} else {
-					correct = false;
+				if (judge && correctCounter > 0) {
+					correct = correct && selectedOption.correct === "true";
 				}
+
 				l_options.push({
 					id: optionIndex+1+"",
 					answer: selectedOption.name,
-					result: correct
+					result: selectedOption.correct === "true"
 				});
 				l_answer.push(selectedOption.name);
 				l_feedback.push(selectedOption.feedback);
 				l_selectedOptions.push(selectedOption);
 			}
+
 			// if all selected are correct - check that none of the unselected options should have been
-			if (correct != false && currentQuestion.getAttribute("type") == "Multiple Answer") {
+			if (judge && correct && currentQuestion.getAttribute("type") == "Multiple Answer") {
 				var notSelected = $("#optionHolder input:not(:checked)");
 				for (var i=0; i<notSelected.length; i++) {
 					var notSelectedOption = quiz.currentAnswers[quiz.currentQ][$(notSelected[i]).parents(".optionGroup").index()];
@@ -406,22 +407,42 @@
 				options: l_options,
 				answer: l_answer,
 				feedback: l_feedback,
-				selectedOption: l_selectedOptions
+				selectedOption: l_selectedOptions,
+				judgeOverride: judgeOverride
 			};
 		}
 
         this.showFeedBackandTrackResults = function() {
+			// are submitted answers going to be judged against correct answers or is it collecting opinions only?
+			let judge = x_checkIfJudged(x_currentPageXML.getAttribute("judge"));
+
 			var currentQuestion = $(x_currentPageXML).children()[quiz.questions[quiz.currentQ]];
 
 			const trackData = this.isCorrect(currentQuestion);
+			if (judge && !trackData.judgeOverride) {
+				judge = trackData.judgeOverride;
+			}
+
 			// Track answer
 			var result = {
 				success: trackData.correct,
-				score: trackData.correct ? 100.0 : 0.0
+				score: trackData.correct ? 100.0 : 0.0,
+				judge: judge
 			};
 
 			XTExitInteraction(x_currentPage, quiz.questions[quiz.currentQ], result, trackData.options, trackData.answer, trackData.feedback, x_currentPageXML.getAttribute("trackinglabel"));
+
 			quiz.myProgress.splice(quiz.currentQ, 1, trackData.correct);
+
+			var myScore = 0;
+			for (var i=0; i<quiz.myProgress.length; i++) {
+				if (quiz.myProgress[i] == true) {
+					myScore++;
+				}
+			}
+
+			const score = Math.round((myScore * 100 / quiz.questions.length) * 100)/100;
+			XTSetPageScore(x_currentPage, score, quiz.currentQ+1 == quiz.questions.length);
 
 			if (trackData.selectedOption.length > 0) {
 				this.tracked = true;
@@ -430,8 +451,7 @@
 				const correct = trackData.correct;
 
 				var rightWrongTxt = "";
-				if (x_currentPageXML.getAttribute("judge") != "false") {
-
+				if (judge) {
 					// add correct feedback depending on if question overall has been answered correctly or not
 					if (currentQuestion.getAttribute("type") == "Multiple Answer") {
 						if (correct == true) {
@@ -473,7 +493,7 @@
 									if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {
 										thisFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '" data-transcript="' + selectedOption.transcript + '"></div>';
 									}
-									if (x_currentPageXML.getAttribute("judge") != "false" && thisFeedback != "") {
+									if (judge && thisFeedback != "") {
 										thisFeedback = '<div class="' + (selectedOption.correct == 'true' ? 'correct' : 'incorrect') + 'Feedback">' + thisFeedback + '</div>';
 									}
 								}
@@ -505,31 +525,22 @@
 							var thisFeedback;
 							if (feedbackOrder[p] == 'G') {
 								thisFeedback = thisQ.getAttribute('feedback');
+
 							} else if (feedbackOrder[p] == 'A') {
-								var selectedInput = $("#optionHolder input:checked")
-								var multipleFeedback = []
-								var feedback = "";
-
-								for (var f = 0; f < selectedInput.length; f++) {
-									multipleFeedback.push(selectedInput[f].value);
-								}
-
-								for (var l = 0; l < multipleFeedback.length; l++) {
-									for (var j = 0; j < thisQ.children.length; j++) {
-										if (multipleFeedback[l] === thisQ.children[j].attributes.text.value) {
-											let thisFeedback = thisQ.children[j].attributes.feedback.value;
-											if (thisQ.children[j].attributes.audioFB != undefined && thisQ.children[j].attributes.audioFB.value != undefined && thisQ.children[j].attributes.audioFB.value != "") {
-												var transcriptInfo = thisQ.children[j].attributes.audioTranscript != undefined ? 'data-transcript="' + thisQ.children[j].attributes.audioTranscript.value + '"' : '';
-												thisFeedback += '<div class="audioHolder" data-audio="' + thisQ.children[j].attributes.audioFB.value + '" ' + transcriptInfo + '></div>';
-											}
-											if (x_currentPageXML.getAttribute("judge") != "false" && thisFeedback != "") {
-												thisFeedback = '<div class="' + (thisQ.children[j].attributes.correct.value == 'true' ? 'correct' : 'incorrect')  + 'Feedback">' + thisFeedback + '</div>';
-											}
-											feedback += thisFeedback;
-										}
+								let feedback = "";
+								for (var l = 0; l < trackData.selectedOption.length; l++) {
+									const selectedOption = trackData.selectedOption[l];
+									let thisFeedback = selectedOption.feedback;
+									if (selectedOption.audioFB != undefined && selectedOption.audioFB != "") {
+										thisFeedback += '<div class="audioHolder" data-audio="' + selectedOption.audioFB + '" data-transcript="' + selectedOption.transcript + '"></div>';
 									}
+									if (judge && thisFeedback != "") {
+										thisFeedback = '<div class="' + (selectedOption.correct == 'true' ? 'correct' : 'incorrect') + 'Feedback">' + thisFeedback + '</div>';
+									}
+									feedback += thisFeedback;
 								}
 								thisFeedback = feedback;
+
 							} else {
 								thisFeedback = rightWrongTxt;
 							}
@@ -611,7 +622,7 @@
                     myScore++;
                 }
             }
-            if (x_currentPageXML.getAttribute("judge") != "false") {
+            if (x_checkIfJudged(x_currentPageXML.getAttribute("judge"))) {
 				if (x_currentPageXML.getAttribute("scorePos") == "Above") {
 					fbTxt = "<p>" + $pageContents.data("scoreText").replace("{i}", myScore).replace("{n}", quiz.questions.length) + "</p>" + fbTxt;
 				} else {
@@ -629,13 +640,11 @@
                 $("#restartBtn").button("enable");
             }
             $("#qTxt").html("");
-
-            var scormScore = Math.round((myScore * 100 / quiz.questions.length) * 100)/100;
-            XTSetPageScore(x_currentPage, scormScore);
         };
 
 		this.loadVideo = function() {
 			const $video = $("#pageVideo");
+			$video.empty();
 			let videoDimensions = $video.data("dimensions");
 			const padding = $video.parent("#vidHolder").outerWidth(true) - $video.parent("#vidHolder").width();
 			$video.hide(); // temporarily hide in case it's making text column too wide
@@ -744,14 +753,9 @@
             if (feedbackLabel == undefined) {
                 feedbackLabel = "Feedback";
             }
-			var generalFeedbackLabel = x_currentPageXML.getAttribute("generalFeedbackLabel");
-			if (generalFeedbackLabel == undefined) {
-				generalFeedbackLabel = "General Feedback";
-			}
 
             $("#pageContents").data({
 				"feedbackLabel"			:feedbackLabel,
-				"generalFeedbackLabel"	:generalFeedbackLabel,
 				"singleRight"			:singleRight,
 				"singleWrong"			:singleWrong,
 				"multiRight"			:multiRight,
@@ -783,13 +787,17 @@
 					x_pageContentsUpdated();
 					});
 
-			$("#restartBtn")
-				.button({
-					label: restartBtnText
-					})
-				.click(function() {
-					quiz.startQs();
-				});
+			if (x_multipleAttemptsAllowed()) {
+				$("#restartBtn")
+						.button({
+							label: restartBtnText
+						})
+						.click(function () {
+							quiz.startQs();
+						});
+			} else {
+				$("#restartBtn").remove();
+			}
 
 			// remove qNoTxt if no string to put in it
 			if (x_currentPageXML.getAttribute("quesCount") === "") {
@@ -800,8 +808,9 @@
 			this.sizeChanged();
 			x_pageLoaded();
 		}
-		
+
 		this.loadAudio = function($audio, soundFile, transcript) {
+			$audio.empty();
 			if (soundFile != undefined && soundFile != "") {
 				$audio.mediaPlayer({
 					type	:"audio",
@@ -812,9 +821,11 @@
 				$audio.show();
 				
 				// manually add a transcript button to the end of the audio bar
-				if (transcript != undefined && transcript != '') {
+				if (transcript != false) {
 					x_addAudioTranscript($audio, transcript);
 				}
+			} else {
+				$audio.hide();
 			}
 		}		
 	}

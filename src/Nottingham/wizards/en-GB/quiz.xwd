@@ -4,7 +4,7 @@
       <quiz><![CDATA[<quiz name="Enter Page Title" order="random" numQuestions="*"
       panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="left" panelStyle="false" removeTxt="false"
       instructions="" judge="true" showfeedback="true" feedback=""
-	  quesCount="Question {i} of {n}" feedbackLabel="Feedback" generalFeedbackLabel="General Feedback"
+	  quesCount="Question {i} of {n}" feedbackLabel="Feedback"
 	  singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers"
 	  multiWrong="You have not selected the correct combination of answers"
 	  onCompletion="You have completed the exercise" score="You scored {i} / {n}"
@@ -21,7 +21,7 @@
 	<order label="Question Order" options="Sequence,Random" type="comboBox"  data="sequence,random" defaultValue="random" width="120"/>
     <numQuestions label="Number of Questions (*=All)" type="TextInput" width="120"/>
     <instructions label="Page Text" type="TextArea" height="120" placeholder="Enter text for the page here" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
-    <judge label="Judge Questions" type="CheckBox" defaultValue="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result."/>
+    <judge label="Judge Questions" type="CheckBox" defaultValue="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect and will not contribute to the project score unless you have changed the 'project score' options at project level to include 'all tasks'."/>
 	<showfeedback label="Show Feedback" type="CheckBox" defaultValue="true" />
     <feedback label="Feedback" type="textArea"  height="120" placeholder="Enter feedback here" tooltip="The feedback that appears once all questions in the quiz have been answered"/>
 
@@ -56,18 +56,18 @@
     </videoInfo>
 
     <attemptsAllowed label="Attempts allowed" type="ComboBox" options="Single,Multiple" data="single,multiple" defaultValue="multiple" optional="true" tooltip="Specify whether multiple attempts of this activity are allowed"/>
-    <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
-	<scorePos label="Score Position" options="Above Feedback,Below Feedback" type="ComboBox" data="Above,Below" defaultValue="Below" width="120" optional="true"/>
+
+    <trackingWeight label="Score Weight" optional="true" type="textInput" defaultValue="1.0" condition="judge!='false'||treeroot.scoreTasks=='all'" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
+	<scorePos label="Score Position" options="Above Feedback,Below Feedback" type="ComboBox" data="Above,Below" defaultValue="Below" condition="judge!='false'" optional="true"/>
 	
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="true" language="true" />
-    <generalFeedbackLabel label="General Feedback Label" type="TextInput" wysiwyg="true" language="true" />
-    <singleRight label="Single Answer Correct" type="TextInput" wysiwyg="true" language="true" />
-	<singleWrong label="Single Answer Wrong" type="TextInput" wysiwyg="true" language="true" />
-    <multiRight label="Multi Answer Correct" type="TextInput" wysiwyg="true" language="true" />
-    <multiWrong label="Multi Answer Wrong" type="TextInput" wysiwyg="true" language="true" />
+    <singleRight label="Single Answer Correct" type="TextInput" wysiwyg="true" condition="judge!='false'" language="true" />
+	<singleWrong label="Single Answer Wrong" type="TextInput" wysiwyg="true" condition="judge!='false'" language="true" />
+    <multiRight label="Multi Answer Correct" type="TextInput" wysiwyg="true" condition="judge!='false'" language="true" />
+    <multiWrong label="Multi Answer Wrong" type="TextInput" wysiwyg="true" condition="judge!='false'" language="true" />
     <onCompletion label="Completion Text" type="TextInput" wysiwyg="true" language="true" />
-    <score label="You scored {i} out of {n} marks" type="TextInput" wysiwyg="true" language="true" />
+    <score label="You scored {i} out of {n} marks" type="TextInput" wysiwyg="true" condition="judge!='false'" language="true" />
     <submitBtnText label="Submit Button Label" type="TextInput" wysiwyg="true" language="true" />
     <submitBtnTip label="Submit Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
     <submitBtnWidth label="Submit Button Width" type="NumericStepper" min="100" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
@@ -117,8 +117,7 @@
 
 	<feedbackGroup type="group" label="Feedback" optional="true">
     	<feedback type="TextArea" height="40" label="General Feedback" optional="true" tooltip="Feedback shown when an answer is submitted. Can be used in conjunction with tailored feedback for each answer option."/>
-    	<markFeedback label="Mark Answer" type="CheckBox" defaultValue="true" optional="true" tooltip="Mark answer as correct or incorrect in feedback block (at least one answer option must also be set as correct for this to be shown)"/>
-    	<feedbackPos label="Feedback Order" options="General > Answer > Correct/Incorrect,General > Correct/Incorrect > Answer,Answer > Correct/Incorrect > General,Answer > General > Correct/Incorrect,Correct/Incorrect > General > Answer,Correct/Incorrect > Answer > General" type="ComboBox" data="GAC,GCA,ACG,AGC,CGA,CAG" defaultValue="GAC" width="120" optional="true" tooltip="The order the different types of feedback are shown within the feedback block. Default order is General feedback > Answer feedback > Correct/Incorrect feedback"/>
+    	<feedbackPos label="Feedback Order" options="General > Answer > Correct/Incorrect,General > Correct/Incorrect > Answer,Answer > Correct/Incorrect > General,Answer > General > Correct/Incorrect,Correct/Incorrect > General > Answer,Correct/Incorrect > Answer > General" type="ComboBox" data="GAC,GCA,ACG,AGC,CGA,CAG" defaultValue="GAC" optional="true" tooltip="The order the different types of feedback are shown within the feedback block. Default order is General feedback > Answer feedback > Correct/Incorrect feedback"/>
     </feedbackGroup>
 
 	<imgInfo type="group" label="Image" optional="true">
@@ -144,7 +143,7 @@
       <text label="Answer" type="TextArea" height="100" placeholder="Enter an answer option here"/>
       <name label="Label" type="TextInput" mandatory="true" defaultValue="Answer" wysiwyg="false" tooltip="The label is used to identify this answer on the results page and when tracking results, e.g. via SCORM/LTI/xAPI"/>
       <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter the feedback for this option" tooltip="Feedback shown when this answer is submitted"/>
-      <correct condition="parent.judge!='false'" label="Correct Answer" type="CheckBox" defaultValue="false" />
+      <correct label="Correct Answer" type="CheckBox" defaultValue="false" />
 
   	  <audioGroup type="group" label="Audio Feedback" optional="true" tooltip="Add an audio player below the feedback text">
   		<audioFB label="File" defaultValue="" type="media" optional="true" placeholder="Select an audio file" />
