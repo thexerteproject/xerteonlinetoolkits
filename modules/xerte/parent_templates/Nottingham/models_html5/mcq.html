@@ -87,21 +87,14 @@
             }
 
 			if (newAttempt) {
-				if(x_currentPageXML.getAttribute("markFeedback") != undefined && x_currentPageXML.getAttribute("markFeedback") == 'false'){
-					judge = false;
+				if (judge) {
+					judge = x_checkIfJudged(x_currentPageXML.getAttribute("markFeedback"));
 				}
-
 				x_currentPageState.judge = judge;
 			}
-			
-            // Create fallback label
-            this.weighting = 1.0;
-            if (x_currentPageXML.getAttribute("trackingWeight") != undefined)
-            {
-                this.weighting = x_currentPageXML.getAttribute("trackingWeight");
-            }
 
-            XTSetPageType(x_currentPage, 'numeric', 1, this.weighting);
+			const weighting = x_calculateWeight(x_currentPageXML.getAttribute("trackingWeight"), x_currentPageState.judge);
+            XTSetPageType(x_currentPage, 'numeric', 1, weighting);
 
             let label = (x_currentPageXML.getAttribute('name') != undefined ? x_currentPageXML.getAttribute('name') : "Multiple choice question");
             label += ' ' + (x_currentPage+1);
@@ -216,27 +209,15 @@
 					let rightWrongTxt = "";
 
 					// add correct feedback depending on if question overall has been answered correctly or not
-					if (x_currentPageXML.getAttribute("markFeedback") != 'false') { // new optional property allows for this feedback to be turned off
-						if (x_currentPageXML.getAttribute("type") == "Multiple Answer") {
-							if (x_currentPageState.judge == true) { // there is a correct answer for question
-								if (correct == true) {
-									$("#feedback").addClass("correctFeedback");
-									rightWrongTxt = multiRight != '' ? '<div class="correctFeedback"><p>' + multiRight + '</p></div>' : '';
-								} else {
-									$("#feedback").addClass("incorrectFeedback");
-									rightWrongTxt = multiWrong != '' ? '<div class="incorrectFeedback"><p>' + multiWrong + '</p></div>' : '';
-								}
-							}
+					if (x_currentPageState.judge == true) {
+						const rightFb = x_currentPageXML.getAttribute("type") === "Multiple Answer" ? multiRight : singleRight;
+						const wrongFb = x_currentPageXML.getAttribute("type") === "Multiple Answer" ? multiWrong : singleWrong;
+						if (correct == true) {
+							$("#feedback").addClass("correctFeedback");
+							rightWrongTxt = rightFb !== '' ? '<div class="correctFeedback"><p>' + rightFb + '</p></div>' : '';
 						} else {
-							if (x_currentPageState.judge == true) { // there is a correct answer for question
-								if (correct == true) {
-									$("#feedback").addClass("correctFeedback");
-									rightWrongTxt = singleRight != '' ? '<div class="correctFeedback"><p>' + singleRight + '</p></div>' : '';
-								} else {
-									$("#feedback").addClass("incorrectFeedback");
-									rightWrongTxt = singleWrong != '' ? '<div class="incorrectFeedback"><p>' + singleWrong + '</p></div>' : '';
-								}
-							}
+							$("#feedback").addClass("incorrectFeedback");
+							rightWrongTxt = wrongFb !== '' ? '<div class="incorrectFeedback"><p>' + wrongFb + '</p></div>' : '';
 						}
 					}
 
@@ -290,20 +271,26 @@
 					const feedbackLabel = x_currentPageXML.getAttribute("feedbackLabel") == undefined ? "Feedback" : x_currentPageXML.getAttribute("feedbackLabel");
 					$("#feedbackHeader").html(feedbackLabel != '' ? "<h3>" + feedbackLabel + "</h3>" : '');
 
-					$("#feedback")
-							.hide()
-							.find(".audioHolder").each(function () {
-						$(this).mediaPlayer({
-							type: "audio",
-							source: $(this).data("audio"),
-							width: "100%"
+					$("#feedback").hide();
+
+					function loadAudio() {
+						$("#feedback")
+								.find(".audioHolder").each(function () {
+							$(this).empty();
+							$(this).mediaPlayer({
+								type: "audio",
+								source: $(this).data("audio"),
+								width: "100%"
+							});
+
+							// manually add a transcript button to the end of the audio bar
+							if ($(this).data("transcript") !== false) {
+								x_addAudioTranscript($(this), $(this).data("transcript"));
+							}
 						});
 
-						// manually add a transcript button to the end of the audio bar
-						if ($(this).data("transcript") !== false) {
-							x_addAudioTranscript($("#feedback").find(".audioHolder"), $(this).data("transcript"));
-						}
-					});
+						mcq.sizeChanged();
+					}
 
 					// to avoid a sudden jump in layout, feedback should slide in gradually if content is centred vertically & panel is full height
 					if ($("#pageContents").data("slideIn") && newAttempt) {
@@ -312,6 +299,7 @@
 							$("#feedback .feedbackBlock").each(function () {
 								$(this).html($(this).html());
 							});
+							loadAudio();
 						});
 
 					} else {
@@ -323,6 +311,7 @@
 							$("#feedback .feedbackBlock").each(function () {
 								$(this).html($(this).html());
 							});
+							loadAudio();
 						}, 0);
 					}
 					$("#checkBtn").button("disable");
@@ -334,14 +323,14 @@
 
 					const result = {
 						success: correct || !x_currentPageState.judge,
-						score: correct ? 100.0 : 0.0,
+						score: correct || !x_currentPageState.judge ? 100.0 : 0.0,
 						judge: x_currentPageState.judge
 					};
 
 					if (newAttempt) {
 						x_currentPageState.checked = checked;
 						XTExitInteraction(x_currentPage, 0, result, l_options, l_answers, l_feedbacks, x_currentPageXML.getAttribute("trackinglabel"));
-						XTSetPageScore(x_currentPage, (correct || !x_currentPageState.judge ? 100.0 : 0.0));
+						XTSetPageScore(x_currentPage, result.score);
 					}
 
 					if (!x_multipleAttemptsAllowed()) {
@@ -420,14 +409,7 @@
 
 					// Randomise the answers, if required
 					if (x_currentPageXML.getAttribute("answerOrder") == 'random') {
-						for (let tmp, j, k, i = indexes.length; i--;) {
-							j = Math.floor(Math.random() * indexes.length);
-							k = Math.floor(Math.random() * indexes.length);
-
-							tmp = indexes[j];
-							indexes[j] = indexes[k];
-							indexes[k] = tmp;
-						}
+						x_shuffleArray(indexes);
 					}
 
 					// only store indexes of answer options in state to minimise amount of data stored
@@ -447,10 +429,6 @@
 							$thisOptionGroup = $optionGroup.clone().appendTo($optionHolder);
 						} else {
 							$thisOptionGroup = $optionGroup;
-						}
-
-						if ($thisOptionGroup.hasClass("answerBtn")) {
-							$thisOptionGroup.button();
 						}
 
 						$thisOption = $thisOptionGroup.find("input");
@@ -501,11 +479,13 @@
 								.html(thisOption.text);
 					});
 
+				$optionHolder.find(".optionGroup.answerBtn").button();
+
 				// check button is not shown if answer type is button
 				if ($("#checkBtn").length > 0) {
 					$("#checkBtn")
 							.button({
-								label: x_currentPageXML.getAttribute("checkBtnTxt") != undefined ? x_currentPageXML.getAttribute("checkBtnTxt") : "Check",
+								label: x_currentPageXML.getAttribute("checkBtnTxt") != undefined ? x_currentPageXML.getAttribute("checkBtnTxt") : "Submit",
 								disabled: true
 							})
 							.click(function () {

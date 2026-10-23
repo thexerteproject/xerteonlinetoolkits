@@ -22,6 +22,7 @@
 - new option needed to allow correct answer to be shown when answers submitted
 - Mark Answers is called Judge Questions in xwd - need consistency - but Mark Answers feels less clear
 - condition="parent.judge!='false'" - this condition used to be on option > correct but it doesn't work as parent is question not page - add page.x to editor code for this to work
+- if quiz can be restarted & shuffle is on, more questions can end up being tracked than the max question no.
  */
 
 	// pageChanged & sizeChanged functions are needed in every model file
@@ -109,12 +110,8 @@
 				for (var i=0; i<$(x_currentPageXML).children().length; i++) {
 					qNums.push(i);
 				}
-				for (var i=0; i<numQs; i++) {
-					var qNum = Math.floor(Math.random() * qNums.length);
-					this.questions.push(qNums[qNum]);
-					qNums.splice(qNum, 1);
-					this.myProgress.push("");
-				}
+				x_shuffleArray(qNums);
+				this.questions = qNums.slice(0, numQs);
 			} else {
 				for (var i=0; i<numQs; i++) {
 					this.questions.push(i);

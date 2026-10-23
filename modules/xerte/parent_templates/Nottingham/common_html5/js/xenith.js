@@ -70,8 +70,9 @@ var x_languageData  = [],
 		{name: 'pageIntro',			defaultIconClass:'fas fa-info',						custom: 'pageIntroIc',		defaultFA: 'fas fa-info'}					// page introduction
 	],
 	// the page models that contribute to the score - this is used when the score is calculated based on the entire project rather than just viewed pages
-	x_scoredModels = ["topXQ", "categories", "dialog", "dictation", "dragDropLabel", "gapFill", "textHighlight", "modelAnswer", "modify",
-		"hotSpotQuestion", "interactiveTable", "interactiveText", "interactiveVideo", "textMatch", "mcq", "opinion", "quiz", "grid", "textCorrection", "timeline"],
+	x_scoredModels = ["categories", "dialog", "dictation", "dragDropLabel", "gapFill", "modelAnswer", "modify", "textHighlight", "topXQ", "quiz",
+		"hotSpotQuestion", "interactiveTable", "interactiveText", "interactiveVideo", "opinion", "grid",
+		"textMatch", "mcq", "textCorrection", "timeline"],
 	x_opinionOnlyModels = ["textHighlight", "modelAnswer", "modify"],
 	x_scoredPages = []; // will contain info about all pages in project that are of a type in x_scoredModels
 	// ** missing model types? documentation, mediaLesson, youtube, results
@@ -653,17 +654,37 @@ x_projectDataLoaded = function(xmlData) {
 									// most pages use 'judge' but there are some other properties that need checking for specific pages
 									let judgeProperty = "judge";
 									let judgeDefault = true;
+									let judgeOverride;
 
 									if (x_pages[i].nodeName === "dictation") {
 										judgeProperty = "showCorrectness";
 										judgeDefault = false;
 									} else if (x_pages[i].nodeName === "mcq") {
-										judgeProperty = "markFeedback"; // ** not sure this is the equivalent - quiz also has this on question children
+										// mcq pages can also be unjudged if non of the answer options are marked as correct
+										// this should take precedence over judge property
+										let hasCorrectOption = false;
+										$(x_pages[i]).children().each(function () {
+											if (this.getAttribute("correct") === "true") {
+												hasCorrectOption = true;
+												return;
+											}
+										});
+
+										if (!hasCorrectOption) {
+											judgeOverride = false;
+										} else {
+											judgeProperty = "markFeedback";
+										}
+
+										// ** should we do something similar with the quiz page too? if there are no correct answer options across any of the questions
+
 									} else if (x_pages[i].nodeName === "gapFill") {
 										// ** judge only applies in some modes
-									}
+									} /* else if (x_pages[i].nodeName === "quiz") {
+										// ** should this look at whether questions have correct answers too?
+									} */
 
-									pageJudge = x_checkIfJudged(x_pages[i].getAttribute(judgeProperty), judgeDefault);
+									pageJudge = judgeOverride !== undefined ? judgeOverride : x_checkIfJudged(x_pages[i].getAttribute(judgeProperty), judgeDefault);
 								}
 
 								// ** other ones to look at edge cases:
@@ -5080,8 +5101,14 @@ function x_hexToRgb(hex, opa) {
 }
 
 // function randomises the order of items in an array
-function x_shuffleArray(array) { 
-    return array.sort(function() {return Math.random()-0.5})
+function x_shuffleArray(array) {
+	for (let i=array.length-1; i>0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		const tmp = array[i];
+		array[i] = array[j];
+		array[j] = tmp;
+	}
+	return array;
 } 
 
 // function returns whether string is a url to a youtube or vimeo video
