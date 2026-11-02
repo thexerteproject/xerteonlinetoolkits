@@ -3,7 +3,6 @@
  */
 import 'ckeditor5/ckeditor5.css';
 import './autocolumns.css';
-import './dropdowns.css';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { InlineEditor } from '@ckeditor/ckeditor5-editor-inline';
 import { Emoji } from '@ckeditor/ckeditor5-emoji';
@@ -76,6 +75,7 @@ import { XerteMediaEmbedRoundTrip } from './plugins/xerte-media-embed-roundtrip.
 import { XerteMediaResize } from './plugins/xerte-media-resize.js';
 import { XerteLightbox } from './plugins/xerte-lightbox.js';
 import { XerteAccessibilityChecker } from './plugins/xerte-accessibility-checker.js';
+import { XerteSourceDialog } from './plugins/xerte-source-dialog.js';
 
 const toolbarItems = [
 	'undo', 'redo', '|',
@@ -182,6 +182,7 @@ const xerteBuiltinPlugins = [
 	XerteMediaResize,
 	XerteLightbox,
 	XerteAccessibilityChecker,
+	XerteSourceDialog,
 	HtmlEmbed,
 	XerteUploadAdapter,
 	XerteBrowseMedia,
@@ -376,7 +377,9 @@ XerteInlineEditor.defaultConfig = {
 	...xerteDefaultConfig,
 	toolbar: {
 		...xerteDefaultConfig.toolbar,
-		items: toolbarItems.filter( item => item !== 'fullscreen' )
+		items: toolbarItems
+			.filter( item => item !== 'fullscreen' )
+			.map( item => item === 'sourceEditing' ? 'xerteSourceDialog' : item )
 	}
 };
 

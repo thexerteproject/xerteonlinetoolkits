@@ -425,6 +425,11 @@
 		}
 		if (user.inlineEditor) {
 			base.menuBar = { isVisible: false };
+			if (base.toolbar && Array.isArray(base.toolbar.items)) {
+				base.toolbar.items = base.toolbar.items.map(function (item) {
+					return item === 'sourceEditing' ? 'xerteSourceDialog' : item;
+				});
+			}
 		}
 		if (!user.inlineEditor) {
 			base.toolbar = base.toolbar || {};
@@ -670,9 +675,9 @@
 			return;
 		}
 		var css = ''
-			+ '.ck.ck-editor__editable_inline > :first-child{margin-top:0!important;}'
-			+ '.ck.ck-editor__editable_inline > :last-child{margin-bottom:0!important;}'
-			+ '.ck.ck-editor__editable_inline{padding:0!important;}';
+			+ '.ck.ck-editor__editable_inline.xerte-inline-editor > :first-child{margin-top:0!important;}'
+			+ '.ck.ck-editor__editable_inline.xerte-inline-editor > :last-child{margin-bottom:0!important;}'
+			+ '.ck.ck-editor__editable_inline.xerte-inline-editor{padding:0!important;}';
 		var style = document.createElement('style');
 		style.type = 'text/css';
 		style.appendChild(document.createTextNode(css));
@@ -696,6 +701,7 @@
 			// Use the measured editor width rather than a percentage. Once this panel
 			// becomes position:fixed, percentage widths are relative to the viewport.
 			+ '.ck.ck-editor__top .ck-sticky-panel__content{width:var(--xerte-editor-width,100%)!important;min-width:0!important;max-width:calc(100vw - 24px)!important;box-sizing:border-box;}'
+			+ '.ck.ck-dropdown__panel{max-width:calc(100vw - 1rem);max-height:60vh;overflow:auto;overscroll-behavior:contain;}'
 			+ '.ck.ck-editor .ck-toolbar__grouped-dropdown>.ck-dropdown__panel{width:min(calc(var(--xerte-editor-width, 600px) - 8px),60vw)!important;max-width:calc(100vw - 24px)!important;}'
 			+ '.ck.ck-editor .ck-toolbar__grouped-dropdown .ck-toolbar_floating{width:100%!important;max-width:100%!important;}'
 			+ '.ck.ck-editor .ck-toolbar__grouped-dropdown .ck-toolbar_floating>.ck-toolbar__items{flex-wrap:wrap!important;}';
@@ -808,6 +814,7 @@
 				ensureInlineEditorCssOverrides();
 				if (editor.ui && editor.ui.view && editor.ui.view.editable && editor.ui.view.editable.element) {
 					var inlineEditable = editor.ui.view.editable.element;
+					inlineEditable.classList.add('xerte-inline-editor');
 					inlineEditable.style.width = '100%';
 					inlineEditable.style.boxSizing = '';
 					inlineEditable.style.minHeight = '40px';
