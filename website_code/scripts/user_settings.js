@@ -171,6 +171,9 @@ function populatePreferencesForm($root) {
     var fixedToolbar = preferenceIsTruthy(prefs.editor_fixed_toolbar, false);
     $root.find('#editor_fixed_toolbar').prop('checked', fixedToolbar);
     $root.find('#editor_fixed_toolbar_expanded').prop('checked', fixedToolbar && preferenceIsTruthy(prefs.editor_fixed_toolbar_expanded, false));
+    var quickFillCollapseMode = preferenceIsTruthy(prefs.editor_collapse_quickfill, false) ? 'always' : 'with_children';
+    $root.find('input[name="editor_quickfill_collapse_mode"][value="' + quickFillCollapseMode + '"]').prop('checked', true);
+    $root.find('#editor_quickfill_assistants_only').prop('checked', preferenceIsTruthy(prefs.editor_quickfill_assistants_only, false));
     $root.find('#editor_expand_groups').prop('checked', preferenceIsTruthy(prefs.editor_expand_groups, false));
     $root.find('#editor_expand_tree').prop('checked', preferenceIsTruthy(prefs.editor_expand_tree, false));
 
@@ -200,6 +203,7 @@ function applyWorkspacePanelPreferences(prefs) {
 
 function savePreferencesFromForm($root) {
     var fixedToolbar = $root.find('#editor_fixed_toolbar').is(':checked');
+    var quickFillCollapseMode = $root.find('input[name="editor_quickfill_collapse_mode"]:checked').val() || 'with_children';
     var prefs = {
         panel_east_open: $root.find('#panel_east_open').is(':checked'),
         panel_south_open: $root.find('#panel_south_open').is(':checked'),
@@ -207,6 +211,9 @@ function savePreferencesFromForm($root) {
         editor_show_language: $root.find('#editor_show_language').is(':checked'),
         editor_fixed_toolbar: fixedToolbar,
         editor_fixed_toolbar_expanded: fixedToolbar && $root.find('#editor_fixed_toolbar_expanded').is(':checked'),
+        editor_collapse_quickfill: quickFillCollapseMode === 'always',
+        editor_collapse_quickfill_with_children: quickFillCollapseMode === 'with_children',
+        editor_quickfill_assistants_only: $root.find('#editor_quickfill_assistants_only').is(':checked'),
         editor_expand_groups: $root.find('#editor_expand_groups').is(':checked'),
         editor_expand_tree: $root.find('#editor_expand_tree').is(':checked'),
         editor_open_mode: $root.find('input[name="editor_open_mode"]:checked').val() || 'popup'

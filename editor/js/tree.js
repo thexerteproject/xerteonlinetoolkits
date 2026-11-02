@@ -1894,8 +1894,7 @@ var EDITOR = (function ($, parent) {
                     },
                     success: function(data) {
                         try {
-                            xml_to_xerte_content(data, aiSettings['key'], 'last', tree, parent);
-                            alert(`${language.vendorApi.generationComplete}`);
+                            xml_to_xerte_content(data, aiSettings['key'], 'last', tree, parent, 'ai');
                             $.featherlight.close();
                         } catch (error) {
                             console.log('Error occurred in success callback:', error);
@@ -1998,7 +1997,7 @@ var EDITOR = (function ($, parent) {
                             // xml_to_xerte_content still has the legacy Quick Fill setup/contract:
                             // a JSON string containing { status, result }. jQuery has
                             // already decoded the REST response, so re-encode its payload.
-                            xml_to_xerte_content(JSON.stringify(payload), event.data.key, 'last', tree, parent);
+                            xml_to_xerte_content(JSON.stringify(payload), event.data.key, 'last', tree, parent, 'quickfill');
                             $.featherlight.close();
                             resolve(payload);
                         } catch (error) {

@@ -33,6 +33,7 @@ var EDITOR = (function ($, parent) {
 		jqGridSetUp = false,
 		workspace,
 		currtheme,
+		quickFillExpandedState = {},
 
     // Build the "insert page" menu
     create_insert_page_menu = function (advanced_toggle) {
@@ -3299,7 +3300,6 @@ var EDITOR = (function ($, parent) {
             await quick_fill({data: {key: key}}, type, parameters);
             if (skipConfirm) {
                 $.featherlight.close();
-                parent.tree.showNodeData(key);
             }
         } catch (error) {
             console.log('Error occurred:', error);
@@ -3331,6 +3331,17 @@ var EDITOR = (function ($, parent) {
     },
 
     showInlineQFGroup = function (key, nodeName, menuOptions) {
+        var preferences = (typeof user_preferences !== 'undefined' && user_preferences) ? user_preferences : {};
+        var assistantsOnly = preferences.editor_quickfill_assistants_only !== undefined &&
+            preferences.editor_quickfill_assistants_only !== null &&
+            preferences.editor_quickfill_assistants_only !== false &&
+            preferences.editor_quickfill_assistants_only !== 'false' &&
+            preferences.editor_quickfill_assistants_only !== 0 &&
+            preferences.editor_quickfill_assistants_only !== '0';
+        if (assistantsOnly) {
+            return;
+        }
+
         var node_options = wizard_data[nodeName] && wizard_data[nodeName].node_options;
         if (!node_options || !node_options.all) {
             return;
@@ -3411,13 +3422,47 @@ var EDITOR = (function ($, parent) {
         var description = qfGroupDef.value.tooltip || inlineLang.$description || '';
         var btnLabel = inlineLang.$btnlabel || language.assistents.QuickFillBtn.$label;
 
+        var tree = $.jstree.reference('#treeview');
+        var node = tree && tree.get_node(key, false);
+        var hasChildren = !!(node && node.children && node.children.length);
+        var preferences = (typeof user_preferences !== 'undefined' && user_preferences) ? user_preferences : {};
+        var preferenceIsEnabled = function (value) {
+            return value !== undefined && value !== null && value !== false && value !== 'false' && value !== 0 && value !== '0';
+        };
+        var collapsedByDefault = preferenceIsEnabled(preferences.editor_collapse_quickfill);
+        var collapseWithChildren = preferenceIsEnabled(preferences.editor_collapse_quickfill_with_children);
+        var expanded = Object.prototype.hasOwnProperty.call(quickFillExpandedState, key)
+            ? quickFillExpandedState[key]
+            : !(collapsedByDefault || (collapseWithChildren && hasChildren));
+
         var $panel = $('<div class="qf-inline-panel">');
+        var $header = $('<div class="qf-inline-header">');
         var $content = $('<div class="qf-inline-content">');
         $content.append($('<div class="qf-inline-title">').text(title));
         if (description) {
             $content.append($('<div class="qf-inline-description">').text(description));
         }
-        $panel.append($content);
+        $header.append($content);
+
+        var expandLabel = inlineLang.$expand || 'Expand Quick Fill';
+        var collapseLabel = inlineLang.$collapse || 'Collapse Quick Fill';
+        var $toggle = $('<button type="button" class="qf-inline-toggle">');
+        var setExpanded = function (isExpanded, remember) {
+            expanded = isExpanded;
+            if (remember) {
+                quickFillExpandedState[key] = isExpanded;
+            }
+            $panel.toggleClass('qf-inline-panel--collapsed', !isExpanded);
+            $toggle
+                .attr('aria-expanded', String(isExpanded))
+                .attr('aria-label', isExpanded ? collapseLabel : expandLabel)
+                .attr('title', isExpanded ? collapseLabel : expandLabel);
+        };
+        $toggle.on('click', function () {
+            setExpanded(!expanded, true);
+        });
+        $header.append($toggle);
+        $panel.append($header);
 
         var $setupBtn = $('<button type="button" class="qf-inline-setup-btn">')
             .text(btnLabel)
@@ -3433,6 +3478,7 @@ var EDITOR = (function ($, parent) {
                 triggerRedrawForm('QFGroup', event.data.key, children, 'initialize');
             });
         $panel.append($setupBtn);
+        setExpanded(expanded, false);
 
         var $row = $('<tr class="qf-inline-row wizardattribute">')
             .append($('<td>').addClass('wizardparameter'))
@@ -5144,7 +5190,7 @@ var EDITOR = (function ($, parent) {
         let inlineLang = language.assistents.QuickFillInline || {};
         let modalLang = language.assistents.QuickFillModal || {};
         let title = isQfGroup
-            ? (modalLang.$title || inlineLang.$title || group.value.label || '').replace('{page}', pageLabel)
+            ? (modalLang.$title || inlineLang.$title || group.value.label || '').replace('{page}', pageName)
             : menuOptions.menuItem;
 
         let lightboxHtml = $("<div></div>");
@@ -5156,7 +5202,8 @@ var EDITOR = (function ($, parent) {
         let lightboxFooter;
 
         if (isQfGroup) {
-            var description = modalLang.$description || group.value.tooltip || inlineLang.$description || '';
+            var description = modalLang.$description || group.value.tooltip || inlineLang.$description ||
+                'Choose the number of items you want. They will be created with their default values and ready to adjust.';
 
             let lightboxHeader = $("<div class=\"qf-lightbox-header\"></div>");
             lightboxHeader.append($("<h2 class=\"qf-lightbox-title\">").text(title));

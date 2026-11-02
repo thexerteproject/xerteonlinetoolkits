@@ -130,6 +130,29 @@ if ($section === 'preferences') {
                     <span class="preferences-control preferences-control--checkbox" aria-hidden="true"></span>
                     <span class="preferences-option-text"><?php echo USER_SETTINGS_EDITOR_EXPAND_TREE; ?></span>
                 </label>
+                <div class="preferences-subsection">
+                    <h4 class="preferences-subsection-title"><?php echo USER_SETTINGS_QUICKFILL_ASSISTANT; ?></h4>
+                    <div class="preferences-options preferences-options--subsection">
+                        <label class="preferences-option preferences-option--with-help">
+                            <input type="checkbox" id="editor_quickfill_assistants_only" name="editor_quickfill_assistants_only" class="preferences-input">
+                            <span class="preferences-control preferences-control--checkbox" aria-hidden="true"></span>
+                            <span class="preferences-option-copy">
+                                <span class="preferences-option-text"><?php echo USER_SETTINGS_EDITOR_HIDE_QUICKFILL; ?></span>
+                                <span class="preferences-option-help"><?php echo USER_SETTINGS_EDITOR_HIDE_QUICKFILL_HELP; ?></span>
+                            </span>
+                        </label>
+                        <label class="preferences-option">
+                            <input type="radio" name="editor_quickfill_collapse_mode" value="always" class="preferences-input">
+                            <span class="preferences-control preferences-control--radio" aria-hidden="true"></span>
+                            <span class="preferences-option-text"><?php echo USER_SETTINGS_EDITOR_COLLAPSE_QUICKFILL; ?></span>
+                        </label>
+                        <label class="preferences-option">
+                            <input type="radio" name="editor_quickfill_collapse_mode" value="with_children" class="preferences-input">
+                            <span class="preferences-control preferences-control--radio" aria-hidden="true"></span>
+                            <span class="preferences-option-text"><?php echo USER_SETTINGS_EDITOR_COLLAPSE_QUICKFILL_WITH_CHILDREN; ?></span>
+                        </label>
+                    </div>
+                </div>
             </div>
         </section>
     </div>

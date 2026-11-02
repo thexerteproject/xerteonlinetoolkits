@@ -727,6 +727,42 @@ div.ui-layout-north div.content {
     margin-left: 38px;
 }
 
+.preferences-subsection {
+    margin-top: 4px;
+}
+
+.preferences-subsection-title {
+    margin: 0 0 12px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #444;
+}
+
+.preferences-options--subsection {
+    margin-left: 38px;
+    gap: 12px;
+}
+
+.preferences-option--with-help {
+    align-items: flex-start;
+}
+
+.preferences-option--with-help .preferences-input {
+    top: 12px;
+}
+
+.preferences-option-copy {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.preferences-option-help {
+    margin-top: 2px;
+    font-size: 0.85rem;
+    color: #666;
+}
+
 .preferences-input {
     position: absolute;
     left: 0;

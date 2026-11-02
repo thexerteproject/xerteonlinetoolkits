@@ -42,6 +42,11 @@
     define("USER_SETTINGS_EDITOR_SHOW_LANGUAGE", "Show language options");
     define("USER_SETTINGS_EDITOR_FIXED_TOOLBAR", "Use a fixed editor toolbar");
     define("USER_SETTINGS_EDITOR_EXPAND_TOOLBAR", "Expand toolbar by default (fixed toolbars only)");
+    define("USER_SETTINGS_QUICKFILL_ASSISTANT", "Quick Fill Assistant");
+    define("USER_SETTINGS_EDITOR_HIDE_QUICKFILL", "Hide Quick Setup section in main panel");
+    define("USER_SETTINGS_EDITOR_HIDE_QUICKFILL_HELP", "Quick Fill remains available in the Assistants side menu.");
+    define("USER_SETTINGS_EDITOR_COLLAPSE_QUICKFILL", "Always collapse Quick Setup section on new pages");
+    define("USER_SETTINGS_EDITOR_COLLAPSE_QUICKFILL_WITH_CHILDREN", "Collapse Quick Setup section only when the page has child items");
     define("USER_SETTINGS_EDITOR_EXPAND_GROUPS", "Open folders automatically");
     define("USER_SETTINGS_EDITOR_EXPAND_TREE", "Open content structure automatically");
     define("USER_SETTINGS_CANCEL", "Cancel");

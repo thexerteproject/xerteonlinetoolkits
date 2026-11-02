@@ -303,8 +303,8 @@
 	<assistents>
 		<ImgSearchBtn label="Query"/>
 		<QuickFillBtn label="Quick Fill"/>
-		<QuickFillInline title="Quickly set up a {page}" description="Specify how many items you want and the structure will be created for you." btnlabel="Quick Setup" confirm="The specified nodes will be automatically generated with their default values. Proceed?"/>
-		<QuickFillModal title="Quickly set up {page}" description="Choose how many items you want. You can then fill in and adjust everything yourself." cancel="Cancel" create="Create {page}"/>
+		<QuickFillInline title="Quickly set up your {page} page" description="Specify how many items you want and the structure will be created for you." btnlabel="Quick Setup" confirm="The specified nodes will be automatically generated with their default values. Proceed?" expand="Expand Quick Fill" collapse="Collapse Quick Fill"/>
+		<QuickFillModal title="Quickly set up your {page} page" description="Choose the number of items you want. They will be created with their default values and ready to adjust." cancel="Cancel" create="Create {page} page"/>
 		<GenerateSuggestion btnlabel="Suggest" intructionprompt="Regarding what kind of suggestions I'm looking for, see: "/>
 		<AutoTranslateBtn label="Translate"/>
 		<AIBtn label="Generate"/>
