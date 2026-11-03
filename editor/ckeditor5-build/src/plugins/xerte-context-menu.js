@@ -8,6 +8,7 @@ import { parseXertePageId } from './xerte-page-link-utils.js';
 import { runAutocolumnsDialog } from './xerte-autocolumns-dialog.js';
 import { runXerteMarkWord } from './xerte-mark-word.js';
 import { openAudioDialog } from './xerte-audio.js';
+import { imageFromDomTarget, openImagePropertiesDialog } from './xerte-browse-media.js';
 
 const boundEditables = new WeakSet();
 
@@ -206,6 +207,7 @@ export class XerteContextMenu extends Plugin {
 		let savedSelectionText = null;
 		let savedPageLink = null;
 		let savedAudio = null;
+		let savedImage = null;
 
 		const hideMenu = () => {
 			if ( dismissCleanup ) {
@@ -276,6 +278,7 @@ export class XerteContextMenu extends Plugin {
 			const hasText = selectionHasText( savedSelectionRanges, editor );
 			const editLink = savedPageLink;
 			const editAudio = savedAudio;
+			const editImage = savedImage;
 
 			addItem( menuEl, editor.t( 'Cut' ), ranges => cutOrCopy( editor, 'cut', ranges ), hasText );
 			addItem( menuEl, editor.t( 'Copy' ), ranges => cutOrCopy( editor, 'copy', ranges ), hasText );
@@ -290,6 +293,12 @@ export class XerteContextMenu extends Plugin {
 				addItem( menuEl, editor.t( 'Audio properties' ), () => {
 					editor.model.change( writer => writer.setSelection( editAudio, 'on' ) );
 					openAudioDialog( editor );
+				} );
+			}
+			if ( editImage ) {
+				addItem( menuEl, editor.t( 'Image properties' ), () => {
+					editor.model.change( writer => writer.setSelection( editImage, 'on' ) );
+					openImagePropertiesDialog( editor, editImage );
 				} );
 			}
 			addItem( menuEl, editor.t( 'Mark Word' ), () => {
@@ -340,6 +349,7 @@ export class XerteContextMenu extends Plugin {
 			savedSelectionRanges = saveModelSelection( editor );
 			savedPageLink = getXertePageLink( editor, domEvent.target );
 			savedAudio = getXerteAudio( editor, domEvent.target );
+			savedImage = imageFromDomTarget( editor, domEvent.target );
 			try {
 				savedSelectionText = editor.model.document.selection.getSelectedText() || '';
 			} catch ( e ) {
@@ -388,6 +398,7 @@ export class XerteContextMenu extends Plugin {
 			savedSelectionText = null;
 			savedPageLink = null;
 			savedAudio = null;
+			savedImage = null;
 		} );
 	}
 }

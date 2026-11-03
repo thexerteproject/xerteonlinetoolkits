@@ -3,6 +3,7 @@
  */
 import 'ckeditor5/ckeditor5.css';
 import './autocolumns.css';
+import './xerte-image-editing.css';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { InlineEditor } from '@ckeditor/ckeditor5-editor-inline';
 import { Emoji } from '@ckeditor/ckeditor5-emoji';
@@ -86,19 +87,15 @@ const toolbarItems = [
 	'textPartLanguage', '|',
 	'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'code', 'removeFormat', '|',
 	'specialCharacters', 'emoji', 'fontAwesome', 'horizontalLine', 'xerteMathJax', 'xerteRubyText', '|',
-	'link', 'xotlink', 'insertImage', 'xerteBrowseMedia', 'xerteAudio', 'xerteRecorder', 'mediaEmbed', 'insertTable', 'autocolumns', 'blockQuote', 'codeBlock', '|',
+	'link', 'xotlink', 'xerteBrowseImage', 'xerteBrowseMedia', 'xerteAudio', 'xerteRecorder', 'mediaEmbed', 'insertTable', 'autocolumns', 'blockQuote', 'codeBlock', '|',
 	'alignment', '|',
 	'bulletedList', 'numberedList', 'outdent', 'indent', '|',
 	'markTag', 'showBlocks'
 ];
 
 const imageToolbar = [
-	'imageStyle:inline',
-	'imageStyle:block',
-	'imageStyle:side',
+	'xerteImageProperties',
 	'|',
-	'toggleImageCaption',
-	'imageTextAlternative',
 	'linkImage'
 ];
 
@@ -291,7 +288,8 @@ const xerteDefaultConfig = {
 		]
 	},
 	image: {
-		toolbar: imageToolbar
+		toolbar: imageToolbar,
+		resizeUnit: 'px'
 	},
 	table: {
 		contentToolbar: tableToolbar
@@ -356,13 +354,15 @@ const xerteDefaultConfig = {
 		]
 	},
 	mediaEmbed: {
-		previewsInData: true
+		previewsInData: true,
+		toolbar: [ 'xerteMediaProperties' ]
 	},
 	htmlEmbed: {
 		showPreviews: true
 	},
 	xerteUploadUrl: '',
 	xerteUploadAudioUrl: '',
+	xerteBrowseImageUrl: '',
 	xerteBrowseMediaUrl: '',
 	xerteMathJaxLib: 'offline/js/mathjax/MathJax.js?config=TeX-MML-AM_HTMLorMML-full'
 };

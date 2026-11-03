@@ -234,7 +234,8 @@
 			Blockquote: 'blockQuote',
 			Link: 'link',
 			xotlink: 'xotlink',
-			Image: 'insertImage',
+			Image: 'xerteBrowseImage',
+			insertImage: 'xerteBrowseImage',
 			Table: 'insertTable',
 			MediaEmbed: 'mediaEmbed',
 			NumberedList: 'numberedList',
@@ -250,7 +251,7 @@
 			fontBackgroundColor: 1, lineHeight: 1, textPartLanguage: 1, bold: 1, italic: 1,
 			underline: 1, strikethrough: 1, subscript: 1, superscript: 1, code: 1, removeFormat: 1,
 			specialCharacters: 1, emoji: 1, fontAwesome: 1, horizontalLine: 1, xerteMathJax: 1,
-			xerteRubyText: 1, link: 1, xotlink: 1, insertImage: 1, xerteBrowseMedia: 1,
+			xerteRubyText: 1, link: 1, xotlink: 1, xerteBrowseImage: 1, xerteBrowseMedia: 1,
 			xerteAudio: 1, xerteRecorder: 1, mediaEmbed: 1, insertTable: 1, autocolumns: 1,
 			blockQuote: 1, codeBlock: 1, alignment: 1, bulletedList: 1, numberedList: 1,
 			outdent: 1, indent: 1, markTag: 1
@@ -354,7 +355,7 @@
 			links: [ 'link', 'xotlink' ],
 			styles: [ 'heading', 'style', 'fontFamily', 'fontSize' ],
 			colors: [ 'fontColor', 'fontBackgroundColor' ],
-			insert: [ 'insertImage', 'xerteBrowseMedia', 'xerteAudio', 'xerteRecorder', 'mediaEmbed',
+			insert: [ 'xerteBrowseImage', 'xerteBrowseMedia', 'xerteAudio', 'xerteRecorder', 'mediaEmbed',
 				'insertTable', 'specialCharacters', 'fontAwesome', 'horizontalLine', 'xerteMathJax' ],
 			list: [ 'bulletedList', 'numberedList' ],
 			indent: [ 'outdent', 'indent' ],
@@ -403,6 +404,7 @@
 			},
 			xerteUploadUrl: user.uploadUrl || defaultUploadUrl(),
 			xerteUploadAudioUrl: user.uploadAudioUrl || defaultUploadAudioUrl(),
+			xerteBrowseImageUrl: user.browseImageUrl || browseUrlForCke5(user.filebrowserImageBrowseUrl) || browseUrl('image'),
 			xerteBrowseMediaUrl: user.browseMediaUrl || browseUrlForCke5(user.filebrowserBrowseUrl) || browseUrl('media'),
 			xerteMathJaxLib: user.mathJaxLib || 'offline/js/mathjax/MathJax.js?config=TeX-MML-AM_HTMLorMML-full'
 		};

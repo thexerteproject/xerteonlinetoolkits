@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "generate:fontawesome": "node scripts/generate-fontawesome-icons.mjs",
-    "build": "npm run generate:fontawesome && webpack --mode production --config webpack.config.js"
+    "build": "npm run generate:fontawesome && webpack --mode production --config webpack.config.js",
+    "test": "node --test tests/*.test.js"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-translations": "^55.2.0",
