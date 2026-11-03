@@ -222,11 +222,6 @@ input.media, input.date
     z-index: 100;
 }
 
-/* Keep the central editor options bar above CKEditor's sticky toolbar and
- * dropdown panel layer while allowing dialogs to remain on top. */
-#main_footer {
-	z-index: calc(var(--ck-z-panel, 1000) + 1);
-}
 .subhead { border-bottom: 1px solid #777; }
 
 #lb_footer.footer{

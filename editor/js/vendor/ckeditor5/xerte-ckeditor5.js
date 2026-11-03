@@ -700,6 +700,7 @@
 			+ '.ck.ck-editor__top .ck-sticky-panel.xerte-fixed-toolbar-panel .ck-sticky-panel__placeholder{display:none!important;height:0!important;}'
 			+ '.ck.ck-editor__top .ck-sticky-panel.xerte-fixed-toolbar-panel .ck-sticky-panel__content{position:static!important;top:auto!important;bottom:auto!important;left:auto!important;margin-left:0!important;width:100%!important;max-width:100%!important;}'
 			+ '.ck.ck-editor__top .ck-sticky-panel.xerte-fixed-toolbar-panel--collapsed .ck-menu-bar{display:none!important;}'
+			+ '.ck.ck-menu-bar__menu>.ck.ck-menu-bar__menu__panel{z-index:calc(var(--ck-z-panel) + 1);}'
 			// Use the measured editor width rather than a percentage. Once this panel
 			// becomes position:fixed, percentage widths are relative to the viewport.
 			+ '.ck.ck-editor__top .ck-sticky-panel__content{width:var(--xerte-editor-width,100%)!important;min-width:0!important;max-width:calc(100vw - 24px)!important;box-sizing:border-box;}'
