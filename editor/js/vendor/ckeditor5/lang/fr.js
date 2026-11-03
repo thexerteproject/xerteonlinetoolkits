@@ -7,3 +7,9 @@
 	'Xerte Page Link': 'Lien vers une page Xerte', 'Edit Xerte Page Link': 'Modifier le lien vers une page Xerte', 'Change Xerte page': 'Changer de page Xerte', 'Select a page to link to.': 'Sélectionnez une page à lier.', 'Choose a page': 'Choisir une page',
 	'Record audio': 'Enregistrer du son', 'Close recorder': 'Fermer l’enregistreur', 'Press Record to request microphone access.': 'Appuyez sur Enregistrer pour demander l’accès au microphone.', 'Filename': 'Nom du fichier', 'recording': 'enregistrement', 'Record': 'Enregistrer', 'Stop': 'Arrêter', 'Upload and insert': 'Téléverser et insérer', 'Requesting microphone access…': 'Demande d’accès au microphone…', 'Recording ready to preview.': 'L’enregistrement est prêt à être écouté.', 'No audio was recorded.': 'Aucun son n’a été enregistré.', 'Recording failed.': 'Échec de l’enregistrement.', 'Recording…': 'Enregistrement…', 'Microphone permission was not granted.': 'L’accès au microphone n’a pas été autorisé.', 'Could not start recording: %0': 'Impossible de démarrer l’enregistrement : %0', 'Finishing recording…': 'Finalisation de l’enregistrement…', 'Uploading…': 'Téléversement…', 'Audio upload failed.': 'Échec du téléversement audio.', 'Could not read the audio file.': 'Impossible de lire le fichier audio.', 'LaTeX / math (wrapped in span.mathjax)': 'LaTeX / mathématiques (dans span.mathjax)'
 } ); } )( globalThis.CKEDITOR_TRANSLATIONS ||= {} );
+
+Object.assign( globalThis.CKEDITOR_TRANSLATIONS.fr.dictionary, {
+	'Image Properties': 'Propriétés de l\'image', 'URL': 'URL', 'Browse Server': 'Parcourir le serveur', 'Alternative Text': 'Texte alternatif',
+	'Lock ratio': 'Conserver les proportions', 'Reset size': 'Réinitialiser la taille', 'Align Left': 'Aligner à gauche', 'Align Center': 'Aligner au centre', 'Align Right': 'Aligner à droite',
+	'Captioned image': 'Image légendée', 'OK': 'OK'
+} );

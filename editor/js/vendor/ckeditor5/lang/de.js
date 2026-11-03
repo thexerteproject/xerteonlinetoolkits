@@ -7,3 +7,9 @@
 	'Xerte Page Link': 'Xerte-Seitenlink', 'Edit Xerte Page Link': 'Xerte-Seitenlink bearbeiten', 'Change Xerte page': 'Xerte-Seite ändern', 'Select a page to link to.': 'Wählen Sie eine zu verlinkende Seite.', 'Choose a page': 'Seite auswählen',
 	'Record audio': 'Audio aufnehmen', 'Close recorder': 'Recorder schließen', 'Press Record to request microphone access.': 'Drücken Sie Aufnehmen, um Mikrofonzugriff anzufordern.', 'Filename': 'Dateiname', 'recording': 'aufnahme', 'Record': 'Aufnehmen', 'Stop': 'Stoppen', 'Upload and insert': 'Hochladen und einfügen', 'Requesting microphone access…': 'Mikrofonzugriff wird angefordert…', 'Recording ready to preview.': 'Aufnahme ist zur Vorschau bereit.', 'No audio was recorded.': 'Es wurde kein Audio aufgenommen.', 'Recording failed.': 'Aufnahme fehlgeschlagen.', 'Recording…': 'Aufnahme läuft…', 'Microphone permission was not granted.': 'Der Mikrofonzugriff wurde nicht gewährt.', 'Could not start recording: %0': 'Aufnahme konnte nicht gestartet werden: %0', 'Finishing recording…': 'Aufnahme wird abgeschlossen…', 'Uploading…': 'Wird hochgeladen…', 'Audio upload failed.': 'Audio-Upload fehlgeschlagen.', 'Could not read the audio file.': 'Die Audiodatei konnte nicht gelesen werden.', 'LaTeX / math (wrapped in span.mathjax)': 'LaTeX / Mathematik (in span.mathjax)'
 } ); } )( globalThis.CKEDITOR_TRANSLATIONS ||= {} );
+
+Object.assign( globalThis.CKEDITOR_TRANSLATIONS.de.dictionary, {
+	'Image Properties': 'Bild-Eigenschaften', 'URL': 'URL', 'Browse Server': 'Server durchsuchen', 'Alternative Text': 'Alternativer Text',
+	'Lock ratio': 'Größenverhältnis beibehalten', 'Reset size': 'Größe zurücksetzen', 'Align Left': 'Linksbündig', 'Align Center': 'Zentriert', 'Align Right': 'Rechtsbündig',
+	'Captioned image': 'Bild mit Überschrift', 'OK': 'OK'
+} );

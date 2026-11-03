@@ -7,3 +7,9 @@
 	'Xerte Page Link': 'Xerte-paginalink', 'Edit Xerte Page Link': 'Xerte-paginalink bewerken', 'Change Xerte page': 'Xerte-pagina wijzigen', 'Select a page to link to.': 'Selecteer een pagina om naar te linken.', 'Choose a page': 'Kies een pagina',
 	'Record audio': 'Audio opnemen', 'Close recorder': 'Recorder sluiten', 'Press Record to request microphone access.': 'Druk op Opnemen om toegang tot de microfoon te vragen.', 'Filename': 'Bestandsnaam', 'recording': 'opname', 'Record': 'Opnemen', 'Stop': 'Stoppen', 'Upload and insert': 'Uploaden en invoegen', 'Requesting microphone access…': 'Microfoontoegang aanvragen…', 'Recording ready to preview.': 'Opname klaar om te beluisteren.', 'No audio was recorded.': 'Er is geen audio opgenomen.', 'Recording failed.': 'Opname mislukt.', 'Recording…': 'Opnemen…', 'Microphone permission was not granted.': 'Toegang tot de microfoon is niet verleend.', 'Could not start recording: %0': 'Kan opname niet starten: %0', 'Finishing recording…': 'Opname afronden…', 'Uploading…': 'Uploaden…', 'Audio upload failed.': 'Uploaden van audio mislukt.', 'Could not read the audio file.': 'Kan het audiobestand niet lezen.', 'LaTeX / math (wrapped in span.mathjax)': 'LaTeX / wiskunde (in span.mathjax)'
 } ); } )( globalThis.CKEDITOR_TRANSLATIONS ||= {} );
+
+Object.assign( globalThis.CKEDITOR_TRANSLATIONS.nl.dictionary, {
+	'Image Properties': 'Afbeeldingseigenschappen', 'URL': 'URL', 'Browse Server': 'Bladeren op server', 'Alternative Text': 'Alternatieve tekst',
+	'Lock ratio': 'Verhouding vergrendelen', 'Reset size': 'Afmetingen herstellen', 'Align Left': 'Links uitlijnen', 'Align Center': 'Centreren', 'Align Right': 'Rechts uitlijnen',
+	'Captioned image': 'Afbeelding met onderschrift', 'OK': 'OK'
+} );
