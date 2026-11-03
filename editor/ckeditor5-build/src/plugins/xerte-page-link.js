@@ -5,7 +5,7 @@
  */
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
-import { IconLink } from 'ckeditor5/src/icons.js';
+import PageLinkIcon from '../icons/page-link.svg';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
 import { parseXertePageId } from './xerte-page-link-utils.js';
 
@@ -274,7 +274,7 @@ function createXertePageLinkButton( editor, ButtonClass, locale ) {
 	const view = new ButtonClass( locale );
 	const buttonProps = {
 		label: editor.t( 'Xerte Page Link' ),
-		icon: IconLink
+		icon: PageLinkIcon
 	};
 
 	if ( ButtonClass === ButtonView ) {
@@ -339,7 +339,7 @@ export class XertePageLink extends Plugin {
 		// The built-in pencil/edit function still edits the URL; this button edits the Xerte page target so that a new page link doesn't have to be added each time it needs to be changed.
 		editor.ui.componentFactory.add( 'xerteEditPageLink', locale => {
 			const view = new ButtonView( locale );
-			view.set( { label: editor.t( 'Change Xerte page' ), icon: IconLink, tooltip: true } );
+			view.set( { label: editor.t( 'Change Xerte page' ), icon: PageLinkIcon, tooltip: true } );
 			const update = () => {
 				view.isVisible = !!getSelectedXertePageLink( editor );
 				view.isEnabled = view.isVisible && linkCommand.isEnabled;

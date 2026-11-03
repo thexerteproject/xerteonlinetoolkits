@@ -15,6 +15,15 @@
 	window.__xerteCke5InlineCssInjected = window.__xerteCke5InlineCssInjected || false;
 	window.__xerteCke5UiCssInjected = window.__xerteCke5UiCssInjected || false;
 
+	function preferenceIsTruthy(value) {
+		return value !== undefined && value !== null && value !== false && value !== 'false' && value !== 0 && value !== '0';
+	}
+
+	function fixedToolbarPreference() {
+		return preferenceIsTruthy(window.user_preferences && window.user_preferences.editor_fixed_toolbar);
+	}
+	window.__xerteCke5FixedToolbarExpanded = preferenceIsTruthy(window.user_preferences && window.user_preferences.editor_fixed_toolbar_expanded);
+
 	function ensureLegacyCkeditorGlobal() {
 		if (window.CKEDITOR && window.CKEDITOR.instances) {
 			return;
@@ -225,14 +234,14 @@
 			Blockquote: 'blockQuote',
 			Link: 'link',
 			xotlink: 'xotlink',
-			Image: 'insertImage',
+			Image: 'xerteBrowseImage',
+			insertImage: 'xerteBrowseImage',
 			Table: 'insertTable',
 			MediaEmbed: 'mediaEmbed',
 			NumberedList: 'numberedList',
 			BulletedList: 'bulletedList',
 			Outdent: 'outdent',
 			Indent: 'indent',
-			xotMarkWord: 'xotMarkWord',
 			Mark: 'markTag',
 			markTag: 'markTag'
 		};
@@ -242,10 +251,10 @@
 			fontBackgroundColor: 1, lineHeight: 1, textPartLanguage: 1, bold: 1, italic: 1,
 			underline: 1, strikethrough: 1, subscript: 1, superscript: 1, code: 1, removeFormat: 1,
 			specialCharacters: 1, emoji: 1, fontAwesome: 1, horizontalLine: 1, xerteMathJax: 1,
-			xerteRubyText: 1, link: 1, xotlink: 1, insertImage: 1, xerteBrowseMedia: 1,
+			xerteRubyText: 1, link: 1, xotlink: 1, xerteBrowseImage: 1, xerteBrowseMedia: 1,
 			xerteAudio: 1, xerteRecorder: 1, mediaEmbed: 1, insertTable: 1, autocolumns: 1,
 			blockQuote: 1, codeBlock: 1, alignment: 1, bulletedList: 1, numberedList: 1,
-			outdent: 1, indent: 1, xotMarkWord: 1, markTag: 1
+			outdent: 1, indent: 1, markTag: 1
 		};
 		return map[item] || (ckeditor5Items[item] ? item : null);
 	}
@@ -288,6 +297,11 @@
 				return;
 			}
 			var item = String(raw);
+			// Mark Word remains available from Xerte's context menu, but is intentionally
+			// omitted from both default and legacy-configured toolbars.
+			if (item === 'xotMarkWord') {
+				return;
+			}
 			var mapped = mapLegacyToolbarItem(item);
 			if (mapped && flat.indexOf(mapped) === -1) {
 				flat.push(mapped);
@@ -341,7 +355,7 @@
 			links: [ 'link', 'xotlink' ],
 			styles: [ 'heading', 'style', 'fontFamily', 'fontSize' ],
 			colors: [ 'fontColor', 'fontBackgroundColor' ],
-			insert: [ 'insertImage', 'xerteBrowseMedia', 'xerteAudio', 'xerteRecorder', 'mediaEmbed',
+			insert: [ 'xerteBrowseImage', 'xerteBrowseMedia', 'xerteAudio', 'xerteRecorder', 'mediaEmbed',
 				'insertTable', 'specialCharacters', 'fontAwesome', 'horizontalLine', 'xerteMathJax' ],
 			list: [ 'bulletedList', 'numberedList' ],
 			indent: [ 'outdent', 'indent' ],
@@ -390,6 +404,7 @@
 			},
 			xerteUploadUrl: user.uploadUrl || defaultUploadUrl(),
 			xerteUploadAudioUrl: user.uploadAudioUrl || defaultUploadAudioUrl(),
+			xerteBrowseImageUrl: user.browseImageUrl || browseUrlForCke5(user.filebrowserImageBrowseUrl) || browseUrl('image'),
 			xerteBrowseMediaUrl: user.browseMediaUrl || browseUrlForCke5(user.filebrowserBrowseUrl) || browseUrl('media'),
 			xerteMathJaxLib: user.mathJaxLib || 'offline/js/mathjax/MathJax.js?config=TeX-MML-AM_HTMLorMML-full'
 		};
@@ -412,6 +427,18 @@
 		}
 		if (user.inlineEditor) {
 			base.menuBar = { isVisible: false };
+			if (base.toolbar && Array.isArray(base.toolbar.items)) {
+				base.toolbar.items = base.toolbar.items.map(function (item) {
+					return item === 'sourceEditing' ? 'xerteSourceDialog' : item;
+				});
+			}
+		}
+		if (!user.inlineEditor) {
+			base.toolbar = base.toolbar || {};
+			// Fixed mode uses CKEditor's native static, wrapping toolbar. This must
+			// be selected at construction time; changing it after render leaves stale
+			// overflow collections and is the cause of the empty/oversized first load.
+			base.toolbar.shouldNotGroupWhenFull = fixedToolbarPreference();
 		}
 		var skip = { uploadUrl: 1, uploadAudioUrl: 1, filebrowserBrowseUrl: 1, filebrowserImageBrowseUrl: 1,
 			filebrowserFlashBrowseUrl: 1, browseMediaUrl: 1, browseImageUrl: 1, toolbar: 1, height: 1,
@@ -505,7 +532,10 @@
 			var fullscreenCommand = editor.commands && editor.commands.get('toggleFullscreen');
 			if (fullscreenCommand) {
 				editor.listenTo(fullscreenCommand, 'change:value', function () {
-					window.requestAnimationFrame(updateToolbarPanelWidth);
+					window.requestAnimationFrame(function () {
+						updateToolbarPanelWidth();
+						setupFixedToolbar(editor);
+					});
 				});
 			}
 		}
@@ -535,29 +565,121 @@
 		}
 	}
 
-	function applyToolbarPreference(editor, show) {
+	function setupFixedToolbar(editor) {
 		if (!editor || !editor.ui || !editor.ui.view) {
 			return;
 		}
+		var toolbarView = editor.ui.view.toolbar;
+		var toolbarEl = toolbarView && toolbarView.element;
 		var stickyPanel = editor.ui.view.stickyPanel;
+		if (!toolbarEl) {
+			return;
+		}
+		if (!fixedToolbarPreference()) {
+			toolbarEl.classList.remove('xerte-fixed-toolbar', 'xerte-fixed-toolbar--collapsed');
+			var collapser = toolbarEl.querySelector('.xerte-toolbar-collapser');
+			if (collapser) collapser.remove();
+			if (stickyPanel && stickyPanel.element) {
+				stickyPanel.element.classList.remove('xerte-fixed-toolbar-panel', 'xerte-fixed-toolbar-panel--collapsed');
+				stickyPanel.isActive = true;
+				stickyPanel.checkIfShouldBeSticky();
+			}
+			return;
+		}
+		toolbarEl.classList.add('xerte-fixed-toolbar');
 		if (stickyPanel && stickyPanel.element) {
-			stickyPanel.element.style.display = show ? '' : 'none';
-			if (show && editor.ui.view.toolbar) {
-				window.requestAnimationFrame(function () {
-					editor.ui.view.toolbar.fire('change:maxWidth');
-				});
+			stickyPanel.element.classList.add('xerte-fixed-toolbar-panel');
+			stickyPanel.isActive = false;
+			stickyPanel.checkIfShouldBeSticky();
+		}
+		var button = toolbarEl.querySelector('.xerte-toolbar-collapser');
+		if (!button) {
+			button = document.createElement('button');
+			button.type = 'button';
+			button.className = 'xerte-toolbar-collapser';
+			button.addEventListener('mousedown', function (event) { event.preventDefault(); });
+			button.addEventListener('click', function () {
+				setFixedToolbarExpanded(editor, toolbarEl.classList.contains('xerte-fixed-toolbar--collapsed'));
+				syncExpandToolbarCheckbox();
+			});
+			toolbarEl.appendChild(button);
+		}
+		setFixedToolbarExpanded(editor, window.__xerteCke5FixedToolbarExpanded);
+	}
+
+	function setFixedToolbarExpanded(editor, expanded) {
+		var toolbarEl = editor && editor.ui && editor.ui.view && editor.ui.view.toolbar && editor.ui.view.toolbar.element;
+		var stickyPanel = editor && editor.ui && editor.ui.view && editor.ui.view.stickyPanel;
+		if (!toolbarEl) return;
+		var collapsed = !expanded;
+		toolbarEl.classList.toggle('xerte-fixed-toolbar--collapsed', collapsed);
+		if (stickyPanel && stickyPanel.element) stickyPanel.element.classList.toggle('xerte-fixed-toolbar-panel--collapsed', collapsed);
+		var button = toolbarEl.querySelector('.xerte-toolbar-collapser');
+		if (!button) return;
+		button.textContent = '';
+		button.title = collapsed ? 'Expand toolbar' : 'Condense toolbar';
+		button.setAttribute('aria-label', button.title);
+		button.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+	}
+
+	function syncExpandToolbarCheckbox() {
+		if (!$) return;
+		var editors = Object.keys(window.__xerteCke5Instances).map(function (id) { return window.__xerteCke5Instances[id]; })
+			.filter(function (editor) { return editor && !editor.__xerteIsInline; });
+		var allExpanded = editors.length > 0 && editors.every(function (editor) {
+			var toolbarEl = editor.ui && editor.ui.view && editor.ui.view.toolbar && editor.ui.view.toolbar.element;
+			return toolbarEl && !toolbarEl.classList.contains('xerte-fixed-toolbar--collapsed');
+		});
+		$('#toolbar_cb').prop('checked', allExpanded);
+	}
+
+	window.setXerteCke5FixedToolbarExpanded = function (expanded) {
+		window.__xerteCke5FixedToolbarExpanded = !!expanded;
+		if (window.EDITOR && EDITOR.tree && typeof EDITOR.tree.setFixedToolbarExpandedDefault === 'function') {
+			EDITOR.tree.setFixedToolbarExpandedDefault(expanded);
+		}
+		Object.keys(window.__xerteCke5Instances).forEach(function (id) {
+			var editor = window.__xerteCke5Instances[id];
+			if (!editor.__xerteIsInline) setFixedToolbarExpanded(editor, !!expanded);
+		});
+	};
+
+	window.setXerteCke5FixedToolbarPreference = function (fixed) {
+		fixed = !!fixed;
+		window.user_preferences = window.user_preferences || {};
+		window.user_preferences.editor_fixed_toolbar = fixed;
+		if (window.EDITOR && EDITOR.tree && typeof EDITOR.tree.setFixedToolbarMode === 'function') {
+			EDITOR.tree.setFixedToolbarMode(fixed);
+		}
+		var needsRebuild = false;
+		Object.keys(window.__xerteCke5Instances).forEach(function (id) {
+			var editor = window.__xerteCke5Instances[id];
+			var toolbar = editor && editor.ui && editor.ui.view && editor.ui.view.toolbar;
+			if (!toolbar || !toolbar.options || editor.__xerteIsInline) return;
+			// shouldGroupWhenFull is fixed when ToolbarView is constructed.
+			if (!!toolbar.options.shouldGroupWhenFull === fixed) {
+				needsRebuild = true;
+			} else {
+				setupFixedToolbar(editor);
+			}
+		});
+		if (needsRebuild && window.EDITOR && EDITOR.tree && typeof EDITOR.tree.showNodeData === 'function') {
+			var tree = $.jstree && $.jstree.reference('#treeview');
+			var selected = tree && tree.get_selected();
+			if (selected && selected.length) {
+				window.setTimeout(function () { EDITOR.tree.showNodeData(selected[0], true); }, 0);
 			}
 		}
-	}
+	};
 
 	function ensureInlineEditorCssOverrides() {
 		if (window.__xerteCke5InlineCssInjected) {
 			return;
 		}
 		var css = ''
-			+ '.ck.ck-editor__editable_inline > :first-child{margin-top:0!important;}'
-			+ '.ck.ck-editor__editable_inline > :last-child{margin-bottom:0!important;}'
-			+ '.ck.ck-editor__editable_inline{padding:0!important;}';
+			+ '.ck.ck-editor__editable_inline.xerte-inline-editor > :first-child{margin-top:0!important;}'
+			+ '.ck.ck-editor__editable_inline.xerte-inline-editor > :last-child{margin-bottom:0!important;}'
+			+ '.ck.ck-editor__editable_inline.xerte-inline-editor{padding:0!important;}';
 		var style = document.createElement('style');
 		style.type = 'text/css';
 		style.appendChild(document.createTextNode(css));
@@ -575,12 +697,25 @@
 			+ '.ck.ck-editor__top{width:100%!important;min-width:0!important;max-width:100%!important;overflow:visible!important;}'
 			+ '.ck.ck-editor__top,.ck.ck-editor__top *{box-sizing:border-box;}'
 			+ '.ck.ck-editor__top .ck-sticky-panel{width:100%!important;min-width:0!important;max-width:100%!important;}'
+			+ '.ck.ck-editor__top .ck-sticky-panel.xerte-fixed-toolbar-panel .ck-sticky-panel__placeholder{display:none!important;height:0!important;}'
+			+ '.ck.ck-editor__top .ck-sticky-panel.xerte-fixed-toolbar-panel .ck-sticky-panel__content{position:static!important;top:auto!important;bottom:auto!important;left:auto!important;margin-left:0!important;width:100%!important;max-width:100%!important;}'
+			+ '.ck.ck-editor__top .ck-sticky-panel.xerte-fixed-toolbar-panel--collapsed .ck-menu-bar{display:none!important;}'
+			+ '.ck.ck-menu-bar__menu>.ck.ck-menu-bar__menu__panel{z-index:calc(var(--ck-z-panel) + 1);}'
 			// Use the measured editor width rather than a percentage. Once this panel
 			// becomes position:fixed, percentage widths are relative to the viewport.
 			+ '.ck.ck-editor__top .ck-sticky-panel__content{width:var(--xerte-editor-width,100%)!important;min-width:0!important;max-width:calc(100vw - 24px)!important;box-sizing:border-box;}'
+			+ '.ck.ck-dropdown__panel{max-width:calc(100vw - 1rem);max-height:60vh;overflow:auto;overscroll-behavior:contain;}'
 			+ '.ck.ck-editor .ck-toolbar__grouped-dropdown>.ck-dropdown__panel{width:min(calc(var(--xerte-editor-width, 600px) - 8px),60vw)!important;max-width:calc(100vw - 24px)!important;}'
 			+ '.ck.ck-editor .ck-toolbar__grouped-dropdown .ck-toolbar_floating{width:100%!important;max-width:100%!important;}'
 			+ '.ck.ck-editor .ck-toolbar__grouped-dropdown .ck-toolbar_floating>.ck-toolbar__items{flex-wrap:wrap!important;}';
+		css += '.ck.ck-toolbar.xerte-fixed-toolbar{position:relative;padding-right:28px!important;}'
+			+ '.ck.ck-toolbar.xerte-fixed-toolbar>.ck-toolbar__items{flex-wrap:wrap!important;overflow:visible;}'
+			+ '.ck.ck-toolbar.xerte-fixed-toolbar--collapsed{min-height:30px!important;padding:0!important;}'
+			+ '.ck.ck-toolbar.xerte-fixed-toolbar--collapsed>.ck-toolbar__items{display:none!important;}'
+			+ '.ck.ck-toolbar .xerte-toolbar-collapser{position:absolute;right:4px;bottom:4px;width:22px;height:22px;padding:0;border:0;border-radius:2px;background:transparent;color:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;}'
+			+ '.ck.ck-toolbar .xerte-toolbar-collapser:before{content:"";display:block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:5px solid currentColor;}'
+			+ '.ck.ck-toolbar.xerte-fixed-toolbar--collapsed .xerte-toolbar-collapser:before{border-top:5px solid currentColor;border-bottom:0;}'
+			+ '.ck.ck-toolbar .xerte-toolbar-collapser:hover,.ck.ck-toolbar .xerte-toolbar-collapser:focus{background:var(--ck-color-button-default-hover-background);outline:none;}';
 		var style = document.createElement('style');
 		style.type = 'text/css';
 		style.appendChild(document.createTextNode(css));
@@ -668,6 +803,7 @@
 			return Editor.create(domEl, cfg);
 		}).then(function (editor) {
 			var id = domEl.id;
+			editor.__xerteIsInline = !!(userConfig && userConfig.inlineEditor);
 			window.__xerteCke5Instances[id] = editor;
 			window.__xerteCke5SourceElements[id] = domEl;
 			if ($ && $(domEl).data) {
@@ -681,6 +817,7 @@
 				ensureInlineEditorCssOverrides();
 				if (editor.ui && editor.ui.view && editor.ui.view.editable && editor.ui.view.editable.element) {
 					var inlineEditable = editor.ui.view.editable.element;
+					inlineEditable.classList.add('xerte-inline-editor');
 					inlineEditable.style.width = '100%';
 					inlineEditable.style.boxSizing = '';
 					inlineEditable.style.minHeight = '40px';
@@ -689,7 +826,9 @@
 				}
 				setupInlineToolbarVisibility(editor);
 			} else if (userConfig && typeof userConfig.toolbarStartupExpanded !== 'undefined') {
-				applyToolbarPreference(editor, !!userConfig.toolbarStartupExpanded);
+				setupFixedToolbar(editor);
+			} else if (!(userConfig && userConfig.inlineEditor)) {
+				setupFixedToolbar(editor);
 			}
 			if (userConfig && userConfig.startupMode === 'source') {
 				try {

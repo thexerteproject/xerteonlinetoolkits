@@ -168,6 +168,12 @@ function populatePreferencesForm($root) {
     $root.find('#panel_south_open').prop('checked', preferenceIsTruthy(prefs.panel_south_open, true));
     $root.find('#editor_panel_east_open').prop('checked', preferenceIsTruthy(prefs.editor_panel_east_open, true));
     $root.find('#editor_show_language').prop('checked', preferenceIsTruthy(prefs.editor_show_language, false));
+    var fixedToolbar = preferenceIsTruthy(prefs.editor_fixed_toolbar, false);
+    $root.find('#editor_fixed_toolbar').prop('checked', fixedToolbar);
+    $root.find('#editor_fixed_toolbar_expanded').prop('checked', fixedToolbar && preferenceIsTruthy(prefs.editor_fixed_toolbar_expanded, false));
+    var quickFillCollapseMode = preferenceIsTruthy(prefs.editor_collapse_quickfill, false) ? 'always' : 'with_children';
+    $root.find('input[name="editor_quickfill_collapse_mode"][value="' + quickFillCollapseMode + '"]').prop('checked', true);
+    $root.find('#editor_quickfill_assistants_only').prop('checked', preferenceIsTruthy(prefs.editor_quickfill_assistants_only, false));
     $root.find('#editor_expand_groups').prop('checked', preferenceIsTruthy(prefs.editor_expand_groups, false));
     $root.find('#editor_expand_tree').prop('checked', preferenceIsTruthy(prefs.editor_expand_tree, false));
 
@@ -196,11 +202,18 @@ function applyWorkspacePanelPreferences(prefs) {
 }
 
 function savePreferencesFromForm($root) {
+    var fixedToolbar = $root.find('#editor_fixed_toolbar').is(':checked');
+    var quickFillCollapseMode = $root.find('input[name="editor_quickfill_collapse_mode"]:checked').val() || 'with_children';
     var prefs = {
         panel_east_open: $root.find('#panel_east_open').is(':checked'),
         panel_south_open: $root.find('#panel_south_open').is(':checked'),
         editor_panel_east_open: $root.find('#editor_panel_east_open').is(':checked'),
         editor_show_language: $root.find('#editor_show_language').is(':checked'),
+        editor_fixed_toolbar: fixedToolbar,
+        editor_fixed_toolbar_expanded: fixedToolbar && $root.find('#editor_fixed_toolbar_expanded').is(':checked'),
+        editor_collapse_quickfill: quickFillCollapseMode === 'always',
+        editor_collapse_quickfill_with_children: quickFillCollapseMode === 'with_children',
+        editor_quickfill_assistants_only: $root.find('#editor_quickfill_assistants_only').is(':checked'),
         editor_expand_groups: $root.find('#editor_expand_groups').is(':checked'),
         editor_expand_tree: $root.find('#editor_expand_tree').is(':checked'),
         editor_open_mode: $root.find('input[name="editor_open_mode"]:checked').val() || 'popup'
@@ -221,6 +234,13 @@ function savePreferencesFromForm($root) {
     });
 
     applyWorkspacePanelPreferences(prefs);
+
+    if (typeof window.setXerteCke5FixedToolbarPreference === 'function') {
+        window.setXerteCke5FixedToolbarPreference(prefs.editor_fixed_toolbar);
+    }
+    if (typeof window.setXerteCke5FixedToolbarExpanded === 'function') {
+        window.setXerteCke5FixedToolbarExpanded(prefs.editor_fixed_toolbar_expanded);
+    }
 
     var expandTreeCb = $('#expand_tree');
     if (expandTreeCb.length > 0) {
@@ -319,6 +339,34 @@ function bindLegacyPreferencesHandlers() {
         }
     });
 
+    $("#change-password-dialog #editor_fixed_toolbar").on('change', function() {
+        var fixed = $(this).is(':checked');
+        if (typeof save_user_preference === 'function') {
+            save_user_preference('editor_fixed_toolbar', fixed);
+        }
+        if (typeof window.setXerteCke5FixedToolbarPreference === 'function') {
+            window.setXerteCke5FixedToolbarPreference(fixed);
+        }
+        if (!fixed) {
+            $(this).closest('#change-password-dialog').find('#editor_fixed_toolbar_expanded').prop('checked', false);
+            if (typeof save_user_preference === 'function') {
+                save_user_preference('editor_fixed_toolbar_expanded', false);
+            }
+            if (typeof window.setXerteCke5FixedToolbarExpanded === 'function') {
+                window.setXerteCke5FixedToolbarExpanded(false);
+            }
+        }
+    });
+
+    $("#change-password-dialog #editor_fixed_toolbar_expanded").on('change', function() {
+        if (typeof save_user_preference === 'function') {
+            save_user_preference('editor_fixed_toolbar_expanded', $(this).is(':checked'));
+        }
+        if (typeof window.setXerteCke5FixedToolbarExpanded === 'function') {
+            window.setXerteCke5FixedToolbarExpanded($(this).is(':checked'));
+        }
+    });
+
     $("#change-password-dialog #editor_expand_groups").on('change', function() {
         if (typeof save_user_preference === 'function') {
             save_user_preference('editor_expand_groups', $(this).is(':checked'));
@@ -368,6 +416,18 @@ function populateLegacyPreferencesForm($dialog) {
         editorShowLanguageCheckbox.prop('checked', preferenceIsTruthy(user_preferences.editor_show_language, false));
     }
 
+    var editorFixedToolbarCheckbox = $dialog.find("#editor_fixed_toolbar");
+    var fixedToolbar = false;
+    if (editorFixedToolbarCheckbox.length) {
+        fixedToolbar = preferenceIsTruthy(user_preferences.editor_fixed_toolbar, false);
+        editorFixedToolbarCheckbox.prop('checked', fixedToolbar);
+    }
+
+    var editorFixedToolbarExpandedCheckbox = $dialog.find("#editor_fixed_toolbar_expanded");
+    if (editorFixedToolbarExpandedCheckbox.length) {
+        editorFixedToolbarExpandedCheckbox.prop('checked', fixedToolbar && preferenceIsTruthy(user_preferences.editor_fixed_toolbar_expanded, false));
+    }
+
     var editorExpandGroupsCheckbox = $dialog.find("#editor_expand_groups");
     if (editorExpandGroupsCheckbox.length) {
         editorExpandGroupsCheckbox.prop('checked', preferenceIsTruthy(user_preferences.editor_expand_groups, false));
@@ -397,7 +457,23 @@ function changepasswordPopup(section) {
     var formUrl = (typeof ajax_php_path !== 'undefined' ? ajax_php_path : 'website_code/php/') +
         'get_user_settings_form.php?section=' + encodeURIComponent(section) + '&_=' + Date.now();
 
+    function fitPreferencesDialog($settingsDialog) {
+        var viewportWidth = $(window).width();
+        var dialogWidth = Math.max(1, Math.min(560, viewportWidth - 32));
+        $settingsDialog.dialog("option", {
+            width: dialogWidth,
+            position: {
+                my: "center",
+                at: "center",
+                of: window,
+                collision: "fit"
+            }
+        });
+    }
+
     var $dialog = getSettingsDialogElement();
+
+    $(window).off(".preferencesSettingsDialog");
 
     if (!$dialog.data("ui-dialog")) {
         $dialog.dialog({
@@ -407,16 +483,17 @@ function changepasswordPopup(section) {
             height: "auto",
             resizable: false,
             title: "",
-            dialogClass: useStyledModal ? "preferences-dialog workspace-dialog" : "workspace-dialog",
+            dialogClass: useStyledModal ? "preferences-dialog " + (isPreferencesModal ? "preferences-settings-dialog " : "") + "workspace-dialog" : "workspace-dialog",
             close: function() {
+                $(window).off(".preferencesSettingsDialog");
                 clearPasswordForm($dialog);
             }
         });
     }
 
     $dialog.dialog("option", {
-        width: useStyledModal ? 560 : 450,
-        dialogClass: useStyledModal ? "preferences-dialog workspace-dialog" : "workspace-dialog",
+        width: isPreferencesModal ? Math.max(1, Math.min(560, $(window).width() - 32)) : (useStyledModal ? 560 : 450),
+        dialogClass: useStyledModal ? "preferences-dialog " + (isPreferencesModal ? "preferences-settings-dialog " : "") + "workspace-dialog" : "workspace-dialog",
         title: ""
     });
 
@@ -447,7 +524,15 @@ function changepasswordPopup(section) {
                 }
             }
 
+            if (isPreferencesModal) {
+                fitPreferencesDialog($dialog);
+            }
             $dialog.dialog("open");
+            if (isPreferencesModal) {
+                $(window).on("resize.preferencesSettingsDialog orientationchange.preferencesSettingsDialog", function() {
+                    fitPreferencesDialog($dialog);
+                });
+            }
         },
         error: function(xhr, status, error) {
             console.error("Error loading settings form:", error, xhr.responseText);

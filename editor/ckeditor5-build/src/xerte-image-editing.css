@@ -1,0 +1,17 @@
+/*
+ * Show explicitly pixel-sized images at their configured width in the wizard.
+ * CKEditor normally caps resized widgets at 100% of the editable, which makes a
+ * 600px image appear to be 383px when the wizard column is narrow for example. Keeping the
+ * overflow inside the editable exposes the real authoring size without allowing
+ * the widget to cover neighbouring wizard controls. Percentage widths continue
+ * to resolve against the editable and are unaffected by these overrides.
+ */
+.ck.ck-editor__editable.ck-content {
+	overflow-x: auto;
+}
+
+.ck.ck-editor__editable.ck-content .image.image_resized,
+.ck.ck-editor__editable.ck-content .image-inline.image_resized {
+	max-width: none;
+}
+

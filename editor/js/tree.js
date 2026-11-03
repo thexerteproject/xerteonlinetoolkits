@@ -35,6 +35,20 @@ var EDITOR = (function ($, parent) {
             return false;
         })(),
         defaultAdvanced = false,
+        defaultToolbar = (function() {
+            if (typeof user_preferences !== 'undefined' && user_preferences) {
+                var value = user_preferences.editor_fixed_toolbar_expanded;
+                return value !== undefined && value !== null && value !== false && value !== 'false' && value !== 0 && value !== '0';
+            }
+            return false;
+        })(),
+        fixedToolbarMode = (function() {
+            if (typeof user_preferences !== 'undefined' && user_preferences) {
+                var value = user_preferences.editor_fixed_toolbar;
+                return value !== undefined && value !== null && value !== false && value !== 'false' && value !== 0 && value !== '0';
+            }
+            return false;
+        })(),
         // Store group defaults for later use
         defaultExpandGroups = (function() {
             if (typeof user_preferences !== 'undefined' && user_preferences && typeof user_has_preferences !== 'undefined' && user_has_preferences) {
@@ -309,11 +323,15 @@ var EDITOR = (function ($, parent) {
 
         // Advanced and language checkboxes
         var checkboxes = $('<div />').attr('id', 'parameter_checkboxes');
-        $([
+        var parameterCheckboxes = [
             {name:language.chkShowLanguage.$label, tooltip: language.chkShowLanguage.$tooltip, id:'language_cb', disabled: true, click:showLanguage},
             {name:language.chkShowAdvanced.$label, tooltip: language.chkShowAdvanced.$tooltip, id:'advanced_cb', disabled: true, click:showAdvanced},
             {name:language.chkShowGroups.$label, tooltip: language.chkShowGroups.$tooltip, id:'groups_cb', disabled: false, click:expandGroups}
-        ]).each(function(index, value) {
+        ];
+        if (fixedToolbarMode) {
+            parameterCheckboxes.splice(2, 0, {name:language.chkShowToolbar.$label, tooltip: language.chkShowToolbar.$tooltip, id:'toolbar_cb', disabled: false, click:showToolbar});
+        }
+        $(parameterCheckboxes).each(function(index, value) {
             var checkbox = $('<input>')
                 .attr('id', value.id)
                 .attr('type',  'checkbox')
@@ -324,6 +342,8 @@ var EDITOR = (function ($, parent) {
             // Initialize checkbox state from defaults set at module level
             if (value.id === 'language_cb') {
                 checkbox.prop('checked', defaultLanguage);
+            } else if (value.id === 'toolbar_cb') {
+                checkbox.prop('checked', defaultToolbar);
             } else if (value.id === 'groups_cb') {
                 checkbox.prop('checked', defaultExpandGroups);
             } else {
@@ -358,7 +378,13 @@ var EDITOR = (function ($, parent) {
                 groupsCb.prop('checked', defaultExpandGroups);
                 expandGroups();
             }
-            
+
+            var toolbarCb = $('#toolbar_cb');
+            if (toolbarCb.length) {
+                toolbarCb.prop('checked', defaultToolbar);
+                showToolbar();
+            }
+
             var expandTreeCb = $('#expand_tree');
             if (expandTreeCb.length) {
                 // Re-apply preference in case it was reset
@@ -625,6 +651,41 @@ var EDITOR = (function ($, parent) {
         }
     },
 
+    showToolbar = function(){
+        defaultToolbar = $('#toolbar_cb').prop('checked');
+        if (typeof window.setXerteCke5FixedToolbarExpanded === 'function') {
+            window.setXerteCke5FixedToolbarExpanded(defaultToolbar);
+        }
+    },
+
+    setFixedToolbarMode = function(enabled){
+        fixedToolbarMode = !!enabled;
+        var checkbox = $('#toolbar_cb');
+        if (!fixedToolbarMode) {
+            checkbox.remove();
+            $('#toolbar_cb_span').remove();
+        } else if (!checkbox.length) {
+            checkbox = $('<input>')
+                .attr('id', 'toolbar_cb')
+                .attr('type', 'checkbox')
+                .attr('title', language.chkShowToolbar.$tooltip)
+                .prop('checked', defaultToolbar)
+                .on('change', showToolbar);
+            var label = $('<label>')
+                .attr('id', 'toolbar_cb_span')
+                .attr('for', 'toolbar_cb')
+                .addClass('enabled')
+                .append(language.chkShowToolbar.$label);
+            var groupsCheckbox = $('#groups_cb');
+            checkbox.insertBefore(groupsCheckbox);
+            label.insertBefore(groupsCheckbox);
+        }
+    },
+
+    setFixedToolbarExpandedDefault = function(expanded){
+        defaultToolbar = !!expanded;
+        $('#toolbar_cb').prop('checked', defaultToolbar);
+    },
 
     expandGroups = function(){
         if ($('#groups_cb').prop('checked')) {
@@ -1833,8 +1894,7 @@ var EDITOR = (function ($, parent) {
                     },
                     success: function(data) {
                         try {
-                            xml_to_xerte_content(data, aiSettings['key'], 'last', tree, parent);
-                            alert(`${language.vendorApi.generationComplete}`);
+                            xml_to_xerte_content(data, aiSettings['key'], 'last', tree, parent, 'ai');
                             $.featherlight.close();
                         } catch (error) {
                             console.log('Error occurred in success callback:', error);
@@ -1937,7 +1997,7 @@ var EDITOR = (function ($, parent) {
                             // xml_to_xerte_content still has the legacy Quick Fill setup/contract:
                             // a JSON string containing { status, result }. jQuery has
                             // already decoded the REST response, so re-encode its payload.
-                            xml_to_xerte_content(JSON.stringify(payload), event.data.key, 'last', tree, parent);
+                            xml_to_xerte_content(JSON.stringify(payload), event.data.key, 'last', tree, parent, 'quickfill');
                             $.featherlight.close();
                             resolve(payload);
                         } catch (error) {
@@ -2413,6 +2473,8 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
     my.generate_lo_key = generate_lo_key;
     my.getSelectedNodeKeys = getSelectedNodeKeys;
     my.showNodeData = showNodeData;
+    my.setFixedToolbarMode = setFixedToolbarMode;
+    my.setFixedToolbarExpandedDefault = setFixedToolbarExpandedDefault;
     my.addNode = addNode;
     my.getParent = getParent;
     my.refresh_workspaceMerge = refresh_workspaceMerge;

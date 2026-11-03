@@ -221,6 +221,7 @@ input.media, input.date
     border-bottom-right-radius: 4px;
     z-index: 100;
 }
+
 .subhead { border-bottom: 1px solid #777; }
 
 #lb_footer.footer{
@@ -1791,22 +1792,87 @@ div#top_buttons button:last-of-type {margin-left: 20px;}
 }
 
 .qf-inline-panel {
-	display: flex;
+	position: relative;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
 	align-items: center;
-	justify-content: space-between;
 	gap: 16px;
 	background: #fff5ee;
 	border: 2px solid #f86718;
 	border-radius: 4px;
-	padding: 12px 16px;
+	padding: 12px 52px 12px 16px;
 	margin: 4px 0 12px 0;
 	box-sizing: border-box;
 	max-width: 100%;
 }
 
+.qf-inline-header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-width: 0;
+}
+
 .qf-inline-content {
 	flex: 1;
 	min-width: 0;
+}
+
+.qf-inline-toggle {
+	position: absolute;
+	right: 10px;
+	bottom: 8px;
+	width: 30px;
+	height: 30px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: #555;
+	cursor: pointer;
+	z-index: 1;
+}
+
+.qf-inline-toggle::before {
+	content: '';
+	position: absolute;
+	left: 9px;
+	top: 11px;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-bottom: 7px solid currentColor;
+}
+
+.qf-inline-panel--collapsed .qf-inline-toggle::before {
+	border-bottom: 0;
+	border-top: 7px solid currentColor;
+}
+
+.qf-inline-panel--collapsed .qf-inline-description,
+.qf-inline-panel--collapsed .qf-inline-setup-btn {
+	display: none;
+}
+
+.qf-inline-panel--collapsed .qf-inline-title {
+	margin-bottom: 0;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.qf-inline-panel--collapsed {
+	grid-template-columns: minmax(0, 1fr);
+	min-height: 38px;
+	padding: 7px 48px 7px 12px;
+	margin-bottom: 8px;
+}
+
+.qf-inline-panel--collapsed .qf-inline-header {
+	min-height: 24px;
+}
+
+.qf-inline-panel--collapsed .qf-inline-toggle {
+	right: 8px;
+	bottom: 4px;
 }
 
 .qf-inline-title {
@@ -1823,6 +1889,7 @@ div#top_buttons button:last-of-type {margin-left: 20px;}
 }
 
 .qf-inline-setup-btn {
+	display: block;
 	background: #f86718 !important;
 	color: #fff !important;
 	border: none !important;
@@ -1833,6 +1900,7 @@ div#top_buttons button:last-of-type {margin-left: 20px;}
 	white-space: nowrap;
 	cursor: pointer;
 	flex-shrink: 0;
+	margin: 0;
 }
 
 .qf-inline-setup-btn:hover {

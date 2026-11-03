@@ -127,6 +127,14 @@ export class XerteLineHeight extends Plugin {
 			const command = editor.commands.get( LINE_HEIGHT );
 			const dropdown = createDropdown( locale );
 			const items = new Collection();
+			const defaultModel = new UIModel( {
+				label: editor.t( 'Default' ),
+				lineHeight: undefined,
+				role: 'menuitemradio',
+				withText: true
+			} );
+			defaultModel.bind( 'isOn' ).to( command, 'value', current => !current );
+			items.add( { type: 'button', model: defaultModel } );
 
 			for ( const value of XERTE_LINE_HEIGHT_VALUES ) {
 				const model = new UIModel( {

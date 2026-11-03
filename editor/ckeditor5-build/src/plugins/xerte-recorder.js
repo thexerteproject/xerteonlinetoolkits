@@ -143,6 +143,24 @@ function openRecorder( editor ) {
 	footer.append( record, stop, cancel, insert );
 	content.appendChild( footer );
 
+	function setControlState( state ) {
+		const states = {
+			idle: { record: false, stop: true, insert: true },
+			requesting: { record: true, stop: true, insert: true },
+			recording: { record: true, stop: false, insert: true },
+			finishing: { record: true, stop: true, insert: true },
+			ready: { record: false, stop: true, insert: false },
+			uploading: { record: true, stop: true, insert: true },
+			error: { record: false, stop: true, insert: !blob }
+		};
+		const controls = states[ state ] || states.idle;
+		for ( const [ name, button ] of Object.entries( { record, stop, insert } ) ) {
+			button.disabled = controls[ name ];
+			button.style.opacity = button.disabled ? '.45' : '1';
+			button.style.cursor = button.disabled ? 'not-allowed' : 'pointer';
+		}
+	}
+
 	let recorder = null;
 	let stream = null;
 	let chunks = [];
@@ -151,6 +169,7 @@ function openRecorder( editor ) {
 	let format = recordingFormat();
 	let recordedExtension = format.extension;
 	let closed = false;
+	setControlState( 'idle' );
 
 	function stopStream() {
 		for ( const track of stream?.getTracks?.() || [] ) track.stop();
@@ -178,6 +197,7 @@ function openRecorder( editor ) {
 	record.onclick = async () => {
 		clearPreview();
 		chunks = [];
+		setControlState( 'requesting' );
 		setStatus( t( 'Requesting microphone access…' ), 'busy' );
 		try {
 			stream = await navigator.mediaDevices.getUserMedia( { audio: true } );
@@ -197,25 +217,21 @@ function openRecorder( editor ) {
 				preview.src = previewUrl;
 				preview.hidden = false;
 				preview.style.display = 'block';
-				insert.disabled = !blob.size;
-				record.disabled = false;
-				stop.disabled = true;
 				stopStream();
+				setControlState( blob.size ? 'ready' : 'error' );
 				setStatus( blob.size ? t( 'Recording ready to preview.' ) : t( 'No audio was recorded.' ), blob.size ? 'ready' : 'error' );
 			};
 			recorder.onerror = () => {
 				stopStream();
-				record.disabled = false;
-				stop.disabled = true;
+				setControlState( 'error' );
 				setStatus( t( 'Recording failed.' ), 'error' );
 			};
 			recorder.start();
-			record.disabled = true;
-			stop.disabled = false;
-			insert.disabled = true;
+			setControlState( 'recording' );
 			setStatus( t( 'Recording…' ), 'recording' );
 		} catch ( error ) {
 			stopStream();
+			setControlState( 'error' );
 			setStatus( error.name === 'NotAllowedError' ?
 				t( 'Microphone permission was not granted.' ) : t( 'Could not start recording: %0', [ error.message ] ), 'error' );
 		}
@@ -223,6 +239,7 @@ function openRecorder( editor ) {
 
 	stop.onclick = () => {
 		if ( recorder?.state === 'recording' ) {
+			setControlState( 'finishing' );
 			setStatus( t( 'Finishing recording…' ), 'busy' );
 			recorder.stop();
 		}
@@ -230,8 +247,7 @@ function openRecorder( editor ) {
 
 	insert.onclick = async () => {
 		if ( !blob ) return;
-		insert.disabled = true;
-		record.disabled = true;
+		setControlState( 'uploading' );
 		setStatus( t( 'Uploading…' ), 'busy' );
 		try {
 			const cleanName = filename.value.replace( /[^a-zA-Z0-9_-]/g, '_' ) || 'recording';
@@ -241,8 +257,7 @@ function openRecorder( editor ) {
 			close();
 		} catch ( error ) {
 			setStatus( error.message || String( error ), 'error' );
-			insert.disabled = false;
-			record.disabled = false;
+			setControlState( 'error' );
 		}
 	};
 

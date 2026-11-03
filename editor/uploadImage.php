@@ -138,18 +138,19 @@ switch($_FILES['upload']['type'])
 
 $filename = sanitizeName(x_clean_input($_FILES['upload']['name']), $response);
 
-// Add path to the $filename
-$paste = "image";
-// Check if pasted filename already exists, if so add a count until we find a name that is available
-if ($filename == $paste . $paste_ext) {
-    $final = $paste . $paste_ext;
-    $count = 1;
-    while (file_exists($uploadpath . "media/" . $final)) {
-        $final =  $paste . "(" . $count . ")" . $paste_ext;
-        $count++;
-    }
-    $filename = $final;
+// Never replace an existing media file. Clipboard images normally arrive as
+// image.png/image.jpg, but dropped files retain their original filename and
+// require the same collision handling.
+$pathInfo = pathinfo($filename);
+$basename = isset($pathInfo['filename']) && $pathInfo['filename'] !== '' ? $pathInfo['filename'] : 'image';
+$extension = isset($pathInfo['extension']) && $pathInfo['extension'] !== '' ? '.' . $pathInfo['extension'] : $paste_ext;
+$final = $basename . $extension;
+$count = 1;
+while (file_exists($uploadpath . "media/" . $final)) {
+    $final = $basename . "(" . $count . ")" . $extension;
+    $count++;
 }
+$filename = $final;
 
 x_check_blacklisted_extensions($filename);
 

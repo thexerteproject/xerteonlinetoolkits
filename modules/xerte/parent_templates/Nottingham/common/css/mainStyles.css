@@ -1099,6 +1099,55 @@ figure.image.image-style-side {
 	max-width: 50%;
 }
 
+figure.image.image-style-align-left,
+figure.image.image-style-align-right {
+	clear: none;
+}
+
+figure.image.image-style-align-left {
+	float: left;
+	margin-left: 0;
+	margin-right: 1.5em;
+}
+
+figure.image.image-style-align-right {
+	float: right;
+	margin-left: 1.5em;
+	margin-right: 0;
+}
+
+figure.image.image-style-align-center {
+	float: none;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+figure.image.image-style-block-align-left {
+	margin-left: 0;
+	margin-right: auto;
+}
+
+figure.image.image-style-block-align-right {
+	margin-left: auto;
+	margin-right: 0;
+}
+
+img.image-inline.image-style-align-left {
+	float: left;
+	margin-right: .75em;
+}
+
+img.image-inline.image-style-align-right {
+	float: right;
+	margin-left: .75em;
+}
+
+img.image-inline.image-style-align-center {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 figcaption {
 	margin-top: .2em;
 	margin-bottom: 0;
@@ -1957,6 +2006,23 @@ button.resourceLink {
 #x_pageHolder {
 	container-name: x_pageHolder;
 	container-type: inline-size;
+}
+
+/* CKEditor 5 stores its default font sizes as classes rather than inline styles. */
+.text-tiny {
+	font-size: 0.7em;
+}
+
+.text-small {
+	font-size: 0.85em;
+}
+
+.text-big {
+	font-size: 1.4em;
+}
+
+.text-huge {
+	font-size: 1.8em;
 }
 
 @container x_pageHolder (max-width: 480px) {

@@ -3,6 +3,7 @@
  */
 import 'ckeditor5/ckeditor5.css';
 import './autocolumns.css';
+import './xerte-image-editing.css';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { InlineEditor } from '@ckeditor/ckeditor5-editor-inline';
 import { Emoji } from '@ckeditor/ckeditor5-emoji';
@@ -75,29 +76,26 @@ import { XerteMediaEmbedRoundTrip } from './plugins/xerte-media-embed-roundtrip.
 import { XerteMediaResize } from './plugins/xerte-media-resize.js';
 import { XerteLightbox } from './plugins/xerte-lightbox.js';
 import { XerteAccessibilityChecker } from './plugins/xerte-accessibility-checker.js';
+import { XerteSourceDialog } from './plugins/xerte-source-dialog.js';
 
 const toolbarItems = [
 	'undo', 'redo', '|',
 	'findAndReplace', '|',
-	'sourceEditing', 'showBlocks', 'accessibilityChecker', 'fullscreen', 'htmlEmbed', '|',
+	'sourceEditing', 'accessibilityChecker', 'fullscreen', 'htmlEmbed', '|',
 	'heading', 'style', '|',
 	'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'lineHeight', '|',
 	'textPartLanguage', '|',
 	'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'code', 'removeFormat', '|',
 	'specialCharacters', 'emoji', 'fontAwesome', 'horizontalLine', 'xerteMathJax', 'xerteRubyText', '|',
-	'link', 'xotlink', 'insertImage', 'xerteBrowseMedia', 'xerteAudio', 'xerteRecorder', 'mediaEmbed', 'insertTable', 'autocolumns', 'blockQuote', 'codeBlock', '|',
+	'link', 'xotlink', 'xerteBrowseImage', 'xerteBrowseMedia', 'xerteAudio', 'xerteRecorder', 'mediaEmbed', 'insertTable', 'autocolumns', 'blockQuote', 'codeBlock', '|',
 	'alignment', '|',
 	'bulletedList', 'numberedList', 'outdent', 'indent', '|',
-	'xotMarkWord', 'markTag'
+	'markTag', 'showBlocks'
 ];
 
 const imageToolbar = [
-	'imageStyle:inline',
-	'imageStyle:block',
-	'imageStyle:side',
+	'xerteImageProperties',
 	'|',
-	'toggleImageCaption',
-	'imageTextAlternative',
 	'linkImage'
 ];
 
@@ -181,6 +179,7 @@ const xerteBuiltinPlugins = [
 	XerteMediaResize,
 	XerteLightbox,
 	XerteAccessibilityChecker,
+	XerteSourceDialog,
 	HtmlEmbed,
 	XerteUploadAdapter,
 	XerteBrowseMedia,
@@ -289,7 +288,8 @@ const xerteDefaultConfig = {
 		]
 	},
 	image: {
-		toolbar: imageToolbar
+		toolbar: imageToolbar,
+		resizeUnit: 'px'
 	},
 	table: {
 		contentToolbar: tableToolbar
@@ -354,13 +354,15 @@ const xerteDefaultConfig = {
 		]
 	},
 	mediaEmbed: {
-		previewsInData: true
+		previewsInData: true,
+		toolbar: [ 'xerteMediaProperties' ]
 	},
 	htmlEmbed: {
 		showPreviews: true
 	},
 	xerteUploadUrl: '',
 	xerteUploadAudioUrl: '',
+	xerteBrowseImageUrl: '',
 	xerteBrowseMediaUrl: '',
 	xerteMathJaxLib: 'offline/js/mathjax/MathJax.js?config=TeX-MML-AM_HTMLorMML-full'
 };
@@ -375,7 +377,9 @@ XerteInlineEditor.defaultConfig = {
 	...xerteDefaultConfig,
 	toolbar: {
 		...xerteDefaultConfig.toolbar,
-		items: toolbarItems.filter( item => item !== 'fullscreen' )
+		items: toolbarItems
+			.filter( item => item !== 'fullscreen' )
+			.map( item => item === 'sourceEditing' ? 'xerteSourceDialog' : item )
 	}
 };
 
