@@ -21,3 +21,9 @@
 	min-width: 15em;
 }
 
+/* MathJax 2.4 rounds its zero-width measurement strut to 0.003em in Chrome. */
+.MathJax span[style*="border-left: 0em solid"],
+.MathJax span[style*="border-left: 0.003em solid"] {
+	border-left-width: 0 !important;
+}
+

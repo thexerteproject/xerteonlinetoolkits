@@ -2030,6 +2030,13 @@ button.resourceLink {
 	font-size: 1.8em;
 }
 
+/* MathJax 2.4 appends a zero-width measurement strut to each equation using
+ * border-left. Prevent browsers from rendering that strut as a hairline. */
+.MathJax span[style*="border-left: 0em solid"],
+.MathJax span[style*="border-left: 0.003em solid"] {
+	border-left-width: 0 !important;
+}
+
 @container x_pageHolder (max-width: 480px) {
 	/* split screen layout used in lots of page models - stack vertically on smaller screens */
 	.splitScreen {
