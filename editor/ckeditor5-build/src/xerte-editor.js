@@ -75,6 +75,8 @@ import { XerteRubyText } from './plugins/xerte-ruby-text.js';
 import { XerteMediaEmbedRoundTrip } from './plugins/xerte-media-embed-roundtrip.js';
 import { XerteMediaResize } from './plugins/xerte-media-resize.js';
 import { XerteLightbox } from './plugins/xerte-lightbox.js';
+import { XerteLinkTarget } from './plugins/xerte-link-target.js';
+import { XerteLinkDialog } from './plugins/xerte-link-dialog.js';
 import { XerteAccessibilityChecker } from './plugins/xerte-accessibility-checker.js';
 import { XerteSourceDialog } from './plugins/xerte-source-dialog.js';
 
@@ -87,7 +89,7 @@ const toolbarItems = [
 	'textPartLanguage', '|',
 	'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'code', 'removeFormat', '|',
 	'specialCharacters', 'emoji', 'fontAwesome', 'horizontalLine', 'xerteMathJax', 'xerteRubyText', '|',
-	'link', 'xotlink', 'xerteBrowseImage', 'xerteBrowseMedia', 'xerteAudio', 'xerteRecorder', 'mediaEmbed', 'insertTable', 'autocolumns', 'blockQuote', 'codeBlock', '|',
+	'xerteLink', 'xotlink', 'xerteBrowseImage', 'xerteBrowseMedia', 'xerteAudio', 'xerteRecorder', 'mediaEmbed', 'insertTable', 'autocolumns', 'blockQuote', 'codeBlock', '|',
 	'alignment', '|',
 	'bulletedList', 'numberedList', 'outdent', 'indent', '|',
 	'markTag', 'showBlocks'
@@ -178,6 +180,8 @@ const xerteBuiltinPlugins = [
 	XerteMediaEmbedRoundTrip,
 	XerteMediaResize,
 	XerteLightbox,
+	XerteLinkTarget,
+	XerteLinkDialog,
 	XerteAccessibilityChecker,
 	XerteSourceDialog,
 	HtmlEmbed,
@@ -295,17 +299,7 @@ const xerteDefaultConfig = {
 		contentToolbar: tableToolbar
 	},
 	link: {
-		toolbar: [ 'linkPreview', '|', 'xerteEditPageLink', 'xerteLightbox', 'editLink', 'linkProperties', 'unlink' ],
-		decorators: {
-			openInNewTab: {
-				mode: 'automatic',
-				callback: url => /^(https?:|mailto:)/i.test( url ),
-				attributes: {
-					target: '_blank',
-					rel: 'noopener noreferrer'
-				}
-			}
-		}
+		toolbar: [ 'xerteLinkPreview', 'xerteEditPageLink', '|', 'xerteLinkTarget', 'xerteEditLink', 'unlink' ]
 	},
 	language: {
 		ui: 'en',

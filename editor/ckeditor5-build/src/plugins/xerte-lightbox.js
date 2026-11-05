@@ -146,7 +146,10 @@ function registerUpcast( editor ) {
 }
 
 function registerInlineDowncast( editor ) {
-	for ( const pipeline of [ 'dataDowncast', 'editingDowncast' ] ) {
+	// Featherlight listens for data-featherlight attributes on live DOM links.
+	// Keep those attributes in serialized data only: rendering them in the
+	// editing view makes a click open the lightbox instead of selecting the link.
+	for ( const pipeline of [ 'dataDowncast' ] ) {
 		editor.conversion.for( pipeline ).add( dispatcher => {
 			const createElement = ( writer, settings ) => {
 				const element = writer.createAttributeElement(
@@ -185,7 +188,9 @@ function registerInlineDowncast( editor ) {
 }
 
 function registerBlockImageDowncast( editor ) {
-	for ( const pipeline of [ 'dataDowncast', 'editingDowncast' ] ) {
+	// As with inline links, the editing view must stay inert. The model retains
+	// the settings, while only the saved data receives Featherlight attributes.
+	for ( const pipeline of [ 'dataDowncast' ] ) {
 		editor.conversion.for( pipeline ).add( dispatcher => {
 			dispatcher.on( `attribute:${ MODEL_ATTRIBUTE }:imageBlock`, ( event, data, api ) => {
 				if ( !api.consumable.consume( data.item, event.name ) ) {
@@ -232,9 +237,13 @@ function registerCleanup( editor ) {
 	} );
 }
 
-function openLightboxDialog( editor, currentValue ) {
+export function openLightboxDialog( editor, currentValue ) {
 	const t = editor.t;
-	const initial = normalizeLightbox( currentValue || { type: 'iframe' } );
+	const initial = normalizeLightbox( currentValue || {
+		type: 'iframe',
+		width: { value: '75', unit: 'vw' },
+		height: { value: '75', unit: 'vh' }
+	} );
 	const overlay = document.createElement( 'div' );
 	overlay.style.cssText = 'position:fixed;inset:0;z-index:2147483645;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:20px';
 
