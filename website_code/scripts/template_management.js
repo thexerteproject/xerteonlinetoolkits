@@ -959,11 +959,23 @@ function renderWorkspaceTemplateInfo(info) {
     h += '<h3>' + escapeHtml(p.displayName || '') + '</h3>';
     h += '<ul class="workspace_info_list">';
     h += '<li><strong>ID</strong>: ' + escapeHtml(p.templateId) + '</li>';
-    if (p.dateCreated) h += '<li><strong>Created</strong>: ' + escapeHtml(p.dateCreated) + '</li>';
-    if (p.dateModified) h += '<li><strong>Modified</strong>: ' + escapeHtml(p.dateModified) + '</li>';
+    if (p.dateCreated) h += '<li><strong>Created on</strong>: ' + escapeHtml(p.dateCreated) + '</li>';
+    if (p.dateModified) h += '<li><strong>Last modified on</strong>: ' + escapeHtml(p.dateModified) + '</li>';
+    if (p.templateUsed) h += '<li><strong>Template</strong>: ' + escapeHtml(p.templateUsed) + '</li>';
+    if (p.engine && p.engine.selectedEngine) {
+        var player = String(p.engine.selectedEngine).toLowerCase() === 'html5' ? 'HTML5' : p.engine.selectedEngine;
+        h += '<li><strong>Player</strong>: ' + escapeHtml(player) + '</li>';
+    }
     if (p.access) h += '<li><strong>Access</strong>: ' + escapeHtml(p.access) + '</li>';
+    if (p.numberOfViews !== null && p.numberOfViews !== undefined) h += '<li><strong>Views</strong>: ' + escapeHtml(p.numberOfViews) + '</li>';
     if (p.playUrl) h += '<li><strong>URL</strong>: <a target="_blank" href="' + escapeHtml(p.playUrl) + '">' + escapeHtml(p.playUrl) + '</a></li>';
+    h += '<li><strong>Shared</strong>: ' + renderWorkspaceSharingValue(info.panels.sharing) + '</li>';
     h += '</ul>';
+
+    if (p.embed && p.embed.iframeSnippet) {
+        h += '<label class="block" for="workspace_embed_code"><strong>Embed code</strong>:</label>';
+        h += '<textarea readonly id="workspace_embed_code" rows="3" cols="30" onfocus="this.select()">' + escapeHtml(p.embed.iframeSnippet) + '</textarea>';
+    }
 
     // Stats placeholder for xAPIDashboard
     if (info.fetch_statistics) {
@@ -971,6 +983,23 @@ function renderWorkspaceTemplateInfo(info) {
     }
     h += '</div>';
     return h;
+}
+
+function renderWorkspaceSharingValue(sharing) {
+    if (!sharing || sharing.empty) return 'Not shared';
+
+    var h = '<ul class="workspace_info_list">';
+    var users = sharing.users || [];
+    for (var i = 0; i < users.length; i++) {
+        var user = users[i];
+        h += '<li>' + escapeHtml(user.firstname) + ' ' + escapeHtml(user.surname) + ' (' + escapeHtml(user.username) + ') – ' + escapeHtml(user.role) + (user.inherited ? ' (inherited)' : '') + '</li>';
+    }
+    var groups = sharing.groups || [];
+    for (var j = 0; j < groups.length; j++) {
+        var group = groups[j];
+        h += '<li>' + escapeHtml(group.name) + ' – ' + escapeHtml(group.role) + (group.inherited ? ' (inherited)' : '') + '</li>';
+    }
+    return h + '</ul>';
 }
 
 function disableReadOnlyButtons(info){
@@ -1030,9 +1059,10 @@ function renderWorkspaceFolderInfo(info) {
     h += '<h3>' + escapeHtml(info.name || '') + '</h3>';
     h += '<ul class="workspace_info_list">';
     h += '<li><strong>ID</strong>: ' + escapeHtml(info.folder_id) + '</li>';
-    if (info.date_created) h += '<li><strong>Created</strong>: ' + escapeHtml(info.date_created) + '</li>';
-    if (info.date_modified) h += '<li><strong>Modified</strong>: ' + escapeHtml(info.date_modified) + '</li>';
-    h += '</ul></div>';
+    if (info.date_created) h += '<li><strong>Created on</strong>: ' + escapeHtml(info.date_created) + '</li>';
+    h += '<li><strong>Shared</strong>: ' + renderWorkspaceSharingValue(info.sharing) + '</li>';
+    h += '</ul>';
+    h += '</div>';
     return h;
 }
 
