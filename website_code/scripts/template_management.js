@@ -366,9 +366,18 @@ function edit_window(admin, edit, openMode) {
                                         iframeWidth: '95%',
                                         iframeHeight: '95%',
                                         beforeClose: function(){
-                                            if (typeof this.$content[0].contentWindow.WIZARD_EDITOR != "undefined") {
-                                                this.$content[0].contentWindow.WIZARD_EDITOR.tree.savepreviewasync(false);
-                                                edit_window_close(node.xot_id + "-");
+                                            var editorWindow = this.$content[0].contentWindow;
+                                            editorWindow.window_reference = window;
+
+                                            if (typeof editorWindow.WIZARD_EDITOR !== "undefined") {
+                                                editorWindow.WIZARD_EDITOR.tree.savepreviewasync(false);
+                                            }
+
+                                            // Complete the normal editor shutdown here and suppress the
+                                            // iframe unload handler so the lock file is not closed twice.
+                                            if (typeof editorWindow.bunload === "function") {
+                                                editorWindow.onbeforeunload = null;
+                                                editorWindow.bunload();
                                             }
                                         },
                                         closeOnClick: false,

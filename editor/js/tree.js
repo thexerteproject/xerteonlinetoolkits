@@ -569,7 +569,7 @@ var EDITOR = (function ($, parent) {
                 dataType: "json",
                 type: "POST",
                 cache:false,
-                async:true
+                async:async
             })
             .done(function() {
                     $('#loader').hide();
