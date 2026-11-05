@@ -6,6 +6,7 @@ import { Command, Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { IconWeb } from 'ckeditor5/src/icons.js';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
+import { priorities } from 'ckeditor5/src/utils.js';
 import { openLightboxDialog } from './xerte-lightbox.js';
 import { hideForXertePageLink } from './xerte-page-link.js';
 
@@ -86,13 +87,17 @@ function registerUpcast( editor ) {
 				attributes.push( 'rel' );
 			}
 			if ( !api.consumable.consume( data.viewItem, { attributes } ) ) return;
+			if ( !data.modelRange ) {
+				Object.assign( data, api.convertChildren( data.viewItem, data.modelCursor ) );
+			}
 
 			if ( data.modelRange && !data.modelRange.isCollapsed ) {
 				api.writer.setAttribute( MODEL_ATTRIBUTE, target, data.modelRange );
 			} else if ( data.modelCursor?.parent?.hasAttribute( 'linkHref' ) ) {
 				api.writer.setAttribute( MODEL_ATTRIBUTE, target, data.modelCursor.parent );
 			}
-		}, { priority: 'high' } );
+		// Run after LinkImage and before General HTML Support.
+		}, { priority: priorities.normal - 1 } );
 	} );
 }
 
@@ -201,13 +206,18 @@ function openTargetDialog( editor ) {
 	cancel.addEventListener( 'click', close );
 	overlay.addEventListener( 'click', event => { if ( event.target === overlay ) close(); } );
 	overlay.addEventListener( 'keydown', event => { if ( event.key === 'Escape' ) close(); } );
+	const showLightboxSettings = () => {
+		close();
+		openLightboxDialog( editor, lightboxCommand.value );
+	};
+	select.addEventListener( 'change', () => {
+		if ( select.value === '_lightbox' ) showLightboxSettings();
+	} );
 	form.addEventListener( 'submit', event => {
 		event.preventDefault();
 		let target = select.value;
 		if ( target === '_lightbox' ) {
-			editor.execute( 'xerteLinkTarget', '' );
-			close();
-			openLightboxDialog( editor, lightboxCommand.value );
+			showLightboxSettings();
 			return;
 		}
 		editor.execute( 'xerteLightbox', null );

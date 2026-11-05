@@ -1,0 +1,97 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Link target and lightbox regression checks</title>
+<h1>Link target and lightbox regression checks</h1>
+<pre id="results">Running…</pre>
+<div id="editor"></div>
+<script src="../../js/vendor/ckeditor5/xerte-editor.bundle.js?lightbox-regression=4"></script>
+<script>
+( async () => {
+	const results = document.querySelector( '#results' );
+	const passed = [];
+	const assert = ( condition, message ) => {
+		if ( !condition ) throw new Error( message );
+	};
+	try {
+		const editor = await XerteCKEditor5.Classic.create( document.querySelector( '#editor' ) );
+		const settings = { type: 'iframe', alt: '', width: { value: '62', unit: 'vw' }, height: { value: '480', unit: 'px' }, extraStyles: [] };
+		const cases = [
+			[ 'image mode with dimensions', '<p><a href="https://example.com/image.png" data-featherlight="image" data-featherlight-iframe-style="width:62vw;height:480px">Image</a></p>', { ...settings, type: 'image' } ],
+			[ 'text', '<p><a href="https://example.com" data-featherlight="iframe" data-featherlight-iframe-style="width:62vw;height:480px">Example</a></p>', settings ],
+			[ 'inline image', '<p><a href="https://example.com" data-featherlight="image" data-image-alt="Large image"><img src="sample.png" alt="Thumbnail"></a></p>', { type: 'image', alt: 'Large image', width: null, height: null, extraStyles: [] } ],
+			[ 'block image', '<figure class="image"><a href="https://example.com" data-featherlight="iframe" data-featherlight-iframe-style="width:62vw;height:480px"><img src="sample.png" alt="Thumbnail"></a></figure>', settings ],
+			[ 'legacy lightbox', '<p><a href="https://example.com" target="_lightbox" data-featherlight-iframe-width="640">Legacy</a></p>', { type: 'iframe', alt: '', width: { value: '640', unit: 'px' }, height: null, extraStyles: [] } ]
+		];
+		const linkedItem = () => Array.from( editor.model.createRangeIn( editor.model.document.getRoot() ).getItems() ).find( item => item.hasAttribute( 'linkHref' ) );
+		for ( const [ name, html, expected ] of cases ) {
+			editor.setData( html );
+			for ( let reload = 0; reload < 3; reload++ ) {
+				assert( JSON.stringify( linkedItem()?.getAttribute( 'linkXerteLightbox' ) ) === JSON.stringify( expected ), `${ name }: settings lost on reload ${ reload }` );
+				const saved = editor.getData();
+				editor.setData( '<p>Another page</p>' );
+				editor.setData( saved );
+			}
+			passed.push( `PASS: ${ name } retains lightbox settings across three reloads` );
+		}
+		for ( const target of [ '_blank', '_parent', '_top', 'named-frame' ] ) {
+			editor.setData( `<p><a href="https://example.com" target="${ target }">Example</a></p>` );
+			assert( linkedItem()?.getAttribute( 'linkXerteTarget' ) === target, `${ target }: target missing` );
+			editor.setData( editor.getData() );
+			assert( linkedItem()?.getAttribute( 'linkXerteTarget' ) === target, `${ target }: target lost on reload` );
+			passed.push( `PASS: ${ target } survives reload` );
+		}
+		editor.setData( cases.find( entry => entry[ 0 ] === 'text' )[ 1 ] );
+		editor.model.change( writer => writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 2 ) );
+		assert( editor.commands.get( 'xerteLightbox' ).value?.width.value === '62', 'Selected link command must restore saved settings' );
+		passed.push( 'PASS: selected link command restores saved settings' );
+		const targetButton = editor.ui.componentFactory.create( 'xerteLinkTarget' );
+		targetButton.fire( 'execute' );
+		let dialog = document.querySelector( '[role="dialog"]' );
+		assert( dialog.querySelector( 'select' ).value === '_lightbox', 'Target dialog must select Lightbox after reload' );
+		dialog.querySelector( 'button' ).click();
+		editor.execute( 'xerteLightbox', null );
+		editor.execute( 'xerteLinkTarget', '_blank' );
+		targetButton.fire( 'execute' );
+		const targetSelect = document.querySelector( '[role="dialog"] select' );
+		targetSelect.value = '_lightbox';
+		targetSelect.dispatchEvent( new Event( 'change' ) );
+		dialog = document.querySelector( '[aria-label="Lightbox settings"]' );
+		assert( dialog, 'Selecting Lightbox must immediately show its settings' );
+		Array.from( dialog.querySelectorAll( 'button' ) ).find( button => button.textContent === 'Cancel' ).click();
+		assert( linkedItem().getAttribute( 'linkXerteTarget' ) === '_blank', 'Cancel must retain original target' );
+		passed.push( 'PASS: Lightbox opens immediately and Cancel preserves the target' );
+		targetButton.fire( 'execute' );
+		const selectAgain = document.querySelector( '[role="dialog"] select' );
+		selectAgain.value = '_lightbox';
+		selectAgain.dispatchEvent( new Event( 'change' ) );
+		dialog = document.querySelector( '[aria-label="Lightbox settings"]' );
+		dialog.querySelector( 'input[type="number"]' ).value = '58';
+		dialog.dispatchEvent( new Event( 'submit', { cancelable: true } ) );
+		assert( !linkedItem().hasAttribute( 'linkXerteTarget' ), 'Saving lightbox must remove window target' );
+		editor.setData( editor.getData() );
+		assert( linkedItem().getAttribute( 'linkXerteLightbox' ).width.value === '58', 'Dialog settings must survive reload' );
+		passed.push( 'PASS: saved dialog settings survive reload and replace window target' );
+		editor.model.change( writer => writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 2 ) );
+		const lightboxButton = editor.ui.componentFactory.create( 'xerteLightbox' );
+		lightboxButton.fire( 'execute' );
+		dialog = document.querySelector( '[aria-label="Lightbox settings"]' );
+		dialog.querySelector( 'select' ).value = 'image';
+		dialog.querySelector( 'select' ).dispatchEvent( new Event( 'change' ) );
+		dialog.dispatchEvent( new Event( 'submit', { cancelable: true } ) );
+		editor.setData( editor.getData() );
+		editor.model.change( writer => writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 2 ) );
+		lightboxButton.fire( 'execute' );
+		dialog = document.querySelector( '[aria-label="Lightbox settings"]' );
+		assert( dialog.querySelector( 'select' ).value === 'image', 'Image mode must survive reload' );
+		assert( dialog.querySelectorAll( 'input[type="number"]' )[ 0 ].value === '58', 'Image mode must retain width after reopening' );
+		assert( dialog.querySelectorAll( 'input[type="number"]' )[ 1 ].value === '75', 'Image mode must retain height after reopening' );
+		Array.from( dialog.querySelectorAll( 'button' ) ).find( button => button.textContent === 'Cancel' ).click();
+		lightboxButton.destroy();
+		passed.push( 'PASS: switching to image mode retains width and height after saving and reopening' );
+		targetButton.destroy();
+		results.textContent = passed.join( '\n' );
+	} catch ( error ) {
+		results.textContent = passed.join( '\n' ) + '\nFAIL: ' + error.stack;
+	}
+} )();
+</script>

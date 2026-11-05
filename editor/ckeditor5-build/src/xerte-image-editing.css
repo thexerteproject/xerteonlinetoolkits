@@ -15,3 +15,9 @@
 	max-width: none;
 }
 
+/* Keep CKEditor's safeguard against squashed media consistent with both
+ * learning-object themes, including during drag resizing. */
+.ck.ck-editor__editable.ck-content figure.media {
+	min-width: 15em;
+}
+

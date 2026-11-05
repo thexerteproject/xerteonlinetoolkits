@@ -1058,6 +1058,11 @@ figure {
 	margin: 0;
 }
 
+/* Match CKEditor and Bootstrap's safeguard against squashed media. */
+figure.media {
+	min-width: 15em;
+}
+
 /* Render CKEditor 5 image styles outside the editor. */
 figure.image {
 	display: table;

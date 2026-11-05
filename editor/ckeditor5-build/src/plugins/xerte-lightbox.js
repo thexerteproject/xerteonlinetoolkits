@@ -131,6 +131,9 @@ function registerUpcast( editor ) {
 				attributesToConsume.push( 'target' );
 			}
 			api.consumable.consume( viewLink, { attributes: attributesToConsume } );
+			if ( !data.modelRange ) {
+				Object.assign( data, api.convertChildren( viewLink, data.modelCursor ) );
+			}
 
 			if ( data.modelRange && !data.modelRange.isCollapsed ) {
 				api.writer.setAttribute( MODEL_ATTRIBUTE, settings, data.modelRange );
@@ -141,7 +144,9 @@ function registerUpcast( editor ) {
 			if ( modelElement && modelElement.hasAttribute( 'linkHref' ) ) {
 				api.writer.setAttribute( MODEL_ATTRIBUTE, settings, modelElement );
 			}
-		}, { priority: 'high' } );
+		// LinkImage runs first. Text links may still need their children converted;
+		// create that range before General HTML Support collects the attributes.
+		}, { priority: priorities.normal - 1 } );
 	} );
 }
 
@@ -372,6 +377,7 @@ export function openLightboxDialog( editor, currentValue ) {
 	overlay.addEventListener( 'keydown', event => { if ( event.key === 'Escape' ) close(); } );
 	form.addEventListener( 'submit', event => {
 		event.preventDefault();
+		editor.execute( 'xerteLinkTarget', '' );
 		editor.execute( 'xerteLightbox', {
 			type: type.value,
 			alt: alt.value.trim(),
