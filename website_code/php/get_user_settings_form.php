@@ -55,7 +55,12 @@ if ($section === 'preferences') {
 ?>
 <div class="preferences-modal" id="preferences-form">
     <div class="preferences-modal-header">
-        <h2 class="preferences-modal-title"><?php echo USER_SETTINGS_PREFERENCES_TITLE; ?></h2>
+        <div class="preferences-modal-heading">
+            <h2 class="preferences-modal-title"><?php echo USER_SETTINGS_PREFERENCES_TITLE; ?></h2>
+            <span class="preferences-info-tooltip" tabindex="0" title="<?php echo htmlspecialchars(USER_SETTINGS_REFRESH_TOOLTIP, ENT_QUOTES, 'UTF-8'); ?>" aria-label="<?php echo htmlspecialchars(USER_SETTINGS_REFRESH_TOOLTIP, ENT_QUOTES, 'UTF-8'); ?>">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
+            </span>
+        </div>
         <button type="button" class="preferences-modal-close" aria-label="<?php echo USER_SETTINGS_CANCEL; ?>">&times;</button>
     </div>
 
@@ -158,6 +163,7 @@ if ($section === 'preferences') {
     </div>
 
     <div class="preferences-modal-footer">
+        <button type="button" class="preferences-btn preferences-btn-reset"><?php echo USER_SETTINGS_RESET_DEFAULTS; ?></button>
         <button type="button" class="preferences-btn preferences-btn-cancel"><?php echo USER_SETTINGS_CANCEL; ?></button>
         <button type="button" class="preferences-btn preferences-btn-save"><?php echo USER_SETTINGS_SAVE; ?></button>
     </div>

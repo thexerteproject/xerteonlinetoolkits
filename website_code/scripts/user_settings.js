@@ -161,8 +161,28 @@ function preferenceIsTruthy(value, defaultValue) {
     return value !== false && value !== 'false' && value !== 0 && value !== '0';
 }
 
-function populatePreferencesForm($root) {
-    var prefs = (typeof user_preferences !== 'undefined' && user_preferences) ? user_preferences : {};
+var userPreferenceDefaults = {
+    panel_east_open: true,
+    panel_south_open: true,
+    editor_panel_east_open: true,
+    editor_show_language: false,
+    editor_fixed_toolbar: false,
+    editor_fixed_toolbar_expanded: false,
+    editor_collapse_quickfill: false,
+    editor_collapse_quickfill_with_children: true,
+    editor_quickfill_assistants_only: false,
+    editor_expand_groups: false,
+    editor_expand_tree: false,
+    editor_open_mode: 'popup'
+};
+
+function getDefaultUserPreferences() {
+    return $.extend({}, userPreferenceDefaults);
+}
+
+function populatePreferencesForm($root, preferenceValues) {
+    var savedPreferences = preferenceValues || ((typeof user_preferences !== 'undefined' && user_preferences) ? user_preferences : {});
+    var prefs = $.extend(getDefaultUserPreferences(), savedPreferences);
 
     $root.find('#panel_east_open').prop('checked', preferenceIsTruthy(prefs.panel_east_open, true));
     $root.find('#panel_south_open').prop('checked', preferenceIsTruthy(prefs.panel_south_open, true));
@@ -223,11 +243,20 @@ function savePreferencesFromForm($root) {
         window.user_preferences = {};
     }
 
-    if (typeof save_user_preference === 'function') {
-        Object.keys(prefs).forEach(function(key) {
-            save_user_preference(key, prefs[key]);
-        });
-    }
+    var saveUrl = (typeof apiV1Url === 'function')
+        ? apiV1Url('user/preferences')
+        : 'website_code/api/v1/index.php?route=' + encodeURIComponent('user/preferences');
+    $.ajax({
+        type: 'POST',
+        url: saveUrl,
+        dataType: 'json',
+        data: {preferences: prefs}
+    }).fail(function(xhr, status, error) {
+        var message = xhr.responseJSON && xhr.responseJSON.error
+            ? xhr.responseJSON.error.message
+            : error;
+        console.error('Failed to save preferences:', message);
+    });
 
     Object.keys(prefs).forEach(function(key) {
         window.user_preferences[key] = prefs[key];
@@ -264,6 +293,10 @@ function bindPreferencesModalHandlers($dialog) {
 
     $root.find('.preferences-modal-close, .preferences-btn-cancel').off('click.prefs').on('click.prefs', function() {
         $dialog.dialog('close');
+    });
+
+    $root.find('.preferences-btn-reset').off('click.prefs').on('click.prefs', function() {
+        populatePreferencesForm($root, getDefaultUserPreferences());
     });
 
     $root.find('.preferences-btn-save').off('click.prefs').on('click.prefs', function() {

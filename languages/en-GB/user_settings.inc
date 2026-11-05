@@ -33,6 +33,7 @@
     define("USER_SETTINGS_EDITOR_OPEN_MODE_LIGHTBOX", "Open in an overlay on the overview page");
 
     define("USER_SETTINGS_PREFERENCES_TITLE", "My preferences");
+    define("USER_SETTINGS_REFRESH_TOOLTIP", "Refresh the page after saving to apply all preference changes.");
     define("USER_SETTINGS_SECTION_EDITOR_OPEN", "When I open a lesson for editing");
     define("USER_SETTINGS_SECTION_OVERVIEW", "On my overview page");
     define("USER_SETTINGS_SECTION_IN_EDITOR", "In the editor");
@@ -50,6 +51,7 @@
     define("USER_SETTINGS_EDITOR_EXPAND_GROUPS", "Expand optional property groups by default");
     define("USER_SETTINGS_EDITOR_EXPAND_TREE", "Expand all pages by default");
     define("USER_SETTINGS_CANCEL", "Cancel");
+    define("USER_SETTINGS_RESET_DEFAULTS", "Reset to defaults");
     define("USER_SETTINGS_SAVE", "Save");
 
 ?>
