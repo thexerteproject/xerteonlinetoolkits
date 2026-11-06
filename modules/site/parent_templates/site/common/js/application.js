@@ -4556,6 +4556,16 @@ var XBOOTSTRAP = (function ($, parent) { var self = parent.GLOBALVARS = {};
 var scrollRevealObserver = null;
 var scrollRevealLastScrollY = 0;
 var scrollRevealAlwaysVisibleCount = $(data).find("learningObject").attr("scrollRevealStatic");
+var scrollRevealSuppressRewind = false;
+var scrollRevealTimer = null;
+
+function scrollRevealSuspendRewind(delay = 600) {
+	scrollRevealSuppressRewind = true;
+	clearTimeout(scrollRevealTimer);
+	scrollRevealTimer = setTimeout(() => {
+		scrollRevealSuppressRewind = false;
+	}, delay);
+}
 
 // Initialise ScrollReveal
 function scrollRevealInit() {
@@ -4614,7 +4624,10 @@ function scrollRevealRefresh() {
 
 				if (entry.isIntersecting) {
 					entry.target.classList.add("visible");
-				} else if (!scrollingDown) {
+				} else if (
+					!scrollingDown &&
+					!scrollRevealSuppressRewind
+				) {
 					entry.target.classList.remove("visible");
 				}
 
@@ -4657,3 +4670,23 @@ function scrollRevealDestroy() {
 
 	scrollRevealLastScrollY = 0;
 }
+// =====================================================
+// PAUSE REWIND DURING NAVIGATOR CHANGES
+// =====================================================
+
+$(document).on(
+	"show.bs.collapse",
+	".collapse",
+	function () {
+		scrollRevealSuspendRewind();
+	}
+);
+
+$(document).on(
+	"show.bs.tab show.bs.pill",
+	"[data-toggle='tab'], [data-toggle='pill']",
+	function () {
+		scrollRevealSuspendRewind();
+	}
+);
+
