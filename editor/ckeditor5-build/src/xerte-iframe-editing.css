@@ -1,0 +1,88 @@
+/* These rules style the wizard-side shell only. Content/theme rules live in the
+ * child document, created by XerteIframeEditing, and cannot reach this toolbar.
+ * The frame takes over the editable's border so there is no doubled border. */
+.ck.ck-editor.xerte-iframe-editor .xerte-cke5-content-frame {
+	border: 1px solid var(--ck-color-base-border);
+	border-radius: 0 0 var(--ck-border-radius) var(--ck-border-radius);
+}
+
+/* The plugin mirrors editor focus onto the frame, including toolbar focus. */
+.ck.ck-editor.xerte-iframe-editor .xerte-cke5-content-frame.ck-focused {
+	border-color: var(--ck-color-focus-border);
+	box-shadow: var(--ck-inner-shadow);
+}
+
+/* A class lets normal wizard scrolling return without overwriting its styles. */
+html.xerte-iframe-fullscreen-open,
+body.xerte-iframe-fullscreen-open {
+	overflow: hidden !important;
+}
+
+/* UI Layout's resize handles are siblings of the editor's pane and paint above
+ * its stacking context. They are wizard controls, not fullscreen page guides. */
+body.xerte-iframe-fullscreen-open .ui-layout-resizer {
+	visibility: hidden !important;
+	pointer-events: none !important;
+}
+
+/* Floating CKEditor UI remains in the wizard's body, outside the fixed editor.
+ * Raise that UI without also raising wizard controls that use --ck-z-panel. */
+body.xerte-iframe-fullscreen-open .ck-body-wrapper {
+	--ck-z-default: 100001;
+	--ck-z-panel: 101000;
+	--ck-z-dialog: 110000;
+}
+
+/* Keep the live iframe in place: moving it would reload its document. Fullscreen
+ * also overrides the bridge's normal field width/height limits. */
+.ck.ck-editor.xerte-iframe-fullscreen {
+	position: fixed !important;
+	inset: 0 !important;
+	z-index: 100000 !important;
+	display: flex !important;
+	flex-direction: column;
+	width: 100% !important;
+	max-width: none !important;
+	height: 100vh !important;
+	max-height: none !important;
+	margin: 0 !important;
+	background: var(--ck-color-base-background);
+}
+
+.ck.ck-editor.xerte-iframe-fullscreen > .ck-editor__top {
+	flex: 0 0 auto;
+	order: 0;
+}
+
+/* The toolbar is already at the top of the fullscreen flex layout. Disable its
+ * sticky offsets and spare placeholder space, which otherwise push it around. */
+.ck.ck-editor.xerte-iframe-fullscreen .ck-sticky-panel__placeholder {
+	display: none !important;
+	height: 0 !important;
+}
+
+.ck.ck-editor.xerte-iframe-fullscreen .ck-sticky-panel__content {
+	position: static !important;
+	top: auto !important;
+	bottom: auto !important;
+	width: 100% !important;
+	max-width: none !important;
+	margin: 0 !important;
+}
+
+/* Give content the space left below the toolbar. min-height:0 allows this area
+ * to shrink; the iframe scrolls instead of making the whole editor overflow. */
+.ck.ck-editor.xerte-iframe-fullscreen > .ck-editor__main {
+	display: flex !important;
+	flex: 1 1 0;
+	flex-direction: column;
+	order: 1;
+	min-height: 0;
+}
+
+/* Ignore the normal pixel field height while flex allocates fullscreen space. */
+.ck.ck-editor.xerte-iframe-fullscreen .xerte-cke5-content-frame {
+	flex: 1 1 0;
+	height: 0 !important;
+	min-height: 0;
+}

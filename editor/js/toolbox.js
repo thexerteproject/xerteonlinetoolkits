@@ -2184,12 +2184,21 @@ var EDITOR = (function ($, parent) {
 
                     if (height > 0)
                     {
+                        // Wizard DOM searches cannot enter the content iframe. The shim
+                        // exposes the native instance; resize its frame when one is used.
                         const e = $('#' + options.id).next().find('.ck-editor__editable_inline');
-                        const editor = e[0].ckeditorInstance;
-                        $('#' + options.id).next().find('.ck-editor__editable_inline').css("min-height", height + "px").css("max-height", height + "px");
-                        editor.editing.view.change(writer=>{
-                            writer.setStyle('height', height + 'px', editor.editing.view.document.getRoot());
-                        });
+                        const editor = self._native || (e[0] && e[0].ckeditorInstance);
+                        if (editor) {
+                            const framed = editor.plugins.has('XerteIframeEditing') && editor.plugins.get('XerteIframeEditing');
+                            if (framed && framed.frame) {
+                                framed.setHeight(height);
+                            } else {
+                                $(editor.ui.getEditableElement()).css("min-height", height + "px").css("max-height", height + "px");
+                                editor.editing.view.change(writer=>{
+                                    writer.setStyle('height', height + 'px', editor.editing.view.document.getRoot());
+                                });
+                            }
+                        }
                     }
 
                     // Editor is ready, attach change event
@@ -2921,6 +2930,10 @@ var EDITOR = (function ($, parent) {
         var description = $("<div>" + theme.description + "</div><div class='theme_url_param'>" + language.ThemeUrlParam + " " + theme.name + "</div>");
         $('div.theme_description:first').html(description);
         setAttributeValue(key, [name], [theme.name]);
+        // Apply the selected theme to open content frames without recreating fields.
+		if (window.XerteCKEditor5Facade && typeof window.XerteCKEditor5Facade.setTheme === 'function') {
+			window.XerteCKEditor5Facade.setTheme(theme.name);
+		}
     }
 
     getComboboxOptionsForBaseSetting = function (setting_key){
@@ -3495,7 +3508,12 @@ var EDITOR = (function ($, parent) {
             return;
         }
         var $label = $nameRow.find('td.wizardlabel').first();
-        var $input = $nameRow.find('.wizardvalue_inner .inlinewysiwyg p').first();
+        // Measure the wizard-side frame: an editable inside it reports coordinates
+        // in the child document, which would misplace the Quick Fill panel.
+        var $input = $nameRow.find('.wizardvalue_inner .xerte-cke5-content-frame').first();
+        if (!$input.length) {
+            $input = $nameRow.find('.wizardvalue_inner .inlinewysiwyg p').first();
+        }
         if (!$input.length) {
             $input = $nameRow.find('.wizardvalue_inner .ck-editor__editable_inline').first();
         }

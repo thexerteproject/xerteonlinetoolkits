@@ -79,6 +79,7 @@ import { XerteLinkTarget } from './plugins/xerte-link-target.js';
 import { XerteLinkDialog } from './plugins/xerte-link-dialog.js';
 import { XerteAccessibilityChecker } from './plugins/xerte-accessibility-checker.js';
 import { XerteSourceDialog } from './plugins/xerte-source-dialog.js';
+import { XerteIframeEditing } from './plugins/xerte-iframe-editing.js';
 
 const toolbarItems = [
 	'undo', 'redo', '|',
@@ -125,6 +126,7 @@ const htmlAllowAll = {
 };
 
 const xerteBuiltinPlugins = [
+	XerteIframeEditing,
 	Essentials,
 	Mention,
 	Emoji,
@@ -365,8 +367,12 @@ export class XerteClassicEditor extends ClassicEditor {}
 XerteClassicEditor.builtinPlugins = xerteBuiltinPlugins;
 XerteClassicEditor.defaultConfig = xerteDefaultConfig;
 
+// Titles/metadata remain native inline editors in the wizard, as in CKEditor 4.
+// Their final heading styling belongs to the player; applying the project theme
+// here would also change ordinary form-field fonts/backgrounds. Only rich-text
+// bodies need the iframe plugin and fullscreen shell.
 export class XerteInlineEditor extends InlineEditor {}
-XerteInlineEditor.builtinPlugins = xerteBuiltinPlugins.filter( plugin => plugin !== Fullscreen );
+XerteInlineEditor.builtinPlugins = xerteBuiltinPlugins.filter( plugin => plugin !== Fullscreen && plugin !== XerteIframeEditing );
 XerteInlineEditor.defaultConfig = {
 	...xerteDefaultConfig,
 	toolbar: {

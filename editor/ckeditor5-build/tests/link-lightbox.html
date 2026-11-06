@@ -13,7 +13,10 @@
 		if ( !condition ) throw new Error( message );
 	};
 	try {
-		const editor = await XerteCKEditor5.Classic.create( document.querySelector( '#editor' ) );
+		const editor = await XerteCKEditor5.Classic.create( document.querySelector( '#editor' ), {
+			// Run the same link checks with isolated content by adding ?iframe=1.
+			xerteIframeEditing: new URLSearchParams( location.search ).get( 'iframe' ) === '1'
+		} );
 		const settings = { type: 'iframe', alt: '', width: { value: '62', unit: 'vw' }, height: { value: '480', unit: 'px' }, extraStyles: [] };
 		const cases = [
 			[ 'image mode with dimensions', '<p><a href="https://example.com/image.png" data-featherlight="image" data-featherlight-iframe-style="width:62vw;height:480px">Image</a></p>', { ...settings, type: 'image' } ],

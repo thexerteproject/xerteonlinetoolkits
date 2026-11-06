@@ -398,6 +398,15 @@
 		var requestedLang = loadedLanguages && loadedLanguages.requestedLanguage || selectedLanguageCode();
 		var lang = loadedLanguages && loadedLanguages.uiLanguage || requestedLang;
 		var base = {
+			// Match CKEditor 4: rich-text bodies use themed iframes; titles and other
+			// inline fields stay in the wizard and inherit its form-field styling.
+			// inlineEditor comes from the wizard's TextInput + wysiwyg="true" route;
+			// the field's name/label does not decide which editor it gets.
+			// The global / URL switch can disable iframes for comparison/debugging.
+			xerteIframeEditing: !user.inlineEditor && window.XERTE_CKE5_IFRAME_EDITING !== false &&
+				!/(?:^|[?&])cke5iframe=0(?:&|$)/.test(window.location.search),
+			xerteIframeFramework: iframeTemplateFolder(),
+			xerteIframeStylesheets: iframeContentStylesheets(),
 			language: {
 				ui: lang,
 				content: lang,
@@ -454,6 +463,54 @@
 		return base;
 	}
 
+	function iframeTemplateFolder() {
+		var attributes = window.lo_data && lo_data.treeroot && lo_data.treeroot.attributes || {};
+		var framework = typeof templateframework !== 'undefined' ? String(templateframework) : 'xerte';
+		return framework === 'xerte' ? String(attributes.targetFolder || 'Nottingham') : framework;
+	}
+
+	function iframeContentStylesheets(themeName) {
+		// Match each player's base CSS and order before applying its selected theme.
+		// Site needs Bootstrap/custom.css (which imports Site's editorstyles.css),
+		// not Nottingham's mainStyles.css. Fonts/icons retain their original URLs.
+		// No selector rewriting: imported/custom themes use normal player files.
+		var folder = iframeTemplateFolder();
+		var common = folder === 'site' ? 'modules/site/parent_templates/site/common/' :
+			'modules/xerte/parent_templates/Nottingham/common/';
+		var urls = folder === 'site' ? [
+			common + 'css/bootstrap.css',
+			common + 'css/bootstrap-responsive.css',
+			common + 'css/fonts.css',
+			common + 'css/custom.css'
+		] : [common + 'css/mainStyles.css'];
+		urls = urls.concat([
+			'modules/common/fontawesome-6.6.0/css/all.min.css',
+			'modules/common/fontawesome-6.6.0/css/v4-shims.min.css',
+			'modules/common/fontawesome-6.6.0/css/v5-font-face.min.css'
+		]);
+		if (folder !== 'site') urls.push(common + 'css/fonts.css');
+		var attributes = window.lo_data && lo_data.treeroot && lo_data.treeroot.attributes || {};
+		var selected = String(themeName || attributes.theme || (typeof theme !== 'undefined' ? theme : 'default'));
+		// Site's application.js loads default/default.css too. Its PHP uses Apereo
+		// as the default LOGO folder only; that does not change the playback CSS.
+		if (selected !== 'default' || folder === 'Nottingham' || folder === 'site') {
+			urls.push('themes/' + encodeURIComponent(folder) + '/' + encodeURIComponent(selected) + '/' + encodeURIComponent(selected) + '.css');
+		}
+		var query = bridgeScript && bridgeScript.src.indexOf('?') !== -1 ? '?' + bridgeScript.src.split('?').slice(1).join('?') : '';
+		return urls.map(function (url) { return url + query; });
+	}
+
+	function setIframeTheme(themeName) {
+		// Swap CSS in open fields without rebuilding editors or resetting their
+		// content/undo history. Newly created fields read the current theme above.
+		Object.keys(window.__xerteCke5Instances).forEach(function (id) {
+			var editor = window.__xerteCke5Instances[id];
+			if (editor.plugins.has('XerteIframeEditing')) {
+				editor.plugins.get('XerteIframeEditing').setStylesheets(iframeContentStylesheets(themeName));
+			}
+		});
+	}
+
 	function applyEditableHeight(editor, px) {
 		if (!px || !editor || !editor.ui) {
 			return;
@@ -463,6 +520,8 @@
 		if (el) {
 			el.style.minHeight = parseInt(px, 10) + 'px';
 		}
+		// The outer frame must follow wizard height settings; its document scrolls.
+		if (editor.plugins.has('XerteIframeEditing')) editor.plugins.get('XerteIframeEditing').setHeight(px);
 	}
 
 	function stabilizeEditorLayout(editor, domEl, userConfig, initialMetrics) {
@@ -497,6 +556,8 @@
 			}
 		}
 		if (sourceHeight > 0 && editable) {
+			// The editable is in another document; sizing it alone cannot size its frame.
+			if (editor.plugins.has('XerteIframeEditing')) editor.plugins.get('XerteIframeEditing').setHeight(sourceHeight);
 			editable.style.minHeight = sourceHeight + 'px';
 			editable.style.height = sourceHeight + 'px';
 			editable.style.overflowY = 'auto';
@@ -582,7 +643,9 @@
 			if (collapser) collapser.remove();
 			if (stickyPanel && stickyPanel.element) {
 				stickyPanel.element.classList.remove('xerte-fixed-toolbar-panel', 'xerte-fixed-toolbar-panel--collapsed');
-				stickyPanel.isActive = true;
+					// Fullscreen has its own stationary toolbar; native stickiness can
+					// move it below the text when focus returns from another window.
+					stickyPanel.isActive = !editor.ui.view.element.classList.contains('xerte-iframe-fullscreen');
 				stickyPanel.checkIfShouldBeSticky();
 			}
 			return;
@@ -680,7 +743,8 @@
 		var css = ''
 			+ '.ck.ck-editor__editable_inline.xerte-inline-editor > :first-child{margin-top:0!important;}'
 			+ '.ck.ck-editor__editable_inline.xerte-inline-editor > :last-child{margin-bottom:0!important;}'
-			+ '.ck.ck-editor__editable_inline.xerte-inline-editor{padding:0!important;}';
+			// CKEditor's content defaults must not replace the wizard's title font.
+			+ '.ck.ck-editor__editable_inline.xerte-inline-editor{padding:0!important;font-family:inherit;font-size:inherit;line-height:inherit;color:inherit;}';
 		var style = document.createElement('style');
 		style.type = 'text/css';
 		style.appendChild(document.createTextNode(css));
@@ -815,10 +879,15 @@
 			}
 			stabilizeEditorLayout(editor, domEl, userConfig || {}, initialMetrics);
 			if (userConfig && userConfig.inlineEditor) {
+				// Keep the source node in the wizard, as with CKEditor 4's inline mode.
+				// Project theme changes affect rich-text frames, not these form fields.
 				ensureInlineEditorCssOverrides();
 				if (editor.ui && editor.ui.view && editor.ui.view.editable && editor.ui.view.editable.element) {
 					var inlineEditable = editor.ui.view.editable.element;
-					inlineEditable.classList.add('xerte-inline-editor');
+					// Use the view writer so subsequent CKEditor renders retain the class.
+					editor.editing.view.change(function (writer) {
+						writer.addClass('xerte-inline-editor', editor.editing.view.document.getRoot());
+					});
 					inlineEditable.style.width = '100%';
 					inlineEditable.style.boxSizing = '';
 					inlineEditable.style.minHeight = '40px';
@@ -847,6 +916,7 @@
 	}
 
 	window.XerteCKEditor5Facade = {
+		setTheme: setIframeTheme,
 		mergeEditorConfig: mergeEditorConfig,
 		create: createInstance,
 		getInstance: function (id) {

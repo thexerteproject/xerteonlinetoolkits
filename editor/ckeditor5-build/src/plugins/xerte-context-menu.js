@@ -88,7 +88,9 @@ function cutOrCopy( editor, command, savedRanges ) {
 	}
 	editable.focus();
 	try {
-		document.execCommand( command );
+		// Browser clipboard commands act on a document's selection. Use the
+		// editable's document, which is the child document in iframe mode.
+		editable.ownerDocument.execCommand( command );
 	} catch ( e ) {
 		console.error( '[XerteContextMenu]', command, e );
 	}
@@ -116,7 +118,8 @@ async function pasteClipboard( editor, savedRanges ) {
 	if ( editable ) {
 		editable.focus();
 		try {
-			document.execCommand( 'paste' );
+			// The fallback must paste into the document that owns the editable too.
+			editable.ownerDocument.execCommand( 'paste' );
 		} catch ( err ) {
 			console.error( '[XerteContextMenu] paste', err );
 		}
@@ -335,11 +338,19 @@ export class XerteContextMenu extends Plugin {
 				}
 			};
 
-			doc.addEventListener( 'click', onDocClick, true );
-			doc.addEventListener( 'keydown', onKeyDown, true );
+			// Click/Escape events do not cross iframe boundaries. Dismiss from
+			// either document, and remove both sets of listeners when closing.
+			const editableDoc = getEditableElement( editor )?.ownerDocument;
+			const documents = new Set( [ doc, editableDoc ].filter( Boolean ) );
+			for ( const eventDocument of documents ) {
+				eventDocument.addEventListener( 'click', onDocClick, true );
+				eventDocument.addEventListener( 'keydown', onKeyDown, true );
+			}
 			dismissCleanup = () => {
-				doc.removeEventListener( 'click', onDocClick, true );
-				doc.removeEventListener( 'keydown', onKeyDown, true );
+				for ( const eventDocument of documents ) {
+					eventDocument.removeEventListener( 'click', onDocClick, true );
+					eventDocument.removeEventListener( 'keydown', onKeyDown, true );
+				}
 			};
 		};
 
@@ -365,13 +376,17 @@ export class XerteContextMenu extends Plugin {
 
 			domEvent.preventDefault();
 
-			const x = domEvent.clientX;
-			const y = domEvent.clientY;
+			// The menu stays in the wizard beside other dialogs. A right-click in
+			// the frame gives child coordinates, so add the frame's screen position.
 			const ownerDoc = domEvent.currentTarget.ownerDocument;
+			const frame = ownerDoc.defaultView.frameElement;
+			const frameRect = ownerDoc !== document && frame ? frame.getBoundingClientRect() : { left: 0, top: 0 };
+			const x = domEvent.clientX + frameRect.left;
+			const y = domEvent.clientY + frameRect.top;
 
 			window.setTimeout( () => {
 				try {
-					showMenu( x, y, ownerDoc );
+					showMenu( x, y, document );
 				} catch ( error ) {
 					console.error( '[XerteContextMenu]', error );
 				}
