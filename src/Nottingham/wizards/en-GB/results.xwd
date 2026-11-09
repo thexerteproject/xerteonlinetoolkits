@@ -119,7 +119,7 @@
             <minDuration label="Minimum value" defaultValue="0" type="TextInput" tooltip="The minimum (rounded down) duration value (in seconds) for which this feedback will show" optional="true"/>
             <maxDuration label="Maximum value" defaultValue="60" type="TextInput" tooltip="The maximum (rounded down) duration value (in seconds) for which this feedback will show" optional="true"/>
         </duration>
-        <fbPDF label="Include in PDF" type="Checkbox" optional="true" defaultValue="false" />
+        <!--<fbPDF label="Include in PDF" type="Checkbox" optional="true" defaultValue="false" />-->
     </feedback>
 
 </wizard>

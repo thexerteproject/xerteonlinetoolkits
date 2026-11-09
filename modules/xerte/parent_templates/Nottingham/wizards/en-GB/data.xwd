@@ -15674,7 +15674,7 @@
             <minDuration label="Minimum value" defaultValue="0" type="TextInput" tooltip="The minimum (rounded down) duration value (in seconds) for which this feedback will show" optional="true"/>
             <maxDuration label="Maximum value" defaultValue="60" type="TextInput" tooltip="The maximum (rounded down) duration value (in seconds) for which this feedback will show" optional="true"/>
         </duration>
-        <fbPDF label="Include in PDF" type="Checkbox" optional="true" defaultValue="false"/>
+        <!--<fbPDF label="Include in PDF" type="Checkbox" optional="true" defaultValue="false" />-->
     <imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
 		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
 		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
