@@ -27,7 +27,16 @@
 			const data = this.getData();
 			if (data.found) {
 				$("#panelTxt").html(data.string);
+				if (!data.unsubmitted) {
+					$("#submitBtn").button("disable");
+				}
 				this.refineData();
+
+				$(".confirmFbTxt").html("");
+				if ($(".mainFbTxt").html() === "") {
+					$("#fbTxt").removeClass("border");
+				}
+
 			} else {
 				$("#panelTxt").html(x_getLangInfo(x_languageData.find("noData")[0], "label", "No page data"));
 			}
@@ -36,7 +45,12 @@
 		// function called every time the size of the LO is changed
 		this.sizeChanged = function() {
 			// panel will be fixed height (100% of available height) if panel style is on, unless there is text above &/or below the panel
-			XENITH.SPLITSCREEN.resizePanel();
+			const panelH = XENITH.SPLITSCREEN.resizePanel();
+
+			// this will be used later when showing feedback - it is done differently depending on whether content is centred vertically on the page & whether panel is full height
+			if (x_currentPageXML.getAttribute("editable") === "true") {
+				$("#pageContents").data("slideIn", x_checkVerticalCentre() && panelH === false);
+			}
 		}
 		
 		this.init = function() {
@@ -57,9 +71,9 @@
 						.click(async function() {
 							// copy to clipboard using function in xenith.js
 							// if it fails then text will be selected and alert will give instructions to Ctrl+C to copy
-							x_copyText($("#panelTxt"), x_getLangInfo(x_languageData.find("copy")[0], "fail", "Copying text to clipboard failed. Use Ctrl+C to manually copy the text to the clipboard."), "panelTxt", x_getLangInfo(x_languageData.find("copy")[0], "selected", "Text selected"));
+							x_copyText($("#panelTxt"), x_getLangInfo(x_languageData.find("copy")[0], "fail", "Copying text to clipboard failed. Use Ctrl+C to manually copy the text to the clipboard."), "panelTxt", x_getLangInfo(x_languageData.find("copy")[0], "selected", "Text selected"), true);
 						})
-						.focusout(function () {
+						.focusout(function() {
 							setTimeout(function() { $("#screenReaderInfo").html(""); }, 100)
 						})
 						.hide();
@@ -83,6 +97,20 @@
 							// remove page links from the text data
 							let $panelTxt = $("#panelTxt").clone();
 							$panelTxt.find("a.dataPageLink").contents().unwrap();
+
+							// remove text areas from the text data but save text in them & ensure line breaks are kept
+							$panelTxt.find("textarea").each(function() {
+								const text = $(this).val();
+								let html = $("<div>")
+										.text(text)
+										.html()
+										.replace(/\r?\n/g, "<br>");
+
+								if (html === "" && $(this).attr("placeholder") !== undefined) {
+									html = "<p><i>" + $(this).attr("placeholder") + "</i></p>";
+								}
+								$(this).replaceWith(html);
+							});
 
 							const docData = {
 								"filename": x_currentPageXML.getAttribute("filename") != undefined && x_currentPageXML.getAttribute("filename").trim() !== "" ? x_currentPageXML.getAttribute("filename") : "model_answer_results",
@@ -119,6 +147,151 @@
 				$("#downloadBtn").remove();
 			}
 
+			if (x_currentPageXML.getAttribute("editable") === "true") {
+				$("#submitBtn")
+						.button({
+							label: x_currentPageXML.getAttribute("submitTxt") != undefined ? x_currentPageXML.getAttribute("submitTxt") : "Update",
+							disabled: true
+						})
+						.click(function() {
+							if (x_currentPageXML.getAttribute("editable") === "true") {
+								$(".confirmFbTxt, .mainFbTxt").empty();
+
+								if (x_currentPageXML.getAttribute("pageFeedback") != undefined && x_addLineBreaks(x_currentPageXML.getAttribute("pageFeedback")) !== "") {
+									$(".mainFbTxt").html(x_addLineBreaks(x_currentPageXML.getAttribute("pageFeedback")));
+									$("#fbTxt").addClass("border");
+								}
+
+								if (x_currentPageXML.getAttribute("updateTxt") != undefined && x_addLineBreaks(x_currentPageXML.getAttribute("updateTxt")) !== "") {
+									$(".confirmFbTxt").html(x_currentPageXML.getAttribute("updateTxt"));
+									$("#fbTxt").addClass("border");
+								}
+
+								if ($("#pageContents").data("slideIn")) {
+									$("#fbTxt").slideDown(function() {
+										// refresh feedback so it is picked up by screen readers now not hidden
+										$("#fbTxt").each(function() {
+											$(this).html($(this).html());
+										});
+									});
+								}
+
+								// track the revised responses
+								$(".pageBlock").each(function() {
+									if ($(this).attr("data-pageid") !== undefined && $(this).find("div.convertTextArea textarea, div.convertTextArea [contenteditable]").length > 0) {
+										const thisPageIndex = Number($(this).attr("data-pageid"));
+										const thisPageXML = x_pages[thisPageIndex];
+										let score = 0;
+
+										$(this).find("div.convertTextArea textarea").each(function(i) {
+											const answerTxt = $(this).val();
+											const correct = answerTxt.trim() !== "" || thisPageXML.getAttribute("judge") === "false";
+											if (correct) {
+												score++;
+											}
+
+											const result = {
+												success: correct,
+												score: (correct ? 100.0 : 0.0),
+												judge: thisPageXML.getAttribute("judge") != "false"
+											};
+
+											XTExitInteraction(thisPageIndex, i, result, [], answerTxt, []);
+										});
+
+										$(this).find("div.convertTextArea [contenteditable]").each(function(i) {
+											const answerTxt = $(this).html();
+											const correct = $("<div>").html(answerTxt).text().trim() !== "";
+											if (correct) {
+												score++;
+											}
+
+											const result = {
+												success: correct,
+												score: (correct ? 100.0 : 0.0)
+											};
+
+											XTExitInteraction(thisPageIndex, i, result, [], answerTxt, []);
+										});
+
+										XTSetPageScore(thisPageIndex, score / $(this).find("div.convertTextArea textarea, div.convertTextArea [contenteditable]").length * 100);
+									}
+								});
+							}
+
+							// if this results page is a standalone page opening in a lightbox, ensure it sends the amended data back to the parent project
+							const isStandalone = x_isStandAloneLightbox(x_currentPage);
+							const thisPageInfo = isStandalone && parent.window.x_pageInfo != undefined ? parent.window.x_pageInfo : x_pageInfo;
+
+							$(".pageBlock").each(function() {
+								const $this = $(this);
+
+								// get the saved data for the page this data came from
+								const pageId = $this.attr("data-pageid");
+								if (pageId !== undefined && $this.find("div.convertTextArea").length > 0) {
+									let savedData = thisPageInfo[pageId].savedData;
+									const $savedData = $("<div>").html(savedData);
+
+									// replace the contents of .dataQuestionAnswer with the amended data from the corresponding text area
+									$this.find("div.convertTextArea").each(function (i) {
+										const $notes = $(this).find("[contenteditable]");
+										const $textarea = $(this).find("textarea");
+										let html;
+										if ($notes.length > 0) {
+											html = $notes.text().trim() === "" ? "" : $notes.html();
+										} else {
+											const value = $textarea.val();
+											html = value.trim() === "" ? "" : $("<div>").text(value).html().replace(/\r?\n/g, "<br/>");
+										}
+
+										let update = true;
+										const $updateDiv = $savedData.find("div.convertTextArea").eq(i);
+										if ($updateDiv.hasClass("noResponse")) {
+											// only replace the text in textareas that displayed the 'no response submitted' text if it has changed
+											if (html === "") {
+												update = false;
+											}
+										}
+
+										if (update) {
+											if (html !== "") {
+												$updateDiv.html(html);
+												$updateDiv.removeClass("noResponse");
+												$textarea.removeAttr("placeholder");
+											} else {
+												const noAnswerTxt = x_pages[pageId].getAttribute("noAnswerHeaderTxt") != undefined ? x_pages[pageId].getAttribute("noAnswerHeaderTxt") : "No response submitted";
+												$updateDiv.html(x_addLineBreaks('<p><em>' + noAnswerTxt + '</em></p>'));
+												$updateDiv.addClass("noResponse");
+												$textarea.attr("placeholder", noAnswerTxt);
+												$notes.html("").attr("data-placeholder", noAnswerTxt);
+											}
+										}
+									});
+
+									// override the saved data with the amended info
+									thisPageInfo[pageId].savedData = $savedData.html();
+									thisPageInfo[pageId].savedDataEdited = {
+										changed: true,
+										byPage: x_currentPage,
+										timestamp: Date.now()
+									};
+								}
+							});
+
+							$(".pageBlock textarea").each(function() {
+								$(this).attr("data-loaded", $(this).val());
+							});
+							$(".pageBlock [contenteditable]").each(function() {
+								$(this).attr("data-loaded", $(this).html());
+							});
+
+							$(this).button("disable");
+						})
+						.hide();
+			} else {
+				$("#submitBtn").remove();
+			}
+
 			const data = this.getData();
 			if (data.found) {
 				$("#panelTxt").html(data.string);
@@ -127,61 +300,126 @@
 				$("#panelTxt").html(x_getLangInfo(x_languageData.find("noData")[0], "label", "No page data"));
 			}
 
+			if (x_currentPageXML.getAttribute("editable") === "true") {
+				if ($("#pageContents").data("slideIn")) {
+					$("#fbTxt").hide();
+				}
+			} else {
+				$("#fbTxt").remove();
+			}
+
 			this.sizeChanged();
 			x_pageLoaded();
 		}
 		
 		// function gets saved data about modelAnswer pages in the project
 		this.getData = function() {
-			// by default all viewed model answer pages will be shown
-			// if you only want some to be shown, you can add nested 'model answer pages' to this results page to specify which model answer pages to show
-			const pages = [];
-			$(x_currentPageXML).children().each(function() {
-				if (this.getAttribute("page") !== "") {
-					pages.push(this.getAttribute("page"));
-				}
-			});
+			// if this results page is a standalone page opening in a lightbox, ensure it gets the data about model answer pages from the parent project
+			const isStandalone = x_isStandAloneLightbox(x_currentPage);
+			const thisPageInfo = isStandalone && parent.window.x_pageInfo != undefined ? parent.window.x_pageInfo : x_pageInfo;
 
-			let acceptedPageTypes = ["modelAnswer", "textHighlight", "documentation"];
-			if (pages.length === 0) {
-				// there's now an option to include data from textHighlight & documentation pages too
-				// unless these are turned on, only data from modelAnswer pages will be compiled
-				for (let i=acceptedPageTypes.length-1; i>=0; i--) {
-					if ((acceptedPageTypes[i] != "modelAnswer" && x_currentPageXML.getAttribute(acceptedPageTypes[i]) != "true") || (acceptedPageTypes[i] == "modelAnswer" && x_currentPageXML.getAttribute(acceptedPageTypes[i]) == "false")) {
-						acceptedPageTypes.splice(i,1);
+			let unsubmitted = false;
+
+			// get all the pages that can be included in the results shown on this page
+			if ($("#pageContents").data("pagesToInclude") == undefined) {
+				const pagesToInclude = [];
+
+				// by default all viewed model answer pages will be shown
+				// if you only want some to be shown, you can add nested 'model answer pages' to this results page to specify which model answer pages to show
+				const pages = [];
+				$(x_currentPageXML).children().each(function() {
+					if (this.getAttribute("page") !== "") {
+						pages.push(this.getAttribute("page"));
+					}
+				});
+
+				let acceptedPageTypes = ["modelAnswer", "textHighlight"];
+				if (pages.length === 0) {
+					// there's now an option to include data from textHighlight page too
+					// unless these are turned on, only data from modelAnswer pages will be compiled
+					for (let i=acceptedPageTypes.length-1; i>=0; i--) {
+						if ((acceptedPageTypes[i] != "modelAnswer" && x_currentPageXML.getAttribute(acceptedPageTypes[i]) != "true") || (acceptedPageTypes[i] == "modelAnswer" && x_currentPageXML.getAttribute(acceptedPageTypes[i]) == "false")) {
+							acceptedPageTypes.splice(i,1);
+						}
+					}
+				} else {
+					acceptedPageTypes = [];
+				}
+
+				for (let i=0; i<thisPageInfo.length; i++) {
+					if ((pages.length > 0 || $.inArray(thisPageInfo[i].type, acceptedPageTypes) > -1) && (pages.length === 0 || pages.indexOf(thisPageInfo[i].linkID) !== -1)) {
+						pagesToInclude.push({ index: i });
 					}
 				}
-			} else {
-				acceptedPageTypes = [];
-			}
 
-			// if this results page is a standalone page opening in a lightbox, ensure it gets the data about model answer pages from the parent project
-			const isStandalone = x_pageInfo[x_currentPage].standalone && x_pages[x_currentPage].getAttribute('linkTarget') === 'lightbox'
-					&& parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current() && parent.window.x_pageInfo != undefined;
-			const thisPageInfo = isStandalone ? parent.window.x_pageInfo : x_pageInfo;
+				$("#pageContents").data("pagesToInclude", pagesToInclude);
+			}
 
 			let dataString = "";
 			let dataFound = true;
 			const pageString = x_currentPageXML.getAttribute("pageTxt") != undefined ? x_currentPageXML.getAttribute("pageTxt") : "Page";
 			const pageUnviewed = x_currentPageXML.getAttribute("notViewed") != undefined ? x_currentPageXML.getAttribute("notViewed") : "Page not viewed";
-			for (let i=0; i<thisPageInfo.length; i++) {
-				const thisObject = thisPageInfo[i];
-				// only show info for modelAnswer pages, that have not been skipped, & have been selected to be shown (or all if not set)
-				let includeUnviewed = x_currentPageXML.getAttribute("unviewed") === "true" ? true : false;
-				if ((pages.length > 0 || $.inArray(thisObject.type,acceptedPageTypes) > -1) && (thisObject.savedData != undefined || includeUnviewed) && (pages.length === 0 || pages.indexOf(thisObject.linkID) !== -1)) {
-					const classNameEnding = thisObject.type != "modelAnswer" ? "_" + thisObject.type : "";
+
+			for (let i=0; i<$("#pageContents").data("pagesToInclude").length; i++) {
+				const pageIndex = $("#pageContents").data("pagesToInclude")[i].index;
+				const thisObject = thisPageInfo[pageIndex];
+
+				// exclude pages that have not been viewed (unless age is set up to show these too)
+				if (thisObject.savedData != undefined || x_currentPageXML.getAttribute("unviewed") === "true") {
+
 					if (thisObject.savedData != undefined) {
-						dataString += thisObject.savedData;
+						// page has been viewed so there should be some data to show
+						const $pageBlock = $(".pageBlock[data-pageid='" + pageIndex + "']");
+
+						// we don't want to lose any unsubmitted data if the parent page hasn't actually changed so check whether it has
+						let pendingAnswer = false;
+						$pageBlock.find("textarea").each(function() {
+							if ($(this).val() !== $(this).attr("data-loaded")) {
+								pendingAnswer = true;
+								return false;
+							}
+						});
+						$pageBlock.find("[contenteditable]").each(function() {
+							if ($(this).html() !== $(this).attr("data-loaded")) {
+								pendingAnswer = true;
+								return false;
+							}
+						});
+
+						const edited = thisObject.savedDataEdited;
+						const storedTime = $("#pageContents").data("pagesToInclude")[i].timestamp;
+						const parentSaved = edited !== undefined && Number(edited.byPage) === pageIndex && edited.changed === true && edited.timestamp !== storedTime;
+
+						if (parentSaved || (!pendingAnswer && (x_currentPageXML.getAttribute("editable") !== "true" || edited === undefined || (edited.changed === true && edited.timestamp !== storedTime)))) {
+							dataString += thisObject.savedData;
+							if (edited !== undefined) {
+								$("#pageContents").data("pagesToInclude")[i].timestamp = edited.timestamp;
+							}
+						} else {
+							// no changes have been made since this page was last shown on this model answer results page
+							// don't refresh this block from the savedData as that might lose unsubmitted changed made to it on this page
+							$pageBlock.find("textarea").each(function() {
+								$(this).text($(this).val()).addClass("initSetup");
+							});
+							$pageBlock.find("[contenteditable]").addClass("initSetup");
+
+							dataString += $("<div/>").append($pageBlock.clone()).html();
+							if (pendingAnswer) {
+								unsubmitted = true;
+							}
+						}
 
 					} else {
-						// page was not viewed
-						const thisLink = '<a href="#" class="dataPageLink" onclick="x_navigateToPage(false,{type:\'linkID\',ID:\'' + x_pages[i].getAttribute("linkID") + '\'}); return false;">';
-						if (thisObject.standalone != true && x_pages[i] !== "menu") {
+						// page has not been viewed
+						const classNameEnding = thisObject.type != "modelAnswer" ? "_" + thisObject.type : "";
+						const thisLink = '<a href="#" class="dataPageLink" onclick="x_navigateToPage(false,{type:\'linkID\',ID:\'' + x_pages[pageIndex].getAttribute("linkID") + '\'}); return false;">';
+
+						if (thisObject.standalone != true && x_pages[pageIndex] !== "menu") {
 							dataString += '<div class="pageBlock"><h3 class="dataPageH">';
-							if (x_pages[i].getAttribute("name") != undefined && x_pages[i].getAttribute("name") !== "") {
-								dataString += thisLink + x_pages[i].getAttribute("name") + '</a>';
+							if (x_pages[pageIndex].getAttribute("name") != undefined && x_pages[pageIndex].getAttribute("name") !== "") {
+								dataString += thisLink + x_pages[pageIndex].getAttribute("name") + '</a>';
 							} else {
-								const pageNum = x_normalPages.indexOf(i) - (XENITH.PAGEMENU.menuPage ? 1 : 0);
+								const pageNum = x_normalPages.indexOf(pageIndex) - (XENITH.PAGEMENU.menuPage ? 1 : 0);
 								dataString += thisLink + pageString + ' ' + (pageNum+1) + '</a>:';
 							}
 							dataString += '</h3>';
@@ -189,7 +427,7 @@
 							dataString += '</div>';
 						} else {
 							dataString += '<div class="pageBlock standalone">';
-							dataString += '<h3 class="dataPageH">' + thisLink + x_pages[i].getAttribute("name") + '</a></h3>';
+							dataString += '<h3 class="dataPageH">' + thisLink + x_pages[pageIndex].getAttribute("name") + '</a></h3>';
 							dataString += '<div class="dataUnviewed' + classNameEnding + '"><p><em>' + pageUnviewed + '</em></p></div>';
 							dataString += '</div>';
 						}
@@ -198,12 +436,12 @@
 			}
 
 			if (dataString.length > 0) {
-				$("#copyBtn, #downloadBtn").show();
+				$("#copyBtn, #downloadBtn, #submitBtn").show();
 			} else {
 				dataFound = false;
 			}
 
-			return { string: dataString, found: dataFound};
+			return { string: dataString, found: dataFound, unsubmitted: unsubmitted};
 		}
 
 		// function removes parts of the dataString that are not needed from the page
@@ -241,6 +479,75 @@
 
 			// move data for any standalone pages which have not been viewed to the end
 			$("#panelTxt .standalone").appendTo("#panelTxt");
+
+			// convert response divs to textarea elements as they can be edited on this page
+			if (x_currentPageXML.getAttribute("editable") === "true" && $(".pageBlock div.convertTextArea").length > 0) {
+				$(".pageBlock div.convertTextArea").each(function(i) {
+					let text = "";
+					let noResponse = false;
+					if ($(this).find("textarea").length === 0) {
+						// text highlight data
+						if ($(this).hasClass("dataQuestionAnswer_textHighlight")) {
+							if ($(this).find("[contenteditable]").length === 0) {
+								const isEmpty = $(this).hasClass("noResponse");
+								const html = isEmpty ? "" : $(this).html();
+								const $editor = $("<div contenteditable='true' class='initSetup'></div>");
+								$editor.html(html).attr("data-loaded", html);
+								if (isEmpty) {
+									$editor.attr("data-placeholder", $(this).text());
+								}
+								$(this).empty().append($editor);
+							}
+							return;
+						}
+
+						// model answer data
+						if ($(this).hasClass("noResponse")) {
+							noResponse = $(this).text();
+						} else {
+							// ensure line breaks are kept
+							text = $(this).clone()
+									.find("br").replaceWith("\n").end()
+									.find("p").each(function() {
+										$(this).prepend("\n").append("\n");
+									}).end()
+									.text()
+									.trim();
+						}
+
+						// remove the 'your response' text when it is editable
+						$(this).parent().find(".dataQuestionH.dataQuestionAnswer, .dataQuestionH.dataQuestionAnswer_textHighlight").remove();
+
+						const $textArea = $("<textarea rows='" + $(this).attr("data-rows") + "' name='response" + i + "' class='initSetup'></textarea>");
+						$textArea
+							.val(text)
+							.attr("data-loaded", text);
+						if (noResponse !== false) {
+							$textArea.attr("placeholder", noResponse);
+						}
+						$(this).empty().append($textArea);
+					}
+				});
+
+				// detect when answer fields have changed - this may affect what is enabled / disabled
+				$("div.convertTextArea textarea.initSetup, div.convertTextArea [contenteditable].initSetup")
+						.on('input', function() {
+							$("#submitBtn").button("enable");
+
+							// hide feedback - this should only be shown if response has been submitted
+							// to avoid a sudden jump in layout, feedback should slide back up gradually if content is centred vertically & panel is full height
+							if ($("#pageContents").data("slideIn")) {
+								$("#fbTxt").slideUp();
+							} else {
+								$(".confirmFbTxt, .mainFbTxt").html("");
+							}
+							$("#fbTxt").removeClass("border");
+						})
+						.removeClass("initSetup");
+
+			} else {
+				$("#submitBtn").hide();
+			}
 		}
 	}
 	
@@ -256,7 +563,12 @@
 	<div id="infoHolder" class="splitScreen_B">
 		<div id="panel" class="panelContent panel" tabindex="0">
 			<div id="panelTxt"></div>
+			<div id="fbTxt" aria-live="polite">
+				<div class="confirmFbTxt"></div>
+				<div class="mainFbTxt"></div>
+			</div>
 			<div id="btnHolder">
+				<button id="submitBtn"/>
 				<button id="copyBtn"/>
 				<button id="downloadBtn"/>
 			</div>

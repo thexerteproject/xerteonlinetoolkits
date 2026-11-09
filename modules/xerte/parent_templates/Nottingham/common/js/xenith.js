@@ -1839,23 +1839,36 @@ function x_continueSetUp1() {
 					} else if (pageIndex == -1) {
 						// if standalone page is in a chapter, the previous button might need to navigate to the previous page in the chapter
 						const chapterIndex = x_pages[x_currentPage].getAttribute("chapterIndex");
-						if (chapterIndex != undefined && x_chapters[chapterIndex].linkPageChapter == "true" &&
-							x_chapters[chapterIndex].footerHideChapter == "false" &&
-							x_chapters[chapterIndex].pages.length > 1) {
+						if (chapterIndex != undefined && x_chapters[chapterIndex].linkPageChapter == "true" && // it's a standalone chapter
+							x_chapters[chapterIndex].footerHideChapter == "false" && // the footer bar is shown
+							x_chapters[chapterIndex].pages.length > 1) // there is more than one page in this chapter
+						{
 							if ($.inArray(x_currentPage, x_chapters[chapterIndex].pages) > 0) {
+								// not the first page in the chapter so just go back one page
 								const prevPage = x_chapters[chapterIndex].pages[$.inArray(x_currentPage, x_chapters[chapterIndex].pages) - 1];
 								x_changePage(prevPage);
-							} else if (shownInFeatherLight) {
-								parent.window.$.featherlight.current().close();
-							} else if (prevPage == undefined) {
-								x_changePage(x_normalPages[0]);
+
 							} else {
-								x_changePage(prevPage);
+								// 1st page in chapter
+								if (shownInFeatherLight) {
+									// close lightbox
+									parent.window.$.featherlight.current().close();
+
+								} else {
+									// go to previously viewed normal page in project (or 1st page if there is none)
+									if (prevPage == undefined) {
+										x_changePage(x_normalPages[0]);
+									} else {
+										x_changePage(prevPage);
+									}
+								}
 							}
 						} else {
 							// historic back
 							if (shownInFeatherLight) {
+								// close lightbox
 								parent.window.$.featherlight.current().close();
+
 							} else if (history.length > 1 && x_params.forcePage1 != 'true') {
 								history.go(-1);
 							} else {
@@ -1893,13 +1906,17 @@ function x_continueSetUp1() {
 				if ($(this).is(":enabled") && $(this).is(":visible")) {
 					var pageIndex = $.inArray(x_currentPage, x_normalPages);
 					if (pageIndex != -1) {
+						// normal (not standalone) page
 						x_changePage(x_normalPages[pageIndex + 1]);
+
 					} else {
+						// if standalone page is in a chapter, the next button might need to navigate to the next page in the chapter
 						const chapterIndex = x_pages[x_currentPage].getAttribute("chapterIndex");
-						if (chapterIndex != undefined && x_chapters[chapterIndex].linkPageChapter == "true" &&
-							x_chapters[chapterIndex].footerHideChapter == "false" &&
-							x_chapters[chapterIndex].pages.length > 1 &&
-							$.inArray(x_currentPage, x_chapters[chapterIndex].pages) < x_chapters[chapterIndex].pages.length - 1) {
+						if (chapterIndex != undefined && x_chapters[chapterIndex].linkPageChapter == "true" && // it's a standalone chapter
+							x_chapters[chapterIndex].footerHideChapter == "false" && // the footer bar is shown
+							x_chapters[chapterIndex].pages.length > 1 && // there is more than one page in this chapter
+							$.inArray(x_currentPage, x_chapters[chapterIndex].pages) < x_chapters[chapterIndex].pages.length - 1) // it is not the last page in the chapter
+						{
 							const nextPage = x_chapters[chapterIndex].pages[$.inArray(x_currentPage, x_chapters[chapterIndex].pages) + 1];
 							x_changePage(nextPage);
 						}
@@ -2712,8 +2729,7 @@ function x_changePageApproved(x_gotoPage, addHistory) {
 	// catch error - when in iframe, i.e. in bootstrap or LMS LTI
 	try {
 		if (standAlonePage) {
-			if (x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' &&
-				parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current()) {
+			if (x_isStandAloneLightbox(x_gotoPage)) {
 				// if this page is already shown in a lightbox then don't try to open another lightbox - load in the existing one
 				standAlonePage = false;
 				addHistory = false;
@@ -3508,9 +3524,9 @@ function x_setUpPage() {
 	} else {
 		// standalone page
 		// if standalone page is in a chapter, we still might need the page numbers
-		if (standaloneChapter &&
-			x_chapters[chapterIndex].footerHideChapter == "false" &&
-			x_chapters[chapterIndex].pages.length > 1) {
+		if (standaloneChapter && // it's a standalone chapter
+			x_chapters[chapterIndex].footerHideChapter == "false" && // the footer bar is shown
+			x_chapters[chapterIndex].pages.length > 1) { // there is more than one page in this chapter
 			const srOnly = '<span class="sr-only">' + x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "Page") + " " + ($.inArray(x_currentPage, x_chapters[chapterIndex].pages)+1) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "of") + " " + x_chapters[chapterIndex].pages.length + '</span>';
 			const notSr = '<span aria-hidden="true">' + ($.inArray(x_currentPage, x_chapters[chapterIndex].pages)+1) + " / " + x_chapters[chapterIndex].pages.length + '</span>';
 			$x_pageNo.html(srOnly + notSr);
@@ -3543,12 +3559,14 @@ function x_setUpPage() {
     } else {
 		// standalone page
 		// if standalone page is in a chapter, we still might need the prevBtn
-		if (standaloneChapter &&
-			x_chapters[chapterIndex].footerHideChapter == "false" &&
-			x_chapters[chapterIndex].pages.length > 1 &&
-			($.inArray(x_currentPage, x_chapters[chapterIndex].pages) > 0 ||
-			x_chapters[chapterIndex].linkTargetChapter != "new")) {
+		if (standaloneChapter && // it's a standalone chapter
+			x_chapters[chapterIndex].footerHideChapter == "false" && // the footer bar is shown
+			x_chapters[chapterIndex].pages.length > 1 && // there is more than one page in this chapter
+			($.inArray(x_currentPage, x_chapters[chapterIndex].pages) > 0 || // it is not the first page in the chapter
+				x_chapters[chapterIndex].linkTargetChapter != "new")) // or it is the first page but it hasn't opened in a new window
+		{
 			$x_prevBtn.button("enable");
+
 		} else {
 			$x_prevBtn
 				.button("disable")
@@ -3563,11 +3581,13 @@ function x_setUpPage() {
     } else {
 		// standalone page
 		// if standalone page is in a chapter, we still might need the nextBtn
-		if (standaloneChapter &&
-			x_chapters[chapterIndex].footerHideChapter == "false" &&
-			x_chapters[chapterIndex].pages.length > 1 &&
-			$.inArray(x_currentPage, x_chapters[chapterIndex].pages) < x_chapters[chapterIndex].pages.length - 1) {
+		if (standaloneChapter && // it's a standalone chapter
+			x_chapters[chapterIndex].footerHideChapter == "false" && // the footer bar is shown
+			x_chapters[chapterIndex].pages.length > 1 && // there is more than one page in this chapter
+			$.inArray(x_currentPage, x_chapters[chapterIndex].pages) < x_chapters[chapterIndex].pages.length - 1) // it is not the last page in the chapter
+		{
 			$x_nextBtn.button("enable");
+
 		} else {
 			$x_nextBtn
 				.button("disable")
@@ -4653,9 +4673,21 @@ function x_sortInitObject(initObj) {
 }
 
 // function copies text to the clipboard
-async function x_copyText(toCopy, errorTxt, toSelect, selectedTxt) {
+async function x_copyText(toCopy, errorTxt, toSelect, selectedTxt, includeTextAreas) {
 	try {
-		await navigator.clipboard.writeText(toCopy.text());
+		let tempTxt = toCopy.text();
+		if (includeTextAreas && toCopy.find("textarea").length > 0) {
+			const temp = toCopy.clone();
+			temp.find("textarea").each(function () {
+				if ($(this).val() !== "") {
+					$(this).replaceWith($(this).val());
+				} else if ($(this).attr("placeholder") !== undefined) {
+					$(this).replaceWith($(this).attr("placeholder"));
+				}
+			});
+			tempTxt = temp.text();
+		}
+		await navigator.clipboard.writeText(tempTxt);
 		alert(x_getLangInfo(x_languageData.find("copy")[0], "success", "Text copied to clipboard"));
 		return true;
 
@@ -4734,6 +4766,13 @@ function x_isYouTubeVimeo(url) {
 	} else {
 		return false;
 	}
+}
+
+// function returns whether a page is a standalone page opening in a lightbox
+function x_isStandAloneLightbox(page) {
+	const isStandalone = x_pageInfo[page].standalone && x_pages[page].getAttribute('linkTarget') === 'lightbox'
+		&& parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current();
+	return isStandalone;
 }
 
 // Based somewhat on these regexps for YouTube and Vimeo (check there for updates)
@@ -5777,7 +5816,7 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 			x_pages.splice(0, 0, "menu");
 			x_pageInfo.splice(0, 0, {type: 'menu', built: false, viewed:false});
 
-			// adjust normal page indexes to take into account menu page
+			// adjust normal page & chapter page indexes to take menu page into account
 			for (var i=0; i<x_normalPages.length; i++) {
 				x_normalPages.splice(i, 1, x_normalPages[i]+1);
 			}
@@ -5951,12 +5990,14 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 			const allChapters = $menuItems.find(".chapterHolder");
 			allChapters.each(function () {
 				if ($thisChapter.length === 0 || !$thisChapter.is($(this))) {
+					// if the TOC is shown in dialog or lightbox, we don't want the chapter accordion animation to be shown
 					if (XENITH.SIDEBAR.sideBarType !== "toc") {
 						$(this).accordion({"animate": 0});
 					}
 
 					$(this).accordion({"active": false});
 
+					// if the TOC is shown in dialog or lightbox, reset the chapter accordion animation so it will work if chapter manually opened / closed
 					if (XENITH.SIDEBAR.sideBarType !== "toc") {
 						$(this).accordion({"animate": {}});
 					}
@@ -6566,6 +6607,11 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 			if (progressBarPosition == "header1") {
 				$pbHolder.insertAfter($x_headerBlock.find(".x_icon"));
+				if ($x_headerBlock.find(".x_icon").length > 0) {
+					$pbHolder.insertAfter($x_headerBlock.find(".x_icon"));
+				} else {
+					$x_headerBlock.prepend($pbHolder);
+				}
 				$x_headerBlock.addClass('pbAbove');
 			} else if (progressBarPosition == "header2") {
 				$pbHolder.appendTo($x_headerBlock);

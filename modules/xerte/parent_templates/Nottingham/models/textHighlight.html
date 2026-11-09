@@ -32,6 +32,95 @@
 			$pageContents = $('#pageContents');
 			docData = $pageContents.data("docData");
 
+			// if data has been updated on a model answer results page - make sure that the text displayed here stays in sync
+			// this can happen if the model answer results page is set up for responses to be edited, a user edits the data displayed there for this page and then clicks submit
+
+			// if this page is a standalone page opening in a lightbox, ensure it gets data from the parent project
+			const isStandalone = x_isStandAloneLightbox(x_currentPage);
+			const thisPageInfo = isStandalone && parent.window.x_pageInfo !== undefined ? parent.window.x_pageInfo : x_pageInfo;
+
+			if ($pageContents.data("mode") === "Notes" && x_currentPageXML.getAttribute("allowTyping") !== "false" && thisPageInfo[x_currentPage].savedDataEdited !== undefined && thisPageInfo[x_currentPage].savedDataEdited.changed === true && thisPageInfo[x_currentPage].savedDataEdited.byPage !== x_currentPage) {
+				const $savedData = $("<div>").html(thisPageInfo[x_currentPage].savedData);
+				const $notes = $savedData.find("div.dataQuestionAnswer_textHighlight.convertTextArea").first();
+				let hasText = false;
+
+				if ($notes.hasClass("noResponse")) {
+					if ($(".notesTxt").hasClass("placeHolder")) {
+						$("#notesTxt").html($(".notesTxt").data("placeHolder"));
+					} else {
+						$("#notesTxt").html("<p></p>");
+					}
+				} else {
+					$("#notesTxt").html($notes.html());
+					hasText = $notes.text().trim() !== "";
+				}
+
+				if (hasText) {
+					$pageContents.data("submitted", true);
+					const show = ["feedbackTxt", "suggestedTxt"];
+					let activateTab = true;
+					for (let i=0; i<show.length; i++) {
+						const $show = $("." + show[i]);
+						if ($show.length > 0) {
+							if ($show.attr("aria-labelledby") != undefined) {
+								const $tab = $("#" + $show.attr("aria-labelledby"));
+								$tab.parent(".navChildTitle").show();
+								if (activateTab == true) {
+									$show.parents(".ui-tabs").tabs("option", "active", $show.index());
+									activateTab = false;
+								}
+								this.sizeChanged();
+							} else {
+								$show.show();
+							}
+						}
+					}
+
+				} else {
+					$pageContents.data("submitted", false);
+
+					$(".feedbackTxt, .suggestedTxt").hide().each(function () {
+						if ($(this).attr("aria-labelledby") != undefined) {
+							$("#" + $(this).attr("aria-labelledby")).parent(".navChildTitle").hide();
+						}
+					});
+
+					$(".ui-tabs").each(function () {
+						const $visible = $(this).find(".tabHolder .navChildTitle:visible").first();
+						if ($visible.length > 0) {
+							$(this).tabs("option", "active", $visible.index());
+						}
+					});
+
+					this.sizeChanged();
+				}
+
+				if (x_currentPageXML.getAttribute("required") == "true") {
+					$("#checkBtn").prop("disabled", !hasText);
+				}
+
+				if (!$(".notesTxt").hasClass("placeHolder")) {
+					$("#clearBtn").button({
+						label: hasText ? $("#clearBtn").data("resetBtnLabel") : $("#clearBtn").data("clearBtnLabel")
+					});
+				}
+
+				if (x_currentPageXML.getAttribute('download') === 'true' || x_currentPageXML.getAttribute('download') === 'submit') {
+					$(".editableDiv").each(function () {
+						if ($(this).data("docDataIndex") != undefined) {
+							docData.pages[$(this).data("docDataIndex")].pageText = $(this).html();
+						}
+					});
+
+					if (x_currentPageXML.getAttribute("download") === "true") {
+						$("#downloadBtn").show().button("enable");
+					}
+				}
+
+				this.finishTracking();
+				thisPageInfo[x_currentPage].savedDataEdited.changed = false;
+			}
+
 			if ($pageContents.data("resizeLater") === true) {
 				$pageContents.data("resizeLater", false);
 				this.sizeChanged();
@@ -867,8 +956,8 @@
 			const noAnswerTxt = x_currentPageXML.getAttribute("noAnswerHeaderTxt") != undefined ? x_currentPageXML.getAttribute("noAnswerHeaderTxt") : "No response submitted";
 			const responseTxt = $pageContents.data('mode') !== 'Notes' ? (x_currentPageXML.getAttribute("responseHeaderTxt") != undefined ? x_currentPageXML.getAttribute("responseHeaderTxt") : "Your response:") : (x_currentPageXML.getAttribute("notesHeaderTxt") != undefined ? x_currentPageXML.getAttribute("notesHeaderTxt") : "Your notes:");
 
-			const isStandalone = x_pageInfo[x_currentPage].standalone && x_pages[x_currentPage].getAttribute('linkTarget') === 'lightbox' && parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current();
-			let stringToSave = '<div class="pageBlock' + (isStandalone ? ' standalone' : '') + '">';
+			const isStandalone = x_isStandAloneLightbox(x_currentPage);
+			let stringToSave = '<div class="pageBlock' + (isStandalone ? ' standalone' : '') + '" data-pageid="' + x_currentPage + '">';
 			stringToSave += '<h3 class="dataPageH">'
 					+ '<a href="#" class="dataPageLink" onclick="x_navigateToPage(false,{type:\'linkID\',ID:\'' + x_currentPageXML.getAttribute("linkID") + '\'}); return false;">'
 					+ x_currentPageXML.getAttribute("name")
@@ -906,7 +995,7 @@
 								title = '<h4 class="dataQuestionH_textHighlight">' + responseTxt + '</h4>';
 							}
 						}
-						stringToSave += '<div class="dataQuestionTxt_textHighlight">' + title + $("#initTxt").html() + ($pageContents.data('mode') !== 'Notes' && $pageContents.data('submitted') != true ? '<p><em>' + noAnswerTxt + '</p></em>' : '') + '</div>';
+						stringToSave += '<div class="dataQuestionTxt_textHighlight">' + title + $("#initTxt").html() + ($pageContents.data('mode') !== 'Notes' && $pageContents.data('submitted') != true ? '<p><em>' + noAnswerTxt + '</em></p>' : '') + '</div>';
 						if ($pageContents.data('mode') !== 'Notes') {
 							stringToSave += '</div>';
 						}
@@ -916,7 +1005,14 @@
 							title = '<h4 class="dataQuestionH_textHighlight">' + responseTxt + '</h4>';
 						}
 						stringToSave += '<div class="questionBlock_textHighlight">';
-						stringToSave += '<div class="dataQuestionAnswer_textHighlight">' + title + $("#notesTxt").html() + ($pageContents.data('submitted') != true ? '<p><em>' + noAnswerTxt + '</p></em>' : '') + '</div>';
+
+						// some model answer results pages allow editing of the data from this page. This is only allowed in notes mode & when typing is allowed
+						const editPotential = x_currentPageXML.getAttribute('allowTyping') !== 'false' ? "convertTextArea" : "";
+						if ($pageContents.data('submitted') != true) {
+							stringToSave += title + '<div class="dataQuestionAnswer_textHighlight noResponse ' + editPotential + '"><p><em>' + noAnswerTxt + '</em></p></div>';
+						} else {
+							stringToSave += title + '<div class="dataQuestionAnswer_textHighlight ' + editPotential + '">' + $("#notesTxt").html() + '</div>';
+						}
 						stringToSave += '</div>';
 					} else if ($(this).hasClass("feedbackTxt")) {
 						stringToSave += '<div class="dataPageFb">' + title + $(".feedbackTxt").html() + '</div>';
@@ -942,11 +1038,18 @@
 			// save the data to x_pageInfo.savedData
 			x_pageInfo[x_currentPage].savedData = stringToSave;
 
+			// some model answer results pages allow editing of the data from this page. This is only allowed in notes mode & when typing is allowed
+			if ($pageContents.data('mode') === 'Notes' && x_currentPageXML.getAttribute('allowTyping') !== 'false' && $pageContents.data('submitted') == true) {
+				x_pageInfo[x_currentPage].savedDataEdited = { changed: true, byPage: x_currentPage, timestamp: Date.now() };
+			}
+
 			// if this is a standalone page showing in a lightbox, also ensure we save in a way that data can later be retrieved by model answer results pages
-			if (x_pageInfo[x_currentPage].standalone && x_pages[x_currentPage].getAttribute('linkTarget') == 'lightbox'
-					&& parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current()
-					&& parent.window.x_pageInfo != undefined && parent.window.x_pageInfo[x_currentPage] != undefined) {
+			if (x_isStandAloneLightbox(x_currentPage) && parent.window.x_pageInfo != undefined && parent.window.x_pageInfo[x_currentPage] != undefined) {
 				parent.window.x_pageInfo[x_currentPage].savedData = stringToSave;
+
+				if ($pageContents.data('mode') === 'Notes' && x_currentPageXML.getAttribute('allowTyping') !== 'false' && $pageContents.data('submitted') == true) {
+					parent.window.x_pageInfo[x_currentPage].savedDataEdited = { changed: true, byPage: x_currentPage, timestamp: Date.now() };
+				}
 			}
 		};
 
