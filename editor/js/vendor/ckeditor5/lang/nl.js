@@ -14,3 +14,7 @@ Object.assign( globalThis.CKEDITOR_TRANSLATIONS.nl.dictionary, {
 	'Lock ratio': 'Verhouding vergrendelen', 'Reset size': 'Afmetingen herstellen', 'Align Left': 'Links uitlijnen', 'Align Center': 'Centreren', 'Align Right': 'Rechts uitlijnen',
 	'Captioned image': 'Afbeelding met onderschrift', 'OK': 'OK'
 } );
+
+Object.assign( globalThis.CKEDITOR_TRANSLATIONS.nl.dictionary, {
+	"Resize editor (drag or use arrow keys)": "Sleep om de grootte te wijzigen. Toetsenbord: ga met Tab naar deze greep en gebruik daarna de pijltoetsen omhoog/omlaag."
+} );

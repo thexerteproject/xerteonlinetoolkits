@@ -159,6 +159,7 @@ export class XerteIframeEditing extends Plugin {
 		this._bridgeBadges();
 		this._bridgeWidgetResize();
 		this._bridgeFullscreen();
+		this._setupResizeHandle();
 		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, focused ) => {
 			frame.classList.toggle( 'ck-focused', focused );
 		} );
@@ -203,7 +204,61 @@ export class XerteIframeEditing extends Plugin {
 	setHeight( height ) {
 		// Size the window onto the content, not the document inside it. Long content
 		// scrolls within the frame; fullscreen temporarily overrides this height.
-		if ( this.frame ) this.frame.style.height = `${ parseInt( height, 10 ) || 250 }px`;
+		const px = parseInt( height, 10 ) || 250;
+		if ( this.frame ) this.frame.style.height = `${ px }px`;
+		this.resizeHandle?.setAttribute( 'aria-valuenow', String( px ) );
+	}
+
+	_setupResizeHandle() {
+		const editor = this.editor;
+		const frame = this.frame;
+		const root = editor.ui.view.element;
+		const handle = this.resizeHandle = root.ownerDocument.createElement( 'button' );
+		handle.type = 'button';
+		handle.className = 'ck xerte-cke5-resize-handle';
+		handle.title = editor.t( 'Resize editor (drag or use arrow keys)' );
+		handle.setAttribute( 'aria-label', handle.title );
+		handle.setAttribute( 'role', 'separator' );
+		handle.setAttribute( 'aria-orientation', 'horizontal' );
+		handle.setAttribute( 'aria-valuemin', '100' );
+		handle.setAttribute( 'aria-valuenow', String( frame.getBoundingClientRect().height ) );
+		// Add a sibling; moving or wrapping the live frame would reload its document.
+		frame.after( handle );
+		editor.ui.focusTracker.add( handle );
+		let drag = null;
+		const resize = height => {
+			this.setHeight( Math.max( 100, height ) );
+			editor.ui.update();
+		};
+		const stop = this._stopEditorResize = () => {
+			if ( !drag ) return;
+			const id = drag.pointerId;
+			drag = null;
+			root.classList.remove( 'xerte-editor-resizing' );
+			if ( handle.hasPointerCapture( id ) ) handle.releasePointerCapture( id );
+		};
+		this._domEmitter.listenTo( handle, 'pointerdown', ( evt, event ) => {
+			if ( event.button !== 0 || event.isPrimary === false || root.classList.contains( 'xerte-iframe-fullscreen' ) ) return;
+			event.preventDefault();
+			stop();
+			drag = { pointerId: event.pointerId, y: event.clientY, height: frame.getBoundingClientRect().height };
+			handle.setPointerCapture( event.pointerId );
+			root.classList.add( 'xerte-editor-resizing' );
+		} );
+		this._domEmitter.listenTo( handle, 'pointermove', ( evt, event ) => {
+			if ( drag && event.pointerId === drag.pointerId ) resize( drag.height + event.clientY - drag.y );
+		} );
+		for ( const event of [ 'pointerup', 'pointercancel', 'lostpointercapture' ] ) {
+			this._domEmitter.listenTo( handle, event, ( evt, data ) => {
+				if ( drag && data.pointerId === drag.pointerId ) stop();
+			} );
+		}
+		this._domEmitter.listenTo( root.ownerDocument.defaultView, 'blur', stop );
+		this._domEmitter.listenTo( handle, 'keydown', ( evt, event ) => {
+			if ( root.classList.contains( 'xerte-iframe-fullscreen' ) || ![ 'ArrowUp', 'ArrowDown' ].includes( event.key ) ) return;
+			event.preventDefault();
+			resize( frame.getBoundingClientRect().height + ( event.key === 'ArrowDown' ? 20 : -20 ) );
+		} );
 	}
 
 	/**
@@ -313,6 +368,7 @@ export class XerteIframeEditing extends Plugin {
 		};
 		command.fullscreenHandler = {
 			enable: () => {
+				this._stopEditorResize?.();
 				root.classList.add( 'xerte-iframe-fullscreen' );
 				doc.documentElement.classList.add( 'xerte-iframe-fullscreen-open' );
 				doc.body.classList.add( 'xerte-iframe-fullscreen-open' );
@@ -328,6 +384,9 @@ export class XerteIframeEditing extends Plugin {
 	}
 
 	_restoreEditable() {
+		this._stopEditorResize?.();
+		if ( this.resizeHandle ) this.editor.ui.focusTracker.remove( this.resizeHandle );
+		this.resizeHandle?.remove();
 		if ( this.frame ) this.editor.ui.focusTracker.remove( this.frame );
 		this._domEmitter?.stopListening();
 		this._initializationObserver?.disconnect();

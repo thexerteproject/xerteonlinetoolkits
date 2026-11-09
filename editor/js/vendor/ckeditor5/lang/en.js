@@ -12,3 +12,7 @@ Object.assign( globalThis.CKEDITOR_TRANSLATIONS.en.dictionary, {
 	'Lock ratio': 'Lock Ratio', 'Reset size': 'Reset Size', 'Align Left': 'Align Left', 'Align Center': 'Align Center', 'Align Right': 'Align Right',
 	'Captioned image': 'Captioned image', 'OK': 'OK'
 } );
+
+Object.assign( globalThis.CKEDITOR_TRANSLATIONS.en.dictionary, {
+	"Resize editor (drag or use arrow keys)": "Drag to resize. Keyboard: Tab to this handle, then use Up/Down."
+} );

@@ -12,6 +12,50 @@
 	box-shadow: var(--ck-inner-shadow);
 }
 
+/* A small grip below the frame resizes the viewport without moving the iframe. */
+.ck.ck-editor.xerte-iframe-editor .xerte-cke5-resize-handle {
+	display: block;
+	position: relative;
+	box-sizing: border-box;
+	width: 100%;
+	height: 14px;
+	min-height: 0;
+	margin: 0;
+	padding: 0;
+	border: 1px solid var(--ck-color-base-border);
+	border-top: 0;
+	background: var(--ck-color-toolbar-background);
+	color: var(--ck-color-text);
+	cursor: ns-resize;
+	touch-action: none;
+	user-select: none;
+}
+
+.ck.ck-editor.xerte-iframe-editor .xerte-cke5-resize-handle::after {
+	content: '';
+	position: absolute;
+	right: 4px;
+	bottom: 3px;
+	width: 10px;
+	height: 6px;
+	border-top: 1px solid currentColor;
+	border-bottom: 1px solid currentColor;
+	transform: rotate(-45deg);
+}
+
+.ck.ck-editor.xerte-iframe-editor .xerte-cke5-resize-handle:focus-visible {
+	outline: 2px solid var(--ck-color-focus-border);
+	outline-offset: -2px;
+}
+
+.ck.ck-editor.xerte-editor-resizing .xerte-cke5-content-frame {
+	pointer-events: none;
+}
+
+.ck.ck-editor.xerte-iframe-fullscreen .xerte-cke5-resize-handle {
+	display: none;
+}
+
 /* A class lets normal wizard scrolling return without overwriting its styles. */
 html.xerte-iframe-fullscreen-open,
 body.xerte-iframe-fullscreen-open {
