@@ -1328,7 +1328,10 @@ function setup() {
 
 		// add & position custom footer
 		if ($(data).find('learningObject').attr('customFooter') != undefined && $(data).find('learningObject').attr('customFooter') != ''){
+
 			var customFooterContent = XBOOTSTRAP.VARIABLES.replaceVariables($(data).find('learningObject').attr('customFooter'), 'variables');
+			customFooterContent = XBOOTSTRAP.GLOBALVARS.replaceGlobalVars(customFooterContent);
+
 			if ($(data).find('learningObject').attr('footerPos') == 'below') {
 				$('.footer .container .row-fluid').append('<div id="customFooter">'+customFooterContent+'</div>');
 				$("#customFooter").css({"margin-top": "40px"});
