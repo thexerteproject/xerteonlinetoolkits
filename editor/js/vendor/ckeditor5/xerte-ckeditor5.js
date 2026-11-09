@@ -175,16 +175,16 @@
 		if (lang === 'en') {
 			return Promise.resolve({ requestedLanguage: lang, uiLanguage: lang });
 		}
-		return Promise.all([
-			loadOptionalLanguageScript('ckeditor:' + lang,
-				languageAssetBase + 'translations/' + lang + '.js'),
-			loadOptionalLanguageScript('xerte:' + lang,
-				languageAssetBase + 'lang/' + lang + '.js')
-		]).then(function (loaded) {
-			return {
-				requestedLanguage: lang,
-				uiLanguage: loaded[0] ? lang : 'en'
-			};
+		return loadOptionalLanguageScript('ckeditor:' + lang,
+			languageAssetBase + 'translations/' + lang + '.js').then(function (coreLoaded) {
+			// Load Xerte translations last so local overrides win over upstream entries.
+			return loadOptionalLanguageScript('xerte:' + lang,
+				languageAssetBase + 'lang/' + lang + '.js').then(function () {
+				return {
+					requestedLanguage: lang,
+					uiLanguage: coreLoaded ? lang : 'en'
+				};
+			});
 		});
 	}
 
