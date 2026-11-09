@@ -228,6 +228,11 @@ input.media, input.date
 	z-index: calc(var(--ck-z-panel, 1000) + 1);
 }
 
+/* Lift the open overflow toolbar above CKEditor's badge outside this pane. */
+#mainContent:has(.ck-toolbar__grouped-dropdown > .ck-dropdown__panel-visible) {
+	z-index: var(--ck-z-panel, 1000) !important;
+}
+
 .subhead { border-bottom: 1px solid #777; }
 
 #lb_footer.footer{

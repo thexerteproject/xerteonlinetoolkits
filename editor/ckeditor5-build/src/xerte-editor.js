@@ -82,18 +82,17 @@ import { XerteSourceDialog } from './plugins/xerte-source-dialog.js';
 import { XerteIframeEditing } from './plugins/xerte-iframe-editing.js';
 
 const toolbarItems = [
-	'undo', 'redo', '|',
-	'findAndReplace', '|',
-	'sourceEditing', 'accessibilityChecker', 'fullscreen', 'htmlEmbed', '|',
-	'heading', 'style', '|',
-	'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'lineHeight', '|',
-	'textPartLanguage', '|',
-	'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'code', 'removeFormat', '|',
-	'specialCharacters', 'emoji', 'fontAwesome', 'horizontalLine', 'xerteMathJax', 'xerteRubyText', '|',
-	'xerteLink', 'xotlink', 'xerteBrowseImage', 'xerteBrowseMedia', 'xerteAudio', 'xerteRecorder', 'mediaEmbed', 'insertTable', 'autocolumns', 'blockQuote', 'codeBlock', '|',
-	'alignment', '|',
-	'bulletedList', 'numberedList', 'outdent', 'indent', '|',
-	'markTag', 'showBlocks'
+	'sourceEditing', '|',
+	'undo', 'redo', 'findAndReplace', '|',
+	'bold', 'italic', 'underline', 'removeFormat', 'strikethrough', 'subscript', 'superscript', 'code', '|',
+	'xerteLink', 'xotlink', '|',
+	'style', 'heading', 'fontFamily', 'fontSize', 'lineHeight', '|',
+	'fontColor', 'fontBackgroundColor', '|',
+	'accessibilityChecker', 'fullscreen', 'showBlocks', '|',
+	'xerteBrowseImage', 'xerteBrowseMedia', 'xerteAudio', 'xerteRecorder', 'mediaEmbed', 'insertTable', 'autocolumns', 'htmlEmbed', '|',
+	'horizontalLine', 'specialCharacters', 'emoji', 'fontAwesome', 'xerteMathJax', 'xerteRubyText', '|',
+	'bulletedList', 'numberedList', 'outdent', 'indent', 'blockQuote', 'codeBlock', 'alignment', 'textPartLanguage', '|',
+	'markTag'
 ];
 
 const imageToolbar = [
