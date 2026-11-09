@@ -500,7 +500,7 @@
 	  noAnswerHeaderTxt="No response submitted" exampleHeaderTxt="Feedback:" feedbackTxt="Page feedback"
 	  copyBtn2Label="Copy" copyShortcutTxt="Press Ctrl+C to copy" downloadTxt="Download" downloadSubmitTxt="Submit &amp; Download" downloadWarningTxt1="You have not downloaded your responses. Do you want to download them now?" downloadWarningTxt2="You have not submitted and downloaded your current responses. Make sure you return and complete this activity or you will lose your work."
 	  answerFieldLabel="Answer"><modelAnswerField name="Text Area" prompt="" rows="5"/></modelAnswer>]]></modelAnswer><modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title" text=""
-     modelAnswerPage="true" highlightPage="false" documentationPage="false" dataPageLink="true"
+      modelAnswer="true" textHighlight="false"
       panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
 	  copyBtn2Label="Copy" downloadTxt="Download" submitTxt="Update" updateTxt="Your responses have been updated." pageTxt="Page" notViewed="Page not viewed"
 	  ></modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Page Title" pageTxt="" instruction="" text="" prompt="" answer="" answerType="true"
@@ -13140,6 +13140,11 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="280" placeholder="Enter text for the page here" mandatory="true" defaultValue="" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
 
+    <collatedPages label="Collated Page Types" type="group" mandatory="true" info="&lt;p&gt;Select the types of page to include in the collated data shown on this page.&lt;br/&gt;These page selections will be overridden if specific pages are added via the new 'Page Results' option below.&lt;/p&gt;">
+      <modelAnswer label="Model Answer" type="CheckBox" defaultValue="true" mandatory="true"/>
+      <textHighlight label="Highlight Text / Note Taking" type="CheckBox" defaultValue="false" mandatory="true"/>
+    </collatedPages>
+
     <layoutGroup label="Page Layout" type="group">
       <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" mandatory="true" conditionTrigger="true"/>
       <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
@@ -13167,11 +13172,7 @@
     </textBelowGroup>
 
     <dataGroup label="Customise Results" type="group" optional="true" tooltip="Customise the type of data from viewed pages that will be shown on this page">
-      <dataPageLink label="Include Link" type="CheckBox" optional="true" condition="dataPageH=='true'||dataPageH==undefined" defaultValue="false" mandatory="true" tooltip="Include links to pages where the collated data originated from"/>
-      <collatedPages label="Page Types" type="group" optional="true" cols="2" info="&lt;p&gt;Select the types of page to include in the collated data shown on this page.&lt;br/&gt;These page selections will be overridden if specific pages are added via the new 'Page Results' option below.&lt;/p&gt;">
-        <modelAnswer label="Model Answer" type="CheckBox" defaultValue="true" optional="true"/>
-        <textHighlight label="Highlight Text / Note Taking" type="CheckBox" defaultValue="false" optional="true"/>
-      </collatedPages>
+      <dataPageLink label="Include Link" type="CheckBox" optional="true" condition="dataPageH=='true'||dataPageH==undefined" defaultValue="false" tooltip="Include links to pages where the collated data originated from"/>
       <dataGroup2 label="Displayed Data" type="group" optional="true" info="Select the data from each page that will be shown here.">
         <dataPageGroup label="Page" type="group" optional="true">
           <dataPageH label="Title" type="CheckBox" conditionTrigger="true" optional="true" defaultValue="true"/>
