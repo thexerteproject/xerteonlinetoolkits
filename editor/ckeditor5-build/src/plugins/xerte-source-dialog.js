@@ -29,7 +29,6 @@ class SourceDialogView extends View {
 						'aria-label': 'Source code editing area',
 						style: {
 							boxSizing: 'border-box',
-							fontFamily: 'monospace',
 							minHeight: '12em',
 							resize: 'vertical',
 							width: '100%'

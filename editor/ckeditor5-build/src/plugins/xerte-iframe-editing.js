@@ -113,7 +113,7 @@ export class XerteIframeEditing extends Plugin {
 			}
 			.ck.ck-editor__editable.xerte-iframe-editable.ck-hidden { display:none!important; }
 			.ck-source-editing-area { min-height:100vh; }
-			.ck-source-editing-area textarea { min-height:100vh; font-family:monospace; }
+			.ck-source-editing-area textarea { min-height:100vh; }
 		`;
 		if ( isSite ) {
 			// Site's grid reserves space for navigation; its body uses a sticky-footer

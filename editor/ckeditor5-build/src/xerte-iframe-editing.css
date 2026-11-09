@@ -86,3 +86,13 @@ body.xerte-iframe-fullscreen-open .ck-body-wrapper {
 	height: 0 !important;
 	min-height: 0;
 }
+
+/* Keep source typography and its sizing mirror equal, independent of theme size. */
+.ck-source-editing-area::after,
+.ck-source-editing-area textarea,
+.ck.ck-xerte-source-dialog textarea.ck-xerte-source-dialog__textarea {
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	line-height: 18px;
+	padding: 4px !important;
+}
