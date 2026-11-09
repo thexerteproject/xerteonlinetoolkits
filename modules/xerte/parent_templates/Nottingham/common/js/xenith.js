@@ -3051,7 +3051,6 @@ function x_changePageStep2(x_gotoPage) {
 
 function x_passwordPage(pswds) {
 	if (x_pageInfo[x_currentPage].passwordPass != true) {
-
 		if (x_params.authorSupport == "true") {
 
 			x_pageInfo[x_currentPage].passwordPass = true;
@@ -3083,6 +3082,14 @@ function x_passwordPage(pswds) {
 			$x_pageDiv.css("height", "calc(100% - " + paddingBlock + "px)");
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '" class="innerPage"></div>');
 			$x_innerPage = $x_pageDiv.find(".innerPage");
+
+			$x_pageIntroBtn.hide();
+			$x_pageResourcesBtn.hide();
+
+			$x_innerPage
+				.hide()
+				.css("visibility", "visible")
+				.fadeIn();
 
 			var $pswdBlock = $('#x_page' + x_currentPage);
 			$pswdBlock.css('height', '100%');
