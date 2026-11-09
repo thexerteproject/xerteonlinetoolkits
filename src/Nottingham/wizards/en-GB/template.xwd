@@ -502,7 +502,7 @@
 	  answerFieldLabel="Answer"><modelAnswerField name="Text Area" prompt="" rows="5"/></modelAnswer>]]></modelAnswer><modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title" text=""
      modelAnswerPage="true" highlightPage="false" documentationPage="false" dataPageLink="true"
       panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
-	  copyBtn2Label="Copy" downloadTxt="Download" pageTxt="Page" notViewed="Page not viewed"
+	  copyBtn2Label="Copy" downloadTxt="Download" submitTxt="Update" updateTxt="Your responses have been updated." pageTxt="Page" notViewed="Page not viewed"
 	  ></modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Page Title" pageTxt="" instruction="" text="" prompt="" answer="" answerType="true"
       panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
 	   answerHeaderTxt="Write your answer here:" feedbackBtnTxt="Submit" answerFieldLabel="Answer"
@@ -13151,6 +13151,11 @@
 
     <info><![CDATA[<p>By default, the results from all viewed Model Answer pages will be displayed on this page. To collate results from a limited number of pages instead, add new 'Page Results' to specify the pages used.</p>]]></info>
 
+    <editableGroup label="Allow Editing" type="group" optional="true" tooltip="Allow users to edit the responses that are collated on this page">
+      <editable label="Allow" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
+      <pageFeedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here" condition="editable=='true'" optional="true" tooltip="The feedback shown when any edited responses have been submitted"/>
+    </editableGroup>
+
     <textTopGroup label="Text Above Panel" type="group" optional="true">
       <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
       <textTopWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
@@ -13206,6 +13211,8 @@
 
     <copyBtn2Label label="Copy Button Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Copy"/>
     <downloadTxt label="Download Button Label" type="TextInput" condition="showDownload!='false'" mandatory="true" language="true" defaultValue="Download"/>
+    <submitTxt label="Update Button Label" type="TextInput" condition="editable=='true'" mandatory="true" language="true" defaultValue="Update"/>
+    <updateTxt label="Update Confirmation Text" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Your responses have been updated."/>
     <pageTxt label="Page Number Text" type="TextInput" condition="unviewed=='true'" mandatory="true" language="true" defaultValue="Page"/>
     <notViewed label="Not Viewed Text" type="TextInput" condition="unviewed=='true'" mandatory="true" language="true" defaultValue="Page not viewed"/>
 
