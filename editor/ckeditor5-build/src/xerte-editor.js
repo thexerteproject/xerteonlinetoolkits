@@ -2,6 +2,7 @@
  * Xerte CKEditor 5 classic build (GPL-2.0+ via CKEditor packages).
  */
 import 'ckeditor5/ckeditor5.css';
+import '../../../modules/common/css/rich-text-tables.css';
 import './autocolumns.css';
 import './xerte-image-editing.css';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
@@ -103,7 +104,9 @@ const imageToolbar = [
 	'linkImage'
 ];
 
-const tableToolbar = [
+const tableWidgetToolbar = [ 'tableProperties', 'toggleTableCaption' ];
+
+const tableContentToolbar = [
 	'insertTableColumnLeft',
 	'insertTableColumnRight',
 	'deleteTableColumn',
@@ -208,6 +211,8 @@ const xerteBuiltinPlugins = [
 	XerteRubyText
 ];
 
+const defaultTableBorder = { borderStyle: 'solid', borderWidth: '1px', borderColor: '#808080' };
+
 const xerteDefaultConfig = {
 	licenseKey: 'GPL',
 	menuBar: {
@@ -303,7 +308,20 @@ const xerteDefaultConfig = {
 		resizeUnit: 'px'
 	},
 	table: {
-		contentToolbar: tableToolbar
+		contentToolbar: tableContentToolbar,
+		tableToolbar: tableWidgetToolbar,
+		showHiddenBorders: false,
+		// These values are implicit in saved HTML. Match rich-text-tables.css
+		// so selecting a different value (including middle alignment) saves it.
+		tableProperties: {
+			defaultProperties: defaultTableBorder
+		},
+		tableCellProperties: {
+			defaultProperties: {
+				...defaultTableBorder,
+				padding: '10px', verticalAlignment: 'top'
+			}
+		}
 	},
 	link: {
 		toolbar: [ 'xerteLinkPreview', 'xerteEditPageLink', '|', 'xerteLinkTarget', 'xerteEditLink', 'unlink' ]
