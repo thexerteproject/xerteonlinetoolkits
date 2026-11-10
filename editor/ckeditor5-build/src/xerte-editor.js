@@ -80,6 +80,8 @@ import { XerteLinkDialog } from './plugins/xerte-link-dialog.js';
 import { XerteAccessibilityChecker } from './plugins/xerte-accessibility-checker.js';
 import { XerteSourceDialog } from './plugins/xerte-source-dialog.js';
 import { XerteIframeEditing } from './plugins/xerte-iframe-editing.js';
+import { XerteStylePreview } from './plugins/xerte-style-preview.js';
+import { XerteLegacyStyles, legacyStyles } from './plugins/xerte-legacy-styles.js';
 
 const toolbarItems = [
 	'sourceEditing', '|',
@@ -123,6 +125,8 @@ const htmlAllowAll = {
 	classes: true,
 	styles: true
 };
+
+const styleVariants = [ 1, 2, 3, 4, 5, 6 ];
 
 const xerteBuiltinPlugins = [
 	XerteIframeEditing,
@@ -175,6 +179,8 @@ const xerteBuiltinPlugins = [
 	SpecialCharacters,
 	SpecialCharactersEssentials,
 	Style,
+	XerteStylePreview,
+	XerteLegacyStyles,
 	FindAndReplace,
 	CodeBlock,
 	MediaEmbed,
@@ -332,20 +338,29 @@ const xerteDefaultConfig = {
 	style: {
 		definitions: [
 			{
+				// Keep the paragraph style available for content authored during the CKEditor 5 rollout.
 				name: 'Panel',
 				element: 'p',
-				classes: [ 'panel1' ]
+				classes: [ 'panel1' ],
+				existingOnly: true
 			},
 			{
-				name: 'Highlight',
+				name: 'Inline Panel',
 				element: 'span',
-				classes: [ 'highlight1' ]
+				classes: [ 'panel', 'editorStyle', 'inline' ],
+				existingOnly: true
 			},
-			{
-				name: 'Block quote',
-				element: 'blockquote',
-				classes: [ 'bq1' ]
-			}
+			...styleVariants.map( number => ( {
+				name: `Panel ${ number }`,
+				element: 'span',
+				classes: [ `panel${ number }` ]
+			} ) ),
+			...styleVariants.map( number => ( {
+				name: `Highlight ${ number }`,
+				element: 'span',
+				classes: [ `highlight${ number }` ]
+			} ) ),
+			...legacyStyles
 		]
 	},
 	mediaEmbed: {

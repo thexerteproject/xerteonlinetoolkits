@@ -82,11 +82,12 @@ function equationValue( element ) {
 }
 
 function createEquationView( writer, modelElement, editing, t, library ) {
+	const featured = modelElement.getAttribute( 'formulaStyle' ) === 'math-featured' ? ' math-featured' : '';
 	if ( editing ) {
 		const value = equationValue( modelElement );
 		const widget = writer.createContainerElement( 'span', {
-			class: modelElement.getAttribute( 'display' ) === 'block' ?
-				'xerte-mathjax-widget mathjax-block' : 'xerte-mathjax-widget',
+			class: ( modelElement.getAttribute( 'display' ) === 'block' ?
+				'xerte-mathjax-widget mathjax-block' : 'xerte-mathjax-widget' ) + featured,
 			'aria-label': t( 'Math equation' )
 		} );
 		const preview = writer.createRawElement( 'span', { class: 'xerte-mathjax-preview' }, domElement => {
@@ -95,7 +96,7 @@ function createEquationView( writer, modelElement, editing, t, library ) {
 		writer.insert( writer.createPositionAt( widget, 0 ), preview );
 		return toWidget( widget, writer, { label: t( 'Math equation' ) } );
 	}
-	const span = writer.createContainerElement( 'span', { class: 'mathjax' } );
+	const span = writer.createContainerElement( 'span', { class: 'mathjax' + featured } );
 	writer.insert( writer.createPositionAt( span, 0 ), writer.createText( equationValue( modelElement ) ) );
 	return span;
 }
@@ -112,22 +113,26 @@ export class XerteMathJaxSnippet extends Plugin {
 			isInline: true,
 			isObject: true,
 			allowWhere: '$text',
-			allowAttributes: [ 'source', 'syntax', 'display' ]
+			allowAttributes: [ 'source', 'syntax', 'display', 'formulaStyle' ]
 		} );
 
 		for ( const className of [ 'mathjax', 'math-tex' ] ) {
 			editor.conversion.for( 'upcast' ).elementToElement( {
 				view: { name: 'span', classes: className },
-				model: ( viewElement, { writer } ) => writer.createElement( 'xerteMathJax', parseMathJaxValue( viewSource( viewElement ) ) ),
+				model: ( viewElement, { writer } ) => {
+					const attributes = parseMathJaxValue( viewSource( viewElement ) );
+					if ( viewElement.hasClass( 'math-featured' ) ) attributes.formulaStyle = 'math-featured';
+					return writer.createElement( 'xerteMathJax', attributes );
+				},
 				converterPriority: 'high'
 			} );
 		}
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
-			model: { name: 'xerteMathJax', attributes: [ 'source', 'syntax', 'display' ] },
+			model: { name: 'xerteMathJax', attributes: [ 'source', 'syntax', 'display', 'formulaStyle' ] },
 			view: ( modelElement, { writer } ) => createEquationView( writer, modelElement, false, editor.t, library )
 		} );
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
-			model: { name: 'xerteMathJax', attributes: [ 'source', 'syntax', 'display' ] },
+			model: { name: 'xerteMathJax', attributes: [ 'source', 'syntax', 'display', 'formulaStyle' ] },
 			view: ( modelElement, { writer } ) => createEquationView( writer, modelElement, true, editor.t, library )
 		} );
 

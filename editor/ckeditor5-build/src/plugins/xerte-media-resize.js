@@ -19,7 +19,11 @@ export class XerteMediaResize extends Plugin {
 	afterInit() {
 		const editor = this.editor;
 		const resizers = editor.plugins.get( WidgetResize );
-		editor.model.schema.extend( 'media', { allowAttributes: mediaAttributes } );
+		editor.model.schema.extend( 'media', { allowAttributes: [ ...mediaAttributes, 'mediaStyle' ] } );
+		editor.conversion.for( 'downcast' ).attributeToAttribute( {
+			model: { name: 'media', key: 'mediaStyle' },
+			view: value => ( { key: 'class', value } )
+		} );
 		this._registerConverters();
 		this._registerPropertiesButton();
 

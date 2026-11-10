@@ -603,6 +603,37 @@
 		}
 	}
 
+	function fitToolbarDropdowns(editor) {
+		var toolbar = editor.ui.view.toolbar;
+		if (!toolbar) return;
+		for (var dropdown of toolbar.items) {
+			if (!dropdown.panelView) continue;
+			editor.listenTo(dropdown, 'change:isOpen', function (event, name, isOpen) {
+				var view = event.source;
+				var panel = view.panelView.element;
+				panel.style.removeProperty('--xerte-dropdown-height');
+				if (!isOpen || view.panelPosition !== 'auto') return;
+				var pane = view.element.closest('#mainContent > .content');
+				if (!pane || view.element.closest('.xerte-iframe-fullscreen')) return;
+
+				// CKEditor positions against the viewport. The wizard clips at its scroll pane.
+				var bounds = pane.getBoundingClientRect();
+				var anchor = view.element.getBoundingClientRect();
+				var above = anchor.top - Math.max(0, bounds.top);
+				var below = Math.min(document.documentElement.clientHeight, bounds.bottom) - anchor.bottom;
+				var position = view.panelView.position;
+				var opensUp = position.startsWith('n');
+				var available = opensUp ? above : below;
+				var opposite = opensUp ? below : above;
+				if (panel.offsetHeight > available && opposite > available) {
+					view.panelView.position = (opensUp ? 's' : 'n') + position.slice(1);
+					available = opposite;
+				}
+				panel.style.setProperty('--xerte-dropdown-height', Math.max(0, Math.floor(available)) + 'px');
+			});
+		}
+	}
+
 	function setupInlineToolbarVisibility(editor) {
 		if (!editor || !editor.ui || !editor.ui.view) {
 			return;
@@ -769,8 +800,10 @@
 			// Use the measured editor width rather than a percentage. Once this panel
 			// becomes position:fixed, percentage widths are relative to the viewport.
 			+ '.ck.ck-editor__top .ck-sticky-panel__content{width:var(--xerte-editor-width,100%)!important;min-width:0!important;max-width:calc(100vw - 24px)!important;box-sizing:border-box;}'
-			+ '.ck.ck-dropdown__panel{max-width:calc(100vw - 1rem);max-height:60vh;overflow:auto;overscroll-behavior:contain;}'
-			+ '.ck.ck-editor .ck-toolbar__grouped-dropdown>.ck-dropdown__panel{width:min(calc(var(--xerte-editor-width, 600px) - 8px),60vw)!important;max-width:calc(100vw - 24px)!important;}'
+			+ '.ck.ck-dropdown__panel{max-width:calc(100vw - 1rem);max-height:min(60vh,var(--xerte-dropdown-height,60vh));overflow:auto;overscroll-behavior:contain;}'
+			+ '.ck.ck-dropdown__panel .ck.ck-style-panel{max-height:min(var(--ck-style-panel-max-height),calc(var(--xerte-dropdown-height,60vh) - 2px));overscroll-behavior:contain;}'
+			// Nested dropdowns such as Styles must be able to open outside the More tools panel.
+			+ '.ck.ck-editor .ck-toolbar__grouped-dropdown>.ck-dropdown__panel{width:min(calc(var(--xerte-editor-width, 600px) - 8px),60vw)!important;max-width:calc(100vw - 24px)!important;max-height:none;overflow:visible;}'
 			+ '.ck.ck-editor .ck-toolbar__grouped-dropdown .ck-toolbar_floating{width:100%!important;max-width:100%!important;}'
 			+ '.ck.ck-editor .ck-toolbar__grouped-dropdown .ck-toolbar_floating>.ck-toolbar__items{flex-wrap:wrap!important;}';
 		css += '.ck.ck-toolbar.xerte-fixed-toolbar{position:relative;padding-right:28px!important;}'
@@ -908,6 +941,7 @@
 			var shim = apiShim(editor, domEl);
 			window.__xerteCke5Shims[id] = shim;
 			ensureEditorUiCssOverrides();
+			fitToolbarDropdowns(editor);
 			if (typeof callback === 'function') {
 				callback.call(shim, domEl);
 			}

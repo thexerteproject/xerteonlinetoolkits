@@ -13,6 +13,8 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import { DomEmitterMixin } from 'ckeditor5/src/utils.js';
 import '../xerte-iframe-editing.css';
 
+const stockBlockquoteSelector = /^\.ck-content(?:\[dir="?rtl"?\])? blockquote$/;
+
 export class XerteIframeEditing extends Plugin {
 	static get pluginName() { return 'XerteIframeEditing'; }
 
@@ -85,8 +87,15 @@ export class XerteIframeEditing extends Plugin {
 		doc.documentElement.lang = editor.locale.contentLanguage;
 		doc.documentElement.dir = editor.locale.contentLanguageDirection;
 		// Copy CKEditor's existing bundle styles, never the wizard's broad CSS.
+		const stylesheets = editor.config.get( 'xerteIframeStylesheets' ) || [];
 		for ( const style of parentDocument.querySelectorAll( 'style[data-cke]' ) ) {
-			doc.head.appendChild( style.cloneNode( true ) );
+			const copy = doc.head.appendChild( style.cloneNode( true ) );
+			if ( !stylesheets.length || !copy.sheet ) continue;
+			// CKEditor's quote rules outrank the player's element and .bqN rules.
+			// Drop them from the themed copy so the project supplies the whole quote style.
+			for ( let index = copy.sheet.cssRules.length - 1; index >= 0; index-- ) {
+				if ( stockBlockquoteSelector.test( copy.sheet.cssRules[ index ].selectorText ) ) copy.sheet.deleteRule( index );
+			}
 		}
 		this.themeAnchor = doc.createElement( 'style' );
 		// Load theme links BEFORE these final layout corrections. Keep theme fonts,
@@ -133,7 +142,7 @@ export class XerteIframeEditing extends Plugin {
 			`;
 		}
 		doc.head.appendChild( this.themeAnchor );
-		await Promise.race( [ this.setStylesheets( editor.config.get( 'xerteIframeStylesheets' ) || [] ), removed ] );
+		await Promise.race( [ this.setStylesheets( stylesheets ), removed ] );
 		if ( !frame.isConnected ) throw new Error( 'CKEditor content frame was removed during initialization.' );
 		this._initializationObserver.disconnect();
 
@@ -197,6 +206,7 @@ export class XerteIframeEditing extends Plugin {
 		} );
 		return this.stylesReady = Promise.all( loading ).then( result => {
 			for ( const link of links ) link.remove();
+			this.fire( 'stylesheetsChanged' );
 			return result;
 		} );
 	}
