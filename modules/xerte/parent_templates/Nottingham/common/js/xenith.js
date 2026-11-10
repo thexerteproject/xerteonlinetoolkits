@@ -3083,8 +3083,8 @@ function x_passwordPage(pswds) {
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '" class="innerPage"></div>');
 			$x_innerPage = $x_pageDiv.find(".innerPage");
 
-			$x_pageIntroBtn.hide();
-			$x_pageResourcesBtn.hide();
+			if ($x_pageIntroBtn) { $x_pageIntroBtn.hide(); }
+			if ($x_pageResourcesBtn) { $x_pageResourcesBtn.hide(); }
 
 			$x_innerPage
 				.hide()
