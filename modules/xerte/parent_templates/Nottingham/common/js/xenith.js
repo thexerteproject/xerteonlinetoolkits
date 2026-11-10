@@ -1746,13 +1746,14 @@ function x_continueSetUp1() {
 			} else {
 				$logo.css('max-height', '80px');
 			}
-			// If the logo padding option is added
-			if (x_params.icPadding != undefined && x_params.icPadding != 'false') {
-				if (x_params.icPaddingVal != undefined && x_params.icPaddingVal != '') {
-					$logo.css('padding', x_params.icPaddingVal);
-				} else {
-					$logo.css('padding', '10px 15px 0px 10px');
-				}
+		}
+
+		// If the logo padding option is added
+		if (x_params.icPadding != undefined && x_params.icPadding != 'false') {
+			if (x_params.icPaddingVal != undefined && x_params.icPaddingVal != '') {
+				$logo.css('padding', x_params.icPaddingVal);
+			} else {
+				$logo.css('padding', '10px 15px 0px 10px');
 			}
 		}
 
@@ -3673,6 +3674,8 @@ function x_setUpPage() {
 		}
 
 		$x_mainHolder.css("visibility", "visible");
+		XENITH.PROGRESSBAR.position();
+
 		x_updateCss2(true);
 		XENITH.SIDEBAR.show();
 
@@ -5622,7 +5625,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 							"left"	:$activeTooltip.offset().left + 20,
 							"top"	:$activeTooltip.offset().top + 20
 						});
-					
+
 					// Queue reparsing of MathJax - fails if no network connection
 					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
 
@@ -6530,6 +6533,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 	let progressBarSpacing;
 	let pageDetails;
 	let totalPages;
+	let setUpComplete = false;
 
 	// used when progress markers represent the ends of chapters/milestones
 	let chapters;
@@ -6629,8 +6633,11 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			}
 		}
 
+		if (progressBarPosition != "footer") {
+			$pbHolder.css("visibility", "hidden");
+		}
+
 		// add the x% COMPLETE text holder to the progress bar
-		let leftOffset = 10;
 		if (progressBarPercentage !== false) {
 			$pbTxt = $('<div class="pbTxt">' + progressBarPercentage.replace("{x}", 100) + '</div>');
 
@@ -6638,31 +6645,6 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 				$pbTxt.appendTo($pbHolder);
 			} else {
 				$pbTxt.prependTo($pbHolder);
-			}
-
-			// on smaller screens the % text goes above the progress bar - on larger screens the text is next to the progress bar
-			if (progressBarPosition != "footer") {
-				if (x_browserInfo.mobile !== true) {
-					$pbTxt.css({"width": $pbTxt.width() + parseInt($pbTxt.css("padding-left"))});
-					$pbTxt.css({"margin-left": -$pbTxt.outerWidth(true)});
-				}
-
-				leftOffset = x_browserInfo.mobile !== true ? $pbTxt.outerWidth() : leftOffset;
-			}
-		}
-
-		// on smaller screens the % text goes above the progress bar - on larger screens the text is next to the progress bar
-		if (progressBarPosition != "footer") {
-			// left logo
-			if ($("#x_headerBlock .x_floatLeft.x_icon:visible").length > 0) {
-				$pbHolder.css("padding-left", leftOffset + Math.round($("#x_headerBlock .x_floatLeft.x_icon").outerWidth()));
-			} else {
-				$pbHolder.css("padding-left", leftOffset);
-			}
-
-			// right logo
-			if ($("#x_headerBlock .x_floatRight.x_icon:visible").length > 0) {
-				$pbHolder.css("padding-right", Math.round($("#x_headerBlock .x_floatRight.x_icon").width()) + 10);
 			}
 		}
 
@@ -6969,7 +6951,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 	// a new page has been viewed - update the progress bar
 	function update(page, target) {
-		if (progressBar) {
+		if (progressBar && setUpComplete) {
 			let update = true;
 
 			if (page != undefined) {
@@ -7103,10 +7085,78 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 		}
 	}
 
+	// set the size / position of the progress bar
+	function position() {
+		if (progressBar && progressBarPosition !== "footer") {
+			// don't do the sizing until everything that may affect the available space has loaded
+			const pending = [];
+			if (document.fonts && document.fonts.ready) {
+				pending.push(document.fonts.ready);
+			}
+
+			$("#x_headerBlock img.x_icon:visible").each(function () {
+				const img = this;
+				if (!img.complete) {
+					pending.push(new Promise(function (resolve) {
+						img.addEventListener("load", resolve, {once: true});
+						img.addEventListener("error", resolve, {once: true});
+					}));
+				}
+			});
+
+			Promise.all(pending).then(function () {
+				requestAnimationFrame(function () {
+					let leftOffset = 10;
+					const $leftIcon = $("#x_headerBlock .x_floatLeft.x_icon:visible");
+
+					if (progressBarPercentage !== false && x_browserInfo.mobile !== true) {
+						$pbTxt.css({width: "", marginLeft: ""});
+						if ($leftIcon.length > 0) {
+							// to make sure it lines up with the title text which has no left padding when next to logo
+							$pbTxt.css("padding-left", 0);
+						}
+
+						const style = window.getComputedStyle($pbTxt[0]);
+						const paddingL = parseFloat(style.paddingLeft) || 0;
+						const paddingR = parseFloat(style.paddingRight) || 0;
+						const border = $pbTxt[0].getBoundingClientRect().width;
+						const headPadding = progressBarPosition === "header3" && $leftIcon.length > 0 ? parseInt($("#x_headerProgress").parent("div").css("padding-left")) : 0;
+						$pbTxt.css("width", Math.max(0, border - paddingL - paddingR) + "px");
+
+						const outer = $pbTxt[0].getBoundingClientRect().width;
+						$pbTxt.css("margin-left", (-outer - headPadding) + "px");
+
+						leftOffset = outer;
+					}
+
+					if ($leftIcon.length > 0) {
+						$pbHolder.css("padding-left", leftOffset + Math.round($leftIcon[0].getBoundingClientRect().width));
+					} else {
+						$pbHolder.css("padding-left", leftOffset);
+					}
+
+					const $rightIcon = $("#x_headerBlock .x_floatRight.x_icon:visible");
+					if ($rightIcon.length > 0) {
+						$pbHolder.css("padding-right", Math.round($rightIcon[0].getBoundingClientRect().width) + 10);
+					}
+
+					$pbHolder.css("visibility", "visible");
+					setUpComplete = true;
+					XENITH.PROGRESSBAR.update();
+				});
+			});
+
+		} else if (progressBar) {
+			setUpComplete = true;
+			XENITH.PROGRESSBAR.update();
+		}
+	}
+
 	// make some public methods
 	self.init = init;
 	self.build = build;
 	self.update = update;
+	self.position = position;
 
 	return parent;
 
