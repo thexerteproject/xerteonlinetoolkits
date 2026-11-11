@@ -1874,6 +1874,14 @@ function upgrade_60()
 {
     $table = table_by_key("management_helper");
 
+    // Older beta installations may have the helper table without this column.
+    if (!_db_field_exists('management_helper', 'preferred_model')) {
+        $ok = _upgrade_db_query("ALTER TABLE `$table` ADD COLUMN `preferred_model` TEXT NULL");
+        if ($ok === false) {
+            return false;
+        }
+    }
+
     $ok = db_query("
         INSERT INTO $table
             (`vendor`, `label`, `type`, `needs_key`, `enabled`, `sub_options`, `preferred_model`)
@@ -1901,4 +1909,19 @@ function upgrade_61()
     }
 
     return $message;
+}
+
+function upgrade_62()
+{
+    if (_db_field_exists('management_helper', 'preferred_model')) {
+        return "Management helper preferred_model column already exists - ok ? true<br>";
+    }
+
+    $table = table_by_key('management_helper');
+    $ok = _upgrade_db_query("ALTER TABLE `$table` ADD COLUMN `preferred_model` TEXT NULL");
+    if ($ok === false) {
+        return false;
+    }
+
+    return "Management helper preferred_model column - ok ? true<br>";
 }
