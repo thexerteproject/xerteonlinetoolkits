@@ -43,6 +43,774 @@ var hideBannerBtn = false;
 var fullscreenBannerTitleMargin=10;
 var m_volume=1;
 
+/* ---------------------------------------------------------------------------
+ * Print-fallback utilities (audio / video / pdf)
+ *
+ * Used by renderAudioNode / renderVideoNode / renderPdfNode to build the
+ * `display: none` sibling elements that replace the live media when the page
+ * is printed (gated by `html.printing-bootstrap` in print.css).
+ * --------------------------------------------------------------------------- */
+
+// Pending async work to resolve before the toolbar Print button fires
+// window.print(). Populated by buildVideoPrintFallback (Vimeo oEmbed + mp4
+// frame capture); drained by prepareMediaForPrint.
+var __mediaPrintTasks = [];
+
+// In-progress warm-ups of XOT embeds in hidden panes; the Print button awaits these.
+var __xotWarmupPromises = [];
+
+// Resolve every queued media-print task with a 2.5s overall cap so the print
+// dialog is never blocked indefinitely (Vimeo down, mp4 metadata stuck, etc.).
+// Always resolves; never rejects. Tasks left unresolved at the deadline are
+// abandoned for this print attempt but will run to completion in the
+// background, so a subsequent print attempt will see them ready.
+function prepareMediaForPrint() {
+	buildAutocolumnsForPrint();
+	// Order matters: applyPrintColors early-returns once the stamp registry
+	// is non-empty, so it must run before the other stampers add records.
+	applyPrintColors();
+	applyPrintIconImages();
+	applyPrintBreakAvoidance();
+	const tasks = __mediaPrintTasks.splice(0, __mediaPrintTasks.length);
+	const wrapped = tasks.map(function (t) {
+		try { return Promise.resolve(t()); } catch (e) { return Promise.resolve(); }
+	});
+	const all = Promise.all(wrapped).then(function () {}, function () {});
+	const timeout = new Promise(function (resolve) { setTimeout(resolve, 2500); });
+	return Promise.race([all, timeout]);
+}
+
+// --- Auto-columns print replica --------------------------------------------
+// CSS multi-column (.autocolumns2..5) doesn't fragment into columns in print,
+// so build a static float-based replica; print.css swaps live block for replica.
+
+// Split a <p> on "blank line" separators (<br> run, optional space, <br> run)
+// so a single authored paragraph can spread across columns.
+function splitParagraphSegments(p) {
+	const segs = p.innerHTML.split(/(?:<br\s*\/?>\s*)+(?:&nbsp;| |\s)*(?:<br\s*\/?>\s*)+/i)
+		.map(function (s) { return s.trim(); })
+		.filter(function (s) { return s.length && s !== '&nbsp;'; });
+	if (segs.length < 2) {
+		return [p.outerHTML];
+	}
+	const cls = p.getAttribute('class');
+	const open = cls ? '<p class="' + cls + '">' : '<p>';
+	return segs.map(function (s) { return open + s + '</p>'; });
+}
+
+// Flatten a container's children into ordered atom HTML strings; paragraphs
+// may split (see splitParagraphSegments), other blocks are kept whole.
+function collectAutocolAtoms(container) {
+	const atoms = [];
+	$(container).children().each(function () {
+		const tag = this.tagName ? this.tagName.toUpperCase() : '';
+		if (tag === 'P') {
+			splitParagraphSegments(this).forEach(function (h) { atoms.push(h); });
+		} else if (tag) {
+			atoms.push(this.outerHTML);
+		}
+	});
+	return atoms;
+}
+
+// Fill columns in order up to a cumulative share of total text weight, so
+// reading order matches multicol (top-to-bottom, then next column).
+function distributeAtoms(atoms, n) {
+	const weights = atoms.map(function (h) {
+		return $('<div></div>').html(h).text().length || 1;
+	});
+	const total = weights.reduce(function (a, b) { return a + b; }, 0);
+	const target = total / n;
+	const cols = [];
+	for (let i = 0; i < n; i += 1) { cols.push([]); }
+	let ci = 0;
+	let acc = 0;
+	for (let i = 0; i < atoms.length; i += 1) {
+		cols[ci].push(atoms[i]);
+		acc += weights[i];
+		if (ci < n - 1 && acc >= target * (ci + 1)) { ci += 1; }
+	}
+	return cols;
+}
+
+// Bootstrap's print reset (* { background:transparent!important; color:#000
+// !important } in bootstrap.css) strips author background colours and forces
+// black text in print. We copy each element's on-screen colours (read via
+// getComputedStyle, which doesn't see the print reset) onto it as inline
+// !important so panels/wells/alerts/highlights keep their look on paper. The
+// stamps mutate the live DOM, so we record each element's original style and
+// revert after printing — otherwise the inline !important colours would break
+// screen states like link :hover. Only elements with a background or non-black
+// text are touched (plain black-on-transparent content is unaffected anyway).
+var __printColorStamped = [];
+
+function applyPrintColors() {
+	if (__printColorStamped.length) {
+		return;
+	}
+	// Read pass first (all getComputedStyle), then write pass, so we don't
+	// thrash layout by interleaving reads and inline-style writes.
+	const plans = [];
+	$('#mainContent *').each(function () {
+		const cs = window.getComputedStyle(this);
+		const bg = cs.backgroundColor;
+		const hasBg = bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)';
+		if (!hasBg && cs.color === 'rgb(0, 0, 0)') {
+			return;
+		}
+		plans.push({ el: this, color: cs.color, bg: hasBg ? bg : null, style: this.getAttribute('style') });
+	});
+	plans.forEach(function (p) {
+		__printColorStamped.push({ el: p.el, style: p.style });
+		p.el.style.setProperty('color', p.color, 'important');
+		if (p.bg !== null) {
+			p.el.style.setProperty('background-color', p.bg, 'important');
+			p.el.style.setProperty('-webkit-print-color-adjust', 'exact', 'important');
+			p.el.style.setProperty('print-color-adjust', 'exact', 'important');
+		}
+	});
+}
+
+function revertPrintColors() {
+	__printColorStamped.forEach(function (rec) {
+		if (rec.style === null) {
+			rec.el.removeAttribute('style');
+		} else {
+			rec.el.setAttribute('style', rec.style);
+		}
+	});
+	__printColorStamped = [];
+	// Scoped to the live page: replicas inside #printAllContent keep theirs.
+	$('#mainContent .x_print-icon-img').remove();
+}
+
+// Bootstrap 2 glyphicons are background-image sprites; the bootstrap.css
+// print reset blanks background images and Safari refuses to print them even
+// when stamped inline with print-color-adjust. Swap each icon for a real
+// cropped <img> of the sprite — every browser prints real images. The live
+// icon is hidden inline (recorded for revert) and revertPrintColors removes
+// the injected replicas again.
+function applyPrintIconImages() {
+	$('#mainContent').find('[class^="icon-"], [class*=" icon-"]').each(function () {
+		const cs = window.getComputedStyle(this);
+		const match = /url\(["']?([^"')]+)["']?\)/.exec(cs.backgroundImage);
+		if (!match || $(this).next('.x_print-icon-img').length) {
+			return;
+		}
+		const pos = cs.backgroundPosition.split(' ');
+		const img = $('<img/>', { src: match[1], alt: '' })[0];
+		// !important needed: print.css forces max-width 100% on content
+		// images, which would shrink the whole sprite into the 14px window.
+		img.style.setProperty('max-width', 'none', 'important');
+		img.style.setProperty('height', 'auto', 'important');
+		img.style.setProperty('margin-left', pos[0] || '0px');
+		img.style.setProperty('margin-top', pos[1] || '0px');
+		const $replica = $('<span class="x_print-icon-img" aria-hidden="true"></span>')
+			.css({
+				display: 'inline-block',
+				width: cs.width,
+				height: cs.height,
+				overflow: 'hidden',
+				'vertical-align': 'text-top',
+			})
+			.append(img);
+		// applyPrintColors may already hold this element's original style —
+		// a second record would re-apply its stamps during revert.
+		const el = this;
+		const recorded = __printColorStamped.some(function (rec) { return rec.el === el; });
+		if (!recorded) {
+			__printColorStamped.push({ el: el, style: el.getAttribute('style') });
+		}
+		el.style.setProperty('display', 'none', 'important');
+		$(el).after($replica);
+	});
+}
+
+// Chart libraries (e.g. Google Charts) paint into absolutely-positioned divs
+// inside a position:relative wrapper they generate themselves, so there is no
+// stable class to target from print.css. When such a wrapper fragments across
+// a page break, browsers paint the absolute content at the wrong offset and
+// neighbouring widgets overlap — keep each widget whole on one page instead.
+// Same applies to aspect-ratio embed wrappers (.embed-container et al), where
+// the absolutely-positioned child is an iframe rather than a div.
+// Stamps are recorded in __printColorStamped so revertPrintColors undoes them.
+function applyPrintBreakAvoidance() {
+	// No svg here: SVGElement has no offsetParent, so the wrapper lookup below
+	// can never resolve for it (chart svgs sit inside absolute divs anyway).
+	$('#mainContent').find('div, iframe, object, embed, video, canvas, img').each(function () {
+		if (window.getComputedStyle(this).position !== 'absolute') {
+			return;
+		}
+		const wrapper = this.offsetParent;
+		if (!wrapper || $(wrapper).closest('#mainContent').length === 0) {
+			return;
+		}
+		// Already stamped this print run (wrappers usually hold several
+		// absolute children) or authored as avoid — nothing to do.
+		if (wrapper.style.getPropertyValue('break-inside') === 'avoid') {
+			return;
+		}
+		const recorded = __printColorStamped.some(function (rec) { return rec.el === wrapper; });
+		if (!recorded) {
+			__printColorStamped.push({ el: wrapper, style: wrapper.getAttribute('style') });
+		}
+		wrapper.style.setProperty('page-break-inside', 'avoid', 'important');
+		wrapper.style.setProperty('break-inside', 'avoid', 'important');
+	});
+}
+
+function buildAutocolumnsForPrint() {
+	$('#mainContent .autocolumns2, #mainContent .autocolumns3, #mainContent .autocolumns4, #mainContent .autocolumns5').each(function () {
+		const $live = $(this);
+		if ($live.data('autocolPrintBuilt')) {
+			return;
+		}
+		$live.data('autocolPrintBuilt', true);
+		// Cap at 3 columns for print readability on A4.
+		const n = $live.is('.autocolumns3, .autocolumns4, .autocolumns5') ? 3 : 2;
+		const atoms = collectAutocolAtoms(this);
+		if (atoms.length < 2) {
+			return;
+		}
+		const filled = distributeAtoms(atoms, n).filter(function (c) { return c.length; });
+		const $replica = $('<div class="x_autocol-print" aria-hidden="true"></div>');
+		filled.forEach(function (colAtoms) {
+			const $col = $('<div class="x_autocol-col"></div>').css('width', (100 / filled.length) + '%');
+			// Duplicated from trusted, already-rendered content (no scripts).
+			colAtoms.forEach(function (h) { $col.append(h); });
+			$replica.append($col);
+		});
+		$live.after($replica).addClass('x_autocol-replaced');
+	});
+}
+
+// Renders XOT embeds in inactive navigator panes by briefly laying each pane out
+// off-screen at full width, so they don't print blank when their tab was never opened.
+function warmUpHiddenXotEmbeds($root, width) {
+	$root.find('.tab-pane:not(.active)').each(function () {
+		const $pane = $(this);
+		if ($pane.data('xotWarmed') || $pane.find('iframe.xot-frame').length === 0) {
+			return;
+		}
+		$pane.data('xotWarmed', true);
+		const w = width || $pane.parent().width();
+		$pane.css({
+			display: 'block',
+			position: 'absolute',
+			left: '-99999px',
+			top: '0',
+			width: w + 'px',
+			visibility: 'hidden',
+		});
+
+		const $frames = $pane.find('iframe.xot-frame');
+		const promise = new Promise(function (resolve) {
+			let settled = false;
+			const done = function () {
+				if (settled) {
+					return;
+				}
+				settled = true;
+				$pane.css({ display: '', position: '', left: '', top: '', width: '', visibility: '' });
+				resolve();
+			};
+			let pending = $frames.length;
+			$frames.each(function () {
+				this.addEventListener('load', function () {
+					pending -= 1;
+					// Let the player lay out before hiding the pane again.
+					if (pending <= 0) { setTimeout(done, 1500); }
+				}, { once: true });
+			});
+			// Hard cap so a stalled embed can't hold things open.
+			setTimeout(done, 6000);
+		});
+		__xotWarmupPromises.push(promise);
+	});
+}
+
+// Resolves once all hidden-pane warm-ups have settled (never rejects).
+function whenXotWarmupSettled() {
+	if (__xotWarmupPromises.length === 0) {
+		return Promise.resolve();
+	}
+	return Promise.all(__xotWarmupPromises).then(function () {}, function () {});
+}
+
+// --- Print all pages --------------------------------------------------------
+// The toolbar print button prints the whole project, not just the current
+// page: every page in validPages is rendered in turn through the normal
+// navigation path, given its print stamps, and cloned into the off-screen
+// #printAllContent accumulator, which print.css swaps in for #mainContent
+// under html.x_print-all. Native Ctrl+P stays single-page — pages can't be
+// rendered asynchronously from inside beforeprint.
+
+// Clone the freshly rendered + stamped current page into a print replica.
+function buildPrintPageReplica() {
+	const $wrap = $('<div class="x_printpage"></div>');
+	// Reuse the rendered title/subtitle rather than rebuilding from XML.
+	const $header = $('<div class="x_printpage-header"></div>')
+		.append($('#pageTitle').clone().removeAttr('id aria-live'))
+		.append($('#pageSubTitle').clone().removeAttr('id aria-live'));
+	const $content = $('#mainContent').children().clone();
+	$wrap.append($header).append($content);
+	// jQuery re-executes script elements on append — authored page scripts
+	// must not run a second time against the live document.
+	$wrap.find('script').remove();
+	// Live players and video/pdf embeds don't survive cloning — jQuery .data()
+	// (e.g. vidHolder's iframeRatio) is lost, so global helpers like
+	// updateContent and the resizeEnd handler would throw when they sweep
+	// `$('.vidHolder iframe')` and hit a clone. print.css hides these live
+	// trees in print anyway in favour of their *-print-fallback siblings.
+	$wrap.find('.mejs-container, audio, video, .vidHolder, .x_videoContainer, object[type="application/pdf"]').remove();
+	// Google Maps embeds gate their tile rendering on occlusion-aware
+	// visibility detection, so a reloaded clone in the hidden accumulator
+	// never draws and prints as a blank box — print a link box instead
+	// (anchors stay clickable in PDFs saved from the print dialog).
+	$wrap.find('iframe[src*="google.com/maps"]').each(function () {
+		const url = validateUrl(this.src);
+		const $box = $('<div/>', { 'class': 'map-print-fallback', 'aria-hidden': 'true' });
+		$box.append(document.createTextNode('Interactive map — '));
+		if (url !== null) {
+			$box.append($('<a/>', { href: url.toString(), rel: 'noopener noreferrer' }).text('open this map in Google Maps'));
+		} else {
+			$box.append(document.createTextNode('view online'));
+		}
+		const $container = $(this).closest('.embed-container');
+		($container.length ? $container : $(this)).replaceWith($box);
+	});
+	// clone() doesn't copy canvas bitmaps — repaint them from the originals
+	// (clone strips no canvases, so live and cloned lists line up by index).
+	const liveCanvases = $('#mainContent').find('canvas');
+	$wrap.find('canvas').each(function (i) {
+		const src = liveCanvases[i];
+		if (src && src.width > 0 && src.height > 0) {
+			try { this.getContext('2d').drawImage(src, 0, 0); } catch (e) {}
+		}
+	});
+	return $wrap;
+}
+
+// Cloned iframes always reload their src once appended. Listeners attach in
+// the same tick as the append — before any load event can fire — and every
+// frame carries its own cap, so frames that finished early never force a
+// full-length wait at print time. Never rejects.
+var __printReplicaFramePromises = [];
+
+function trackPrintReplicaFrames($replica) {
+	$replica.find('iframe').each(function () {
+		const frame = this;
+		__printReplicaFramePromises.push(new Promise(function (resolve) {
+			frame.addEventListener('load', function () {
+				// Let the embedded document lay out and finish its fade-in
+				// (XOT players fade content in after load) before printing.
+				setTimeout(resolve, 2000);
+			}, { once: true });
+			// Hard cap so a dead embed can't hold the print dialog hostage.
+			setTimeout(resolve, 8000);
+		}));
+	});
+}
+
+function whenPrintReplicaFramesLoaded() {
+	return Promise.all(__printReplicaFramePromises).then(function () {}, function () {});
+}
+
+
+function captureAllPagesForPrint() {
+	const originalPage = currentPage;
+	const originalScroll = $(window).scrollTop();
+	$('#printAllContent').remove();
+	__printReplicaFramePromises = [];
+	const $accumulator = $('<div id="printAllContent" aria-hidden="true"></div>').appendTo('#aboveFooter');
+	// Force panes open on the live page while capturing (see custom.css) so
+	// stamping reads real computed styles and embeds in inactive panes render
+	// before they're cloned.
+	document.documentElement.classList.add('x_print-capture');
+
+	const capturePage = function (pageIndex) {
+		return new Promise(function (resolve) {
+			parseContent({ type: 'index', id: pageIndex }, undefined, undefined, false);
+			// Order matters: authored async (Google Charts callbacks, MathJax)
+			// must finish BEFORE prepareMediaForPrint stamps the page — chart
+			// widgets that draw after the break-avoidance scan would be cloned
+			// unstamped and overlap again in print. So: wait for warm-ups and
+			// a settle first, stamp right before cloning.
+			setTimeout(function () {
+				whenXotWarmupSettled().then(function () {
+					setTimeout(function () {
+						// The user can still navigate while the capture runs;
+						// skip the clone rather than capture the wrong page.
+						if (currentPage !== pageIndex) {
+							resolve();
+							return;
+						}
+						prepareMediaForPrint().then(function () {
+							if (currentPage !== pageIndex) {
+								resolve();
+								return;
+							}
+							// Append immediately so cloned iframes start
+							// reloading while later pages are still captured.
+							const $replica = buildPrintPageReplica();
+							$accumulator.append($replica);
+							trackPrintReplicaFrames($replica);
+							// The clone keeps its stamped inline styles;
+							// reverting only the live page clears the registry
+							// so the next page's applyPrintColors doesn't
+							// early-return.
+							revertPrintColors();
+							resolve();
+						});
+					}, 800);
+				});
+			}, 0);
+		});
+	};
+
+	let chain = Promise.resolve();
+	validPages.forEach(function (pageIndex) {
+		const page = $(data).find('page').eq(pageIndex);
+		// Pages behind an access code that hasn't been entered would only
+		// capture the password prompt — leave them out entirely.
+		const locked = $.trim(page.attr('password') || '').length > 0 && page.attr('passwordPass') != 'true';
+		if (locked) {
+			return;
+		}
+		chain = chain.then(function () { return capturePage(pageIndex); }).catch(function (e) {
+			// One bad page must not hang the whole print — log and move on,
+			// it just won't appear in the printout.
+			console.log('print: failed to capture page ' + (pageIndex + 1), e);
+		});
+	});
+
+	return chain.then(function () {
+		// Drop the forced-open panes before the original page re-renders so
+		// the user gets their normal view back.
+		document.documentElement.classList.remove('x_print-capture');
+		if (currentPage !== originalPage) {
+			parseContent({ type: 'index', id: originalPage }, undefined, undefined, false);
+		}
+		$(window).scrollTop(originalScroll);
+		return whenPrintReplicaFramesLoaded();
+	});
+}
+
+// Validate a URL and return its absolute form, or null if it fails the scheme
+// allowlist or is malformed. Author-controlled XML attributes can carry
+// `javascript:` / `data:` payloads — reject everything except http/https.
+function validateUrl(raw) {
+	if (raw === undefined || raw === null || raw === '') return null;
+	try {
+		const u = new URL(String(raw), window.location.href);
+		if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
+		return u;
+	} catch (e) {
+		return null;
+	}
+}
+
+// Strip control / bidi-format characters that could be used to misrepresent
+// a printed URL (e.g. U+202E reversing the apparent domain).
+function stripUrlDisplayChars(s) {
+	return String(s).replace(/[\u202A-\u202E\u2066-\u2069\u200E\u200F\u00AD\u0000-\u001F\u007F]/g, '');
+}
+
+// Return a printable URL string with userinfo stripped and bidi/control
+// chars removed. Returns '' if the raw URL fails validation.
+function displayUrl(raw) {
+	const u = validateUrl(raw);
+	if (u === null) return '';
+	u.username = '';
+	u.password = '';
+	return stripUrlDisplayChars(u.toString());
+}
+
+// Best-effort basename of a URL's path, percent-decoded. Returns '' if the
+// URL is invalid or has no path component.
+function extractFilename(raw) {
+	const u = validateUrl(raw);
+	if (u === null) return '';
+	const last = u.pathname.split('/').pop() || '';
+	let decoded;
+	try {
+		decoded = decodeURIComponent(last);
+	} catch (e) {
+		decoded = last;
+	}
+	return stripUrlDisplayChars(decoded);
+}
+
+// Pull the `src` attribute out of an iframe HTML blob without instantiating
+// the iframe in the DOM (which would trigger network requests for hostile
+// `<iframe src=...>` content). Returns '' on no match.
+function extractIframeSrc(blob) {
+	if (typeof blob !== 'string') return '';
+	const m = /<iframe\b[^>]*\bsrc\s*=\s*["']([^"']+)["']/i.exec(blob);
+	return m ? m[1] : '';
+}
+
+// Resolve the canonical URL of a video XML node's `url` attribute. If it's
+// an iframe embed blob, extract the src; otherwise use as-is. Returns ''
+// when the result fails scheme validation.
+function resolveVideoUrl(rawUrl) {
+	if (typeof rawUrl === 'string' && /^\s*<iframe/i.test(rawUrl)) {
+		return displayUrl(extractIframeSrc(rawUrl));
+	}
+	return displayUrl(rawUrl);
+}
+
+// --- Video thumbnail resolution (used by buildVideoPrintFallback) -----------
+
+function parseYouTubeId(rawUrl) {
+	const u = validateUrl(rawUrl);
+	if (u === null) return '';
+	const host = u.hostname.toLowerCase().replace(/^www\./, '');
+	const ytHosts = ['youtube.com', 'youtu.be', 'youtube-nocookie.com'];
+	if (ytHosts.indexOf(host) === -1) return '';
+	const idRegex = /^[A-Za-z0-9_-]{6,20}$/;
+	if (host === 'youtu.be') {
+		const id = u.pathname.replace(/^\//, '').split('/')[0];
+		return idRegex.test(id) ? id : '';
+	}
+	if (u.pathname.indexOf('/embed/') === 0) {
+		const id = u.pathname.substring('/embed/'.length).split('/')[0];
+		return idRegex.test(id) ? id : '';
+	}
+	const v = u.searchParams.get('v');
+	return v && idRegex.test(v) ? v : '';
+}
+
+function parseVimeoId(rawUrl) {
+	const u = validateUrl(rawUrl);
+	if (u === null) return '';
+	const host = u.hostname.toLowerCase().replace(/^www\./, '');
+	if (host !== 'vimeo.com' && host !== 'player.vimeo.com') return '';
+	const m = u.pathname.match(/\/(?:video\/)?(\d+)/);
+	return m ? m[1] : '';
+}
+
+function fetchVimeoThumb(id) {
+	const oembedUrl = 'https://vimeo.com/api/oembed.json?url=' + encodeURIComponent('https://vimeo.com/' + id);
+	return fetch(oembedUrl, { referrerPolicy: 'no-referrer' })
+		.then(function (r) { return r.ok ? r.json() : null; })
+		.then(function (data) {
+			if (!data || !data.thumbnail_url) return '';
+			const tu = validateUrl(data.thumbnail_url);
+			if (tu === null) return '';
+			if (!/(^|\.)vimeocdn\.com$/.test(tu.hostname.toLowerCase())) return '';
+			return tu.toString();
+		})
+		.catch(function () { return ''; });
+}
+
+// Draw the current frame of a <video> to canvas and return a JPEG data URL.
+// Returns '' on CORS taint, decode failure, or timeout. Same-origin mp4 only.
+function captureVideoFrame(videoEl) {
+	return new Promise(function (resolve) {
+		const draw = function () {
+			try {
+				const canvas = document.createElement('canvas');
+				canvas.width = videoEl.videoWidth || 640;
+				canvas.height = videoEl.videoHeight || 360;
+				canvas.getContext('2d').drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+				resolve(canvas.toDataURL('image/jpeg', 0.85));
+			} catch (e) {
+				resolve('');
+			}
+		};
+		if (videoEl.readyState >= 2) {
+			draw();
+		} else {
+			let settled = false;
+			const onReady = function () { if (!settled) { settled = true; draw(); } };
+			videoEl.addEventListener('loadeddata', onReady, { once: true });
+			try { videoEl.load(); } catch (e) { /* no-op */ }
+			setTimeout(function () { if (!settled) { settled = true; resolve(''); } }, 2000);
+		}
+	});
+}
+
+// Resolve a thumbnail URL/data-URL for a video node. Deferred until first
+// print intent so unprinted pages incur no oEmbed fetch / frame capture cost.
+function resolveVideoThumbnail(rawUrl, $playerEl) {
+	let candidate = rawUrl;
+	if (typeof rawUrl === 'string' && /^\s*<iframe/i.test(rawUrl)) {
+		candidate = extractIframeSrc(rawUrl);
+	}
+	const ytId = parseYouTubeId(candidate);
+	if (ytId !== '') {
+		return Promise.resolve('https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg');
+	}
+	const vimeoId = parseVimeoId(candidate);
+	if (vimeoId !== '') {
+		return fetchVimeoThumb(vimeoId);
+	}
+	if ($playerEl && $playerEl.length && $playerEl[0].tagName === 'VIDEO') {
+		const poster = $playerEl.attr('poster');
+		const validPoster = validateUrl(poster);
+		if (validPoster !== null) return Promise.resolve(validPoster.toString());
+		return captureVideoFrame($playerEl[0]);
+	}
+	return Promise.resolve('');
+}
+
+// --- Print-fallback builders (called by renderAudioNode etc.) ---------------
+
+function buildAudioPrintFallback($parent, $xmlNode) {
+	const rawUrl = $xmlNode.attr('url');
+	const rawTranscript = $xmlNode.attr('transcript');
+	const filename = extractFilename(rawUrl);
+	const printUrl = displayUrl(rawUrl);
+	const transcriptUrl = displayUrl(rawTranscript);
+
+	const $fallback = $('<div/>', {
+		'class': 'audio-print-fallback',
+		'aria-hidden': 'true',
+	});
+
+	const $bar = $('<div/>', { 'class': 'audio-print-fallback__bar' });
+	$bar.append($('<i/>', { 'class': 'fa fa-play', 'aria-hidden': 'true' }));
+	$bar.append($('<span/>', { 'class': 'audio-print-fallback__time' }).text('00:00'));
+	$bar.append($('<div/>', { 'class': 'audio-print-fallback__progress' }));
+	$bar.append($('<span/>', { 'class': 'audio-print-fallback__time' }).text('00:00'));
+	$bar.append($('<i/>', { 'class': 'fa fa-volume-up', 'aria-hidden': 'true' }));
+	$fallback.append($bar);
+
+	if (filename !== '') {
+		$fallback.append($('<div/>', { 'class': 'audio-print-fallback__filename' }).text(filename));
+	}
+	if (transcriptUrl !== '') {
+		$fallback.append($('<a/>', {
+			'class': 'audio-print-fallback__transcript',
+			href: transcriptUrl,
+			rel: 'noopener noreferrer',
+			target: '_blank',
+		}).text('Transcript: ' + transcriptUrl));
+	}
+	if (printUrl !== '') {
+		$fallback.append($('<div/>', { 'class': 'media-print-url' }).text(printUrl));
+	}
+
+	$parent.append($fallback);
+}
+
+function buildVideoPrintFallback($parent, $xmlNode) {
+	const rawUrl = $xmlNode.attr('url');
+	const printUrl = resolveVideoUrl(rawUrl);
+
+	const $fallback = $('<div/>', {
+		'class': 'video-print-fallback',
+		'aria-hidden': 'true',
+	});
+	const $img = $('<img/>', {
+		'class': 'video-print-fallback__thumb x_noLightBox',
+		alt: '',
+	});
+	const $play = $('<i/>', {
+		'class': 'fa fa-play-circle video-print-fallback__play',
+		'aria-hidden': 'true',
+	});
+	$fallback.append($img);
+	$fallback.append($play);
+	if (printUrl !== '') {
+		$fallback.append($('<div/>', { 'class': 'media-print-url' }).text(printUrl));
+	}
+	$parent.append($fallback);
+
+	__mediaPrintTasks.push(function () {
+		const $player = $parent.find('video, iframe').last();
+		return resolveVideoThumbnail(rawUrl, $player).then(function (thumbUrl) {
+			if (thumbUrl) {
+				$img.attr('src', thumbUrl);
+			} else {
+				// No thumbnail (Kaltura, MediaSpace, cross-origin mp4, etc.) —
+				// drop the empty <img> and play icon so the fallback collapses
+				// to just the printed URL rather than rendering a stray play
+				// icon over the URL text.
+				$img.remove();
+				$play.remove();
+			}
+		}, function () {
+			$img.remove();
+			$play.remove();
+		});
+	});
+}
+
+function buildPdfPrintFallback($parent, $xmlNode) {
+	const printUrl = displayUrl($xmlNode.attr('url'));
+	if (printUrl === '') return;
+	const $fallback = $('<div/>', {
+		'class': 'pdf-print-fallback',
+		'aria-hidden': 'true',
+	});
+	$fallback.append(document.createTextNode('PDF document: '));
+	$fallback.append($('<span/>', { 'class': 'media-print-url' }).text(printUrl));
+	$parent.append($fallback);
+}
+
+// Source-link caption beneath the printed XOT embed (also the fallback if it prints blank).
+function buildXotPrintFallback($parent, $xmlNode) {
+	const printUrl = displayUrl($xmlNode.attr('link'));
+	if (printUrl === '') return;
+	const $fallback = $('<div/>', {
+		'class': 'xot-print-fallback',
+		'aria-hidden': 'true',
+	});
+	$fallback.append(document.createTextNode('Interactive content — view online: '));
+	$fallback.append($('<span/>', { 'class': 'media-print-url' }).text(printUrl));
+	$parent.append($fallback);
+}
+
+// --- Render helpers (replace the inline audio/video/pdf branches) -----------
+
+// Preserves the existing screen rendering verbatim and appends the print-only
+// fallback as a sibling. Returns the inserted vidHolder / object so callers
+// that need to push into video[]/pdf[] arrays can do so without re-querying.
+
+function renderAudioNode($container, $xmlNode) {
+	const $audio = $('<audio src="' + $xmlNode.attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
+	$container.append($audio);
+	$audio.wrap('<p></p>');
+	if ($xmlNode.attr('transcript') != undefined && $xmlNode.attr('transcript') != '') {
+		$audio.data('transcript', $xmlNode.attr('transcript'));
+	}
+	// Append fallback as sibling of the wrapping <p> so CSS sibling rules and
+	// print isolation work uniformly across all four render sites.
+	buildAudioPrintFallback($container, $xmlNode);
+	return $audio;
+}
+
+function renderVideoNode($container, $xmlNode, idSuffix) {
+	const videoInfo = setUpVideo($xmlNode.attr('url'), $xmlNode.attr('iframeRatio'), idSuffix);
+	$container.append('<p>' + videoInfo[0] + '</p>');
+	const $vidHolder = $container.find('.vidHolder').last();
+	if (videoInfo[1] != undefined) {
+		$vidHolder.data('iframeRatio', videoInfo[1]);
+	}
+	buildVideoPrintFallback($container, $xmlNode);
+	return $vidHolder;
+}
+
+function renderPdfNode($container, $xmlNode, urlSuffix) {
+	const suffix = urlSuffix || '';
+	const url = $xmlNode.attr('url');
+	const dataUrl = url + suffix;
+	const timestamp = new Date().getTime();
+	const openPdf = $xmlNode.attr('openPDF');
+	const openPdfLabel = (openPdf == '' || openPdf == undefined) ? 'Open PDF in new tab' : openPdf;
+	$container.append('<object id="pdfDoc' + timestamp + '" data="' + dataUrl + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + dataUrl + '"></object>');
+	$container.append('<a class="pdfLink" href="' + url + '" target="_blank">' + openPdfLabel + '</a>');
+	buildPdfPrintFallback($container, $xmlNode);
+	return $container.find('object').last();
+}
+
+function renderXotNode($container, $xmlNode) {
+	$container.append(loadXotContent($xmlNode));
+	buildXotPrintFallback($container, $xmlNode);
+}
+
 function init(){
 
 	$.extend($.featherlight.defaults, {
@@ -782,15 +1550,82 @@ function setup() {
 			}
 		});
 
-	// set up print functionality - all this does is add a print button to the toolbar which triggers browser's print dialog
-	if ($(data).find('learningObject').attr('print') == 'true') {
+	// set up print functionality — adds a toolbar button that triggers a clean
+	// print of the current page. CSS isolation lives in custom.css under
+	// `html.printing-bootstrap`. Class management is hooked into native
+	// beforeprint/afterprint so the browser's own Ctrl+P also benefits
+	// (matters in author-support previews where .alertMsg holds plaintext
+	// access codes that must not reach paper).
+	if (!window.__bootstrapPrintListenersRegistered) {
+		window.__bootstrapPrintListenersRegistered = true;
+		window.addEventListener('beforeprint', function () {
+			document.documentElement.classList.add('printing-bootstrap');
+			// Fire-and-forget: native Ctrl+P can't await, but at least the
+			// resolvers start running so the next re-print sees them resolved.
+			prepareMediaForPrint();
+		});
+		window.addEventListener('afterprint', function () {
+			document.documentElement.classList.remove('printing-bootstrap', 'x_print-all', 'x_print-capture');
+			revertPrintColors();
+			// Drop the print-all accumulator; a repeat print re-captures so
+			// the content is always current.
+			$('#printAllContent').remove();
+		});
+	}
 
-		var altTxt = languageData.find("print")[0] != undefined && languageData.find("print")[0].getAttribute('printBtn') != null ? languageData.find("print")[0].getAttribute('printBtn') : "Print page";
+	if ($(data).find('learningObject').attr('print') === 'true' && document.getElementById('printIcon') === null) {
+
+		var printLang = languageData.find('print')[0];
+		var altTxt = printLang !== undefined && printLang.getAttribute('printBtn') !== null
+			? printLang.getAttribute('printBtn')
+			: 'Print page';
 
 		$('<li id="printIcon" role="none"><a href="#" aria-label="' + altTxt + '"><i class="fa fa-print text-white ml-3" aria-hidden="true" title="' + altTxt + '"></i></a></li>')
 			.appendTo('#nav')
-			.click(function() {
-				window.print();
+			.on('click.bootstrapPrint', function (e) {
+				e.preventDefault();
+				const $icon = $(this).find('i');
+				// Ignore repeat clicks while a print is already being prepared.
+				if ($icon.data('printing')) {
+					return;
+				}
+				$icon.data('printing', true);
+				// Show a spinner while warm-up + media prep finish.
+				$icon.removeClass('fa-print').addClass('fa-spinner fa-spin');
+				const restoreIcon = function () {
+					$icon.removeClass('fa-spinner fa-spin').addClass('fa-print');
+					$icon.data('printing', false);
+				};
+				// Capture every project page into #printAllContent; fall back
+				// to single-page printing when the current page sits outside
+				// validPages (e.g. a standalone page).
+				const printAll = $.inArray(currentPage, validPages) > -1;
+				const prepared = printAll
+					? captureAllPagesForPrint()
+					: Promise.all([whenXotWarmupSettled(), prepareMediaForPrint()]);
+				prepared.then(function () {
+					// Add the classes up-front in case the browser doesn't fire
+					// beforeprint synchronously (Safari historically lazy).
+					document.documentElement.classList.add('printing-bootstrap');
+					if (printAll) {
+						document.documentElement.classList.add('x_print-all');
+					}
+					// Defensive fallback if afterprint never fires — the
+					// classes are gated behind @media print so lingering is
+					// harmless, and a missing accumulator remove is a no-op.
+					setTimeout(function () {
+						document.documentElement.classList.remove('printing-bootstrap', 'x_print-all', 'x_print-capture');
+						revertPrintColors();
+						$('#printAllContent').remove();
+					}, 30000);
+					restoreIcon();
+					// Paint the restored icon before the blocking print dialog opens.
+					requestAnimationFrame(function () {
+						requestAnimationFrame(function () {
+							window.print();
+						});
+					});
+				});
 			});
 	}
 
@@ -2340,14 +3175,7 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 					section.append(hideContentMessage);
 				}
-				const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
-				section.append($audio);
-				$audio.wrap('<p></p>');
-
-				// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
-				if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
-					$audio.data("transcript", $(this).attr('transcript'));
-				}
+				renderAudioNode(section, $(this));
 				section.append(hideContentMessage);
 			}
 		}
@@ -2360,12 +3188,7 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 					section.append(hideContentMessage);
 				}
 				section.append(hideContentMessage);
-				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), pageIndex + '_' + sectionIndex + '_' + itemIndex);
-				section.append('<p>' + videoInfo[0] + '</p>');
-
-				if (videoInfo[1] != undefined) {
-					section.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
-				}
+				renderVideoNode(section, $(this), pageIndex + '_' + sectionIndex + '_' + itemIndex);
 			}
 		}
 
@@ -2376,8 +3199,7 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 					section.append(hideContentMessage);
 				}
-				section.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
-				section.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
+				renderPdfNode(section, $(this));
 				section.append(hideContentMessage);
 			}
 		}
@@ -2389,7 +3211,7 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 					section.append(hideContentMessage);
 				}
-				section.append(loadXotContent($(this)));
+				renderXotNode(section, $(this));
 				section.append(hideContentMessage);
 			}
 		}
@@ -2946,31 +3768,15 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-
-				const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
-				pane.append($audio);
-				$audio.wrap('<p></p>');
-
-				// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
-				if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
-					$audio.data("transcript", $(this).attr('transcript'));
-				}
-
+				renderAudioNode(pane, $(this));
 			}
 
 			if (this.nodeName == 'video'){
-				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index + "_" + x);
-				pane.append('<p>' + videoInfo[0] + '</p>');
-
-				if (videoInfo[1] != undefined) {
-					pane.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
+				const $vidHolder = renderVideoNode(pane, $(this), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index + '_' + x);
+				video.push($vidHolder.find('video'));
+				if ($vidHolder.hasClass('iframe')) {
+					video.push($vidHolder);
 				}
-
-				video.push(pane.find('.vidHolder').last().find('video'));
-				if (pane.find('.vidHolder').last().hasClass('iframe')) {
-					video.push(pane.find('.vidHolder').last());
-				}
-
 			}
 
 			if (this.nodeName == 'link'){
@@ -3015,15 +3821,12 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'pdf'){
-
-				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '#page=1&view=fitH" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '#page=1&view=fitH"></object>');
-				pane.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
-				pdf.push(pane.find('object'));
-
+				const $object = renderPdfNode(pane, $(this), '#page=1&view=fitH');
+				pdf.push($object);
 			}
 
 			if (this.nodeName == 'xot'){
-				pane.append(loadXotContent($(this)));
+				renderXotNode(pane, $(this));
 			}
 
 		});
@@ -3093,7 +3896,15 @@ function makeNav(node,section,type, sectionIndex, itemIndex){
 			iframeInit($(this));
 		});
 
+		// Pre-render XOT embeds in inactive panes so they don't print blank.
+		warmUpHiddenXotEmbeds(tabDiv, content.width());
+
 	}, 0);
+
+	// Drop warm-up styling when the user opens a pane.
+	tabDiv.on('shown.bs.tab', function () {
+		tabDiv.find('.tab-pane').css({ display: '', position: '', left: '', top: '', width: '', visibility: '' });
+	});
 
 }
 
@@ -3208,14 +4019,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			if (this.nodeName == 'audio'){
 				var hideContent = checkHiddenContent($(this), 'Content');
 				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
-					const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
-					inner.append($audio);
-					$audio.wrap('<p></p>');
-
-					// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
-					if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
-						$audio.data("transcript", $(this).attr('transcript'));
-					}
+					renderAudioNode(inner, $(this));
 					if(authorSupport == true){
 						var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 						inner.append(hideContentMessage);
@@ -3230,11 +4034,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 						var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 						inner.append(hideContentMessage);
 					}
-					var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index + "_" + i);
-					inner.append('<p>' + videoInfo[0] + '</p>');
-					if (videoInfo[1] != undefined) {
-						inner.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
-					}
+					renderVideoNode(inner, $(this), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index + '_' + i);
 				}
 			}
 
@@ -3283,8 +4083,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			if (this.nodeName == 'pdf'){
 				var hideContent = checkHiddenContent($(this), 'Content');
 				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
-					inner.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
-					inner.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
+					renderPdfNode(inner, $(this));
 					if(authorSupport == true){
 						var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
 						inner.append(hideContentMessage);
@@ -3295,7 +4094,7 @@ function makeAccordion(node,section, sectionIndex, itemIndex){
 			if (this.nodeName == 'xot') {
 				var hideContent = checkHiddenContent($(this), 'Content');
 				if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
-					inner.append(loadXotContent($(this)));
+					renderXotNode(inner, $(this));
 				}
 				if(authorSupport == true){
 					var hideContentMessage = `<span class="alertMsg">${hideContent?.[1] ?? ''}</span>`;
@@ -3385,26 +4184,12 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'audio'){
-
-				const $audio = $('<audio src="' + $(this).attr('url') + '" type="audio/mp3" controls="controls" preload="none" width="100%"></audio>');
-				pane.append($audio);
-				$audio.wrap('<p></p>');
-
-				// there's a transcript - store the transcript text so the transcript button can be set up when player had loaded
-				if ($(this).attr('transcript') != undefined && $(this).attr('transcript') != '') {
-					$audio.data("transcript", $(this).attr('transcript'));
-				}
+				renderAudioNode(pane, $(this));
 			}
 
 			if (this.nodeName == 'video'){
-				var videoInfo = setUpVideo($(this).attr('url'), $(this).attr('iframeRatio'), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index + '_' + i);
-				pane.append('<p>' + videoInfo[0] + '</p>');
-
-				if (videoInfo[1] != undefined) {
-					pane.find('.vidHolder').last().data('iframeRatio', videoInfo[1]);
-				}
-
-				video.push(pane.find('.vidHolder').last());
+				const $vidHolder = renderVideoNode(pane, $(this), currentPage + '_' + sectionIndex + '_' + itemIndex + '_' + index + '_' + i);
+				video.push($vidHolder);
 			}
 
 			if (this.nodeName == 'link'){
@@ -3450,13 +4235,11 @@ function makeCarousel(node, section, sectionIndex, itemIndex){
 			}
 
 			if (this.nodeName == 'pdf'){
-				pane.append('<object id="pdfDoc"' + new Date().getTime() + ' data="' + $(this).attr('url') + '" type="application/pdf" width="100%" height="600"><param name="src" value="' + $(this).attr('url') + '"></object>');
-				pane.append('<a class="pdfLink" href="' + $(this).attr('url') + '" target="_blank">' + ($(this).attr('openPDF') == "" || $(this).attr('openPDF') == undefined ? "Open PDF in new tab" : $(this).attr('openPDF')) + '</a>');
-
+				renderPdfNode(pane, $(this));
 			}
 
 			if (this.nodeName == 'xot'){
-				pane.append(loadXotContent($(this)));
+				renderXotNode(pane, $(this));
 			}
 
 		});
@@ -3588,7 +4371,14 @@ function loadXotContent($this) {
 
 	// xot project can be embedded, link to or both
 	if ($this.attr('showEmbed') != 'false' || $this.attr('showLink') != 'true')	{
-		html += warning + '<iframe width="' + xotWidth + '" height="' + xotHeight + '" src="' + xotLink + separator + 'x_embed=true' + '" frameborder="0" style="float:left; position:relative; top:0px; left:0px; z-index:0;"></iframe>';
+		const iframeHtml = '<iframe class="xot-frame" width="' + xotWidth + '" height="' + xotHeight + '" src="' + xotLink + separator + 'x_embed=true' + '" frameborder="0" style="float:left; position:relative; top:0px; left:0px; z-index:0;"></iframe>';
+		// Wrap the iframe in a link so the rendered page is clickable in a saved PDF.
+		const frameLink = displayUrl($this.attr('link'));
+		if (frameLink !== '') {
+			html += warning + '<a class="xot-frame-link" href="' + frameLink + '" target="_blank" rel="noopener" aria-hidden="true" tabindex="-1">' + iframeHtml + '</a>';
+		} else {
+			html += warning + iframeHtml;
+		}
 	}
 
 	if ($this.attr('showLink') == 'true') {
@@ -3602,7 +4392,7 @@ function loadXotContent($this) {
 			linkWarning = "";
 		}
 		const linkText = $this.attr('linkText') != undefined && $this.attr('linkText') != "" ? $this.attr('linkText') : $this.attr('link');
-		html += "<a href='" + xotLink + "' " + target + ">" + linkText + linkWarning + "</a>";
+		html += "<a class='xot-link' href='" + xotLink + "' " + target + ">" + linkText + linkWarning + "</a>";
 	}
 	return html;
 

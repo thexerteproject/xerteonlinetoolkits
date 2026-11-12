@@ -34,8 +34,8 @@
 
     define("USER_SETTINGS_PREFERENCES_TITLE", "My preferences");
     define("USER_SETTINGS_REFRESH_TOOLTIP", "Refresh the page after saving to apply all preference changes.");
-    define("USER_SETTINGS_SECTION_EDITOR_OPEN", "When I open a lesson for editing");
-    define("USER_SETTINGS_SECTION_OVERVIEW", "On my overview page");
+    define("USER_SETTINGS_SECTION_EDITOR_OPEN", "When I open a learning object");
+    define("USER_SETTINGS_SECTION_OVERVIEW", "On my workspace");
     define("USER_SETTINGS_SECTION_IN_EDITOR", "In the editor");
     define("USER_SETTINGS_PANEL_EAST", "Show project templates on the right");
     define("USER_SETTINGS_PANEL_SOUTH", "Show the bar at the bottom");

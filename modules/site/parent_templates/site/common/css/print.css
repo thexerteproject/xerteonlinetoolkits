@@ -1,0 +1,362 @@
+/* Print-only stylesheet for the bootstrap "site" template.
+ *
+ * Loaded via <link rel="stylesheet" media="print"> in rloObject.htm so it is
+ * deferred by the browser for screen rendering. The whole file is therefore
+ * already in a print media context — no outer `@media print` wrapper needed.
+ *
+ * Class management: application.js wires beforeprint/afterprint listeners
+ * (and the toolbar print button click handler) to add/remove the
+ * `printing-bootstrap` class on <html>. Rules scoped to that class take
+ * effect only when the page is actually being printed, so the browser's
+ * native Ctrl+P benefits from the same isolation as the toolbar button. */
+
+a[href]:after {
+    content: none !important;
+}
+
+/* Single-page print isolation. Strategy: hide every body sibling except
+ * #aboveFooter; inside it, keep only #overview (LO title / logos) +
+ * #mainContent; collapse the Bootstrap 2 grid so #mainContent fills the
+ * page. .alertMsg is hidden so author-support previews never print
+ * plaintext access codes. */
+html.printing-bootstrap body {
+    overflow: visible !important;
+    background-color: #fff !important;
+}
+html.printing-bootstrap body > *:not(#aboveFooter) {
+    display: none !important;
+}
+html.printing-bootstrap #topnav,
+html.printing-bootstrap #contentTable,
+html.printing-bootstrap #alwaysTop,
+html.printing-bootstrap #printIcon,
+html.printing-bootstrap .alertMsg {
+    display: none !important;
+}
+html.printing-bootstrap #aboveFooter,
+html.printing-bootstrap #aboveFooter .container,
+html.printing-bootstrap #aboveFooter .row-fluid,
+html.printing-bootstrap :is(#mainContent, #printAllContent) {
+    width: 100% !important;
+    max-width: 100% !important;
+    float: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    height: auto !important;
+}
+html.printing-bootstrap #overview,
+html.printing-bootstrap :is(#mainContent, #printAllContent) {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+/* Cap images to page width; keep figure + caption together across page
+ * breaks. We deliberately do NOT reset float / display on figures or
+ * images — that flattens multi-column rows (image left + text right)
+ * into stacked blocks, often pushing the image to its own page. */
+html.printing-bootstrap :is(#mainContent, #printAllContent) img,
+html.printing-bootstrap :is(#mainContent, #printAllContent) figure,
+html.printing-bootstrap :is(#mainContent, #printAllContent) .img-polaroid {
+    max-width: 100% !important;
+    height: auto !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+
+/* Preserve authored two-column layouts in print so image-left +
+ * text-right blocks keep their proportions. Bootstrap's own
+ * print/responsive stylesheets collapse these to full width — override.
+ * `.columns` is the CKEditor xotcolumns plugin / LO inline-styles
+ * convention (`.columns div:first-child { float: left }`). */
+html.printing-bootstrap :is(#mainContent, #printAllContent) .row,
+html.printing-bootstrap :is(#mainContent, #printAllContent) .row-fluid,
+html.printing-bootstrap :is(#mainContent, #printAllContent) .columns {
+    display: block !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+html.printing-bootstrap :is(#mainContent, #printAllContent) .columns::after,
+html.printing-bootstrap :is(#mainContent, #printAllContent) .row::after,
+html.printing-bootstrap :is(#mainContent, #printAllContent) .row-fluid::after {
+    content: "" !important;
+    display: table !important;
+    clear: both !important;
+}
+html.printing-bootstrap :is(#mainContent, #printAllContent) .columns > div:first-child {
+    float: left !important;
+    max-width: 60% !important;
+    padding-right: 1em !important;
+}
+html.printing-bootstrap :is(#mainContent, #printAllContent) [class*="span"] {
+    float: left !important;
+    display: block !important;
+    box-sizing: border-box !important;
+}
+html.printing-bootstrap :is(#mainContent, #printAllContent) .row-fluid .span1  { width: 8.333%  !important; }
+html.printing-bootstrap :is(#mainContent, #printAllContent) .row-fluid .span2  { width: 16.666% !important; }
+html.printing-bootstrap :is(#mainContent, #printAllContent) .row-fluid .span3  { width: 25%     !important; }
+html.printing-bootstrap :is(#mainContent, #printAllContent) .row-fluid .span4  { width: 33.333% !important; }
+html.printing-bootstrap :is(#mainContent, #printAllContent) .row-fluid .span5  { width: 41.666% !important; }
+html.printing-bootstrap :is(#mainContent, #printAllContent) .row-fluid .span6  { width: 50%     !important; }
+html.printing-bootstrap :is(#mainContent, #printAllContent) .row-fluid .span7  { width: 58.333% !important; }
+html.printing-bootstrap :is(#mainContent, #printAllContent) .row-fluid .span8  { width: 66.666% !important; }
+html.printing-bootstrap :is(#mainContent, #printAllContent) .row-fluid .span9  { width: 75%     !important; }
+html.printing-bootstrap :is(#mainContent, #printAllContent) .row-fluid .span10 { width: 83.333% !important; }
+html.printing-bootstrap :is(#mainContent, #printAllContent) .row-fluid .span11 { width: 91.666% !important; }
+html.printing-bootstrap :is(#mainContent, #printAllContent) .row-fluid .span12 { width: 100%    !important; }
+
+/* CSS multi-column (.autocolumns*) doesn't fragment into columns in print, so
+ * hide the live block and show the JS-built float replica (.x_autocol-print)
+ * instead; its column widths are set inline. Screen-time hide is in custom.css
+ * (this file is media="print"-only). */
+html.printing-bootstrap :is(#mainContent, #printAllContent) .x_autocol-replaced {
+    display: none !important;
+}
+html.printing-bootstrap :is(#mainContent, #printAllContent) .x_autocol-print {
+    display: block !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+html.printing-bootstrap :is(#mainContent, #printAllContent) .x_autocol-print::after {
+    content: "" !important;
+    display: table !important;
+    clear: both !important;
+}
+html.printing-bootstrap :is(#mainContent, #printAllContent) .x_autocol-col {
+    float: left !important;
+    box-sizing: border-box !important;
+}
+html.printing-bootstrap :is(#mainContent, #printAllContent) .x_autocol-col:not(:last-child) {
+    padding-right: 1.5em !important;
+}
+html.printing-bootstrap :is(#mainContent, #printAllContent) .x_autocol-col li,
+html.printing-bootstrap :is(#mainContent, #printAllContent) .x_autocol-col > blockquote,
+html.printing-bootstrap :is(#mainContent, #printAllContent) .x_autocol-col > p {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+}
+
+/* Don't orphan a heading at the bottom of a page from its content */
+html.printing-bootstrap :is(#mainContent, #printAllContent) h1,
+html.printing-bootstrap :is(#mainContent, #printAllContent) h2,
+html.printing-bootstrap :is(#mainContent, #printAllContent) h3,
+html.printing-bootstrap :is(#mainContent, #printAllContent) h4,
+html.printing-bootstrap :is(#mainContent, #printAllContent) h5 {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+}
+
+/* ===========================================================================
+ * Media print fallbacks (audio / video / pdf).
+ *
+ * Each renderer emits two trees:
+ *   1) the live, interactive element (mejs container / vidHolder / object)
+ *   2) a sibling `.{audio|video|pdf}-print-fallback` block, `display: none`
+ *      by default and revealed under `html.printing-bootstrap` here.
+ *
+ * Everything that lives in the live tree is hidden during print so we don't
+ * end up with a blank player on the page; the fallback then carries the
+ * visual representation (audio bar mock, video thumbnail, plain text URL).
+ * =========================================================================== */
+
+/* Force open Bootstrap panes that are normally `display: none` so all tab /
+ * accordion / pill / carousel siblings print rather than just the active one. */
+html.printing-bootstrap .tab-pane,
+html.printing-bootstrap .tab-content > .tab-pane,
+html.printing-bootstrap .carousel-inner > .item,
+html.printing-bootstrap .accordion-body,
+html.printing-bootstrap .collapse {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    height: auto !important;
+}
+html.printing-bootstrap .nav-tabs,
+html.printing-bootstrap .carousel-control,
+html.printing-bootstrap .carousel-indicators {
+    display: none !important;
+}
+/* Pill rows are short button strips — never slice one across a page break. */
+html.printing-bootstrap .nav-pills,
+html.printing-bootstrap .navigator .nav {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+
+/* Shared print-only URL display (audio, video, pdf). Monospace + wrap so long
+ * URLs break inside the page rather than overflowing the column. */
+.media-print-url { display: none; }
+html.printing-bootstrap .media-print-url {
+    display: block !important;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    font-family: monospace;
+    font-size: 0.9em;
+    margin: 0.25em 0 1em 0;
+}
+
+/* --- Audio ----------------------------------------------------------------- */
+.audio-print-fallback { display: none; }
+html.printing-bootstrap .mejs-container,
+html.printing-bootstrap .mejs-offscreen,
+html.printing-bootstrap audio {
+    display: none !important;
+}
+html.printing-bootstrap .audio-print-fallback {
+    display: block !important;
+    margin: 0.5em 0 1em 0;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+html.printing-bootstrap .audio-print-fallback__bar {
+    display: flex;
+    align-items: center;
+    background: #222;
+    color: #fff;
+    padding: 0.5em 0.75em;
+    border-radius: 2px;
+    gap: 0.75em;
+}
+html.printing-bootstrap .audio-print-fallback__bar .fa {
+    color: #fff;
+}
+html.printing-bootstrap .audio-print-fallback__time {
+    font-family: monospace;
+    font-size: 0.85em;
+    color: #fff;
+}
+html.printing-bootstrap .audio-print-fallback__progress {
+    flex: 1 1 auto;
+    height: 6px;
+    background: #555;
+    border-radius: 3px;
+}
+html.printing-bootstrap .audio-print-fallback__filename {
+    font-size: 0.9em;
+    margin: 0.25em 0 0 0;
+    color: #555;
+}
+html.printing-bootstrap .audio-print-fallback__transcript {
+    display: block;
+    font-size: 0.9em;
+    margin: 0.25em 0 0 0;
+}
+
+/* --- Video ----------------------------------------------------------------- */
+.video-print-fallback { display: none; }
+html.printing-bootstrap .vidHolder,
+html.printing-bootstrap .x_videoContainer {
+    display: none !important;
+}
+html.printing-bootstrap .video-print-fallback {
+    display: block !important;
+    position: relative;
+    margin: 0.5em 0 1em 0;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+html.printing-bootstrap .video-print-fallback__thumb {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    background: #eee;
+    min-height: 100px;
+}
+html.printing-bootstrap .video-print-fallback__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4em;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+}
+
+/* --- PDF ------------------------------------------------------------------- */
+.pdf-print-fallback { display: none; }
+html.printing-bootstrap object[type="application/pdf"],
+html.printing-bootstrap .pdfLink {
+    display: none !important;
+}
+html.printing-bootstrap .pdf-print-fallback {
+    display: block !important;
+    margin: 0.5em 0 1em 0;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+
+/* --- XOT (embedded Xerte project): print the live embed, link as fallback --- */
+.xot-print-fallback { display: none; }
+/* Block box in print so the saved PDF gets a clickable link over the embed. */
+html.printing-bootstrap .xot-frame-link {
+    display: block !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+html.printing-bootstrap .xot-frame {
+    display: block !important;
+    float: none !important;
+    width: 100% !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+html.printing-bootstrap .xot-print-fallback {
+    display: block !important;
+    margin: 0.25em 0 1em 0;
+    font-size: 0.85em;
+    color: #555;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+
+/* --- Google Maps: tiles never render in the hidden print-all replica, so the
+ * embed is swapped for a labelled link box (built in buildPrintPageReplica). */
+html.printing-bootstrap .map-print-fallback {
+    display: block;
+    border: 1px solid #ccc;
+    padding: 1em;
+    margin: 0.5em 0 1em 0;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+
+/* ===========================================================================
+ * Print all pages (toolbar print button).
+ *
+ * application.js captures every project page into the #printAllContent
+ * accumulator (kept off-screen for screen media; see custom.css) and adds
+ * `x_print-all` next to `printing-bootstrap` on <html>. The accumulator then
+ * replaces #mainContent in the printed output. Content rules above are scoped
+ * `:is(#mainContent, #printAllContent)` so the captured clones get the same
+ * print layout as a live page. Native Ctrl+P never carries `x_print-all`, so
+ * it keeps printing just the current page.
+ * =========================================================================== */
+html.printing-bootstrap.x_print-all #mainContent {
+    display: none !important;
+}
+html.printing-bootstrap.x_print-all #printAllContent {
+    display: block !important;
+    position: static !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    z-index: auto !important;
+}
+html.printing-bootstrap.x_print-all .x_printpage {
+    position: static !important;
+    width: auto !important;
+    opacity: 1 !important;
+    page-break-before: always;
+    break-before: page;
+}
+html.printing-bootstrap.x_print-all .x_printpage:first-child {
+    page-break-before: auto;
+    break-before: auto;
+}
+html.printing-bootstrap.x_print-all .x_printpage-header {
+    border-bottom: 1px solid #ccc;
+    margin: 0 0 1em 0;
+    padding-bottom: 0.25em;
+}
