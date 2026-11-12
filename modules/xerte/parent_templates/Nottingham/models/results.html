@@ -242,12 +242,15 @@
 
       // only set up splitscreen layout 1st time page is loaded
       if (regenerate !== true) {
+
+        const pgTxtOrFb = $('#mainTxtHolder').length > 0 || $('#feedbackHolder .fbBlock').length > 0;
+
         // send amended data to split screen function dues to defaults being different for old projects
         const attributes = {
           panelWidth: x_currentPageXML.getAttribute("panelWidth") != undefined ? x_currentPageXML.getAttribute("panelWidth") : "Full",
           panelStyle: x_currentPageXML.getAttribute("panelStyle") != undefined ? x_currentPageXML.getAttribute("panelStyle") : "true",
-          pageTxt: $('#mainTxtHolder').length > 0 ? "exists" : undefined, // make sure text column not removed if there's something in it (it contains tailored feedback as well as page text)
-          removeTxt: x_currentPageXML.getAttribute("removeTxt") === "true" && $('#mainTxtHolder').length === 0 ? "true" : "false"
+          pageTxt: pgTxtOrFb ? "exists" : undefined, // make sure text column not removed if there's something in it (it contains tailored feedback as well as page text)
+          removeTxt: x_currentPageXML.getAttribute("removeTxt") === "true" && !pgTxtOrFb ? "true" : "false"
         }
         // set up split screen layout
         XENITH.SPLITSCREEN.init({"attributes": attributes});

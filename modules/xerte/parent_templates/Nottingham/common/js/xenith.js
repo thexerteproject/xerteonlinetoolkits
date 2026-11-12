@@ -1746,13 +1746,14 @@ function x_continueSetUp1() {
 			} else {
 				$logo.css('max-height', '80px');
 			}
-			// If the logo padding option is added
-			if (x_params.icPadding != undefined && x_params.icPadding != 'false') {
-				if (x_params.icPaddingVal != undefined && x_params.icPaddingVal != '') {
-					$logo.css('padding', x_params.icPaddingVal);
-				} else {
-					$logo.css('padding', '10px 15px 0px 10px');
-				}
+		}
+
+		// If the logo padding option is added
+		if (x_params.icPadding != undefined && x_params.icPadding != 'false') {
+			if (x_params.icPaddingVal != undefined && x_params.icPaddingVal != '') {
+				$logo.css('padding', x_params.icPaddingVal);
+			} else {
+				$logo.css('padding', '10px 15px 0px 10px');
 			}
 		}
 
@@ -1839,23 +1840,36 @@ function x_continueSetUp1() {
 					} else if (pageIndex == -1) {
 						// if standalone page is in a chapter, the previous button might need to navigate to the previous page in the chapter
 						const chapterIndex = x_pages[x_currentPage].getAttribute("chapterIndex");
-						if (chapterIndex != undefined && x_chapters[chapterIndex].linkPageChapter == "true" &&
-							x_chapters[chapterIndex].footerHideChapter == "false" &&
-							x_chapters[chapterIndex].pages.length > 1) {
+						if (chapterIndex != undefined && x_chapters[chapterIndex].linkPageChapter == "true" && // it's a standalone chapter
+							x_chapters[chapterIndex].footerHideChapter == "false" && // the footer bar is shown
+							x_chapters[chapterIndex].pages.length > 1) // there is more than one page in this chapter
+						{
 							if ($.inArray(x_currentPage, x_chapters[chapterIndex].pages) > 0) {
+								// not the first page in the chapter so just go back one page
 								const prevPage = x_chapters[chapterIndex].pages[$.inArray(x_currentPage, x_chapters[chapterIndex].pages) - 1];
 								x_changePage(prevPage);
-							} else if (shownInFeatherLight) {
-								parent.window.$.featherlight.current().close();
-							} else if (prevPage == undefined) {
-								x_changePage(x_normalPages[0]);
+
 							} else {
-								x_changePage(prevPage);
+								// 1st page in chapter
+								if (shownInFeatherLight) {
+									// close lightbox
+									parent.window.$.featherlight.current().close();
+
+								} else {
+									// go to previously viewed normal page in project (or 1st page if there is none)
+									if (prevPage == undefined) {
+										x_changePage(x_normalPages[0]);
+									} else {
+										x_changePage(prevPage);
+									}
+								}
 							}
 						} else {
 							// historic back
 							if (shownInFeatherLight) {
+								// close lightbox
 								parent.window.$.featherlight.current().close();
+
 							} else if (history.length > 1 && x_params.forcePage1 != 'true') {
 								history.go(-1);
 							} else {
@@ -1893,13 +1907,17 @@ function x_continueSetUp1() {
 				if ($(this).is(":enabled") && $(this).is(":visible")) {
 					var pageIndex = $.inArray(x_currentPage, x_normalPages);
 					if (pageIndex != -1) {
+						// normal (not standalone) page
 						x_changePage(x_normalPages[pageIndex + 1]);
+
 					} else {
+						// if standalone page is in a chapter, the next button might need to navigate to the next page in the chapter
 						const chapterIndex = x_pages[x_currentPage].getAttribute("chapterIndex");
-						if (chapterIndex != undefined && x_chapters[chapterIndex].linkPageChapter == "true" &&
-							x_chapters[chapterIndex].footerHideChapter == "false" &&
-							x_chapters[chapterIndex].pages.length > 1 &&
-							$.inArray(x_currentPage, x_chapters[chapterIndex].pages) < x_chapters[chapterIndex].pages.length - 1) {
+						if (chapterIndex != undefined && x_chapters[chapterIndex].linkPageChapter == "true" && // it's a standalone chapter
+							x_chapters[chapterIndex].footerHideChapter == "false" && // the footer bar is shown
+							x_chapters[chapterIndex].pages.length > 1 && // there is more than one page in this chapter
+							$.inArray(x_currentPage, x_chapters[chapterIndex].pages) < x_chapters[chapterIndex].pages.length - 1) // it is not the last page in the chapter
+						{
 							const nextPage = x_chapters[chapterIndex].pages[$.inArray(x_currentPage, x_chapters[chapterIndex].pages) + 1];
 							x_changePage(nextPage);
 						}
@@ -2712,8 +2730,7 @@ function x_changePageApproved(x_gotoPage, addHistory) {
 	// catch error - when in iframe, i.e. in bootstrap or LMS LTI
 	try {
 		if (standAlonePage) {
-			if (x_pages[x_gotoPage].getAttribute('linkTarget') == 'lightbox' &&
-				parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current()) {
+			if (x_isStandAloneLightbox(x_gotoPage)) {
 				// if this page is already shown in a lightbox then don't try to open another lightbox - load in the existing one
 				standAlonePage = false;
 				addHistory = false;
@@ -3035,7 +3052,6 @@ function x_changePageStep2(x_gotoPage) {
 
 function x_passwordPage(pswds) {
 	if (x_pageInfo[x_currentPage].passwordPass != true) {
-
 		if (x_params.authorSupport == "true") {
 
 			x_pageInfo[x_currentPage].passwordPass = true;
@@ -3067,6 +3083,14 @@ function x_passwordPage(pswds) {
 			$x_pageDiv.css("height", "calc(100% - " + paddingBlock + "px)");
 			$x_pageDiv.append('<div id="x_page' + x_currentPage + '" class="innerPage"></div>');
 			$x_innerPage = $x_pageDiv.find(".innerPage");
+
+			if ($x_pageIntroBtn) { $x_pageIntroBtn.hide(); }
+			if ($x_pageResourcesBtn) { $x_pageResourcesBtn.hide(); }
+
+			$x_innerPage
+				.hide()
+				.css("visibility", "visible")
+				.fadeIn();
 
 			var $pswdBlock = $('#x_page' + x_currentPage);
 			$pswdBlock.css('height', '100%');
@@ -3508,9 +3532,9 @@ function x_setUpPage() {
 	} else {
 		// standalone page
 		// if standalone page is in a chapter, we still might need the page numbers
-		if (standaloneChapter &&
-			x_chapters[chapterIndex].footerHideChapter == "false" &&
-			x_chapters[chapterIndex].pages.length > 1) {
+		if (standaloneChapter && // it's a standalone chapter
+			x_chapters[chapterIndex].footerHideChapter == "false" && // the footer bar is shown
+			x_chapters[chapterIndex].pages.length > 1) { // there is more than one page in this chapter
 			const srOnly = '<span class="sr-only">' + x_getLangInfo(x_languageData.find("vocab").find("page")[0], false, "Page") + " " + ($.inArray(x_currentPage, x_chapters[chapterIndex].pages)+1) + " " + x_getLangInfo(x_languageData.find("vocab").find("of")[0], false, "of") + " " + x_chapters[chapterIndex].pages.length + '</span>';
 			const notSr = '<span aria-hidden="true">' + ($.inArray(x_currentPage, x_chapters[chapterIndex].pages)+1) + " / " + x_chapters[chapterIndex].pages.length + '</span>';
 			$x_pageNo.html(srOnly + notSr);
@@ -3543,12 +3567,14 @@ function x_setUpPage() {
     } else {
 		// standalone page
 		// if standalone page is in a chapter, we still might need the prevBtn
-		if (standaloneChapter &&
-			x_chapters[chapterIndex].footerHideChapter == "false" &&
-			x_chapters[chapterIndex].pages.length > 1 &&
-			($.inArray(x_currentPage, x_chapters[chapterIndex].pages) > 0 ||
-			x_chapters[chapterIndex].linkTargetChapter != "new")) {
+		if (standaloneChapter && // it's a standalone chapter
+			x_chapters[chapterIndex].footerHideChapter == "false" && // the footer bar is shown
+			x_chapters[chapterIndex].pages.length > 1 && // there is more than one page in this chapter
+			($.inArray(x_currentPage, x_chapters[chapterIndex].pages) > 0 || // it is not the first page in the chapter
+				x_chapters[chapterIndex].linkTargetChapter != "new")) // or it is the first page but it hasn't opened in a new window
+		{
 			$x_prevBtn.button("enable");
+
 		} else {
 			$x_prevBtn
 				.button("disable")
@@ -3563,11 +3589,13 @@ function x_setUpPage() {
     } else {
 		// standalone page
 		// if standalone page is in a chapter, we still might need the nextBtn
-		if (standaloneChapter &&
-			x_chapters[chapterIndex].footerHideChapter == "false" &&
-			x_chapters[chapterIndex].pages.length > 1 &&
-			$.inArray(x_currentPage, x_chapters[chapterIndex].pages) < x_chapters[chapterIndex].pages.length - 1) {
+		if (standaloneChapter && // it's a standalone chapter
+			x_chapters[chapterIndex].footerHideChapter == "false" && // the footer bar is shown
+			x_chapters[chapterIndex].pages.length > 1 && // there is more than one page in this chapter
+			$.inArray(x_currentPage, x_chapters[chapterIndex].pages) < x_chapters[chapterIndex].pages.length - 1) // it is not the last page in the chapter
+		{
 			$x_nextBtn.button("enable");
+
 		} else {
 			$x_nextBtn
 				.button("disable")
@@ -3646,6 +3674,8 @@ function x_setUpPage() {
 		}
 
 		$x_mainHolder.css("visibility", "visible");
+		XENITH.PROGRESSBAR.position();
+
 		x_updateCss2(true);
 		XENITH.SIDEBAR.show();
 
@@ -4653,9 +4683,21 @@ function x_sortInitObject(initObj) {
 }
 
 // function copies text to the clipboard
-async function x_copyText(toCopy, errorTxt, toSelect, selectedTxt) {
+async function x_copyText(toCopy, errorTxt, toSelect, selectedTxt, includeTextAreas) {
 	try {
-		await navigator.clipboard.writeText(toCopy.text());
+		let tempTxt = toCopy.text();
+		if (includeTextAreas && toCopy.find("textarea").length > 0) {
+			const temp = toCopy.clone();
+			temp.find("textarea").each(function () {
+				if ($(this).val() !== "") {
+					$(this).replaceWith($(this).val());
+				} else if ($(this).attr("placeholder") !== undefined) {
+					$(this).replaceWith($(this).attr("placeholder"));
+				}
+			});
+			tempTxt = temp.text();
+		}
+		await navigator.clipboard.writeText(tempTxt);
 		alert(x_getLangInfo(x_languageData.find("copy")[0], "success", "Text copied to clipboard"));
 		return true;
 
@@ -4734,6 +4776,13 @@ function x_isYouTubeVimeo(url) {
 	} else {
 		return false;
 	}
+}
+
+// function returns whether a page is a standalone page opening in a lightbox
+function x_isStandAloneLightbox(page) {
+	const isStandalone = x_pageInfo[page].standalone && x_pages[page].getAttribute('linkTarget') === 'lightbox'
+		&& parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current();
+	return isStandalone;
 }
 
 // Based somewhat on these regexps for YouTube and Vimeo (check there for updates)
@@ -5576,7 +5625,7 @@ var XENITH = (function ($, parent) { var self = parent.GLOSSARY = {};
 							"left"	:$activeTooltip.offset().left + 20,
 							"top"	:$activeTooltip.offset().top + 20
 						});
-					
+
 					// Queue reparsing of MathJax - fails if no network connection
 					try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch (e){};
 
@@ -5777,7 +5826,7 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 			x_pages.splice(0, 0, "menu");
 			x_pageInfo.splice(0, 0, {type: 'menu', built: false, viewed:false});
 
-			// adjust normal page indexes to take into account menu page
+			// adjust normal page & chapter page indexes to take menu page into account
 			for (var i=0; i<x_normalPages.length; i++) {
 				x_normalPages.splice(i, 1, x_normalPages[i]+1);
 			}
@@ -5951,12 +6000,14 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 			const allChapters = $menuItems.find(".chapterHolder");
 			allChapters.each(function () {
 				if ($thisChapter.length === 0 || !$thisChapter.is($(this))) {
+					// if the TOC is shown in dialog or lightbox, we don't want the chapter accordion animation to be shown
 					if (XENITH.SIDEBAR.sideBarType !== "toc") {
 						$(this).accordion({"animate": 0});
 					}
 
 					$(this).accordion({"active": false});
 
+					// if the TOC is shown in dialog or lightbox, reset the chapter accordion animation so it will work if chapter manually opened / closed
 					if (XENITH.SIDEBAR.sideBarType !== "toc") {
 						$(this).accordion({"animate": {}});
 					}
@@ -6482,6 +6533,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 	let progressBarSpacing;
 	let pageDetails;
 	let totalPages;
+	let setUpComplete = false;
 
 	// used when progress markers represent the ends of chapters/milestones
 	let chapters;
@@ -6566,6 +6618,11 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 			if (progressBarPosition == "header1") {
 				$pbHolder.insertAfter($x_headerBlock.find(".x_icon"));
+				if ($x_headerBlock.find(".x_icon").length > 0) {
+					$pbHolder.insertAfter($x_headerBlock.find(".x_icon"));
+				} else {
+					$x_headerBlock.prepend($pbHolder);
+				}
 				$x_headerBlock.addClass('pbAbove');
 			} else if (progressBarPosition == "header2") {
 				$pbHolder.appendTo($x_headerBlock);
@@ -6576,8 +6633,11 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 			}
 		}
 
+		if (progressBarPosition != "footer") {
+			$pbHolder.css("visibility", "hidden");
+		}
+
 		// add the x% COMPLETE text holder to the progress bar
-		let leftOffset = 10;
 		if (progressBarPercentage !== false) {
 			$pbTxt = $('<div class="pbTxt">' + progressBarPercentage.replace("{x}", 100) + '</div>');
 
@@ -6585,31 +6645,6 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 				$pbTxt.appendTo($pbHolder);
 			} else {
 				$pbTxt.prependTo($pbHolder);
-			}
-
-			// on smaller screens the % text goes above the progress bar - on larger screens the text is next to the progress bar
-			if (progressBarPosition != "footer") {
-				if (x_browserInfo.mobile !== true) {
-					$pbTxt.css({"width": $pbTxt.width() + parseInt($pbTxt.css("padding-left"))});
-					$pbTxt.css({"margin-left": -$pbTxt.outerWidth(true)});
-				}
-
-				leftOffset = x_browserInfo.mobile !== true ? $pbTxt.outerWidth() : leftOffset;
-			}
-		}
-
-		// on smaller screens the % text goes above the progress bar - on larger screens the text is next to the progress bar
-		if (progressBarPosition != "footer") {
-			// left logo
-			if ($("#x_headerBlock .x_floatLeft.x_icon:visible").length > 0) {
-				$pbHolder.css("padding-left", leftOffset + Math.round($("#x_headerBlock .x_floatLeft.x_icon").outerWidth()));
-			} else {
-				$pbHolder.css("padding-left", leftOffset);
-			}
-
-			// right logo
-			if ($("#x_headerBlock .x_floatRight.x_icon:visible").length > 0) {
-				$pbHolder.css("padding-right", Math.round($("#x_headerBlock .x_floatRight.x_icon").width()) + 10);
 			}
 		}
 
@@ -6916,7 +6951,7 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 
 	// a new page has been viewed - update the progress bar
 	function update(page, target) {
-		if (progressBar) {
+		if (progressBar && setUpComplete) {
 			let update = true;
 
 			if (page != undefined) {
@@ -7050,10 +7085,78 @@ var XENITH = (function ($, parent) { var self = parent.PROGRESSBAR = {};
 		}
 	}
 
+	// set the size / position of the progress bar
+	function position() {
+		if (progressBar && progressBarPosition !== "footer") {
+			// don't do the sizing until everything that may affect the available space has loaded
+			const pending = [];
+			if (document.fonts && document.fonts.ready) {
+				pending.push(document.fonts.ready);
+			}
+
+			$("#x_headerBlock img.x_icon:visible").each(function () {
+				const img = this;
+				if (!img.complete) {
+					pending.push(new Promise(function (resolve) {
+						img.addEventListener("load", resolve, {once: true});
+						img.addEventListener("error", resolve, {once: true});
+					}));
+				}
+			});
+
+			Promise.all(pending).then(function () {
+				requestAnimationFrame(function () {
+					let leftOffset = 10;
+					const $leftIcon = $("#x_headerBlock .x_floatLeft.x_icon:visible");
+
+					if (progressBarPercentage !== false && x_browserInfo.mobile !== true) {
+						$pbTxt.css({width: "", marginLeft: ""});
+						if ($leftIcon.length > 0) {
+							// to make sure it lines up with the title text which has no left padding when next to logo
+							$pbTxt.css("padding-left", 0);
+						}
+
+						const style = window.getComputedStyle($pbTxt[0]);
+						const paddingL = parseFloat(style.paddingLeft) || 0;
+						const paddingR = parseFloat(style.paddingRight) || 0;
+						const border = $pbTxt[0].getBoundingClientRect().width;
+						const headPadding = progressBarPosition === "header3" && $leftIcon.length > 0 ? parseInt($("#x_headerProgress").parent("div").css("padding-left")) : 0;
+						$pbTxt.css("width", Math.max(0, border - paddingL - paddingR) + "px");
+
+						const outer = $pbTxt[0].getBoundingClientRect().width;
+						$pbTxt.css("margin-left", (-outer - headPadding) + "px");
+
+						leftOffset = outer;
+					}
+
+					if ($leftIcon.length > 0) {
+						$pbHolder.css("padding-left", leftOffset + Math.round($leftIcon[0].getBoundingClientRect().width));
+					} else {
+						$pbHolder.css("padding-left", leftOffset);
+					}
+
+					const $rightIcon = $("#x_headerBlock .x_floatRight.x_icon:visible");
+					if ($rightIcon.length > 0) {
+						$pbHolder.css("padding-right", Math.round($rightIcon[0].getBoundingClientRect().width) + 10);
+					}
+
+					$pbHolder.css("visibility", "visible");
+					setUpComplete = true;
+					XENITH.PROGRESSBAR.update();
+				});
+			});
+
+		} else if (progressBar) {
+			setUpComplete = true;
+			XENITH.PROGRESSBAR.update();
+		}
+	}
+
 	// make some public methods
 	self.init = init;
 	self.build = build;
 	self.update = update;
+	self.position = position;
 
 	return parent;
 

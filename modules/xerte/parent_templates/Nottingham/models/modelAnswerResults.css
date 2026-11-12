@@ -42,4 +42,31 @@
 	.pageBlock:not(:first-of-type) h3 {
 		padding-top: 0.3em;
 	}
-	
+
+	.convertTextArea textarea,
+	.convertTextArea [contenteditable] {
+		display: block;
+		width: 100%;
+		box-sizing: border-box;
+		resize: vertical;
+		margin: 0.5em auto;
+	}
+
+	.convertTextArea [contenteditable] {
+		min-height: 5em;
+		border: 1px solid #ccc;
+		padding: 0.2em;
+	}
+
+	.convertTextArea [contenteditable]:empty:before {
+		content: attr(data-placeholder);
+		color: #777;
+		pointer-events: none;
+	}
+
+	#fbTxt.border {
+		border-top: 1px solid #ccc;
+		padding-top: 1em;
+		margin-top: 1em;
+	}
+

@@ -21,8 +21,51 @@
 	// pageChanged & sizeChanged functions are needed in every model file
 	// other functions for model should also be in here to avoid conflicts
 	var modelAnswer = new function() {
+
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
+			// if data has been updated on a model answer results page - make sure that the text displayed here stays in sync
+			// this can happen if the model answer results page is set up for responses to be edited, a user edits the data displayed there for this page and then clicks submit
+
+			// if this page is a standalone page opening in a lightbox, ensure it gets data from the parent project
+			const isStandalone = x_isStandAloneLightbox(x_currentPage);
+			const thisPageInfo = isStandalone && parent.window.x_pageInfo !== undefined ? parent.window.x_pageInfo : x_pageInfo;
+
+			if (thisPageInfo[x_currentPage].savedDataEdited !== undefined && thisPageInfo[x_currentPage].savedDataEdited.changed === true && thisPageInfo[x_currentPage].savedDataEdited.byPage !== x_currentPage) {
+				let numWithText = 0;
+				const $savedData = $("<div>").html(thisPageInfo[x_currentPage].savedData);
+				$savedData.find("div.dataQuestionAnswer.convertTextArea").each(function(i) {
+					if ($(this).hasClass("noResponse")) {
+						$(".panelContent .answerTxt").eq(i).val("");
+					} else {
+						// ensure line breaks are kept
+						const temp = $(this)
+								.find("br").replaceWith("\n").end()
+								.find("p").each(function () { $(this).prepend("\n").append("\n"); }).end()
+								.text();
+
+						$(".panelContent .answerTxt").eq(i).val(temp);
+
+						numWithText++;
+					}
+				});
+
+				// only show feedback if some (or all if answers are required) fields are completed
+				if (numWithText === $(".answerTxt").length || (x_currentPageXML.getAttribute("required") !== 'true' && numWithText > 0)) {
+					this.setFeedback();
+				} else {
+					if ($("#pageContents").data("slideIn")) {
+						$("#fbTxt, .fbTxt").hide();
+					} else {
+						$("#fbTxt,.fbTxt").html("");
+					}
+					$("#fbTxt").removeClass("border");
+				}
+
+				$("#button").button("disable");
+				this.finishTracking();
+				thisPageInfo[x_currentPage].savedDataEdited.changed = false;
+			}
 		};
 
 		this.leavePage = function() {
@@ -313,26 +356,7 @@
 									x_currentPageXML.getAttribute("feedbackBtnTxt") == undefined || x_currentPageXML.getAttribute("feedbackBtnTxt") == "" ? "Submit" : x_currentPageXML.getAttribute("feedbackBtnTxt")
 						})
 						.click(function() {
-							$("#fbTxt").empty();
-
-							if (x_currentPageXML.getAttribute("pageFeedback") != undefined && x_addLineBreaks(x_currentPageXML.getAttribute("pageFeedback")) !== "") {
-								$("#fbTxt")
-										.html(x_addLineBreaks(x_currentPageXML.getAttribute("pageFeedback")))
-										.addClass("border");
-							}
-
-							$(".fbTxt").each(function() {
-								$(this).html($(this).data("feedback"));
-							});
-
-							if ($("#pageContents").data("slideIn")) {
-								$("#fbTxt, .fbTxt").slideDown(function() {
-									// refresh feedback so it is picked up by screen readers now not hidden
-									$("#fbTxt, .fbTxt").each(function() {
-										$(this).html($(this).html());
-									});
-								});
-							}
+							modelAnswer.setFeedback();
 
                             $("#button").button("disable");
 							$("#copyBtn, #downloadBtn").show().button("enable");
@@ -380,6 +404,7 @@
 						} else {
 							$("#fbTxt,.fbTxt").html("");
 						}
+						$("#fbTxt").removeClass("border");
 					}
 				});
 
@@ -397,6 +422,7 @@
 						} else {
 							$("#fbTxt,.fbTxt").html("");
 						}
+						$("#fbTxt").removeClass("border");
 					});
 				}
 
@@ -417,6 +443,29 @@
 			this.saveData();
 			x_pageLoaded();
 		};
+
+		this.setFeedback = function() {
+			$("#fbTxt").empty();
+
+			if (x_currentPageXML.getAttribute("pageFeedback") != undefined && x_addLineBreaks(x_currentPageXML.getAttribute("pageFeedback")) !== "") {
+				$("#fbTxt")
+						.html(x_addLineBreaks(x_currentPageXML.getAttribute("pageFeedback")))
+						.addClass("border");
+			}
+
+			$(".fbTxt").each(function() {
+				$(this).html($(this).data("feedback"));
+			});
+
+			if ($("#pageContents").data("slideIn")) {
+				$("#fbTxt, .fbTxt").slideDown(function() {
+					// refresh feedback so it is picked up by screen readers now not hidden
+					$("#fbTxt, .fbTxt").each(function() {
+						$(this).html($(this).html());
+					});
+				});
+			}
+		}
 
 		this.download = function() {
 			// download a Word doc containing the text shown in the #panelTxt div
@@ -468,8 +517,8 @@
 			// create the text string that will be shown on the model answer results page for this page
 			// the 'data' & 'standalone' classes are used in model answer results page - do not remove them
 			const langStrings = $("#pageContents").data("langStrings");
-			const isStandalone = x_pageInfo[x_currentPage].standalone && x_pages[x_currentPage].getAttribute('linkTarget') === 'lightbox' && parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current();
-			let stringToSave = '<div class="pageBlock' + (isStandalone ? ' standalone' : '') + '">';
+			const isStandalone = x_isStandAloneLightbox(x_currentPage);
+			let stringToSave = '<div class="pageBlock' + (isStandalone ? ' standalone' : '') + '" data-pageid="' + x_currentPage + '">';
 			let hLevel;
 
 			// this is an old style model answer page with just one prompt added at page level - use the now deprecated language strings
@@ -504,11 +553,12 @@
 				hLevel++;
 
 				thisString += '<div class="dataQuestionTxt">' + $this.find(".promptTxt").html() + '</div><div class="answerTxt">';
+				// include the no. of rows in the textarea as a data attribute as this may be used if the response is turned back into a textarea on the model answer results page
 				if ($this.find(".answerTxt").val().trim() !== "") {
-					thisString += '<h' + hLevel + ' class="dataQuestionH dataQuestionAnswer">' + x_addLineBreaks(langStrings.responseTxt) + '</h' + hLevel + '><div class="dataQuestionAnswer"><p>' +  x_addLineBreaks($this.find(".answerTxt").val(), true) + '</p></div>';
+					thisString += '<h' + hLevel + ' class="dataQuestionH dataQuestionAnswer">' + x_addLineBreaks(langStrings.responseTxt) + '</h' + hLevel + '><div class="dataQuestionAnswer convertTextArea" data-rows="' + $this.find(".answerTxt").attr("rows") + '"><p>' +  x_addLineBreaks($this.find(".answerTxt").val(), true) + '</p></div>';
 				} else {
 					// not answered
-					thisString += '<div class="dataQuestionAnswer">' + x_addLineBreaks('<p><em>' + langStrings.noAnswerTxt + '</em></p>') + '</div>';
+					thisString += '<div class="dataQuestionAnswer noResponse convertTextArea" data-rows="' + $this.find(".answerTxt").attr("rows") + '">' + x_addLineBreaks('<p><em>' + langStrings.noAnswerTxt + '</em></p>') + '</div>';
 				}
 				thisString += '</div>';
 
@@ -540,37 +590,38 @@
 
 			// save the data to x_pageInfo.savedData
 			x_pageInfo[x_currentPage].savedData = stringToSave;
+			x_pageInfo[x_currentPage].savedDataEdited = { changed: true, byPage: x_currentPage, timestamp: Date.now() };
 
 			// if this is a standalone page showing in a lightbox, also ensure we save in a way that data can later be retrieved by model answer results pages
-			if (x_pageInfo[x_currentPage].standalone && x_pages[x_currentPage].getAttribute('linkTarget') == 'lightbox'
-					&& parent.window.$ && parent.window.$.featherlight && parent.window.$.featherlight.current()
-					&& parent.window.x_pageInfo != undefined && parent.window.x_pageInfo[x_currentPage] != undefined) {
+			if (x_isStandAloneLightbox(x_currentPage) && parent.window.x_pageInfo != undefined && parent.window.x_pageInfo[x_currentPage] != undefined) {
 				parent.window.x_pageInfo[x_currentPage].savedData = stringToSave;
-
+				parent.window.x_pageInfo[x_currentPage].savedDataEdited = { changed: true, byPage: x_currentPage, timestamp: Date.now() };
 			}
 		};
 
         this.finishTracking = function() {
-			let score = 0;
+			if ($(".answerTxt").length > 0) {
+				let score = 0;
 
-			$(".answerTxt").each(function(i) {
-				const answerTxt = $(this).val();
-				const correct = answerTxt.trim() != "" || x_currentPageXML.getAttribute("judge") === "false";
+				$(".answerTxt").each(function(i) {
+					const answerTxt = $(this).val();
+					const correct = answerTxt.trim() != "" || x_currentPageXML.getAttribute("judge") === "false";
 
-				if (correct) {
-					score++;
-				}
+					if (correct) {
+						score++;
+					}
 
-				const result = {
-					success: correct,
-					score: (correct ? 100.0 : 0.0),
-					judge: x_currentPageXML.getAttribute("judge") != "false"
-				};
+					const result = {
+						success: correct,
+						score: (correct ? 100.0 : 0.0),
+						judge: x_currentPageXML.getAttribute("judge") != "false"
+					};
 
-				XTExitInteraction(x_currentPage, i, result, [], answerTxt, []);
-			});
+					XTExitInteraction(x_currentPage, i, result, [], answerTxt, []);
+				});
 
-            XTSetPageScore(x_currentPage, score / $(".answerTxt").length * 100);
+				XTSetPageScore(x_currentPage, score / $(".answerTxt").length * 100);
+			}
         };
 
     };

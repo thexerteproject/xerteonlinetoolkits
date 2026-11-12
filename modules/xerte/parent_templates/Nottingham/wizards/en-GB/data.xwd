@@ -500,9 +500,9 @@
 	  noAnswerHeaderTxt="No response submitted" exampleHeaderTxt="Feedback:" feedbackTxt="Page feedback"
 	  copyBtn2Label="Copy" copyShortcutTxt="Press Ctrl+C to copy" downloadTxt="Download" downloadSubmitTxt="Submit &amp; Download" downloadWarningTxt1="You have not downloaded your responses. Do you want to download them now?" downloadWarningTxt2="You have not submitted and downloaded your current responses. Make sure you return and complete this activity or you will lose your work."
 	  answerFieldLabel="Answer"><modelAnswerField name="Text Area" prompt="" rows="5"/></modelAnswer>]]></modelAnswer><modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title" text=""
-     modelAnswerPage="true" highlightPage="false" documentationPage="false" dataPageLink="true"
+      modelAnswer="true" textHighlight="false"
       panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
-	  copyBtn2Label="Copy" downloadTxt="Download" pageTxt="Page" notViewed="Page not viewed"
+	  copyBtn2Label="Copy" downloadTxt="Download" submitTxt="Update" updateTxt="Your responses have been updated." pageTxt="Page" notViewed="Page not viewed"
 	  ></modelAnswerResults>]]></modelAnswerResults><modify><![CDATA[<modify name="Enter Page Title" pageTxt="" instruction="" text="" prompt="" answer="" answerType="true"
       panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
 	   answerHeaderTxt="Write your answer here:" feedbackBtnTxt="Submit" answerFieldLabel="Answer"
@@ -13140,6 +13140,11 @@
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
     <text label="Page Text" type="TextArea" height="280" placeholder="Enter text for the page here" mandatory="true" defaultValue="" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)"/>
 
+    <collatedPages label="Collated Page Types" type="group" mandatory="true" info="&lt;p&gt;Select the types of page to include in the collated data shown on this page.&lt;br/&gt;These page selections will be overridden if specific pages are added via the new 'Page Results' option below.&lt;/p&gt;">
+      <modelAnswer label="Model Answer" type="CheckBox" defaultValue="true" mandatory="true"/>
+      <textHighlight label="Highlight Text / Note Taking" type="CheckBox" defaultValue="false" mandatory="true"/>
+    </collatedPages>
+
     <layoutGroup label="Page Layout" type="group">
       <panelWidth label="Panel Width" options="Small,Medium,Large,Full,Custom" type="ComboBox" data="Small,Medium,Large,Full,Custom" defaultValue="Medium" mandatory="true" conditionTrigger="true"/>
       <panelWidthCustom label="Custom Width (%)" type="NumericStepper" min="10" max="90" step="1" defaultValue="50" condition="panelWidth=='Custom'"/>
@@ -13150,6 +13155,11 @@
     </layoutGroup>
 
     <info><![CDATA[<p>By default, the results from all viewed Model Answer pages will be displayed on this page. To collate results from a limited number of pages instead, add new 'Page Results' to specify the pages used.</p>]]></info>
+
+    <editableGroup label="Allow Editing" type="group" optional="true" tooltip="Allow users to edit the responses that are collated on this page">
+      <editable label="Allow" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
+      <pageFeedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here" condition="editable=='true'" optional="true" tooltip="The feedback shown when any edited responses have been submitted"/>
+    </editableGroup>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
       <textTop label="Text" type="TextArea" height="100" optional="true" conditionTrigger="true"/>
@@ -13162,11 +13172,7 @@
     </textBelowGroup>
 
     <dataGroup label="Customise Results" type="group" optional="true" tooltip="Customise the type of data from viewed pages that will be shown on this page">
-      <dataPageLink label="Include Link" type="CheckBox" optional="true" condition="dataPageH=='true'||dataPageH==undefined" defaultValue="false" mandatory="true" tooltip="Include links to pages where the collated data originated from"/>
-      <collatedPages label="Page Types" type="group" optional="true" cols="2" info="&lt;p&gt;Select the types of page to include in the collated data shown on this page.&lt;br/&gt;These page selections will be overridden if specific pages are added via the new 'Page Results' option below.&lt;/p&gt;">
-        <modelAnswer label="Model Answer" type="CheckBox" defaultValue="true" optional="true"/>
-        <textHighlight label="Highlight Text / Note Taking" type="CheckBox" defaultValue="false" optional="true"/>
-      </collatedPages>
+      <dataPageLink label="Include Link" type="CheckBox" optional="true" condition="dataPageH=='true'||dataPageH==undefined" defaultValue="false" tooltip="Include links to pages where the collated data originated from"/>
       <dataGroup2 label="Displayed Data" type="group" optional="true" info="Select the data from each page that will be shown here.">
         <dataPageGroup label="Page" type="group" optional="true">
           <dataPageH label="Title" type="CheckBox" conditionTrigger="true" optional="true" defaultValue="true"/>
@@ -13206,6 +13212,8 @@
 
     <copyBtn2Label label="Copy Button Label" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Copy"/>
     <downloadTxt label="Download Button Label" type="TextInput" condition="showDownload!='false'" mandatory="true" language="true" defaultValue="Download"/>
+    <submitTxt label="Update Button Label" type="TextInput" condition="editable=='true'" mandatory="true" language="true" defaultValue="Update"/>
+    <updateTxt label="Update Confirmation Text" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue="Your responses have been updated."/>
     <pageTxt label="Page Number Text" type="TextInput" condition="unviewed=='true'" mandatory="true" language="true" defaultValue="Page"/>
     <notViewed label="Not Viewed Text" type="TextInput" condition="unviewed=='true'" mandatory="true" language="true" defaultValue="Page not viewed"/>
 
@@ -15667,7 +15675,7 @@
             <minDuration label="Minimum value" defaultValue="0" type="TextInput" tooltip="The minimum (rounded down) duration value (in seconds) for which this feedback will show" optional="true"/>
             <maxDuration label="Maximum value" defaultValue="60" type="TextInput" tooltip="The maximum (rounded down) duration value (in seconds) for which this feedback will show" optional="true"/>
         </duration>
-        <fbPDF label="Include in PDF" type="Checkbox" optional="true" defaultValue="false"/>
+        <!--<fbPDF label="Include in PDF" type="Checkbox" optional="true" defaultValue="false" />-->
     <imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
 		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
 		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>

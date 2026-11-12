@@ -791,7 +791,7 @@ button.ui-button-icon-only .ui-icon.fa-x-refresh {
 }
 #x_mainHolder:not(.x_mobile) #x_headerProgress .pbTxt {
 	display: inline-block;
-	padding: 0 10px 5px;
+	padding: 0 1em 5px;
 }
 #x_headerProgress.progressMarkers .pbTxt {
 	padding: 0 5px 10px;
@@ -875,18 +875,13 @@ button.ui-button-icon-only .ui-icon.fa-x-refresh {
 	flex-direction: column;
 }
 
-#x_pagePswdBtn:active, #x_pagePswdBtn:hover, #x_pagePswdBtn:focus {
-	text-decoration: underline;
-	background-color: #0088cc;
-}
-
 .x_pswdError {
 	margin-top: 1em;
 	font-size: 0.9em;
 	color: #c0392b;
 }
 
-:not(.old) .x_pswdError {
+.x_pswdBlock:not(.old) .x_pswdError {
 	text-align: center;
 }
 
@@ -917,7 +912,7 @@ input#x_pagePswd.old {
 .vault-door-frame {
 	width: 94%;
 	height: 94%;
-	background-color: #808080;
+	background-color: #A6A6A6;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -996,15 +991,16 @@ input#x_pagePswd.old {
 }
 .vault input{
 	background-color: #00000000;
-	border: 2px solid #ffffff40;
+	border: 2px solid #FFFFFF;
 	z-index: 2;
 	font-size: 3.5vmin;
 }
 
-.vault .numberbtn, .vault #resetbtn, .vault input {
+.vault .numberbtn, .vault #resetbtn, .vault input, .vault #x_pagePswdBtn .ui-button-text {
 	color: black;
 	text-align: center;
 	font-weight: bold;
+	cursor: pointer;
 }
 
 .vault input:focus, .vault input:hover {
@@ -1019,7 +1015,7 @@ input#x_pagePswd.old {
 }
 
 .vault button {
-	background-color: #808080;
+	background-color: #A6A6A6;
 	border: 2px solid #505050 !important;
 }
 

@@ -264,6 +264,7 @@ var videoSynch = new function() {
 				.addClass("shown");
 		});
 
+		x_pageContentsUpdated();
 		x_pageLoaded();
 	}
 
@@ -324,6 +325,8 @@ var videoSynch = new function() {
 							.removeClass("shown");
 					}
 				}
+
+				x_pageContentsUpdated();
 			});
 		});
 	}
