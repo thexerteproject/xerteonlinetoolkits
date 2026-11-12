@@ -86,6 +86,9 @@ if(is_user_admin()) {
         $enabled = (isset($options['enabled']) && $options['enabled'] === 'true') ? 1 : 0;
 
         $preferred_model = $options['preferred_model'] ?? null;
+        if (is_string($preferred_model) && (trim($preferred_model) === '' || strtolower(trim($preferred_model)) === 'default')) {
+            $preferred_model = null;
+        }
 
         unset($options['type'], $options['vendor'], $options['enabled'], $options['preferred_model']);
 

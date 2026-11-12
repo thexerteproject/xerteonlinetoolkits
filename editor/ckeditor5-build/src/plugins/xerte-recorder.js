@@ -253,7 +253,7 @@ function openRecorder( editor ) {
 			const cleanName = filename.value.replace( /[^a-zA-Z0-9_-]/g, '_' ) || 'recording';
 			const extension = recordedExtension;
 			const url = await uploadAudio( blob, endpoint, { filename: `${ cleanName }.${ extension }`, extension, t } );
-			editor.execute( 'insertXerteAudio', { src: url, align: 'center' } );
+			editor.execute( 'insertXerteAudio', { src: url, align: 'center', autoplay: false } );
 			close();
 		} catch ( error ) {
 			setStatus( error.message || String( error ), 'error' );

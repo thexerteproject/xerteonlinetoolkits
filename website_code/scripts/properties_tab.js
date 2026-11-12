@@ -70,6 +70,17 @@ function propertiesApiPost(route, data, onOk, onFail) {
 	});
 }
 
+function propertiesApiMutation(route, data, onOk, onFail) {
+	return propertiesApiPost(route, data, function (responseData) {
+		if (onOk) onOk(responseData);
+
+		var workspaceWindow = (typeof window_reference === "undefined") ? window.opener : window_reference;
+		if (workspaceWindow && typeof workspaceWindow.refresh_workspace === "function") {
+			workspaceWindow.refresh_workspace();
+		}
+	}, onFail);
+}
+
 function renderPublishPanel(d) {
 	var h = '<h2 class="header">' + PUBLISH_TITLE + '</h2><div id="mainContent">';
 	h += '<p>' + PUBLISH_NAME + ': ' + escapeHtml(d.name) + '</p>';
@@ -641,7 +652,7 @@ function group_delete_sharing_template(template_id,group_id){
 	var answer = confirm(SHARING_CONFIRM);
 
 	if(answer){
-		propertiesApiPost('properties/group-share-remove', {
+		propertiesApiMutation('properties/group-share-remove', {
 				template_id: template_id,
 				id: group_id,
 				group: true
@@ -681,7 +692,7 @@ function syndication_change_template(){
 	var description = $('#description').val();
 	var keywords = $('#keywords').val();
 
-	propertiesApiPost('properties/syndication', {
+	propertiesApiMutation('properties/syndication', {
 			tutorial_id: window.name,
 			synd: synd,
 			description: description,
@@ -792,7 +803,7 @@ function peer_change_template(){
 		alert(PASSWORD_REMINDER);
 		
 	} else {
-		propertiesApiPost('properties/peer', {
+		propertiesApiMutation('properties/peer', {
 				template_id: window.name,
 				peer_status: peeron,
 				extra: pswd + email
@@ -817,7 +828,7 @@ function rss_change_template(){
 		exporting = $('#exporton').prop('checked'),
 		desc = document.getElementById("desc").value;
 
-	propertiesApiPost('properties/rss', {
+	propertiesApiMutation('properties/rss', {
 			 template_id: window.name,
 			 rss: rssing,
 			 export: exporting,
@@ -880,7 +891,7 @@ function xml_change_template(){
 	var xmlon = $('#xmlon').prop('checked') ? 'on' : 'off';
 	var address = xmlon == 'on' ? ($('#sitename').val() != '' ? $('#sitename').val() : 'null') : 'null';
 
-	propertiesApiPost('properties/xml', {
+	propertiesApiMutation('properties/xml', {
 			template_id: window.name,
 			xml_status: xmlon,
 			address: address
@@ -906,7 +917,7 @@ function properties_template(){
 
 function default_engine_toggle(type)
 {
-	propertiesApiPost('properties/default-engine', {
+	propertiesApiMutation('properties/default-engine', {
 			template_id: window.name,
 			engine: $('input[name="engine"]:checked').attr('id'),
 			page:'properties'
@@ -922,7 +933,7 @@ function publish_engine_toggle(tag, engine1, engine2)
 	{
 		engine = engine2;
 	}
-	propertiesApiPost('properties/default-engine', {
+	propertiesApiMutation('properties/default-engine', {
 			template_id: window.name,
 			engine: engine,
 			page:'publish'
@@ -976,7 +987,7 @@ function notes_template(){
 
 function change_notes(template_id, form_tag){
 	var new_notes = document.getElementById('notes') ? document.getElementById('notes').value : '';
-	propertiesApiPost('properties/notes', {
+	propertiesApiMutation('properties/notes', {
 			template_id: template_id,
 			notes: new_notes
 	}, function (d) {
@@ -1023,7 +1034,7 @@ function delete_unused_files_ajax(delete_path, delete_string){
 		files.push(encodeURIComponent(delete_path + delete_files[i]));
 	}
 	files = btoa(JSON.stringify(files));
-	propertiesApiPost('properties/delete-unused-files', {
+	propertiesApiMutation('properties/delete-unused-files', {
 			data: files
 	}, function () {
 			delete_file_stateChanged('');
@@ -1046,7 +1057,7 @@ function delete_file(file, answer = false){
 		answer = confirm(DELETE_FILE_CONFIRM);
 	}
 	if(answer){
-		propertiesApiPost('properties/delete-file', {
+		propertiesApiMutation('properties/delete-file', {
 				file: encodeURIComponent(file)
 		}, function () {
 			delete_file_stateChanged('');
@@ -1161,7 +1172,7 @@ function access_change_template(template_id){
 				access: access_value
 			}
 		}
-		propertiesApiPost('properties/access', data, function (d) {
+		propertiesApiMutation('properties/access', data, function (d) {
 			properties_showPanel(renderAccessPanel(d), 'panelAccess');
 		});
 	}
@@ -1358,7 +1369,7 @@ function share_this_template(template, id, group=false){
 	 if(setup_ajax()!=false){
 		 var role = document.querySelector('input[name="role"]:checked').value;
 
-		 propertiesApiPost('properties/share-add', {
+		 propertiesApiMutation('properties/share-add', {
 				 template_id: template,
 				 id: id,
 				 role: role,
@@ -1441,7 +1452,7 @@ function group_sharing_status_template(){
 
 function group_share_this_template(template){
 	var group_id = $('#group').val();
-	propertiesApiPost('properties/group-share-add', {
+	propertiesApiMutation('properties/group-share-add', {
 			template_id: template,
 			group_id: group_id
 	}, function () {
@@ -1512,7 +1523,7 @@ function set_sharing_rights_template(template, id, group){
 	var role = document.getElementById(idPrefix + '_' + id).value.split('_')[0];
 
 	 if(setup_ajax()!=false){
-		 propertiesApiPost('properties/set-sharing-rights', {
+		 propertiesApiMutation('properties/set-sharing-rights', {
 				 template_id: template,
 				 id: id,
 				 role: role,
@@ -1567,7 +1578,7 @@ function setup_download_link(path, buttonlbl, file)
 
 
 function lti_update(id) {
-	propertiesApiPost('properties/lti-update', {
+	propertiesApiMutation('properties/lti-update', {
 			template_id: id,
 			tsugi_published: $("#pubChk").prop('checked'),
 			tsugi_useglobal: $("[name=tsugi_useglobal]").prop('checked'),

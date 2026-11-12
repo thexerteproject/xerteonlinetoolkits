@@ -39,6 +39,9 @@ export class XerteMediaEmbedRoundTrip extends Plugin {
 				const height = figure && figure.getStyle( 'height' );
 				const iframe = findDescendant( viewElement, element => element.is( 'element', 'iframe' ) );
 				const attributes = { url };
+				const preset = [ ...( figure?.getClassNames() || [] ), ...viewElement.getClassNames() ]
+					.find( name => /^embed-(240|360|480|720|1080)p$/.test( name ) );
+				if ( preset ) attributes.mediaStyle = preset;
 				if ( validDimension( width, true ) ) attributes.mediaWidth = width;
 				if ( validDimension( height, false ) ) attributes.mediaHeight = height;
 				const title = figure && ( figure.getAttribute( 'data-xerte-media-title' ) || figure.getAttribute( 'title' ) ) || iframe && iframe.getAttribute( 'title' );

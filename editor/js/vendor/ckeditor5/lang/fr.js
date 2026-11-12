@@ -13,3 +13,7 @@ Object.assign( globalThis.CKEDITOR_TRANSLATIONS.fr.dictionary, {
 	'Lock ratio': 'Conserver les proportions', 'Reset size': 'Réinitialiser la taille', 'Align Left': 'Aligner à gauche', 'Align Center': 'Aligner au centre', 'Align Right': 'Aligner à droite',
 	'Captioned image': 'Image légendée', 'OK': 'OK'
 } );
+
+Object.assign( globalThis.CKEDITOR_TRANSLATIONS.fr.dictionary, {
+	"Resize editor (drag or use arrow keys)": "Faites glisser pour redimensionner. Clavier : sélectionnez cette poignée avec Tab, puis utilisez les flèches haut/bas."
+} );

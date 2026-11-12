@@ -11,6 +11,13 @@ import AudioIcon from '../icons/audio.svg';
 const defaults = { src: '', align: 'center', autoplay: false, noDownload: false, title: '' };
 const alignments = new Set( [ 'none', 'left', 'center', 'right' ] );
 
+// Autoplay is a boolean HTML attribute, so autoplay="false" would still enable it.
+function autoplayEnabled( value ) {
+	if ( value === true ) return true;
+	if ( typeof value !== 'string' ) return false;
+	return [ 'autoplay', 'true', 'yes' ].includes( value.trim().toLowerCase() );
+}
+
 function settingsFromView( div ) {
 	const audio = Array.from( div.getChildren() ).find( child => child.is( 'element', 'audio' ) );
 	if ( !audio || !audio.getAttribute( 'src' ) ) return null;
@@ -18,7 +25,8 @@ function settingsFromView( div ) {
 	return {
 		src: audio.getAttribute( 'src' ),
 		align: alignments.has( align ) ? align : 'none',
-		autoplay: audio.hasAttribute( 'autoplay' ),
+		autoplay: audio.hasAttribute( 'autoplay' ) &&
+			autoplayEnabled( audio.getAttribute( 'autoplay' ) || 'autoplay' ),
 		noDownload: ( audio.getAttribute( 'controlslist' ) || '' ).split( /\s+/ ).includes( 'nodownload' ),
 		title: audio.getAttribute( 'title' ) || ''
 	};
@@ -72,6 +80,7 @@ export class InsertXerteAudioCommand extends Command {
 		const settings = { ...defaults, ...options };
 		if ( !settings.src ) return;
 		settings.align = alignments.has( settings.align ) ? settings.align : 'none';
+		settings.autoplay = autoplayEnabled( settings.autoplay );
 		const editor = this.editor;
 		editor.model.change( writer => {
 			const existing = findAudio( editor.model.document.selection );

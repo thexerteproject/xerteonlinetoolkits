@@ -1,5 +1,6 @@
 /** Dutch translations for Xerte's CKEditor 5 extensions. @license Apache-2.0 */
 ( function( t ) { const l = t.nl = t.nl || { dictionary: {} }; Object.assign( l.dictionary ||= {}, {
+	'MENU_BAR_MENU_FORMAT': 'Opmaak',
 	'Insert Font Awesome': 'Font Awesome invoegen', 'Font Awesome icon': 'Font Awesome-pictogram', 'Insert Font Awesome icon': 'Font Awesome-pictogram invoegen', 'Search icons': 'Pictogrammen zoeken','Use default text colour':'Standaardtekstkleur gebruiken', 'Description': 'Beschrijving', 'Colour': 'Kleur', 'Rotation': 'Rotatie', 'Spin': 'Draaien', 'Pulse': 'Pulseren', 'Fixed width': 'Vaste breedte', 'Flip horizontal': 'Horizontaal spiegelen', 'Flip vertical': 'Verticaal spiegelen',
 	'Audio': 'Audio', 'Audio properties': 'Audio-eigenschappen', 'Browse server': 'Bladeren op server', 'Upload audio': 'Audio uploaden', 'Autoplay (browser may block it)': 'Automatisch afspelen (browser kan dit blokkeren)', 'Hide download control (browser dependent)': 'Downloadknop verbergen (afhankelijk van browser)', 'Advisory title': 'Beschrijvende titel',
 	'Autocolumns': 'Automatische kolommen', 'Autocolumns content': 'Inhoud automatische kolommen', 'Autocolumn Settings': 'Instellingen automatische kolommen', 'Number of columns': 'Aantal kolommen', 'Spacing between columns': 'Ruimte tussen kolommen', 'Line style': 'Lijnstijl', 'Line thickness (px)': 'Lijndikte (px)', 'Line colour': 'Lijnkleur',
@@ -12,4 +13,8 @@ Object.assign( globalThis.CKEDITOR_TRANSLATIONS.nl.dictionary, {
 	'Image Properties': 'Afbeeldingseigenschappen', 'URL': 'URL', 'Browse Server': 'Bladeren op server', 'Alternative Text': 'Alternatieve tekst',
 	'Lock ratio': 'Verhouding vergrendelen', 'Reset size': 'Afmetingen herstellen', 'Align Left': 'Links uitlijnen', 'Align Center': 'Centreren', 'Align Right': 'Rechts uitlijnen',
 	'Captioned image': 'Afbeelding met onderschrift', 'OK': 'OK'
+} );
+
+Object.assign( globalThis.CKEDITOR_TRANSLATIONS.nl.dictionary, {
+	"Resize editor (drag or use arrow keys)": "Sleep om de grootte te wijzigen. Toetsenbord: ga met Tab naar deze greep en gebruik daarna de pijltoetsen omhoog/omlaag."
 } );

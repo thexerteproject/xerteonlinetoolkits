@@ -3,22 +3,27 @@
  * @license Apache-2.0
  */
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
+import { MediaEmbed, MediaEmbedToolbar } from '@ckeditor/ckeditor5-media-embed';
 import { WidgetResize } from '@ckeditor/ckeditor5-widget';
-import { IconPencil } from 'ckeditor5/src/icons.js';
+import { IconMedia, IconPencil } from 'ckeditor5/src/icons.js';
 import { showMediaPropertiesDialog } from './xerte-media-properties-dialog.js';
 
 const mediaAttributes = [ 'mediaWidth', 'mediaHeight', 'mediaAlign', 'mediaTitle', 'mediaAriaLabel' ];
+const originalRenderers = new WeakMap();
 
 export class XerteMediaResize extends Plugin {
 	static get pluginName() { return 'XerteMediaResize'; }
-	static get requires() { return [ MediaEmbed, WidgetResize ]; }
+	static get requires() { return [ MediaEmbed, MediaEmbedToolbar, WidgetResize ]; }
 
 	afterInit() {
 		const editor = this.editor;
 		const resizers = editor.plugins.get( WidgetResize );
-		editor.model.schema.extend( 'media', { allowAttributes: mediaAttributes } );
+		editor.model.schema.extend( 'media', { allowAttributes: [ ...mediaAttributes, 'mediaStyle' ] } );
+		editor.conversion.for( 'downcast' ).attributeToAttribute( {
+			model: { name: 'media', key: 'mediaStyle' },
+			view: value => ( { key: 'class', value } )
+		} );
 		this._registerConverters();
 		this._registerPropertiesButton();
 
@@ -46,34 +51,100 @@ export class XerteMediaResize extends Plugin {
 						if ( !api.consumable.consume( data.item, event.name ) ) return;
 						const figure = api.mapper.toViewElement( data.item );
 						if ( figure ) applyMediaAttribute( api.writer, figure, attribute, data.attributeNewValue );
+						if ( figure ) refreshMediaPreview( api.writer, figure, data.item );
 					} );
 				}
+				dispatcher.on( 'attribute:url:media', ( event, data, api ) => {
+					const figure = api.mapper.toViewElement( data.item );
+					if ( figure ) refreshMediaPreview( api.writer, figure, data.item );
+				}, { priority: 'low' } );
 			} );
 		}
 	}
 
 	_registerPropertiesButton() {
 		const editor = this.editor;
+		// Replace the URL-only insertion control while retaining legacy toolbar mappings.
+		for ( const [ name, View ] of [ [ 'mediaEmbed', ButtonView ], [ 'menuBar:mediaEmbed', MenuBarMenuListItemButtonView ] ] ) {
+			editor.ui.componentFactory.add( name, locale => {
+				const button = new View( locale );
+				button.set( { label: editor.t( 'Insert media' ), icon: IconMedia, tooltip: true } );
+				button.bind( 'isEnabled' ).to( editor.commands.get( 'mediaEmbed' ), 'isEnabled' );
+				button.on( 'execute', () => openMediaPropertiesDialog( editor ) );
+				return button;
+			} );
+		}
 		editor.ui.componentFactory.add( 'xerteMediaProperties', locale => {
 			const button = new ButtonView( locale );
 			button.set( { label: editor.t( 'Media properties' ), icon: IconPencil, tooltip: true } );
-			button.on( 'execute', async () => {
-				const media = editor.model.document.selection.getSelectedElement();
-				if ( !media || !media.is( 'element', 'media' ) ) return;
-				const values = await showMediaPropertiesDialog( editor, media );
-				if ( !values ) return;
-				editor.model.change( writer => {
-					for ( const attribute of mediaAttributes ) {
-						const value = values[ attribute ];
-						if ( value ) writer.setAttribute( attribute, value, media );
-						else writer.removeAttribute( attribute, media );
-					}
-				} );
-				editor.editing.view.focus();
-			} );
+			button.bind( 'isEnabled' ).to( editor, 'isReadOnly', value => !value );
+			button.on( 'execute', () => openMediaPropertiesDialog( editor ) );
 			return button;
 		} );
 	}
+}
+
+// Provider HTML lives inside a RawElement, outside CKEditor's view tree.
+// Recreate that preview with its original renderer so settings also reach the
+// iframe, survive URL changes, and appear in serialized learning-object HTML.
+function refreshMediaPreview( writer, figure, media ) {
+	const preview = Array.from( figure.getChildren() ).find( child => child.is( 'rawElement' ) );
+	if ( !preview ) return;
+	const render = originalRenderers.get( preview ) || preview.render;
+	const values = Object.fromEntries( mediaAttributes.map( key => [ key, media.getAttribute( key ) ] ) );
+	const replacement = writer.createRawElement( preview.name, preview.getAttributes(), ( dom, converter ) => {
+		render.call( preview, dom, converter );
+		for ( const iframe of dom.querySelectorAll( 'iframe' ) ) {
+			if ( values.mediaTitle ) iframe.setAttribute( 'title', values.mediaTitle );
+			if ( values.mediaAriaLabel ) iframe.setAttribute( 'aria-label', values.mediaAriaLabel );
+			if ( values.mediaHeight ) {
+				const container = iframe.parentElement;
+				if ( container !== dom ) {
+					container.style.height = values.mediaHeight;
+					container.style.paddingBottom = '0';
+				}
+				iframe.style.height = values.mediaHeight;
+			}
+		}
+	} );
+	for ( const [ key, value ] of preview.getCustomProperties() ) writer.setCustomProperty( key, value, replacement );
+	originalRenderers.set( replacement, render );
+	writer.insert( writer.createPositionBefore( preview ), replacement );
+	writer.remove( preview );
+}
+
+export async function openMediaPropertiesDialog( editor, media = editor.model.document.selection.getSelectedElement() ) {
+	if ( editor.isReadOnly ) return;
+	if ( !media?.is( 'element', 'media' ) ) media = null;
+	const ranges = Array.from( editor.model.document.selection.getRanges(), range => range.clone() );
+	const values = await showMediaPropertiesDialog( editor, media );
+	if ( values && !editor.isReadOnly && ( !media || media.root.rootName !== '$graveyard' ) ) {
+		editor.model.change( writer => {
+			writer.setSelection( media || ranges, media ? 'on' : undefined );
+			editor.execute( 'mediaEmbed', values.url );
+			const target = editor.model.document.selection.getSelectedElement();
+			if ( !target?.is( 'element', 'media' ) ) return;
+			for ( const attribute of mediaAttributes ) {
+				if ( values[ attribute ] ) writer.setAttribute( attribute, values[ attribute ], target );
+				else writer.removeAttribute( attribute, target );
+			}
+		} );
+	}
+	editor.editing.view.focus();
+}
+
+export function mediaFromDomTarget( editor, target ) {
+	const root = editor.editing.view.getDomRoot();
+	let node = target?.nodeType === Node.TEXT_NODE ? target.parentElement : target;
+	while ( node && node !== root ) {
+		if ( node.matches?.( 'figure.media' ) ) {
+			const view = editor.editing.view.domConverter.domToView( node );
+			const model = view && editor.editing.mapper.toModelElement( view );
+			return model?.is( 'element', 'media' ) ? model : null;
+		}
+		node = node.parentElement;
+	}
+	return null;
 }
 
 function applyMediaAttribute( writer, figure, attribute, value ) {

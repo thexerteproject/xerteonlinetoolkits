@@ -1,0 +1,104 @@
+.ck.ck-style-panel {
+	--ck-style-panel-columns: 1;
+	--ck-style-panel-button-width: 100%;
+	--ck-style-panel-max-height: min(470px, calc(60vh - 2px));
+	width: min(13rem, calc(100vw - 2rem));
+	box-sizing: border-box;
+	padding: 0;
+}
+
+.ck.ck-style-panel [hidden] {
+	display: none !important;
+}
+
+.ck.ck-style-panel .ck-style-grid {
+	justify-content: stretch;
+	gap: 0;
+}
+
+.ck.ck-style-panel .ck-style-panel__style-group > .ck-label {
+	margin: 0;
+	padding: 4px 6px;
+	background: var(--ck-color-base-foreground);
+}
+
+.ck.ck-style-panel .ck-style-grid .ck-style-grid__button.xerte-style-name-preview {
+	height: auto;
+	min-height: 24px;
+	justify-content: center;
+	border-radius: 0;
+}
+
+.ck.ck-style-panel .ck-style-grid .xerte-style-name-preview:not(:focus) {
+	border-color: transparent;
+}
+
+/* The original label still names the option for assistive technology. */
+.ck.ck-style-panel .xerte-style-name-preview .ck-button__label {
+	position: absolute;
+	clip-path: inset(50%);
+}
+
+.ck.ck-style-panel .ck-style-grid .xerte-style-name-preview .ck-style-grid__button__preview {
+	zoom: .85;
+	flex-basis: auto;
+	box-sizing: border-box;
+	padding: 3px 6px;
+	border: 0;
+	opacity: 1;
+	background-color: var(--xerte-style-canvas, var(--ck-color-base-background));
+}
+
+.ck.ck-style-panel .ck-style-grid .xerte-style-name-preview:hover .ck-style-grid__button__preview:not(:has(> q)) {
+	background-color: var(--ck-color-base-foreground);
+}
+
+.ck.ck-style-panel .xerte-style-name-preview .ck-style-grid__button__preview > * {
+	display: inline-block;
+	max-width: 100%;
+	box-sizing: border-box;
+	margin: 0;
+	overflow-wrap: anywhere;
+}
+
+.ck.ck-style-panel .ck-style-grid .xerte-style-name-preview .ck-style-grid__button__preview:has(> blockquote) {
+	padding-inline: 4px;
+}
+
+.ck.ck-style-panel .xerte-style-name-preview .ck-style-grid__button__preview > blockquote {
+	display: block;
+	width: 100%;
+	overflow: visible;
+}
+
+.xerte-style-name-preview :is(blockquote, q)::before {
+	content: var(--xerte-quote-before-content, none);
+	color: var(--xerte-quote-before-color, currentColor);
+	font: var(--xerte-quote-before-font, inherit);
+	margin: var(--xerte-quote-before-margin, 0);
+	vertical-align: var(--xerte-quote-before-vertical-align, baseline);
+}
+
+.xerte-style-name-preview :is(blockquote, q)::after {
+	content: var(--xerte-quote-after-content, none);
+	color: var(--xerte-quote-after-color, currentColor);
+	font: var(--xerte-quote-after-font, inherit);
+	margin: var(--xerte-quote-after-margin, 0);
+	vertical-align: var(--xerte-quote-after-vertical-align, baseline);
+}
+
+.xerte-style-name-preview [class*="speech-bubble"] {
+	position: relative;
+}
+
+.xerte-style-name-preview [class*="speech-bubble"]::after {
+	content: var(--xerte-tail-content, none);
+	position: var(--xerte-tail-position, absolute);
+	inset: var(--xerte-tail-inset, auto);
+	width: var(--xerte-tail-width, 0);
+	height: var(--xerte-tail-height, 0);
+	margin: var(--xerte-tail-margin, 0);
+	border-width: var(--xerte-tail-border-width, 0);
+	border-style: var(--xerte-tail-border-style, none);
+	border-color: var(--xerte-tail-border-color, transparent);
+}

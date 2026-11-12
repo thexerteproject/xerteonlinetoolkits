@@ -33,12 +33,13 @@
     define("USER_SETTINGS_EDITOR_OPEN_MODE_LIGHTBOX", "Open in an overlay on the overview page");
 
     define("USER_SETTINGS_PREFERENCES_TITLE", "My preferences");
-    define("USER_SETTINGS_SECTION_EDITOR_OPEN", "When I open a lesson for editing");
-    define("USER_SETTINGS_SECTION_OVERVIEW", "On my overview page");
+    define("USER_SETTINGS_REFRESH_TOOLTIP", "Refresh the page after saving to apply all preference changes.");
+    define("USER_SETTINGS_SECTION_EDITOR_OPEN", "When I open a learning object");
+    define("USER_SETTINGS_SECTION_OVERVIEW", "On my workspace");
     define("USER_SETTINGS_SECTION_IN_EDITOR", "In the editor");
     define("USER_SETTINGS_PANEL_EAST", "Show project templates on the right");
     define("USER_SETTINGS_PANEL_SOUTH", "Show the bar at the bottom");
-    define("USER_SETTINGS_EDITOR_PANEL_EAST", "Show the help panel on the right");
+    define("USER_SETTINGS_EDITOR_PANEL_EAST", "Open the Optional Properties and Assistants panel by default");
     define("USER_SETTINGS_EDITOR_SHOW_LANGUAGE", "Show language options");
     define("USER_SETTINGS_EDITOR_FIXED_TOOLBAR", "Use a fixed editor toolbar");
     define("USER_SETTINGS_EDITOR_EXPAND_TOOLBAR", "Expand toolbar by default (fixed toolbars only)");
@@ -47,9 +48,10 @@
     define("USER_SETTINGS_EDITOR_HIDE_QUICKFILL_HELP", "Quick Fill remains available in the Assistants side menu.");
     define("USER_SETTINGS_EDITOR_COLLAPSE_QUICKFILL", "Always collapse Quick Setup section on new pages");
     define("USER_SETTINGS_EDITOR_COLLAPSE_QUICKFILL_WITH_CHILDREN", "Collapse Quick Setup section only when the page has child items");
-    define("USER_SETTINGS_EDITOR_EXPAND_GROUPS", "Open folders automatically");
-    define("USER_SETTINGS_EDITOR_EXPAND_TREE", "Open content structure automatically");
+    define("USER_SETTINGS_EDITOR_EXPAND_GROUPS", "Expand optional property groups by default");
+    define("USER_SETTINGS_EDITOR_EXPAND_TREE", "Expand all pages by default");
     define("USER_SETTINGS_CANCEL", "Cancel");
+    define("USER_SETTINGS_RESET_DEFAULTS", "Reset to defaults");
     define("USER_SETTINGS_SAVE", "Save");
 
 ?>

@@ -5,6 +5,7 @@
  */
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
+import { _LinkPreviewButtonView as LinkPreviewButtonView, _ensureSafeLinkUrl as ensureSafeLinkUrl } from '@ckeditor/ckeditor5-link';
 import PageLinkIcon from '../icons/page-link.svg';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
 import { parseXertePageId } from './xerte-page-link-utils.js';
@@ -42,7 +43,7 @@ function normalizePageItems( items ) {
 	return out;
 }
 
-function getSelectedXertePageLink( editor ) {
+export function getSelectedXertePageLink( editor ) {
 	const selection = editor.model.document.selection;
 	const htmlA = selection.getAttribute( 'htmlA' );
 	const id = parseXertePageId( htmlA && htmlA.attributes && htmlA.attributes.onclick );
@@ -52,6 +53,13 @@ function getSelectedXertePageLink( editor ) {
 	}
 	const range = findAttributeRange( position, 'htmlA', htmlA, editor.model );
 	return range.isCollapsed ? null : { id, range };
+}
+
+export function hideForXertePageLink( editor, view ) {
+	const update = () => { view.isVisible = !getSelectedXertePageLink( editor ); };
+	view.listenTo( editor.model.document.selection, 'change:range', update );
+	view.listenTo( editor.model.document.selection, 'change:attribute', update );
+	update();
 }
 
 function choosePageFromModal( pages, currentPageId = null, t = value => value ) {
@@ -301,6 +309,25 @@ export class XertePageLink extends Plugin {
 		const editor = this.editor;
 		const linkCommand = editor.commands.get( 'link' );
 		const model = editor.model;
+
+		editor.ui.componentFactory.add( 'xerteLinkPreview', locale => {
+			const view = new LinkPreviewButtonView( locale );
+			const allowedProtocols = editor.config.get( 'link.allowedProtocols' );
+			const update = () => {
+				const href = linkCommand.value;
+				const isPageLink = !!getSelectedXertePageLink( editor );
+				view.isVisible = !isPageLink;
+				view.isEnabled = !isPageLink && !!href;
+				view.href = href ? ensureSafeLinkUrl( href, allowedProtocols ) : '';
+				view.label = href || undefined;
+				view.tooltip = editor.t( 'Open link in new tab' );
+			};
+			view.listenTo( editor.model.document.selection, 'change:range', update );
+			view.listenTo( editor.model.document.selection, 'change:attribute', update );
+			view.listenTo( linkCommand, 'change:value', update );
+			update();
+			return view;
+		} );
 
 		// Changing a page link's URL converts it to an ordinary link. Otherwise its
 		// legacy onclick handler would keep navigating to the old Xerte page.

@@ -669,6 +669,27 @@ div.ui-layout-north div.content {
     color: #111;
 }
 
+.preferences-modal-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.preferences-info-tooltip {
+    color: #666;
+    cursor: help;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.preferences-info-tooltip:hover,
+.preferences-info-tooltip:focus {
+    color: #111;
+    outline: 2px solid #f86718;
+    outline-offset: 3px;
+    border-radius: 50%;
+}
+
 .preferences-modal-close {
     border: none;
     background: none;
@@ -861,8 +882,17 @@ div.ui-layout-north div.content {
     border: 1px solid #cfcfcf;
 }
 
+.preferences-btn-reset {
+    margin-right: auto;
+    background: #fff;
+    color: #333;
+    border: 1px solid #cfcfcf;
+}
+
 .preferences-btn-cancel:hover,
-.preferences-btn-cancel:focus {
+.preferences-btn-cancel:focus,
+.preferences-btn-reset:hover,
+.preferences-btn-reset:focus {
     background: #f7f7f7;
     outline: none;
 }

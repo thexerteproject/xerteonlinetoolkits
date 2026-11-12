@@ -9,6 +9,7 @@ class vendor_option_component
     public $has_key;
     public $enabled;
     public $sub_options;
+    public $preferred_model = null;
 
     public function __construct($vendor)
     {
@@ -46,10 +47,11 @@ class vendor_option_component
             $this->sub_options = $options;
             }
 
-        if ($vendor['preferred_model'] !== null && $vendor['preferred_model'] !== "") {
-            $this->preferred_model =  $vendor['preferred_model'];
-            }
+        $preferred_model = $vendor['preferred_model'] ?? null;
+        if (is_string($preferred_model) && trim($preferred_model) !== '' && strtolower(trim($preferred_model)) !== 'default') {
+            $this->preferred_model = $preferred_model;
         }
+    }
 
     //check if vendor has no sub options
     public function has_no_sub_options()

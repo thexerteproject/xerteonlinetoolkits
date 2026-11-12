@@ -10,6 +10,22 @@ import TerserWebpackPlugin from 'terser-webpack-plugin';
 
 const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
 
+// Xerte's player stylesheet supplies these content rules in both views. Keep
+// CKEditor's widget, selection and focus rules in the editor bundle.
+const stockTableContent = /^\.ck-content(?:\[dir="(?:ltr|rtl)"\])? (?:(?:figure|table)?\.table:not\(\.layout-table\)|\.table (?:th|> figcaption)$|figure\.table(?: > table > caption)?$)/;
+const useXerteTableStyles = {
+	postcssPlugin: 'xerte-table-content-styles',
+	Rule( rule ) {
+		const nestedTableContent = rule.selector === '.ck-content' && path.basename( rule.source.input.file ) === 'table.css';
+		if ( nestedTableContent || rule.selectors.every( selector => stockTableContent.test( selector ) ) ) {
+			rule.remove();
+		} else if ( rule.selector === '.ck .ck-editor__nested-editable' ) {
+			// A transparent editing border changes table cell and caption dimensions.
+			rule.selector += ':not(td, th, figure.table > figcaption)';
+		}
+	}
+};
+
 export default {
 	context: __dirname,
 	mode: 'production',
@@ -71,6 +87,13 @@ export default {
 			{
 				test: /\.svg$/,
 				type: 'asset/source'
+			},
+			{
+				// The package imports its table CSS as well as the aggregate stylesheet.
+				test: /[\\/](?:ckeditor5[\\/]dist[\\/]ckeditor5|ckeditor5-table[\\/]theme[\\/]table(?:caption)?)\.css$/,
+				enforce: 'pre',
+				loader: 'postcss-loader',
+				options: { postcssOptions: { config: false, plugins: [ useXerteTableStyles ] } }
 			},
 			{
 				...loaders.getStylesLoader( {
