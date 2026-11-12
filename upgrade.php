@@ -1885,11 +1885,13 @@ function upgrade_60()
     $ok = db_query("
         INSERT INTO $table
             (`vendor`, `label`, `type`, `needs_key`, `enabled`, `sub_options`, `preferred_model`)
-        VALUES
-            ('gemini', 'Gemini (Google)', 'ai', 1, 0, '{}', 'gemini-3.6-flash')
+        SELECT 'gemini', 'Gemini (Google)', 'ai', 1, 0, '{}', 'gemini-3.6-flash'
+        WHERE NOT EXISTS (
+            SELECT 1 FROM $table WHERE `vendor` = 'gemini' AND `type` = 'ai'
+        )
     ");
 
-    return "Adding Gemini to management_helper - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    return "Adding Gemini to management_helper - ok ? " . ($ok !== false ? 'true' : 'false') . "<br>";
 }
 
 function upgrade_61()
@@ -1909,19 +1911,4 @@ function upgrade_61()
     }
 
     return $message;
-}
-
-function upgrade_62()
-{
-    if (_db_field_exists('management_helper', 'preferred_model')) {
-        return "Management helper preferred_model column already exists - ok ? true<br>";
-    }
-
-    $table = table_by_key('management_helper');
-    $ok = _upgrade_db_query("ALTER TABLE `$table` ADD COLUMN `preferred_model` TEXT NULL");
-    if ($ok === false) {
-        return false;
-    }
-
-    return "Management helper preferred_model column - ok ? true<br>";
 }
