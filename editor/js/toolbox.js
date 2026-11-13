@@ -5724,7 +5724,7 @@ var EDITOR = (function ($, parent) {
 					.attr('id', id)
                     .attr('name', name)
 					.attr('type',  "checkbox")
-					.prop('checked', value && (value == 'true' || value == '1' || value == 'on'))
+					.prop('checked', value && (value == 'true' || value == '1' || value == 'on' || value == 'True'))
 					.change({id:id, key:key, name:name, trigger:conditionTrigger, group:options.group}, function(event){
                             cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
                         if (event.data.trigger)
@@ -6632,8 +6632,8 @@ var EDITOR = (function ($, parent) {
 						})
 						.attr('value', value));
 
-				var td2 = $('<td>');
-				var btnHolder = $('<div style="width:6.5em"></div>').appendTo(td2);
+				var td2 = $('<td style="white-space:nowrap">');
+				var btnHolder = $('<div></div>').appendTo(td2);
 				btnHolder.append($('<button>')
 					.attr('id', 'browse_' + id)
 					.attr('title', language.compMedia.$tooltip)
@@ -6909,6 +6909,77 @@ var EDITOR = (function ($, parent) {
 				iconpickers.push({id: id + '_btn', iconList: options.iconList});
 				
 				break;
+            case 'synchpoint':
+                const sp_id = 'synchpoint_' + form_id_offset;
+                form_id_offset++;
+                const sp_input = $('<input>')
+                    .attr({
+                        'type': 'text',
+                        'id': sp_id,
+                        'name': name,
+                        'value': parent.syncPointPicker.formatDisplayValue(value),
+                        'aria-describedby': sp_id + '_hint'
+                    })
+                    .addClass('inputtext')
+                    .change({id: sp_id, key: key, name: name, trigger: conditionTrigger, group: options.group}, function (event) {
+                        // set the sync point manually
+                        var stored = parent.syncPointPicker.parseInputToStored(this.value);
+                        this.value = parent.syncPointPicker.formatDisplayValue(stored);
+                        inputChanged(event.data.id, event.data.key, event.data.name, stored, this);
+                        if (event.data.trigger) {
+                            if (mode === 'none') {
+                                triggerRedrawPage(event.data.key);
+                            } else {
+                                triggerRedrawForm(event.data.group, event.data.key, '', 'redraw');
+                            }
+                        }
+                    });
+
+                // set up the sync point helper which opens on button click
+                var sp_btnCell = $('<td>');
+                sp_btnCell.append($('<button>')
+                    .attr({
+                        'type': 'button',
+                        'id': sp_id + '_btn',
+                        'title': language.synchPoint.pickerTooltip
+                    })
+                    .addClass('xerte_button')
+                    .append($('<i>').addClass('fa fa-lg fa-regular fa-clock xerte-icon')));
+
+                sp_btnCell.find('button').click({
+                    id: sp_id,
+                    key: key,
+                    name: name,
+                    src: options.src
+                }, function (event) {
+                    const mediaUrl = parent.syncPointPicker.resolveMediaSrc(
+                        event.data.key,
+                        event.data.src
+                    );
+                    if (!mediaUrl) {
+                        alert(language.synchPoint.Error.selectMedia);
+                        return;
+                    }
+                    if (String(mediaUrl).toLowerCase().indexOf("<iframe") === 0) {
+                        alert(language.synchPoint.Error.invalidMedia);
+                        return;
+                    }
+                    parent.syncPointPicker.openPicker({
+                        key: event.data.key,
+                        mediaUrl: mediaUrl,
+                        storedValue: lo_data[event.data.key].attributes[event.data.name],
+                        onSet: function (seconds) {
+                            var $inp = $('#' + event.data.id);
+                            $inp.val(parent.syncPointPicker.formatDisplayValue(seconds));
+                            inputChanged(event.data.id, event.data.key, event.data.name, seconds, $inp[0]);
+                        }
+                    });
+                });
+
+                html = $('<table class="synchPointField" style="width:100%">').append(
+                    $('<tr>').append($('<td width="100%">').append(sp_input)).append(sp_btnCell)
+                );
+                break;
             case 'info':
                 break;
             case 'quickfillbutton':
@@ -8107,7 +8178,7 @@ var EDITOR = (function ($, parent) {
     my.hideInlineEditor = hideInlineEditor;
     my.triggerRedrawForm = triggerRedrawForm;
     my.triggerRedrawPage = triggerRedrawPage;
-
+    my.makeAbsolute = makeAbsolute;
 
     return parent;
 

@@ -235,7 +235,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 
 
     /**
-     * sort of the screen sies required for the preview window
+     * sort of the screen sizes required for the preview window
      */
 
     $temp = explode("~",get_template_screen_size($row_edit['template_name'],$row_edit['template_framework']));
@@ -251,6 +251,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
     $mtime_language_js = $editor_js_mtime('editor/js/language.js');
     $mtime_tree_js = $editor_js_mtime('editor/js/tree.js');
     $mtime_layout_js = $editor_js_mtime('editor/js/layout.js');
+    $mtime_syncPoint_js = $editor_js_mtime('editor/js/syncPointPicker.js');
     $mtime_complex_css = $editor_js_mtime('editor/css/complex.css');
     $oai_pmh = file_exists($xerte_toolkits_site->root_file_path . "oai-pmh/oai_config.php");
     $user_roles = getRolesFromUser($_SESSION['toolkits_logon_id']);
@@ -566,6 +567,7 @@ function output_editor_code($row_edit, $xerte_toolkits_site, $read_status, $vers
 <script type="text/javascript" src="editor/js/language.js?version=<?php echo $version;?>&m=<?php echo $mtime_language_js;?>"></script>
 <script type="text/javascript" src="editor/js/layout.js?version=<?php echo $version;?>&m=<?php echo $mtime_layout_js;?>"></script>
 <script type="text/javascript" src="editor/js/tree.js?version=<?php echo $version;?>&m=<?php echo $mtime_tree_js;?>"></script>
+<script type="text/javascript" src="editor/js/syncPointPicker.js?version=<?php echo $version;?>&m=<?php echo $mtime_syncPoint_js;?>"></script>
 </body>
 </html>
 

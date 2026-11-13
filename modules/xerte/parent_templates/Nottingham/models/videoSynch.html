@@ -171,7 +171,6 @@ var videoSynch = new function() {
 		$(captionInfo).each(function() {
 			const $this = $(this);
 			let imgStr = "";
-			let divString;
 
 			if ($this.attr("url") != undefined && $this.attr("url") != "") {
 				imgStr += '<div class="myImg">';
@@ -189,21 +188,29 @@ var videoSynch = new function() {
 				imgStr += '</div>';
 			}
 
-			if ($this.attr("align") == "Bottom") {
-				divString = imgStr + x_addLineBreaks($this.attr("text"));
-			} else {
-				divString = x_addLineBreaks($this.attr("text")) + imgStr;
+			let syncTxt = x_addLineBreaks($this.attr("text"));
+			if (syncTxt.length > 0) {
+				syncTxt = '<div class="syncTxt">' + syncTxt + '</div>'
 			}
 
-			const $caption = $('<div tabindex="0"></div>')
-					.data({
-						"synch": $this.attr("synch"),
-						"content": divString
-					});
+			let divString;
+			if ($this.attr("align") == "Bottom") {
+				divString = imgStr + syncTxt;
+			} else {
+				divString = syncTxt + imgStr;
+			}
 
-			$infoHolder.find("#panel").append($caption);
+			if (divString !== "") {
+				const $caption = $('<div tabindex="0"></div>')
+						.data({
+							"synch": $this.attr("synch"),
+							"content": divString
+						});
 
-			captions.push($caption[0]);
+				$infoHolder.find("#panel").append($caption);
+
+				captions.push($caption[0]);
+			}
 		});
 
 		$pageContents.data("captions", captions);

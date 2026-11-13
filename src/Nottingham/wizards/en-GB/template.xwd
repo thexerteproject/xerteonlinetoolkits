@@ -2087,7 +2087,7 @@
     </QFGroup>
 
     <newNodes>
-      <synchPoint><![CDATA[<synchPoint name="Enter Slide Title" text="" align="Top" synch="0"/>]]></synchPoint>
+      <synchPoint><![CDATA[<synchPoint name="Enter Slide Title" text="" synch="0"/>]]></synchPoint>
     </newNodes>
 
   <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -2201,15 +2201,14 @@
 
     <name label="Slide Title" type="TextInput" wysiwyg="true"/>
     <text label="Slide Text" type="TextArea" height="250" placeholder="Content for the slide"/>
-    <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
+    <synch label="Sync Point" type="synchPoint" src="parent.sound"/>
 	
 	<imgInfo type="group" label="Image" optional="true">
-		<url label="Image" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
-		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
-		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+        <url label="Image" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
+        <tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
+        <caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+        <align label="Position" options="Above text,Below text" type="ComboBox" data="Bottom,Top" optional="true" defaultValue="Top"/>
 	</imgInfo>
-	
-	<synch label="Synch Point" type="TextInput"/>
 
   <imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
 		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
@@ -19505,12 +19504,12 @@
     <timedText label="Timed Text File" type="Media" optional="true" placeholder="Select a timed text file"/>
 
     <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
-      <qfNestedSynch label="Number of Synch Points" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfNestedSynch label="Number of Sync Points" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
       <qfButton type="quickfillbutton" optional="true"/>
     </QFGroup>
 
     <newNodes>
-      <nestedSynch><![CDATA[<nestedSynch text="" synch="0" name="Synch Point" />]]></nestedSynch>
+      <nestedSynch><![CDATA[<nestedSynch text="" synch="0" name="Sync Point" />]]></nestedSynch>
     </newNodes>
 
   <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -19621,10 +19620,9 @@
 		<headerBgColor type="ColourPicker" label="Header Background Colour" defaultValue="" optional="true" tooltip="Change the header background colour for this page only. If necessary, remember to change the colour of the titles too in order to maintain acceptable contrast for accessibility."/>
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></transcriptReader><nestedSynch menuItem="Text" icon="icBullet" remove="true">
-    <name label="Label" type="TextInput" mandatory="true" defaultValue="Synch point" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make synch points easier to locate for editing at a later date."/>
+    <name label="Label" type="TextInput" mandatory="true" defaultValue="Sync point" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make sync points easier to locate for editing at a later date."/>
     <text label="Text" type="TextArea" height="250" placeholder="Enter text here"/>
-    <synch label="Synch Point" type="TextInput"/>	
-
+    <synch label="Sync Point" type="synchPoint" src="parent.sound"/>
   <imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
 		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
 		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
@@ -19657,10 +19655,10 @@
 	</imgSearchAndHelpGroup></nestedSynch><videoSynch menu="Media" menuItem="Synched Video" hint="Synchronise passages of text to a movie." icon="icPageWhiteOffice" thumb="thumbs/videoSynch.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#synchedvideo" wiki="https://xerte.org.uk/wiki/doku.php?id=media_synched_video_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
-    <url label="Video" type="Media" placeholder="Select a video file or enter a URL/embed code" enableImgSHTool="false"/>
     <text label="Page Text" type="TextArea" height="200" placeholder="Enter text for the page here"/>
-    <pause label="Pause on Sync Points" options="True,False" type="ComboBox" data="True,False" defaultValue="True" width="100"/>
-    <erase label="Erase on Sync Points" options="True,False" type="ComboBox" data="True,False" defaultValue="True" width="100"/>
+    <url label="Video" type="Media" placeholder="Select a video file or enter a URL/embed code" enableImgSHTool="false"/>
+    <pause label="Pause on Sync Points" type="Checkbox" defaultValue="True"/>
+    <erase label="Erase on Sync Points" type="Checkbox" defaultValue="True"/>
 
     <layoutGroup label="Page Layout" type="group">
         <panelWidth label="Panel Width" options=",Small,Medium,Large,Custom" type="ComboBox" data=",Small,Medium,Large,Custom" defaultValue="" mandatory="true" conditionTrigger="true"/>
@@ -19685,7 +19683,7 @@
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 
     <newNodes>
-      <videoSynchPoint><![CDATA[<videoSynchPoint name="Enter Title Here" text="Content for the pane" align="Top" synch="0"/>]]></videoSynchPoint>
+      <videoSynchPoint><![CDATA[<videoSynchPoint name="Sync Point" text="" synch="0"/>]]></videoSynchPoint>
     </newNodes>
 
   <resources label="Resource files / links" type="DataGrid" gridTxt="Resources can be URLs, uploaded files or other pages within this resource.&lt;br/&gt;Either enter a URL / upload a file to the resource field or select a page from the Xerte page link drop down menu." columns="4" colWidths="20,15,15,50" editable="1,1,1,1" cellType="textInput,media,pageList,textArea" wysiwyg="false,false,false,true" controls="1" headers="Title,Resource,Xerte Page Link,Description" newRow=",,," defaultValue="|" optional="true" tooltip="A list of additional resources related to the page content" common="true"/><narrate type="group" label="Narration" optional="true" tooltip="Add an audio player to the bottom of the page" common="true">
@@ -19797,17 +19795,16 @@
 		<headerTextColor type="ColourPicker" label="Header Titles Colour" defaultValue="" optional="true" tooltip="Change the header text colour for this page only. Note this will not overide a colour applied to the titles directly."/>
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></videoSynch><videoSynchPoint menuItem="Sync Point" icon="icBullet" remove="true">
 
-    <name label="Title" type="TextInput" wysiwyg="true"/>
-    <text label="Text" type="TextArea" height="250"/>
-    <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
-	
+    <name label="Label" type="TextInput" wysiwyg="true" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make sync points easier to locate for editing at a later date."/>
+    <text label="Text" type="TextArea" height="250" placeholder="Content to add at sync point"/>
+    <synch label="Sync Point" type="synchPoint" src="parent.url"/>
+
 	<imgInfo type="group" label="Image" optional="true">
-		<url label="Image" type="media" optional="true" defaultValue="Select an Image"/>
+		<url label="Image" type="media" optional="true" defaultValue="Select an image"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+        <align label="Position" options="Above text,Below text" type="ComboBox" data="Bottom,Top" optional="true" defaultValue="Top"/>
 	</imgInfo>
-	
-	<synch label="Sync Point" type="TextInput"/>
     
   <imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
 		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
