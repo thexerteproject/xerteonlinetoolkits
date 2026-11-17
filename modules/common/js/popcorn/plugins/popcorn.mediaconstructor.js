@@ -56,7 +56,11 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
          || isPeertubeVideo(mediaData.media)
          || mediaData.media.indexOf('yuja.com') > 0) {
             popcornInstance = Popcorn.smart("#" + $holder.attr("id") + " .popcornMedia", mediaData.media);
-            var $videoHolder = $holder.find(".popcornMedia").addClass(popcornInstance.media._util.type).addClass("embed");
+            var $videoHolder = $holder.find(".popcornMedia");
+            if (popcornInstance.media._util != undefined && popcornInstance.media._util.type != undefined) {
+                $videoHolder.addClass(popcornInstance.media._util.type);
+            }
+            $videoHolder.addClass("embed");
             $videoHolder.attr("aspect", mediaData.aspect);
             $videoHolder.data("popcornInstance", popcornInstance);
             if (mediaData.autoplay == "true") {
