@@ -224,13 +224,14 @@ function _do_cleanup()
         'LTI/*',
         'play_html5.php',
         'play_site.php',
-        'setup/xampp.php',
-        'setup/xampp.txt',
-        'setup/xampp_database.txt',
         'rloObject.js',
         'package.json',
         'package-lock.json',
         'modules/xerte/parent_templates/Nottingham/common/js/jsPDF/jspdf.min.js',
+        'webctlink.php',
+        'setup/*',
+        'modules/xerte/parent_templates/Nottingham/common_html5/',
+        'modules/xerte/parent_templates/Nottingham/models_html5/'
     );
 
     foreach ($filelist as $file)
@@ -1658,6 +1659,9 @@ function upgrade_52()
             return "Adding new extensions to the blacklisted extensions - ok ? false";
         }
     }
+    else{
+        return "Adding new extensions to the blacklisted extensions - NO PREVIOUS EXTENSIONS FOUND!";
+    }
 }
 
 function upgrade_53()
@@ -1874,14 +1878,24 @@ function upgrade_60()
 {
     $table = table_by_key("management_helper");
 
+    // Older beta installations may have the helper table without this column.
+    if (!_db_field_exists('management_helper', 'preferred_model')) {
+        $ok = _upgrade_db_query("ALTER TABLE `$table` ADD COLUMN `preferred_model` TEXT NULL");
+        if ($ok === false) {
+            return false;
+        }
+    }
+
     $ok = db_query("
         INSERT INTO $table
             (`vendor`, `label`, `type`, `needs_key`, `enabled`, `sub_options`, `preferred_model`)
-        VALUES
-            ('gemini', 'Gemini (Google)', 'ai', 1, 0, '{}', 'gemini-3.6-flash')
+        SELECT 'gemini', 'Gemini (Google)', 'ai', 1, 0, '{}', 'gemini-3.6-flash'
+        WHERE NOT EXISTS (
+            SELECT 1 FROM $table WHERE `vendor` = 'gemini' AND `type` = 'ai'
+        )
     ");
 
-    return "Adding Gemini to management_helper - ok ? " . ($ok ? 'true' : 'false') . "<br>";
+    return "Adding Gemini to management_helper - ok ? " . ($ok !== false ? 'true' : 'false') . "<br>";
 }
 
 function upgrade_61()

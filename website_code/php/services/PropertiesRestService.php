@@ -77,8 +77,13 @@ function properties_rest_project_payload($template_id, $change, $msgtype)
     global $xerte_toolkits_site;
     $prefix = $xerte_toolkits_site->database_table_prefix;
 
-    $query_for_names = "select {$prefix}templatedetails.template_name, template_framework, date_created, date_modified, extra_flags from "
-        . "{$prefix}templatedetails, {$prefix}originaltemplatesdetails where template_id= ? and {$prefix}originaltemplatesdetails.template_type_id =  {$prefix}templatedetails.template_type_id ";
+    $query_for_names = "select td.template_name, td.date_created, td.date_modified, td.extra_flags, td.number_of_uses, "
+        . "otd.template_name as template_type, otd.display_name as template_display_name, "
+        . "otd.parent_template, otd.template_framework, parent.display_name as parent_display_name from "
+        . "{$prefix}templatedetails td join {$prefix}originaltemplatesdetails otd on otd.template_type_id = td.template_type_id "
+        . "left join {$prefix}originaltemplatesdetails parent on parent.template_name = otd.parent_template "
+        . "and parent.template_framework = otd.template_framework "
+        . "where td.template_id= ?";
     $row = db_query_one($query_for_names, array($template_id));
     if ($row === false || $row === null) {
         return array('error' => 'not_found');
@@ -88,6 +93,12 @@ function properties_rest_project_payload($template_id, $change, $msgtype)
 
     $can_rename = is_user_creator_or_coauthor($template_id) || is_user_permitted('projectadmin');
     $display_name = str_replace('_', ' ', $row_template_name['template_name']);
+    $template_used = isset($row['template_display_name']) && $row['template_display_name'] !== ''
+        ? $row['template_display_name']
+        : str_replace('_', ' ', $row['template_type']);
+    if ($row['parent_template'] !== $row['template_type'] && isset($row['parent_display_name']) && $row['parent_display_name'] !== '') {
+        $template_used .= ' (' . $row['parent_display_name'] . ')';
+    }
 
     include $xerte_toolkits_site->root_file_path . 'modules/' . $row['template_framework'] . '/module_functions.php';
 
@@ -128,9 +139,11 @@ function properties_rest_project_payload($template_id, $change, $msgtype)
         'panel' => 'project',
         'templateId' => $template_id,
         'displayName' => $display_name,
+        'templateUsed' => $template_used,
         'canRename' => $can_rename,
         'dateCreated' => $row['date_created'],
         'dateModified' => $row['date_modified'],
+        'numberOfViews' => (int) $row['number_of_uses'],
         'access' => $access,
         'playUrl' => $play_url,
         'embed' => array(

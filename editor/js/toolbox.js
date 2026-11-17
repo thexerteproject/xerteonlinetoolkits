@@ -33,6 +33,7 @@ var EDITOR = (function ($, parent) {
 		jqGridSetUp = false,
 		workspace,
 		currtheme,
+		quickFillExpandedState = {},
 
     // Build the "insert page" menu
     create_insert_page_menu = function (advanced_toggle) {
@@ -2183,12 +2184,21 @@ var EDITOR = (function ($, parent) {
 
                     if (height > 0)
                     {
+                        // Wizard DOM searches cannot enter the content iframe. The shim
+                        // exposes the native instance; resize its frame when one is used.
                         const e = $('#' + options.id).next().find('.ck-editor__editable_inline');
-                        const editor = e[0].ckeditorInstance;
-                        $('#' + options.id).next().find('.ck-editor__editable_inline').css("min-height", height + "px").css("max-height", height + "px");
-                        editor.editing.view.change(writer=>{
-                            writer.setStyle('height', height + 'px', editor.editing.view.document.getRoot());
-                        });
+                        const editor = self._native || (e[0] && e[0].ckeditorInstance);
+                        if (editor) {
+                            const framed = editor.plugins.has('XerteIframeEditing') && editor.plugins.get('XerteIframeEditing');
+                            if (framed && framed.frame) {
+                                framed.setHeight(height);
+                            } else {
+                                $(editor.ui.getEditableElement()).css("min-height", height + "px").css("max-height", height + "px");
+                                editor.editing.view.change(writer=>{
+                                    writer.setStyle('height', height + 'px', editor.editing.view.document.getRoot());
+                                });
+                            }
+                        }
                     }
 
                     // Editor is ready, attach change event
@@ -2253,6 +2263,10 @@ var EDITOR = (function ($, parent) {
         }
     },
 
+    removeTrailingLineBreak = function (value) {
+        return String(value).replace(/(?:\r\n|\r|\n)$/, '');
+    },
+
     convertTextInputs = function () {
         lti_session = lti_session !== "" ? "&" + lti_session : "";
         $.each(textinputs_options, function (i, options) {
@@ -2263,16 +2277,15 @@ var EDITOR = (function ($, parent) {
                         sizeInlineQFPanel($('#mainPanel .qf-inline-row'));
                     }
                     this.on('change', function(){
-                        var thisValue = this.getData();
-                        thisValue = thisValue.substr(0, thisValue.length-1); // Remove the extra linebreak
+                        var thisValue = removeTrailingLineBreak(this.getData());
                         inputChanged(options.id, options.key, options.name, thisValue, this);
                     });
                     var lastValue = "";
                     this.on('change', function(event) {
                         if (options.name == 'name') {
-                            var thisValue = this.getData();
+                            var thisValue = removeTrailingLineBreak(this.getData());
                             var thisText = getTextFromHTML(thisValue);
-                            thisValue = stripP(thisValue.substr(0, thisValue.length-1));
+                            thisValue = stripP(thisValue);
                             if (lastValue != thisValue) {
                                 lastValue = thisValue;
 
@@ -2917,6 +2930,10 @@ var EDITOR = (function ($, parent) {
         var description = $("<div>" + theme.description + "</div><div class='theme_url_param'>" + language.ThemeUrlParam + " " + theme.name + "</div>");
         $('div.theme_description:first').html(description);
         setAttributeValue(key, [name], [theme.name]);
+        // Apply the selected theme to open content frames without recreating fields.
+		if (window.XerteCKEditor5Facade && typeof window.XerteCKEditor5Facade.setTheme === 'function') {
+			window.XerteCKEditor5Facade.setTheme(theme.name);
+		}
     }
 
     getComboboxOptionsForBaseSetting = function (setting_key){
@@ -3296,7 +3313,6 @@ var EDITOR = (function ($, parent) {
             await quick_fill({data: {key: key}}, type, parameters);
             if (skipConfirm) {
                 $.featherlight.close();
-                parent.tree.showNodeData(key);
             }
         } catch (error) {
             console.log('Error occurred:', error);
@@ -3328,6 +3344,17 @@ var EDITOR = (function ($, parent) {
     },
 
     showInlineQFGroup = function (key, nodeName, menuOptions) {
+        var preferences = (typeof user_preferences !== 'undefined' && user_preferences) ? user_preferences : {};
+        var assistantsOnly = preferences.editor_quickfill_assistants_only !== undefined &&
+            preferences.editor_quickfill_assistants_only !== null &&
+            preferences.editor_quickfill_assistants_only !== false &&
+            preferences.editor_quickfill_assistants_only !== 'false' &&
+            preferences.editor_quickfill_assistants_only !== 0 &&
+            preferences.editor_quickfill_assistants_only !== '0';
+        if (assistantsOnly) {
+            return;
+        }
+
         var node_options = wizard_data[nodeName] && wizard_data[nodeName].node_options;
         if (!node_options || !node_options.all) {
             return;
@@ -3408,13 +3435,47 @@ var EDITOR = (function ($, parent) {
         var description = qfGroupDef.value.tooltip || inlineLang.$description || '';
         var btnLabel = inlineLang.$btnlabel || language.assistents.QuickFillBtn.$label;
 
+        var tree = $.jstree.reference('#treeview');
+        var node = tree && tree.get_node(key, false);
+        var hasChildren = !!(node && node.children && node.children.length);
+        var preferences = (typeof user_preferences !== 'undefined' && user_preferences) ? user_preferences : {};
+        var preferenceIsEnabled = function (value) {
+            return value !== undefined && value !== null && value !== false && value !== 'false' && value !== 0 && value !== '0';
+        };
+        var collapsedByDefault = preferenceIsEnabled(preferences.editor_collapse_quickfill);
+        var collapseWithChildren = preferenceIsEnabled(preferences.editor_collapse_quickfill_with_children);
+        var expanded = Object.prototype.hasOwnProperty.call(quickFillExpandedState, key)
+            ? quickFillExpandedState[key]
+            : !(collapsedByDefault || (collapseWithChildren && hasChildren));
+
         var $panel = $('<div class="qf-inline-panel">');
+        var $header = $('<div class="qf-inline-header">');
         var $content = $('<div class="qf-inline-content">');
         $content.append($('<div class="qf-inline-title">').text(title));
         if (description) {
             $content.append($('<div class="qf-inline-description">').text(description));
         }
-        $panel.append($content);
+        $header.append($content);
+
+        var expandLabel = inlineLang.$expand || 'Expand Quick Fill';
+        var collapseLabel = inlineLang.$collapse || 'Collapse Quick Fill';
+        var $toggle = $('<button type="button" class="qf-inline-toggle">');
+        var setExpanded = function (isExpanded, remember) {
+            expanded = isExpanded;
+            if (remember) {
+                quickFillExpandedState[key] = isExpanded;
+            }
+            $panel.toggleClass('qf-inline-panel--collapsed', !isExpanded);
+            $toggle
+                .attr('aria-expanded', String(isExpanded))
+                .attr('aria-label', isExpanded ? collapseLabel : expandLabel)
+                .attr('title', isExpanded ? collapseLabel : expandLabel);
+        };
+        $toggle.on('click', function () {
+            setExpanded(!expanded, true);
+        });
+        $header.append($toggle);
+        $panel.append($header);
 
         var $setupBtn = $('<button type="button" class="qf-inline-setup-btn">')
             .text(btnLabel)
@@ -3430,6 +3491,7 @@ var EDITOR = (function ($, parent) {
                 triggerRedrawForm('QFGroup', event.data.key, children, 'initialize');
             });
         $panel.append($setupBtn);
+        setExpanded(expanded, false);
 
         var $row = $('<tr class="qf-inline-row wizardattribute">')
             .append($('<td>').addClass('wizardparameter'))
@@ -3446,7 +3508,12 @@ var EDITOR = (function ($, parent) {
             return;
         }
         var $label = $nameRow.find('td.wizardlabel').first();
-        var $input = $nameRow.find('.wizardvalue_inner .inlinewysiwyg p').first();
+        // Measure the wizard-side frame: an editable inside it reports coordinates
+        // in the child document, which would misplace the Quick Fill panel.
+        var $input = $nameRow.find('.wizardvalue_inner .xerte-cke5-content-frame').first();
+        if (!$input.length) {
+            $input = $nameRow.find('.wizardvalue_inner .inlinewysiwyg p').first();
+        }
         if (!$input.length) {
             $input = $nameRow.find('.wizardvalue_inner .ck-editor__editable_inline').first();
         }
@@ -5141,7 +5208,7 @@ var EDITOR = (function ($, parent) {
         let inlineLang = language.assistents.QuickFillInline || {};
         let modalLang = language.assistents.QuickFillModal || {};
         let title = isQfGroup
-            ? (modalLang.$title || inlineLang.$title || group.value.label || '').replace('{page}', pageLabel)
+            ? (modalLang.$title || inlineLang.$title || group.value.label || '').replace('{page}', pageName)
             : menuOptions.menuItem;
 
         let lightboxHtml = $("<div></div>");
@@ -5153,7 +5220,8 @@ var EDITOR = (function ($, parent) {
         let lightboxFooter;
 
         if (isQfGroup) {
-            var description = modalLang.$description || group.value.tooltip || inlineLang.$description || '';
+            var description = modalLang.$description || group.value.tooltip || inlineLang.$description ||
+                'Choose the number of items you want. They will be created with their default values and ready to adjust.';
 
             let lightboxHeader = $("<div class=\"qf-lightbox-header\"></div>");
             lightboxHeader.append($("<h2 class=\"qf-lightbox-title\">").text(title));
@@ -5656,7 +5724,7 @@ var EDITOR = (function ($, parent) {
 					.attr('id', id)
                     .attr('name', name)
 					.attr('type',  "checkbox")
-					.prop('checked', value && (value == 'true' || value == '1' || value == 'on'))
+					.prop('checked', value && (value == 'true' || value == '1' || value == 'on' || value == 'True'))
 					.change({id:id, key:key, name:name, trigger:conditionTrigger, group:options.group}, function(event){
                             cbChanged(event.data.id, event.data.key, event.data.name, this.checked, this);
                         if (event.data.trigger)
@@ -6564,8 +6632,8 @@ var EDITOR = (function ($, parent) {
 						})
 						.attr('value', value));
 
-				var td2 = $('<td>');
-				var btnHolder = $('<div style="width:6.5em"></div>').appendTo(td2);
+				var td2 = $('<td style="white-space:nowrap">');
+				var btnHolder = $('<div></div>').appendTo(td2);
 				btnHolder.append($('<button>')
 					.attr('id', 'browse_' + id)
 					.attr('title', language.compMedia.$tooltip)
@@ -6841,6 +6909,77 @@ var EDITOR = (function ($, parent) {
 				iconpickers.push({id: id + '_btn', iconList: options.iconList});
 				
 				break;
+            case 'synchpoint':
+                const sp_id = 'synchpoint_' + form_id_offset;
+                form_id_offset++;
+                const sp_input = $('<input>')
+                    .attr({
+                        'type': 'text',
+                        'id': sp_id,
+                        'name': name,
+                        'value': parent.syncPointPicker.formatDisplayValue(value),
+                        'aria-describedby': sp_id + '_hint'
+                    })
+                    .addClass('inputtext')
+                    .change({id: sp_id, key: key, name: name, trigger: conditionTrigger, group: options.group}, function (event) {
+                        // set the sync point manually
+                        var stored = parent.syncPointPicker.parseInputToStored(this.value);
+                        this.value = parent.syncPointPicker.formatDisplayValue(stored);
+                        inputChanged(event.data.id, event.data.key, event.data.name, stored, this);
+                        if (event.data.trigger) {
+                            if (mode === 'none') {
+                                triggerRedrawPage(event.data.key);
+                            } else {
+                                triggerRedrawForm(event.data.group, event.data.key, '', 'redraw');
+                            }
+                        }
+                    });
+
+                // set up the sync point helper which opens on button click
+                var sp_btnCell = $('<td>');
+                sp_btnCell.append($('<button>')
+                    .attr({
+                        'type': 'button',
+                        'id': sp_id + '_btn',
+                        'title': language.synchPoint.pickerTooltip
+                    })
+                    .addClass('xerte_button')
+                    .append($('<i>').addClass('fa fa-lg fa-regular fa-clock xerte-icon')));
+
+                sp_btnCell.find('button').click({
+                    id: sp_id,
+                    key: key,
+                    name: name,
+                    src: options.src
+                }, function (event) {
+                    const mediaUrl = parent.syncPointPicker.resolveMediaSrc(
+                        event.data.key,
+                        event.data.src
+                    );
+                    if (!mediaUrl) {
+                        alert(language.synchPoint.Error.selectMedia);
+                        return;
+                    }
+                    if (String(mediaUrl).toLowerCase().indexOf("<iframe") === 0) {
+                        alert(language.synchPoint.Error.invalidMedia);
+                        return;
+                    }
+                    parent.syncPointPicker.openPicker({
+                        key: event.data.key,
+                        mediaUrl: mediaUrl,
+                        storedValue: lo_data[event.data.key].attributes[event.data.name],
+                        onSet: function (seconds) {
+                            var $inp = $('#' + event.data.id);
+                            $inp.val(parent.syncPointPicker.formatDisplayValue(seconds));
+                            inputChanged(event.data.id, event.data.key, event.data.name, seconds, $inp[0]);
+                        }
+                    });
+                });
+
+                html = $('<table class="synchPointField" style="width:100%">').append(
+                    $('<tr>').append($('<td width="100%">').append(sp_input)).append(sp_btnCell)
+                );
+                break;
             case 'info':
                 break;
             case 'quickfillbutton':
@@ -8039,7 +8178,7 @@ var EDITOR = (function ($, parent) {
     my.hideInlineEditor = hideInlineEditor;
     my.triggerRedrawForm = triggerRedrawForm;
     my.triggerRedrawPage = triggerRedrawPage;
-
+    my.makeAbsolute = makeAbsolute;
 
     return parent;
 

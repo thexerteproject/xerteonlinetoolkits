@@ -137,7 +137,7 @@ if (is_user_admin()) {
                 id=\"" . htmlspecialchars($selectedKey, ENT_QUOTES) . "\"
                 style=\"padding: 0.4em 0.15em;\">";
 
-                // Generic default option (saved to DB as literal 'default' but backend reads it as a null)
+                // Generic default option (saved to DB as NULL)
                 $defaultSelectedAttr = ($effectiveSelected === 'default') ? " selected" : "";
                 echo "<option value=\"default\"{$defaultSelectedAttr}>(Default)</option>";
 

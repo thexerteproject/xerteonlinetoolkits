@@ -14,37 +14,45 @@ export class XerteUploadAdapter extends Plugin {
 
 	init() {
 		const uploadUrl = this.editor.config.get( 'xerteUploadUrl' );
-		if ( !uploadUrl ) {
-			return;
-		}
+		if ( !uploadUrl ) return;
 
-		this.editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => ( {
-			upload: () => this._upload( loader, uploadUrl ),
-			abort: () => {}
+		this.editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => new XerteImageUploadAdapter( loader, uploadUrl );
+	}
+}
+
+class XerteImageUploadAdapter {
+	constructor( loader, uploadUrl ) {
+		this.loader = loader;
+		this.uploadUrl = uploadUrl;
+		this.xhr = null;
+	}
+
+	async upload() {
+		const file = await this.loader.file;
+		return new Promise( ( resolve, reject ) => {
+			const data = new FormData();
+			data.append( 'upload', file );
+			const xhr = this.xhr = new XMLHttpRequest();
+			xhr.open( 'POST', this.uploadUrl, true );
+			xhr.onload = () => {
+				let result;
+				try {
+					result = JSON.parse( xhr.responseText );
+				} catch ( error ) {
+					reject( new Error( 'The image upload returned an invalid response.' ) );
+					return;
+				}
+				if ( xhr.status >= 200 && xhr.status < 300 && result.uploaded && result.url ) resolve( { default: result.url } );
+				else reject( new Error( result.error || 'Image upload failed.' ) );
+			};
+			xhr.onerror = () => reject( new Error( 'Image upload failed due to a network error.' ) );
+			xhr.onabort = () => reject( new Error( 'Image upload was aborted.' ) );
+			xhr.send( data );
 		} );
 	}
 
-	_upload( loader, uploadUrl ) {
-		return loader.file.then( file => new Promise( ( resolve, reject ) => {
-			const data = new FormData();
-			data.append( 'upload', file );
-			const xhr = new XMLHttpRequest();
-			xhr.open( 'POST', uploadUrl, true );
-			xhr.onload = () => {
-				try {
-					const res = JSON.parse( xhr.responseText );
-					if ( res.uploaded && res.url ) {
-						resolve( { default: res.url } );
-					} else {
-						reject( res.error || 'Upload failed' );
-					}
-				} catch ( e ) {
-					reject( e );
-				}
-			};
-			xhr.onerror = () => reject( new Error( 'Network error' ) );
-			xhr.send( data );
-		} ) );
+	abort() {
+		this.xhr?.abort();
 	}
 }
 

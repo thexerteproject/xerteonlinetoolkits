@@ -2,7 +2,9 @@
  * Xerte CKEditor 5 classic build (GPL-2.0+ via CKEditor packages).
  */
 import 'ckeditor5/ckeditor5.css';
+import '../../../modules/common/css/rich-text-tables.css';
 import './autocolumns.css';
+import './xerte-image-editing.css';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { InlineEditor } from '@ckeditor/ckeditor5-editor-inline';
 import { Emoji } from '@ckeditor/ckeditor5-emoji';
@@ -74,34 +76,37 @@ import { XerteRubyText } from './plugins/xerte-ruby-text.js';
 import { XerteMediaEmbedRoundTrip } from './plugins/xerte-media-embed-roundtrip.js';
 import { XerteMediaResize } from './plugins/xerte-media-resize.js';
 import { XerteLightbox } from './plugins/xerte-lightbox.js';
+import { XerteLinkTarget } from './plugins/xerte-link-target.js';
+import { XerteLinkDialog } from './plugins/xerte-link-dialog.js';
 import { XerteAccessibilityChecker } from './plugins/xerte-accessibility-checker.js';
+import { XerteSourceDialog } from './plugins/xerte-source-dialog.js';
+import { XerteIframeEditing } from './plugins/xerte-iframe-editing.js';
+import { XerteStylePreview } from './plugins/xerte-style-preview.js';
+import { XerteLegacyStyles, legacyStyles } from './plugins/xerte-legacy-styles.js';
 
 const toolbarItems = [
-	'undo', 'redo', '|',
-	'findAndReplace', '|',
-	'sourceEditing', 'showBlocks', 'accessibilityChecker', 'fullscreen', 'htmlEmbed', '|',
-	'heading', 'style', '|',
-	'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'lineHeight', '|',
-	'textPartLanguage', '|',
-	'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'code', 'removeFormat', '|',
-	'specialCharacters', 'emoji', 'fontAwesome', 'horizontalLine', 'xerteMathJax', 'xerteRubyText', '|',
-	'link', 'xotlink', 'insertImage', 'xerteBrowseMedia', 'xerteAudio', 'xerteRecorder', 'mediaEmbed', 'insertTable', 'autocolumns', 'blockQuote', 'codeBlock', '|',
-	'alignment', '|',
-	'bulletedList', 'numberedList', 'outdent', 'indent', '|',
-	'xotMarkWord', 'markTag'
+	'sourceEditing', '|',
+	'undo', 'redo', 'findAndReplace', '|',
+	'bold', 'italic', 'underline', 'removeFormat', 'strikethrough', 'subscript', 'superscript', 'code', '|',
+	'xerteLink', 'xotlink', '|',
+	'style', 'heading', 'fontFamily', 'fontSize', 'lineHeight', '|',
+	'fontColor', 'fontBackgroundColor', '|',
+	'accessibilityChecker', 'fullscreen', 'showBlocks', '|',
+	'xerteBrowseImage', 'xerteBrowseMedia', 'xerteAudio', 'xerteRecorder', 'mediaEmbed', 'insertTable', 'autocolumns', 'htmlEmbed', '|',
+	'horizontalLine', 'specialCharacters', 'emoji', 'fontAwesome', 'xerteMathJax', 'xerteRubyText', '|',
+	'bulletedList', 'numberedList', 'outdent', 'indent', 'blockQuote', 'codeBlock', 'alignment', 'textPartLanguage', '|',
+	'markTag'
 ];
 
 const imageToolbar = [
-	'imageStyle:inline',
-	'imageStyle:block',
-	'imageStyle:side',
+	'xerteImageProperties',
 	'|',
-	'toggleImageCaption',
-	'imageTextAlternative',
 	'linkImage'
 ];
 
-const tableToolbar = [
+const tableWidgetToolbar = [ 'tableProperties', 'toggleTableCaption' ];
+
+const tableContentToolbar = [
 	'insertTableColumnLeft',
 	'insertTableColumnRight',
 	'deleteTableColumn',
@@ -124,7 +129,10 @@ const htmlAllowAll = {
 	styles: true
 };
 
+const styleVariants = [ 1, 2, 3, 4, 5, 6 ];
+
 const xerteBuiltinPlugins = [
+	XerteIframeEditing,
 	Essentials,
 	Mention,
 	Emoji,
@@ -174,13 +182,18 @@ const xerteBuiltinPlugins = [
 	SpecialCharacters,
 	SpecialCharactersEssentials,
 	Style,
+	XerteStylePreview,
+	XerteLegacyStyles,
 	FindAndReplace,
 	CodeBlock,
 	MediaEmbed,
 	XerteMediaEmbedRoundTrip,
 	XerteMediaResize,
 	XerteLightbox,
+	XerteLinkTarget,
+	XerteLinkDialog,
 	XerteAccessibilityChecker,
+	XerteSourceDialog,
 	HtmlEmbed,
 	XerteUploadAdapter,
 	XerteBrowseMedia,
@@ -197,6 +210,8 @@ const xerteBuiltinPlugins = [
 	XerteLineHeight,
 	XerteRubyText
 ];
+
+const defaultTableBorder = { borderStyle: 'solid', borderWidth: '1px', borderColor: '#808080' };
 
 const xerteDefaultConfig = {
 	licenseKey: 'GPL',
@@ -289,23 +304,27 @@ const xerteDefaultConfig = {
 		]
 	},
 	image: {
-		toolbar: imageToolbar
+		toolbar: imageToolbar,
+		resizeUnit: 'px'
 	},
 	table: {
-		contentToolbar: tableToolbar
-	},
-	link: {
-		toolbar: [ 'linkPreview', '|', 'xerteEditPageLink', 'xerteLightbox', 'editLink', 'linkProperties', 'unlink' ],
-		decorators: {
-			openInNewTab: {
-				mode: 'automatic',
-				callback: url => /^(https?:|mailto:)/i.test( url ),
-				attributes: {
-					target: '_blank',
-					rel: 'noopener noreferrer'
-				}
+		contentToolbar: tableContentToolbar,
+		tableToolbar: tableWidgetToolbar,
+		showHiddenBorders: false,
+		// These values are implicit in saved HTML. Match rich-text-tables.css
+		// so selecting a different value (including middle alignment) saves it.
+		tableProperties: {
+			defaultProperties: defaultTableBorder
+		},
+		tableCellProperties: {
+			defaultProperties: {
+				...defaultTableBorder,
+				padding: '10px', verticalAlignment: 'top'
 			}
 		}
+	},
+	link: {
+		toolbar: [ 'xerteLinkPreview', 'xerteEditPageLink', '|', 'xerteLinkTarget', 'xerteEditLink', 'unlink' ]
 	},
 	language: {
 		ui: 'en',
@@ -337,30 +356,41 @@ const xerteDefaultConfig = {
 	style: {
 		definitions: [
 			{
+				// Keep the paragraph style available for content authored during the CKEditor 5 rollout.
 				name: 'Panel',
 				element: 'p',
-				classes: [ 'panel1' ]
+				classes: [ 'panel1' ],
+				existingOnly: true
 			},
 			{
-				name: 'Highlight',
+				name: 'Inline Panel',
 				element: 'span',
-				classes: [ 'highlight1' ]
+				classes: [ 'panel', 'editorStyle', 'inline' ],
+				existingOnly: true
 			},
-			{
-				name: 'Block quote',
-				element: 'blockquote',
-				classes: [ 'bq1' ]
-			}
+			...styleVariants.map( number => ( {
+				name: `Panel ${ number }`,
+				element: 'span',
+				classes: [ `panel${ number }` ]
+			} ) ),
+			...styleVariants.map( number => ( {
+				name: `Highlight ${ number }`,
+				element: 'span',
+				classes: [ `highlight${ number }` ]
+			} ) ),
+			...legacyStyles
 		]
 	},
 	mediaEmbed: {
-		previewsInData: true
+		previewsInData: true,
+		toolbar: [ 'xerteMediaProperties' ]
 	},
 	htmlEmbed: {
 		showPreviews: true
 	},
 	xerteUploadUrl: '',
 	xerteUploadAudioUrl: '',
+	xerteBrowseImageUrl: '',
 	xerteBrowseMediaUrl: '',
 	xerteMathJaxLib: 'offline/js/mathjax/MathJax.js?config=TeX-MML-AM_HTMLorMML-full'
 };
@@ -369,13 +399,19 @@ export class XerteClassicEditor extends ClassicEditor {}
 XerteClassicEditor.builtinPlugins = xerteBuiltinPlugins;
 XerteClassicEditor.defaultConfig = xerteDefaultConfig;
 
+// Titles/metadata remain native inline editors in the wizard, as in CKEditor 4.
+// Their final heading styling belongs to the player; applying the project theme
+// here would also change ordinary form-field fonts/backgrounds. Only rich-text
+// bodies need the iframe plugin and fullscreen shell.
 export class XerteInlineEditor extends InlineEditor {}
-XerteInlineEditor.builtinPlugins = xerteBuiltinPlugins.filter( plugin => plugin !== Fullscreen );
+XerteInlineEditor.builtinPlugins = xerteBuiltinPlugins.filter( plugin => plugin !== Fullscreen && plugin !== XerteIframeEditing );
 XerteInlineEditor.defaultConfig = {
 	...xerteDefaultConfig,
 	toolbar: {
 		...xerteDefaultConfig.toolbar,
-		items: toolbarItems.filter( item => item !== 'fullscreen' )
+		items: toolbarItems
+			.filter( item => item !== 'fullscreen' )
+			.map( item => item === 'sourceEditing' ? 'xerteSourceDialog' : item )
 	}
 };
 

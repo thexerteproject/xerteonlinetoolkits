@@ -50,7 +50,9 @@
 			$hiddenCards.show();
 			
 			const $cards = $('#cards');
-			$cards.find('div.card').removeClass('fitHeight');
+			$cards.find('div.card')
+				.removeClass('fitHeight')
+				.css('height', '');
 			
 			if (firstLoad == true) {
 				// adds class re. the card sizing: small,medium,large,full,custom
@@ -146,6 +148,15 @@
 			if ($('#cardNoHolder').length > 0) {
 				excludeHeight.push($('#cardNoHolder'));
 			}
+			// Optional text is inserted as a sibling of the card holder by the shared
+			// split-screen layout. Account for it when sizing the cards so the card
+			// sides cannot extend underneath the text above or below them.
+			excludeHeight.push(
+				$pageContents.children(".textTopHolder"),
+				$pageContents.children(".textBottomHolder"),
+				$("#infoHolder > .textTopHolder"),
+				$("#infoHolder > .textBottomHolder")
+			);
 			if (cardHeight == 'default' && x_browserInfo.mobile != true && $pageContents.data("pageLayout") !== "next" && ($pageContents.data('displayStyle') !== 'vertical' || ($pageContents.data('displayStyle') == 'vertical' && $cards.find('div.card').length <= 1))) {
 				excludeHeight.push($("#textHolder"));
 			}
@@ -162,6 +173,7 @@
 
 				$cards.find('div.card')
 					.addClass('fitHeight')
+					.height(maxH)
 					.find('.front, .back').height(maxH);
 
 				// make sure contents of card scrolls instead of overflows
@@ -190,6 +202,7 @@
 							let cardMaxH = Math.max($this.find('.front').height(), $this.find('.back').height());
 							cardMaxH += $this.find('.flipBtnHolder').outerHeight(true);
 							cardMaxH = $this.find(".front iframe.mediaHolder, .back iframe.mediaHolder").length > 0 && maxH > cardMaxH ? maxH : Math.min(maxH, cardMaxH);
+							$this.height(cardMaxH);
 							$this.find('.front, .back').height(cardMaxH);
 
 							// make sure contents of card scrolls instead of overflows
@@ -224,6 +237,7 @@
 
 				$cards.find('div.card').each(function() {
 					const $this = $(this);
+					$this.height(tallestCard);
 					$this.find('.front, .back').height(tallestCard);
 
 					// make sure contents of card scrolls instead of overflows
@@ -362,6 +376,7 @@
 			// set up split screen layout
 			// send amended data to split screen function to ensure set up as expected
 			XENITH.SPLITSCREEN.init({"attributes": attributes});
+			$("#cardHolder").toggleClass("withSupportingText", $("#pageContents").find(".textTopHolder, .textBottomHolder").length > 0);
 
 			// default is one card shown at a time
 			let displayStyle = pageLayout === "below" && x_currentPageXML.getAttribute('displayStyle') != undefined && x_currentPageXML.getAttribute('position') != "next" ? x_currentPageXML.getAttribute('displayStyle') : "one";

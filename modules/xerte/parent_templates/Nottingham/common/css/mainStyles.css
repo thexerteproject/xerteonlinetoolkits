@@ -791,7 +791,7 @@ button.ui-button-icon-only .ui-icon.fa-x-refresh {
 }
 #x_mainHolder:not(.x_mobile) #x_headerProgress .pbTxt {
 	display: inline-block;
-	padding: 0 10px 5px;
+	padding: 0 1em 5px;
 }
 #x_headerProgress.progressMarkers .pbTxt {
 	padding: 0 5px 10px;
@@ -875,18 +875,13 @@ button.ui-button-icon-only .ui-icon.fa-x-refresh {
 	flex-direction: column;
 }
 
-#x_pagePswdBtn:active, #x_pagePswdBtn:hover, #x_pagePswdBtn:focus {
-	text-decoration: underline;
-	background-color: #0088cc;
-}
-
 .x_pswdError {
 	margin-top: 1em;
 	font-size: 0.9em;
 	color: #c0392b;
 }
 
-:not(.old) .x_pswdError {
+.x_pswdBlock:not(.old) .x_pswdError {
 	text-align: center;
 }
 
@@ -917,7 +912,7 @@ input#x_pagePswd.old {
 .vault-door-frame {
 	width: 94%;
 	height: 94%;
-	background-color: #808080;
+	background-color: #A6A6A6;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -996,15 +991,16 @@ input#x_pagePswd.old {
 }
 .vault input{
 	background-color: #00000000;
-	border: 2px solid #ffffff40;
+	border: 2px solid #FFFFFF;
 	z-index: 2;
 	font-size: 3.5vmin;
 }
 
-.vault .numberbtn, .vault #resetbtn, .vault input {
+.vault .numberbtn, .vault #resetbtn, .vault input, .vault #x_pagePswdBtn .ui-button-text {
 	color: black;
 	text-align: center;
 	font-weight: bold;
+	cursor: pointer;
 }
 
 .vault input:focus, .vault input:hover {
@@ -1019,7 +1015,7 @@ input#x_pagePswd.old {
 }
 
 .vault button {
-	background-color: #808080;
+	background-color: #A6A6A6;
 	border: 2px solid #505050 !important;
 }
 
@@ -1056,6 +1052,11 @@ textarea {
 
 figure {
 	margin: 0;
+}
+
+/* Match CKEditor and Bootstrap's safeguard against squashed media. */
+figure.media {
+	min-width: 15em;
 }
 
 /* Render CKEditor 5 image styles outside the editor. */
@@ -1097,6 +1098,55 @@ figure.image.image-style-side {
 	float: right;
 	margin-left: 1.5em;
 	max-width: 50%;
+}
+
+figure.image.image-style-align-left,
+figure.image.image-style-align-right {
+	clear: none;
+}
+
+figure.image.image-style-align-left {
+	float: left;
+	margin-left: 0;
+	margin-right: 1.5em;
+}
+
+figure.image.image-style-align-right {
+	float: right;
+	margin-left: 1.5em;
+	margin-right: 0;
+}
+
+figure.image.image-style-align-center {
+	float: none;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+figure.image.image-style-block-align-left {
+	margin-left: 0;
+	margin-right: auto;
+}
+
+figure.image.image-style-block-align-right {
+	margin-left: auto;
+	margin-right: 0;
+}
+
+img.image-inline.image-style-align-left {
+	float: left;
+	margin-right: .75em;
+}
+
+img.image-inline.image-style-align-right {
+	float: right;
+	margin-left: .75em;
+}
+
+img.image-inline.image-style-align-center {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 figcaption {
@@ -1957,6 +2007,30 @@ button.resourceLink {
 #x_pageHolder {
 	container-name: x_pageHolder;
 	container-type: inline-size;
+}
+
+/* CKEditor 5 stores its default font sizes as classes rather than inline styles. */
+.text-tiny {
+	font-size: 0.7em;
+}
+
+.text-small {
+	font-size: 0.85em;
+}
+
+.text-big {
+	font-size: 1.4em;
+}
+
+.text-huge {
+	font-size: 1.8em;
+}
+
+/* MathJax 2.4 appends a zero-width measurement strut to each equation using
+ * border-left. Prevent browsers from rendering that strut as a hairline. */
+.MathJax span[style*="border-left: 0em solid"],
+.MathJax span[style*="border-left: 0.003em solid"] {
+	border-left-width: 0 !important;
 }
 
 @container x_pageHolder (max-width: 480px) {

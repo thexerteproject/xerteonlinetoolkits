@@ -55,7 +55,12 @@ if ($section === 'preferences') {
 ?>
 <div class="preferences-modal" id="preferences-form">
     <div class="preferences-modal-header">
-        <h2 class="preferences-modal-title"><?php echo USER_SETTINGS_PREFERENCES_TITLE; ?></h2>
+        <div class="preferences-modal-heading">
+            <h2 class="preferences-modal-title"><?php echo USER_SETTINGS_PREFERENCES_TITLE; ?></h2>
+            <span class="preferences-info-tooltip" tabindex="0" title="<?php echo htmlspecialchars(USER_SETTINGS_REFRESH_TOOLTIP, ENT_QUOTES, 'UTF-8'); ?>" aria-label="<?php echo htmlspecialchars(USER_SETTINGS_REFRESH_TOOLTIP, ENT_QUOTES, 'UTF-8'); ?>">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
+            </span>
+        </div>
         <button type="button" class="preferences-modal-close" aria-label="<?php echo USER_SETTINGS_CANCEL; ?>">&times;</button>
     </div>
 
@@ -111,6 +116,16 @@ if ($section === 'preferences') {
                     <span class="preferences-option-text"><?php echo USER_SETTINGS_EDITOR_SHOW_LANGUAGE; ?></span>
                 </label>
                 <label class="preferences-option">
+                    <input type="checkbox" id="editor_fixed_toolbar" name="editor_fixed_toolbar" class="preferences-input">
+                    <span class="preferences-control preferences-control--checkbox" aria-hidden="true"></span>
+                    <span class="preferences-option-text"><?php echo USER_SETTINGS_EDITOR_FIXED_TOOLBAR; ?></span>
+                </label>
+                <label class="preferences-option preferences-option--sub" id="editor_fixed_toolbar_expanded_option">
+                    <input type="checkbox" id="editor_fixed_toolbar_expanded" name="editor_fixed_toolbar_expanded" class="preferences-input">
+                    <span class="preferences-control preferences-control--checkbox" aria-hidden="true"></span>
+                    <span class="preferences-option-text"><?php echo USER_SETTINGS_EDITOR_EXPAND_TOOLBAR; ?></span>
+                </label>
+                <label class="preferences-option">
                     <input type="checkbox" id="editor_expand_groups" name="editor_expand_groups" class="preferences-input">
                     <span class="preferences-control preferences-control--checkbox" aria-hidden="true"></span>
                     <span class="preferences-option-text"><?php echo USER_SETTINGS_EDITOR_EXPAND_GROUPS; ?></span>
@@ -120,11 +135,35 @@ if ($section === 'preferences') {
                     <span class="preferences-control preferences-control--checkbox" aria-hidden="true"></span>
                     <span class="preferences-option-text"><?php echo USER_SETTINGS_EDITOR_EXPAND_TREE; ?></span>
                 </label>
+                <div class="preferences-subsection">
+                    <h4 class="preferences-subsection-title"><?php echo USER_SETTINGS_QUICKFILL_ASSISTANT; ?></h4>
+                    <div class="preferences-options preferences-options--subsection">
+                        <label class="preferences-option preferences-option--with-help">
+                            <input type="checkbox" id="editor_quickfill_assistants_only" name="editor_quickfill_assistants_only" class="preferences-input">
+                            <span class="preferences-control preferences-control--checkbox" aria-hidden="true"></span>
+                            <span class="preferences-option-copy">
+                                <span class="preferences-option-text"><?php echo USER_SETTINGS_EDITOR_HIDE_QUICKFILL; ?></span>
+                                <span class="preferences-option-help"><?php echo USER_SETTINGS_EDITOR_HIDE_QUICKFILL_HELP; ?></span>
+                            </span>
+                        </label>
+                        <label class="preferences-option">
+                            <input type="radio" name="editor_quickfill_collapse_mode" value="always" class="preferences-input">
+                            <span class="preferences-control preferences-control--radio" aria-hidden="true"></span>
+                            <span class="preferences-option-text"><?php echo USER_SETTINGS_EDITOR_COLLAPSE_QUICKFILL; ?></span>
+                        </label>
+                        <label class="preferences-option">
+                            <input type="radio" name="editor_quickfill_collapse_mode" value="with_children" class="preferences-input">
+                            <span class="preferences-control preferences-control--radio" aria-hidden="true"></span>
+                            <span class="preferences-option-text"><?php echo USER_SETTINGS_EDITOR_COLLAPSE_QUICKFILL_WITH_CHILDREN; ?></span>
+                        </label>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
 
     <div class="preferences-modal-footer">
+        <button type="button" class="preferences-btn preferences-btn-reset"><?php echo USER_SETTINGS_RESET_DEFAULTS; ?></button>
         <button type="button" class="preferences-btn preferences-btn-cancel"><?php echo USER_SETTINGS_CANCEL; ?></button>
         <button type="button" class="preferences-btn preferences-btn-save"><?php echo USER_SETTINGS_SAVE; ?></button>
     </div>

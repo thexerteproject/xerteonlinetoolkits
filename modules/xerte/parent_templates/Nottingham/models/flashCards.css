@@ -30,6 +30,13 @@
 		height: 1px;
 		min-height: 72.5%;
 	}
+
+	/* The legacy 1px height supports fill-space cards, but collapses the holder
+	   when optional text makes its parent's height content-based. */
+	#cardHolder.withSupportingText {
+		height: auto;
+		min-height: 0;
+	}
 	
 	.btnHolder, #cards {
 		vertical-align: middle;

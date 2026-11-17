@@ -64,9 +64,9 @@ function createIconView( modelElement, writer, editing = false, t = value => val
 	return editing ? toWidget( wrapper, writer, { label: title || t( 'Font Awesome icon' ) } ) : wrapper;
 }
 
-function styleWithColour( style, colour ) {
+function styleWithColour( style, colour, useDefaultColour ) {
 	const declarations = String( style || '' ).split( ';' ).map( item => item.trim() ).filter( item => item && !/^color\s*:/i.test( item ) );
-	if ( colour.toLowerCase() !== '#000000' ) declarations.push( 'color: ' + colour );
+	if ( !useDefaultColour ) declarations.push( 'color: ' + colour );
 	return declarations.length ? declarations.join( '; ' ) + ';' : '';
 }
 
@@ -129,20 +129,35 @@ function openPicker( initial, t ) {
 		fields.style.cssText = 'display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;';
 		const title = input( 'text', initial.iconTitle );
 		const colour = input( 'color', initial.colour || '#000000' );
+		const useDefaultColour = document.createElement( 'input' );
+		useDefaultColour.type = 'checkbox';
+		useDefaultColour.checked = initial.useDefaultColour;
+		const defaultColourLabel = document.createElement( 'label' );
+		defaultColourLabel.style.cssText = 'display:flex;align-items:center;gap:7px;margin-top:7px;font-weight:400;';
+		defaultColourLabel.append( useDefaultColour, document.createTextNode( t( 'Use default text colour' ) ) );
+		const updateColourState = () => {
+			colour.disabled = useDefaultColour.checked;
+			colour.style.opacity = useDefaultColour.checked ? '.45' : '1';
+		};
+		useDefaultColour.addEventListener( 'change', updateColourState );
+		updateColourState();
 		const size = document.createElement( 'select' );
 		size.style.cssText = 'width:100%;padding:7px;';
-		[ '', 'fa-xs', 'fa-sm', 'fa-lg', 'fa-2x', 'fa-3x', 'fa-4x', 'fa-5x', 'fa-10x' ].forEach( value => size.add( new Option( value || t( 'Normal' ), value ) ) );
+		[ '', 'fa-xs', 'fa-sm', 'fa-lg', 'fa-2x', 'fa-3x', 'fa-4x', 'fa-5x', 'fa-10x' ].forEach( value => size.add( new Option( value || t( 'Match surrounding text' ), value ) ) );
 		size.value = initial.size || '';
 		const rotation = document.createElement( 'select' );
 		rotation.style.cssText = 'width:100%;padding:7px;';
 		[ '', 'fa-rotate-90', 'fa-rotate-180', 'fa-rotate-270' ].forEach( value => rotation.add( new Option( value ? value.replace( 'fa-rotate-', '' ) + '\u00b0' : t( 'Normal' ), value ) ) );
 		rotation.value = initial.rotation || '';
-		[ [ t( 'Description' ), title ], [ t( 'Colour' ), colour ], [ t( 'Size' ), size ], [ t( 'Rotation' ), rotation ] ].forEach( pair => {
-			const label = document.createElement( 'label' );
-			label.textContent = pair[ 0 ];
-			label.style.fontWeight = '600';
-			label.appendChild( pair[ 1 ] );
-			fields.appendChild( label );
+		[ [ t( 'Description' ), title ], [ t( 'Colour' ), colour, defaultColourLabel ], [ t( 'Size' ), size ], [ t( 'Rotation' ), rotation ] ].forEach( pair => {
+			const fieldContainer = document.createElement( 'div' );
+			const fieldLabel = document.createElement( 'label' );
+			fieldLabel.textContent = pair[ 0 ];
+			fieldLabel.style.fontWeight = '600';
+			fieldLabel.appendChild( pair[ 1 ] );
+			fieldContainer.appendChild( fieldLabel );
+			if ( pair[ 2 ] ) fieldContainer.appendChild( pair[ 2 ] );
+			fields.appendChild( fieldContainer );
 		} );
 		dialog.appendChild( fields );
 
@@ -174,7 +189,7 @@ function openPicker( initial, t ) {
 			if ( size.value ) classes.push( size.value );
 			if ( rotation.value ) classes.push( rotation.value );
 			Object.keys( checks ).forEach( key => { if ( checks[ key ].checked ) classes.push( 'fa-' + key ); } );
-			cleanup( { iconClass: classes.join( ' ' ), iconTitle: title.value.trim(), iconStyle: styleWithColour( initial.iconStyle, colour.value ) } );
+			cleanup( { iconClass: classes.join( ' ' ), iconTitle: title.value.trim(), iconStyle: styleWithColour( initial.iconStyle, colour.value, useDefaultColour.checked ) } );
 		} );
 		actions.append( cancel, ok );
 		dialog.appendChild( actions );
@@ -203,6 +218,7 @@ async function editFontAwesomeIcon( editor, existing = selectedIcon( editor ) ) 
 		iconTitle: existing?.getAttribute( 'iconTitle' ) || '',
 		iconStyle: style,
 		colour: style.match( /color:\s*(#[0-9a-f]{6})/i )?.[ 1 ] || '#000000',
+		useDefaultColour: !/(?:^|;)\s*color\s*:/i.test( style ),
 		size: currentClass.match( /\bfa-(?:xs|sm|lg|\d+x)\b/ )?.[ 0 ] || '',
 		rotation: currentClass.match( /\bfa-rotate-(?:90|180|270)\b/ )?.[ 0 ] || ''
 	}, editor.t );
@@ -222,7 +238,16 @@ async function editFontAwesomeIcon( editor, existing = selectedIcon( editor ) ) 
 			writer.remove( existing );
 			writer.setSelection( replacement, 'on' );
 		} else {
-			editor.model.insertObject( writer.createElement( 'fontAwesomeIcon', result ), null, null, { setSelection: 'on' } );
+			// Inline objects do not automatically receive the active text attributes.
+			// Copy them explicitly so formatting spans can continue across the icon.
+			const textAttributes = Object.fromEntries(
+				Array.from( editor.model.document.selection.getAttributes() )
+					.filter( ( [ key ] ) => editor.model.schema.checkAttribute( 'fontAwesomeIcon', key ) )
+			);
+			editor.model.insertObject( writer.createElement( 'fontAwesomeIcon', {
+				...textAttributes,
+				...result
+			} ), null, null, { setSelection: 'on' } );
 		}
 	} );
 }
@@ -233,7 +258,8 @@ class XerteFontAwesomeEditing extends Plugin {
 		const editor = this.editor;
 		editor.model.schema.register( 'fontAwesomeIcon', {
 			isInline: true, isObject: true, allowWhere: '$text',
-			allowAttributes: [ 'iconClass', 'iconTitle', 'iconStyle' ]
+			allowAttributes: [ 'iconClass', 'iconTitle', 'iconStyle' ],
+			allowAttributesOf: '$text'
 		} );
 		editor.conversion.for( 'upcast' ).elementToElement( {
 			view: { name: 'span', classes: 'fav2' },

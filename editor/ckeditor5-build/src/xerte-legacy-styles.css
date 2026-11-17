@@ -1,0 +1,44 @@
+/* Defaults for presets that were styled by CKEditor 4's contents.css.
+   Project theme rules take precedence inside the editing frame. */
+:where(.ck-content .marker) {
+	background-color: yellow;
+}
+
+:where(.ck-content img.left, .ck-content figure.image:has(img.left)) {
+	float: left;
+}
+
+:where(.ck-content img.right, .ck-content figure.image:has(img.right)) {
+	float: right;
+}
+
+:where(.ck-content .code-featured) {
+	outline: 5px solid red;
+}
+
+:where(.ck-content .math-featured) {
+	padding: 20px;
+	box-shadow: 0 0 2px rgba(200, 0, 0, 1);
+	background-color: rgba(255, 0, 0, .05);
+}
+
+:where(.ck-content) .image.image-clean,
+:where(.ck-content img.image-clean) {
+	border: 0;
+	background: none;
+	padding: 0;
+}
+
+:where(.ck-content) .image-clean > figcaption {
+	font-size: .9em;
+	text-align: right;
+}
+
+:where(.ck-content .image-grayscale) {
+	background-color: white;
+	color: #666;
+}
+
+:where(.ck-content .image-grayscale img, .ck-content img.image-grayscale) {
+	filter: grayscale(100%);
+}

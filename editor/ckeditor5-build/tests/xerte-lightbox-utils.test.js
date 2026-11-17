@@ -39,12 +39,21 @@ test( 'style dimensions take precedence and unrelated styles survive', () => {
 	);
 } );
 
-test( 'image settings discard iframe-only values', () => {
+test( 'image settings retain dimensions and styles across serialization and type changes', () => {
+	const original = {
+		type: 'image', alt: 'A description',
+		width: { value: '90', unit: '%' }, height: { value: '480', unit: 'px' },
+		extraStyles: [ 'border:none' ]
+	};
+	const settings = normalizeLightbox( original );
+	assert.deepEqual( settings, original );
+	assert.deepEqual( readLightboxAttributes( writeLightboxAttributes( settings ) ), original );
+	assert.deepEqual( normalizeLightbox( { ...settings, type: 'iframe' } ), { ...original, type: 'iframe' } );
 	assert.deepEqual( normalizeLightbox( {
 		type: 'image', alt: 'A description',
 		width: { value: '90', unit: '%' }, extraStyles: [ 'border:none' ]
 	} ), {
-		type: 'image', alt: 'A description', width: null, height: null, extraStyles: []
+		type: 'image', alt: 'A description', width: { value: '90', unit: '%' }, height: null, extraStyles: [ 'border:none' ]
 	} );
 
 	assert.deepEqual( writeLightboxAttributes( { type: 'image', alt: 'A description' } ), {

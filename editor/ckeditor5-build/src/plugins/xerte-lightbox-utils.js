@@ -97,9 +97,9 @@ export function normalizeLightbox( settings ) {
 		type,
 		// CKEditor 4 retained this value while switching between lightbox types.
 		alt: String( settings.alt || '' ),
-		width: type === 'iframe' ? normalizeDimension( settings.width ) : null,
-		height: type === 'iframe' ? normalizeDimension( settings.height ) : null,
-		extraStyles: type === 'iframe' && Array.isArray( settings.extraStyles ) ?
+		width: normalizeDimension( settings.width ),
+		height: normalizeDimension( settings.height ),
+		extraStyles: Array.isArray( settings.extraStyles ) ?
 			settings.extraStyles.map( value => String( value ).trim() ).filter( Boolean ) : []
 	};
 }
@@ -122,9 +122,9 @@ export function writeLightboxAttributes( settings ) {
 	if ( normalized.alt ) {
 		attributes[ 'data-image-alt' ] = normalized.alt;
 	}
-	if ( normalized.type === 'image' ) {
-		return attributes;
-	}
+	// Retain embedded-page dimensions even in image mode so switching types
+	// and saving/reloading does not erase the author's settings. Featherlight
+	// only applies these iframe attributes to embedded pages.
 
 	const styles = [ ...normalized.extraStyles ];
 	for ( const property of [ 'width', 'height' ] ) {

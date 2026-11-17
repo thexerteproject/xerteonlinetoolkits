@@ -21,7 +21,7 @@ function build_xerte_xml(xml_tree, parent_name, parser){
     }
 }
 
-function xml_to_xerte_content(data, key, pos, tree, realParent) {
+function xml_to_xerte_content(data, key, pos, tree, realParent, source) {
     try {
         $('body').css("cursor", "default");
         $('.featherlight').css("cursor", "default")
@@ -79,21 +79,28 @@ function xml_to_xerte_content(data, key, pos, tree, realParent) {
                     }
                 } else {
                     // Node does not exist, add it
-                    addAINodeToTree(key, pos, child.tagName, child, tree, true, true);
+                    addAINodeToTree(key, pos, child.tagName, child, tree, false, true);
                 }
             }
 
 
             var node = tree.get_node(key, false);
             if (node) {
-                // Refresh the node to reflect the updated attributes
-                realParent.tree.showNodeData(node.id, true);
+                // Keep the tree selection and the page shown in the main panel in sync.
+                tree.deselect_all();
+                tree.select_node(node.id);
                 tree.rename_node(node, lo_data[key]['attributes']['name']);
             }
 
             // Resolve targets for decision_tree children
             if (node.type === 'decision'){
                 resolveDecisionTreeTargets(tree, key);
+            }
+
+            // Quick Fill creates default structures and should not display the
+            // AI-specific warning about generated content or hallucinations.
+            if (source === 'ai') {
+                alert(`${language.vendorApi.generationComplete}`);
             }
 
             console.log("done!")

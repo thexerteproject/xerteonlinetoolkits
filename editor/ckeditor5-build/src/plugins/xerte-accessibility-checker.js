@@ -288,6 +288,14 @@ class XerteAccessibilityCheckerCommand extends Command {
 		}
 
 		clearHighlights( editable );
+		// The results dialog stays in the wizard, but its CSS cannot reach content
+		// in the frame. Add only the issue outline there so highlighted items show.
+		if ( editable.ownerDocument !== document && !editable.ownerDocument.getElementById( 'xerte-axe-content-styles' ) ) {
+			const style = editable.ownerDocument.createElement( 'style' );
+			style.id = 'xerte-axe-content-styles';
+			style.textContent = `.${ HIGHLIGHT_CLASS } { outline:3px solid #d63638!important; outline-offset:2px!important; }`;
+			editable.ownerDocument.head.appendChild( style );
+		}
 		const results = await axe.run( editable, {
 			runOnly: { type: 'rule', values: CHECKER_RULES },
 			resultTypes: [ 'violations', 'incomplete' ]

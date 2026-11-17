@@ -62,7 +62,7 @@
 			}
 			// set up split screen layout
 			XENITH.SPLITSCREEN.init({"attributes": attributes});
-
+			
 			// get & store card data
 			const cards = [];
 			$(x_currentPageXML).children().each(function(i){
@@ -83,7 +83,7 @@
 				"cardData"		:cards,
 				"currentCard"	:""
 			});
-
+			
 			$("#button")
 				.button({
 					label: x_currentPageXML.getAttribute("resetBtnTxt") == undefined ? "Shuffle Cards" : x_currentPageXML.getAttribute("resetBtnTxt")
@@ -111,6 +111,8 @@
 			const $cardTopHolder = $("#cardTopHolder");
 			const $cardBottomHolder = $("#cardBottomHolder");
 			let cardbackurl =  x_templateLocation + 'common/card.png'; // Default
+			// Use a local timer variable for flip/match animations to avoid interfering with global page timers
+			let flipTimer = null;
 			
 			// change card back if alternative available
 			if (x_currentPageXML.getAttribute("backurl") != undefined && x_currentPageXML.getAttribute("backurl") != "") {
@@ -142,7 +144,7 @@
 						if ($pageContents.data("currentCard") == "") { // 1st card revealed
 							$pageContents.data("currentCard", $this);
 							$cardTopHolder.find(".card:not('.correct')").animate({opacity: 1}, 250); // can't use fadeIn/Out() because it stops it displaying as block
-							clearInterval(x_timer);
+							clearInterval(flipTimer);
 							$this.animate({opacity: 0}, 500);
 							
 						} else { // 2nd card revealed - does it match?
@@ -156,8 +158,8 @@
 								if (parseInt($card1B.data("match")) == parseInt($card2B.data("match"))) { // match - short delay and then add label to image card
 									$this.add($pageContents.data("currentCard")).addClass("correct");
 									
-									clearInterval(x_timer);
-									x_timer =  setInterval(function() {
+									clearInterval(flipTimer);
+									flipTimer =  setInterval(function() {
 										if ($card1B.find(".answer").length == 0) {
 											$card2B.find(".answer .imgLabel").css("background-image", $card1B.css("background-image"));
 											$card1B.animate({opacity: 0}, 500);
@@ -174,14 +176,14 @@
 											$("#button").show();
 										}
 										
-										clearInterval(x_timer);
+										clearInterval(flipTimer);
 									}, 500);
 									
 								} else { // no match
-									clearInterval(x_timer);
-									x_timer =  setInterval(function() {
+									clearInterval(flipTimer);
+									flipTimer =  setInterval(function() {
 										$cardTopHolder.find(".card:not('.correct')").animate({opacity: 1}, 250);
-										clearInterval(x_timer);
+										clearInterval(flipTimer);
 									}, 1000);
 								}
 								$pageContents.data("currentCard", "");

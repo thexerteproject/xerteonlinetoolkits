@@ -6,11 +6,17 @@ import { Plugin, Command } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
 import { browseMedia } from './xerte-browse-media.js';
-import { uploadAudio } from './xerte-upload-adapter.js';
 import AudioIcon from '../icons/audio.svg';
 
 const defaults = { src: '', align: 'center', autoplay: false, noDownload: false, title: '' };
 const alignments = new Set( [ 'none', 'left', 'center', 'right' ] );
+
+// Autoplay is a boolean HTML attribute, so autoplay="false" would still enable it.
+function autoplayEnabled( value ) {
+	if ( value === true ) return true;
+	if ( typeof value !== 'string' ) return false;
+	return [ 'autoplay', 'true', 'yes' ].includes( value.trim().toLowerCase() );
+}
 
 function settingsFromView( div ) {
 	const audio = Array.from( div.getChildren() ).find( child => child.is( 'element', 'audio' ) );
@@ -19,7 +25,8 @@ function settingsFromView( div ) {
 	return {
 		src: audio.getAttribute( 'src' ),
 		align: alignments.has( align ) ? align : 'none',
-		autoplay: audio.hasAttribute( 'autoplay' ),
+		autoplay: audio.hasAttribute( 'autoplay' ) &&
+			autoplayEnabled( audio.getAttribute( 'autoplay' ) || 'autoplay' ),
 		noDownload: ( audio.getAttribute( 'controlslist' ) || '' ).split( /\s+/ ).includes( 'nodownload' ),
 		title: audio.getAttribute( 'title' ) || ''
 	};
@@ -73,6 +80,7 @@ export class InsertXerteAudioCommand extends Command {
 		const settings = { ...defaults, ...options };
 		if ( !settings.src ) return;
 		settings.align = alignments.has( settings.align ) ? settings.align : 'none';
+		settings.autoplay = autoplayEnabled( settings.autoplay );
 		const editor = this.editor;
 		editor.model.change( writer => {
 			const existing = findAudio( editor.model.document.selection );
@@ -126,7 +134,7 @@ export class XerteAudio extends Plugin {
 	}
 }
 
-function openAudioDialog( editor ) {
+export function openAudioDialog( editor ) {
 	const t = editor.t;
 	const initial = { ...defaults, ...editor.commands.get( 'insertXerteAudio' ).value };
 	const overlay = document.createElement( 'div' );
@@ -180,17 +188,6 @@ function openAudioDialog( editor ) {
 		if ( chosen ) url.value = chosen;
 	};
 	urlRow.appendChild( browse );
-	const separator = document.createElement( 'div' );
-	separator.textContent = t( 'or' );
-	separator.style.cssText = 'display:flex;align-items:center;gap:10px;margin:13px 0;color:#94a3b8;font-size:12px;text-transform:uppercase;letter-spacing:.06em';
-	separator.insertAdjacentHTML( 'afterbegin', '<span style="height:1px;background:#dfe5ee;flex:1"></span>' );
-	separator.insertAdjacentHTML( 'beforeend', '<span style="height:1px;background:#dfe5ee;flex:1"></span>' );
-	sourceBox.appendChild( separator );
-	const file = field( t( 'Upload audio' ), document.createElement( 'input' ), sourceBox );
-	file.type = 'file'; file.accept = 'audio/*,.mp3,.ogg,.wav,.webm';
-	file.disabled = !editor.config.get( 'xerteUploadAudioUrl' );
-	file.style.cssText = inputStyle + ';padding:7px 9px;background:#fff';
-
 	const details = document.createElement( 'div' );
 	details.style.cssText = 'display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;margin-top:18px';
 	content.appendChild( details );
@@ -235,16 +232,15 @@ function openAudioDialog( editor ) {
 	form.onsubmit = async event => {
 		event.preventDefault();
 		status.style.display = 'none';
-		if ( !url.value.trim() && !file.files.length ) {
-			status.textContent = t( 'Choose an audio file or enter a URL.' );
+		if ( !url.value.trim() ) {
+			status.textContent = t( 'Choose an audio file in the media browser or enter a URL.' );
 			status.style.display = 'block';
 			return;
 		}
 		save.disabled = true;
 		save.style.opacity = '.65';
 		try {
-			let src = url.value.trim();
-			if ( file.files.length ) src = await uploadAudio( file.files[ 0 ], editor.config.get( 'xerteUploadAudioUrl' ), { t } );
+			const src = url.value.trim();
 			editor.execute( 'insertXerteAudio', {
 				src, align: align.value, autoplay: autoplay.checked,
 				noDownload: noDownload.checked, title: title.value

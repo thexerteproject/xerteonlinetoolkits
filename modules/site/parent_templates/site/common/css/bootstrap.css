@@ -2005,13 +2005,14 @@ table {
   border-spacing: 0;
 }
 
-.table {
+/* CKEditor also uses .table on a figure. These Bootstrap rules style tables only. */
+:where(table).table {
   width: 100%;
   margin-bottom: 20px;
 }
 
-.table th,
-.table td {
+:where(table).table th,
+:where(table).table td {
   padding: 8px;
   line-height: 20px;
   text-align: left;
@@ -2019,28 +2020,28 @@ table {
   border-top: 1px solid #dddddd;
 }
 
-.table th {
+:where(table).table th {
   font-weight: bold;
 }
 
-.table thead th {
+:where(table).table thead th {
   vertical-align: bottom;
 }
 
-.table caption + thead tr:first-child th,
-.table caption + thead tr:first-child td,
-.table colgroup + thead tr:first-child th,
-.table colgroup + thead tr:first-child td,
-.table thead:first-child tr:first-child th,
-.table thead:first-child tr:first-child td {
+:where(table).table caption + thead tr:first-child th,
+:where(table).table caption + thead tr:first-child td,
+:where(table).table colgroup + thead tr:first-child th,
+:where(table).table colgroup + thead tr:first-child td,
+:where(table).table thead:first-child tr:first-child th,
+:where(table).table thead:first-child tr:first-child td {
   border-top: 0;
 }
 
-.table tbody + tbody {
+:where(table).table tbody + tbody {
   border-top: 2px solid #dddddd;
 }
 
-.table .table {
+:where(table).table :where(table).table {
   background-color: #ffffff;
 }
 
@@ -2161,103 +2162,103 @@ table th[class*="span"],
   margin-left: 0;
 }
 
-.table td.span1,
-.table th.span1 {
+:where(table).table td.span1,
+:where(table).table th.span1 {
   float: none;
   width: 44px;
   margin-left: 0;
 }
 
-.table td.span2,
-.table th.span2 {
+:where(table).table td.span2,
+:where(table).table th.span2 {
   float: none;
   width: 124px;
   margin-left: 0;
 }
 
-.table td.span3,
-.table th.span3 {
+:where(table).table td.span3,
+:where(table).table th.span3 {
   float: none;
   width: 204px;
   margin-left: 0;
 }
 
-.table td.span4,
-.table th.span4 {
+:where(table).table td.span4,
+:where(table).table th.span4 {
   float: none;
   width: 284px;
   margin-left: 0;
 }
 
-.table td.span5,
-.table th.span5 {
+:where(table).table td.span5,
+:where(table).table th.span5 {
   float: none;
   width: 364px;
   margin-left: 0;
 }
 
-.table td.span6,
-.table th.span6 {
+:where(table).table td.span6,
+:where(table).table th.span6 {
   float: none;
   width: 444px;
   margin-left: 0;
 }
 
-.table td.span7,
-.table th.span7 {
+:where(table).table td.span7,
+:where(table).table th.span7 {
   float: none;
   width: 524px;
   margin-left: 0;
 }
 
-.table td.span8,
-.table th.span8 {
+:where(table).table td.span8,
+:where(table).table th.span8 {
   float: none;
   width: 604px;
   margin-left: 0;
 }
 
-.table td.span9,
-.table th.span9 {
+:where(table).table td.span9,
+:where(table).table th.span9 {
   float: none;
   width: 684px;
   margin-left: 0;
 }
 
-.table td.span10,
-.table th.span10 {
+:where(table).table td.span10,
+:where(table).table th.span10 {
   float: none;
   width: 764px;
   margin-left: 0;
 }
 
-.table td.span11,
-.table th.span11 {
+:where(table).table td.span11,
+:where(table).table th.span11 {
   float: none;
   width: 844px;
   margin-left: 0;
 }
 
-.table td.span12,
-.table th.span12 {
+:where(table).table td.span12,
+:where(table).table th.span12 {
   float: none;
   width: 924px;
   margin-left: 0;
 }
 
-.table tbody tr.success > td {
+:where(table).table tbody tr.success > td {
   background-color: #dff0d8;
 }
 
-.table tbody tr.error > td {
+:where(table).table tbody tr.error > td {
   background-color: #f2dede;
 }
 
-.table tbody tr.warning > td {
+:where(table).table tbody tr.warning > td {
   background-color: #fcf8e3;
 }
 
-.table tbody tr.info > td {
+:where(table).table tbody tr.info > td {
   background-color: #d9edf7;
 }
 

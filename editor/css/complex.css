@@ -221,6 +221,18 @@ input.media, input.date
     border-bottom-right-radius: 4px;
     z-index: 100;
 }
+
+/* Keep the central editor options bar above CKEditor's sticky toolbar and
+ * dropdown panel layer while allowing dialogs to remain on top. */
+#main_footer {
+	z-index: calc(var(--ck-z-panel, 1000) + 1);
+}
+
+/* Keep open CKEditor menus above the badge outside this pane. */
+#mainContent:has(.ck-dropdown__panel-visible, .ck-menu-bar__menu__panel:not(.ck-hidden)) {
+	z-index: var(--ck-z-panel, 1000) !important;
+}
+
 .subhead { border-bottom: 1px solid #777; }
 
 #lb_footer.footer{
@@ -1039,12 +1051,18 @@ div.hotspotEditor {
 	background-color: #f0f0f2;
 }
 
-.hsbutton_holder
-{
+.hsbutton_holder, .synchPointButtonHolder {
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
 	background-color: #f0f0f2;
 	padding: 5px;
+}
+
+.synchPointButtonHolder {
+	overflow: auto;
+}
+
+.hsbutton_holder {
 	border-bottom: 1px solid #e0e0e0;
 }
 .overlayImage {
@@ -1095,9 +1113,55 @@ div.hotspotEditor {
 	background: rgba(0,0,0,0); /*!important;*/
 }
 
-.hotspotEditor
-{
+div.hotspotEditor, div.synchPointPicker {
 	padding: 5px;
+	background-color: #f0f0f2;
+}
+
+div.synchPointPicker .synchPointPicker__body {
+	margin: 10px;
+	padding: 10px;
+	background-color: #ffffff;
+	clear: both;
+}
+
+div.synchPointPicker .synchPointPicker__mediaHolder {
+	width: 100%;
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+div.synchPointPicker:not(.audio) .synchPointPicker__mediaHolder {
+	aspect-ratio: 16 / 9;
+}
+
+div.synchPointPicker .popcornMedia.embed {
+	width: 100%;
+	height: 100%;
+}
+
+div.synchPointPicker .popcornMedia.embed iframe {
+	width: 100% !important;
+	height: 100% !important;
+}
+
+div.synchPointPicker .synchPointPicker__media {
+	width: 100%;
+	max-height: 70vh;
+	display: block;
+}
+
+div.synchPointPicker .synchPointPicker__timeRow {
+	margin: 0.75em 0 0;
+	font-weight: bold;
+}
+
+div.synchPointPicker .popcornMedia {
+	margin: 0 auto;
+}
+
+table.synchPointField td {
+	vertical-align: middle;
 }
 
 .instructions{
@@ -1791,22 +1855,87 @@ div#top_buttons button:last-of-type {margin-left: 20px;}
 }
 
 .qf-inline-panel {
-	display: flex;
+	position: relative;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
 	align-items: center;
-	justify-content: space-between;
 	gap: 16px;
 	background: #fff5ee;
 	border: 2px solid #f86718;
 	border-radius: 4px;
-	padding: 12px 16px;
+	padding: 12px 52px 12px 16px;
 	margin: 4px 0 12px 0;
 	box-sizing: border-box;
 	max-width: 100%;
 }
 
+.qf-inline-header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-width: 0;
+}
+
 .qf-inline-content {
 	flex: 1;
 	min-width: 0;
+}
+
+.qf-inline-toggle {
+	position: absolute;
+	right: 10px;
+	bottom: 8px;
+	width: 30px;
+	height: 30px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: #555;
+	cursor: pointer;
+	z-index: 1;
+}
+
+.qf-inline-toggle::before {
+	content: '';
+	position: absolute;
+	left: 9px;
+	top: 11px;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-bottom: 7px solid currentColor;
+}
+
+.qf-inline-panel--collapsed .qf-inline-toggle::before {
+	border-bottom: 0;
+	border-top: 7px solid currentColor;
+}
+
+.qf-inline-panel--collapsed .qf-inline-description,
+.qf-inline-panel--collapsed .qf-inline-setup-btn {
+	display: none;
+}
+
+.qf-inline-panel--collapsed .qf-inline-title {
+	margin-bottom: 0;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.qf-inline-panel--collapsed {
+	grid-template-columns: minmax(0, 1fr);
+	min-height: 38px;
+	padding: 7px 48px 7px 12px;
+	margin-bottom: 8px;
+}
+
+.qf-inline-panel--collapsed .qf-inline-header {
+	min-height: 24px;
+}
+
+.qf-inline-panel--collapsed .qf-inline-toggle {
+	right: 8px;
+	bottom: 4px;
 }
 
 .qf-inline-title {
@@ -1823,6 +1952,7 @@ div#top_buttons button:last-of-type {margin-left: 20px;}
 }
 
 .qf-inline-setup-btn {
+	display: block;
 	background: #f86718 !important;
 	color: #fff !important;
 	border: none !important;
@@ -1833,6 +1963,7 @@ div#top_buttons button:last-of-type {margin-left: 20px;}
 	white-space: nowrap;
 	cursor: pointer;
 	flex-shrink: 0;
+	margin: 0;
 }
 
 .qf-inline-setup-btn:hover {

@@ -7,6 +7,9 @@ import { runXertePageLink } from './xerte-page-link.js';
 import { parseXertePageId } from './xerte-page-link-utils.js';
 import { runAutocolumnsDialog } from './xerte-autocolumns-dialog.js';
 import { runXerteMarkWord } from './xerte-mark-word.js';
+import { openAudioDialog } from './xerte-audio.js';
+import { imageFromDomTarget, openImagePropertiesDialog } from './xerte-browse-media.js';
+import { mediaFromDomTarget, openMediaPropertiesDialog } from './xerte-media-resize.js';
 
 const boundEditables = new WeakSet();
 
@@ -85,7 +88,9 @@ function cutOrCopy( editor, command, savedRanges ) {
 	}
 	editable.focus();
 	try {
-		document.execCommand( command );
+		// Browser clipboard commands act on a document's selection. Use the
+		// editable's document, which is the child document in iframe mode.
+		editable.ownerDocument.execCommand( command );
 	} catch ( e ) {
 		console.error( '[XerteContextMenu]', command, e );
 	}
@@ -113,7 +118,8 @@ async function pasteClipboard( editor, savedRanges ) {
 	if ( editable ) {
 		editable.focus();
 		try {
-			document.execCommand( 'paste' );
+			// The fallback must paste into the document that owns the editable too.
+			editable.ownerDocument.execCommand( 'paste' );
 		} catch ( err ) {
 			console.error( '[XerteContextMenu] paste', err );
 		}
@@ -143,6 +149,23 @@ function getXertePageLink( editor, target ) {
 			const viewRange = editor.editing.view.createRangeIn( viewLink );
 			const range = editor.editing.mapper.toModelRange( viewRange );
 			return range && !range.isCollapsed ? { id, range } : null;
+		}
+		node = node.parentElement;
+	}
+	return null;
+}
+
+function getXerteAudio( editor, target ) {
+	const domRoot = editor.editing.view.getDomRoot();
+	if ( !domRoot || !target ) {
+		return null;
+	}
+	let node = target.nodeType === Node.TEXT_NODE ? target.parentElement : target;
+	while ( node && node !== domRoot ) {
+		if ( node.classList?.contains( 'ckeditor-html5-audio' ) ) {
+			const viewElement = editor.editing.view.domConverter.domToView( node );
+			const modelElement = viewElement && editor.editing.mapper.toModelElement( viewElement );
+			return modelElement?.is( 'element', 'xerteAudio' ) ? modelElement : null;
 		}
 		node = node.parentElement;
 	}
@@ -187,6 +210,9 @@ export class XerteContextMenu extends Plugin {
 		let savedSelectionRanges = null;
 		let savedSelectionText = null;
 		let savedPageLink = null;
+		let savedAudio = null;
+		let savedImage = null;
+		let savedMedia = null;
 
 		const hideMenu = () => {
 			if ( dismissCleanup ) {
@@ -256,6 +282,9 @@ export class XerteContextMenu extends Plugin {
 
 			const hasText = selectionHasText( savedSelectionRanges, editor );
 			const editLink = savedPageLink;
+			const editAudio = savedAudio;
+			const editImage = savedImage;
+			const editMedia = savedMedia;
 
 			addItem( menuEl, editor.t( 'Cut' ), ranges => cutOrCopy( editor, 'cut', ranges ), hasText );
 			addItem( menuEl, editor.t( 'Copy' ), ranges => cutOrCopy( editor, 'copy', ranges ), hasText );
@@ -266,6 +295,21 @@ export class XerteContextMenu extends Plugin {
 			menuEl.appendChild( sep );
 
 			addItem( menuEl, editLink ? editor.t( 'Edit Xerte Page Link' ) : editor.t( 'Xerte Page Link' ), () => runXertePageLink( editor, editLink ) );
+			if ( editAudio ) {
+				addItem( menuEl, editor.t( 'Audio properties' ), () => {
+					editor.model.change( writer => writer.setSelection( editAudio, 'on' ) );
+					openAudioDialog( editor );
+				} );
+			}
+			if ( editImage ) {
+				addItem( menuEl, editor.t( 'Image properties' ), () => {
+					editor.model.change( writer => writer.setSelection( editImage, 'on' ) );
+					openImagePropertiesDialog( editor, editImage );
+				} );
+			}
+			if ( editMedia ) {
+				addItem( menuEl, editor.t( 'Media properties' ), () => openMediaPropertiesDialog( editor, editMedia ) );
+			}
 			addItem( menuEl, editor.t( 'Mark Word' ), () => {
 				runXerteMarkWord( editor, savedSelectionRanges, savedSelectionText );
 			}, hasText, true );
@@ -294,11 +338,19 @@ export class XerteContextMenu extends Plugin {
 				}
 			};
 
-			doc.addEventListener( 'click', onDocClick, true );
-			doc.addEventListener( 'keydown', onKeyDown, true );
+			// Click/Escape events do not cross iframe boundaries. Dismiss from
+			// either document, and remove both sets of listeners when closing.
+			const editableDoc = getEditableElement( editor )?.ownerDocument;
+			const documents = new Set( [ doc, editableDoc ].filter( Boolean ) );
+			for ( const eventDocument of documents ) {
+				eventDocument.addEventListener( 'click', onDocClick, true );
+				eventDocument.addEventListener( 'keydown', onKeyDown, true );
+			}
 			dismissCleanup = () => {
-				doc.removeEventListener( 'click', onDocClick, true );
-				doc.removeEventListener( 'keydown', onKeyDown, true );
+				for ( const eventDocument of documents ) {
+					eventDocument.removeEventListener( 'click', onDocClick, true );
+					eventDocument.removeEventListener( 'keydown', onKeyDown, true );
+				}
 			};
 		};
 
@@ -313,6 +365,9 @@ export class XerteContextMenu extends Plugin {
 
 			savedSelectionRanges = saveModelSelection( editor );
 			savedPageLink = getXertePageLink( editor, domEvent.target );
+			savedAudio = getXerteAudio( editor, domEvent.target );
+			savedImage = imageFromDomTarget( editor, domEvent.target );
+			savedMedia = mediaFromDomTarget( editor, domEvent.target );
 			try {
 				savedSelectionText = editor.model.document.selection.getSelectedText() || '';
 			} catch ( e ) {
@@ -321,13 +376,17 @@ export class XerteContextMenu extends Plugin {
 
 			domEvent.preventDefault();
 
-			const x = domEvent.clientX;
-			const y = domEvent.clientY;
+			// The menu stays in the wizard beside other dialogs. A right-click in
+			// the frame gives child coordinates, so add the frame's screen position.
 			const ownerDoc = domEvent.currentTarget.ownerDocument;
+			const frame = ownerDoc.defaultView.frameElement;
+			const frameRect = ownerDoc !== document && frame ? frame.getBoundingClientRect() : { left: 0, top: 0 };
+			const x = domEvent.clientX + frameRect.left;
+			const y = domEvent.clientY + frameRect.top;
 
 			window.setTimeout( () => {
 				try {
-					showMenu( x, y, ownerDoc );
+					showMenu( x, y, document );
 				} catch ( error ) {
 					console.error( '[XerteContextMenu]', error );
 				}
@@ -360,6 +419,9 @@ export class XerteContextMenu extends Plugin {
 			savedSelectionRanges = null;
 			savedSelectionText = null;
 			savedPageLink = null;
+			savedAudio = null;
+			savedImage = null;
+			savedMedia = null;
 		} );
 	}
 }
