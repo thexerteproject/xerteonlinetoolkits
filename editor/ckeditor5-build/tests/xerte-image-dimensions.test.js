@@ -7,9 +7,10 @@ import {
 } from '../src/plugins/xerte-image-dimensions.js';
 
 test( 'normalizes pixel and percentage dimensions for CKEditor model attributes', () => {
-	assert.equal( normalizeDimension( '400' ), '400px' );
+	assert.equal( normalizeDimension( '50' ), '50%' );
 	assert.equal( normalizeDimension( '400px' ), '400px' );
 	assert.equal( normalizeDimension( '37.5%' ), '37.5%' );
+	assert.equal( normalizeDimension( '0.5' ), '0.5%' );
 } );
 
 test( 'rejects empty, zero, negative and unsupported dimensions', () => {
@@ -18,15 +19,20 @@ test( 'rejects empty, zero, negative and unsupported dimensions', () => {
 	}
 } );
 
-test( 'displays pixels without a suffix and retains percentages', () => {
-	assert.equal( displayDimension( '640px' ), '640' );
+test( 'preserves saved pixel and percentage units when displaying and saving dimensions', () => {
+	assert.equal( displayDimension( '640px' ), '640px' );
+	assert.equal( displayDimension( 640 ), '640px' );
 	assert.equal( displayDimension( '80%' ), '80%' );
 	assert.equal( displayDimension( 'auto' ), '' );
+	for ( const value of [ '640px', '37.5%', '0.5%' ] ) {
+		assert.equal( normalizeDimension( displayDimension( value ) ), value );
+	}
 } );
 
-test( 'preserves ratio for pixels and mirrors percentage sizing', () => {
-	assert.equal( proportionalDimension( '400px', 800, 600 ), '300' );
-	assert.equal( proportionalDimension( '50%', 800, 600 ), '50%' );
-	assert.equal( proportionalDimension( '400', 0, 0 ), '' );
+test( 'preserves pixel ratios and leaves the other axis automatic for percentage sizing', () => {
+	assert.equal( proportionalDimension( '400px', 800, 600 ), '300px' );
+	assert.equal( proportionalDimension( '50%', 800, 600 ), '' );
+	assert.equal( proportionalDimension( '50', 800, 600 ), '' );
+	assert.equal( proportionalDimension( '400px', 0, 0 ), '' );
 } );
 

@@ -44,6 +44,7 @@ function findAudio( selection ) {
 }
 
 function syncView( writer, div, settings ) {
+	writer.setStyle( 'width', '100%', div );
 	for ( const style of [ 'text-align', 'float', 'margin-left', 'margin-right' ] ) writer.removeStyle( style, div );
 	if ( settings.align !== 'none' ) writer.setStyle( 'text-align', settings.align, div );
 	if ( settings.align === 'left' || settings.align === 'right' ) {
@@ -52,6 +53,7 @@ function syncView( writer, div, settings ) {
 	}
 	const audio = Array.from( div.getChildren() ).find( child => child.is( 'element', 'audio' ) );
 	if ( !audio ) return;
+	writer.setStyle( 'width', '100%', audio );
 	writer.setAttribute( 'src', settings.src, audio );
 	writer.setAttribute( 'controls', 'controls', audio );
 	for ( const [ name, value ] of [ [ 'autoplay', settings.autoplay ], [ 'controlslist', settings.noDownload ], [ 'title', settings.title ] ] ) {

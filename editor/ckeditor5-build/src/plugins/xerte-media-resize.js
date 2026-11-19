@@ -33,11 +33,14 @@ export class XerteMediaResize extends Plugin {
 				const viewElement = conversionApi.mapper.toViewElement( modelElement );
 				if ( !viewElement || resizers.getResizerByViewElement( viewElement ) ) return;
 				resizers.attachTo( {
-					unit: 'px', modelElement, viewElement, editor,
+					unit: '%', modelElement, viewElement, editor,
 					getHandleHost: domWidget => domWidget,
 					getResizeHost: domWidget => domWidget,
 					isCentered: () => ( modelElement.getAttribute( 'mediaAlign' ) || 'center' ) === 'center',
-					onCommit: width => editor.model.change( writer => writer.setAttribute( 'mediaWidth', width, modelElement ) )
+					onCommit: width => editor.model.change( writer => {
+						writer.setAttribute( 'mediaWidth', width, modelElement );
+						writer.removeAttribute( 'mediaHeight', modelElement );
+					} )
 				} );
 			}, { priority: 'low' } );
 		} );

@@ -28,15 +28,18 @@ export function showImagePropertiesDialog( editor, initial, browseImage ) {
 		const sizeRow = document.createElement( 'div' ); sizeRow.style.cssText = 'display:flex;gap:12px;align-items:end;margin-top:12px';
 		const width = labeledInput( sizeRow, editor.t( 'Width' ), initial.width, '80px' );
 		const height = labeledInput( sizeRow, editor.t( 'Height' ), initial.height, '80px' );
+		width.placeholder = '%'; height.placeholder = editor.t( 'Auto' );
 		let ratioLocked = true;
 		let naturalWidth = initial.naturalWidth || 0;
 		let naturalHeight = initial.naturalHeight || 0;
 		let dimensionSource = initial.url;
 		let dimensionRequest = 0;
-		let resetToOriginal = false;
 		const lock = document.createElement( 'button' ); lock.type = 'button'; lock.textContent = '🔒'; lock.title = editor.t( 'Lock ratio' ); lock.setAttribute( 'aria-pressed', 'true' );
 		const reset = document.createElement( 'button' ); reset.type = 'button'; reset.textContent = '↻'; reset.title = editor.t( 'Reset size' );
 		sizeRow.append( lock, reset ); body.appendChild( sizeRow );
+		const help = document.createElement( 'div' );
+		help.textContent = editor.t( 'Sizes default to %. Add px for pixels. Leave height blank to keep the original proportions.' );
+		help.style.cssText = 'margin-top:8px;color:#555;font-size:12px'; body.appendChild( help );
 		const alignment = document.createElement( 'fieldset' ); alignment.style.cssText = 'border:0;padding:0;margin:14px 0 0';
 		const legend = document.createElement( 'legend' ); legend.textContent = editor.t( 'Alignment' ); alignment.appendChild( legend );
 		for ( const [ value, label ] of [ [ 'none', 'None' ], [ 'left', 'Align Left' ], [ 'center', 'Align Center' ], [ 'right', 'Align Right' ] ] ) {
@@ -54,27 +57,26 @@ export function showImagePropertiesDialog( editor, initial, browseImage ) {
 		const ok = document.createElement( 'button' ); ok.type = 'submit'; ok.textContent = editor.t( 'OK' ); ok.style.cssText = 'background:#07883d;color:#fff;border:0;padding:7px 18px;font-weight:bold';
 		actions.append( ok, cancel ); dialog.append( heading, body, actions ); overlay.appendChild( dialog ); document.body.appendChild( overlay );
 
-		const loadDimensions = async ( source, replaceFields = true ) => {
+		const loadDimensions = async source => {
 			const request = ++dimensionRequest;
 			const dimensions = await loadImageDimensions( source );
 			if ( request !== dimensionRequest || source !== url.value.trim() || !dimensions ) return null;
 			naturalWidth = dimensions.width; naturalHeight = dimensions.height;
 			dimensionSource = source;
-			if ( replaceFields ) { width.value = dimensions.width; height.value = dimensions.height; }
 			return dimensions;
 		};
-		if ( initial.url ) loadDimensions( initial.url, !initial.width && !initial.height );
+		if ( initial.url ) loadDimensions( initial.url );
 		browse.addEventListener( 'click', async () => {
 			const chosen = await browseImage();
-			if ( chosen ) { resetToOriginal = false; url.value = chosen; await loadDimensions( chosen ); alt.focus(); }
+			if ( chosen ) { url.value = chosen; await loadDimensions( chosen ); alt.focus(); }
 		} );
-		url.addEventListener( 'change', () => { resetToOriginal = false; loadDimensions( url.value.trim() ); } );
+		url.addEventListener( 'change', () => loadDimensions( url.value.trim() ) );
 		lock.addEventListener( 'click', () => {
 			ratioLocked = !ratioLocked; lock.textContent = ratioLocked ? '🔒' : '🔓'; lock.setAttribute( 'aria-pressed', String( ratioLocked ) );
 		} );
-		width.addEventListener( 'input', () => { resetToOriginal = false; syncRatioField( width, height, naturalWidth, naturalHeight, ratioLocked ); } );
-		height.addEventListener( 'input', () => { resetToOriginal = false; syncRatioField( height, width, naturalHeight, naturalWidth, ratioLocked ); } );
-		reset.addEventListener( 'click', async () => { if ( await loadDimensions( url.value.trim() ) ) resetToOriginal = true; } );
+		width.addEventListener( 'input', () => syncRatioField( width, height, naturalWidth, naturalHeight, ratioLocked ) );
+		height.addEventListener( 'input', () => syncRatioField( height, width, naturalHeight, naturalWidth, ratioLocked ) );
+		reset.addEventListener( 'click', () => { width.value = '100%'; height.value = ''; } );
 
 		let finished = false;
 		const finish = value => {
@@ -92,10 +94,10 @@ export function showImagePropertiesDialog( editor, initial, browseImage ) {
 			event.preventDefault();
 			const source = url.value.trim();
 			if ( !source ) { url.focus(); return; }
-			const widthValue = resetToOriginal ? null : normalizeDimension( width.value );
-			const heightValue = resetToOriginal ? null : normalizeDimension( height.value );
-			if ( !resetToOriginal && width.value && !widthValue ) { width.focus(); return; }
-			if ( !resetToOriginal && height.value && !heightValue ) { height.focus(); return; }
+			const widthValue = normalizeDimension( width.value );
+			const heightValue = normalizeDimension( height.value );
+			if ( width.value && !widthValue ) { width.focus(); return; }
+			if ( height.value && !heightValue ) { height.focus(); return; }
 			finish( {
 				url: source, alt: alt.value.trim(), width: widthValue, height: heightValue,
 				alignment: dialog.elements[ 'xerte-image-alignment' ].value,
@@ -138,6 +140,6 @@ function loadImageDimensions( url ) {
 function syncRatioField( source, target, sourceNatural, targetNatural, locked ) {
 	if ( !locked ) return;
 	const proportional = proportionalDimension( source.value, sourceNatural, targetNatural );
-	if ( proportional ) target.value = proportional;
+	if ( proportional || normalizeDimension( source.value )?.endsWith( '%' ) ) target.value = proportional;
 }
 

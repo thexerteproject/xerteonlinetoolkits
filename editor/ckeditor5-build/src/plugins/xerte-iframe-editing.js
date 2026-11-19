@@ -320,11 +320,15 @@ export class XerteIframeEditing extends Plugin {
 		this._domEmitter.listenTo( childDocument, 'mousemove', ( evt, event ) => resize._mouseMoveListener( evt, event ) );
 		this._domEmitter.listenTo( childDocument, 'mouseup', () => resize._mouseUpListener() );
 		this._domEmitter.listenTo( parentDocument, 'mousemove', ( evt, event ) => {
+			// Assistant lightboxes can detach the frame before editor teardown.
+			// Detached iframes have no contentWindow; ignore those mouse events.
+			const frameWindow = this.frame.contentWindow;
+			if ( !this.frame.isConnected || !frameWindow ) return;
 			const rect = this.frame.getBoundingClientRect();
 			// The resizer expects child-document page coordinates, including scroll.
 			resize._mouseMoveListener( evt, {
-				pageX: event.clientX - rect.left + this.frame.contentWindow.scrollX,
-				pageY: event.clientY - rect.top + this.frame.contentWindow.scrollY
+				pageX: event.clientX - rect.left + frameWindow.scrollX,
+				pageY: event.clientY - rect.top + frameWindow.scrollY
 			} );
 		} );
 	}

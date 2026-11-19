@@ -101,6 +101,14 @@ const toolbarItems = [
 const imageToolbar = [
 	'xerteImageProperties',
 	'|',
+	'imageStyle:inline',
+	'imageStyle:wrapText',
+	'imageStyle:breakText',
+	'|',
+	'resizeImage',
+	'|',
+	'toggleImageCaption',
+	'imageTextAlternative',
 	'linkImage'
 ];
 
@@ -264,7 +272,10 @@ const xerteDefaultConfig = {
 				model: 'div',
 				view: 'div',
 				title: 'Normal (DIV)',
-				class: 'ck-heading_div'
+				class: 'ck-heading_div',
+				// DIVs may be containers or widgets, not just text blocks. Let
+				// dedicated features and GHS preserve their structure first.
+				converterPriority: 'low'
 			}
 		]
 	},
@@ -300,7 +311,15 @@ const xerteDefaultConfig = {
 	},
 	image: {
 		toolbar: imageToolbar,
-		resizeUnit: 'px'
+		resizeUnit: '%',
+		resizeOptions: [
+			{ name: 'resizeImage:original', value: null, icon: 'original' },
+			{ name: 'resizeImage:custom', value: 'custom', icon: 'custom' },
+			{ name: 'resizeImage:25', value: '25', icon: 'small' },
+			{ name: 'resizeImage:50', value: '50', icon: 'medium' },
+			{ name: 'resizeImage:75', value: '75', icon: 'large' },
+			{ name: 'resizeImage:100', value: '100', icon: 'original' }
+		]
 	},
 	table: {
 		contentToolbar: tableContentToolbar,
@@ -319,7 +338,7 @@ const xerteDefaultConfig = {
 		}
 	},
 	link: {
-		toolbar: [ 'xerteLinkPreview', 'xerteEditPageLink', '|', 'xerteLinkTarget', 'xerteEditLink', 'unlink' ]
+		toolbar: [ 'xerteLinkPreview', 'xerteEditPageLink', '|', 'xerteEditLink', 'unlink' ]
 	},
 	language: {
 		ui: 'en',

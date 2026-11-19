@@ -242,27 +242,14 @@ function registerCleanup( editor ) {
 	} );
 }
 
-export function openLightboxDialog( editor, currentValue ) {
+export function createLightboxFields( editor, currentValue ) {
 	const t = editor.t;
 	const initial = normalizeLightbox( currentValue || {
 		type: 'iframe',
 		width: { value: '75', unit: 'vw' },
 		height: { value: '75', unit: 'vh' }
 	} );
-	const overlay = document.createElement( 'div' );
-	overlay.style.cssText = 'position:fixed;inset:0;z-index:2147483645;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:20px';
-
-	const form = document.createElement( 'form' );
-	form.setAttribute( 'role', 'dialog' );
-	form.setAttribute( 'aria-modal', 'true' );
-	form.setAttribute( 'aria-label', t( 'Lightbox settings' ) );
-	form.style.cssText = 'box-sizing:border-box;width:480px;max-width:95vw;padding:20px;border:1px solid #dbe2ea;border-radius:12px;background:#fff;color:#172033;box-shadow:0 24px 65px rgba(15,23,42,.3);font:14px system-ui,-apple-system,Segoe UI,Arial,sans-serif';
-
-	const heading = document.createElement( 'h2' );
-	heading.textContent = t( 'Lightbox settings' );
-	heading.style.cssText = 'margin:0 0 18px;font-size:18px';
-	form.appendChild( heading );
-
+	const form = document.createElement( 'div' );
 	const inputStyle = 'box-sizing:border-box;width:100%;margin-top:6px;padding:9px 10px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#172033;font:inherit';
 	const field = ( labelText, input, parent = form ) => {
 		const label = document.createElement( 'label' );
@@ -346,6 +333,44 @@ export function openLightboxDialog( editor, currentValue ) {
 		if ( matchUnits.input.checked ) heightUnit.value = matchingUnit( widthUnit.value, 'height' );
 	} );
 
+	const updateVisibility = () => {
+		imageOptions.hidden = type.value !== 'image';
+		iframeOptions.hidden = type.value !== 'iframe';
+		dimensionShortcuts.hidden = type.value !== 'iframe';
+	};
+	type.addEventListener( 'change', updateVisibility );
+	updateVisibility();
+	return {
+		element: form,
+		focus: () => type.focus(),
+		getValue: () => normalizeLightbox( {
+			type: type.value,
+			alt: alt.value.trim(),
+			width: width.value ? { value: width.value, unit: widthUnit.value } : null,
+			height: height.value ? { value: height.value, unit: heightUnit.value } : null,
+			extraStyles: initial.extraStyles
+		} )
+	};
+}
+
+export function openLightboxDialog( editor, currentValue ) {
+	const t = editor.t;
+	const overlay = document.createElement( 'div' );
+	overlay.style.cssText = 'position:fixed;inset:0;z-index:2147483645;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:20px';
+
+	const form = document.createElement( 'form' );
+	form.setAttribute( 'role', 'dialog' );
+	form.setAttribute( 'aria-modal', 'true' );
+	form.setAttribute( 'aria-label', t( 'Lightbox settings' ) );
+	form.style.cssText = 'box-sizing:border-box;width:480px;max-width:95vw;padding:20px;border:1px solid #dbe2ea;border-radius:12px;background:#fff;color:#172033;box-shadow:0 24px 65px rgba(15,23,42,.3);font:14px system-ui,-apple-system,Segoe UI,Arial,sans-serif';
+
+	const heading = document.createElement( 'h2' );
+	heading.textContent = t( 'Lightbox settings' );
+	heading.style.cssText = 'margin:0 0 18px;font-size:18px';
+	form.appendChild( heading );
+
+	const fields = createLightboxFields( editor, currentValue );
+	form.appendChild( fields.element );
 	const buttons = document.createElement( 'div' );
 	buttons.style.cssText = 'display:flex;justify-content:flex-end;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid #e5e7eb';
 	const remove = dialogButton( t( 'Remove lightbox' ), '#fff', '#b91c1c' );
@@ -357,17 +382,11 @@ export function openLightboxDialog( editor, currentValue ) {
 	buttons.append( remove, cancel, save );
 	form.appendChild( buttons );
 
-	const updateVisibility = () => {
-		imageOptions.hidden = type.value !== 'image';
-		iframeOptions.hidden = type.value !== 'iframe';
-		dimensionShortcuts.hidden = type.value !== 'iframe';
-	};
 	const close = () => {
 		overlay.remove();
 		editor.editing.view.focus();
 	};
 
-	type.addEventListener( 'change', updateVisibility );
 	cancel.addEventListener( 'click', close );
 	remove.addEventListener( 'click', () => {
 		editor.execute( 'xerteLightbox', null );
@@ -378,20 +397,13 @@ export function openLightboxDialog( editor, currentValue ) {
 	form.addEventListener( 'submit', event => {
 		event.preventDefault();
 		editor.execute( 'xerteLinkTarget', '' );
-		editor.execute( 'xerteLightbox', {
-			type: type.value,
-			alt: alt.value.trim(),
-			width: width.value ? { value: width.value, unit: widthUnit.value } : null,
-			height: height.value ? { value: height.value, unit: heightUnit.value } : null,
-			extraStyles: initial.extraStyles
-		} );
+		editor.execute( 'xerteLightbox', fields.getValue() );
 		close();
 	} );
 
 	overlay.appendChild( form );
 	document.body.appendChild( overlay );
-	updateVisibility();
-	type.focus();
+	fields.focus();
 }
 
 function createUnitSelect( dimension, t ) {

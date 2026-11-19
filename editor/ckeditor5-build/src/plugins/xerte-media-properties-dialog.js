@@ -24,7 +24,7 @@ export function showMediaPropertiesDialog( editor, media ) {
 		form.appendChild( heading );
 		const body = document.createElement( 'div' ); body.style.cssText = 'padding:14px';
 		form.appendChild( body );
-		media = media || { getAttribute: () => '' };
+		media = media || { getAttribute: name => name === 'mediaWidth' ? '100%' : '' };
 		const url = addField( body, editor.t( 'URL' ), media.getAttribute( 'url' ) || '' );
 		url.required = true;
 		const title = addField( body, editor.t( 'Title' ), media.getAttribute( 'mediaTitle' ) || '' );
@@ -33,12 +33,12 @@ export function showMediaPropertiesDialog( editor, media ) {
 		dimensions.style.cssText = 'display:flex;gap:12px;align-items:end;margin-top:12px;flex-wrap:wrap';
 		const width = addField( dimensions, editor.t( 'Width' ), displayDimension( media.getAttribute( 'mediaWidth' ) ), '90px' );
 		const height = addField( dimensions, editor.t( 'Height' ), displayDimension( media.getAttribute( 'mediaHeight' ) ), '90px' );
-		width.placeholder = 'px / %'; height.placeholder = 'px';
+		width.placeholder = '%'; height.placeholder = editor.t( 'Auto' );
 		const reset = makeButton( '↻', 'button' );
 		reset.title = editor.t( 'Reset size' ); reset.setAttribute( 'aria-label', editor.t( 'Reset size' ) );
 		dimensions.appendChild( reset ); body.appendChild( dimensions );
 		const help = document.createElement( 'div' );
-		help.textContent = editor.t( 'Width: pixels or % (e.g. 640 or 75%). Leave height blank to keep the original proportions.' );
+		help.textContent = editor.t( 'Sizes default to %. Add px for pixels. Leave height blank to keep the original proportions.' );
 		help.style.cssText = 'margin-top:8px;color:#555;font-size:12px'; body.appendChild( help );
 		const align = document.createElement( 'fieldset' );
 		align.style.cssText = 'border:0;padding:0;margin:14px 0 0';
@@ -84,7 +84,7 @@ export function showMediaPropertiesDialog( editor, media ) {
 			event.stopPropagation();
 			finish( null );
 		};
-		reset.addEventListener( 'click', () => { width.value = ''; height.value = ''; } );
+		reset.addEventListener( 'click', () => { width.value = '100%'; height.value = ''; } );
 		cancel.addEventListener( 'click', () => finish( null ) );
 		form.addEventListener( 'submit', event => {
 			event.preventDefault();
@@ -93,7 +93,7 @@ export function showMediaPropertiesDialog( editor, media ) {
 				url.reportValidity();
 				return;
 			}
-			if ( !validDimension( width.value, true ) || !validDimension( height.value, false ) ) {
+			if ( !validDimension( width.value ) || !validDimension( height.value ) ) {
 				window.alert( editor.t( 'Enter a positive number, optionally followed by px or %.' ) );
 				return;
 			}
@@ -130,7 +130,7 @@ function makeButton( text, type ) {
 	return button;
 }
 
-function validDimension( value, allowPercent ) {
-	return !value.trim() || new RegExp( `^(?:[1-9]\\d*(?:\\.\\d+)?)(?:px${ allowPercent ? '|%' : '' })?$`, 'i' ).test( value.trim() );
+function validDimension( value ) {
+	return !value.trim() || !!normalizeDimension( value );
 }
 
