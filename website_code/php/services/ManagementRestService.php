@@ -6,7 +6,7 @@
  * feeds, licenses, categories, educationlevels, grouping, course, uploads.
  */
 
-require_once dirname(__FILE__) . "/../../../../config.php";
+require_once dirname(__FILE__) . "/../../../config.php";
 require_once dirname(__FILE__) . "/../user_library.php";
 
 function management_rest_load_language_sets()
