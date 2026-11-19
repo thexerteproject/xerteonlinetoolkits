@@ -106,7 +106,15 @@ export function showImagePropertiesDialog( editor, initial, browseImage ) {
 			} );
 		} );
 		cancel.addEventListener( 'click', () => finish( null ) );
-		overlay.addEventListener( 'click', event => { if ( event.target === overlay ) finish( null ); } );
+		// A drag from a field to the backdrop can also produce a click on the overlay.
+		let backdropClick = false;
+		overlay.addEventListener( 'pointerdown', event => { backdropClick = event.button === 0 && event.target === overlay; } );
+		overlay.addEventListener( 'pointerup', event => { backdropClick = backdropClick && event.button === 0 && event.target === overlay; } );
+		overlay.addEventListener( 'pointercancel', () => { backdropClick = false; } );
+		overlay.addEventListener( 'click', event => {
+			if ( backdropClick && event.target === overlay ) finish( null );
+			backdropClick = false;
+		} );
 		document.addEventListener( 'keydown', onKeydown, true );
 		url.focus();
 	} );

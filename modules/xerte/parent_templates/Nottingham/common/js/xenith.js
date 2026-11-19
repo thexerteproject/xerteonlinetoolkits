@@ -2166,7 +2166,7 @@ function x_continueSetUp1() {
 					}
 					if (x_params.backgroundGrey == "true") {
 						// uses a jquery plugin as just css way won't work in all browsers
-						x_insertCSS(x_templateLocation + "common/js/gray-gh-pages/css/gray.css", function() {
+						x_insertCSS(x_siteUrl + "modules/common/js/gray-gh-pages/css/gray.css", function() {
 							$x_background.append('<img id="x_mainBg" class="grayscale" alt="" src="' + x_evalURL(x_params.background) + '"/>');
 							$("#x_mainBg").css({
 								"opacity"	:Number(alpha/100),
@@ -3342,8 +3342,8 @@ function x_changePageStep3() {
 				if (mediaExists) {
 					if (x_currentPageXML.getAttribute("bgImageGrey") == "true") {
 						// load css for jquery greyscale plugin if not already loaded
-						if (!$("link[href='" + x_templateLocation + "common/js/gray-gh-pages/css/gray.css']").length) {
-							x_insertCSS(x_templateLocation + "common/js/gray-gh-pages/css/gray.css", x_loadPageBg(loadModel));
+						if (!$("link[href='" + x_siteUrl + "modules/common/js/gray-gh-pages/css/gray.css']").length) {
+							x_insertCSS(x_siteUrl + "modules/common/js/gray-gh-pages/css/gray.css", x_loadPageBg(loadModel));
 						} else {
 							// css required will already be loaded (either already loaded for this title page or already loaded for LO bg image)
 							x_loadPageBg(loadModel);

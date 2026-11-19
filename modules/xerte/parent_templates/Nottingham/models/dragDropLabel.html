@@ -42,12 +42,9 @@
 
                 // resize image to max that will fit space
                 var $image = $("#image"),
-                    prevW = $image.width(),
-                    labelHolderH = labelPos != "text" ? $("#labelHolder").height() : 0,
-                    imgSize = x_currentPageXML.getAttribute("imgWidth") == undefined || x_currentPageXML.getAttribute("imgWidth") == "Medium" ? 0.5 : x_currentPageXML.getAttribute("imgWidth") == "Small" ? 0.3 : 0.8;
+                    prevW = $image.width();
 
-                x_scaleImg($image, $x_innerPage.width() * imgSize, x_getAvailableHeight([$("#mainPanel"), $("#dragDropHolderLabelling")], [labelHolderH]));
-                $("#labelHolder").width($image.width());
+                this.resizeImage();
 
                 // adjust target sizes and positions
                 var resetTargets = false;
@@ -214,7 +211,7 @@
                 var	$labelHolder = $("#labelHolder"),
                     tempData = [];
 
-                $labelHolder.empty();
+                $labelHolder.empty().css("min-height", "");
                 $("#infoHolder").empty();
                 $("#textHolder hr:eq(1)").show();
                 $pageContents.data("selectedLabel", "");
@@ -389,9 +386,26 @@
 
             this.imgLoaded = function() {
                 // labels have been created and image loaded - can now resize image to fit space and create targets on it
+                this.resizeImage(true);
+
+                this.drawTargets();
+
+                x_pageLoaded();
+            };
+
+            this.resizeImage = function(firstScale) {
+                // Share sizing between load and interaction: load used 60%/40% for Medium/Small,
+                // but sizeChanged used 50%/30%, making the image jump when selecting or dropping a label.
                 var $image = $("#image"),
-                    labelHolderH = labelPos != "text" ? $("#labelHolder").height() : 0,
+                    $labelHolder = $("#labelHolder"),
+                    labelHolderH = labelPos != "text" ? $labelHolder.height() : 0,
                     imgSize = x_currentPageXML.getAttribute("imgWidth") == undefined || x_currentPageXML.getAttribute("imgWidth") == "Medium" ? 0.6 : x_currentPageXML.getAttribute("imgWidth") == "Small" ? 0.4 : 0.8;
+
+                // Dropped labels leave normal flow. Reserve their tray space so the image
+                // does not grow as rows disappear or the final label is placed.
+                if (labelPos != "text") {
+                    $labelHolder.css("min-height", labelHolderH);
+                }
 
                 const maxW = x_browserInfo.mobile != true ? imgSize : 1;
                 const maxH = 1;
@@ -402,13 +416,14 @@
                 imgMaxW -= ($("#mainPanel").outerWidth(true) - $("#mainPanel").width()) + ($x_pageDiv.outerWidth() - $x_pageDiv.width()) + ($("#dragDropHolderLabelling").outerWidth(true) - $("#dragDropHolderLabelling").width());
                 imgMaxH -= ($("#mainPanel").outerHeight(true) - $("#mainPanel").height()) + labelHolderH + ($x_pageDiv.outerHeight(true) - $x_pageDiv.height()) + ($("#dragDropHolderLabelling").outerHeight(true) - $("#dragDropHolderLabelling").height());
 
-                x_scaleImg($image, imgMaxW, imgMaxH, true, true);
+                x_scaleImg($image, imgMaxW, imgMaxH, true, firstScale);
 
-                $("#labelHolder").width(x_browserInfo.mobile != true ? (labelPos == "text" ? "auto" : $image.width()) : "100%");
+                $labelHolder.width(x_browserInfo.mobile != true ? (labelPos == "text" ? "auto" : $image.width()) : "100%");
 
-                this.drawTargets();
-
-                x_pageLoaded();
+                // A narrower tray may wrap onto more rows; reserve those before drawing targets.
+                if (labelPos != "text" && $labelHolder.height() > labelHolderH) {
+                    this.resizeImage(false);
+                }
             };
 
             this.drawTargets = function() {

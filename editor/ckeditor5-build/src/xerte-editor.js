@@ -107,13 +107,8 @@ const imageToolbar = [
 const tableWidgetToolbar = [ 'tableProperties', 'toggleTableCaption' ];
 
 const tableContentToolbar = [
-	'insertTableColumnLeft',
-	'insertTableColumnRight',
-	'deleteTableColumn',
-	'|',
-	'insertTableRowAbove',
-	'insertTableRowBelow',
-	'deleteTableRow',
+	'tableColumn',
+	'tableRow',
 	'|',
 	'mergeTableCells',
 	'tableProperties',
