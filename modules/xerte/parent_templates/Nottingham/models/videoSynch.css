@@ -11,7 +11,12 @@
 
 #infoHolder .myImg {
 	text-align: center;
+	padding-bottom: 1em;
+}
+
+#infoHolder .syncTxt + .myImg {
 	padding-top: 1em;
+	padding-bottom: 0em;
 }
 
 #infoHolder .myImg figcaption {

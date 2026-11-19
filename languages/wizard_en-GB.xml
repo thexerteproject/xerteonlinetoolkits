@@ -46,7 +46,7 @@
 	<optionalAssistantPropHTML label="Ai features and tools" general="Assistants"/>
 	<chkShowLanguage label="Show Language Options" tooltip="If language options are available, show them."/>
 	<chkShowAdvanced label="Show Advanced Options" tooltip="If advanced options are available, show them."/>
-    <chkShowToolbar label="Expand Toolbar" tooltip="Expand or contract all fixed editor toolbars on this page."/>
+    <chkShowToolbar label="Expand Toolbar" tooltip="Expand or collapse all fixed editor toolbars on this page."/>
 	<chkShowGroups label="Expand Groups" tooltip="Expand all optional property groups by default."/>
 	<compMedia tooltip="Import Media"/>
 	<compPreview tooltip="Preview" error="Preview unavailable"/>
@@ -230,6 +230,25 @@
 			<selectFile>Select scene first!</selectFile>
 		</Error>
     </edit360View>
+
+	<synchPoint>
+		<pickerTooltip>Sync point picker</pickerTooltip>
+		<currentTime>Current time</currentTime>
+		<relativeNote>Stored as relative offset</relativeNote>
+		<relativeHint>Choosing a new point will save an absolute time.</relativeHint>
+		<Instructions>
+			<header>Instructions:</header>
+			<play>Play or manually scrub the media to the required position.</play>
+			<set>Click the &#9745; Ok button to set the sync point.</set>
+			<cancel>Click the &#9746; cancel button to cancel without saving.</cancel>
+		</Instructions>
+		<Error>
+			<selectMedia>No media found. Select media before creating sync points.</selectMedia>
+			<invalidMedia>Invalid media source. Select media before creating sync points.</invalidMedia>
+			<loadFailed>There is a problem loading the media player. Create manual sync points instead.</loadFailed>
+		</Error>
+	</synchPoint>
+
 	<fontawesome>
 		<preview>Icon preview</preview>
 		<select>Select Icon</select>

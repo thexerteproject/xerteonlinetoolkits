@@ -81,6 +81,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
 
     $flash_js_dir = "modules/" . $row['template_framework'] . "/";
     $template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . "/";
+    $common_path = "modules/common/";
     $rlo_file = $template_path . $row['template_name'] . ".rlt";
     if (file_exists("modules/" . $row['template_framework'] . "/templates/" . $row['template_name'] . "/wizards/" . $xmlFixer->getLanguage() . "/data.xwd"))
     {
@@ -463,7 +464,7 @@ function show_template_page($row, $datafile="", $xapi_enabled = false)
         $page_content = str_replace("%EMBED_SUPPORT%", $embedsupport, $page_content);
 
         // Check popcorn mediasite and peertube config files
-        $popcorn_config = popcorn_config($template_path . "common/", $version);
+        $popcorn_config = popcorn_config($common_path, $version);
         $page_content = str_replace("%POPCORN_CONFIG%", $popcorn_config, $page_content);
         $page_content = str_replace("%TOKEN%", $_SESSION['token'], $page_content);
 

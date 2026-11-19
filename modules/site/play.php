@@ -113,6 +113,7 @@ function show_template($row, $xapi_enabled=false){
     $string_for_flash_xml = $xmlfile;
 
 	$template_path = "modules/" . $row['template_framework'] . "/parent_templates/" . $row['parent_template'] . "/";
+    $common_path = "modules/common/";
     $js_dir = "modules/" . $row['template_framework'] . "/";
 
     list($x, $y) = explode("~",get_template_screen_size($row['template_name'],$row['template_framework']));
@@ -336,7 +337,7 @@ function show_template($row, $xapi_enabled=false){
     }
 
     // Check popcorn mediasite and peertube config files
-    $popcorn_config = popcorn_config($template_path . "common/", $version);
+    $popcorn_config = popcorn_config($common_path, $version);
     $page_content = str_replace("%POPCORN_CONFIG%", $popcorn_config, $page_content);
 
     echo $page_content;
