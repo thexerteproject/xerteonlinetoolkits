@@ -108,6 +108,10 @@ function access($attr, $path, $data, $volume) {
 
 function sanitizeName($cmd, $result, $args, $elfinder)
 {
+    if (!isset($result['added']))
+    {
+        return true;
+    }
     $files = $result['added'];
     foreach ($files as $file) {
         $filename = str_replace(' ', '_' , $file['name']);
