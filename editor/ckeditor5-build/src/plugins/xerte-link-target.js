@@ -7,11 +7,10 @@ import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { IconWeb } from 'ckeditor5/src/icons.js';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
 import { priorities } from 'ckeditor5/src/utils.js';
-import { openLightboxDialog } from './xerte-lightbox.js';
+import { openLinkDialog } from './xerte-link-dialog.js';
 import { hideForXertePageLink } from './xerte-page-link.js';
 
 const MODEL_ATTRIBUTE = 'linkXerteTarget';
-const STANDARD_TARGETS = new Set( [ '_blank', '_parent', '_top' ] );
 
 class XerteLinkTargetCommand extends Command {
 	refresh() {
@@ -57,7 +56,7 @@ export class XerteLinkTarget extends Plugin {
 			button.set( { label: editor.t( 'Link target' ), icon: IconWeb, tooltip: true } );
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
 			hideForXertePageLink( editor, button );
-			button.on( 'execute', () => openTargetDialog( editor ) );
+			button.on( 'execute', () => openLinkDialog( editor ) );
 			return button;
 		} );
 	}
@@ -169,67 +168,4 @@ function registerCleanup( editor ) {
 		}
 		return changed;
 	} );
-}
-
-function openTargetDialog( editor ) {
-	const targetCommand = editor.commands.get( 'xerteLinkTarget' );
-	const lightboxCommand = editor.commands.get( 'xerteLightbox' );
-	const storedTarget = targetCommand.value || '';
-	const current = lightboxCommand.value ? '_lightbox' : storedTarget === '_self' ? '' : storedTarget;
-	const overlay = document.createElement( 'div' );
-	overlay.style.cssText = 'position:fixed;inset:0;z-index:2147483645;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:20px';
-	const form = document.createElement( 'form' );
-	form.setAttribute( 'role', 'dialog' );
-	form.setAttribute( 'aria-modal', 'true' );
-	form.style.cssText = 'box-sizing:border-box;width:440px;max-width:95vw;padding:20px;border:1px solid #dbe2ea;border-radius:12px;background:#fff;color:#172033;box-shadow:0 24px 65px rgba(15,23,42,.3);font:14px system-ui,-apple-system,Segoe UI,Arial,sans-serif';
-	form.innerHTML = '<h2 style="margin:0 0 18px;font-size:18px">Link target</h2>';
-
-	const select = document.createElement( 'select' );
-	select.style.cssText = 'box-sizing:border-box;width:100%;padding:9px 10px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#172033;font:inherit';
-	for ( const [ value, label ] of [
-		[ '', 'Same window' ], [ '_blank', 'New window/tab' ], [ '_parent', 'Parent window' ],
-		[ '_top', 'Topmost window' ], [ '_lightbox', 'Lightbox' ]
-	] ) select.add( new Option( editor.t( label ), value ) );
-
-	const isCustom = current && current !== '_lightbox' && !STANDARD_TARGETS.has( current );
-	if ( isCustom ) select.add( new Option( `${ editor.t( 'Existing named frame' ) }: ${ current }`, current ) );
-	select.value = current;
-	form.appendChild( select );
-
-	const buttons = document.createElement( 'div' );
-	buttons.style.cssText = 'display:flex;justify-content:flex-end;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid #e5e7eb';
-	const cancel = makeButton( editor.t( 'Cancel' ), '#fff', '#475569' );
-	const save = makeButton( editor.t( 'Save' ), '#2563eb', '#fff' );
-	save.type = 'submit';
-	buttons.append( cancel, save ); form.appendChild( buttons ); overlay.appendChild( form ); document.body.appendChild( overlay );
-	const close = () => { overlay.remove(); editor.editing.view.focus(); };
-	cancel.addEventListener( 'click', close );
-	overlay.addEventListener( 'click', event => { if ( event.target === overlay ) close(); } );
-	overlay.addEventListener( 'keydown', event => { if ( event.key === 'Escape' ) close(); } );
-	const showLightboxSettings = () => {
-		close();
-		openLightboxDialog( editor, lightboxCommand.value );
-	};
-	select.addEventListener( 'change', () => {
-		if ( select.value === '_lightbox' ) showLightboxSettings();
-	} );
-	form.addEventListener( 'submit', event => {
-		event.preventDefault();
-		let target = select.value;
-		if ( target === '_lightbox' ) {
-			showLightboxSettings();
-			return;
-		}
-		editor.execute( 'xerteLightbox', null );
-		editor.execute( 'xerteLinkTarget', target );
-		close();
-	} );
-	select.focus();
-}
-
-function makeButton( text, background, color ) {
-	const button = document.createElement( 'button' );
-	button.type = 'button'; button.textContent = text;
-	button.style.cssText = `min-height:38px;padding:8px 14px;border:1px solid #cbd5e1;border-radius:8px;background:${ background };color:${ color };font:600 14px system-ui,-apple-system,Segoe UI,Arial,sans-serif;cursor:pointer`;
-	return button;
 }

@@ -4,6 +4,7 @@
  */
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { normalizeDimension } from './xerte-image-dimensions.js';
 
 export class XerteMediaEmbedRoundTrip extends Plugin {
 	static get pluginName() {
@@ -42,8 +43,8 @@ export class XerteMediaEmbedRoundTrip extends Plugin {
 				const preset = [ ...( figure?.getClassNames() || [] ), ...viewElement.getClassNames() ]
 					.find( name => /^embed-(240|360|480|720|1080)p$/.test( name ) );
 				if ( preset ) attributes.mediaStyle = preset;
-				if ( validDimension( width, true ) ) attributes.mediaWidth = width;
-				if ( validDimension( height, false ) ) attributes.mediaHeight = height;
+				if ( normalizeDimension( width ) ) attributes.mediaWidth = normalizeDimension( width );
+				if ( normalizeDimension( height ) ) attributes.mediaHeight = normalizeDimension( height );
 				const title = figure && ( figure.getAttribute( 'data-xerte-media-title' ) || figure.getAttribute( 'title' ) ) || iframe && iframe.getAttribute( 'title' );
 				const ariaLabel = figure && ( figure.getAttribute( 'data-xerte-media-aria-label' ) || figure.getAttribute( 'aria-label' ) ) || iframe && iframe.getAttribute( 'aria-label' );
 				const align = figure && figure.getAttribute( 'data-xerte-media-align' ) || alignmentFromStyles( figure );
@@ -56,10 +57,6 @@ export class XerteMediaEmbedRoundTrip extends Plugin {
 			converterPriority: 'high'
 		} );
 	}
-}
-
-function validDimension( value, allowPercent ) {
-	return value && new RegExp( `^(?:[1-9]\\d*(?:\\.\\d+)?)(?:px${ allowPercent ? '|%' : '' })$`, 'i' ).test( value );
 }
 
 function alignmentFromStyles( figure ) {

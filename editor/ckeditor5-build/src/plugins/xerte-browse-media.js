@@ -16,6 +16,17 @@ export class XerteBrowseMedia extends Plugin {
 	init() {
 		const editor = this.editor;
 		registerImageHeightConversion( editor );
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		// URL insertion, uploads and auto-linked image URLs share this entry point.
+		// Existing-image type conversions must retain the author's chosen size.
+		imageUtils.decorate( 'insertImage' );
+		this.listenTo( imageUtils, 'insertImage', ( event, args ) => {
+			if ( imageUtils.isImage( args[ 1 ]?.getSelectedElement?.() ) ) return;
+			const attributes = args[ 0 ] || {};
+			if ( attributes.resizedWidth === undefined && attributes.resizedHeight === undefined ) {
+				args[ 0 ] = { ...attributes, resizedWidth: '100%' };
+			}
+		}, { priority: 'high' } );
 		const browseUrl = editor.config.get( 'xerteBrowseMediaUrl' );
 		const browseImageUrl = editor.config.get( 'xerteBrowseImageUrl' );
 
@@ -105,7 +116,7 @@ export function openImagePropertiesDialog( editor, image = null ) {
 		naturalHeight: Number( image.getAttribute( 'height' ) ) || 0,
 		alignment: alignmentFromImage( image ),
 		captioned: hasCaption( image )
-	} : { url: '', alt: '', width: '', height: '', naturalWidth: 0, naturalHeight: 0, alignment: 'none', captioned: false };
+	} : { url: '', alt: '', width: '100%', height: '', naturalWidth: 0, naturalHeight: 0, alignment: 'none', captioned: false };
 
 	return showImagePropertiesDialog( editor, initial, () => browseMedia( browseUrl ) ).then( values => {
 		if ( !values ) return null;

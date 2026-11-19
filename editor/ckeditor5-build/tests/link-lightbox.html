@@ -4,7 +4,7 @@
 <h1>Link target and lightbox regression checks</h1>
 <pre id="results">Running…</pre>
 <div id="editor"></div>
-<script src="../../js/vendor/ckeditor5/xerte-editor.bundle.js?lightbox-regression=4"></script>
+<script src="../../js/vendor/ckeditor5/xerte-editor.bundle.js?link-properties-regression=5"></script>
 <script>
 ( async () => {
 	const results = document.querySelector( '#results' );
@@ -50,24 +50,25 @@
 		const targetButton = editor.ui.componentFactory.create( 'xerteLinkTarget' );
 		targetButton.fire( 'execute' );
 		let dialog = document.querySelector( '[role="dialog"]' );
-		assert( dialog.querySelector( 'select' ).value === '_lightbox', 'Target dialog must select Lightbox after reload' );
-		dialog.querySelector( 'button' ).click();
+		assert( dialog.querySelector( '[name=target]' ).value === '_lightbox', 'Target dialog must select Lightbox after reload' );
+		Array.from( dialog.querySelectorAll( 'button' ) ).find( button => button.textContent === 'Cancel' ).click();
 		editor.execute( 'xerteLightbox', null );
 		editor.execute( 'xerteLinkTarget', '_blank' );
 		targetButton.fire( 'execute' );
-		const targetSelect = document.querySelector( '[role="dialog"] select' );
+		const targetSelect = document.querySelector( '[role="dialog"] [name=target]' );
 		targetSelect.value = '_lightbox';
 		targetSelect.dispatchEvent( new Event( 'change' ) );
-		dialog = document.querySelector( '[aria-label="Lightbox settings"]' );
-		assert( dialog, 'Selecting Lightbox must immediately show its settings' );
+		dialog = document.querySelector( '[role="dialog"]' );
+		assert( dialog.querySelector( 'input[type=number]' ).checkVisibility(), 'Selecting Lightbox must show inline settings' );
+		assert( document.querySelectorAll( '[role="dialog"]' ).length === 1, 'Lightbox settings must stay in the link form' );
 		Array.from( dialog.querySelectorAll( 'button' ) ).find( button => button.textContent === 'Cancel' ).click();
 		assert( linkedItem().getAttribute( 'linkXerteTarget' ) === '_blank', 'Cancel must retain original target' );
-		passed.push( 'PASS: Lightbox opens immediately and Cancel preserves the target' );
+		passed.push( 'PASS: Lightbox expands inline and Cancel preserves the target' );
 		targetButton.fire( 'execute' );
-		const selectAgain = document.querySelector( '[role="dialog"] select' );
+		const selectAgain = document.querySelector( '[role="dialog"] [name=target]' );
 		selectAgain.value = '_lightbox';
 		selectAgain.dispatchEvent( new Event( 'change' ) );
-		dialog = document.querySelector( '[aria-label="Lightbox settings"]' );
+		dialog = document.querySelector( '[role="dialog"]' );
 		dialog.querySelector( 'input[type="number"]' ).value = '58';
 		dialog.dispatchEvent( new Event( 'submit', { cancelable: true } ) );
 		assert( !linkedItem().hasAttribute( 'linkXerteTarget' ), 'Saving lightbox must remove window target' );
@@ -92,6 +93,106 @@
 		lightboxButton.destroy();
 		passed.push( 'PASS: switching to image mode retains width and height after saving and reopening' );
 		targetButton.destroy();
+		const linkButton = editor.ui.componentFactory.create( 'xerteLink' );
+		const openProperties = () => {
+			linkButton.fire( 'execute' );
+			return document.querySelector( '[role="dialog"]' );
+		};
+		const chooseTarget = ( form, value ) => {
+			const input = form.querySelector( '[name=target]' );
+			input.value = value;
+			input.dispatchEvent( new Event( 'change' ) );
+		};
+		const submit = form => form.dispatchEvent( new Event( 'submit', { cancelable: true } ) );
+		const selectText = collapsed => editor.model.change( writer => {
+			const paragraph = editor.model.document.getRoot().getChild( 0 );
+			if ( collapsed ) writer.setSelection( paragraph, 0 );
+			else writer.setSelection( writer.createRangeIn( paragraph ) );
+		} );
+		const checkTarget = ( target, message ) => {
+			const items = Array.from( editor.model.createRangeIn( editor.model.document.getRoot() ).getItems() )
+				.filter( item => item.hasAttribute( 'linkHref' ) );
+			assert( items.length, `${ message }: link missing` );
+			assert( items.every( item => ( item.getAttribute( 'linkXerteTarget' ) || '' ) === target ), `${ message }: incorrect target` );
+		};
+		for ( const collapsed of [ false, true ] ) {
+			for ( const target of [ '', '_blank', '_parent', '_top', '_lightbox' ] ) {
+				editor.setData( '<p>Example</p>' );
+				selectText( collapsed );
+				const before = editor.getData();
+				dialog = openProperties();
+				assert( dialog.querySelector( '[name=target]' ).value === '_blank', 'New links must default to new window/tab' );
+				dialog.querySelector( 'input[type=text]' ).value = 'example.com/new';
+				chooseTarget( dialog, target );
+				submit( dialog );
+				assert( !document.querySelector( '[role="dialog"]' ), 'Save must close the form' );
+				const context = `new ${ collapsed ? 'caret' : 'selection' } link, target ${ target || 'same window' }`;
+				checkTarget( target === '_lightbox' ? '' : target, context );
+				assert( !!linkedItem().getAttribute( 'linkXerteLightbox' ) === ( target === '_lightbox' ), `${ context }: incorrect lightbox` );
+				const saved = editor.getData();
+				editor.execute( 'undo' );
+				assert( editor.getData() === before, `${ context }: one Undo must restore original content` );
+				editor.execute( 'redo' );
+				assert( editor.getData() === saved, `${ context }: Redo must restore all properties` );
+				editor.setData( saved );
+				checkTarget( target === '_lightbox' ? '' : target, context + ' after reload' );
+				passed.push( `PASS: ${ context }, reload and single-step Undo/Redo` );
+			}
+		}
+		for ( const target of [ '', '_self', '_blank', '_parent', '_top', 'named-frame' ] ) {
+			editor.setData( `<p><a href="https://example.com"${ target ? ` target="${ target }"` : '' }>https://example.com</a></p>` );
+			editor.model.change( writer => writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 2 ) );
+			dialog = openProperties();
+			assert( dialog.querySelector( '[name=target]' ).value === target, `${ target }: existing target must be selected` );
+			dialog.querySelector( 'input[type=text]' ).value = 'example.com/changed';
+			submit( dialog );
+			checkTarget( target, `edited URL-as-text ${ target }` );
+			assert( editor.getData().includes( 'https://example.com/changed' ), 'URL edit must save' );
+			passed.push( `PASS: editing a URL-as-text link retains ${ target || 'same window' }` );
+		}
+		for ( const html of [
+			'<p><img src="sample.png" alt="Thumbnail"></p>',
+			'<figure class="image"><img src="sample.png" alt="Thumbnail"></figure>'
+		] ) {
+			editor.setData( html );
+			const image = Array.from( editor.model.createRangeIn( editor.model.document.getRoot() ).getItems() )
+				.find( item => item.is( 'element', 'imageBlock' ) || item.is( 'element', 'imageInline' ) );
+			editor.model.change( writer => writer.setSelection( image, 'on' ) );
+			dialog = openProperties();
+			dialog.querySelector( 'input[type=text]' ).value = 'example.com/image';
+			chooseTarget( dialog, '_parent' );
+			submit( dialog );
+			checkTarget( '_parent', image.name );
+			dialog = openProperties();
+			chooseTarget( dialog, '_lightbox' );
+			submit( dialog );
+			assert( image.getAttribute( 'linkXerteLightbox' )?.type === 'iframe', 'Image lightbox settings missing' );
+			assert( !image.hasAttribute( 'linkXerteTarget' ), 'Image lightbox must remove window target' );
+			passed.push( `PASS: ${ image.name } link and lightbox save through properties` );
+		}
+		editor.setData( '<p><a href="https://example.com" data-featherlight="image" data-image-alt="A picture" data-featherlight-iframe-style="width:62vw;height:480px;border:0">Example</a></p>' );
+		editor.model.change( writer => writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 2 ) );
+		const original = editor.getData();
+		dialog = openProperties();
+		assert( dialog.querySelector( '[name=target]' ).value === '_lightbox', 'Lightbox must be restored in properties' );
+		assert( dialog.querySelectorAll( 'select' )[ 2 ].value === 'image', 'Lightbox type must be restored' );
+		assert( dialog.querySelectorAll( 'input[type=text]' )[ 1 ].value === 'A picture', 'Lightbox alt text must be restored' );
+		assert( dialog.querySelector( 'input[type=number]' ).value === '62', 'Lightbox size must be restored' );
+		submit( dialog );
+		assert( editor.getData() === original, 'Saving properties must preserve all lightbox settings' );
+		dialog = openProperties();
+		chooseTarget( dialog, '_top' );
+		dialog.querySelector( 'input[type=text]' ).value = 'discarded.example';
+		Array.from( dialog.querySelectorAll( 'button' ) ).find( button => button.textContent === 'Cancel' ).click();
+		assert( editor.getData() === original, 'Cancel must discard URL and target edits' );
+		dialog = openProperties();
+		chooseTarget( dialog, '' );
+		submit( dialog );
+		assert( !linkedItem().hasAttribute( 'linkXerteLightbox' ), 'Choosing same window must remove lightbox settings' );
+		checkTarget( '', 'lightbox replaced by same window' );
+		passed.push( 'PASS: properties preserve saved lightbox settings, cancel edits and replace lightbox with a window target' );
+		linkButton.destroy();
+		window.testEditor = editor;
 		results.textContent = passed.join( '\n' );
 	} catch ( error ) {
 		results.textContent = passed.join( '\n' ) + '\nFAIL: ' + error.stack;

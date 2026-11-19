@@ -261,6 +261,17 @@ export class XerteLegacyStyles extends Plugin {
 	afterInit() {
 		const { editor } = this;
 		const { model } = editor;
+		const heading = editor.commands.get( 'heading' );
+		if ( heading && heading.modelElements.includes( 'div' ) ) {
+			const refreshHeading = heading.refresh.bind( heading );
+			heading.refresh = () => {
+				refreshHeading();
+				// GHS reads text-only DIVs as htmlDivParagraph so containers can
+				// retain their own structure. Keep the existing format label active.
+				const block = model.document.selection.getSelectedBlocks().next().value;
+				if ( block?.name === 'htmlDivParagraph' ) heading.value = 'div';
+			};
+		}
 		const html = editor.plugins.get( 'GeneralHtmlSupport' );
 		const command = editor.commands.get( 'style' );
 		const custom = new Map( ( editor.config.get( 'style.definitions' ) || [] )
