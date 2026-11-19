@@ -1,10 +1,8 @@
 <?php
 
-require_once("../../../config.php");
-require_once("../user_library.php");
-require_once("../folder_library.php");
-
-
+require_once(__DIR__ . "/../../../config.php");
+require_once(__DIR__ . "/../user_library.php");
+require_once(__DIR__ . "/../folder_library.php");
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
