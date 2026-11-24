@@ -1524,7 +1524,20 @@ function x_continueSetUp1() {
 
 						const $introHolder = $('<div id="x_pageIntroHolder"><div id="x_pageIntroTxt"><div id="x_pageIntroTxtInner"></div></div></div>');
 
-						$introHolder.find('#x_pageIntroTxtInner').html(introInfo.info);
+						introInfoTxt = introInfo.info;
+
+						// check text for variables - if found replace with variable value
+						// also handle case where comma decimal separator has been requested
+						if (XENITH.VARIABLES && XENITH.VARIABLES.exist()) {
+							introInfoTxt = XENITH.VARIABLES.replaceVariables(introInfoTxt, x_params.decimalseparator);
+						}
+
+						// check text for global variables - if found replace with variable value
+						if (x_params.globalVars == 'true') {
+							introInfoTxt = XENITH.GLOBALVARS.replaceGlobalVars(introInfoTxt);
+						}
+
+						$introHolder.find('#x_pageIntroTxtInner').html(introInfoTxt);
 
 						// include project title
 						if (x_params.introTitle == 'true') {
@@ -1691,7 +1704,20 @@ function x_continueSetUp1() {
 
 						const $introHolder = $('<div id="x_pageIntroHolder"><div id="x_pageIntroTxt"><div id="x_pageIntroTxtInner"></div></div></div>');
 
-						$introHolder.find('#x_pageIntroTxtInner').html(thisPageIntro.info);
+						let introInfoTxt = thisPageIntro.info;
+
+						// check text for variables - if found replace with variable value
+						// also handle case where comma decimal separator has been requested
+						if (XENITH.VARIABLES && XENITH.VARIABLES.exist()) {
+							introInfoTxt = XENITH.VARIABLES.replaceVariables(introInfoTxt, x_params.decimalseparator);
+						}
+
+						// check text for global variables - if found replace with variable value
+						if (x_params.globalVars == 'true') {
+							introInfoTxt = XENITH.GLOBALVARS.replaceGlobalVars(introInfoTxt);
+						}
+
+						$introHolder.find('#x_pageIntroTxtInner').html(introInfoTxt);
 
 						// include page title
 						if (x_currentPageXML.getAttribute('introTitle') == 'true') {
@@ -1767,13 +1793,25 @@ function x_continueSetUp1() {
 
 		XENITH.ACCESSIBILITY.buildBtn();
 
+		let h1Title = x_params.name;
+
+		// check title for variables - if found replace with variable value
+		// also handle case where comma decimal separator has been requested
+		if (XENITH.VARIABLES && XENITH.VARIABLES.exist()) {
+			h1Title = XENITH.VARIABLES.replaceVariables(h1Title, x_params.decimalseparator);
+		}
+
+		// check text for global variables - if found replace with variable value
+		if (x_params.globalVars == 'true') {
+			h1Title = XENITH.GLOBALVARS.replaceGlobalVars(h1Title);
+		}
 
 		// ignores x_params.allpagestitlesize if added as optional property as the header bar will resize to fit any title
 		// add link to LO title?
 		if (x_params.homePageLink != undefined && x_params.homePageLink === 'true') {
 			$("#x_headerBlock h1").prepend(
 				$("<a>")
-					.html(x_params.name)
+					.html(h1Title)
 					.attr("href", "#")
 					.addClass("x_homePageLink")
 					.attr("title", x_getLangInfo(x_languageData.find("homeLink")[0], "description", "Go to Home page"))
@@ -1782,11 +1820,11 @@ function x_continueSetUp1() {
 				);
 		}
 		else {
-			$("#x_headerBlock h1").prepend(x_params.name);
+			$("#x_headerBlock h1").prepend(h1Title);
 		}
 
 		// strips code out of page title
-		var div = $("<div>").html(x_params.name);
+		var div = $("<div>").html(h1Title);
 		var strippedText = div.text();
 		if (strippedText != "") {
 			document.title = strippedText;
@@ -3028,6 +3066,17 @@ function x_changePageStep2(x_gotoPage) {
 		}
 
 		pageTitle = pageTitle + extraTitle;
+
+		// check text for variables - if found replace with variable value
+		// also handle case where comma decimal separator has been requested
+		if (XENITH.VARIABLES && XENITH.VARIABLES.exist()) {
+			pageTitle = XENITH.VARIABLES.replaceVariables(pageTitle, x_params.decimalseparator);
+		}
+
+		// check text for global variables - if found replace with variable value
+		if (x_params.globalVars == 'true') {
+			pageTitle = XENITH.GLOBALVARS.replaceGlobalVars(pageTitle);
+		}
 
 		// is page password protected? if so, don't finish page setup until after a valid password entered
 		var pswds = [];
@@ -5367,7 +5416,12 @@ var XENITH = (function ($, parent) { var self = parent.VARIABLES = {};
 					var thisTag = tags[p];
 
 					if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
-						var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
+						let $tempText;
+						try {
+							$tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
+						} catch (e) {
+							$tempText = $('<span>' + tempText + '</span>');
+						}
 						for (var m=0; m<$tempText.find(thisTag).length; m++){
 							var tempTag = $tempText.find(thisTag)[m].outerHTML,
 								regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
@@ -5901,7 +5955,21 @@ var XENITH = (function ($, parent) { var self = parent.PAGEMENU = {};
 				}
 			}
 			$thisItem.data("pageIndex", i);
-			$thisItem.html(tickBefore + pageNum + x_pages[x_normalPages[i+pageNumOffset]].getAttribute("name") + tickAfter);
+
+			let menuPageTitle = x_pages[x_normalPages[i+pageNumOffset]].getAttribute("name");
+
+			// check text for variables - if found replace with variable value
+			// also handle case where comma decimal separator has been requested
+			if (XENITH.VARIABLES && XENITH.VARIABLES.exist()) {
+				menuPageTitle = XENITH.VARIABLES.replaceVariables(menuPageTitle, x_params.decimalseparator);
+			}
+
+			// check text for global variables - if found replace with variable value
+			if (x_params.globalVars == 'true') {
+				menuPageTitle = XENITH.GLOBALVARS.replaceGlobalVars(menuPageTitle);
+			}
+
+			$thisItem.html(tickBefore + pageNum + menuPageTitle + tickAfter);
 		}
 
 		if (x_params.pageTickPostion == "before") {
@@ -7713,7 +7781,20 @@ var XENITH = (function ($, parent) { var self = parent.RESOURCES = {};
 			$resourceHolder.append("<h1 id='x_resourceHeader'>" + x_params.resourceTitle + "</h1>");
 		}
 		if (x_params.resourceText != undefined && x_params.resourceText.trim() != "") {
-			$resourceHolder.append("<div id='x_resourceTxt'>" + x_params.resourceText + "</div>");
+			let resourceTxt = x_params.resourceText;
+
+			// check text for variables - if found replace with variable value
+			// also handle case where comma decimal separator has been requested
+			if (XENITH.VARIABLES && XENITH.VARIABLES.exist()) {
+				resourceTxt = XENITH.VARIABLES.replaceVariables(resourceTxt, x_params.decimalseparator);
+			}
+
+			// check text for global variables - if found replace with variable value
+			if (x_params.globalVars == 'true') {
+				resourceTxt = XENITH.GLOBALVARS.replaceGlobalVars(resourceTxt);
+			}
+
+			$resourceHolder.append("<div id='x_resourceTxt'>" + resourceTxt + "</div>");
 		}
 		if (trackCompletion && x_params.resourceCompletionTxt != undefined && x_params.resourceCompletionTxt.trim() != "") {
 			$resourceHolder.append("<div id='x_resourcePercentage'><p>" + x_params.resourceCompletionTxt.replace("{x}", "<span class='resourcePercentage'>" + 0 + "</span>") + "</p></div>");

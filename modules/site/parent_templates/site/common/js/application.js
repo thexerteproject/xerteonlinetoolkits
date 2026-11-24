@@ -1303,10 +1303,7 @@ function setup() {
 		}
 	}
 
-	if ($(data).find('learningObject').attr('globalVars') == 'true') {
-		// check xml text for global variables - if found replace with variable value
-		x_checkForText($(data).find('page'), 'globalVars');
-	}
+	x_checkForText($(data).find('page'), 'globalVars');
 
 	if ($(data).find('learningObject').attr('glossary') != undefined) {
 
@@ -1494,6 +1491,9 @@ function setup() {
 			if ($(this).attr('pageLink') != undefined && $(this).attr('pageLink') != '') {
 				name = $(this).attr('pageLink');
 			}
+
+			name = XBOOTSTRAP.VARIABLES.replaceVariables(name);
+			name = XBOOTSTRAP.GLOBALVARS.replaceGlobalVars(name);
 
 			var $link = $('<li class="" role="none"><a href="javascript:parseContent({ type: \'index\', id: ' + index + ' })"></a></li>').appendTo('#nav');
 			$link.find('a').append(name);
@@ -2164,7 +2164,7 @@ function setup() {
 		// add & position custom footer
 		if ($(data).find('learningObject').attr('customFooter') != undefined && $(data).find('learningObject').attr('customFooter') != ''){
 
-			var customFooterContent = XBOOTSTRAP.VARIABLES.replaceVariables($(data).find('learningObject').attr('customFooter'), 'variables');
+			var customFooterContent = XBOOTSTRAP.VARIABLES.replaceVariables($(data).find('learningObject').attr('customFooter'));
 			customFooterContent = XBOOTSTRAP.GLOBALVARS.replaceGlobalVars(customFooterContent);
 
 			if ($(data).find('learningObject').attr('footerPos') == 'below') {
@@ -2736,9 +2736,13 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 			currentPage = pageIndex;
 			this.x_CheckBanner(currentPage);
 
-			//set the main page title and subtitle
-			$('#pageTitle').html(page.attr('name'));
-			$(document).prop('title', $('<p>' + page.attr('name') +' - ' + $(data).find('learningObject').attr('name') + '</p>').text());
+			// set the main page title and subtitle
+			var pageTitle = XBOOTSTRAP.VARIABLES.replaceVariables(page.attr('name'));
+			pageTitle = XBOOTSTRAP.GLOBALVARS.replaceGlobalVars(pageTitle);
+
+			$('#pageTitle').html(pageTitle);
+
+			$(document).prop('title', $('<p>' + pageTitle +' - ' + $(data).find('learningObject').attr('name') + '</p>').text());
 			if ($(".jumbotron").length > 0) {
 				// header bar can be hidden on standalone pages
 				if (standAlonePage && page.attr('headerHide') == 'true') {
@@ -2794,7 +2798,10 @@ function parseContent(pageRef, sectionNum, contentNum, addHistory) {
 
 			var extraTitle = authorSupport == true && page.attr('hidePageInfo') != undefined && page.attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + page.attr('hidePageInfo') + '</span>' : '';
 
-			$('#pageSubTitle').html( page.attr('subtitle') + extraTitle);
+			let pageSubtitle = XBOOTSTRAP.VARIABLES.replaceVariables(page.attr('subtitle'));
+			pageSubtitle = XBOOTSTRAP.GLOBALVARS.replaceGlobalVars(pageSubtitle);
+
+			$('#pageSubTitle').html(pageSubtitle + extraTitle);
 
 			$('#overview').removeClass('hide');// show the header
 			$('#topnav').removeClass('hide');// show the topnavbar
@@ -2890,6 +2897,9 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 					tocName = tocName.html();
 				}
 
+				tocName = XBOOTSTRAP.VARIABLES.replaceVariables(tocName);
+				tocName = XBOOTSTRAP.GLOBALVARS.replaceGlobalVars(tocName);
+
 				var $link = $('<li' + (sectionVisibleIndex==0?' aria-current="location" class="active" ':'') +'><a href="#' + sectionId + '"></a></li>').appendTo('#toc');
 				$link.find('a').append(tocName);
 
@@ -2904,9 +2914,12 @@ function loadPage(page, pageHash, sectionNum, contentNum, pageIndex, standAloneP
 			}
 
 			// add the section header
+			let sectionTitleTxt = XBOOTSTRAP.VARIABLES.replaceVariables($(this).attr('name'));
+			sectionTitleTxt = XBOOTSTRAP.GLOBALVARS.replaceGlobalVars(sectionTitleTxt);
+
 			var extraTitle = authorSupport == true && $(this).attr('hidePageInfo') != undefined && $(this).attr('hidePageInfo') != '' ? ' <span class="alertMsg">' + $(this).attr('hidePageInfo') + '</span>' : '',
 				links = $(this).attr('links') != undefined && $(this).attr('links') != "none" ? '<ol class="sectionSubLinks ' + $(this).attr('links') + '" aria-label="' + (languageData.find("bootstrapNavigation")[0] != undefined && languageData.find("bootstrapNavigation")[0].getAttribute('subSections') != null ? languageData.find("bootstrapNavigation")[0].getAttribute('subSections') : "Sub-sections") + '"></ol>' : '',
-				subHeadings = $(this).attr('name') != "" && ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h2 id="' + sectionId + '_title" class="sectionTitle">' + $(this).attr('name') + '</h2>' : '';
+				subHeadings = $(this).attr('name') != "" && ($(this).attr('menu') != 'menu' && $(this).attr('menu') != 'neither') ? '<h2 id="' + sectionId + '_title" class="sectionTitle">' + sectionTitleTxt + '</h2>' : '';
 
 			var pageHeader = subHeadings + extraTitle + links != '' ? '<div class="page-header">' + subHeadings + extraTitle + links + '</div>' : '';
 			var section = $('<section id="' + sectionId + '" ' + (subHeadings != "" ? 'aria-labelledby="' + sectionId + '_title"' : '' ) + '>' + pageHeader + '</section>');
@@ -3048,11 +3061,13 @@ function loadSection(thisSection, section, sectionIndex, page, pageHash, pageInd
 
 			var sectionInfo = $(thisSection).attr('customLinkID') != undefined && $(thisSection).attr('customLinkID') != '' ? $(thisSection).attr('customLinkID') : pageHash + 'section' + (sectionIndex+1);
 
-//only show section titles based on the hide/show conditions
+			//only show section titles based on the hide/show conditions
+			let contentTitleTxt = XBOOTSTRAP.VARIABLES.replaceVariables($(this).attr('name'));
+			contentTitleTxt = XBOOTSTRAP.GLOBALVARS.replaceGlobalVars(contentTitleTxt);
 			var hideContent = checkIfHidden($(this).attr('hideContent'), $(this).attr('hideOnDate'), $(this).attr('hideOnTime'), $(this).attr('hideUntilDate'), $(this).attr('hideUntilTime'), 'Content');
 			if (hideContent[0] == false || hideContent[0] == undefined || authorSupport == true) {
 				if ($(this).attr('showTitle') !== false) {
-					section.append('<h3 id="' + sectionInfo + 'content' + (itemIndex + 1) + '" class="contentTitle">' + $(this).attr('name') + '</h3>');
+					section.append('<h3 id="' + sectionInfo + 'content' + (itemIndex + 1) + '" class="contentTitle">' + contentTitleTxt + '</h3>');
 				}
 			}
 		}
@@ -5186,7 +5201,12 @@ var XBOOTSTRAP = (function ($, parent) { var self = parent.VARIABLES = {};
 					var thisTag = tags[p];
 
 					if (tempText.indexOf('[' + variables[k].name + ']') != -1) {
-						var $tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
+						let $tempText;
+						try {
+							$tempText = $(tempText).length == 0 ? $('<span>' + tempText + '</span>') : $(tempText);
+						} catch (e) {
+							$tempText = $('<span>' + tempText + '</span>');
+						}
 						for (var m=0; m<$tempText.find(thisTag).length; m++){
 							var tempTag = $tempText.find(thisTag)[m].outerHTML,
 								regExp2 = new RegExp('\\[' + variables[k].name + '\\]', 'g');
@@ -5323,16 +5343,17 @@ var XBOOTSTRAP = (function ($, parent) { var self = parent.VARIABLES = {};
 // allows surfacing of any global variables
 
 var XBOOTSTRAP = (function ($, parent) { var self = parent.GLOBALVARS = {};
-
 	var	replaceGlobalVars = function (tempText) {
-		var regExp = new RegExp('\\{(.*?)\\}', 'g');
-
-		var matches = tempText.match(regExp);
-		if (matches != null) {
-			for (var m=0; m<matches.length; m++) {
-				try {
-					tempText = tempText.replace(matches[m], '<span class="x_globalVar">' + eval(matches[m]) + '</span>');
-				} catch (e){}
+		if ($(data).find('learningObject').attr('globalVars') == 'true') {
+			var regExp = new RegExp('\\{(.*?)\\}', 'g');
+			var matches = tempText.match(regExp);
+			if (matches != null) {
+				for (var m = 0; m < matches.length; m++) {
+					try {
+						tempText = tempText.replace(matches[m], '<span class="x_globalVar">' + eval(matches[m]) + '</span>');
+					} catch (e) {
+					}
+				}
 			}
 		}
 
