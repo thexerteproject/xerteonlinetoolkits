@@ -132,9 +132,8 @@ optional: pauseMedia*
 					});
 				}
 
-
 				// has a xot iframe already been built here for this block? if not, build iframe
-				if (!options.child && $target.children(".xotiframe").length == 0) {
+				if ((!options.child || options.child === "false") && $target.children(".xotiframe").length == 0) {
 					$target.addClass("xotHolder");
 						
 					$iframe = $('<iframe class="xotiframe"/>')

@@ -55,18 +55,18 @@
         </AIGroup>
 
         <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
-            <qfIvSynchTextPlus label="Number of Text Objects" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
-            <qfIvSynchMCQ label="Number of Multiple Choice Questions" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
-            <qfIvSynchMCQOption label="Number of Answers per MCQ" type="TextInput" wysiwyg="true" defaultValue = "4" optional="true"/>
-            <qfIvSynchXot label="Number of Embeded XOT Projects" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
-            <qfIvSynchXotChange label="Number of Pages per Embeded XOT Project" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
+            <qfIvSynchTextPlus label="Number of Text Objects" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfIvSynchMCQ label="Number of Multiple Choice Questions" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+            <qfIvSynchMCQOption label="Number of Answers per MCQ" type="TextInput" wysiwyg="true" defaultValue="4" optional="true"/>
+            <qfIvSynchXot label="Number of Embedded XOT Projects" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+            <qfIvSynchXotChange label="Number of Pages per Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
             <qfButton type="quickfillbutton" optional="true"/>
         </QFGroup>
 
 		<newNodes>
-			<ivSynchXot><![CDATA[<ivSynchXot name="Enter Title" url="" page="" hide="none" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchXot>
-			<ivSynchMCQ><![CDATA[<ivSynchMCQ name="Enter Title" text="" type="radio" answerType="single" synchStart="0" clearpanel="true" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></ivSynchMCQ>
-			<ivSynchTextPlus><![CDATA[<ivSynchTextPlus name="Enter Title" text="" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchTextPlus>
+			<ivSynchXot><![CDATA[<ivSynchXot name="Enter Title" url="" page="" hide="none" synchStart="0" pauseMedia="true"/>]]></ivSynchXot>
+			<ivSynchMCQ><![CDATA[<ivSynchMCQ name="Enter Title" text="" type="radio" answerType="single" synchStart="0" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></ivSynchMCQ>
+			<ivSynchTextPlus><![CDATA[<ivSynchTextPlus name="Enter Title" text="" synchStart="0" pauseMedia="true"/>]]></ivSynchTextPlus>
 		</newNodes>
 
 	</ivOverlayPanel>
@@ -76,89 +76,37 @@
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<text label="Text" type="TextArea" height="250" placeholder="Enter text for the panel here"/>
 
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
-			<optional    label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-			<tooltip	 label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true" tooltip="Label not suited for small screens" />
-			<icon        label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
-			<colour1     label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
-			<colour2     label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-			<hsSize      label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" optional="true" tooltip="Size in %; Max = 40%"/>
+		<synchStart label="Sync Point" type="synchPoint" src="page|ivMediaPanel|media"/>
+		<synchEnd label="Sync Point: End" type="synchPoint" relativeTo="synchStart" src="page|ivMediaPanel|media" optional="true"/>
+		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Optional events do not open automatically. A hotspot is shown that must be clicked to open the content.">
+			<optional label="Optional Event" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
+			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true" condition="optional=='true'" tooltip="Label not suited for small screens" />
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="optional=='true'" optional="true"/>
+			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" condition="optional=='true'" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" condition="optional=='true'" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" condition="optional=='true'" optional="true" tooltip="Size in %; Max = 40%"/>
 		</hsAppearance>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
-		<clearPanel label="Clear Existing Content"  type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
-		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
-		
-
 	</ivSynchTextPlus>
-	
-	<ivSynchSlides menuItem="Slideshow" icon="icFolderImg" remove="true">
-
-		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR" />
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
-			<optional    label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-			<tooltip	 label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true" tooltip="Label not suited for small screens"/>
-			<icon        label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
-			<colour1     label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
-			<colour2     label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-			<hsSize      label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" optional="true" tooltip="Size in %; Max = 40"/>
-		</hsAppearance>
-		<pauseMedia label="Pause Media" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
-		<clearPanel label="Clear Existing Content"  type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
-		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
-
-		<newNodes>
-			<ivSynchSlide><![CDATA[<synchSlide name="" url="Select Image" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></ivSynchSlide>
-		</newNodes>
-
-	</ivSynchSlides>
-	
-	<ivSynchSlide menuItem="Slide" icon="icBullet" remove="true">
-
-		<name label="Image Description" type="TextInput" placeholder="Enter a description for accessibility"/>
-		<url label="Image" type="media"/>
-		<synchStart label="Synch Point" type="TextInput"/>
-		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
-
-		<captionOptions type="group" label="Caption" optional="true">
-			<caption label="Text" type="TextInput" wysiwyg="true" defaultValue="Enter Caption Text" optional="true"/>
-			<captionPosV label="Vertical Position" type="ComboBox" options="Top,Middle,Bottom" data="top,middle,bottom" defaultValue="bottom" width="100" optional="true"/>
-			<captionPosH label="Horizontal Position" type="ComboBox" options="Left,Centre,Right" data="left,centre,right" defaultValue="centre" width="100" optional="true"/>
-		</captionOptions>
-
-	</ivSynchSlide>
 
 	<ivSynchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
-
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
 		<text label="Question" type="TextArea" height="100" placeholder="Enter question text here"/>
 		<judge label="Mark Answer" type="CheckBox" defaultvalue="true" optional="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result."/>
-		<!--<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>-->
-		<!--<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>-->
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
-		<disable label="Disable Controls" type="CheckBox"/>
-		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<synchStart label="Sync Point" type="synchPoint" src="page|ivMediaPanel|media"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true" conditionTrigger="true"/>
+		<disable label="Disable Controls" type="CheckBox" condition="pauseMedia=='true'"/>
+		<synchEnd label="Sync Point: End" type="synchPoint" relativeTo="synchStart" src="page|ivMediaPanel|media" optional="true"/>
 		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
-			<optional    label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-			<tooltip	 label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true" tooltip="Label not suited for small screens"/>
-			<icon        label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
-			<colour1     label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
-			<colour2     label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-			<hsSize      label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" optional="true" tooltip="Size in %; Max = 40"/>
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" conditionTrigger="true" optional="true"/>
+			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" condition="optional=='true'" optional="true" tooltip="Label not suited for small screens"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="optional=='true'" optional="true"/>
+			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" condition="optional=='true'" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" condition="optional=='true'" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" condition="optional=='true'" optional="true" tooltip="Size in %; Max = 40"/>
 		</hsAppearance>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
-		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
 
 		<feedback type="TextArea" height="40" label="Feedback" optional="true"/>
 
@@ -174,7 +122,7 @@
     	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
 
 		<newNodes>
-			<ivSynchMCQOption><![CDATA[<ivSynchMCQOption name="Answer" text="Option text" correct="false"/>]]></ivSynchMCQOption>
+			<ivSynchMCQOption><![CDATA[<ivSynchMCQOption name="Answer" text="" correct="false"/>]]></ivSynchMCQOption>
 		</newNodes>
 
 	</ivSynchMCQ>
@@ -186,8 +134,8 @@
 	    <correct condition="parent.judge!='false'" label="Correct Answer" type="CheckBox" defaultValue="false"/>
 
 		<feedback label="Feedback" type="TextArea" height="100" defaultValue="" optional="true"/>
-		<page label="Go to Page" type="PageList" optional="true"/>
-		<synch label="Go to Synch Point" type="TextInput" optional="true"/>
+		<page label="Navigate to Page" type="PageList" optional="true"/>
+		<synch label="Go to Sync Point" type="synchPoint" relativeTo="parent|synchStart" src="page|ivMediaPanel|media" optional="true"/>
 		<play label="Play Media" type="CheckBox" defaultValue="false" optional="true"/>
 		<enable label="Enable Controls" type="CheckBox" defaultValue="true" optional="true"/>
 
@@ -200,19 +148,17 @@
 		<page label="Page" type="TextInput" wysiwyg="false" defaultValue="" placeholder="e.g. 5" tooltip="By default, the XOT project will be shown from page 1. Use this option to automatically show a later page instead"/>
 		<hide label="Hide" type="ComboBox" options="None,Header,Footer,Both" data="none,top,bottom,both" defaultValue="none" width="100"/>
 
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<synchStart label="Sync Point" type="synchPoint" src="page|ivMediaPanel|media"/>
+		<synchEnd label="Sync Point: End" type="synchPoint" relativeTo="synchStart" src="page|ivMediaPanel|media" optional="true"/>
 		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
-			<optional    label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-			<tooltip	 label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true" tooltip="Label not suited for small screens"/>
-			<icon        label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
-			<colour1     label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
-			<colour2     label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-			<hsSize      label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" optional="true" tooltip="Size in %; Max = 40"/>
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" conditionTrigger="true" optional="true"/>
+			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" condition="optional=='true'" optional="true" tooltip="Label not suited for small screens"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="optional=='true'" optional="true"/>
+			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" condition="optional=='true'" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" condition="optional=='true'" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" condition="optional=='true'" optional="true" tooltip="Size in %; Max = 40"/>
 		</hsAppearance>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
 
 		<newNodes>
 			<ivSynchXotChange><![CDATA[<ivSynchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></ivSynchXotChange>
@@ -224,7 +170,7 @@
 
 		<page label="Page" type="TextInput" defaultValue="Enter Page Number"/>
 
-		<synchStart label="Synch Point" type="TextInput"/>
+		<synchStart label="Sync Point" type="synchPoint" relativeTo="parent|synchStart" src="page|ivMediaPanel|media"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
 
 	</ivSynchXotChange>

@@ -171,12 +171,12 @@ optional: feedback page synch play enable
 			
 			if (options.childNodes[index].getAttribute("enable") == "true" || (enable == true && ((options.childNodes[index].getAttribute("page") == undefined || options.childNodes[index].getAttribute("page") == "") && (options.childNodes[index].getAttribute("synch") == undefined || options.childNodes[index].getAttribute("synch") == "")))) {
 				// controls will be enabled if correct answer selected unless there is a 'go to page' or 'go to synch point' action associated with it
-				$learningObjectParent.enableControls(media.media, true);
+				$learningObjectParent.enableControls(media.media, true, false, x_currentPageXML.nodeName === "interactiveVideo");
 			}
 			
 			// automatically enable if the question has been set up so there's no answer that will enable them
 			if (autoEnable == true) {
-				$learningObjectParent.enableControls(media.media, true);
+				$learningObjectParent.enableControls(media.media, true, false, x_currentPageXML.nodeName === "interactiveVideo");
 			}
 			
 			// show feedback if there is some, with button to do action afterwards (change page, media current time, play media)
@@ -585,9 +585,9 @@ optional: feedback page synch play enable
                     }
 					
 					if (options.disable == "true") {
-						$learningObjectParent.enableControls(this.media, false);
+						$learningObjectParent.enableControls(this.media, false, true, x_currentPageXML.nodeName === "interactiveVideo");
 					} else {
-						$learningObjectParent.enableControls(this.media, true);
+						$learningObjectParent.enableControls(this.media, true, false, x_currentPageXML.nodeName === "interactiveVideo");
 					}
 				}
 				if (options.overlayPan) {

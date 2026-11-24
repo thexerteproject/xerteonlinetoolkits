@@ -23,54 +23,76 @@ var EDITOR = (function ($, parent) {
     let popcornLoading = false;
     let popcornQueue = [];
 
-    // returns the media url for the sync point
+    // returns the media url for the sync point, this is specified in xwd in src, e.g. src="parent|url"
     function resolveMediaSrc(key, src) {
         if (!src) {
             return "";
         }
-        const tree = $.jstree.reference("#treeview");
-        if (!tree) {
+        let value = parent.toolbox.evaluateReference(key, src, lo_data[key] && lo_data[key].attributes, typeof lo_attributes !== "undefined" ? lo_attributes : undefined);
+        if (value === undefined || value === null || String(value).trim() === "") {
             return "";
         }
-        let nodeKey = key;
-        let attrName = src;
-        let parts = src.split(".");
-        if (parts[0] === "parent" && parts.length >= 2) {
-            nodeKey = tree.get_parent(key);
-            if (!nodeKey || nodeKey === "treeroot") {
-                return "";
-            }
-            attrName = parts.slice(1).join(".");
-        }
-        if (!lo_data[nodeKey] || !lo_data[nodeKey].attributes) {
-            return "";
-        }
-        const val = lo_data[nodeKey].attributes[attrName];
-        if (val === undefined || val === null || String(val).trim() === "") {
-            return "";
-        }
-        return parent.toolbox.makeAbsolute(val);
+        return parent.toolbox.makeAbsolute(value);
     }
 
-    // returns the current sync time in seconds
-    function resolvePreviewSeconds(key, storedValue) {
-        if (storedValue === undefined || storedValue === null || String(storedValue).trim() === "") {
+    // resolves the sync point value to seconds - sync points can be set as relative values (e.g. +5) and these need to be calculated in relation to the previous sync point (or the sync point specified in relativeTo)
+    function resolveAttributeToSeconds(nodeKey, attrName, stack) {
+        stack = stack || {};
+        const stackId = nodeKey + "|" + attrName;
+        if (stack[stackId]) {
             return 0;
         }
-        const s = String(storedValue).trim();
-        if (s.charAt(0) === "+") {
-            let offset = parseFloat(s.slice(1));
-            if (isNaN(offset)) {
-                offset = 0;
-            }
-            return resolvePreviousSiblingSynch(key) + offset;
+        stack[stackId] = true;
+
+        const attrs = lo_data[nodeKey] && lo_data[nodeKey].attributes;
+        if (!attrs || attrs[attrName] === undefined || attrs[attrName] === null) {
+            return 0;
         }
-        const num = parseFloat(s);
-        return isNaN(num) ? 0 : num;
+        const s = String(attrs[attrName]).trim();
+        if (s === "") {
+            return 0;
+        }
+        if (s.charAt(0) !== "+") {
+            const num = parseFloat(s);
+            return isNaN(num) ? 0 : num;
+        }
+
+        let offset = parseFloat(s.slice(1));
+        if (isNaN(offset)) {
+            offset = 0;
+        }
+
+        let base = 0;
+        const relSpec = getWizardRelativeTo(attrs.nodeName, attrName);
+        if (relSpec) {
+            const ref = parent.toolbox.resolveReferenceTarget(nodeKey, relSpec);
+            if (ref) {
+                base = resolveAttributeToSeconds(ref.key, ref.attrName, stack);
+            }
+        } else {
+            base = resolvePreviousSiblingSameField(nodeKey, attrName, stack);
+        }
+        return base + offset;
     }
 
-    // returns the current sync time in seconds for relative sync points (so needs to look at sibling sync points)
-    function resolvePreviousSiblingSynch(key) {
+    // by default, relative sync points are relative to the same attribute on the node's sibling
+    // can override this by specifying relativeTo in xwd - this function returns relativeTo when it exists
+    function getWizardRelativeTo(nodeName, attrName) {
+        if (typeof wizard_data === "undefined" || !wizard_data[nodeName] || !wizard_data[nodeName].node_options) {
+            return undefined;
+        }
+        const all = wizard_data[nodeName].node_options.all || [];
+        for (let i = 0; i < all.length; i++) {
+            if (all[i].name === attrName && all[i].value && all[i].value.relativeTo) {
+                return all[i].value.relativeTo;
+            }
+        }
+        return undefined;
+    }
+
+    // by default, relative sync points are relative to the same attribute on the node's previous sibling
+    // returns this value when no relativeTo specified (which would override the default)
+    function resolvePreviousSiblingSameField(key, attrName, stack) {
         const tree = $.jstree.reference("#treeview");
         if (!tree) {
             return 0;
@@ -80,26 +102,15 @@ var EDITOR = (function ($, parent) {
             return 0;
         }
         const siblings = tree.get_node(parentKey).children || [];
-        let synchPoint = 0;
-        for (let i=0; i<siblings.length; i++) {
-            if (siblings[i] === key) {
-                break;
-            }
-            if (!lo_data[siblings[i]] || !lo_data[siblings[i]].attributes) {
-                continue;
-            }
-            const attrs = lo_data[siblings[i]].attributes;
-            let synch = attrs.synch !== undefined ? attrs.synch : (attrs.synchStart !== undefined ? attrs.synchStart : "0");
-            synch = String(synch).trim();
-            if (synch.charAt(0) === "+") {
-                const off = parseFloat(synch.slice(1));
-                synchPoint += isNaN(off) ? 0 : off;
-            } else {
-                const n = parseFloat(synch);
-                synchPoint = isNaN(n) ? 0 : n;
+        const idx = siblings.indexOf(key);
+        for (let i = idx - 1; i >= 0; i--) {
+            const sibKey = siblings[i];
+            const a = lo_data[sibKey] && lo_data[sibKey].attributes;
+            if (a && a[attrName] !== undefined && a[attrName] !== null && String(a[attrName]).trim() !== "") {
+                return resolveAttributeToSeconds(sibKey, attrName, stack);
             }
         }
-        return synchPoint;
+        return 0;
     }
 
     // returns the sync point in format hh:mm:ss
@@ -179,21 +190,27 @@ var EDITOR = (function ($, parent) {
         return s;
     }
 
-    // returns true if video is an embedded video, e.g. YouTube
-    function isEmbeddableVideo(url) {
-        const u = String(url).toLowerCase();
-        return u.indexOf("youtu") > 0
-            || u.indexOf("vimeo") > 0
-            || u.indexOf('videos/embed') > 0 // Peertube
-            || u.indexOf('mediamission') > 0
-            || u.indexOf('mediasite') > 0
-            || u.indexOf('deltion') > 0
-            || u.indexOf('yuja.com') > 0;
-    }
-
     // returns true if youtube
     function isYouTubeEmbed(url) {
         return String(url).toLowerCase().indexOf("youtu") > 0;
+    }
+
+    // returns true if vimeo
+    function isVimeoEmbed(url) {
+        return String(url).toLowerCase().indexOf("vimeo") > 0;
+    }
+
+    // returns true if peer tube
+    function isPeertubeEmbed(url) {
+        if (typeof isPeertubeVideo === "function") {
+            return isPeertubeVideo(url);
+        }
+        return String(url).toLowerCase().indexOf("videos/embed") > -1;
+    }
+
+    // if vimeo or peertube, we need canplaythrough to be true before we can seek to initial sync point
+    function needsDeferredEmbedSeek(url) {
+        return isVimeoEmbed(url) || isPeertubeEmbed(url);
     }
 
     // adds start time to YouTube URL as seeking after loading player was temperamental
@@ -219,6 +236,7 @@ var EDITOR = (function ($, parent) {
             || u.indexOf(".m4a") > -1;
     }
 
+    // closes lightbox if an error has occured (alert is shown prior to this)
     function closeSynchLightBox() {
         const lightbox = $.featherlight.current();
         if (lightbox) {
@@ -226,7 +244,7 @@ var EDITOR = (function ($, parent) {
         }
     }
 
-    // popcorn vimeo wrapper expects x_params (player) and errors without it
+    // popcorn / mediaPlayer.js wrapper can error without some globals set
     function ensureEditorPopcornGlobals() {
         if (typeof window.x_params === "undefined") {
             let lang = "en-GB";
@@ -235,13 +253,37 @@ var EDITOR = (function ($, parent) {
             }
             window.x_params = { language: lang };
         }
+        if (typeof window.x_volume === "undefined") {
+            window.x_volume = 1;
+        }
+        if (typeof window.x_audioBarH === "undefined") {
+            window.x_audioBarH = 30;
+        }
+        if (typeof window.x_mediaText === "undefined") {
+            window.x_mediaText = [
+                { label: "Stop" },
+                { label: "Play/Pause" },
+                { label: "Volume" },
+                { label: "Fullscreen" },
+                { label: "Captions" },
+                { label: "" }
+            ];
+        }
+        if (typeof window.x_templateLocation === "undefined") {
+            window.x_templateLocation = "";
+        }
+        if (typeof window.xot_offline === "undefined") {
+            window.xot_offline = false;
+        }
     }
 
-    // loads popcorn files if not already loaded
+    // loads required js files
     function ensurePopcorn(callback) {
         ensureEditorPopcornGlobals();
         // check that popcorn has loaded
-        if (typeof Popcorn !== "undefined" && typeof loadMedia !== "undefined") {
+        if (typeof Popcorn !== "undefined"
+            && typeof loadMedia !== "undefined"
+            && typeof $.fn.mediaPlayer === "function") {
             callback();
             return;
         }
@@ -250,32 +292,55 @@ var EDITOR = (function ($, parent) {
             return;
         }
         popcornLoading = true;
-        $.getScript("modules/common/js/popcorn/popcorn-complete.js")
-            .done(function () {
-                $.getScript("modules/common/js/popcorn/plugins/popcorn.mediaconstructor.js")
-                    .done(function () {
-                        popcornLoading = false;
-                        const q = popcornQueue.slice();
-                        popcornQueue = [];
-                        q.forEach(function (cb) {
-                            cb();
-                        });
-                    })
-                    .fail(function () {
-                        popcornLoading = false;
-                        popcornQueue = [];
-                        alert(language.synchPoint.Error.loadFailed);
-                        closeSynchLightBox();
-                    });
-            })
-            .fail(function () {
-                popcornLoading = false;
-                popcornQueue = [];
-                alert(language.synchPoint.Error.loadFailed);
-                closeSynchLightBox();
+
+        function onScriptsReady() {
+            popcornLoading = false;
+            const q = popcornQueue.slice();
+            popcornQueue = [];
+            q.forEach(function (cb) {
+                cb();
             });
+        }
+
+        function onScriptsFailed() {
+            popcornLoading = false;
+            popcornQueue = [];
+            alert(language.synchPoint.Error.loadFailed);
+            closeSynchLightBox();
+        }
+
+        const pickerScriptChain = [
+            { url: "modules/common/js/popcorn/popcorn-complete.js" },
+            { url: "modules/common/mediaelement/mediaelement-and-player.js" },
+            { url: "modules/xerte/parent_templates/Nottingham/common/js/mediaPlayer.js", optional: true },
+            { url: "modules/common/js/popcorn/config/peertube_urls.js", optional: true },
+            { url: "modules/common/js/popcorn/plugins/popcorn.mediaconstructor.js" }
+        ];
+
+        function loadPickerScripts(chain, index) {
+            if (index >= chain.length) {
+                onScriptsReady();
+                return;
+            }
+            const step = chain[index];
+            const req = $.getScript(site_url + step.url);
+            if (step.optional) {
+                req.always(function () {
+                    loadPickerScripts(chain, index + 1);
+                });
+            } else {
+                req.done(function () {
+                    loadPickerScripts(chain, index + 1);
+                }).fail(function () {
+                    onScriptsFailed();
+                });
+            }
+        }
+
+        loadPickerScripts(pickerScriptChain, 0);
     }
 
+    // one-shot popcorn event listener (e.g. defer seek until canplaythrough)
     function popcornOnce(instance, type, fn) {
         if (!instance || typeof instance.on !== "function") {
             return;
@@ -302,21 +367,25 @@ var EDITOR = (function ($, parent) {
         return 0;
     }
 
-    // moves player to current sync point when lightbox is opened
-    function seekTo(state, time) {
+    // moves player to current sync point (& pauses) when lightbox is opened
+    function seekTo(state, time, pauseAfter) {
         const t = Math.max(0, time);
         if (state.popcornInstance) {
             try {
                 state.popcornInstance.currentTime(t);
             } catch (e) {}
-            try {
-                state.popcornInstance.pause();
-            } catch (e) {}
+            if (pauseAfter === true) {
+                try {
+                    state.popcornInstance.pause();
+                } catch (e) {}
+            }
             return;
         }
         if (state.mediaElement) {
             state.mediaElement.currentTime = t;
-            state.mediaElement.pause();
+            if (pauseAfter === true) {
+                state.mediaElement.pause();
+            }
         }
     }
 
@@ -339,10 +408,9 @@ var EDITOR = (function ($, parent) {
         }
     }
 
-    // uploaded media file
-    function buildNativePlayer($holder, url, isAudio) {
-        const tag = isAudio ? "audio" : "video";
-        const $media = $("<" + tag + ">", {
+    // builds native <audio> for MP3 preview
+    function buildAudioPlayer($holder, url) {
+        const $media = $("<audio>", {
             controls: true,
             preload: "metadata",
             class: "synchPointPicker__media"
@@ -352,7 +420,7 @@ var EDITOR = (function ($, parent) {
         return $media[0];
     }
 
-    // embedded media file
+    // build video player (embed or file) via loadMedia
     function buildEmbedPlayer($holder, url, state, previewTime, onReady) {
         const holderId = "synchPickerHolder_" + Date.now();
         $holder.empty().attr("id", holderId);
@@ -361,27 +429,42 @@ var EDITOR = (function ($, parent) {
             autoplay: "false",
             tip: ""
         };
-        if (typeof Popcorn !== "undefined" && typeof Popcorn.fixYouTubeVimeo === "function") {
-            mediaData.media = Popcorn.fixYouTubeVimeo(mediaData.media);
-        }
         state.youtubeStartParam = false;
         if (isYouTubeEmbed(mediaData.media) && previewTime > 0) {
             mediaData.media = youTubeAddStartParam(mediaData.media, previewTime);
             state.youtubeStartParam = true;
         }
         state.popcornInstance = loadMedia($holder, "video", mediaData, true);
+        let readyDone = false;
+        const fireReadyOnce = function () {
+            if (readyDone || !state.popcornInstance) {
+                return;
+            }
+            readyDone = true;
+            onReady();
+        };
+
         const tryReady = function () {
             if (!state.popcornInstance) {
                 return;
             }
+
+            // ensure peer tube videos jump to sync point on load
+            if (isPeertubeEmbed(url)) {
+                popcornOnce(state.popcornInstance, "canplaythrough", fireReadyOnce);
+                popcornOnce(state.popcornInstance, "durationchange", fireReadyOnce);
+                setTimeout(fireReadyOnce, 5000);
+                return;
+            }
+
             let dur = 0;
             try {
                 dur = state.popcornInstance.duration();
             } catch (e) {}
             if (dur > 0 || state.popcornInstance.media) {
-                onReady();
+                fireReadyOnce();
             } else {
-                popcornOnce(state.popcornInstance, "loadedmetadata", onReady);
+                popcornOnce(state.popcornInstance, "loadedmetadata", fireReadyOnce);
             }
         };
         setTimeout(tryReady, 100);
@@ -392,8 +475,10 @@ var EDITOR = (function ($, parent) {
         const key = options.key;
         const mediaUrl = options.mediaUrl;
         const storedValue = options.storedValue;
+        const fieldName = options.fieldName;
         const onSet = options.onSet;
-        const previewTime = resolvePreviewSeconds(key, storedValue);
+
+        const previewTime = resolveAttributeToSeconds(key, fieldName || "synch", {});
         const pickerId = "synchPicker_" + Date.now();
 
         const state = {
@@ -465,11 +550,13 @@ var EDITOR = (function ($, parent) {
             })
         );
 
+        // updates the current time shown below the media player
         function updateTimeDisplay() {
             const t = getCurrentTime(state);
             state.$timeDisplay.text(secondsToDisplay(t));
         }
 
+        // sets up event listeners
         function bindTimeDisplayUpdates() {
             if (state.popcornInstance) {
                 state.popcornInstance.on("timeupdate", updateTimeDisplay);
@@ -480,6 +567,7 @@ var EDITOR = (function ($, parent) {
             }
         }
 
+        // remove the event listeners used by the sync point picker
         function unbindTimeDisplayUpdates() {
             if (state.popcornInstance) {
                 try {
@@ -492,54 +580,65 @@ var EDITOR = (function ($, parent) {
             }
         }
 
+        // loads the media player within the sync point picker lightbox
         function initPlayer($root) {
             const $mediaHolder = $root.find(".synchPointPicker__mediaHolder");
-            if (isEmbeddableVideo(mediaUrl)) {
-                ensurePopcorn(function () {
-                    buildEmbedPlayer($mediaHolder, mediaUrl, state, previewTime, function () {
-                        state.$timeDisplay.text(secondsToDisplay(previewTime));
-                        let embedSeekDone = false;
-                        const applyEmbedSeek = function () {
-                            if (embedSeekDone || !state.popcornInstance) {
-                                return;
-                            }
-                            embedSeekDone = true;
-                            seekTo(state, previewTime);
-                            popcornOnce(state.popcornInstance, "seeked", updateTimeDisplay);
-                        };
 
-                        const isYouTube = isYouTubeEmbed(mediaUrl);
-                        const isVimeo = String(mediaUrl).toLowerCase().indexOf("vimeo") > 0;
-
-                        if (isYouTube) {
-                            if (!state.youtubeStartParam && previewTime > 0) {
-                                applyEmbedSeek();
-                            }
-                        } else if (isVimeo) {
-                            popcornOnce(state.popcornInstance, "canplaythrough", applyEmbedSeek);
-                            setTimeout(applyEmbedSeek, 2500);
-                        } else {
-                            applyEmbedSeek();
-                        }
-                        bindTimeDisplayUpdates();
-                    });
-                });
-            } else {
-                let audio = isAudioMedia(mediaUrl);
-                if (audio) {
-                    $(".synchPointPicker").addClass("audio");
-                }
-                state.mediaElement = buildNativePlayer($mediaHolder, mediaUrl, audio);
-                $(state.mediaElement).on("loadedmetadata.synchPicker", function () {
+            if (isAudioMedia(mediaUrl)) {
+                $(".synchPointPicker").addClass("audio");
+                state.mediaElement = buildAudioPlayer($mediaHolder, mediaUrl);
+                const applyAudioPreviewSeek = function () {
                     seekTo(state, previewTime);
                     updateTimeDisplay();
-                });
+                };
+                $(state.mediaElement).on("loadedmetadata.synchPicker", applyAudioPreviewSeek);
                 if (state.mediaElement.readyState >= 1) {
-                    seekTo(state, previewTime);
-                    updateTimeDisplay();
+                    applyAudioPreviewSeek();
                 }
                 bindTimeDisplayUpdates();
+                return;
             }
+
+            ensurePopcorn(function () {
+                buildEmbedPlayer($mediaHolder, mediaUrl, state, previewTime, function () {
+                    state.$timeDisplay.text(secondsToDisplay(previewTime));
+
+                    const isYouTube = isYouTubeEmbed(mediaUrl);
+                    const pauseAfterInitialSeek = !isPeertubeEmbed(mediaUrl);
+
+                    let embedSeekDone = false;
+                    const applyEmbedSeek = function () {
+                        if (embedSeekDone || !state.popcornInstance) {
+                            return;
+                        }
+                        embedSeekDone = true;
+                        if (previewTime <= 0) {
+                            return;
+                        }
+                        seekTo(state, previewTime, pauseAfterInitialSeek);
+                        popcornOnce(state.popcornInstance, "seeked", updateTimeDisplay);
+                    };
+
+                    const scheduleDeferredEmbedSeek = function () {
+                        if (previewTime <= 0) {
+                            return;
+                        }
+                        popcornOnce(state.popcornInstance, "canplaythrough", applyEmbedSeek);
+                        setTimeout(applyEmbedSeek, 3000);
+                    };
+
+                    if (isYouTube) {
+                        if (!state.youtubeStartParam && previewTime > 0) {
+                            applyEmbedSeek();
+                        }
+                    } else if (needsDeferredEmbedSeek(mediaUrl)) {
+                        scheduleDeferredEmbedSeek();
+                    } else {
+                        applyEmbedSeek();
+                    }
+                    bindTimeDisplayUpdates();
+                });
+            });
         }
 
         // open the lightbox containing the html constructed above

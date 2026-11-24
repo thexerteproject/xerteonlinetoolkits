@@ -22,8 +22,8 @@
 	// other functions for model should also be in here to avoid conflicts
 	var mediaLesson = new function() {
 		var	$panelHolder,
-			plugins = ["mediaconstructor", "textplus", "subtitleplus", "xot", "mediaplus", "mcq", "slides", "sortholder"], // list of popcorn plugins to load
-			css = ["subtitleplus", "mcq", "overlaygeneric", "slides"]; // list of popcorn plugin css to load
+			plugins = ["mediaconstructor", "textplus", "xot", "mediaplus", "mcq", "slides", "sortholder"], // list of popcorn plugins to load
+			css = ["mcq", "overlaygeneric", "slides"]; // list of popcorn plugin css to load
 		
 		// function called every time the page is viewed after it has initially loaded
 		this.pageChanged = function() {
@@ -153,7 +153,7 @@
 				if ($this.width() != $popcornMedia.width() && triggerResize == true) {
 					triggerResize = false;
 					$x_window.resize();
-				}
+ 				}
 				if ($popcornMedia.next().hasClass("transcriptHolder")) {
 					$popcornMedia.next().width($popcornMedia.width());
 				}
@@ -201,10 +201,6 @@
 				$holder.height($panel.height() - (parseInt($panel.css("padding-top")) * 2) - $panel.find(".panelTitle").outerHeight() - excludeH);
 			} else {
 				$holder.css("max-height", $panel.height() - (parseInt($panel.css("padding-top")) * 2) - $panel.find(".panelTitle").outerHeight() - excludeH);
-			}
-			
-			if ($holder.hasClass("googlemapHolder")) {
-				//google.maps.event.trigger($holder.find(".gm-style")[0], "resize");
 			}
 		}
 
@@ -738,43 +734,50 @@
 		// function can be called for mainMedia & additional media from mediaPlus plugin
 		this.sortPopcorn = function(synchData, targetRef, popcornInstance, $mediaDiv) {
 			// wait until metadata has loaded before continuing
-			if (popcornInstance.duration()) {
+			try {
+				popcornInstance.duration();
 				mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
-			} else if (popcornInstance.media._util != undefined && popcornInstance.media._util.type == "Vimeo") {
-				function onMessageReceived(event) {
-					if (!(/^https?:\/\/player.vimeo.com/).test(event.origin)
-					     && !(/^https?:\/\/www.youtube.com/).test(event.origin)) {
-						return false;
-					}
-					
-					var data = JSON.parse(event.data);
-					if (data.event == "loadProgress") {
-						// Vimeo
-						$mediaDiv.data("duration", data.data.duration);
-						mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
-						window.removeEventListener("message", onMessageReceived, false);
-						// ** vimeo events are unreliable. Sometimes they only start working after play/pause/play again - can't work out why.
-						// Possible issue in popcorn.js itself
-					}
-					if (data.event == "infoDelivery") {
-						// YouTube
-						//$mediaDiv.data("duration", data.info.duration);
-						//mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
-						//window.removeEventListener("message", onMessageReceived, false);
+			} catch(e) {
+				if (popcornInstance) {
+					if (popcornInstance.media._util != undefined && popcornInstance.media._util.type == "Vimeo") {
+
+						function onMessageReceived(event) {
+							if (!(/^https?:\/\/player.vimeo.com/).test(event.origin)
+									&& !(/^https?:\/\/www.youtube.com/).test(event.origin)) {
+								return false;
+							}
+
+							var data = JSON.parse(event.data);
+							if (data.event == "loadProgress") {
+								// Vimeo
+								$mediaDiv.data("duration", data.data.duration);
+								mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
+								window.removeEventListener("message", onMessageReceived, false);
+								// ** vimeo events are unreliable. Sometimes they only start working after play/pause/play again - can't work out why.
+								// Possible issue in popcorn.js itself
+							}
+							if (data.event == "infoDelivery") {
+								// YouTube
+								//$mediaDiv.data("duration", data.info.duration);
+								//mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
+								//window.removeEventListener("message", onMessageReceived, false);
+							}
+						}
+
+						window.addEventListener("message", onMessageReceived, false);
+					} else if (popcornInstance.media._util != undefined && popcornInstance.media._util.type == "YouTube") {
+						function doCallback() {
+							document.removeEventListener('youtubemetadata', doCallback);
+							mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
+						}
+
+						document.addEventListener('youtubemetadata', doCallback);
+					} else {
+						popcornInstance.on("loadedmetadata", function () {
+							mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
+						});
 					}
 				}
-				window.addEventListener("message", onMessageReceived, false);
-			} else if (popcornInstance.media._util != undefined && popcornInstance.media._util.type == "YouTube") {
-				function doCallback()
-				{
-					document.removeEventListener('youtubemetadata', doCallback);
-					mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
-				}
-				document.addEventListener('youtubemetadata', doCallback);
-			} else {
-				popcornInstance.on("loadedmetadata", function() {
-					mediaLesson.sortPopcornNow(synchData, targetRef, popcornInstance, $mediaDiv);
-				});
 			}
 		};
 		
@@ -813,22 +816,15 @@
 			$(synchData).each(function(j) {
 				// ignore the media synchCues as they will be set up separately
 				if (this.nodeName != "synchCue") {
-					if (this.nodeName != "synchSubtitlePlus") {
-						start = mediaLesson.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStart);
-						end = mediaLesson.sortRelativeSynchPoints("end", this.getAttribute("synchEnd"), start, undefined);
-						prevStart = start;
-					} else {
-						// there's no start or end synch on subtitle holder - 
-						// store previous sibling's start for relative synching to be done against
-						start = 0;
-					}
+					start = mediaLesson.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStart);
+					end = mediaLesson.sortRelativeSynchPoints("end", this.getAttribute("synchEnd"), start, undefined);
+					prevStart = start;
 					
 					data.push({
 						type:			this.nodeName,
 						start:			start,
 						end:			end,
 						target:			targetRef + "_" + j,
-						optional:		this.getAttribute("optional"),
 						allInfo:		this
 					});
 						
@@ -845,8 +841,6 @@
 							$parent.children().each(function(k) {
 								// if child nodes have a synch point then include their details too
 								// with reference to the parent as this will create the holder for the child
-								// e.g. for subtitles the parent creates a holder and 1st caption
-								// the children then have their own synch points and load in the same holder
 								if (this.getAttribute("synchStart") == undefined) {
 									syncChildren = false;
 								} else {
@@ -864,7 +858,6 @@
 										start:		start,
 										end:		end,
 										target:		targetRef + "_" + j, // ref. to parent synch point to make sure it loads in correct place
-										optional:   $(this).parent()[0].optional,
 										allInfo:	this
 									});
 								}
@@ -910,7 +903,7 @@
 					var thisStart = data[j].start;
 					for (var k=0; k<j; k++) {
 						// does previous content need end time added because it's being cleared by next content block?
-						if ((data[k].end == undefined || data[k].end > thisStart) && (data[k].type != "synchEmpty" && data[k].type != "synchCue" && data[k].type != "synchSubtitlePlus")) {
+						if ((data[k].end == undefined || data[k].end > thisStart) && (data[k].type != "synchEmpty" && data[k].type != "synchCue")) {
 							data[k].end = thisStart;
 						}
 					}
@@ -949,7 +942,6 @@
 						start	  : thisContent.start,
 						end		  : thisContent.end,
 						target	  : thisContent.target,
-						optional  : thisContent.optional,
 						overlayPan: thisContent.overlayPanel
 					};
 

@@ -67,7 +67,7 @@
 
     <name label="Slide Title" type="TextInput" wysiwyg="true" />
     <text label="Slide Text" type="TextArea" height="250" placeholder="Content for the slide"/>
-    <synch label="Sync Point" type="synchPoint" src="parent.sound"/>
+    <synch label="Sync Point" type="synchPoint" src="parent|sound"/>
 	
 	<imgInfo type="group" label="Image" optional="true">
         <url label="Image" type="media"  optional="true" defaultValue="" placeholder="Select an image"/>

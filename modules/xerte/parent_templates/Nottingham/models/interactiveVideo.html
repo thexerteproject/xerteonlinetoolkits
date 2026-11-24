@@ -22,15 +22,14 @@
     // other functions for model should also be in here to avoid conflicts
     var interactiveVideo = new function() {
         var	$panelHolder,
-            plugins = ["mediaconstructor", "textplus", "subtitleplus", "xot", "mediaplus", "mcq", "slides", "sortholder"], // list of popcorn plugins to load
-            css = ["subtitleplus", "mcq", "overlaygeneric", "slides"], // list of popcorn plugin css to load
+            plugins = ["mediaconstructor", "textplus", "xot", "mediaplus", "mcq", "sortholder"], // list of popcorn plugins to load
+            css = ["mcq", "overlaygeneric"], // list of popcorn plugin css to load
             vidFullWatched,
             trackinglabel = "",
             toResize = false,
             isPlaying = false,
             isMuted = false,
             trackBarEnabled = true;
-
 
         // function called every time the page is viewed after it has initially loaded
         this.pageChanged = function() {
@@ -59,7 +58,6 @@
         // function called every time the size of the LO is changed
         this.sizeChanged = function() {
             $panelHolder = $("#panelHolder");
-            var panels = $panelHolder.find(".videoPanel.panel");
             this.resizePanels();
         };
 
@@ -125,22 +123,8 @@
                     $popcornMedia.next().width($popcornMedia.width());
                 }
             });
-            var ratio = 16 / 9;
-            if ($(x_currentPageXML).children("mediaPanel").attr("aspectRatio") != undefined)
-                ratio = parseFloat($(x_currentPageXML).children("mediaPanel").attr("aspectRatio"));
             $(".popcornMedia.embed").each(function(i) {
-                resizeEmbededMedia($(this), {ratio: ratio});
-            });
-
-            $(".popcornMedia audio").each(function(i) {
-                var audioBarW = 0;
-                $(this).closest(".mejs-inner").find(".mejs-controls").children().each(function() {
-                    audioBarW += $(this).outerWidth();
-                });
-                if (audioBarW != $(this).closest(".popcornMedia").width() && triggerResize == true) {
-                    triggerResize = false;
-                    $x_window.resize();
-                }
+                resizeEmbededMedia($(this), { ratio: 16/9 });
             });
 
             // 1) Resize trackbar holder. 2) Move slider. 3) Move all markers
@@ -436,11 +420,7 @@
                 }
             }
 
-            // get type of media (video/audio)
-            if (mediaFile.indexOf(".mp3") != -1) {
-                mediaType = "audio";
-
-            } else if (mediaFile.indexOf(".") == -1) {
+           if (mediaFile.indexOf(".") == -1) {
                 // no media
                 mediaType = undefined;
                 panelData.splice(mediaPanelIndex, 1);
@@ -448,6 +428,7 @@
             }
 
             // set up accordion if there's some intro text
+            // this is deprecated but left in so it still works in really old projects
             if (x_currentPageXML.getAttribute("intro") != "" && x_currentPageXML.getAttribute("intro") != undefined) {
                 var $contentCover = $("#contentCover");
                 $contentCover
@@ -498,12 +479,6 @@
                 // mark the overlay panel and all its relevant children as such
                 if (panelData[i].nodeName == "ivOverlayPanel") {
                     $(panelData[i].children).each(function(j){
-                        if (this.nodeName == "ivSynchSlides")	{
-                            $(this.children).each(function(k){
-                                this.setAttribute("overlayPan", "true");
-
-                            });
-                        }
                         this.setAttribute("overlayPan", "true");
                         this.setAttribute("clearPanel", "true");
                     });
@@ -526,21 +501,6 @@
 
             // _____ LOAD MEDIA _____
             // Loading media is now handled by the mediaconstructor plugin. (22/12/2021)
-            var mcqBool = true;
-            this.isMCQ = (node) => {
-               var childs = node.childNodes
-               for (var i = 0; i < childs.length; i++) {
-                   if (childs[i].nodeName === 'synchMCQ') {
-                       mcqBool = false;
-                   }
-                   this.isMCQ(childs[i]);
-               }
-            }
-
-            this.isMCQ(x_currentPageXML);
-            var trackVideo = x_currentPageXML.getAttribute('trackVideo') === 'yes' ||
-            x_currentPageXML.getAttribute('trackVideo') === 'only_video' ||
-            x_currentPageXML.getAttribute('trackVideo') === 'no_mcqs' &&  mcqBool;
             var mediaPanelData = $(x_currentPageXML).children("ivMediaPanel");
             if (mediaPanelIndex != -1) {
                 this.popcornInstance = loadMedia(
@@ -554,8 +514,6 @@
                         aspect: mediaPanelData.attr("aspect"),
                         transcript: mediaPanelData.attr("transcript"),
                         transcriptBtnTxt: mediaPanelData.attr("transcriptBtnTxt"),
-                        audioImage: mediaPanelData.attr("audioImage"),
-                        audioImageTip: mediaPanelData.attr("audioImageTip"),
                         pageName: "interactiveVideo",
                         trackMedia: true,
                         doNotCloseTracking: true
@@ -570,7 +528,7 @@
             var $trackBarHolder = $('<div id="trackBarHolder"></div>')
                 .insertAfter($('#' + interactiveVideo.panelbaseid + mediaPanelIndex).find(".popcornMedia")[0]);
             var $playButton = $('<div id="playButton" class="trackBarButton fa fa-fw fa-x-pause" tabindex="0"/>')
-                .appendTo($trackBarHolder);2
+                .appendTo($trackBarHolder);
             var $trackBarTime = $('<div id="trackBarCurrentTime" class="trackBarTime">00:00:00</div>')
                 .appendTo($trackBarHolder);
             var $trackBarRail = $('<div id="trackBarRail"></div>')
@@ -900,71 +858,55 @@
                 });
             }
             $(synchData).each(function(j) {
-                // ignore the media synchCues as they will be set up separately
-                if (this.nodeName != "synchCue") {
-                    if (this.nodeName != "synchSubtitlePlus") {
-                        start = interactiveVideo.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStart);
-                        end = interactiveVideo.sortRelativeSynchPoints("end", this.getAttribute("synchEnd"), start, undefined);
-                        prevStart = start;
-                    } else {
-                        // there's no start or end synch on subtitle holder -
-                        // store previous sibling's start for relative synching to be done against
-                        start = 0;
-                    }
+                start = interactiveVideo.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStart);
+                end = interactiveVideo.sortRelativeSynchPoints("end", this.getAttribute("synchEnd"), start, undefined);
+                prevStart = start;
 
-                    data.push({
-                        type:			this.nodeName,
-                        start:			start,
-                        end:			end,
-                        target:			targetRef + "_" + j,
-                        optional:		this.getAttribute("optional"),
-                        allInfo:		this
-                    });
+                data.push({
+                    type:			this.nodeName,
+                    start:			start,
+                    end:			end,
+                    target:			targetRef + "_" + j,
+                    optional:		this.getAttribute("optional"),
+                    allInfo:		this
+                });
 
-                    if ($(this).children().length > 0) {
-                        var $parent = $(this),
-                            syncChildren = true,
-                            prevStartII = prevStart;
+                if ($(this).children().length > 0) {
+                    var $parent = $(this),
+                        syncChildren = true,
+                        prevStartII = prevStart;
 
-                        this.setAttribute("child", false);
-                        $parent.children().each(function(k) {
-                            // if child nodes have a synch point then include their details too
-                            // with reference to the parent as this will create the holder for the child
-                            // e.g. for subtitles the parent creates a holder and 1st caption
-                            // the children then have their own synch points and load in the same holder
-                            if (this.getAttribute("synchStart") == undefined) {
-                                syncChildren = false;
-                            } else {
-                                // if no end point is set force it to be at the start of the next child
-                                //otherwise it won't revert if rewinding (if no next child then use parent synchEnd)
-                                // this won't be right if the next child is using relative synching so it's fixed later after that has been calculated
-                                var defaultEnd = $parent.children()[k+1] ? $parent.children()[k+1].getAttribute("synchStart") : $.isNumeric($parent[0].getAttribute("synchEnd")) ? ($parent[0].getAttribute("synchEnd")[0] == "+" ? end : Number($parent[0].getAttribute("synchEnd"))) : undefined;
-                                this.setAttribute("child", true);
+                    this.setAttribute("child", false);
+                    $parent.children().each(function(k) {
+                        // if child nodes have a synch point then include their details too
+                        // with reference to the parent as this will create the holder for the child
+                        // e.g. for XOT projects the parent creates a holder and load project
+                        // the page change then have their own synch points and load in the same holder
+                        if (this.getAttribute("synchStart") == undefined) {
+                            syncChildren = false;
+                        } else {
+                            // if no end point is set force it to be at the start of the next child
+                            // otherwise it won't revert if rewinding (if no next child then use parent synchEnd)
+                            // this won't be right if the next child is using relative synching so it's fixed later after that has been calculated
+                            var defaultEnd = $parent.children()[k+1] ? $parent.children()[k+1].getAttribute("synchStart") : $.isNumeric($parent[0].getAttribute("synchEnd")) ? ($parent[0].getAttribute("synchEnd")[0] == "+" ? end : Number($parent[0].getAttribute("synchEnd"))) : undefined;
+                            this.setAttribute("child", true);
 
-                                var start = interactiveVideo.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStartII),
-                                    end = interactiveVideo.sortRelativeSynchPoints("end", this.getAttribute("synchEnd"), start, defaultEnd);
-                                prevStartII = start;
-                                data.push({
-                                    type:		$(this).parent()[0].nodeName,
-                                    start:		start,
-                                    end:		end,
-                                    target:		targetRef + "_" + j, // ref. to parent synch point to make sure it loads in correct place
-                                    optional:   $(this).parent()[0].optional,
-                                    allInfo:	this
-                                });
-                            }
-                        });
-                        // store child data if children aren't being synced to media so plugin can use it
-                        if (syncChildren == false) {
-                            data[data.length-1].childNodes = $(this).children();
+                            var start = interactiveVideo.sortRelativeSynchPoints("start", this.getAttribute("synchStart"), prevStartII),
+                                end = interactiveVideo.sortRelativeSynchPoints("end", this.getAttribute("synchEnd"), start, defaultEnd);
+                            prevStartII = start;
+                            data.push({
+                                type:		$(this).parent()[0].nodeName,
+                                start:		start,
+                                end:		end,
+                                target:		targetRef + "_" + j, // ref. to parent synch point to make sure it loads in correct place
+                                optional:   $(this).parent()[0].optional,
+                                allInfo:	this
+                            });
                         }
-                    }
-                } else {
-                    start = interactiveVideo.sortRelativeSynchPoints("start", this.getAttribute("synch"), prevStart);
-                    prevStart = start;
-                    this.setAttribute("synch", start);
-                    if (this.getAttribute("destination") != undefined && this.getAttribute("destination")[0] == "+") {
-                        this.setAttribute("destination", Number(this.getAttribute("destination").slice(1)) + start);
+                    });
+                    // store child data if children aren't being synced to media so plugin can use it
+                    if (syncChildren == false) {
+                        data[data.length-1].childNodes = $(this).children();
                     }
                 }
             });
@@ -989,21 +931,18 @@
 
             // add end points for content already on panel if they are to be removed with "Empty Panel" or because new content clears panel
             for (var j=0; j<data.length; j++) {
-                // is content to be cleared?
-                if (data[j].type == "synchEmpty" || data[j].allInfo.getAttribute("clearPanel") == "true") {
-                    var thisStart = data[j].start;
-                    for (var k=0; k<j; k++) {
-                        // does previous content need end time added because it's being cleared by next content block?
-                        if ((data[k].end == undefined || data[k].end > thisStart) && (data[k].type != "synchEmpty" && data[k].type != "synchCue" && data[k].type != "synchSubtitlePlus")) {
-                            data[k].end = thisStart;
-                        }
+                var thisStart = data[j].start;
+                for (var k=0; k<j; k++) {
+                    // does previous content need end time added because it's being cleared by next content block?
+                    if (data[k].end == undefined || data[k].end > thisStart) {
+                        data[k].end = thisStart;
                     }
                 }
             }
 
             // set end point to end of media if still undefined
             for (var j=0; j<data.length; j++) {
-                if (data[j].end == undefined && data[j].type != "synchEmpty" && data[j].type != "synchCue") {
+                if (data[j].end == undefined) {
                     if (popcornInstance.duration()) {
                         data[j].end = popcornInstance.duration() - 1;
                     } else {
@@ -1014,12 +953,6 @@
             }
 
             // _____ ADD EVENTS FOR EACH SYNCH POINT _____
-            // add pause points for mainMedia/mediaPlus
-            for (var j=0; j<synchData.length; j++) {
-                if (synchData[j].nodeName == "synchCue") {
-                    interactiveVideo.setUpPopcornSynchCue(popcornInstance, synchData[j]);
-                }
-            }
             // add all other synch events
             for (var j=0; j<data.length; j++) {
                 // each synch event
@@ -1027,173 +960,112 @@
                     pluginName = thisContent.type.split("ivSynch")[1].toLowerCase();
 
                 // ____ ADD SYNCH EVENT ON SLIDER ____
-                // Clear Content should not be counted as an event.
-                if (thisContent.type != "synchEmpty")
-                {
-                    var $eventMarker =  $('<div id=marker_' + j + ' class="trackBarEventMarker ui-icon-play"></div>')
+                var $eventMarker =  $('<div id=marker_' + j + ' class="trackBarEventMarker ui-icon-play"></div>')
+                    .appendTo($('#trackBarRail'));
+                var duration = isNaN(popcornInstance.duration()) ? $mediaDiv.data("duration") : popcornInstance.duration();
+                frac = thisContent.start / duration
+                // Do not add this event to the timeline if it doesn't occur during the duration of the video.
+                if (frac < 0 || frac > 1) {
+                    $eventMarker.remove();
+                }
+                else {
+                    $eventMarker.attr("synchFrac", frac);
+                    eventOffset = frac * $('#trackBarRail').width();
+                    $eventMarker.css("left", eventOffset);
+                    if (thisContent.optional == "false") {
+                        $eventMarkerMandatory = $('<div id=marker_mandatory_' + j + ' class="trackBarEventMarkerMandatory"></div>')
                         .appendTo($('#trackBarRail'));
-                    var duration = isNaN(popcornInstance.duration()) ? $mediaDiv.data("duration") : popcornInstance.duration();
-                    frac = thisContent.start / duration
-                    // Do not add this event to the timeline if it doesn't occur during the duration of the video.
-                    if (frac < 0 || frac > 1) {
-                        $eventMarker.remove();
-                    }
-                    else {
-                        $eventMarker.attr("synchFrac", frac);
-                        eventOffset = frac * $('#trackBarRail').width();
-                        $eventMarker.css("left", eventOffset);
-                        if (thisContent.optional == "false") {
-                            $eventMarkerMandatory = $('<div id=marker_mandatory_' + j + ' class="trackBarEventMarkerMandatory"></div>')
-                            .appendTo($('#trackBarRail'));
-                            $eventMarkerMandatory.css("left", eventOffset - $eventMarkerMandatory.width() * 0.25);
-                        }
+                        $eventMarkerMandatory.css("left", eventOffset - $eventMarkerMandatory.width() * 0.25);
                     }
                 }
-                if (thisContent.type == "ivSynchSlides") {
-                    $.each(thisContent.allInfo.children, function(i, e){
-                        e.optional = thisContent.optional;
-                        e.setAttribute("_w", parseFloat(thisContent.allInfo.attributes._w.value));
-                        e.setAttribute("_x", parseFloat(thisContent.allInfo.attributes._x.value));
-                        e.setAttribute("_y", parseFloat(thisContent.allInfo.attributes._y.value));
-                    });
+
+                // Collect Look-and-Feel data for hotspots.
+                var optional = thisContent.allInfo.getAttribute("optional");
+                optional = optional == '' || optional == undefined  ? 'false' : optional;
+
+                var tooltip = thisContent.allInfo.getAttribute("tooltip");
+                tooltip = tooltip == '' || tooltip == undefined  ? 'label' : tooltip;
+
+                var icon = thisContent.allInfo.getAttribute("icon");
+                icon = icon == '' || icon == undefined  ? 'fas fa-info' : icon;
+                // Background Color
+                var colour1 = thisContent.allInfo.getAttribute("colour1");
+                colour1 = colour1 == '' || colour1 == undefined ? '#000000' : colour1;
+                colour1 = colour1.indexOf('0x') === 0 ? colour1.replace("0x", "#") : colour1;
+                // Icon Color
+                var colour2 = thisContent.allInfo.getAttribute("colour2");
+                colour2 = colour2 == '' || colour2 == undefined ? '#FFFFFF' : colour2;
+                colour2 = colour2.indexOf('0x') === 0 ? colour2.replace("0x", "#") : colour2;
+
+                var hsSize = thisContent.allInfo.getAttribute("hsSize");
+                hsSize = hsSize == '' || hsSize == undefined ? '24px' : hsSize;
+
+                var hsAttributes = {
+                    optional: optional,
+                    tooltip : tooltip,
+                    icon    : icon,
+                    colour1 : colour1,
+                    colour2 : colour2,
+                    hsSize  : hsSize,
+                };
+                var pluginAttributes = {
+                    start	  : thisContent.start,
+                    end		  : thisContent.end,
+                    target	  : thisContent.target,
+                    optional  : thisContent.optional,
+                    attrib	  : hsAttributes,
+                    overlayPan: thisContent.ivOverlayPanel
                 }
-                if (thisContent.type != "synchEmpty") {
-                    if (thisContent.type == "ivSynchMCQ" || thisContent.type == "ivSynchTextPlus" || thisContent.type == "ivSynchSlides" || thisContent.type == "ivSynchXot") {
-                        // Collect Look-and-Feel data for hotspots.
-                        var optional = thisContent.allInfo.getAttribute("optional");
-                        optional = optional == '' || optional == undefined  ? 'false' : optional;
 
-                        var tooltip = thisContent.allInfo.getAttribute("tooltip");
-                        tooltip = tooltip == '' || tooltip == undefined  ? 'label' : tooltip;
-
-                        var icon = thisContent.allInfo.getAttribute("icon");
-                        icon = icon == '' || icon == undefined  ? 'fas fa-info' : icon;
-                        // Background Color
-                        var colour1 = thisContent.allInfo.getAttribute("colour1");
-                        colour1 = colour1 == '' || colour1 == undefined ? '#000000' : colour1;
-                        colour1 = colour1.indexOf('0x') === 0 ? colour1.replace("0x", "#") : colour1;
-                        // Icon Color
-                        var colour2 = thisContent.allInfo.getAttribute("colour2");
-                        colour2 = colour2 == '' || colour2 == undefined ? '#FFFFFF' : colour2;
-                        colour2 = colour2.indexOf('0x') === 0 ? colour2.replace("0x", "#") : colour2;
-
-                        var hsSize = thisContent.allInfo.getAttribute("hsSize");
-                        hsSize = hsSize == '' || hsSize == undefined ? '24px' : hsSize;
-
-                        var hsAttributes = {
-                            optional: optional,
-                            tooltip : tooltip,
-                            icon    : icon,
-                            colour1 : colour1,
-                            colour2 : colour2,
-                            hsSize  : hsSize,
-                        };
-                        var pluginAttributes = {
-                            start	  : thisContent.start,
-                            end		  : thisContent.end,
-                            target	  : thisContent.target,
-                            optional  : thisContent.optional,
-                            attrib	  : hsAttributes,
-                            overlayPan: thisContent.ivOverlayPanel
-                        };
+                // add other info to pluginAttributes
+                $.each(thisContent.allInfo.attributes, function(i, attrib) {
+                    // ignore attributes that aren't needed or are dealt with here rather than in individual plugins
+                    if (attrib.name != "synchStart" && attrib.name != "synchEnd" && attrib.name != "clearPanel"
+                            && attrib.name != "pauseMedia" && attrib.name != "linkID") {
+                        pluginAttributes[attrib.name] = attrib.value;
                     }
-                    else {
-                        var pluginAttributes = {
-                            start	  : thisContent.start,
-                            end		  : thisContent.end,
-                            target	  : thisContent.target,
-                            optional  : thisContent.optional,
-                            overlayPan: thisContent.ivOverlayPanel
-                        };
-                    }
-
-                    // add other info to pluginAttributes
-                    $.each(thisContent.allInfo.attributes, function(i, attrib) {
-                        // ignore attributes that aren't needed or are dealt with here rather than in individual plugins
-                        if (attrib.name != "synchStart" && attrib.name != "synchEnd" && attrib.name != "clearPanel"
-                                && attrib.name != "pauseMedia" && attrib.name != "linkID") {
-                            pluginAttributes[attrib.name] = attrib.value;
-                        }
-                    });
-                    if (thisContent.childNodes) { // used in some plugins e.g. mediaPlus
-                        pluginAttributes.childNodes = thisContent.childNodes;
-                    }
-
-                    // create the holder for the content if it doesn't exist & position it correctly
-                    var $target = $("#" + targetRef);
-                    if ($target.find("#" + pluginAttributes.target).length == 0) {
-                        var $holder;
-                        var $targetDiv = ($("#" + targetRef + " .panelContent").length > 0 ? $("#" + targetRef + " .panelContent") : $target);
-                            // ^^ targetDiv is different if it's content to show on top of additional media
-
-                        if (pluginAttributes.position == "top") {
-                            $holder = $('<div>').prependTo($targetDiv);
-                        } else {
-                            $holder = $('<div>').appendTo($targetDiv);
-                        }
-
-                        $holder
-                            .addClass("contentBlock " + pluginName + "Holder")
-                            .attr("id", pluginAttributes.target);
-                    }
-
-                    if (x_params.authorSupport == "true") {
-                        var startTxt = x_currentPageXML.getAttribute("supportStart") != undefined ? x_currentPageXML.getAttribute("supportStart") : "start",
-                            endTxt = x_currentPageXML.getAttribute("supportEnd") != undefined ? x_currentPageXML.getAttribute("supportEnd") : "end",
-                            authorSupportTxt = thisContent.autoEnd != true ? startTxt + ":" + thisContent.start + " " + endTxt + ":" + thisContent.end : startTxt + ":" + thisContent.start;
-                        pluginAttributes.name = pluginAttributes.name + ' <span class="alert">[' + authorSupportTxt + ']</span>';
-                    }
-
-                    popcornInstance[pluginName](pluginAttributes);
-                    // ^^ plugins called are either bespoke ones in popcorn/plugins folder or from popcorn-complete.min.js
-                    // ^^ for those from popcorn-complete.min.js, the xwd node names & values must match the expected popcorn properties for the plugin
-
-                    if ($.inArray(pluginName, plugins) == -1) {
-                        // plugin is being called from popcorn-complete.min.js - need to call this too (gets holder in correct state with titles & visibility)
-                        popcornInstance["sortholder"](pluginAttributes);
-                    }
-                    interactiveVideo.setUpPopcornCue(popcornInstance, thisContent);
+                });
+                if (thisContent.childNodes) { // used in some plugins e.g. mediaPlus
+                    pluginAttributes.childNodes = thisContent.childNodes;
                 }
+
+                // create the holder for the content if it doesn't exist & position it correctly
+                var $target = $("#" + targetRef);
+                if ($target.find("#" + pluginAttributes.target).length == 0) {
+                    var $holder;
+                    var $targetDiv = ($("#" + targetRef + " .panelContent").length > 0 ? $("#" + targetRef + " .panelContent") : $target);
+                        // ^^ targetDiv is different if it's content to show on top of additional media
+
+                    if (pluginAttributes.position == "top") {
+                        $holder = $('<div>').prependTo($targetDiv);
+                    } else {
+                        $holder = $('<div>').appendTo($targetDiv);
+                    }
+
+                    $holder
+                        .addClass("contentBlock " + pluginName + "Holder")
+                        .attr("id", pluginAttributes.target);
+                }
+
+                if (x_params.authorSupport == "true") {
+                    var startTxt = x_currentPageXML.getAttribute("supportStart") != undefined ? x_currentPageXML.getAttribute("supportStart") : "start",
+                        endTxt = x_currentPageXML.getAttribute("supportEnd") != undefined ? x_currentPageXML.getAttribute("supportEnd") : "end",
+                        authorSupportTxt = thisContent.autoEnd != true ? startTxt + ":" + thisContent.start + " " + endTxt + ":" + thisContent.end : startTxt + ":" + thisContent.start;
+                    pluginAttributes.name = pluginAttributes.name + ' <span class="alert">[' + authorSupportTxt + ']</span>';
+                }
+
+                popcornInstance[pluginName](pluginAttributes);
+                // ^^ plugins called are either bespoke ones in popcorn/plugins folder or from popcorn-complete.min.js
+                // ^^ for those from popcorn-complete.min.js, the xwd node names & values must match the expected popcorn properties for the plugin
+
+                if ($.inArray(pluginName, plugins) == -1) {
+                    // plugin is being called from popcorn-complete.min.js - need to call this too (gets holder in correct state with titles & visibility)
+                    popcornInstance["sortholder"](pluginAttributes);
+                }
+                interactiveVideo.setUpPopcornCue(popcornInstance, thisContent);
             }
 
             x_pageContentsUpdated();
-        }
-
-        // function sets up the popcorn sync events for pausing and skipping the media
-        // Also shows or hide streams for the mediasite API.
-        this.setUpPopcornSynchCue = function(popcornInstance, synchData) {
-            popcornInstance.cue(Number(synchData.getAttribute("synch")), function() {
-                // pause / play media
-                if (synchData.getAttribute("pauseMedia") == "true") { //TODO not here
-                    this.pause();
-                    if (synchData.getAttribute("overlay") != "true") {
-                        interactiveVideo.exitFullScreen();
-                    }
-                } else {
-                    this.play()
-                }
-
-                // Show the following streams (Mediasite)
-                // 0: Video 1
-                // 1: Document
-                // 2: Slides
-                // 3: Presentation
-                // 4: Video 2
-                // 5: Video 3
-                if (this.video._util !== undefined && this.video._util.type === "Mediasite")
-                    if (synchData.getAttribute("visibleStreamTypes") != undefined)
-                        this.setVST(synchData.getAttribute("visibleStreamTypes"));
-
-                // disable media controls
-                if (synchData.getAttribute("disable") == "true") {
-                    interactiveVideo.enableControls(this.media, false, true, true);
-                }
-
-                // skip media
-                if (synchData.getAttribute("destination") != undefined && $.isNumeric(synchData.getAttribute("destination"))) {
-                    this.currentTime(synchData.getAttribute("destination"));
-                }
-            });
         }
 
         this.setUpPopcornCue = function(popcornInstance, thisContent) {
@@ -1201,6 +1073,7 @@
                 // pauses media at synch point if needed
                 if (thisContent.allInfo.getAttribute("pauseMedia") == "true") {
                     this.pause();
+
                     // Gray out the background and fix z-index if the media is paused on an overlay panel
                     if (thisContent.allInfo.getAttribute("overlayPan") == "true" && thisContent.type == "ivSynchXot")
                     {
@@ -1246,7 +1119,7 @@
                     }
                     if (includeTrackbar == true) {
                         trackBarEnabled = true;
-                        $("#trackBarHolder").show();
+                        $("#trackBarHolder").removeClass("hideContents");
                     }
                 }
             } else {
@@ -1266,18 +1139,9 @@
                     }
                     if (includeTrackbar == true) {
                         trackBarEnabled = false;
-                        $("#trackBarHolder").hide();
+                        $("#trackBarHolder").addClass("hideContents");
                     }
                 }
-            }
-        }
-
-        this.hideControlLayer = function(media) {
-            if (media.nodeName == "VIDEO") {
-                $(media).parent().parent().find(".mejs-controls").hide()
-                $(media).parent().parent().find(".mejs-layers").hide();
-            } else {
-                $(media).parent().parent().find(".mejs-controls").children("div").hide();
             }
         }
 

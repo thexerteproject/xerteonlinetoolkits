@@ -2201,7 +2201,7 @@
 
     <name label="Slide Title" type="TextInput" wysiwyg="true"/>
     <text label="Slide Text" type="TextArea" height="250" placeholder="Content for the slide"/>
-    <synch label="Sync Point" type="synchPoint" src="parent.sound"/>
+    <synch label="Sync Point" type="synchPoint" src="parent|sound"/>
 	
 	<imgInfo type="group" label="Image" optional="true">
         <url label="Image" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
@@ -9581,15 +9581,15 @@
             <qfIvSynchTextPlus label="Number of Text Objects" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
             <qfIvSynchMCQ label="Number of Multiple Choice Questions" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
             <qfIvSynchMCQOption label="Number of Answers per MCQ" type="TextInput" wysiwyg="true" defaultValue="4" optional="true"/>
-            <qfIvSynchXot label="Number of Embeded XOT Projects" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
-            <qfIvSynchXotChange label="Number of Pages per Embeded XOT Project" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+            <qfIvSynchXot label="Number of Embedded XOT Projects" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+            <qfIvSynchXotChange label="Number of Pages per Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
             <qfButton type="quickfillbutton" optional="true"/>
         </QFGroup>
 
 		<newNodes>
-			<ivSynchXot><![CDATA[<ivSynchXot name="Enter Title" url="" page="" hide="none" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchXot>
-			<ivSynchMCQ><![CDATA[<ivSynchMCQ name="Enter Title" text="" type="radio" answerType="single" synchStart="0" clearpanel="true" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></ivSynchMCQ>
-			<ivSynchTextPlus><![CDATA[<ivSynchTextPlus name="Enter Title" text="" synchStart="0" clearpanel="true" pauseMedia="true"/>]]></ivSynchTextPlus>
+			<ivSynchXot><![CDATA[<ivSynchXot name="Enter Title" url="" page="" hide="none" synchStart="0" pauseMedia="true"/>]]></ivSynchXot>
+			<ivSynchMCQ><![CDATA[<ivSynchMCQ name="Enter Title" text="" type="radio" answerType="single" synchStart="0" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></ivSynchMCQ>
+			<ivSynchTextPlus><![CDATA[<ivSynchTextPlus name="Enter Title" text="" synchStart="0" pauseMedia="true"/>]]></ivSynchTextPlus>
 		</newNodes>
 
 	<imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
@@ -9626,22 +9626,17 @@
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<text label="Text" type="TextArea" height="250" placeholder="Enter text for the panel here"/>
 
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
-			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true" tooltip="Label not suited for small screens"/>
-			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
-			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
-			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" optional="true" tooltip="Size in %; Max = 40%"/>
+		<synchStart label="Sync Point" type="synchPoint" src="page|ivMediaPanel|media"/>
+		<synchEnd label="Sync Point: End" type="synchPoint" relativeTo="synchStart" src="page|ivMediaPanel|media" optional="true"/>
+		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Optional events do not open automatically. A hotspot is shown that must be clicked to open the content.">
+			<optional label="Optional Event" type="CheckBox" defaultValue="true" conditionTrigger="true" optional="true"/>
+			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true" condition="optional=='true'" tooltip="Label not suited for small screens"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="optional=='true'" optional="true"/>
+			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" condition="optional=='true'" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" condition="optional=='true'" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" condition="optional=='true'" optional="true" tooltip="Size in %; Max = 40%"/>
 		</hsAppearance>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
-		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
-		
-
 	<imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
 		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
 		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
@@ -9671,125 +9666,24 @@
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false' &amp;&amp; vendor_is_available('ai','all') &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
 		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
-	</imgSearchAndHelpGroup></ivSynchTextPlus><ivSynchSlides menuItem="Slideshow" icon="icFolderImg" remove="true">
-
-		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
-			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true" tooltip="Label not suited for small screens"/>
-			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
-			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
-			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" optional="true" tooltip="Size in %; Max = 40"/>
-		</hsAppearance>
-		<pauseMedia label="Pause Media" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
-		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
-
-		<newNodes>
-			<ivSynchSlide><![CDATA[<synchSlide name="" url="Select Image" synchStart="0" clearpanel="true" pauseMedia="false"/>]]></ivSynchSlide>
-		</newNodes>
-
-	<imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
-		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
-		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
-		<imgGenApi label="Service" type="comboBox_imagegen" defaultValue="gpt1" width="120" optional="true" conditionTrigger="true" tooltip="Dalle2: Attempt to generate the specified number of images based on the given descriptions using an AI model; Dalle3: Attempt to generate a single image based on the given description using an AI model." condition="serviceType=='generate' &amp;&amp; hasrole('aiuser')"/>
-		<imgmodelver label="Model Version" tooltip="Choose one of the available models for image generation." options="GPT Image 1, GPT Image 1 Mini, GPT Image 1.5" type="comboBox" data="gpt-image-1, gpt-image-1-mini, gpt-image-1.5" defaultValue="gpt-image-1" condition="serviceType=='generate' &amp;&amp; imgGenApi=='gpt1'" optional="true"/>
-		<nri label="Quantity" options="1, 2, 3, 4, 5, 6, 7, 8, 9, 10" type="comboBox" data="1,2,3,4,5,6,7,8,9,10" defaultValue="1" tooltip="The number of images to retrieve or generate." condition="((serviceType=='retrieve') &amp;&amp; imgApi!='null') || (serviceType=='generate' &amp;&amp; (imgGenApi!='dalle3'))" optional="true"/>
-		<imgQuery verification="^.+$" label="Query" type="TextArea" placeholder="Write your query here..." tooltip="Provide a brief description for the desired image here." height="50" wysiwyg="true" defaultValue="" condition="(imgApi != 'NaN' &amp;&amp; imgApi != 'null' &amp;&amp; imgApi != null) || (imgGenApi != 'NaN' &amp;&amp; imgGenApi != 'null' &amp;&amp; imgGenApi != null)" optional="true"/>
-		<advancedSettingsPrompt label="The following search parameters are available for your selected service:" type="info" optional="true" condition="overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'"/>
-		<wikimediaWidth label="Width" tooltip="Input a number in pixels to filter images with that specific width, for example: 640" type="TextInput" defaultValue="" placeholder="Input the numeric value in pixels, for example 500" optional="true" condition="imgApi=='wikimedia' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<wikimediaHeight label="Height" tooltip="Input a number in pixels to filter images with that specific height, for example: 640" type="TextInput" defaultValue="" placeholder="Input the numeric value in pixels, for example 500" optional="true" condition="imgApi=='wikimedia' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsColor label="Colour" tooltip="Input a single color or a hexadecimal value, representative of the average color desired in the image." type="TextInput" defaultValue="" placeholder="A single colour (red) or hex value (#F54927)" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsSize label="Size" tooltip="Select the size of the retrieved images." options="small, medium, large, any" type="comboBox" data="small,medium,large,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsOrientation label="Orientation" options="landscape, portrait, square, any" type="comboBox" data="landscape,portrait,square,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pixabayColorsDropdown label="Colour" tooltip="Pick a colour from the drop-down list, or select custom and input one or more colours separated by a comma." type="comboBox" defaultValue="custom" options="grayscale,transparent,red, orange,yellow,green,turquoise,blue,lilac,pink,white,gray,black,brown,custom" data="grayscale,transparent,red,orange,yellow,green,turquoise,blue,lilac,pink,white,gray,black,brown,custom" optional="true" placeholder="grayscale, transparent, red, orange, yellow, green..." condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'" conditionTrigger="true"/>
-		<pixabayColors label="Colour" tooltip="Input one or more colours, separated by a comma, from the following list: grayscale, transparent, red, orange, yellow, green, turquoise, blue, lilac, pink, white, gray, black, brown. When using custom lists like this, bear in mind that the colours must be written in English, exactly as you see them in this description." type="TextInput" defaultValuePh="" placeholder="Enter one or more colours, separated by a comma." condition="pixabayColorsDropdown=='custom' &amp;&amp; imgApi=='pixabay'" optional="true"/>
-		<pixabayType label="Type" tooltip="Select which type of image to retrieve." options="all,photo,illustration,vector" type="comboBox" data="all,photo,illustration,vector" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pixabayOrientation label="Orientation" options="horizontal, vertical, all" type="comboBox" data="horizontal,vertical,all" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<color label="Colors" options="black_and_white, black, white, yellow, orange, red, purple, magenta, green, teal, blue, any" type="comboBox" data="black_and_white,black,white,yellow,orange,red,purple,magenta,green,teal,blue,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='unsplash' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<orientation label="Orientation" options="landscape, portrait, squarish, any" type="comboBox" data="landscape,portrait,squarish,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='unsplash' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<aiSettingsPrompt label="The following AI-settings are available for your selected service:" type="info" optional="true" condition="hasrole('aiuser') &amp;&amp; (imgApi!='NaN' || imgGenApi!='NaN') &amp;&amp; vendor_is_available('ai','all')"/>
-		<useAiInterpret label="Enable AI Query Interpretation" tooltip="This option results in your chosen AI model rewriting your request to better match the selected service." type="Checkbox" conditionTrigger="true" condition="hasrole('aiuser') &amp;&amp; vendor_is_available('ai','all')" defaultValue="false" optional="true"/>
-		<!--<overrideAiSettings label="Enable AI settings override." tooltip="Allows the user to manually set parameters specific to the service, regardless of the input in the query." type="Checkbox" conditionTrigger="true" condition="imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia'" defaultValue="false" optional="true"/>-->
-		<overrideAiSettings label="Enable AI-Autofill for Settings" tooltip="Let the AI model determine which settings to fill in, based on your request." type="Checkbox" conditionTrigger="true" condition="(hasrole('aiuser') &amp;&amp; vendor_is_available('ai','all') &amp;&amp; serviceType=='retrieve') &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia')" defaultValue="false" optional="true"/>
-		<ishButton type="imgsearchandhelpbutton" optional="true"/>
-		<aiContentWarningPrompt label="AI query interpretation is enabled. The image search and help tool will interpret the entered query using an Artifical Intelligence model before using the selected service." type="info" condition="useAiInterpret=='true' &amp;&amp; hasrole('aiuser')" optional="true"/>
-		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
-		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
-		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false' &amp;&amp; vendor_is_available('ai','all') &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
-	</imgSearchAndHelpGroup></ivSynchSlides><ivSynchSlide menuItem="Slide" icon="icBullet" remove="true">
-
-		<name label="Image Description" type="TextInput" placeholder="Enter a description for accessibility"/>
-		<url label="Image" type="media"/>
-		<synchStart label="Synch Point" type="TextInput"/>
-		<optional label="optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
-
-		<captionOptions type="group" label="Caption" optional="true">
-			<caption label="Text" type="TextInput" wysiwyg="true" defaultValue="Enter Caption Text" optional="true"/>
-			<captionPosV label="Vertical Position" type="ComboBox" options="Top,Middle,Bottom" data="top,middle,bottom" defaultValue="bottom" width="100" optional="true"/>
-			<captionPosH label="Horizontal Position" type="ComboBox" options="Left,Centre,Right" data="left,centre,right" defaultValue="centre" width="100" optional="true"/>
-		</captionOptions>
-
-	<imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
-		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
-		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
-		<imgGenApi label="Service" type="comboBox_imagegen" defaultValue="gpt1" width="120" optional="true" conditionTrigger="true" tooltip="Dalle2: Attempt to generate the specified number of images based on the given descriptions using an AI model; Dalle3: Attempt to generate a single image based on the given description using an AI model." condition="serviceType=='generate' &amp;&amp; hasrole('aiuser')"/>
-		<imgmodelver label="Model Version" tooltip="Choose one of the available models for image generation." options="GPT Image 1, GPT Image 1 Mini, GPT Image 1.5" type="comboBox" data="gpt-image-1, gpt-image-1-mini, gpt-image-1.5" defaultValue="gpt-image-1" condition="serviceType=='generate' &amp;&amp; imgGenApi=='gpt1'" optional="true"/>
-		<nri label="Quantity" options="1, 2, 3, 4, 5, 6, 7, 8, 9, 10" type="comboBox" data="1,2,3,4,5,6,7,8,9,10" defaultValue="1" tooltip="The number of images to retrieve or generate." condition="((serviceType=='retrieve') &amp;&amp; imgApi!='null') || (serviceType=='generate' &amp;&amp; (imgGenApi!='dalle3'))" optional="true"/>
-		<imgQuery verification="^.+$" label="Query" type="TextArea" placeholder="Write your query here..." tooltip="Provide a brief description for the desired image here." height="50" wysiwyg="true" defaultValue="" condition="(imgApi != 'NaN' &amp;&amp; imgApi != 'null' &amp;&amp; imgApi != null) || (imgGenApi != 'NaN' &amp;&amp; imgGenApi != 'null' &amp;&amp; imgGenApi != null)" optional="true"/>
-		<advancedSettingsPrompt label="The following search parameters are available for your selected service:" type="info" optional="true" condition="overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'"/>
-		<wikimediaWidth label="Width" tooltip="Input a number in pixels to filter images with that specific width, for example: 640" type="TextInput" defaultValue="" placeholder="Input the numeric value in pixels, for example 500" optional="true" condition="imgApi=='wikimedia' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<wikimediaHeight label="Height" tooltip="Input a number in pixels to filter images with that specific height, for example: 640" type="TextInput" defaultValue="" placeholder="Input the numeric value in pixels, for example 500" optional="true" condition="imgApi=='wikimedia' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsColor label="Colour" tooltip="Input a single color or a hexadecimal value, representative of the average color desired in the image." type="TextInput" defaultValue="" placeholder="A single colour (red) or hex value (#F54927)" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsSize label="Size" tooltip="Select the size of the retrieved images." options="small, medium, large, any" type="comboBox" data="small,medium,large,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsOrientation label="Orientation" options="landscape, portrait, square, any" type="comboBox" data="landscape,portrait,square,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pixabayColorsDropdown label="Colour" tooltip="Pick a colour from the drop-down list, or select custom and input one or more colours separated by a comma." type="comboBox" defaultValue="custom" options="grayscale,transparent,red, orange,yellow,green,turquoise,blue,lilac,pink,white,gray,black,brown,custom" data="grayscale,transparent,red,orange,yellow,green,turquoise,blue,lilac,pink,white,gray,black,brown,custom" optional="true" placeholder="grayscale, transparent, red, orange, yellow, green..." condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'" conditionTrigger="true"/>
-		<pixabayColors label="Colour" tooltip="Input one or more colours, separated by a comma, from the following list: grayscale, transparent, red, orange, yellow, green, turquoise, blue, lilac, pink, white, gray, black, brown. When using custom lists like this, bear in mind that the colours must be written in English, exactly as you see them in this description." type="TextInput" defaultValuePh="" placeholder="Enter one or more colours, separated by a comma." condition="pixabayColorsDropdown=='custom' &amp;&amp; imgApi=='pixabay'" optional="true"/>
-		<pixabayType label="Type" tooltip="Select which type of image to retrieve." options="all,photo,illustration,vector" type="comboBox" data="all,photo,illustration,vector" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pixabayOrientation label="Orientation" options="horizontal, vertical, all" type="comboBox" data="horizontal,vertical,all" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<color label="Colors" options="black_and_white, black, white, yellow, orange, red, purple, magenta, green, teal, blue, any" type="comboBox" data="black_and_white,black,white,yellow,orange,red,purple,magenta,green,teal,blue,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='unsplash' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<orientation label="Orientation" options="landscape, portrait, squarish, any" type="comboBox" data="landscape,portrait,squarish,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='unsplash' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<aiSettingsPrompt label="The following AI-settings are available for your selected service:" type="info" optional="true" condition="hasrole('aiuser') &amp;&amp; (imgApi!='NaN' || imgGenApi!='NaN') &amp;&amp; vendor_is_available('ai','all')"/>
-		<useAiInterpret label="Enable AI Query Interpretation" tooltip="This option results in your chosen AI model rewriting your request to better match the selected service." type="Checkbox" conditionTrigger="true" condition="hasrole('aiuser') &amp;&amp; vendor_is_available('ai','all')" defaultValue="false" optional="true"/>
-		<!--<overrideAiSettings label="Enable AI settings override." tooltip="Allows the user to manually set parameters specific to the service, regardless of the input in the query." type="Checkbox" conditionTrigger="true" condition="imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia'" defaultValue="false" optional="true"/>-->
-		<overrideAiSettings label="Enable AI-Autofill for Settings" tooltip="Let the AI model determine which settings to fill in, based on your request." type="Checkbox" conditionTrigger="true" condition="(hasrole('aiuser') &amp;&amp; vendor_is_available('ai','all') &amp;&amp; serviceType=='retrieve') &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia')" defaultValue="false" optional="true"/>
-		<ishButton type="imgsearchandhelpbutton" optional="true"/>
-		<aiContentWarningPrompt label="AI query interpretation is enabled. The image search and help tool will interpret the entered query using an Artifical Intelligence model before using the selected service." type="info" condition="useAiInterpret=='true' &amp;&amp; hasrole('aiuser')" optional="true"/>
-		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
-		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
-		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false' &amp;&amp; vendor_is_available('ai','all') &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
-	</imgSearchAndHelpGroup></ivSynchSlide><ivSynchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
-
+	</imgSearchAndHelpGroup></ivSynchTextPlus><ivSynchMCQ menuItem="Multiple Choice Question" icon="icComments" remove="true">
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<HotSpot label="Choose location" type="LocPicker" defaultValue="ERROR"/>
 		<text label="Question" type="TextArea" height="100" placeholder="Enter question text here"/>
 		<judge label="Mark Answer" type="CheckBox" defaultvalue="true" optional="true" conditionTrigger="true" tooltip="Uncheck this option to use this activity to record a user's opinion. Answers will be recorded (e.g. for later use on the results page) but will not be marked as correct/incorrect. When unmarked, a score of 100% will be recorded for the completed activity. Set the tracking weight to 0 if you do not want the score to count in the end result."/>
-		<!--<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>-->
-		<!--<type label="Question Type" type="ComboBox" options="Radio Buttons" data="radio" width="150"/>-->
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
-		<disable label="Disable Controls" type="CheckBox"/>
-		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="true"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<synchStart label="Sync Point" type="synchPoint" src="page|ivMediaPanel|media"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true" conditionTrigger="true"/>
+		<disable label="Disable Controls" type="CheckBox" condition="pauseMedia=='true'"/>
+		<synchEnd label="Sync Point: End" type="synchPoint" relativeTo="synchStart" src="page|ivMediaPanel|media" optional="true"/>
 		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
-			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true" tooltip="Label not suited for small screens"/>
-			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
-			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
-			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" optional="true" tooltip="Size in %; Max = 40"/>
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" conditionTrigger="true" optional="true"/>
+			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" condition="optional=='true'" optional="true" tooltip="Label not suited for small screens"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="optional=='true'" optional="true"/>
+			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" condition="optional=='true'" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" condition="optional=='true'" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" condition="optional=='true'" optional="true" tooltip="Size in %; Max = 40"/>
 		</hsAppearance>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
-		<line label="Divider" type="CheckBox" condition="parent.nodeName=='panel'" defaultValue="false" optional="true"/>
 
 		<feedback type="TextArea" height="40" label="Feedback" optional="true"/>
 
@@ -9805,7 +9699,7 @@
     	<answerOrder label="Answer Order" options="Sequence,Random" type="comboBox" data="sequence,random" defaultValue="sequence" width="120" optional="true"/>
 
 		<newNodes>
-			<ivSynchMCQOption><![CDATA[<ivSynchMCQOption name="Answer" text="Option text" correct="false"/>]]></ivSynchMCQOption>
+			<ivSynchMCQOption><![CDATA[<ivSynchMCQOption name="Answer" text="" correct="false"/>]]></ivSynchMCQOption>
 		</newNodes>
 
 	<imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
@@ -9844,8 +9738,8 @@
 	    <correct condition="parent.judge!='false'" label="Correct Answer" type="CheckBox" defaultValue="false"/>
 
 		<feedback label="Feedback" type="TextArea" height="100" defaultValue="" optional="true"/>
-		<page label="Go to Page" type="PageList" optional="true"/>
-		<synch label="Go to Synch Point" type="TextInput" optional="true"/>
+		<page label="Navigate to Page" type="PageList" optional="true"/>
+		<synch label="Go to Sync Point" type="synchPoint" relativeTo="parent|synchStart" src="page|ivMediaPanel|media" optional="true"/>
 		<play label="Play Media" type="CheckBox" defaultValue="false" optional="true"/>
 		<enable label="Enable Controls" type="CheckBox" defaultValue="true" optional="true"/>
 
@@ -9885,19 +9779,17 @@
 		<page label="Page" type="TextInput" wysiwyg="false" defaultValue="" placeholder="e.g. 5" tooltip="By default, the XOT project will be shown from page 1. Use this option to automatically show a later page instead"/>
 		<hide label="Hide" type="ComboBox" options="None,Header,Footer,Both" data="none,top,bottom,both" defaultValue="none" width="100"/>
 
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
+		<synchStart label="Sync Point" type="synchPoint" src="page|ivMediaPanel|media"/>
+		<synchEnd label="Sync Point: End" type="synchPoint" relativeTo="synchStart" src="page|ivMediaPanel|media" optional="true"/>
 		<hsAppearance type="group" label="Optional Event" optional="true" tooltip="Customise the appearance of hotspots">
-			<optional label="Optional Event" type="CheckBox" defaultValue="false" optional="true"/>
-			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" optional="true" tooltip="Label not suited for small screens"/>
-			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" optional="true"/>
-			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" optional="true"/>
-			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" optional="true"/>
-			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" optional="true" tooltip="Size in %; Max = 40"/>
+			<optional label="Optional Event" type="CheckBox" defaultValue="false" conditionTrigger="true" optional="true"/>
+			<tooltip label="Hotspot" type="ComboBox" options="Icon and Tooltip,Icon and Label,Icon Only" data="tooltip,label,none" defaultValue="label" condition="optional=='true'" optional="true" tooltip="Label not suited for small screens"/>
+			<icon label="Icon" type="FontAwesome" iconList="hotspot" defaultValue="fas fa-info" condition="optional=='true'" optional="true"/>
+			<colour1 label="Background Colour Icon" type="ColourPicker" defaultValue="0x000000" condition="optional=='true'" optional="true"/>
+			<colour2 label="Icon Colour" type="ColourPicker" defaultValue="0xFFFFFF" condition="optional=='true'" optional="true"/>
+			<hsSize label="Size" type="NumericStepper" min="4" max="40" step="1" defaultValue="7" condition="optional=='true'" optional="true" tooltip="Size in %; Max = 40"/>
 		</hsAppearance>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" condition="parent.nodeName=='panel'" defaultValue="top" width="100" optional="true"/>
 
 		<newNodes>
 			<ivSynchXotChange><![CDATA[<ivSynchXotChange page="Enter Page Number" synchStart="0" pauseMedia="false"/>]]></ivSynchXotChange>
@@ -9936,7 +9828,7 @@
 
 		<page label="Page" type="TextInput" defaultValue="Enter Page Number"/>
 
-		<synchStart label="Synch Point" type="TextInput"/>
+		<synchStart label="Sync Point" type="synchPoint" relativeTo="parent|synchStart" src="page|ivMediaPanel|media"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="true"/>
 
 	<imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
@@ -11760,7 +11652,6 @@
 
 		<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
 		<trackVideo label="Track Video Progress" optional="true" type="ComboBox" data="no_mcqs,only_video,no,yes" options="Only if no MCQ's,Only video,No (only track MCQ's),Yes" defaultValue="no_mcqs" tooltip="Track video progress as part of the score. By default the video view percentage is only taken into account if there are no Multiple Choice Questions (MCQ's) present. Here you can choose to include the video progress (or not) in the score (when tracking)."/>
-		<!-- <judge label="Mark Answer" optional="true" type="CheckBox" defaultValue="true" tooltip='if this option is disable the answer are still tracked but does not count towards the score.you have to enable "Show pages with 0 tracking weight" for the answers to show on the results page if this option is off'/> -->
 
 	    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
           <qfPanel label="Number of Panels" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
@@ -11914,13 +11805,10 @@
 
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="" page="" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
-			<!--<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>-->
-			<!--<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchGoogleFeed>-->
 			<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchWebpage>
 			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="" type="button" answerType="single" synchStart="0" clearPanel="false" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
 			<synchSlides><![CDATA[<synchSlides name="Enter Title" synchStart="0" clearPanel="false" pauseMedia="false"><synchSlide name="" url="" synchStart="0" pauseMedia="false"/></synchSlides>]]></synchSlides>
 			<synchTextPlus><![CDATA[<synchTextPlus name="Enter Title" text="" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchTextPlus>
-			<!--<synchSubtitlePlus><![CDATA[<synchSubtitlePlus name="Subtitle Holder"><synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/></synchSubtitlePlus>]]></synchSubtitlePlus>-->
 			<synchEmpty><![CDATA[<synchEmpty name="Clear Panel" synchStart="0"/>]]></synchEmpty>
 			<synchCue><![CDATA[<synchCue synch="0" pauseMedia="false" disable="false"/>]]></synchCue>
 		</newNodes>
@@ -11975,8 +11863,6 @@
 
 		<newNodes>
 			<synchXot><![CDATA[<synchXot name="Enter Title" url="" page="" hide="none" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchXot>
-			<!--<synchGoogleMap><![CDATA[<synchGoogleMap name="Enter Title" type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchGoogleMap>-->
-			<!--<synchGoogleFeed><![CDATA[<synchGoogleFeed name="Enter Title" title=" " url="Enter URL" synchStart="0" clearPanel="false" pauseMedia="false"/>]]></synchGoogleFeed>-->
 			<synchWebpage><![CDATA[<synchWebpage name="Enter Title" src="" synchStart="0" clearPanel="false" pauseMedia="false" fullH="true"/>]]></synchWebpage>
 			<synchMediaPlus><![CDATA[<synchMediaPlus name="Enter Title" media="Select Media" width="800" height="600" tip="" synchStart="0" autoplay="false" clearPanel="false" pauseMedia="true" transcriptBtnTxt="Transcript"/>]]></synchMediaPlus>
 			<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="" type="radio" answerType="single" synchStart="0" clearPanel="false" pauseMedia="true" disable="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>
@@ -12015,11 +11901,11 @@
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false' &amp;&amp; vendor_is_available('ai','all') &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
 		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></panel><synchCue menuItem="Pause/Jump Point" icon="icPause" remove="true">
-		<synch label="Synch Point" type="TextInput" defaultValue="0"/>
+		<synch label="Sync Point" type="synchPoint" src="parent|media"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<disable label="Disable Controls" type="CheckBox" defaultValue="false"/>
 		<visibleStreamTypes label="Visible Stream Types" type="TextInput" defaultValue="0 1 2 3 4 5" optional="true"/>
-		<destination label="Jump To" type="TextInput" defaultValue="0" optional="true"/>
+		<destination label="Jump To" type="synchPoint" relativeTo="synch" src="parent|media" optional="true"/>
 	<imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
 		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
 		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
@@ -12050,7 +11936,7 @@
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false' &amp;&amp; vendor_is_available('ai','all') &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
 		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></synchCue><synchEmpty menuItem="Clear Panel" icon="icBullet" remove="true">
-		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
+		<synchStart label="Sync Point" type="synchPoint" src="page|mediaPanel|media"/>
 	<imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
 		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
 		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
@@ -12080,82 +11966,11 @@
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false' &amp;&amp; vendor_is_available('ai','all') &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
 		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
-	</imgSearchAndHelpGroup></synchEmpty><synchSubtitlePlus menuItem="Subtitles" icon="icFolderPage" remove="true" max="1" deprecated="This item is deprecated">
-		<info><![CDATA[This is the holder for the media's subtitles.<br/>Select 'New Subtitle' to add and synch each caption.]]></info>
-		<newNodes>
-			<synchSub><![CDATA[<synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/>]]></synchSub>
-		</newNodes>
-	<imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
-		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
-		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
-		<imgGenApi label="Service" type="comboBox_imagegen" defaultValue="gpt1" width="120" optional="true" conditionTrigger="true" tooltip="Dalle2: Attempt to generate the specified number of images based on the given descriptions using an AI model; Dalle3: Attempt to generate a single image based on the given description using an AI model." condition="serviceType=='generate' &amp;&amp; hasrole('aiuser')"/>
-		<imgmodelver label="Model Version" tooltip="Choose one of the available models for image generation." options="GPT Image 1, GPT Image 1 Mini, GPT Image 1.5" type="comboBox" data="gpt-image-1, gpt-image-1-mini, gpt-image-1.5" defaultValue="gpt-image-1" condition="serviceType=='generate' &amp;&amp; imgGenApi=='gpt1'" optional="true"/>
-		<nri label="Quantity" options="1, 2, 3, 4, 5, 6, 7, 8, 9, 10" type="comboBox" data="1,2,3,4,5,6,7,8,9,10" defaultValue="1" tooltip="The number of images to retrieve or generate." condition="((serviceType=='retrieve') &amp;&amp; imgApi!='null') || (serviceType=='generate' &amp;&amp; (imgGenApi!='dalle3'))" optional="true"/>
-		<imgQuery verification="^.+$" label="Query" type="TextArea" placeholder="Write your query here..." tooltip="Provide a brief description for the desired image here." height="50" wysiwyg="true" defaultValue="" condition="(imgApi != 'NaN' &amp;&amp; imgApi != 'null' &amp;&amp; imgApi != null) || (imgGenApi != 'NaN' &amp;&amp; imgGenApi != 'null' &amp;&amp; imgGenApi != null)" optional="true"/>
-		<advancedSettingsPrompt label="The following search parameters are available for your selected service:" type="info" optional="true" condition="overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'"/>
-		<wikimediaWidth label="Width" tooltip="Input a number in pixels to filter images with that specific width, for example: 640" type="TextInput" defaultValue="" placeholder="Input the numeric value in pixels, for example 500" optional="true" condition="imgApi=='wikimedia' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<wikimediaHeight label="Height" tooltip="Input a number in pixels to filter images with that specific height, for example: 640" type="TextInput" defaultValue="" placeholder="Input the numeric value in pixels, for example 500" optional="true" condition="imgApi=='wikimedia' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsColor label="Colour" tooltip="Input a single color or a hexadecimal value, representative of the average color desired in the image." type="TextInput" defaultValue="" placeholder="A single colour (red) or hex value (#F54927)" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsSize label="Size" tooltip="Select the size of the retrieved images." options="small, medium, large, any" type="comboBox" data="small,medium,large,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsOrientation label="Orientation" options="landscape, portrait, square, any" type="comboBox" data="landscape,portrait,square,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pixabayColorsDropdown label="Colour" tooltip="Pick a colour from the drop-down list, or select custom and input one or more colours separated by a comma." type="comboBox" defaultValue="custom" options="grayscale,transparent,red, orange,yellow,green,turquoise,blue,lilac,pink,white,gray,black,brown,custom" data="grayscale,transparent,red,orange,yellow,green,turquoise,blue,lilac,pink,white,gray,black,brown,custom" optional="true" placeholder="grayscale, transparent, red, orange, yellow, green..." condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'" conditionTrigger="true"/>
-		<pixabayColors label="Colour" tooltip="Input one or more colours, separated by a comma, from the following list: grayscale, transparent, red, orange, yellow, green, turquoise, blue, lilac, pink, white, gray, black, brown. When using custom lists like this, bear in mind that the colours must be written in English, exactly as you see them in this description." type="TextInput" defaultValuePh="" placeholder="Enter one or more colours, separated by a comma." condition="pixabayColorsDropdown=='custom' &amp;&amp; imgApi=='pixabay'" optional="true"/>
-		<pixabayType label="Type" tooltip="Select which type of image to retrieve." options="all,photo,illustration,vector" type="comboBox" data="all,photo,illustration,vector" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pixabayOrientation label="Orientation" options="horizontal, vertical, all" type="comboBox" data="horizontal,vertical,all" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<color label="Colors" options="black_and_white, black, white, yellow, orange, red, purple, magenta, green, teal, blue, any" type="comboBox" data="black_and_white,black,white,yellow,orange,red,purple,magenta,green,teal,blue,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='unsplash' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<orientation label="Orientation" options="landscape, portrait, squarish, any" type="comboBox" data="landscape,portrait,squarish,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='unsplash' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<aiSettingsPrompt label="The following AI-settings are available for your selected service:" type="info" optional="true" condition="hasrole('aiuser') &amp;&amp; (imgApi!='NaN' || imgGenApi!='NaN') &amp;&amp; vendor_is_available('ai','all')"/>
-		<useAiInterpret label="Enable AI Query Interpretation" tooltip="This option results in your chosen AI model rewriting your request to better match the selected service." type="Checkbox" conditionTrigger="true" condition="hasrole('aiuser') &amp;&amp; vendor_is_available('ai','all')" defaultValue="false" optional="true"/>
-		<!--<overrideAiSettings label="Enable AI settings override." tooltip="Allows the user to manually set parameters specific to the service, regardless of the input in the query." type="Checkbox" conditionTrigger="true" condition="imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia'" defaultValue="false" optional="true"/>-->
-		<overrideAiSettings label="Enable AI-Autofill for Settings" tooltip="Let the AI model determine which settings to fill in, based on your request." type="Checkbox" conditionTrigger="true" condition="(hasrole('aiuser') &amp;&amp; vendor_is_available('ai','all') &amp;&amp; serviceType=='retrieve') &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia')" defaultValue="false" optional="true"/>
-		<ishButton type="imgsearchandhelpbutton" optional="true"/>
-		<aiContentWarningPrompt label="AI query interpretation is enabled. The image search and help tool will interpret the entered query using an Artifical Intelligence model before using the selected service." type="info" condition="useAiInterpret=='true' &amp;&amp; hasrole('aiuser')" optional="true"/>
-		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
-		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
-		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false' &amp;&amp; vendor_is_available('ai','all') &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
-	</imgSearchAndHelpGroup></synchSubtitlePlus><synchSub menuItem="Subtitle" icon="icBullet" remove="true">
-		<name label="Subtitle Text" type="TextArea" height="100"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="bottom" width="100"/>
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-	<imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
-		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
-		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
-		<imgGenApi label="Service" type="comboBox_imagegen" defaultValue="gpt1" width="120" optional="true" conditionTrigger="true" tooltip="Dalle2: Attempt to generate the specified number of images based on the given descriptions using an AI model; Dalle3: Attempt to generate a single image based on the given description using an AI model." condition="serviceType=='generate' &amp;&amp; hasrole('aiuser')"/>
-		<imgmodelver label="Model Version" tooltip="Choose one of the available models for image generation." options="GPT Image 1, GPT Image 1 Mini, GPT Image 1.5" type="comboBox" data="gpt-image-1, gpt-image-1-mini, gpt-image-1.5" defaultValue="gpt-image-1" condition="serviceType=='generate' &amp;&amp; imgGenApi=='gpt1'" optional="true"/>
-		<nri label="Quantity" options="1, 2, 3, 4, 5, 6, 7, 8, 9, 10" type="comboBox" data="1,2,3,4,5,6,7,8,9,10" defaultValue="1" tooltip="The number of images to retrieve or generate." condition="((serviceType=='retrieve') &amp;&amp; imgApi!='null') || (serviceType=='generate' &amp;&amp; (imgGenApi!='dalle3'))" optional="true"/>
-		<imgQuery verification="^.+$" label="Query" type="TextArea" placeholder="Write your query here..." tooltip="Provide a brief description for the desired image here." height="50" wysiwyg="true" defaultValue="" condition="(imgApi != 'NaN' &amp;&amp; imgApi != 'null' &amp;&amp; imgApi != null) || (imgGenApi != 'NaN' &amp;&amp; imgGenApi != 'null' &amp;&amp; imgGenApi != null)" optional="true"/>
-		<advancedSettingsPrompt label="The following search parameters are available for your selected service:" type="info" optional="true" condition="overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'"/>
-		<wikimediaWidth label="Width" tooltip="Input a number in pixels to filter images with that specific width, for example: 640" type="TextInput" defaultValue="" placeholder="Input the numeric value in pixels, for example 500" optional="true" condition="imgApi=='wikimedia' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<wikimediaHeight label="Height" tooltip="Input a number in pixels to filter images with that specific height, for example: 640" type="TextInput" defaultValue="" placeholder="Input the numeric value in pixels, for example 500" optional="true" condition="imgApi=='wikimedia' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsColor label="Colour" tooltip="Input a single color or a hexadecimal value, representative of the average color desired in the image." type="TextInput" defaultValue="" placeholder="A single colour (red) or hex value (#F54927)" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsSize label="Size" tooltip="Select the size of the retrieved images." options="small, medium, large, any" type="comboBox" data="small,medium,large,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsOrientation label="Orientation" options="landscape, portrait, square, any" type="comboBox" data="landscape,portrait,square,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pixabayColorsDropdown label="Colour" tooltip="Pick a colour from the drop-down list, or select custom and input one or more colours separated by a comma." type="comboBox" defaultValue="custom" options="grayscale,transparent,red, orange,yellow,green,turquoise,blue,lilac,pink,white,gray,black,brown,custom" data="grayscale,transparent,red,orange,yellow,green,turquoise,blue,lilac,pink,white,gray,black,brown,custom" optional="true" placeholder="grayscale, transparent, red, orange, yellow, green..." condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'" conditionTrigger="true"/>
-		<pixabayColors label="Colour" tooltip="Input one or more colours, separated by a comma, from the following list: grayscale, transparent, red, orange, yellow, green, turquoise, blue, lilac, pink, white, gray, black, brown. When using custom lists like this, bear in mind that the colours must be written in English, exactly as you see them in this description." type="TextInput" defaultValuePh="" placeholder="Enter one or more colours, separated by a comma." condition="pixabayColorsDropdown=='custom' &amp;&amp; imgApi=='pixabay'" optional="true"/>
-		<pixabayType label="Type" tooltip="Select which type of image to retrieve." options="all,photo,illustration,vector" type="comboBox" data="all,photo,illustration,vector" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pixabayOrientation label="Orientation" options="horizontal, vertical, all" type="comboBox" data="horizontal,vertical,all" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<color label="Colors" options="black_and_white, black, white, yellow, orange, red, purple, magenta, green, teal, blue, any" type="comboBox" data="black_and_white,black,white,yellow,orange,red,purple,magenta,green,teal,blue,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='unsplash' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<orientation label="Orientation" options="landscape, portrait, squarish, any" type="comboBox" data="landscape,portrait,squarish,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='unsplash' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<aiSettingsPrompt label="The following AI-settings are available for your selected service:" type="info" optional="true" condition="hasrole('aiuser') &amp;&amp; (imgApi!='NaN' || imgGenApi!='NaN') &amp;&amp; vendor_is_available('ai','all')"/>
-		<useAiInterpret label="Enable AI Query Interpretation" tooltip="This option results in your chosen AI model rewriting your request to better match the selected service." type="Checkbox" conditionTrigger="true" condition="hasrole('aiuser') &amp;&amp; vendor_is_available('ai','all')" defaultValue="false" optional="true"/>
-		<!--<overrideAiSettings label="Enable AI settings override." tooltip="Allows the user to manually set parameters specific to the service, regardless of the input in the query." type="Checkbox" conditionTrigger="true" condition="imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia'" defaultValue="false" optional="true"/>-->
-		<overrideAiSettings label="Enable AI-Autofill for Settings" tooltip="Let the AI model determine which settings to fill in, based on your request." type="Checkbox" conditionTrigger="true" condition="(hasrole('aiuser') &amp;&amp; vendor_is_available('ai','all') &amp;&amp; serviceType=='retrieve') &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia')" defaultValue="false" optional="true"/>
-		<ishButton type="imgsearchandhelpbutton" optional="true"/>
-		<aiContentWarningPrompt label="AI query interpretation is enabled. The image search and help tool will interpret the entered query using an Artifical Intelligence model before using the selected service." type="info" condition="useAiInterpret=='true' &amp;&amp; hasrole('aiuser')" optional="true"/>
-		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
-		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
-		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false' &amp;&amp; vendor_is_available('ai','all') &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
-	</imgSearchAndHelpGroup></synchSub><synchTextPlus menuItem="Text Content" icon="icPageWhiteText" remove="true">
+	</imgSearchAndHelpGroup></synchEmpty><synchTextPlus menuItem="Text Content" icon="icPageWhiteText" remove="true">
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<text label="Text" type="TextArea" height="250" placeholder="Enter text for the panel here"/>
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
+		<synchStart label="Sync Point" type="synchPoint" src="page|mediaPanel|media"/>
+		<synchEnd label="Sync Point: End" type="synchPoint" relativeTo="synchStart" src="page|mediaPanel|media" optional="true"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
@@ -12191,9 +12006,8 @@
 		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
 	</imgSearchAndHelpGroup></synchTextPlus><synchSlides menuItem="Slideshow" icon="icFolderImg" remove="true">
 		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
+		<synchStart label="Sync Point" type="synchPoint" src="page|mediaPanel|media"/>
+		<synchEnd label="Sync Point: End" type="synchPoint" relativeTo="synchStart" src="page|mediaPanel|media" optional="true"/>
 		<overlay label="Overlay Media" type="CheckBox" defaultValue="false" deprecated="This property is deprecated. The interactive video page offers an alternative way of having content overlaying a video."/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
@@ -12234,8 +12048,7 @@
 	</imgSearchAndHelpGroup></synchSlides><synchSlide menuItem="Slide" icon="icBullet" remove="true">
 		<name label="Image Description" type="TextInput" placeholder="Enter a description for accessibility"/>
 		<url label="Image" type="media" placeholder="Select an image"/>
-		<synchStart label="Synch Point" type="TextInput"/>
-		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
+		<synchStart label="Sync Point" type="synchPoint" relativeTo="parent|synchStart" src="page|mediaPanel|media"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<captionOptions type="group" label="Caption" optional="true">
 			<caption label="Text" type="TextInput" wysiwyg="true" defaultValue="Enter Caption Text" optional="true"/>
@@ -12287,9 +12100,8 @@
 			<audioImageTip label="Description" type="textInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
 		</audioImg>
 
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
+		<synchStart label="Sync Point" type="synchPoint" src="page|mediaPanel|media"/>
+		<synchEnd label="Sync Point: End" type="synchPoint" relativeTo="synchStart" src="page|mediaPanel|media" optional="true"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
@@ -12297,8 +12109,6 @@
 		<aspect label="Maintain Aspect Ratio" type="CheckBox" defaultValue="true" optional="true"/>
 
 		<newNodes>
-			<!--<synchMCQ><![CDATA[<synchMCQ name="Enter Title" text="Enter a Prompt" type="button" answerType="single" overlay="true" disable="true" synchStart="0" clearPanel="false" pauseMedia="true" feedbackLabel="Feedback" singleRight="Your answer is correct!" singleWrong="Your answer is incorrect" multiRight="You have selected all the correct answers" multiWrong="You have not selected the correct combination of answers" checkBtnTxt="Check" continueBtnTxt="Continue" topOption="Select Answer..."/>]]></synchMCQ>-->
-			<!--<synchSubtitlePlus><![CDATA[<synchSubtitlePlus name="Subtitle Holder"><synchSub name="Enter Subtitle Text Here" position="bottom" synchStart="0" pauseMedia="false"/></synchSubtitlePlus>]]></synchSubtitlePlus>-->
 			<synchCue><![CDATA[<synchCue synch="0" pauseMedia="false" disable="false"/>]]></synchCue>
 		</newNodes>
 
@@ -12338,12 +12148,11 @@
 		<type label="Question Type" type="ComboBox" options="Buttons,Radio Buttons,Drop Down Menu" data="button,radio,list" width="150"/>
 		<answerType label="Answer Type" type="ComboBox" options="Single Answer,Multiple Answer" data="single,multiple" width="150"/>
 		<overlay label="Overlay Media" type="CheckBox" defaultValue="false" deprecated="This property is deprecated. The interactive video page offers an alternative way of having content overlaying a video."/>
-		<disable label="Disable Controls" type="CheckBox"/>
-		<synchStart label="Synch Point" type="TextInput" defaultValue="9999"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
+		<synchStart label="Sync Point" type="synchPoint" src="page|mediaPanel|media"/>
+		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false" conditionTrigger="true"/>
+		<disable label="Disable Controls" type="CheckBox" condition="pauseMedia=='true'"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
+		<synchEnd label="Sync Point: End" type="synchPoint" relativeTo="synchStart" src="page|mediaPanel|media" optional="true"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
 		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
 		<feedback type="TextArea" height="40" label="Feedback" optional="true"/>
@@ -12399,7 +12208,7 @@
 
 		<feedback label="Feedback" type="TextArea" height="100" defaultValue="Feedback for this option" optional="true"/>
 		<page label="Go to Page" type="PageList" optional="true"/>
-		<synch label="Go to Synch Point" type="TextInput" optional="true"/>
+		<synch label="Go to Sync Point" type="synchPoint" relativeTo="parent|synchStart" src="page|mediaPanel|media" optional="true"/>
 		<play label="Play Media" type="CheckBox" defaultValue="false" optional="true"/>
 		<enable label="Enable Controls" type="CheckBox" defaultValue="true" optional="true"/>
 
@@ -12437,9 +12246,8 @@
 		<name label="Title" type="TextInput" wysiwyg="true"/>
 		<src label="URL" type="TextInput" placeholder="Enter a URL"/>
 
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
+		<synchStart label="Sync Point" type="synchPoint" src="page|mediaPanel|media"/>
+		<synchEnd label="Sync Point: End" type="synchPoint" relativeTo="synchStart" src="page|mediaPanel|media" optional="true"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
@@ -12483,9 +12291,8 @@
 
 		<description label="Description" type="TextInput" wysiwyg="true" optional="true"/>
 
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
+		<synchStart label="Sync Point" type="synchPoint" src="page|mediaPanel|media"/>
+		<synchEnd label="Sync Point: End" type="synchPoint" relativeTo="synchStart" src="page|mediaPanel|media" optional="true"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
 		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
@@ -12527,7 +12334,7 @@
 
 		<page label="Page" type="TextInput" defaultValue="" placeholder="e.g. 5"/>
 
-		<synchStart label="Synch Point" type="TextInput"/>
+		<synchStart label="Sync Point" type="synchPoint" relativeTo="parent|synchStart" src="page|mediaPanel|media"/>
 		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
 
 	<imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
@@ -12559,156 +12366,7 @@
 		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
 		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false' &amp;&amp; vendor_is_available('ai','all') &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
 		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
-	</imgSearchAndHelpGroup></synchXotChange><synchGoogleFeed menuItem="RSS Feed" icon="icRSS" remove="true" deprecated="This item is deprecated">
-
-		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<url label="RSS Feed URL" type="TextInput"/>
-
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
-		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-
-	<imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
-		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
-		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
-		<imgGenApi label="Service" type="comboBox_imagegen" defaultValue="gpt1" width="120" optional="true" conditionTrigger="true" tooltip="Dalle2: Attempt to generate the specified number of images based on the given descriptions using an AI model; Dalle3: Attempt to generate a single image based on the given description using an AI model." condition="serviceType=='generate' &amp;&amp; hasrole('aiuser')"/>
-		<imgmodelver label="Model Version" tooltip="Choose one of the available models for image generation." options="GPT Image 1, GPT Image 1 Mini, GPT Image 1.5" type="comboBox" data="gpt-image-1, gpt-image-1-mini, gpt-image-1.5" defaultValue="gpt-image-1" condition="serviceType=='generate' &amp;&amp; imgGenApi=='gpt1'" optional="true"/>
-		<nri label="Quantity" options="1, 2, 3, 4, 5, 6, 7, 8, 9, 10" type="comboBox" data="1,2,3,4,5,6,7,8,9,10" defaultValue="1" tooltip="The number of images to retrieve or generate." condition="((serviceType=='retrieve') &amp;&amp; imgApi!='null') || (serviceType=='generate' &amp;&amp; (imgGenApi!='dalle3'))" optional="true"/>
-		<imgQuery verification="^.+$" label="Query" type="TextArea" placeholder="Write your query here..." tooltip="Provide a brief description for the desired image here." height="50" wysiwyg="true" defaultValue="" condition="(imgApi != 'NaN' &amp;&amp; imgApi != 'null' &amp;&amp; imgApi != null) || (imgGenApi != 'NaN' &amp;&amp; imgGenApi != 'null' &amp;&amp; imgGenApi != null)" optional="true"/>
-		<advancedSettingsPrompt label="The following search parameters are available for your selected service:" type="info" optional="true" condition="overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'"/>
-		<wikimediaWidth label="Width" tooltip="Input a number in pixels to filter images with that specific width, for example: 640" type="TextInput" defaultValue="" placeholder="Input the numeric value in pixels, for example 500" optional="true" condition="imgApi=='wikimedia' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<wikimediaHeight label="Height" tooltip="Input a number in pixels to filter images with that specific height, for example: 640" type="TextInput" defaultValue="" placeholder="Input the numeric value in pixels, for example 500" optional="true" condition="imgApi=='wikimedia' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsColor label="Colour" tooltip="Input a single color or a hexadecimal value, representative of the average color desired in the image." type="TextInput" defaultValue="" placeholder="A single colour (red) or hex value (#F54927)" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsSize label="Size" tooltip="Select the size of the retrieved images." options="small, medium, large, any" type="comboBox" data="small,medium,large,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsOrientation label="Orientation" options="landscape, portrait, square, any" type="comboBox" data="landscape,portrait,square,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pixabayColorsDropdown label="Colour" tooltip="Pick a colour from the drop-down list, or select custom and input one or more colours separated by a comma." type="comboBox" defaultValue="custom" options="grayscale,transparent,red, orange,yellow,green,turquoise,blue,lilac,pink,white,gray,black,brown,custom" data="grayscale,transparent,red,orange,yellow,green,turquoise,blue,lilac,pink,white,gray,black,brown,custom" optional="true" placeholder="grayscale, transparent, red, orange, yellow, green..." condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'" conditionTrigger="true"/>
-		<pixabayColors label="Colour" tooltip="Input one or more colours, separated by a comma, from the following list: grayscale, transparent, red, orange, yellow, green, turquoise, blue, lilac, pink, white, gray, black, brown. When using custom lists like this, bear in mind that the colours must be written in English, exactly as you see them in this description." type="TextInput" defaultValuePh="" placeholder="Enter one or more colours, separated by a comma." condition="pixabayColorsDropdown=='custom' &amp;&amp; imgApi=='pixabay'" optional="true"/>
-		<pixabayType label="Type" tooltip="Select which type of image to retrieve." options="all,photo,illustration,vector" type="comboBox" data="all,photo,illustration,vector" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pixabayOrientation label="Orientation" options="horizontal, vertical, all" type="comboBox" data="horizontal,vertical,all" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<color label="Colors" options="black_and_white, black, white, yellow, orange, red, purple, magenta, green, teal, blue, any" type="comboBox" data="black_and_white,black,white,yellow,orange,red,purple,magenta,green,teal,blue,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='unsplash' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<orientation label="Orientation" options="landscape, portrait, squarish, any" type="comboBox" data="landscape,portrait,squarish,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='unsplash' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<aiSettingsPrompt label="The following AI-settings are available for your selected service:" type="info" optional="true" condition="hasrole('aiuser') &amp;&amp; (imgApi!='NaN' || imgGenApi!='NaN') &amp;&amp; vendor_is_available('ai','all')"/>
-		<useAiInterpret label="Enable AI Query Interpretation" tooltip="This option results in your chosen AI model rewriting your request to better match the selected service." type="Checkbox" conditionTrigger="true" condition="hasrole('aiuser') &amp;&amp; vendor_is_available('ai','all')" defaultValue="false" optional="true"/>
-		<!--<overrideAiSettings label="Enable AI settings override." tooltip="Allows the user to manually set parameters specific to the service, regardless of the input in the query." type="Checkbox" conditionTrigger="true" condition="imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia'" defaultValue="false" optional="true"/>-->
-		<overrideAiSettings label="Enable AI-Autofill for Settings" tooltip="Let the AI model determine which settings to fill in, based on your request." type="Checkbox" conditionTrigger="true" condition="(hasrole('aiuser') &amp;&amp; vendor_is_available('ai','all') &amp;&amp; serviceType=='retrieve') &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia')" defaultValue="false" optional="true"/>
-		<ishButton type="imgsearchandhelpbutton" optional="true"/>
-		<aiContentWarningPrompt label="AI query interpretation is enabled. The image search and help tool will interpret the entered query using an Artifical Intelligence model before using the selected service." type="info" condition="useAiInterpret=='true' &amp;&amp; hasrole('aiuser')" optional="true"/>
-		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
-		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
-		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false' &amp;&amp; vendor_is_available('ai','all') &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
-	</imgSearchAndHelpGroup></synchGoogleFeed><synchGoogleMap menuItem="Google Map" icon="icMap" remove="true" deprecated="This item is deprecated">
-
-		<name label="Title" type="TextInput" wysiwyg="true"/>
-		<type label="Map Type" type="ComboBox" options="Hybrid,Road,Satellite,Terrain,Street view" data="HYBRID,ROADMAP,SATELLITE,TERRAIN,STREETVIEW" width="100"/>
-		<zoom label="Zoom" type="TextInput"/>
-		<lat label="Latitude" type="TextInput"/>
-		<lng label="Longitude" type="TextInput"/>
-		<location label="Location" type="TextInput"/>
-
-		<orientation type="group" label="Orientation (Street view only)" optional="true">
-			<heading label="Horizontal" type="TextInput" defaultValue="0" optional="true"/>
-			<pitch label="Vertical" type="TextInput" defaultValue="1" optional="true"/>
-		</orientation>
-
-		<info><![CDATA[Either Latitude & Longitude or Location must be set for the map to load.]]></info>
-
-		<synchStart label="Synch Point" type="TextInput"/>
-		<synchEnd label="Synch Point: End" type="TextInput" defaultValue="9999" optional="true"/>
-		<!--<optional label="optional question" type="CheckBox" defaultValue="false" optional="true"/>-->
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-		<clearPanel label="Clear Existing Content" type="CheckBox" defaultValue="false"/>
-		<position label="Position" type="ComboBox" options="Top,Bottom" data="top,bottom" defaultValue="top" width="100" optional="true"/>
-		<line label="Divider" type="CheckBox" defaultValue="false" optional="true"/>
-
-		<!--<newNodes>
-			<synchGoogleMapChange><![CDATA[<synchGoogleMapChange type="HYBRID" zoom="8" lat="" lng="" location="" synchStart="0" pauseMedia="false"/>]]></synchGoogleMapChange>
-		</newNodes>-->
-
-	<imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
-		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
-		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
-		<imgGenApi label="Service" type="comboBox_imagegen" defaultValue="gpt1" width="120" optional="true" conditionTrigger="true" tooltip="Dalle2: Attempt to generate the specified number of images based on the given descriptions using an AI model; Dalle3: Attempt to generate a single image based on the given description using an AI model." condition="serviceType=='generate' &amp;&amp; hasrole('aiuser')"/>
-		<imgmodelver label="Model Version" tooltip="Choose one of the available models for image generation." options="GPT Image 1, GPT Image 1 Mini, GPT Image 1.5" type="comboBox" data="gpt-image-1, gpt-image-1-mini, gpt-image-1.5" defaultValue="gpt-image-1" condition="serviceType=='generate' &amp;&amp; imgGenApi=='gpt1'" optional="true"/>
-		<nri label="Quantity" options="1, 2, 3, 4, 5, 6, 7, 8, 9, 10" type="comboBox" data="1,2,3,4,5,6,7,8,9,10" defaultValue="1" tooltip="The number of images to retrieve or generate." condition="((serviceType=='retrieve') &amp;&amp; imgApi!='null') || (serviceType=='generate' &amp;&amp; (imgGenApi!='dalle3'))" optional="true"/>
-		<imgQuery verification="^.+$" label="Query" type="TextArea" placeholder="Write your query here..." tooltip="Provide a brief description for the desired image here." height="50" wysiwyg="true" defaultValue="" condition="(imgApi != 'NaN' &amp;&amp; imgApi != 'null' &amp;&amp; imgApi != null) || (imgGenApi != 'NaN' &amp;&amp; imgGenApi != 'null' &amp;&amp; imgGenApi != null)" optional="true"/>
-		<advancedSettingsPrompt label="The following search parameters are available for your selected service:" type="info" optional="true" condition="overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'"/>
-		<wikimediaWidth label="Width" tooltip="Input a number in pixels to filter images with that specific width, for example: 640" type="TextInput" defaultValue="" placeholder="Input the numeric value in pixels, for example 500" optional="true" condition="imgApi=='wikimedia' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<wikimediaHeight label="Height" tooltip="Input a number in pixels to filter images with that specific height, for example: 640" type="TextInput" defaultValue="" placeholder="Input the numeric value in pixels, for example 500" optional="true" condition="imgApi=='wikimedia' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsColor label="Colour" tooltip="Input a single color or a hexadecimal value, representative of the average color desired in the image." type="TextInput" defaultValue="" placeholder="A single colour (red) or hex value (#F54927)" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsSize label="Size" tooltip="Select the size of the retrieved images." options="small, medium, large, any" type="comboBox" data="small,medium,large,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsOrientation label="Orientation" options="landscape, portrait, square, any" type="comboBox" data="landscape,portrait,square,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pixabayColorsDropdown label="Colour" tooltip="Pick a colour from the drop-down list, or select custom and input one or more colours separated by a comma." type="comboBox" defaultValue="custom" options="grayscale,transparent,red, orange,yellow,green,turquoise,blue,lilac,pink,white,gray,black,brown,custom" data="grayscale,transparent,red,orange,yellow,green,turquoise,blue,lilac,pink,white,gray,black,brown,custom" optional="true" placeholder="grayscale, transparent, red, orange, yellow, green..." condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'" conditionTrigger="true"/>
-		<pixabayColors label="Colour" tooltip="Input one or more colours, separated by a comma, from the following list: grayscale, transparent, red, orange, yellow, green, turquoise, blue, lilac, pink, white, gray, black, brown. When using custom lists like this, bear in mind that the colours must be written in English, exactly as you see them in this description." type="TextInput" defaultValuePh="" placeholder="Enter one or more colours, separated by a comma." condition="pixabayColorsDropdown=='custom' &amp;&amp; imgApi=='pixabay'" optional="true"/>
-		<pixabayType label="Type" tooltip="Select which type of image to retrieve." options="all,photo,illustration,vector" type="comboBox" data="all,photo,illustration,vector" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pixabayOrientation label="Orientation" options="horizontal, vertical, all" type="comboBox" data="horizontal,vertical,all" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<color label="Colors" options="black_and_white, black, white, yellow, orange, red, purple, magenta, green, teal, blue, any" type="comboBox" data="black_and_white,black,white,yellow,orange,red,purple,magenta,green,teal,blue,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='unsplash' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<orientation label="Orientation" options="landscape, portrait, squarish, any" type="comboBox" data="landscape,portrait,squarish,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='unsplash' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<aiSettingsPrompt label="The following AI-settings are available for your selected service:" type="info" optional="true" condition="hasrole('aiuser') &amp;&amp; (imgApi!='NaN' || imgGenApi!='NaN') &amp;&amp; vendor_is_available('ai','all')"/>
-		<useAiInterpret label="Enable AI Query Interpretation" tooltip="This option results in your chosen AI model rewriting your request to better match the selected service." type="Checkbox" conditionTrigger="true" condition="hasrole('aiuser') &amp;&amp; vendor_is_available('ai','all')" defaultValue="false" optional="true"/>
-		<!--<overrideAiSettings label="Enable AI settings override." tooltip="Allows the user to manually set parameters specific to the service, regardless of the input in the query." type="Checkbox" conditionTrigger="true" condition="imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia'" defaultValue="false" optional="true"/>-->
-		<overrideAiSettings label="Enable AI-Autofill for Settings" tooltip="Let the AI model determine which settings to fill in, based on your request." type="Checkbox" conditionTrigger="true" condition="(hasrole('aiuser') &amp;&amp; vendor_is_available('ai','all') &amp;&amp; serviceType=='retrieve') &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia')" defaultValue="false" optional="true"/>
-		<ishButton type="imgsearchandhelpbutton" optional="true"/>
-		<aiContentWarningPrompt label="AI query interpretation is enabled. The image search and help tool will interpret the entered query using an Artifical Intelligence model before using the selected service." type="info" condition="useAiInterpret=='true' &amp;&amp; hasrole('aiuser')" optional="true"/>
-		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
-		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
-		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false' &amp;&amp; vendor_is_available('ai','all') &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
-	</imgSearchAndHelpGroup></synchGoogleMap><synchGoogleMapChange menuItem="Google Map Location" icon="icBullet" remove="true">
-
-		<type label="Map Type" type="ComboBox" options="Hybrid,Road map,Satellite,Terrain,Street view" data="HYBRID,ROADMAP,SATELLITE,TERRAIN,STREETVIEW" width="100"/>
-		<zoom label="Zoom" type="TextInput"/>
-		<lat label="Latitude" type="TextInput"/>
-		<lng label="Longitude" type="TextInput"/>
-		<location label="Location" type="TextInput"/>
-
-		<orientation type="group" label="Orientation (Street view only)" optional="true">
-			<heading label="Horizontal" type="TextInput" defaultValue="0" optional="true"/>
-			<pitch label="Vertical" type="TextInput" defaultValue="1" optional="true"/>
-		</orientation>
-
-		<tween label="Tween (Street view only)" type="CheckBox" defaultValue="false" optional="true"/>
-		<interval label="Tween Interval (Street view only)" type="TextInput" defaultValue="1000" optional="true"/>
-
-		<info><![CDATA[Either Latitude & Longitude or Location must be set for the map to load.]]></info>
-
-		<synchStart label="Synch Point" type="TextInput"/>
-		<pauseMedia label="Pause Media" type="CheckBox" defaultValue="false"/>
-
-	<imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
-		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
-		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
-		<imgGenApi label="Service" type="comboBox_imagegen" defaultValue="gpt1" width="120" optional="true" conditionTrigger="true" tooltip="Dalle2: Attempt to generate the specified number of images based on the given descriptions using an AI model; Dalle3: Attempt to generate a single image based on the given description using an AI model." condition="serviceType=='generate' &amp;&amp; hasrole('aiuser')"/>
-		<imgmodelver label="Model Version" tooltip="Choose one of the available models for image generation." options="GPT Image 1, GPT Image 1 Mini, GPT Image 1.5" type="comboBox" data="gpt-image-1, gpt-image-1-mini, gpt-image-1.5" defaultValue="gpt-image-1" condition="serviceType=='generate' &amp;&amp; imgGenApi=='gpt1'" optional="true"/>
-		<nri label="Quantity" options="1, 2, 3, 4, 5, 6, 7, 8, 9, 10" type="comboBox" data="1,2,3,4,5,6,7,8,9,10" defaultValue="1" tooltip="The number of images to retrieve or generate." condition="((serviceType=='retrieve') &amp;&amp; imgApi!='null') || (serviceType=='generate' &amp;&amp; (imgGenApi!='dalle3'))" optional="true"/>
-		<imgQuery verification="^.+$" label="Query" type="TextArea" placeholder="Write your query here..." tooltip="Provide a brief description for the desired image here." height="50" wysiwyg="true" defaultValue="" condition="(imgApi != 'NaN' &amp;&amp; imgApi != 'null' &amp;&amp; imgApi != null) || (imgGenApi != 'NaN' &amp;&amp; imgGenApi != 'null' &amp;&amp; imgGenApi != null)" optional="true"/>
-		<advancedSettingsPrompt label="The following search parameters are available for your selected service:" type="info" optional="true" condition="overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'"/>
-		<wikimediaWidth label="Width" tooltip="Input a number in pixels to filter images with that specific width, for example: 640" type="TextInput" defaultValue="" placeholder="Input the numeric value in pixels, for example 500" optional="true" condition="imgApi=='wikimedia' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<wikimediaHeight label="Height" tooltip="Input a number in pixels to filter images with that specific height, for example: 640" type="TextInput" defaultValue="" placeholder="Input the numeric value in pixels, for example 500" optional="true" condition="imgApi=='wikimedia' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsColor label="Colour" tooltip="Input a single color or a hexadecimal value, representative of the average color desired in the image." type="TextInput" defaultValue="" placeholder="A single colour (red) or hex value (#F54927)" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsSize label="Size" tooltip="Select the size of the retrieved images." options="small, medium, large, any" type="comboBox" data="small,medium,large,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pexelsOrientation label="Orientation" options="landscape, portrait, square, any" type="comboBox" data="landscape,portrait,square,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='pexels' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pixabayColorsDropdown label="Colour" tooltip="Pick a colour from the drop-down list, or select custom and input one or more colours separated by a comma." type="comboBox" defaultValue="custom" options="grayscale,transparent,red, orange,yellow,green,turquoise,blue,lilac,pink,white,gray,black,brown,custom" data="grayscale,transparent,red,orange,yellow,green,turquoise,blue,lilac,pink,white,gray,black,brown,custom" optional="true" placeholder="grayscale, transparent, red, orange, yellow, green..." condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'" conditionTrigger="true"/>
-		<pixabayColors label="Colour" tooltip="Input one or more colours, separated by a comma, from the following list: grayscale, transparent, red, orange, yellow, green, turquoise, blue, lilac, pink, white, gray, black, brown. When using custom lists like this, bear in mind that the colours must be written in English, exactly as you see them in this description." type="TextInput" defaultValuePh="" placeholder="Enter one or more colours, separated by a comma." condition="pixabayColorsDropdown=='custom' &amp;&amp; imgApi=='pixabay'" optional="true"/>
-		<pixabayType label="Type" tooltip="Select which type of image to retrieve." options="all,photo,illustration,vector" type="comboBox" data="all,photo,illustration,vector" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<pixabayOrientation label="Orientation" options="horizontal, vertical, all" type="comboBox" data="horizontal,vertical,all" defaultValue="all" width="120" optional="true" condition="imgApi=='pixabay' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<color label="Colors" options="black_and_white, black, white, yellow, orange, red, purple, magenta, green, teal, blue, any" type="comboBox" data="black_and_white,black,white,yellow,orange,red,purple,magenta,green,teal,blue,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='unsplash' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<orientation label="Orientation" options="landscape, portrait, squarish, any" type="comboBox" data="landscape,portrait,squarish,unmentioned" defaultValue="unmentioned" width="120" optional="true" condition="imgApi=='unsplash' &amp;&amp; overrideAiSettings!='true' &amp;&amp; serviceType=='retrieve'"/>
-		<aiSettingsPrompt label="The following AI-settings are available for your selected service:" type="info" optional="true" condition="hasrole('aiuser') &amp;&amp; (imgApi!='NaN' || imgGenApi!='NaN') &amp;&amp; vendor_is_available('ai','all')"/>
-		<useAiInterpret label="Enable AI Query Interpretation" tooltip="This option results in your chosen AI model rewriting your request to better match the selected service." type="Checkbox" conditionTrigger="true" condition="hasrole('aiuser') &amp;&amp; vendor_is_available('ai','all')" defaultValue="false" optional="true"/>
-		<!--<overrideAiSettings label="Enable AI settings override." tooltip="Allows the user to manually set parameters specific to the service, regardless of the input in the query." type="Checkbox" conditionTrigger="true" condition="imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia'" defaultValue="false" optional="true"/>-->
-		<overrideAiSettings label="Enable AI-Autofill for Settings" tooltip="Let the AI model determine which settings to fill in, based on your request." type="Checkbox" conditionTrigger="true" condition="(hasrole('aiuser') &amp;&amp; vendor_is_available('ai','all') &amp;&amp; serviceType=='retrieve') &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia')" defaultValue="false" optional="true"/>
-		<ishButton type="imgsearchandhelpbutton" optional="true"/>
-		<aiContentWarningPrompt label="AI query interpretation is enabled. The image search and help tool will interpret the entered query using an Artifical Intelligence model before using the selected service." type="info" condition="useAiInterpret=='true' &amp;&amp; hasrole('aiuser')" optional="true"/>
-		<aiContentWarningSettings label="AI setting auto-fill is enabled. AI will be used to automatically fill in relevant search criteria based on your query." type="info" condition="overrideAiSettings=='true' &amp;&amp; serviceType=='retrieve' &amp;&amp; hasrole('aiuser')" optional="true"/>
-		<aiContentWarningImg label="When using the selected service, the returned images will be generated using an Artificial Intelligence model." type="info" condition="serviceType=='generate' &amp;&amp; (imgGenApi=='dalle2' || imgGenApi=='dalle3')" optional="true"/>
-		<noAIcontentNotice label="You have selected a configuration for the image search and help tool which does not make use of any AI services." type="info" condition="useAiInterpret=='false' &amp;&amp; vendor_is_available('ai','all') &amp;&amp; overrideAiSettings!='true' &amp;&amp; (imgApi=='pexels' || imgApi=='pixabay' || imgApi=='unsplash' || imgApi=='wikimedia') &amp;&amp; serviceType=='retrieve'" optional="true"/>
-		<textApi label="AI model" type="comboBox_ai" defaultValue="mistral" width="120" condition="(((overrideAiSettings=='true' || useAiInterpret=='true') &amp;&amp; serviceType=='retrieve') || (useAiInterpret=='true'&amp;&amp;serviceType=='generate'))" optional="true"/>
-	</imgSearchAndHelpGroup></synchGoogleMapChange><memory menu="Games" menuItem="Memory Game" hint="A memory card game. Create pairs of text and images for the user to match." icon="icLightbulb" thumb="thumbs/memoryGame.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#memorygame" wiki="https://xerte.org.uk/wiki/doku.php?id=games_memorygame_page" remove="true">
+	</imgSearchAndHelpGroup></synchXotChange><memory menu="Games" menuItem="Memory Game" hint="A memory card game. Create pairs of text and images for the user to match." icon="icLightbulb" thumb="thumbs/memoryGame.jpg" example="https://xot.xerte.org.uk/play_116?hide=bottom#memorygame" wiki="https://xerte.org.uk/wiki/doku.php?id=games_memorygame_page" remove="true">
 
     <name label="Page Title" type="TextInput" wysiwyg="true"/>
 
@@ -19622,7 +19280,7 @@
     </pageHeaderGroup><milestone label="Milestone" type="CheckBox" defaultValue="true" optional="true" tooltip="Make this page a milestone which will be highlighted on the progress bar" common="true"/></transcriptReader><nestedSynch menuItem="Text" icon="icBullet" remove="true">
     <name label="Label" type="TextInput" mandatory="true" defaultValue="Sync point" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make sync points easier to locate for editing at a later date."/>
     <text label="Text" type="TextArea" height="250" placeholder="Enter text here"/>
-    <synch label="Sync Point" type="synchPoint" src="parent.sound"/>
+    <synch label="Sync Point" type="synchPoint" src="parent|sound"/>
   <imgSearchAndHelpGroup type="group" label="Image Search and Help Tool" tooltip="Find images, using royalty-free sites Pexels or Pixabay, or generate new ones. Images will be saved to the Media folder ready for you to add to your project." optional="true" lightbox="form" condition="(vendor_is_available('imagegen', 'all') &amp;&amp; hasrole('aiuser')) || (vendor_is_available('image','all'))" subgroup="assistant" scope="all" common="true">
 		<serviceType label="Image Service Type" type="combobox" defaultValue="retrieve" options="Retrieve Images, Generate Images" data="retrieve,generate" tooltip="You may retrieve images from a selection of royalty-free image websites, or generate your own using AI!" conditionTrigger="true" optional="true"/>
 		<imgApi label="Service" type="comboBox_image" defaultValue="pexels" width="120" optional="true" conditionTrigger="true" tooltip="Pexels: send an image request to Pexels and receive images that match the given description. Pixabay: send an image request to Pixabay and receive images that match the given description." condition="serviceType=='retrieve'"/>
@@ -19797,7 +19455,7 @@
 
     <name label="Label" type="TextInput" wysiwyg="true" tooltip="The label only appears in the editor's project structure panel and is not shown in the project itself. Unique and meaningful labels can be used to make sync points easier to locate for editing at a later date."/>
     <text label="Text" type="TextArea" height="250" placeholder="Content to add at sync point"/>
-    <synch label="Sync Point" type="synchPoint" src="parent.url"/>
+    <synch label="Sync Point" type="synchPoint" src="parent|url"/>
 
 	<imgInfo type="group" label="Image" optional="true">
 		<url label="Image" type="media" optional="true" defaultValue="Select an image"/>

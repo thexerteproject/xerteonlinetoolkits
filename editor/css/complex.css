@@ -1164,6 +1164,10 @@ table.synchPointField td {
 	vertical-align: middle;
 }
 
+.synchPointPicker.featherlight-inner .mejs__time {
+	height: auto;
+}
+
 .instructions{
     width: 94%;
     padding: 3%;

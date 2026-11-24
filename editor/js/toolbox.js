@@ -520,6 +520,127 @@ var EDITOR = (function ($, parent) {
         return {found : true, value: attribute_value};
     },
 
+    // used by resolveReferenceTarget function to return the first tree child matching nodeType in page|nodeType|fieldName or sibling|nodeType|fieldName
+    findReferenceChildByType = function (tree, childKeys, nodeType, excludeKey, requireAttrName) {
+        if (!childKeys) {
+            return null;
+        }
+        for (let i = 0; i < childKeys.length; i++) {
+            const childKey = childKeys[i];
+            if (excludeKey && childKey === excludeKey) {
+                continue;
+            }
+            const childNode = tree.get_node(childKey);
+            const childAttrs = lo_data[childKey]?.attributes;
+            const matchesType =
+                (childNode && childNode.type === nodeType) ||
+                (childAttrs && childAttrs.nodeName === nodeType);
+            if (matchesType) {
+                if (requireAttrName) {
+                    if (!childAttrs || childAttrs[requireAttrName] === undefined || childAttrs[requireAttrName] === null) {
+                        continue;
+                    }
+                }
+                return childKey;
+            }
+        }
+        return null;
+    },
+
+    // resolves parent| / sibling| / page| paths to { key, attrName }
+    resolveReferenceTarget = function (key, spec, options) {
+        options = options || {};
+        if (!spec) {
+            return null;
+        }
+        const tree = $.jstree.reference("#treeview");
+        if (!tree) {
+            return null;
+        }
+        const parts = String(spec).split("|").map(p => p.trim()).filter(Boolean);
+        if (parts.length === 1) {
+            return { key: key, attrName: parts[0] };
+        }
+
+        // parent|fieldName (inherit this field from the parent node)
+        if (parts[0] === "parent" && parts.length === 2) {
+            const parentKey = tree.get_parent(key);
+            if (!parentKey || parentKey === "#" || parentKey === "treeroot" || !lo_data[parentKey]) {
+                return null;
+            }
+            return { key: parentKey, attrName: parts[1] };
+        }
+
+        // sibling|nodeType|fieldName (inherit this field from another node under the same parent)
+        if (parts[0] === "sibling" && parts.length === 3) {
+            const parentKey = tree.get_parent(key);
+            if (!parentKey || parentKey === "#" || parentKey === "treeroot") {
+                return null;
+            }
+            const parentNode = tree.get_node(parentKey);
+            const requireAttr = options.requireAttrValue ? parts[2] : undefined;
+            const childKey = findReferenceChildByType(tree, parentNode?.children, parts[1], key, requireAttr);
+            if (!childKey) {
+                return null;
+            }
+            return { key: childKey, attrName: parts[2] };
+        }
+
+        // page|nodeType|fieldName (inherit this field from another node under the same page)
+        if (parts[0] === "page" && parts.length === 3) {
+            let pageKey = key;
+            let parentKey = tree.get_parent(pageKey);
+            while (parentKey && parentKey !== "#" && parentKey !== "treeroot"
+                && lo_data[parentKey]?.attributes?.nodeName !== "chapter") {
+                pageKey = parentKey;
+                parentKey = tree.get_parent(pageKey);
+            }
+            const pageNode = tree.get_node(pageKey);
+            const requireAttr = options.requireAttrValue ? parts[2] : undefined;
+            const childKey = findReferenceChildByType(tree, pageNode?.children, parts[1], null, requireAttr);
+            if (!childKey) {
+                return null;
+            }
+            return { key: childKey, attrName: parts[2] };
+        }
+        return null;
+    },
+
+    // returns the attribute value for parent| / sibling| / page| paths
+    evaluateReference = function(key, spec, attributes, lo_attributes) {
+        if (!spec) {
+            return undefined;
+        }
+        const tree = $.jstree.reference("#treeview");
+        if (!tree) {
+            return undefined;
+        }
+        const parts = String(spec).split("|").map(p => p.trim()).filter(Boolean);
+
+        // simple mode: inherit from current context of event
+        if (parts.length === 1) {
+            const inheritKey = parts[0];
+
+            if (attributes && attributes[inheritKey] !== undefined && attributes[inheritKey] !== null) {
+                return attributes[inheritKey];
+            }
+            if (lo_attributes && lo_attributes[inheritKey] !== undefined && lo_attributes[inheritKey] !== null) {
+                return lo_attributes[inheritKey];
+            }
+            return undefined;
+        }
+
+        const target = resolveReferenceTarget(key, spec, { requireAttrValue: true });
+        if (!target) {
+            return undefined;
+        }
+        const targetAttrs = lo_data[target.key]?.attributes;
+        if (targetAttrs && targetAttrs[target.attrName] !== undefined && targetAttrs[target.attrName] !== null) {
+            return targetAttrs[target.attrName];
+        }
+        return undefined;
+    },
+
     evaluateConditionExpression = function(ctree, key, formState, source = 'attribute') {
         switch (ctree.type) {
             case "Literal":
@@ -5405,65 +5526,7 @@ var EDITOR = (function ($, parent) {
 
                 if (inheritSpec) {
                     const groupName = groupChildren[input]?.name;
-                    let value;
-                    const tree = $.jstree.reference("#treeview");
-                    const parts = inheritSpec.split("|").map(p => p.trim()).filter(Boolean);
-
-                    //simple mode: inherit from current context of event
-                    if (parts.length === 1) {
-                        const inheritKey = parts[0];
-
-                        if (attributes[inheritKey] !== undefined && attributes[inheritKey] !== null) {
-                            value = attributes[inheritKey];
-                        } else if (lo_attributes[inheritKey] !== undefined && lo_attributes[inheritKey] !== null) {
-                            value = lo_attributes[inheritKey];
-                        }
-                    }
-
-                    // parent|fieldName (inherit this field from the parent node)
-                    else if (parts[0] === "parent" && parts.length === 2) {
-                        const inheritKey = parts[1];
-                        const parentKey = tree.get_parent(key);
-
-                        if (parentKey && parentKey !== "#" && parentKey !== "treeroot") {
-                            const parentAttrs = lo_data[parentKey]?.attributes;
-                            if (parentAttrs && parentAttrs[inheritKey] !== undefined && parentAttrs[inheritKey] !== null) {
-                                value = parentAttrs[inheritKey];
-                            }
-                        }
-                    }
-
-                    // sibling|nodeType|fieldName (inherit this field from another node under the same parent)
-                    else if (parts[0] === "sibling" && parts.length === 3) {
-                        const siblingType = parts[1];
-                        const inheritKey = parts[2];
-                        const parentKey = tree.get_parent(key);
-
-                        if (parentKey && parentKey !== "#" && parentKey !== "treeroot") {
-                            const parentNode = tree.get_node(parentKey);
-
-                            if (parentNode && parentNode.children) {
-                                for (let i = 0; i < parentNode.children.length; i++) {
-                                    const childKey = parentNode.children[i];
-                                    if (childKey === key) continue;
-
-                                    const childNode = tree.get_node(childKey);
-                                    const childAttrs = lo_data[childKey]?.attributes;
-
-                                    const matchesType =
-                                        (childNode && childNode.type === siblingType) ||
-                                        (childAttrs && childAttrs.nodeName === siblingType);
-
-                                    if (matchesType) {
-                                        if (childAttrs && childAttrs[inheritKey] !== undefined && childAttrs[inheritKey] !== null) {
-                                            value = childAttrs[inheritKey];
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    let value = evaluateReference(key, inheritSpec, attributes, lo_attributes);
 
                     // clean if requested by inheritFieldClean mode
                     if (shouldClean) {
@@ -6952,10 +7015,7 @@ var EDITOR = (function ($, parent) {
                     name: name,
                     src: options.src
                 }, function (event) {
-                    const mediaUrl = parent.syncPointPicker.resolveMediaSrc(
-                        event.data.key,
-                        event.data.src
-                    );
+                    const mediaUrl = parent.syncPointPicker.resolveMediaSrc( event.data.key, event.data.src );
                     if (!mediaUrl) {
                         alert(language.synchPoint.Error.selectMedia);
                         return;
@@ -6966,6 +7026,7 @@ var EDITOR = (function ($, parent) {
                     }
                     parent.syncPointPicker.openPicker({
                         key: event.data.key,
+                        fieldName: event.data.name,
                         mediaUrl: mediaUrl,
                         storedValue: lo_data[event.data.key].attributes[event.data.name],
                         onSet: function (seconds) {
@@ -8179,6 +8240,8 @@ var EDITOR = (function ($, parent) {
     my.triggerRedrawForm = triggerRedrawForm;
     my.triggerRedrawPage = triggerRedrawPage;
     my.makeAbsolute = makeAbsolute;
+    my.evaluateReference = evaluateReference;
+    my.resolveReferenceTarget = resolveReferenceTarget;
 
     return parent;
 
