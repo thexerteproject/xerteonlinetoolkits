@@ -3178,238 +3178,250 @@ var EDITOR = (function ($, parent) {
         setAttributeValue(key, [name], [value]);
     },
 
-        catListChanged = function (id, key, name, $parentDiv, obj)
-        {
-            var checked = $parentDiv.data('checked');
-            if ($(obj).prop('checked') == true && $.inArray(obj.id.substring(4), checked) == -1) {
-                checked.push(obj.id.substring(4));
-            } else if ($.inArray(obj.id.substring(4), checked) > -1) {
-                checked.splice($.inArray(obj.id.substring(4), checked), 1);
-            }
-            $parentDiv.data('checked', checked);
+    catListChanged = function (id, key, name, $parentDiv, obj)
+    {
+        var checked = $parentDiv.data('checked');
+        if ($(obj).prop('checked') == true && $.inArray(obj.id.substring(4), checked) == -1) {
+            checked.push(obj.id.substring(4));
+        } else if ($.inArray(obj.id.substring(4), checked) > -1) {
+            checked.splice($.inArray(obj.id.substring(4), checked), 1);
+        }
+        $parentDiv.data('checked', checked);
 
-            setAttributeValue(key, [name], [checked.toString()]);
-        },
+        setAttributeValue(key, [name], [checked.toString()]);
+    },
+
+    quickFillCount = function (value, fallback) {
+        if (value === undefined || value === null) {
+            return fallback;
+        }
+        var text = String(value).trim();
+        if (text === "") {
+            return "0";
+        }
+        var count = parseInt(text, 10);
+        return isNaN(count) || count < 0 ? "0" : String(count);
+    },
 
     getQuickFillParameters = function (type, attributes) {
         switch (type) {
             case 'quiz':
                 return {
-                    "question": attributes["numberOfQuestions"] || "3",
-                    "option": attributes["numberOfAnswers"] || "4",
+                    "question": quickFillCount(attributes["numberOfQuestions"], "3"),
+                    "option": quickFillCount(attributes["numberOfAnswers"], "4"),
                 };
             case 'tabNavExtra':
                 return {
-                    "topic": attributes["qfTopic"] || "3",
-                    "nestedTab": attributes["qfNestedTab"] || "3",
-                    "nestedPage": attributes["qfNestedPage"] || "5",
+                    "topic": quickFillCount(attributes["qfTopic"], "3"),
+                    "nestedTab": quickFillCount(attributes["qfNestedTab"], "3"),
+                    "nestedPage": quickFillCount(attributes["qfNestedPage"], "5"),
                 };
             case 'columnPage':
                 return {
-                    "nestedColumnPage": attributes["qfNestedColumnPage"] || "3",
+                    "nestedColumnPage": quickFillCount(attributes["qfNestedColumnPage"], "3"),
                 };
             case 'audioSlideshow':
                 return {
-                    "synchPoint": attributes["qfSynchPoint"] || "3",
+                    "synchPoint": quickFillCount(attributes["qfSynchPoint"], "3"),
                 };
             case 'imageSequence':
                 return {
-                    "case": attributes["qfCase"] || "3",
-                    "imgSeries": attributes["qfImgSeries"] || "3",
-                    "singleImg": attributes["qfSingleImg"] || "5",
+                    "case": quickFillCount(attributes["qfCase"] || "3"),
+                    "imgSeries": quickFillCount(attributes["qfImgSeries"], "3"),
+                    "singleImg": quickFillCount(attributes["qfSingleImg"], "5"),
                 };
             case 'thumbnailViewer':
                 return {
-                    "thumbnailImage": attributes["qfThumbnailImage"] || "5",
+                    "thumbnailImage": quickFillCount(attributes["qfThumbnailImage"], "5"),
                 };
             case 'SictTimeline':
                 return {
-                    "timeLineText": attributes["qfTimeLineText"] || "1",
-                    "timelineimage": attributes["qfTimelineimage"] || "1",
-                    "timelinevideo": attributes["qfTimelinevideo"] || "1",
-                    "timeLineAudio": attributes["qfTimeLineAudio"] || "1",
+                    "timeLineText": quickFillCount(attributes["qfTimeLineText"], "1"),
+                    "timelineimage": quickFillCount(attributes["qfTimelineimage"], "1"),
+                    "timelinevideo": quickFillCount(attributes["qfTimelinevideo"], "1"),
+                    "timeLineAudio": quickFillCount(attributes["qfTimeLineAudio"], "1"),
                 };
             case 'transcriptReader':
                 return {
-                    "nestedSynch": attributes["qfNestedSynch"] || "3",
+                    "nestedSynch": quickFillCount(attributes["qfNestedSynch"], "3"),
                 };
             case 'flashCards':
                 return {
-                    "card": attributes["qfCard"] || "5",
+                    "card": quickFillCount(attributes["qfCard"], "5"),
                 };
             case 'list':
                 return {
-                    "listItem": attributes["qfListItem"] || "5",
+                    "listItem": quickFillCount(attributes["qfListItem"], "5"),
                 };
             case 'nav':
                 return {
-                    "navPage": attributes["qfNavPage"] || "3",
+                    "navPage": quickFillCount(attributes["qfNavPage"], "3"),
                 };
             case 'perspectives':
                 return {
-                    "movie": attributes["qfMovie"] || "1",
-                    "sound": attributes["qfSound"] || "1",
-                    "image": attributes["qfImage"] || "1",
-                    "mpText": attributes["qfMpText"] || "1",
+                    "movie": quickFillCount(attributes["qfMovie"], "1"),
+                    "sound": quickFillCount(attributes["qfSound"], "1"),
+                    "image": quickFillCount(attributes["qfImage"], "1"),
+                    "mpText": quickFillCount(attributes["qfMpText"], "1"),
                 };
             case 'annotatedDiagram':
                 return {
-                    "flexhotspot": attributes["qfFlexhotspot"] || "3",
+                    "flexhotspot": quickFillCount(attributes["qfFlexhotspot"], "3"),
                 };
             case 'hotspotGroup':
                 return {
-                    "flexhotspot": attributes["qfFlexhotspot"] || "3",
+                    "flexhotspot": quickFillCount(attributes["qfFlexhotspot"], "3"),
                 };
             case 'topXQ':
                 return {
-                    "optionXQ": attributes["qfOptionXQ"] || "5",
+                    "optionXQ": quickFillCount(attributes["qfOptionXQ"], "5"),
                 };
             case 'buttonSequence':
                 return {
-                    "button": attributes["qfButton"] || "5",
+                    "button": quickFillCount(attributes["qfButton"], "5"),
                 };
             case 'categories':
                 return {
-                    "category": attributes["qfCategory"] || "3",
-                    "item": attributes["qfItem"] || "5",
+                    "category": quickFillCount(attributes["qfCategory"], "3"),
+                    "item": quickFillCount(attributes["qfItem"], "5"),
                 };
             case 'decision':
                 return {
-                    "resultStep": attributes["qfResultStep"] || "1",
-                    "infoStep": attributes["qfInfoStep"] || "1",
-                    "sliderStep": attributes["qfSliderStep"] || "1",
-                    "sliderStepOption": attributes["qfSliderStepOption"] || "4",
-                    "mcqStep": attributes["qfMcqStep"] || "1",
-                    "mcqStepOption": attributes["qfMcqStepOption"] || "4",
+                    "resultStep": quickFillCount(attributes["qfResultStep"], "1"),
+                    "infoStep": quickFillCount(attributes["qfInfoStep"], "1"),
+                    "sliderStep": quickFillCount(attributes["qfSliderStep"], "1"),
+                    "sliderStepOption": quickFillCount(attributes["qfSliderStepOption"], "4"),
+                    "mcqStep": quickFillCount(attributes["qfMcqStep"], "1"),
+                    "mcqStepOption": quickFillCount(attributes["qfMcqStepOption"], "4"),
                 };
             case 'dialog':
                 return {
-                    "dialogStep": attributes["qfDialogStep"] || "5",
+                    "dialogStep": quickFillCount(attributes["qfDialogStep"], "5"),
                 };
             case 'dictation':
                 return {
-                    "nestedDictation": attributes["qfNestedDictation"] || "3",
+                    "nestedDictation": quickFillCount(attributes["qfNestedDictation"], "3"),
                 };
             case 'documentation':
                 return {
-                    "page": attributes["qfPage"] || "1",
+                    "page": quickFillCount(attributes["qfPage"], "1"),
                 };
             case 'page':
                 return {
-                    "media": attributes["qfMedia"] || "1",
-                    "selectlist": attributes["qfSelectlist"] || "1",
-                    "selectitem": attributes["qfSelectitem"] || "5",
-                    "description": attributes["qfDescription"] || "1",
-                    "tableDoc": attributes["qfTableDoc"] || "1",
-                    "checkbox": attributes["qfCheckbox"] || "1",
-                    "textArea": attributes["qfTextArea"] || "1",
-                    "textBox": attributes["qfTextBox"] || "1",
+                    "media": quickFillCount(attributes["qfMedia"], "1"),
+                    "selectlist": quickFillCount(attributes["qfSelectlist"], "1"),
+                    "selectitem": quickFillCount(attributes["qfSelectitem"], "5"),
+                    "description": quickFillCount(attributes["qfDescription"], "1"),
+                    "tableDoc": quickFillCount(attributes["qfTableDoc"], "1"),
+                    "checkbox": quickFillCount(attributes["qfCheckbox"], "1"),
+                    "textArea": quickFillCount(attributes["qfTextArea"], "1"),
+                    "textBox": quickFillCount(attributes["qfTextBox"], "1"),
                 };
             case 'section':
                 return {
-                    "media": attributes["qfMedia"] || "1",
-                    "selectlist": attributes["qfSelectlist"] || "1",
-                    "selectitem": attributes["qfSelectitem"] || "5",
-                    "description": attributes["qfDescription"] || "1",
-                    "tableDoc": attributes["qfTableDoc"] || "1",
-                    "checkbox": attributes["qfCheckbox"] || "1",
-                    "textArea": attributes["qfTextArea"] || "1",
-                    "textBox": attributes["qfTextBox"] || "1",
+                    "media": quickFillCount(attributes["qfMedia"], "1"),
+                    "selectlist": quickFillCount(attributes["qfSelectlist"], "1"),
+                    "selectitem": quickFillCount(attributes["qfSelectitem"], "5"),
+                    "description": quickFillCount(attributes["qfDescription"], "1"),
+                    "tableDoc": quickFillCount(attributes["qfTableDoc"], "1"),
+                    "checkbox": quickFillCount(attributes["qfCheckbox"], "1"),
+                    "textArea": quickFillCount(attributes["qfTextArea"], "1"),
+                    "textBox": quickFillCount(attributes["qfTextBox"], "1"),
                 };
             case 'dragDropLabel':
                 return {
-                    "hotspot": attributes["qfHotspot"] || "3",
+                    "hotspot": quickFillCount(attributes["qfHotspot"], "3"),
                 };
             case 'hotspotImage':
                 return {
-                    "flexhotspot": attributes["qfFlexhotspot"] || "3",
+                    "flexhotspot": quickFillCount(attributes["qfFlexhotspot"], "3"),
                 };
             case 'hotSpotQuestion':
                 return {
-                    "QHotSpot": attributes["qfQHotSpot"] || "3",
+                    "QHotSpot": quickFillCount(attributes["qfQHotSpot"], "3"),
                 };
             case 'interactiveText':
                 return {
-                    "group": attributes["qfGroup"] || "5",
+                    "group": quickFillCount(attributes["qfGroup"], "5"),
                 };
             case 'ivOverlayPanel':
                 return {
-                    "ivSynchTextPlus": attributes["qfIvSynchTextPlus"] || "3",
-                    "ivSynchMCQ": attributes["qfIvSynchMCQ"] || "1",
-                    "ivSynchMCQOption": attributes["qfIvSynchMCQOption"] || "4",
-                    "ivSynchXot": attributes["qfIvSynchXot"] || "1",
-                    "ivSynchXotChange": attributes["qfIvSynchXotChange"] || "3",
+                    "ivSynchTextPlus": quickFillCount(attributes["qfIvSynchTextPlus"], "3"),
+                    "ivSynchMCQ": quickFillCount(attributes["qfIvSynchMCQ"], "1"),
+                    "ivSynchMCQOption": quickFillCount(attributes["qfIvSynchMCQOption"], "4"),
+                    "ivSynchXot": quickFillCount(attributes["qfIvSynchXot"], "1"),
+                    "ivSynchXotChange": quickFillCount(attributes["qfIvSynchXotChange"], "3"),
                 };
             case 'inventory':
                 return {
-                    "invQuestion": attributes["qfInvQuestion"] || "3",
-                    "invOption": attributes["qfInvOption"] || "4",
+                    "invQuestion": quickFillCount(attributes["qfInvQuestion"], "3"),
+                    "invOption": quickFillCount(attributes["qfInvOption"], "4"),
                 };
             case 'textMatch':
                 return {
-                    "sentence": attributes["qfSentence"] || "3",
+                    "sentence": quickFillCount(attributes["qfSentence"], "3"),
                 };
             case 'mcq':
                 return {
-                    "option": attributes["qfOption"] || "4",
+                    "option": quickFillCount(attributes["qfOption"], "4"),
                 };
             case 'opinion':
                 return {
-                    "opinionClass": attributes["qfOpinionClass"] || "3",
-                    "opinionQuestion": attributes["qfOpinionQuestion"] || "3",
-                    "opinionOption": attributes["qfOpinionOption"] || "4",
+                    "opinionClass": quickFillCount(attributes["qfOpinionClass"], "3"),
+                    "opinionQuestion": quickFillCount(attributes["qfOpinionQuestion"], "3"),
+                    "opinionOption": quickFillCount(attributes["qfOpinionOption"], "4"),
                 };
             case 'timeline':
                 return {
-                    "timelinedate": attributes["qfTimelinedate"] || "6",
+                    "timelinedate": quickFillCount(attributes["qfTimelinedate"], "6"),
                 };
             case 'memory':
                 return {
-                    "matchItem": attributes["qfMatchItem"] || "6",
+                    "matchItem": quickFillCount(attributes["qfMatchItem"], "6"),
                 };
             case 'crossword':
                 return {
-                    "wordAndHint": attributes["qfWordAndHint"] || "6",
+                    "wordAndHint": quickFillCount(attributes["qfWordAndHint"], "6"),
                 };
             case 'links':
                 return {
-                    "link": attributes["qfLink"] || "3",
+                    "link": quickFillCount(attributes["qfLink"], "3"),
                 };
             case 'adaptiveContent':
                 return {
-                    "interaction": attributes["qfInteraction"] || "3",
-                    "interactionBlock": attributes["qfInteractionBlock"] || "3",
+                    "interaction": quickFillCount(attributes["qfInteraction"], "3"),
+                    "interactionBlock": quickFillCount(attributes["qfInteractionBlock"], "3"),
                 };
             case 'mediaLesson':
                 return {
-                    "panel": attributes["qfPanel"] || "3",
+                    "panel": quickFillCount(attributes["qfPanel"], "3"),
                 };
             case 'mediaPanel':
                 return {
-                    "synchXot": attributes["qfSynchXot"] || "1",
-                    "synchXotChange": attributes["qfSynchXotChange"] || "3",
-                    "synchWebpage": attributes["qfSynchWebpage"] || "3",
-                    "synchMCQ": attributes["qfSynchMCQ"] || "1",
-                    "synchMCQOption": attributes["qfSynchMCQOption"] || "4",
-                    "synchSlides": attributes["qfSynchSlides"] || "1",
-                    "synchSlide": attributes["qfSynchSlide"] || "6",
-                    "synchTextPlus": attributes["qfSynchTextPlus"] || "3",
-                    "synchEmpty": attributes["qfSynchEmpty"] || "3",
-                    "synchCue": attributes["qfSynchCue"] || "3",
+                    "synchXot": quickFillCount(attributes["qfSynchXot"], "1"),
+                    "synchXotChange": quickFillCount(attributes["qfSynchXotChange"], "3"),
+                    "synchWebpage": quickFillCount(attributes["qfSynchWebpage"], "3"),
+                    "synchMCQ": quickFillCount(attributes["qfSynchMCQ"], "1"),
+                    "synchMCQOption": quickFillCount(attributes["qfSynchMCQOption"], "4"),
+                    "synchSlides": quickFillCount(attributes["qfSynchSlides"], "1"),
+                    "synchSlide": quickFillCount(attributes["qfSynchSlide"], "6"),
+                    "synchTextPlus": quickFillCount(attributes["qfSynchTextPlus"], "3"),
+                    "synchEmpty": quickFillCount(attributes["qfSynchEmpty"], "3"),
+                    "synchCue": quickFillCount(attributes["qfSynchCue"], "3"),
                 };
             case 'panel':
                 return {
-                    "synchXot": attributes["qfSynchXot"] || "1",
-                    "synchXotChange": attributes["qfSynchXotChange"] || "3",
-                    "synchWebpage": attributes["qfSynchWebpage"] || "3",
-                    "synchMCQ": attributes["qfSynchMCQ"] || "1",
-                    "synchMCQOption": attributes["qfSynchMCQOption"] || "4",
-                    "synchSlides": attributes["qfSynchSlides"] || "1",
-                    "synchSlide": attributes["qfSynchSlide"] || "6",
-                    "synchTextPlus": attributes["qfSynchTextPlus"] || "3",
-                    "synchEmpty": attributes["qfSynchEmpty"] || "3",
-                    "synchMediaPlus": attributes["qfSynchMediaPlus"] || "3",
-                    "synchCue": attributes["qfSynchCue"] || "3",
+                    "synchXot": quickFillCount(attributes["qfSynchXot"], "1"),
+                    "synchXotChange": quickFillCount(attributes["qfSynchXotChange"], "3"),
+                    "synchWebpage": quickFillCount(attributes["qfSynchWebpage"], "3"),
+                    "synchMCQ": quickFillCount(attributes["qfSynchMCQ"], "1"),
+                    "synchMCQOption": quickFillCount(attributes["qfSynchMCQOption"], "4"),
+                    "synchSlides": quickFillCount(attributes["qfSynchSlides"], "1"),
+                    "synchSlide": quickFillCount(attributes["qfSynchSlide"], "6"),
+                    "synchTextPlus": quickFillCount(attributes["qfSynchTextPlus"], "3"),
+                    "synchEmpty": quickFillCount(attributes["qfSynchEmpty"], "3"),
+                    "synchMediaPlus": quickFillCount(attributes["qfSynchMediaPlus"], "3"),
+                    "synchCue": quickFillCount(attributes["qfSynchCue"], "3"),
                 };
             default:
                 return undefined;
@@ -4173,6 +4185,7 @@ var EDITOR = (function ($, parent) {
                 edit_img.find("#overlayWrapper_" + id).css("width", overlayWidth + "px")
                     .css("height", overlayHeight + "px");
                 $.featherlight(edit_img, {
+                    closeOnClick:   'false',       /* Close lightbox on click ('background', 'anywhere', or false) */
                     closeOnEsc:     true,          /* Close lightbox when pressing esc */
                     closeIcon:      '',            /* Close icon */
                     afterOpen: function () {
@@ -4187,6 +4200,7 @@ var EDITOR = (function ($, parent) {
                 edit_img.find("#overlayWrapper_" + id).css("width", overlayWidth + "px")
                     .css("height", overlayHeight + "px");
                 $.featherlight(edit_img, {
+                    closeOnClick:   'false',       /* Close lightbox on click ('background', 'anywhere', or false) */
                     closeOnEsc:     true,          /* Close lightbox when pressing esc */
                     closeIcon:      '',            /* Close icon */
                     afterOpen: function () {
@@ -5055,6 +5069,7 @@ var EDITOR = (function ($, parent) {
 		
 		// open lightbox
 		$.featherlight($editImg, {
+			closeOnClick: 'false',
 			closeOnEsc: true,
 			closeIcon: '',
 			afterOpen: function () {
@@ -5217,6 +5232,7 @@ var EDITOR = (function ($, parent) {
 		
 		// open lightbox
 		$.featherlight($editImg, {
+			closeOnClick: 'false',
 			closeOnEsc: true,
 			closeIcon: '',
 			afterOpen: function () {
@@ -5458,6 +5474,7 @@ var EDITOR = (function ($, parent) {
 
         $.featherlight(lightboxHtml, {
             persist: true,
+            closeOnClick: false,
             closeOnEsc: isQfGroup,
             afterOpen: function(event) {
                 var attributes = lo_data[key]['attributes'];
