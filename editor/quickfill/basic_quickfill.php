@@ -70,9 +70,9 @@ class basicquickfill
                     $count = min($count, $max);
                 }
 
-                // If duplicate is "false", set count to 0 if it's greater than 0
-                if (isset($hierarchy[$node]['topLevelAttributes']['duplicate']) && $hierarchy[$node]['topLevelAttributes']['duplicate'] === "false" && $count > 0) {
-                    $count = 0;
+                // A child marked duplicate="false" may not be created more than once
+                if (isset($hierarchy[$childName]['topLevelAttributes']['duplicate']) && $hierarchy[$childName]['topLevelAttributes']['duplicate'] === "false" && $count > 1) {
+                    $count = 1;
                 }
 
                 for ($i = 0; $i < $count; $i++) {

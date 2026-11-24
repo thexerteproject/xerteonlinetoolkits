@@ -741,10 +741,10 @@
         <error label="Loading Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
         <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
-           <qfTimeLineText label="Number of Text Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
-           <qfTimelineimage label="Number of Image Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
-           <qfTimelinevideo label="Number of Video Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
-           <qfTimeLineAudio label="Number of Audio Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+           <qfTimeLineText label="Number of Text Items" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+           <qfTimelineimage label="Number of Image Items" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+           <qfTimelinevideo label="Number of Video Items" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+           <qfTimeLineAudio label="Number of Audio Items" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
            <qfButton type="quickfillbutton" optional="true"/>
         </QFGroup>
 
@@ -11790,7 +11790,7 @@
 		<aspectRatio label="Media aspect ratio" type="ComboBox" data="1.333333,1.777777,2.333333,0.5625,0,428571" options="4:3,16:9,21:9,9:16,9:21" defaultValue="1.777777" optional="true" tooltip="The aspect ratio used for embedded videos from external sites, e.g. YouTube. The aspect ratio of MP4s uploaded to projects will be automatically detected."/>
 
 	    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
-            <qfSynchXot label="Number of Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+            <qfSynchXot label="Number of Embedded XOT Projects" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
             <qfSynchXotChange label="Number of Page Changes per Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
             <qfSynchWebpage label="Number of Embedded Webpages" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
             <qfSynchMCQ label="Number of MCQ Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
@@ -11847,7 +11847,7 @@
 		<name label="Panel Title" type="TextInput" wysiwyg="true"/>
 
         <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
-            <qfSynchXot label="Number of Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
+            <qfSynchXot label="Number of Embedded XOT Projects" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>
             <qfSynchXotChange label="Number of Page Changes per Embedded XOT Project" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
             <qfSynchWebpage label="Number of Embedded Webpages" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
             <qfSynchMCQ label="Number of MCQ Pages" type="TextInput" wysiwyg="true" defaultValue="1" optional="true"/>

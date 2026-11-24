@@ -2231,7 +2231,17 @@ img_search_and_help = function(query, api, url, interpretPrompt, overrideSetting
                         mesg = mesg.substr(0, pos) + max + mesg.substr(pos + 3, mesg.length);
                         pos = mesg.indexOf("{i}");
                         mesg = mesg.substr(0, pos) + wizard_data[newNode]['menu_options'].menuItem + mesg.substr(pos + 3, mesg.length);
-                        alert(mesg);
+                        // ensure the alert only shows once (quick fill can otherwise trigger multiple alerts)
+                        if (!validateInsert._shown) {
+                            validateInsert._shown = {};
+                        }
+                        if (!validateInsert._shown[mesg]) {
+                            validateInsert._shown[mesg] = true;
+                            alert(mesg);
+                            setTimeout(function () {
+                                delete validateInsert._shown[mesg];
+                            }, 0);
+                        }
                         return false;
                     }
                 }

@@ -1989,7 +1989,7 @@ div#top_buttons button:last-of-type {margin-left: 20px;}
 	padding: 0 !important;
 	border-bottom: none !important;
 	background: transparent !important;
-	overflow: visible;
+	/*overflow: visible;*/
 	max-width: none !important;
 	min-width: 0 !important;
 }

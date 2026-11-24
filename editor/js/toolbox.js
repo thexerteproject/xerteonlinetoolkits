@@ -3226,7 +3226,7 @@ var EDITOR = (function ($, parent) {
                 return {
                     "timeLineText": attributes["qfTimeLineText"] || "1",
                     "timelineimage": attributes["qfTimelineimage"] || "1",
-                    "timelinevideo ": attributes["qfTimelinevideo"] || "1",
+                    "timelinevideo": attributes["qfTimelinevideo"] || "1",
                     "timeLineAudio": attributes["qfTimeLineAudio"] || "1",
                 };
             case 'transcriptReader':
@@ -4173,7 +4173,6 @@ var EDITOR = (function ($, parent) {
                 edit_img.find("#overlayWrapper_" + id).css("width", overlayWidth + "px")
                     .css("height", overlayHeight + "px");
                 $.featherlight(edit_img, {
-                    closeOnClick:   'false',       /* Close lightbox on click ('background', 'anywhere', or false) */
                     closeOnEsc:     true,          /* Close lightbox when pressing esc */
                     closeIcon:      '',            /* Close icon */
                     afterOpen: function () {
@@ -4188,7 +4187,6 @@ var EDITOR = (function ($, parent) {
                 edit_img.find("#overlayWrapper_" + id).css("width", overlayWidth + "px")
                     .css("height", overlayHeight + "px");
                 $.featherlight(edit_img, {
-                    closeOnClick:   'false',       /* Close lightbox on click ('background', 'anywhere', or false) */
                     closeOnEsc:     true,          /* Close lightbox when pressing esc */
                     closeIcon:      '',            /* Close icon */
                     afterOpen: function () {
@@ -5057,7 +5055,6 @@ var EDITOR = (function ($, parent) {
 		
 		// open lightbox
 		$.featherlight($editImg, {
-			closeOnClick: 'false',
 			closeOnEsc: true,
 			closeIcon: '',
 			afterOpen: function () {
@@ -5220,7 +5217,6 @@ var EDITOR = (function ($, parent) {
 		
 		// open lightbox
 		$.featherlight($editImg, {
-			closeOnClick: 'false',
 			closeOnEsc: true,
 			closeIcon: '',
 			afterOpen: function () {
@@ -5462,7 +5458,6 @@ var EDITOR = (function ($, parent) {
 
         $.featherlight(lightboxHtml, {
             persist: true,
-            closeOnClick: false,
             closeOnEsc: isQfGroup,
             afterOpen: function(event) {
                 var attributes = lo_data[key]['attributes'];
