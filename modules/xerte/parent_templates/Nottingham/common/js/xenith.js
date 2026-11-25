@@ -2142,7 +2142,10 @@ function x_continueSetUp1() {
 			}
 		}
 
-		$x_window.resize(function() {
+		$x_window.resize(function(e) {
+			if (e.target !== window && e.target !== document) { // stop this being triggered by events such as resizing dialog boxes
+				return;
+			}
 			if (x_fillWindow == true) {
 				if (this.resizeTo) {
 					clearTimeout(this.resizeTo);
@@ -4085,7 +4088,7 @@ function x_loadPageBg(loadModel) {
 	$("#x_mainBg").hide();
 }
 
-// function sorts out css that's dependant on screensize
+// function sorts out css that's dependent on screensize
 function x_updateCss(updatePage, updateSidebar) {
 	if (updatePage != false) {
 
