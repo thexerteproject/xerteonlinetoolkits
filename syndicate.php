@@ -27,7 +27,7 @@ _load_language_file("/syndicate.inc");
 include $xerte_toolkits_site->php_library_path . "url_library.php";
 
 
-$query = "SELECT {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails.template_name as origname, username, {$xerte_toolkits_site->database_table_prefix}logindetails.login_id, 
+$query = "SELECT {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails.template_name as origname, {$xerte_toolkits_site->database_table_prefix}originaltemplatesdetails.template_framework, username, {$xerte_toolkits_site->database_table_prefix}logindetails.login_id,  
 {$xerte_toolkits_site->database_table_prefix}templatedetails.template_id, keywords, creator_id, date_created, {$xerte_toolkits_site->database_table_prefix}templatedetails.template_name, 
 license, category, export, {$xerte_toolkits_site->database_table_prefix}templatesyndication.description, firstname, surname 
 FROM {$xerte_toolkits_site->database_table_prefix}templatedetails, {$xerte_toolkits_site->database_table_prefix}templatesyndication, {$xerte_toolkits_site->database_table_prefix}logindetails, 
@@ -48,6 +48,8 @@ echo "<" . "?xml version=\"1.0\" encoding=\"UTF-8\"?>
 foreach($rows as $row) {
     $_dataxml = $xerte_toolkits_site->root_file_path . $xerte_toolkits_site->users_file_area_short . $row['template_id'] . '-' . $row['username'] . '-' . $row['origname'] . '/data.xml';
 
+    $include_scorm = ($row['template_framework'] == 'xerte');
+
     echo "<item><title>" . str_replace("_"," ",$row['template_name']) . "</title>
         <link>" . $xerte_toolkits_site->site_url . url_return("play" , $row['template_id']) . "</link>
         <dc:date>" . date(DATE_RSS, filemtime($_dataxml)) . "</dc:date>
@@ -56,7 +58,10 @@ foreach($rows as $row) {
     if($row['export']=="true"){
 
         echo "<br> " . SYNDICATE_DOWNLOAD . $xerte_toolkits_site->site_url . url_return("export", $row['template_id']);
-        echo "<br> " . SYNDICATE_DOWNLOAD_SCORM . $xerte_toolkits_site->site_url . url_return("scorm", $row['template_id']);		
+
+        if ($include_scorm) {
+            echo "<br> " . SYNDICATE_DOWNLOAD_SCORM . $xerte_toolkits_site->site_url . url_return("scorm", $row['template_id']);
+        }
 
     }
 
@@ -65,8 +70,10 @@ foreach($rows as $row) {
     if($row['export']=="true"){
 
         echo "<br> " . SYNDICATE_DOWNLOAD . $xerte_toolkits_site->site_url . url_return("export", $row['template_id']);
-        echo "<br> " . SYNDICATE_DOWNLOAD_SCORM . $xerte_toolkits_site->site_url . url_return("scorm", $row['template_id']);		
 
+        if ($include_scorm) {
+            echo "<br> " . SYNDICATE_DOWNLOAD_SCORM . $xerte_toolkits_site->site_url . url_return("scorm", $row['template_id']);
+        }
 
     }
 
@@ -74,8 +81,12 @@ foreach($rows as $row) {
 
     if($row['export']=="true"){
 
-        echo $xerte_toolkits_site->site_url . url_return("export", $row['template_id']) . "</dc:relation><dc:relation>";
-        echo $xerte_toolkits_site->site_url . url_return("scorm", $row['template_id']);		
+        echo $xerte_toolkits_site->site_url . url_return("export", $row['template_id']);
+
+        if ($include_scorm) {
+            echo "]]></dc:relation><dc:relation><![CDATA[";
+            echo $xerte_toolkits_site->site_url . url_return("scorm", $row['template_id']);
+        }
 
     }
 
