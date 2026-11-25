@@ -6,7 +6,7 @@
 	  feedbackBtnTxt="Submit" pageTxt="Page" questionTxt="Question" responseHeaderTxt="Your response:"
 	  noAnswerHeaderTxt="No response submitted" exampleHeaderTxt="Feedback:" feedbackTxt="Page feedback"
 	  copyBtn2Label="Copy" copyShortcutTxt="Press Ctrl+C to copy" downloadTxt="Download" downloadSubmitTxt="Submit &amp; Download" downloadWarningTxt1="You have not downloaded your responses. Do you want to download them now?" downloadWarningTxt2="You have not submitted and downloaded your current responses. Make sure you return and complete this activity or you will lose your work."
-	  answerFieldLabel="Answer"><modelAnswerField name="Text Area" prompt="" rows="5"/></modelAnswer>]]></modelAnswer>
+	  answerFieldLabel="Answer"></modelAnswer>]]></modelAnswer>
     </newNodes>
   </pageWizard>
 
@@ -86,6 +86,11 @@
     <instructHeaderBTxt label="Instruction Header (b)" type="TextInput" wysiwyg="true" language="true" deprecated="This property is no longer required"/>
     <feedbackBtnTip label="Check Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
     <feedbackBtnWidth label="Check Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
+
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
+      <qfModelAnswerField label="Number of Text Areas" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
     <AIGroup type="group" label="AI" tooltip ="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
       <subject verification="^.+$"  label="Subject" type="TextInput" placeholder="Enter a subject here..." tooltip = "This determines which area or subject the generated questions and feedback will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." optional="true"/>

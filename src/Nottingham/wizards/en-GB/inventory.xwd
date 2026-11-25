@@ -92,6 +92,7 @@
     <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
       <qfInvQuestion label="Number of Questions" type="TextInput" wysiwyg="true" defaultValue = "3" optional="true"/>
       <qfInvOption label="Number of Answers per Question" type="TextInput" wysiwyg="true" defaultValue = "4" optional="true"/>
+      <qfInvClassFeedback label="Number of Tailored Feedback Blocks" type="TextInput" wysiwyg="true" defaultValue="0" optional="true"/>
       <qfButton type="quickfillbutton" optional="true"/>
     </QFGroup>
 

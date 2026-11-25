@@ -3356,6 +3356,7 @@ var EDITOR = (function ($, parent) {
                 return {
                     "invQuestion": quickFillCount(attributes["qfInvQuestion"], "3"),
                     "invOption": quickFillCount(attributes["qfInvOption"], "4"),
+                    "invClassFeedback": quickFillCount(attributes["qfInvClassFeedback"], "0"),
                 };
             case 'textMatch':
                 return {
@@ -3370,6 +3371,7 @@ var EDITOR = (function ($, parent) {
                     "opinionClass": quickFillCount(attributes["qfOpinionClass"], "3"),
                     "opinionQuestion": quickFillCount(attributes["qfOpinionQuestion"], "3"),
                     "opinionOption": quickFillCount(attributes["qfOpinionOption"], "4"),
+                    "classFeedback": quickFillCount(attributes["qfClassFeedback"], "0"),
                 };
             case 'timeline':
                 return {
@@ -3422,6 +3424,14 @@ var EDITOR = (function ($, parent) {
                     "synchEmpty": quickFillCount(attributes["qfSynchEmpty"], "3"),
                     "synchMediaPlus": quickFillCount(attributes["qfSynchMediaPlus"], "3"),
                     "synchCue": quickFillCount(attributes["qfSynchCue"], "3"),
+                };
+            case 'modelAnswer':
+                return {
+                    "modelAnswerField": quickFillCount(attributes["qfModelAnswerField"], "3"),
+                };
+            case 'videoSynch':
+                return {
+                    "videoSynchPoint": quickFillCount(attributes["qfVideoSynchPoint"], "3"),
                 };
             default:
                 return undefined;

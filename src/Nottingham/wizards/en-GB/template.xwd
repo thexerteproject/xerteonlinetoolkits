@@ -499,7 +499,7 @@
 	  feedbackBtnTxt="Submit" pageTxt="Page" questionTxt="Question" responseHeaderTxt="Your response:"
 	  noAnswerHeaderTxt="No response submitted" exampleHeaderTxt="Feedback:" feedbackTxt="Page feedback"
 	  copyBtn2Label="Copy" copyShortcutTxt="Press Ctrl+C to copy" downloadTxt="Download" downloadSubmitTxt="Submit &amp; Download" downloadWarningTxt1="You have not downloaded your responses. Do you want to download them now?" downloadWarningTxt2="You have not submitted and downloaded your current responses. Make sure you return and complete this activity or you will lose your work."
-	  answerFieldLabel="Answer"><modelAnswerField name="Text Area" prompt="" rows="5"/></modelAnswer>]]></modelAnswer><modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title" text=""
+	  answerFieldLabel="Answer"></modelAnswer>]]></modelAnswer><modelAnswerResults><![CDATA[<modelAnswerResults name="Enter Page Title" text=""
       modelAnswer="true" textHighlight="false"
       panelWidth="Medium" panelWidthCustom="50" panelHeight="fill" align="Right" panelStyle="false" removeTxt="false"
 	  copyBtn2Label="Copy" downloadTxt="Download" submitTxt="Update" updateTxt="Your responses have been updated." pageTxt="Page" notViewed="Page not viewed"
@@ -9938,6 +9938,7 @@
     <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
       <qfInvQuestion label="Number of Questions" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
       <qfInvOption label="Number of Answers per Question" type="TextInput" wysiwyg="true" defaultValue="4" optional="true"/>
+      <qfInvClassFeedback label="Number of Tailored Feedback Blocks" type="TextInput" wysiwyg="true" defaultValue="0" optional="true"/>
       <qfButton type="quickfillbutton" optional="true"/>
     </QFGroup>
 
@@ -12622,6 +12623,11 @@
     <feedbackBtnTip label="Check Button Tip" type="textInput" language="true" deprecated="This property is no longer required"/>
     <feedbackBtnWidth label="Check Button Width" type="NumericStepper" min="80" max="250" step="10" width="100" defaultValue="100" language="true" deprecated="Width is now set automatically"/>
 
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
+      <qfModelAnswerField label="Number of Text Areas" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+      <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
+
     <AIGroup type="group" label="AI" tooltip="Generate content automatically with the help of AI." optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
       <subject verification="^.+$" label="Subject" type="TextInput" placeholder="Enter a subject here..." tooltip="This determines which area or subject the generated questions and feedback will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." optional="true"/>
       <additionalInstructions label="Additional Instructions" type="text" tooltip="You can leave this blank or provide additional instructions or requests on how the generated result should look. Please note that certain instructions may break the structure of the generated response. If this occurs, change the wording and attempt to generate again." wysiwyg="true" height="50" placeholder="Write your instructions here..." optional="true"/>
@@ -13782,6 +13788,7 @@
         <qfOpinionClass label="Number of Classes" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
         <qfOpinionQuestion label="Number of Questions per Class" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
         <qfOpinionOption label="Number of Options per Question" type="TextInput" wysiwyg="true" defaultValue="4" optional="true"/>
+        <qfClassFeedback label="Number of Tailored Feedback Blocks per Class" type="TextInput" wysiwyg="true" defaultValue="0" optional="true"/>
         <qfButton type="quickfillbutton" optional="true"/>
     </QFGroup>
 
@@ -19339,6 +19346,11 @@
     <movieSize label="Video Size" type="textInput" defaultValue="" placeholder="e.g. 320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!" deprecated="This property is deprecated. Use the panel width option to change the page layout instead."/>
 	<timedText label="Timed Text File" type="Media" optional="true" placeholder="Select a timed text file"/>
 	<trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score."/>
+
+    <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
+        <qfVideoSynchPoint label="Number of Sync Points" type="TextInput" wysiwyg="true" defaultValue="3" optional="true"/>
+        <qfButton type="quickfillbutton" optional="true"/>
+    </QFGroup>
 
     <newNodes>
       <videoSynchPoint><![CDATA[<videoSynchPoint name="Sync Point" text="" synch="0"/>]]></videoSynchPoint>
