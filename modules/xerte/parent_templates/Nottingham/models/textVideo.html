@@ -182,7 +182,7 @@
 			}
 
 			if (videoSrc.substr(0,7) == "<iframe") {
-				
+				// start / end times will not work when video source is from an iframe
 				$pageVideo
 					.addClass('iframe')
 					.append(videoSrc);
@@ -216,10 +216,10 @@
 				}
 
 			} else {
-				$pageVideo.data({
-					"src"			:videoSrc,
-					"startEndFrame"	:[Number(x_currentPageXML.getAttribute("startFrame")), Number(x_currentPageXML.getAttribute("endFrame"))]
-				});
+				let startSec = parseFloat(x_currentPageXML.getAttribute("startFrame"));
+				let endSec = parseFloat(x_currentPageXML.getAttribute("endFrame"));
+				startSec = isNaN(startSec) ? 0 : startSec;
+				endSec = isNaN(endSec) ? 0 : endSec;
 
 				this.popcornInstance = loadMedia($("#pageVideo"), "video",
 				{	tip: x_currentPageXML.getAttribute("tip"),
@@ -235,6 +235,7 @@
 					pageName: "textVideo",
 					trackMedia: true,
 					weighting: x_currentPageXML.getAttribute("trackingWeight"),
+					startEndFrame: [startSec, endSec]
 				}, true);
 
 				//controls toggle

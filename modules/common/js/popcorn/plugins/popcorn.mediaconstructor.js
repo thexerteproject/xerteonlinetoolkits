@@ -68,17 +68,24 @@ this.loadMedia = function($holder, mediaType, mediaData, mainMedia = true) {
             }
         } 
         else {
+            var playerOpts = {
+                type: "video",
+                source: mediaData.media,
+                width: "100%",
+                height: "100%",
+                autoPlay: mediaData.autoplay,
+                pageName: mediaData.pageName ? mediaData.pageName : "mediaLesson"
+            };
+
+            // some pages, e.g. video page, may send start &/or end times for the video too
+            if (mediaData.startEndFrame != undefined) {
+                playerOpts.startEndFrame = mediaData.startEndFrame;
+            }
+
             $myVideo
                 .attr("title", mediaData.tip)
                 .css("margin", "0 auto")
-                .mediaPlayer({
-                    type		:"video",
-                    source		:mediaData.media,
-                    width		:"100%",
-                    height		:"100%",
-                    autoPlay	:mediaData.autoplay,
-                    pageName	:mediaData.pageName ? mediaData.pageName : "mediaLesson"
-                });
+                .mediaPlayer(playerOpts);
 
             popcornInstance = Popcorn("#" +$holder.attr("id") + " video");
             if (mainMedia == true) {
