@@ -21,7 +21,7 @@
 
 	define("FOLDER_RSS_FEEDS","Folder RSS feeds");
 	
-	define("FOLDER_RSS_PUBLIC","If there is any public content in this folder, you will be able to access it via the RSS Feed at");
+	define("FOLDER_RSS_PUBLIC","If any projects in this folder are set to be included in RSS feeds (via the RSS options in the project's properties), you will be able to access them via the RSS feed at");
 
     define("FOLDER_RSS_FAIL", "You do not have rights to this folder");
 	
