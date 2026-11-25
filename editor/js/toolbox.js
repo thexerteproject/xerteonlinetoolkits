@@ -2041,12 +2041,12 @@ var EDITOR = (function ($, parent) {
                                 previewFile($(this).parents("tr").find(".CaptionTD").html(), $(this).parents("tr").find(".media")[0].value);
                             })
                             .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon'));
-                        $(this).parent().append('<button id="' + 'ai_' + col_id + '" title="' + language.compai.$tooltip + '" class="xerte_button"></button>');
+                        /*$(this).parent().append('<button id="' + 'ai_' + col_id + '" title="' + language.compai.$tooltip + '" class="xerte_button"></button>');
                         $(this).parent().find("#ai_" + col_id)
                             .click(function () {
                                 previewFile($(this).parents("tr").find(".CaptionTD").html(), $(this).parents("tr").find(".media")[0].value);
                             })
-                            .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon'));
+                            .append($('<i>').addClass('fa').addClass('fa-lg').addClass('fa-search').addClass('xerte-icon'));*/
                     }
 
                 } else {
