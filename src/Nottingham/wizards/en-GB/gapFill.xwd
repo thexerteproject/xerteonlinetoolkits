@@ -57,7 +57,7 @@
 	<gapFillPartWrongTracking label="Gap Fill Part Wrong (Tracking)" type="TextInput" wysiwyg="true" language="true"/>
 	<tryAgain label="Try Again" type="TextInput" wysiwyg="true" language="true" mandatory="true" defaultValue=""/>
 
-	<delimiters type="group" label="Delimiters" optional="true">
+	<delimiters type="group" label="Delimiters" optional="true" tooltip="Change the default characters used for mark up within the editor">
 		<mainDelimiter label="Marked Word" type="textInput" defaultValue="|" optional="true" tooltip="The character used to mark words for the exercise"/>
 		<answerDelimiter label="Correct Answer" type="textInput" defaultValue="," optional="true" tooltip="The character separating each correct answer, where there is more than one correct answer for a gap, e.g. |Doctor,Dr|"/>
 		<noiseDelimiter label="Distractor" type="textInput" defaultValue=" " optional="true" tooltip="The character used to separate distractors"/>

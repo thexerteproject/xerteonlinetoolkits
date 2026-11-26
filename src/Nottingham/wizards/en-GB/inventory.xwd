@@ -109,7 +109,7 @@
     <type label="Question Type" options="Single Answer,Multiple Answer" type="ComboBox" data="Single Answer,Multiple Answer" defaultValue="Single Answer" width="120"/>
     <questionFeedback label="Display Feedback" options="No,Yes" type="ComboBox" data="no,yes" defaultValue="no" width="120"/>
 
-	<imgInfo type="group" label="Image" optional="true">
+	<imgInfo type="group" label="Image" optional="true" tooltip="Add an image next to the question text">
 		<image label="Image" type="Media" optional="true" defaultValue="" placeholder="Select an image"/>
 		<tip label="Image Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>

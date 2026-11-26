@@ -69,7 +69,7 @@
     <text label="Slide Text" type="TextArea" height="250" placeholder="Content for the slide"/>
     <synch label="Sync Point" type="synchPoint" src="parent|sound"/>
 	
-	<imgInfo type="group" label="Image" optional="true">
+	<imgInfo type="group" label="Image" optional="true" tooltip="Add an image to the slide">
         <url label="Image" type="media"  optional="true" defaultValue="" placeholder="Select an image"/>
         <tip label="Description" type="textInput"  optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
         <caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>

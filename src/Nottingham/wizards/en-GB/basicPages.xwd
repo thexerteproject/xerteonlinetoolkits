@@ -95,7 +95,7 @@
 	</customLinkGroup>
 		
 	<unmarkForCompletion label="Completion Not Required" type ="CheckBox" defaultValue="true" tooltip="When the project is being tracked (e.g. using SCORM or xAPI), remove the requirement for this page to be completed in order for the project to be marked as complete" optional="true"/>
-	<disableGlossary label="Disable Glossary" defaultValue="true" type="CheckBox" condition="treeroot.glossary!=undefined" optional="true" tooltip="Prevent glossary words from from displaying definitions on this page"/>
+	<disableGlossary label="Disable Glossary" defaultValue="true" type="CheckBox" condition="treeroot.glossary!=undefined" optional="true" tooltip="Prevent glossary words from displaying definitions on this page"/>
 	<styles label="Styles" type="script" height="200" optional="true" tooltip="Add bespoke CSS to this page"/>
 
 	<tracking type="group" label="Tracking" optional="true" tooltip="Properties relating to tracked projects (e.g. using SCORM or xAPI)">

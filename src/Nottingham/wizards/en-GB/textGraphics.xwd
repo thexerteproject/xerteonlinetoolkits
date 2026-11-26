@@ -21,8 +21,8 @@
 
 	<caption label="Image Caption" type="textInput" defaultValue="" placeholder="Enter a caption for the image" optional="true" wysiwyg="true" tooltip="A caption displayed below the image"/>
 	
-	<magnifierGroup type="group" label="Image Magnification" optional="true">
-		<magnifier label="Magnifier"  type="checkBox" defaultValue="true" conditionTrigger="true" optional="true" tooltip="A magnifier which appears as the mouse is moved across the image"/>
+	<magnifierGroup type="group" label="Image Magnification" optional="true" tooltip="A magnifier which appears as the mouse is moved across the image">
+		<magnifier label="Magnifier"  type="checkBox" defaultValue="true" conditionTrigger="true" optional="true"/>
 		<magnifierSize label="Size" type="NumericStepper" min="50" max="500" step="20" defaultValue="100" condition="magnifier!='false'" optional="true" tooltip="The size of the magnifier in pixels"/>
 		<magnifierForce label="Force Magnification" type="checkbox" defaultValue="false" condition="magnifier!='false'" optional="true" tooltip="By default (when image size is auto), magnification will only work when the image is shown at &lt;80% of the original image size. Forcing magnification will make the magnifier always work, even when the magnified image is larger than the original and may appear fuzzy"/>
 	</magnifierGroup>
@@ -33,7 +33,7 @@
 		<transcriptPos label="Transcript Position" options="Below audio player,Lightbox" type="ComboBox" data="below,lightbox" defaultValue="lightbox" optional="true" conditionTrigger="true"/>
 	</soundGroup>
 	
-    <hidePanel label="Hide Panel"  type="checkBox" defaultValue="false" optional="true" condition="sound==undefined||sound==''||(transcript==undefined||transcript==''||transcriptPos=='lightbox')"/>
+    <hidePanel label="Hide Panel"  type="checkBox" defaultValue="false" optional="true" condition="sound==undefined||sound==''||(transcript==undefined||transcript==''||transcriptPos=='lightbox')" tooltip="Remove the panel from behind the image"/>
 
       <AIGroup type="group" label="AI" optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
           <subject verification="^.+$"  label="Subject" type="TextInput" placeholder="Enter a subject here..." tooltip = "This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." optional="true"/>

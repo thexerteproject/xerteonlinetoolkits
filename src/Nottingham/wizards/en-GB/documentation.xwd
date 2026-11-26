@@ -36,9 +36,9 @@
 
     <track label="Submit Button" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true" tooltip="Include a button that submits answers to the results page"/>
 	<showDownload label="Download Button" type="CheckBox" optional="true" defaultValue="true" conditionTrigger="true" tooltip="A download button will be shown by default. Uncheck this option to remove the download button."/>
-	<trackingWeight condition="track=='true'" label="Tracking Score Weight (0=Off)" optional="true" type="textInput" width="120" defaultValue="0.0" />
+	<trackingWeight condition="track=='true'" label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="0.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
 
-    <filename condition="showDownload!='false'" label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true"/>
+    <filename condition="showDownload!='false'" label="Filename (without extension)" type="TextInput" defaultValue="documentation" optional="true" tooltip="Customise the name of the downloaded .doc file"/>
 	<fileOrientation condition="showDownload!='false'" label="File Orientation" data="portrait,landscape" type="ComboBox" options="Portrait,Landscape" width="120" defaultValue="portrait" optional="true" tooltip="Orientation of downloaded file"/>
 
 	<fontSize condition="showDownload!='false'" type="group" label="Font Size" optional="true" tooltip="Customise the font sizes used in the downloaded document">
@@ -101,7 +101,7 @@
     <name label="Section Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="100" placeholder="Enter section text here"/>
 	
-	<exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+	<exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Page,Downloaded document" defaultValue="doc" width="120" optional="true" tooltip="Use this to only show this section on the page or in the downloaded document"/>
 
     <QFGroup type="group" lightbox="form" subgroup="assistant" label="Quick Fill" tooltip ="Generate an empty template based on the options you choose, ready to be populated with your content." optional="true">
       <qfMedia label="Number of Images" type="TextInput" wysiwyg="true" defaultValue = "1" optional="true"/>
@@ -141,9 +141,9 @@
 	
 	<replace label="Insert Text Areas" type="CheckBox" defaultValue="true" tooltip="Insert text area fields into empty cells in table. Use markup '[empty]' in the cell to force it to remain empty."/>
 	
-	<rows label="Text Area Lines" verification="^\d+$" type="NumericStepper" min="1" max="15" defaultValue="3" optional="true"/>
-	<exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
-	<required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
+	<rows label="Text Area Lines" verification="^\d+$" type="NumericStepper" min="1" max="15" defaultValue="3" optional="true" tooltip="Specify the number of lines (height) of the text areas"/>
+	<exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Page,Downloaded document" defaultValue="doc" width="120" optional="true" tooltip="Use this to only show this block on the page or in the downloaded document"/>
+	<required label="Required Field" type="Checkbox" defaultValue="true" optional="true" tooltip="Require completion of this block before responses can be submitted or downloaded"/>
 	<empty label="Empty Cell Markup" type="TextInput" defaultValue="[empty]" optional="true" tooltip="The string used to markup empty cells. Default: [empty]"/>
 	
 	<notAnswered label="Not Answered Text" type="TextInput" language="true"/>
@@ -174,7 +174,7 @@
     <type label="Question Type" type="ComboBox" data="radio,checkbox" options="Single Answer,Multiple Answer" width="120"/>
 	<display label="Display Options" type="ComboBox" data="horizontal,vertical" options="Horizontal,Vertical" width="120"/>
 	
-	<exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+	<exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Page,Downloaded document" defaultValue="doc" width="120" optional="true" tooltip="Use this to only show this block on the page or in the downloaded document"/>
 
     <AIGroup type="group" label="AI" lightbox="form" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))" subgroup="assistant" optional="true">
         <subject label="Subject" type="TextInput" verification="^.+$" defaultValue="" placeholder="Enter a subject here..." tooltip = "This determines which area or subject for which a description and accompanying options will be generated." optional="true"/>
@@ -208,7 +208,7 @@
     <name label="Description Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="100" placeholder="Enter text here"/>
     
-    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Page,Downloaded document" defaultValue="doc" width="120" optional="true" tooltip="Use this to only show this block on the page or in the downloaded document"/>
 
       <AIGroup type="group" label="AI" optional="true" lightbox="form" subgroup="assistant" condition="(vendor_is_available('ai', 'all')) &amp;&amp; (hasrole('aiuser'))">
           <subject verification="^.+$"  label="Subject" type="TextInput" placeholder="Enter a subject here..." tooltip = "This determines which area or subject the generated questions and possible answers will follow. More complex subjects may result in less consistent content. Examples: 'bird migration habits', 'migration habits of birds native to The Netherlands'." optional="true"/>
@@ -229,7 +229,7 @@
   </description>
   
   <line menuItem="Horizontal Rule" icon="icHr">
-    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Page,Downloaded document" defaultValue="doc" width="120" optional="true" tooltip="Use this to only show this block on the page or in the downloaded document"/>
   </line>
 
   <media menuItem="Image" icon="icPicture">
@@ -242,7 +242,7 @@
 	</mediaGroup>
 
 	<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Add a caption below the image"/>
-    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Page,Downloaded document" defaultValue="doc" width="120" optional="true" tooltip="Use this to only show this block on the page or in the downloaded document"/>
   </media>
 
   <checkbox menuItem="Checkbox" icon="icCheckbox">
@@ -250,9 +250,9 @@
     <text label="Text" type="TextArea" height="100" placeholder="Enter text here"/>
 	<label label="Label" type="TextInput" wysiwyg="true"/>
 	
-	<default label="Default State" type="Checkbox" defaultValue="false" optional="true"/>
-    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
-	<exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+	<default label="Default State" type="Checkbox" defaultValue="false" optional="true" tooltip="Specify whether the checkbox is initially checked or unchecked"/>
+    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true" tooltip="Require completion of this block before responses can be submitted or downloaded"/>
+	<exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Page,Downloaded document" defaultValue="doc" width="120" optional="true" tooltip="Use this to only show this block on the page or in the downloaded document"/>
 	
 	<checked label="Checked" type="TextInput" language="true"/>
 	<unchecked label="Unchecked" type="TextInput" language="true"/>
@@ -262,11 +262,11 @@
     <name label="Text Area Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="100" placeholder="Enter text here"/>
 
-    <rows label="Text Area Lines" verification="^\d+$" type="NumericStepper" min="1" max="15" defaultValue="3" optional="true"/>
+    <rows label="Text Area Lines" verification="^\d+$" type="NumericStepper" min="1" max="15" defaultValue="3" optional="true" tooltip="Specify the number of lines (height) of the text area"/>
 	<width label="Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="100" optional="true"/>
 	<defaultTxt label="Placeholder Text" type="TextInput" optional="true"/>
-    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
-    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true" tooltip="Require completion of this block before responses can be submitted or downloaded"/>
+    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Page,Downloaded document" defaultValue="doc" width="120" optional="true" tooltip="Use this to only show this block on the page or in the downloaded document"/>
 	
 	<notAnswered label="Not Answered Text" type="TextInput" language="true"/>
 
@@ -294,8 +294,8 @@
     
 	<width label="Width" options="Small,Medium,Large,Full" type="ComboBox"  data="Small,Medium,Large,Full" defaultValue="Medium" width="100" optional="true"/>
 	<defaultTxt label="Placeholder Text" type="TextInput" optional="true"/>
-    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true"/>
-    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Learning Object,Documentation" defaultValue="doc" width="120" optional="true"/>
+    <required label="Required Field" type="Checkbox" defaultValue="true" optional="true" tooltip="Require completion of this block before responses can be submitted or downloaded"/>
+    <exclude label="Exclude From" type="ComboBox" data="lo,doc" options="Page,Downloaded document" defaultValue="doc" width="120" optional="true" tooltip="Use this to only show this block on the page or in the downloaded document"/>
 	
 	<notAnswered label="Not Answered Text" type="TextInput" language="true"/>
 

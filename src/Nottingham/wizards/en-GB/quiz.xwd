@@ -44,19 +44,19 @@
         <textBottomWidth label="Full Width" type="CheckBox" optional="true" defaultValue="false" condition="panelWidth!='Full'"/>
     </textBelowGroup>
 
-    <imgInfo type="group" label="Image" optional="true" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)">
+    <imgInfo type="group" label="Image" optional="true" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)" tooltip="Add an image below the page text">
         <img label="Image" type="media" defaultValue="" placeholder="Select an image" optional="true"/>
         <tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
         <caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
     </imgInfo>
 
-    <videoInfo type="group" label="Video" optional="true" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)">
+    <videoInfo type="group" label="Video" optional="true" condition="panelWidth!='Full'||(removeTxt!='true'&amp;&amp;removeTxt!=undefined)" tooltip="Add a video below the page text">
         <video label="Video" type="media" defaultValue="" placeholder="Select a video file or enter a URL/embed code" optional="true" enableImgSHTool="false"/>
         <movieSize label="Size" type="textInput" defaultValue="" placeholder="e.g. 320,240" optional="true" tooltip="By default videos will be scaled automatically to best fit on the page. This option fixes the video size (width,height). Use with caution!"/>
     </videoInfo>
 
     <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
-	<scorePos label="Score Position" options="Above Feedback,Below Feedback" type="ComboBox" data="Above,Below" defaultValue="Below" width="120" optional="true"/>
+	<scorePos label="Score Position" options="Above Feedback,Below Feedback" type="ComboBox" data="Above,Below" defaultValue="Below" width="120" optional="true" tooltip="Determines whether the score is shown above or below the page feedback"/>
 	
     <quesCount label="{i} of {n} questions" type="TextInput" wysiwyg="true" divider="true" language="true" />
     <feedbackLabel label="Feedback Label" type="TextInput" wysiwyg="true" language="true" />
@@ -121,7 +121,7 @@
     	<feedbackPos label="Feedback Order" options="General > Answer > Correct/Incorrect,General > Correct/Incorrect > Answer,Answer > Correct/Incorrect > General,Answer > General > Correct/Incorrect,Correct/Incorrect > General > Answer,Correct/Incorrect > Answer > General" type="ComboBox" data="GAC,GCA,ACG,AGC,CGA,CAG" defaultValue="GAC" width="120" optional="true" tooltip="The order the different types of feedback are shown within the feedback block. Default order is General feedback > Answer feedback > Correct/Incorrect feedback"/>
     </feedbackGroup>
 
-	<imgInfo type="group" label="Image" optional="true">
+	<imgInfo type="group" label="Image" optional="true" tooltip="Add an image next to the question text">
 		<image label="Image" type="Media" defaultValue="" placeholder="Select an image" optional="true" />
 		<tip label="Image Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
 		<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>

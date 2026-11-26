@@ -17,8 +17,8 @@
 		<tip label="Description" type="TextInput" placeholder="Enter a description for accessibility" />
 	</image>
 	
-	<magnifierGroup type="group" label="Image Magnification" optional="true">
-		<magnifier label="Magnifier"  type="checkBox" defaultValue="true" conditionTrigger="true" optional="true" tooltip="A magnifier which appears as the mouse is moved across the image"/>
+	<magnifierGroup type="group" label="Image Magnification" optional="true" tooltip="A magnifier which appears as the mouse is moved across the image">
+		<magnifier label="Magnifier" type="checkBox" defaultValue="true" conditionTrigger="true" optional="true"/>
 		<magnifierSize label="Size" type="NumericStepper" min="50" max="500" step="20" defaultValue="100" condition="magnifier!='false'" optional="true" tooltip="The size of the magnifier in pixels"/>
 		<magnifierForce label="Force Magnification" type="checkbox" defaultValue="false" condition="magnifier!='false'" optional="true" tooltip="By default (when image size is auto), magnification will only work when the image is shown at &lt;80% of the original image size. Forcing magnification will make the magnifier always work, even when the magnified image is larger than the original and may appear fuzzy"/>
 	</magnifierGroup>
@@ -34,9 +34,9 @@
 		<linktarget label="Target" type="textInput" width="70" defaultValue="_blank" optional="true" />
 	</linkInfo>
 
-	<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>
+	<caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Add a caption below the image"/>
 	
-	<addmargin label="Image Margin" type="Checkbox" defaultValue="false"  optional="true"/>
+	<addmargin label="Image Margin" type="Checkbox" defaultValue="false" optional="true" tooltip="Add a panel and margin around the image"/>
 	
     <size label="Text Size" type="ComboBox"  options="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" data="12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,48,70" defaultValue="18" width="100" optional="true" deprecated="This property is deprecated. You can change the text's size in the text toolbar."/>
 

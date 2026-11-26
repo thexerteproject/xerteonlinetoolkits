@@ -93,7 +93,7 @@
     <text label="Text" type="TextArea" height="250" placeholder="Enter text for the nested page here"/>
     <align label="Align Text" options="Top,Bottom" type="ComboBox" data="Top,Bottom" defaultValue="Top" width="100"/>
 	
-    <imgInfo type="group" label="Image" optional="true">
+    <imgInfo type="group" label="Image" optional="true" tooltip="Add an image to the nested page">
       <url label="Image" type="media"  optional="true" defaultValue="" placeholder="Select an image"/>
       <tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
       <caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>

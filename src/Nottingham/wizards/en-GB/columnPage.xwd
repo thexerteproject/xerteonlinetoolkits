@@ -73,7 +73,7 @@
           <aiButton type="aibutton" optional="true"/>
           <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
       </AIGroup>
-	<imgInfo type="group" label="Image" optional="true">
+	<imgInfo type="group" label="Image" optional="true" tooltip="Add an image to the column">
 		<url label="Image" type="media"  optional="true" defaultValue="" placeholder="Select an image"/>
 		<tip label="Description" type="textInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
         <caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>

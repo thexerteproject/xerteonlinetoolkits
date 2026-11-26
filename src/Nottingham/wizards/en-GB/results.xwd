@@ -115,9 +115,9 @@
             <minCompletion label="Minimum value" defaultValue="0" type="TextInput" optional="true"/>
             <maxCompletion label="Maximum value" defaultValue="50" type="TextInput" optional="true"/>
         </completion>
-        <duration type="group" label="Duration" optional="true">
-            <minDuration label="Minimum value" defaultValue="0" type="TextInput" tooltip="The minimum (rounded down) duration value (in seconds) for which this feedback will show" optional="true"/>
-            <maxDuration label="Maximum value" defaultValue="60" type="TextInput" tooltip="The maximum (rounded down) duration value (in seconds) for which this feedback will show" optional="true"/>
+        <duration type="group" label="Duration" optional="true" tooltip="The maximum and minimum (rounded down) duration values (in seconds) used to determine whether the feedback will be shown">
+            <minDuration label="Minimum value" defaultValue="0" type="TextInput" optional="true"/>
+            <maxDuration label="Maximum value" defaultValue="60" type="TextInput" optional="true"/>
         </duration>
         <!--<fbPDF label="Include in PDF" type="Checkbox" optional="true" defaultValue="false" />-->
     </feedback>

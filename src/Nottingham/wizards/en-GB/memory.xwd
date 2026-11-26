@@ -22,7 +22,7 @@
         <removeTxt label="Remove Page Text" type="CheckBox" defaultValue="false" conditionTrigger="true" condition="panelWidth=='Full'||panelWidth==undefined"/>
     </layoutGroup>
 
-	<backurl label="Card Back Image" type="Media" optional="true" placeholder="Select an image"/>
+	<backurl label="Card Back Image" type="Media" optional="true" placeholder="Select an image" tooltip="Customise the image on the back of the cards"/>
 	<imgFit label="Image Scaling" optional="true" type="ComboBox" options="Stretch to fit,Crop to fit" data="fill,cover" defaultValue="cover" tooltip="How the images fill the cards. 'Stretch to fit' will stretch the image vertically or horizontally to fill the whole card area, while 'Crop to fit' will crop the image to fit without distorting it"/>
 
     <textTopGroup label="Text Above Panel" type="group" optional="true">
@@ -52,7 +52,7 @@
 
     <name label="Label" type="TextInput" wysiwyg="true"/>
     <url label="Image" type="Media" placeholder="Select an image"/>
-	<url2 label="Label Image" type="Media" optional="true" placeholder="Select an image"/>
+	<url2 label="Label Image" type="Media" optional="true" placeholder="Select an image" tooltip="An image to display in the background of the label text card"/>
 
   </matchItem>
 

@@ -60,7 +60,7 @@
 
   <cMenuListedPage menuItem="Item" remove="true" icon="icBullet" >
     <name label="Title" type="TextInput" wysiwyg="true" />
-    <pageID label="Destination Page" type="pageList" defaultValue="" optional="true"/>
+    <pageID label="Destination Page" type="pageList" defaultValue="" optional="true" tooltip="Navigate to a page within this project when menu button is clicked"/>
 	
 	<externalGroup type="group" label="External URL" optional="true" tooltip="Open another web page when menu button is clicked">
 		<externalURL label="External URL" type="TextInput" wysiwyg="false" optional="true" />

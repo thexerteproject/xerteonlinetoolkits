@@ -29,7 +29,7 @@
         <submitText label="Submit button label for Match" type="TextInput" wysiwyg="true" language="true" />
         <incomplete label= "Incomplete" type="TextInput" wysiwyg="true" language="true"/>
 
-        <labelPos label="Label Position" type="ComboBox" data="image,text" options="Below Image,Below Text" defaultValue="image" optional="true"/>
+        <labelPos label="Label Position" type="ComboBox" data="image,text" options="Below Image,Below Text" defaultValue="image" optional="true" tooltip="Change the position of labels before they are moved onto the image"/>
 
         <trackingWeight label="Tracking Score Weight" optional="true" type="textInput" width="120" defaultValue="1.0" tooltip="Customise the weight of the task on this page, relative to other scored pages in the project. Setting the weight to 0 will mean that the task on this page will not contribute to the project's overall score." />
 
@@ -49,7 +49,7 @@
 
         <name label="Drag Label" type="TextInput" wysiwyg="true"/>
         <text label="Text" type="TextArea" height="250" placeholder="Enter a description for the hotspot"/>
-        <alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" />
+        <alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" tooltip="A description of the hotspot area for accessibility" />
 
     </hotspot>
 

@@ -53,13 +53,13 @@
   <hotspot label="Edit Hotspot" menuItem="Hotspot" type="hotSpot"  icon="icLayers" remove="true">
     <name label="Drag Label" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250" placeholder="Enter a description for the hotspot"/>
-  	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" />
+  	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" tooltip="A description of the hotspot area for accessibility" />
   </hotspot>
   
   <flexhotspot type="flexhotSpot" upgradefrom="hotspot" label="Edit Hotspot" menuItem="Hotspot" icon="icLayers" remove="true">
     <name label="Title" type="TextInput" wysiwyg="true"/>
     <text label="Text" type="TextArea" height="250" placeholder="Description for the hotspot"/>
-  	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" />
+  	<alttext label="Tooltip Description" type="script" height="100" defaultValue="" placeholder="Enter a description for accessibility" optional="true" tooltip="A description of the hotspot area for accessibility" />
   </flexhotspot>
 
   <!-- HOTSPOTQ================================== -->

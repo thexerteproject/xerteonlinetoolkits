@@ -123,7 +123,7 @@
 
     <feedback label="Feedback" type="TextArea" height="100" placeholder="Enter feedback here" optional="true" tooltip="The feedback shown below the associated text field after answers have been submitted"/>
 
-    <imgInfo type="group" label="Image" optional="true">
+    <imgInfo type="group" label="Image" optional="true" tooltip="Add an image below the prompt">
         <image label="File" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
         <tooltip label="Description" type="TextInput" optional="true" defaultValue="" placeholder="Enter a description for accessibility"/>
         <caption label="Caption" type="textInput" optional="true" defaultValue="" wysiwyg="true" placeholder="Enter the caption text" tooltip="Optional: add a caption below the image"/>

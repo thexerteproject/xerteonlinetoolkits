@@ -40,7 +40,7 @@
 			<autoplay label="Auto Play" type="CheckBox" defaultValue="false"/>
 		</mediaGroup>
 
-		<audioImg type="group" label="Image (Audio only)" optional="true">
+		<audioImg type="group" label="Image (Audio only)" optional="true" tooltip="Add an image above the audio player">
 			<audioImage label="Image" type="media" optional="true" defaultValue="" placeholder="Select an image"/>
 			<audioImageTip label="Description" type="textInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
 		</audioImg>
@@ -167,7 +167,7 @@
 		<transcript label="Transcript" type="textArea" height="150" optional="true"/>
 		<transcriptBtnTxt label="Transcript Button Label" type="TextInput" wysiwyg="true" divider="true" language="true"/>
 
-		<audioImg type="group" label="Image (Audio only)" optional="true">
+		<audioImg type="group" label="Image (Audio only)" optional="true" tooltip="Add an image above the audio player">
 			<audioImage label="Image" type="media" optional="true"/>
 			<audioImageTip label="Description" type="textInput" defaultValue="" placeholder="Enter a description for accessibility" optional="true"/>
 		</audioImg>
@@ -253,7 +253,7 @@
 		<page label="Page" type="TextInput" wysiwyg="false" defaultValue="" placeholder="e.g. 5" tooltip="By default, the XOT project will be shown from page 1. Use this option to automatically show a later page instead"/>
 		<hide label="Hide" type="ComboBox" options="None,Header,Footer,Both" data="none,top,bottom,both" defaultValue="none" width="100"/>
 
-		<description label="Description" type="TextInput" wysiwyg="true" optional="true"/>
+		<description label="Description" type="TextInput" wysiwyg="true" optional="true" placeholder="Enter a description for accessibility"/>
 
 		<synchStart label="Sync Point" type="synchPoint" src="page|mediaPanel|media"/>
 		<synchEnd label="Sync Point: End" type="synchPoint" relativeTo="synchStart" src="page|mediaPanel|media" optional="true"/>

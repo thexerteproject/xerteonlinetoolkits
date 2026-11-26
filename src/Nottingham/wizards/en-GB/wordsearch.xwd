@@ -12,7 +12,7 @@
     <text label="Page Text" type="TextArea" height="100" placeholder="Enter text for the page here"/>
     <words label="Words" type="script" height="100" tooltip="Enter words here, placing each on a new line"/>
 	
-	<colours type="group" label="Colours" optional="true">
+	<colours type="group" label="Colours" optional="true" tooltip="Customise the colours used in the wordsearch">
 		<colour1 label="Select" type="ColourPicker" defaultValue="0xFFA500" optional="true"/>
 		<colour2 label="Found" type="ColourPicker" defaultValue="0x0000FF" optional="true"/>
 		<colour3 label="Complete" type="ColourPicker" defaultValue="0x800080" optional="true"/>
@@ -36,11 +36,11 @@
         <explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
     </AIGroup>
 	
-	<order label="Word Ordering" options="None,Alphabetical,Random" type="ComboBox" width="120" data="none,alphabetical,random" defaultValue="none" optional="true"/>
-	<hideSolve label="Hide Solve Button" hint="Hide the solve button completely" type="CheckBox" optional="true"/>
-	<hideSolveUntilTimer label="Hide Solve Until Timer" hint="Hide the solve button until the timer expires" type="CheckBox" optional="true"/>
-	<hideWords label="Hide Words" hint="Hide the words to make the puzzle harder" type="CheckBox" optional="true"/>
-	<puzzleCase label="Force Puzzle Case" options="Uppercase,Lowercase,As Typed" type="ComboBox" width="120" data="uppercase,lowercase,astyped" defaultValue="uppercase" optional="true"/>
+	<order label="Word Ordering" options="In order,Alphabetical,Random" type="ComboBox" width="120" data="none,alphabetical,random" condition="hideWords!='true'" defaultValue="none" optional="true" tooltip="The order of the words in the word list"/>
+	<hideSolve label="Hide Solve Button" tooltip="Remove the solve button from the page" type="CheckBox" optional="true"/>
+	<hideSolveUntilTimer label="Hide Solve Until Timer" tooltip="Remove the solve button until the timer expires" type="CheckBox" optional="true"/>
+	<hideWords label="Hide Words" tooltip="Hide the list of words that are hidden in the wordsearch" type="CheckBox" optional="true" conditionTrigger="true"/>
+	<puzzleCase label="Force Puzzle Case" options="Uppercase,Lowercase,As Typed" type="ComboBox" width="120" data="uppercase,lowercase,astyped" defaultValue="uppercase" optional="true" tooltip="Specify the case used for the letters in the wordsearch"/>
 	
 	<solveBtnTxt label="Solve Button Label" type="TextInput" wysiwyg="true" language="true"/>
 	<retryBtnTxt label="Retry Button Label" type="TextInput" wysiwyg="true" language="true"/>
