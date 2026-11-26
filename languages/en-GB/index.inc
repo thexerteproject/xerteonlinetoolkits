@@ -29,7 +29,7 @@ define("INDEX_LDAP_MISSING", "PHP's LDAP library needs to be installed to use LD
 
 define("INDEX_SITE_ADMIN", "Site admins should log on on the manangement page");
 
-define("INDEX_LOGON_FAIL", "Sorry that password combination was not correct");
+define("INDEX_LOGON_FAIL", "Invalid username or password.<br/>Check your details and try again.");
 
 define("INDEX_LOGIN", "login area");
 

@@ -155,12 +155,11 @@ function login_prompt_lti($messages, $extra_path = '') {
                                 <script>   document.getElementById("login_box").focus();      </script>
                               <?php
                               if (!empty($messages)) {
-                                echo "<ul class='error'>";
-
-                                foreach ($messages as $message) {
-                                  echo "<li class='error'>" . $message . "</li>";
-                                }
-                                echo "</ul>";
+                                  echo "<div class='loginError'>";
+                                  foreach ($messages as $message) {
+                                      echo "<i class='fa fa-exclamation-circle'></i> " . $message . "<br/>";
+                                  }
+                                  echo "<div>";
                               }
                               ?>
 
@@ -253,12 +252,21 @@ function login_prompt($messages, $xerte_toolkits_site) {
 			<div style="margin:0 7px 4px 0"><?PHP echo INDEX_PSWD_LOGIN; ?>:</div>
             <form method="post" enctype="application/x-www-form-urlencoded" >
                 <p style="margin:4px"><label for="login_box"><?php echo INDEX_USERNAME; ?>:</label>
-                <input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
+                <input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box" value="<?php echo isset($_POST['login']) ? htmlspecialchars($_POST['login'], ENT_QUOTES, 'UTF-8') : ''; ?>"/></p>
                 <p style="margin:4px"><label for="password"><?PHP echo INDEX_PASSWORD; ?>:</label>
                 <input class="xerte_input_box" type="password" size="20" maxlength="100" name="password" id="password" /></p>
                 <button type="submit" class="xerte_button" style="margin:0 3px 0 0"><i class="fa fa-sign-in"></i> <?php echo INDEX_BUTTON_LOGIN; ?></button>
             </form>
             <script>document.getElementById("login_box").focus();      </script>
+            <?php
+            if (!empty($messages)) {
+                echo "<div class='loginError'>";
+                foreach ($messages as $message) {
+                    echo "<i class='fa fa-exclamation-circle'></i> " . $message . "<br/>";
+                }
+                echo "<div>";
+            }
+            ?>
         </div>
     </div>
     <div style="clear:both;"></div>
@@ -361,12 +369,21 @@ function login_form($messages, $xerte_toolkits_site)
             <div style="margin:0 7px 4px 0"><?php display_language_selectionform("", true);?></div>
             <form method="post" enctype="application/x-www-form-urlencoded" >
                 <p style="margin:4px"><label for="login_box"><?php echo INDEX_USERNAME; ?>:</label>
-                <input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box"/></p>
+                <input class="xerte_input_box" type="text" size="20" maxlength="100" name="login" id="login_box" value="<?php echo isset($_POST['login']) ? htmlspecialchars($_POST['login'], ENT_QUOTES, 'UTF-8') : ''; ?>"/></p>
                 <p style="margin:4px"><label for="password"><?PHP echo INDEX_PASSWORD; ?>:</label>
                 <input class="xerte_input_box" type="password" size="20" maxlength="100" name="password" id="password" /></p>
                 <button type="submit" class="xerte_button" style="margin:0 3px 0 0"><i class="fa fa-sign-in"></i> <?php echo INDEX_BUTTON_LOGIN; ?></button>
             </form>
             <script>document.getElementById("login_box").focus();      </script>
+            <?php
+            if (!empty($messages)) {
+                echo "<div class='loginError'>";
+                foreach ($messages as $message) {
+                    echo "<i class='fa fa-exclamation-circle'></i> " . $message . "<br/>";
+                }
+                echo "<div>";
+            }
+            ?>
         </div>
     </div>
     <div style="clear:both;"></div>
@@ -436,53 +453,54 @@ function login_processing($exit = true) {
 
     /**
      * Username and password left empty
+     * The first visit has no POST data, so both fields look empty and should not generate a message
      */
-    if (empty($_POST["login"]) && empty($_POST["password"])) {
-      $errors[] = INDEX_USERNAME_AND_PASSWORD_EMPTY;
-      /*
-      * Username left empty
-      */
-    } else if (empty($_POST["login"])) {
-      $errors[] = INDEX_USERNAME_EMPTY;
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if (empty($_POST["login"]) && empty($_POST["password"])) {
+            $errors[] = INDEX_USERNAME_AND_PASSWORD_EMPTY;
+        } else if (empty($_POST["login"])) {
+            $errors[] = INDEX_USERNAME_EMPTY;
+        } else if (empty($_POST["password"])) {
+            $errors[] = INDEX_PASSWORD_EMPTY;
+        }
 
-      /*
-      * Password left empty
-      */
-    } else if (empty($_POST["password"])) {
-      $errors[] = INDEX_PASSWORD_EMPTY;
-    }
-
-    if (!empty($_POST['login']) && ($_POST["login"] == $xerte_toolkits_site->admin_username) && (!empty($_POST['password']) && hash('sha256', $_POST["password"]) == $xerte_toolkits_site->admin_password)) {
-        $_SESSION['toolkits_logon_id'] = "site_administrator";
-        $_SESSION['toolkits_logon_username'] = $xerte_toolkits_site->admin_username;
-        $_SESSION['toolkits_firstname'] = "Admin";
-        $_SESSION['toolkits_surname'] = "User";
-        $success = true;
-        session_regenerate_id(true);
-    }
-    else {
-        $success = false;
-        if (empty($errors)) {
-            try {
-                $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
-            } catch (InvalidArgumentException $e) {
-                $errors[] = "Invalid authentication choice; check config.php (authentication_method)";
-            }
+        if (!empty($_POST['login']) && ($_POST["login"] == $xerte_toolkits_site->admin_username) && (!empty($_POST['password']) && hash('sha256', $_POST["password"]) == $xerte_toolkits_site->admin_password)) {
+            $_SESSION['toolkits_logon_id'] = "site_administrator";
+            $_SESSION['toolkits_logon_username'] = $xerte_toolkits_site->admin_username;
+            $_SESSION['toolkits_firstname'] = "Admin";
+            $_SESSION['toolkits_surname'] = "User";
+            $success = true;
+            session_regenerate_id(true);
+        } else {
+            $success = false;
             if (empty($errors)) {
-                if ($authmech->check()) {
-                    $success = $authmech->login($_POST['login'], $_POST['password']);
-                    if ($success && $xerte_toolkits_site->authentication_method != "Moodle") {
-                        session_regenerate_id(true);
+                try {
+                    $authmech = Xerte_Authentication_Factory::create($xerte_toolkits_site->authentication_method);
+                } catch (InvalidArgumentException $e) {
+                    $errors[] = "Invalid authentication choice; check config.php (authentication_method)";
+                }
+                if (empty($errors)) {
+                    if ($authmech->check()) {
+                        $success = $authmech->login($_POST['login'], $_POST['password']);
+                        if ($success && $xerte_toolkits_site->authentication_method != "Moodle") {
+                            session_regenerate_id(true);
+                        }
+                    }
+                    $errors = $authmech->getErrors();
+                    if (!$success && empty($errors)) {
+                        $errors[] = INDEX_LOGON_FAIL;
                     }
                 }
-                $errors = $authmech->getErrors();
             }
         }
+    } else {
+      $success = false;
+      $errors = array();
     }
 
     if ($exit === true) {
       if (!$success || !empty($errors)) {
-        if (in_array(INDEX_USERNAME_AND_PASSWORD_EMPTY, $errors) == false) {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && in_array(INDEX_USERNAME_AND_PASSWORD_EMPTY, $errors) == false) {
           $msg = "User '" . $_POST['login'] . "' attempted to login from " . $_SERVER['REMOTE_ADDR'];
           receive_message("", "SYSTEM", "LOGINS", "Failed login", $msg);
         }

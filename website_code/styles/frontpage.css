@@ -1501,3 +1501,9 @@ div.ui-layout-center {
 .lockFileContent footer {
 	min-height: 50px;
 }
+
+.loginError {
+    text-align: left;
+    display:inline-block;
+    margin-top: 1em;
+}
