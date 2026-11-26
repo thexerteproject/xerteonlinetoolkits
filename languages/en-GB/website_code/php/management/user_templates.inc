@@ -74,3 +74,5 @@
     define("USERS_MANAGEMENT_TEMPLATE_OWNER", "Owner");
 
     define("USERS_MANAGEMENT_TEMPLATE_ROLE", "Role");
+
+    define("USERS_MANAGEMENT_TEMPLATE_SEARCH_USER_ERROR", "Select a user");

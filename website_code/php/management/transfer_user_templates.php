@@ -58,7 +58,7 @@ if(is_user_permitted("projectadmin", "system")) {
 
     echo str_replace("{user}", $row['firstname'] .  " "  . $row['surname'], USERS_MANAGEMENT_TEMPLATE_TRANSFER_EXPLANATION);
 
-    echo "<form name=\"doTransfer\" action=\"javascript:do_transfer_user_templates('" . $login_id . "', 'select_new_owner', 'transfer_private', 'transfer_shared_folders', 'delete_user')\"><select id=\"select_new_owner\">";
+    echo "<form name=\"doTransfer\" action=\"javascript:do_transfer_user_templates('" . $login_id . "', 'select_new_owner', 'transfer_private', 'transfer_shared_folders', 'delete_user')\"><select id=\"select_new_owner\"><option value=\"\"></option>";
 
     foreach ($logins as $row_users) {
 

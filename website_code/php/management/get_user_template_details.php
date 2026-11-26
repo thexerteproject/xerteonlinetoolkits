@@ -94,7 +94,7 @@ if(is_user_permitted("projectadmin")) {
 
     echo "<p>" . USERS_MANAGEMENT_TEMPLATE_GIVE . "</p>";
 
-    echo "<form name=\"" . $row['login_id'] . "_" . $row_templates['template_id'] . "\" action=\"javascript:change_owner('" . $row_templates['template_id'] . "')\"><select id=\"" . $row_templates['template_id'] . "_new_owner\">";
+    echo "<form name=\"" . $row['login_id'] . "_" . $row_templates['template_id'] . "\" action=\"javascript:change_owner('" . $row_templates['template_id'] . "')\"><select id=\"" . $row_templates['template_id'] . "_new_owner\"><option value=\"\"></option>";
 
     foreach ($logins as $row_users) {
 

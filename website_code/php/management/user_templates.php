@@ -41,7 +41,7 @@ if(is_user_permitted("projectadmin")){
 
     echo "<input type=\"textinput\" name=\"searchfilter\" id=\"searchfilter\" /><button type=\"button\" class=\"xerte_button\" onclick=\"javascript:search_user_templates('searchfilter')\">" . USERS_MANAGEMENT_TEMPLATE_SEARCH . "</button><br/>";
 
-    echo "<select id=\"list_user\">";
+    echo "<select id=\"list_user\"><option value=\"\"></option>";
     foreach($logins as $row_users){
         echo "<option value=\"" . $row_users['login_id'] . "\">" . $row_users['surname'] . ", " . $row_users['firstname'] . " (" . $row_users['username'] . ")</option>";
     }

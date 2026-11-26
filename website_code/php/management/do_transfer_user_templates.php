@@ -251,7 +251,9 @@ function createGetFolderId($folder_structure, $newuserid, $old_folder_id, $trans
 if(is_user_permitted("projectadmin", "system"))
 {
     if (isset($_REQUEST['olduserid']) && isset($_REQUEST['newuserid']) && isset($_REQUEST['transfer_private']) && isset($_REQUEST['transfer_shared_folders']) && isset($_REQUEST['delete_user'])) {
-
+        if (trim($_REQUEST['olduserid']) === '' || trim($_REQUEST['newuserid']) === '') {
+            die(USERS_MANAGEMENT_TEMPLATE_SEARCH_USER_ERROR);
+        }
         $olduserid = x_clean_input($_REQUEST['olduserid'], 'numeric');
         $newuserid = x_clean_input($_REQUEST['newuserid'], 'numeric');
         $transfer_private = x_clean_input($_REQUEST['transfer_private']);

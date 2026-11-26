@@ -52,3 +52,7 @@ var DELETE_MEMBER_FAIL = "Failed to delete member.";
 var USER_LIST_FAIL = "Failed to list user groups.";
 
 var THEME_DELETE = "Do you really want to disable this theme?"
+
+var SEARCH_USER_ERROR = "Select a user";
+
+var SEARCH_ERROR = "No search terms entered";

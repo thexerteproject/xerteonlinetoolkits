@@ -1141,18 +1141,22 @@ function refresh_languages()
 
 function change_owner(template_id){
 	var login = (document.getElementById(template_id + "_new_owner").value);
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/management/change_owner.php",
-		data: {
-			template_id: template_id,
-			new_user   : login
-		},
-	})
+
+	if (login !== "") {
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/management/change_owner.php",
+			data: {
+				template_id: template_id,
+				new_user   : login
+			},
+		})
 		.done(function (response) {
 			change_owner_stateChanged(response);
 		});
-
+	} else {
+		alert(SEARCH_USER_ERROR);
+	}
 }
 
 // Function give a project
@@ -1163,7 +1167,7 @@ function change_owner_stateChanged(response){
 
 	if(response!=""){
 		alert(USER_CHANGED);
-		users_list();
+		user_templates_list();
 	}else{
 		alert("ERROR " + response);
 	}
@@ -1277,16 +1281,20 @@ function list_templates_for_user(tag){
 
 	var user = document.getElementById(tag).value;
 
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/management/get_templates_for_user.php",
-		data: {
-			user_id: user
-		},
-	})
+	if (user !== "") {
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/management/get_templates_for_user.php",
+			data: {
+				user_id: user
+			},
+		})
 		.done(function (response) {
 			list_templates_for_user_stateChanged(response);
 		});
+	} else {
+		alert(SEARCH_USER_ERROR);
+	}
 }
 
 function list_templates_for_user_stateChanged(response){
@@ -1362,16 +1370,21 @@ function load(modal)
 function search_user_templates(tag){
 
 	var search = document.getElementById(tag).value;
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/management/search_user_templates.php",
-		data: {
-			search: search
-		},
-	})
+
+	if (search.trim() !== "") {
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/management/search_user_templates.php",
+			data: {
+				search: search
+			},
+		})
 		.done(function (response) {
 			search_user_templates_stateChanged(response);
 		});
+	} else {
+		alert(SEARCH_ERROR);
+	}
 }
 
 function search_user_templates_stateChanged(response){
@@ -1385,16 +1398,22 @@ function search_user_templates_stateChanged(response){
 function transfer_user_templates(tag){
 
 	var user = $('#' + tag).val();
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/management/transfer_user_templates.php",
-		data: {
-			user_id: user
-		},
-	})
+
+	if (user !== "") {
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/management/transfer_user_templates.php",
+			data: {
+				user_id: user
+			},
+		})
 		.done(function (response) {
 			transfer_user_templates_stateChanged(response);
 		});
+
+	} else {
+		alert(SEARCH_USER_ERROR);
+	}
 }
 
 function transfer_user_templates_stateChanged(response){
@@ -1408,26 +1427,31 @@ function transfer_user_templates_stateChanged(response){
 function do_transfer_user_templates(user_id, tag_user_select, tag_transfer_private, tag_transfer_shared_folders, tag_delete_user)
 {
 	var new_user = $('#' + tag_user_select).val();
-	var transfer_private = $('#' + tag_transfer_private).prop('checked');
-	var transfer_shared_folders = $('#' + tag_transfer_shared_folders).prop('checked');
-	var delete_user = $('#' + tag_delete_user).prop('checked');
 
-	$("#transfer_result").show();
+	if (new_user !== "") {
+		var transfer_private = $('#' + tag_transfer_private).prop('checked');
+		var transfer_shared_folders = $('#' + tag_transfer_shared_folders).prop('checked');
+		var delete_user = $('#' + tag_delete_user).prop('checked');
 
-	$.ajax({
-		type: "POST",
-		url: "website_code/php/management/do_transfer_user_templates.php",
-		data: {
-			olduserid: user_id,
-			newuserid: new_user,
-			transfer_private: transfer_private,
-			transfer_shared_folders: transfer_shared_folders,
-			delete_user: delete_user
-		},
-	})
+		$("#transfer_result").show();
+
+		$.ajax({
+			type: "POST",
+			url: "website_code/php/management/do_transfer_user_templates.php",
+			data: {
+				olduserid: user_id,
+				newuserid: new_user,
+				transfer_private: transfer_private,
+				transfer_shared_folders: transfer_shared_folders,
+				delete_user: delete_user
+			},
+		})
 		.done(function (response) {
 			do_transfer_user_templates_stateChanged(response);
 		});
+	} else {
+		alert(SEARCH_USER_ERROR);
+	}
 }
 
 function do_transfer_user_templates_stateChanged(response){
