@@ -116,7 +116,7 @@
 		<showTitle label="Show Title" type="CheckBox"/>
 		<showTitleFix label="Show Title" type="CheckBox"/>
 		
-		<disableGlossary label="Disable Glossary" defaultValue="true" type="CheckBox" optional="true"/>
+		<disableGlossary label="Disable Glossary" defaultValue="true" type="CheckBox" optional="true" condition="treeroot.glossary!=undefined" tooltip="Prevent glossary words from displaying definitions in this text block"/>
 
 		<hideShow type="group" label="Hide/Show Text" optional="true" tooltip="Hide this text completely or hide/show the text between specified dates" info="Hide this text from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
         			<hideContent label="Hide text" type="CheckBox" defaultValue="false" optional="true"/>

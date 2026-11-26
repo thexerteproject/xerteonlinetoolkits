@@ -46,7 +46,7 @@
 			<explanation label="This content is generated using AI. Make sure to double-check and adjust!" type="info" optional="true"/>
 		</AIGroup>
 		
-		<glossaryGroup type="group" label="Glossary" optional="true">
+		<glossaryGroup type="group" label="Glossary" optional="true" tooltip="A glossary of words/terms and their definitions. Hovering over a word/term in the project text will reveal the associated definition in a tooltip.">
 			<glossary label="Glossary" type="DataGrid" height="200" width="390" columns="2" colWidths="100,295" editable="1,1" controls="1" headers="Term,Definition" newRow="term,definition" defaultValue="term|definition" optional="true" wysiwyg="false,true"/>
 			<glossaryHover label="Show Definition on Hover" type="Checkbox" defaultValue="true" optional="true"/>
 			<glossaryPage label="Glossary Page" type="ComboBox" data="none,first,last" conditionTrigger="true" options="None,First Page,Last Page" optional="true" defaultValue="none" width="175"/>
@@ -83,7 +83,7 @@
 			</glossaryPageGroup>
 		</glossaryGroup>
 		
-		<headerGroup type="group" label="Header" optional="true">
+		<headerGroup type="group" label="Header" optional="true" tooltip="Customise the appearance of the header bar. Header customisations can also be made on individual pages.">
 			<headerHide label="Hide Header" type="Checkbox" defaultValue="false" optional="true" conditionTrigger="true"/>
 			<headerTitleAlign type="ComboBox" optional="true" label="Title Position" data="left,center,right" options="Left,Centre,Right" defaultValue="center" tooltip="The horizontal alignment of the title" condition="headerHide!='true'"/>
 			<headerImg type="group" label="Background Image" optional="true" condition="headerHide!='true'">
@@ -108,7 +108,7 @@
 			</headerLogoL>
 		</headerGroup>
         
-        <navbarGroup type="group" label="Navigation Bar" optional="true">
+        <navbarGroup type="group" label="Navigation Bar" optional="true" tooltip="Customise the appearance of the navigation bar containing page links">
 			<fixedheader type="Checkbox" defaultValue="false" conditionTrigger="false" optional="true" label="Fix navigation bar" tooltip="The menu bar is fixed to the top of the window"/>
 			<navbarPos type="ComboBox" data="above,below" options="Above Header,Below Header" optional="true" label="Position" defaultValue="above" width="175"/>
 			<navbarHide label="Hide Navigation Bar" type="Checkbox" defaultValue="false" optional="true" conditionTrigger="true"/>
@@ -134,7 +134,7 @@
 			</socialBtnsGroup>
 		</socialGroup>
 		
-        <footerGroup type="group" label="Footer" optional="true">
+        <footerGroup type="group" label="Footer" optional="true" tooltip="Customise the appearance of the footer bar at the bottom of the project">
             <footerHide label="Hide Footer" type="Checkbox" defaultValue="false" optional="true" conditionTrigger="true"/>
             <customFooter type="TextArea" height="60" label="Custom Footer Content" optional="true" condition="footerHide!='true'"/>
 			<footerPos type="ComboBox" deprecated="Social icons are currently unavailable" data="above,below,replace" options="Above Social Icons,Below Social Icons,Replace Social Icons" optional="true" label="Custom Footer Position" defaultValue="above" width="175" condition="footerHide!='true'"/>
@@ -149,7 +149,7 @@
 			<wcagTarget type="ComboBox" label="Open in" data="_blank,_self,lightbox" options="New tab/window,This tab,Lightbox" optional="true" defaultValue="_blank"/>
 		</wcagGroup>
 
-		<meta type="group" label="Metadata" optional="true">
+		<meta type="group" label="Metadata" optional="true" tooltip="Add catalogue details for this project, e.g. the course, description and keywords. These are used in SCORM packages and xAPI reports, and when sharing the project through oai-pmh. They are not shown on screen within the project.">
 		    <explanation label="Note: to share this project using oai-pmh, you need to give your assent and the fields 'Category' and 'Education level' need to be filled in." type="info" condition="oai_pmh_available" optional="true"/>
 			<course label="Course" type="Course" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the course this learning object is part of, used to create metadata in SCORM objects. This is also stored in xAPI events."/>
 			<module label="Module" type="TextInput" wysiwyg="false" defaultValue="" optional="true" tooltip="Label indicating the module/subject of this learning object, used to create metadata in SCORM objects. This is also stored in xAPI events."/>
@@ -176,7 +176,7 @@
 			<lightboxCaption type="ComboBox" label="Caption" defaultValue="false" optional="true" options="None,Below Image,Above Image" data="false,below,above" condition="lightbox!='false'" tooltip="Add a caption to lightbox images. The caption text is taken from the 'Description' or 'Alt Text' fields."/>
 		</lightboxGroup>
 
-		<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/play.php?template_id=636' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for help creating and using variables">
+		<varGroup type="group" label="Variables" optional="true" info="See the &lt;u&gt;&lt;a href='https://xot.xerte.org.uk/play.php?template_id=636' target='_blank'&gt;Variables Guide&lt;/a&gt;&lt;/u&gt; for help creating and using variables" tooltip="Create variables based on a series of parameters. Variables can be used to add variety to the data that is shown in projects, e.g. instead of including the sum 1+2=3, variables allow the sum a+b=c to be presented using a variety of numbers.">
 			<variables optional="true" label="Variable Data" type="DataGrid" columns="11" editable="1,1,1,1,1,1,1,1,1,1,1" controls="1" headers="Name,Fixed Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" newRow="Name,Value,Random,Min,Max,Step,DP,SF,Trailing Zeros,Exclude,Default" defaultValue=" | | | | | | | |false| | "/>
 			<decimalseparator label="Decimal Separator" type="ComboBox" options="Period,Comma" data="period,comma" width="100" defaultValue="period" optional="true" tooltip="Specify the character used as the decimal separator when numeric variables are used"/>
 		</varGroup>
@@ -231,7 +231,7 @@
 			<section><![CDATA[<section name="Enter Section Title"/>]]></section>
 		</newNodes>
 
-	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><headerGroup type="group" label="Header" optional="true" common="true">
+	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project." common="true"/><headerGroup type="group" label="Header" optional="true" tooltip="Customise the appearance of the header bar on this page" common="true">
 		<headerTitleAlign type="ComboBox" optional="true" label="Title Position" data="left,center,right" options="Left,Center,Right" defaultValue="center" tooltip="The horizontal alignment of the title"/>
 		<headerImg type="group" label="Image" optional="true">
 			<header type="Media" optional="true" label="File" placeholder="Select an image"/>
@@ -376,7 +376,7 @@
 		<showTitle label="Show Title" type="CheckBox"/>
 		<showTitleFix label="Show Title" type="CheckBox"/>
 		
-		<disableGlossary label="Disable Glossary" defaultValue="true" type="CheckBox" optional="true"/>
+		<disableGlossary label="Disable Glossary" defaultValue="true" type="CheckBox" optional="true" condition="treeroot.glossary!=undefined" tooltip="Prevent glossary words from displaying definitions in this text block"/>
 
 		<hideShow type="group" label="Hide/Show Text" optional="true" tooltip="Hide this text completely or hide/show the text between specified dates" info="Hide this text from view at all times or use the 'From' &amp; 'Until' fields to specify when it should be available">
         			<hideContent label="Hide text" type="CheckBox" defaultValue="false" optional="true"/>

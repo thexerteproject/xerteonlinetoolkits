@@ -2,7 +2,7 @@
 	
 	<notes label="Notes" type="TextArea" height="150" defaultValue="" optional="true" tooltip="Your notes for the page. These are not shown in the live project."/>
 
-	<headerGroup type="group" label="Header" optional="true">
+	<headerGroup type="group" label="Header" optional="true" tooltip="Customise the appearance of the header bar on this page">
 		<headerTitleAlign type="ComboBox" optional="true" label="Title Position" data="left,center,right" options="Left,Center,Right" defaultValue="center" tooltip="The horizontal alignment of the title" />
 		<headerImg type="group" label="Image" optional="true">
 			<header type="Media" optional="true" label="File" placeholder="Select an image"/>
