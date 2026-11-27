@@ -4150,11 +4150,15 @@ function x_openDialog(type, title, close, position, load, onclose) {
                         	if (onclose && typeof onclose == 'function')  onclose();
                         },
 						create: function(event, ui) {
-							$(this).parent(".ui-dialog").find(".ui-dialog-titlebar-close .ui-icon")
+							var $dialog = $(this).parent(".ui-dialog");
+							$dialog.find(".ui-dialog-titlebar-close .ui-icon")
 								.removeClass("ui-icon-closethick")
 								.addClass("fa fa-x-close");
-							}
-                        })
+							$dialog.find(".ui-dialog-titlebar-close").on("touchstart", function(e) {
+								e.stopPropagation();
+							});
+						}
+					})
                     .parent().hide();
 
                 if (load == undefined) { // load dialog contents from a file in the models folder called [type].html
