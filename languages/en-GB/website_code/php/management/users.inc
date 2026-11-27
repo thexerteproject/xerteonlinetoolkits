@@ -60,9 +60,9 @@
 	
 	define("USERS_MODIFY_ROLES", "Modify user roles");
 
-    define("USERS_MANAGE_ROLES_SELECT_USER", "Select a user to modify their roles");
+    define("USERS_MANAGE_ROLES_SELECT_USER", "Select or search for a user to modify their roles");
 
-    define("USERS_MANAGE_SELECT_USER", "Select a user to view their details");
+    define("USERS_MANAGE_SELECT_USER", "Select or search for a user to view their details");
 
     define("USERS_MANAGE_ROLES", "Manage user roles");
     define("USERS_SHOW_ROLES", "Show user roles");
